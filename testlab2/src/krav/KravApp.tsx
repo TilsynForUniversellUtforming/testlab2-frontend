@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import Title from '../common/title/Title';
 
 type KravType = {
