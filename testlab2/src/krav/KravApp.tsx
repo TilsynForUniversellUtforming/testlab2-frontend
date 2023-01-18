@@ -10,6 +10,10 @@ type KravType = {
   gjeldapp: boolean;
   urlrettleiing: string;
 }[];
-const KravApp = () => <Title title="Krav" />;
+const KravApp = () => (
+  <div>
+    <Title title="Krav" />
+  </div>
+);
 
 export default KravApp;
