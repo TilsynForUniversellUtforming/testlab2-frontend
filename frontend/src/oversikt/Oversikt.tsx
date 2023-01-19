@@ -1,11 +1,13 @@
-import Title from '../common/title/Title';
-import Lenker from './lenker/Lenker';
+import './oversikt.scss';
+
+import TestingLenker from './TestingLenker';
+import VerktoeyLenker from './VerktoeyLenker';
 
 const Oversikt = () => {
   return (
     <div className="oversikt">
-      <Title title="Verktøy" />
-      <Lenker />
+      <VerktoeyLenker />
+      <TestingLenker />
     </div>
   );
 };
