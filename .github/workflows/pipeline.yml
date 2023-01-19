@@ -24,31 +24,14 @@ jobs:
           registry: ${{ secrets.ACR_ENDPOINT }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-
-  build-frontend:
-    needs: setup
-    runs-on: ubuntu-latest
-    defaults:
-      run:
+      - name: install frontend dependencies
         working-directory: frontend
-
-    steps:
-      - name: install dependencies
         run: npm ci
-      - name: build app
+      - name: build frontend app
+        working-directory: frontend
         run: npm run build
-
-  build-server:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: compile and test app
+      - name: compile and test server app
         run: mvn -B test
-
-  assemble-and-push-image:
-    needs: [build-frontend, build-server]
-    runs-on: ubuntu-latest
-    steps:
       - name: make public folder
         run: mkdir -p target/classes/public
       - name: copy frontend app
