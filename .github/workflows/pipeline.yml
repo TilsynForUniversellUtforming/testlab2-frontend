@@ -1,0 +1,57 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
+      - name: Set up node v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Log in to registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ACR_ENDPOINT }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+  build-frontend:
+    needs: setup
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: install dependencies
+        run: npm ci
+      - name: build app
+        run: npm run build
+
+  build-server:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: compile and test app
+        run: mvn -B test
+
+  assemble-and-push-image:
+    needs: [build-frontend, build-server]
+    runs-on: ubuntu-latest
+    steps:
+      - name: make public folder
+        run: mkdir -p target/classes/public
+      - name: copy frontend app
+        run: cp -R frontend/dist/* target/classes/public/
+      - name: build and push image
+        run: mvn -B compile jib:build
