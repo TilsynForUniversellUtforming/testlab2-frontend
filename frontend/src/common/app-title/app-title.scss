@@ -1,0 +1,8 @@
+.app-title {
+  padding-left: 1rem;
+  &.overview {
+    padding: 0 0 1rem 0;
+    text-align: center;
+    border-bottom: 1px solid #DDD;
+  }
+}

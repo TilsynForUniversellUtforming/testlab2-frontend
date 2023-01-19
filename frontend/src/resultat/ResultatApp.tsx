@@ -1,5 +1,5 @@
-import Title from '../common/title/Title';
+import AppTitle from '../common/app-title/AppTitle';
 
-const ResultatApp = () => <Title title="Resultat" />;
+const ResultatApp = () => <AppTitle title="Resultat" />;
 
 export default ResultatApp;

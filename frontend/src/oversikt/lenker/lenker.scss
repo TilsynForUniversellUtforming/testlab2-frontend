@@ -1,17 +1,17 @@
 .lenker {
   display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  .lenke {
+  flex-flow: wrap;
+  &__item {
     text-align: center;
+    flex: 0 0 16%;
+    margin-bottom: 1rem;
     a {
       text-decoration: none;
       color: black;
     }
-    .lenke__img {
-      object-fit: cover;
-      width: 100%;
-      height: 8vh;
-    }
+  }
+  &__img {
+    object-fit: contain;
+    height: 7rem;
   }
 }

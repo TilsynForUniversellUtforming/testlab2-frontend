@@ -1,23 +1,35 @@
 import './lenker.scss';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
-import kravImg from '../../assets/krav.png';
-import loeysingImg from '../../assets/loeysingar.svg';
-import resultatImg from '../../assets/resultat.svg';
-import testingImg from '../../assets/testing.svg';
-import { Paths } from '../../common/paths';
-import Lenke from './Lenke';
+import { PathType } from '../../common/paths';
 
-const Lenker = () => {
+interface Props {
+  children: ReactNode;
+}
+
+export interface LenkeProps {
+  img: string;
+  pathType: PathType;
+}
+
+const Lenke = ({ img, pathType }: LenkeProps) => {
+  const { path, navn } = pathType;
   return (
-    <div className="lenker">
-      <Lenke path={Paths.TEST} img={testingImg} tekst="Testing" />
-      <Lenke path={Paths.KRAV} img={kravImg} tekst="Krav" />
-      <Lenke path={Paths.RESULTAT} img={resultatImg} tekst="Resultat" />
-      <Lenke path={Paths.LOEYSINGAR} img={loeysingImg} tekst="Løysingar" />
+    <div className="lenker__item">
+      <Link to={path}>
+        <img className="lenker__img" src={img} alt={navn} />
+        <div className="lenker__text">{navn}</div>
+      </Link>
     </div>
   );
 };
+
+const Lenker = ({ children }: Props) => {
+  return <div className="lenker">{children}</div>;
+};
+
+Lenker.Lenke = Lenke;
 
 export default Lenker;

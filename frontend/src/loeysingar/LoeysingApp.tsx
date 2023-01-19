@@ -1,5 +1,5 @@
-import Title from '../common/title/Title';
+import AppTitle from '../common/app-title/AppTitle';
 
-const LoeysingApp = () => <Title title="Løysingar" />;
+const LoeysingApp = () => <AppTitle title="Løysing" />;
 
 export default LoeysingApp;
