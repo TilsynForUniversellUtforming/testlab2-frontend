@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import NavBar from './common/navigation/NavBar';
+import Navigation from './common/navigation/Navigation';
 import paths from './common/paths';
 import DiskusjonApp from './diskusjon/DiskusjonApp';
 import KravApp from './krav/KravApp';
@@ -20,7 +20,7 @@ import VerksemderApp from './verksemder/VerksemderApp';
 function App() {
   return (
     <>
-      <NavBar />
+      <Navigation />
       <Routes>
         <Route path={paths.ROOT.path} element={<Oversikt />} />
         <Route path={paths.SAKER.path} element={<SakerApp />} />

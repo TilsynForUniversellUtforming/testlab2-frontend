@@ -1,13 +1,13 @@
 import './oversikt.scss';
 
-import TestingLenker from './TestingLenker';
-import VerktoeyLenker from './VerktoeyLenker';
+import { testing, verktoey } from '../common/paths';
+import Lenker from './lenker/Lenker';
 
 const Oversikt = () => {
   return (
     <div className="oversikt">
-      <VerktoeyLenker />
-      <TestingLenker />
+      <Lenker tittel="Verktøy" paths={verktoey} />
+      <Lenker tittel="Testing" paths={testing} />
     </div>
   );
 };
