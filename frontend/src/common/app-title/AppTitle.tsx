@@ -8,7 +8,7 @@ export interface AppTitleProps {
 }
 
 const AppTitle = ({ title, overview = false }: AppTitleProps) => (
-  <h1 className={classNames('app-title', { overview: overview })}>{title}</h1>
+  <h2 className={classNames('app-title', { overview: overview })}>{title}</h2>
 );
 
 export default AppTitle;
