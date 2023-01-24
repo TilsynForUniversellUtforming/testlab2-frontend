@@ -1,9 +1,9 @@
-import TestreglarTable from './TestreglarTable';
+import RegelTable from './table/RegelTable';
 
 const Testreglar = () => {
   return (
     <>
-      <TestreglarTable />
+      <RegelTable />
     </>
   );
 };
