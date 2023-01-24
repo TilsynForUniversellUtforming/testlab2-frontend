@@ -1,4 +1,4 @@
-export default interface Testregel {
+export type Testregel = {
   Id: number;
   TestregelId: string;
   Navn: string;
@@ -7,4 +7,4 @@ export default interface Testregel {
   Type: string;
   Modus: string;
   Krav: string;
-}
+};

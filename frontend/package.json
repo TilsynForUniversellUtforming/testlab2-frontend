@@ -11,6 +11,8 @@
     "prepare": "cd .. && husky install frontend/.husky"
   },
   "dependencies": {
+    "@tanstack/match-sorter-utils": "^8.7.6",
+    "@tanstack/react-table": "^8.7.6",
     "@types/react-router-bootstrap": "^0.24.5",
     "bootstrap": "^5.2.3",
     "classnames": "^2.3.2",
