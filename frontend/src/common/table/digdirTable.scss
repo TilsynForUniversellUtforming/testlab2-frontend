@@ -1,2 +1,49 @@
 .digdir-table {
+  table-layout: fixed;
+  width: 64rem;
+
+  &__header-button {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+  }
+
+  .sortering {
+    &::before,
+    &::after {
+      content: '';
+      position: relative;
+      border: 4px solid transparent;
+    }
+
+    &::before {
+      border-bottom-color: #bdbdbd;
+      bottom: 10px;
+    }
+
+    &::after {
+      border-top-color: #bdbdbd;
+      top: 10px;
+    }
+
+    &.sort-asc {
+      &::before {
+        border-bottom-color: #3f3f3f;
+      }
+
+      &::after {
+        content: none;
+      }
+    }
+
+    &.sort-desc {
+      &::before {
+        content: none;
+      }
+
+      &::after {
+        border-top-color: #3f3f3f;
+      }
+    }
+  }
 }
