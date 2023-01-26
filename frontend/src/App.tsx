@@ -1,8 +1,10 @@
+import './index.scss';
+
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import Navigation from './common/navigation/Navigation';
-import paths from './common/paths';
+import routes from './common/routes';
 import DiskusjonApp from './diskusjon/DiskusjonApp';
 import KravApp from './krav/KravApp';
 import LoeysingApp from './loeysingar/LoeysingApp';
@@ -14,6 +16,8 @@ import ResultatApp from './resultat/ResultatApp';
 import SakerApp from './saker/SakerApp';
 import TeknikkarApp from './teknikkar/TeknikkarApp';
 import TesterApp from './tester/TesterApp';
+import Regelsett from './testreglar/regelsett/Regelsett';
+import Testreglar from './testreglar/testreglar-liste/Testreglar';
 import TestreglarApp from './testreglar/TestreglarApp';
 import VerksemderApp from './verksemder/VerksemderApp';
 
@@ -21,21 +25,26 @@ function App() {
   return (
     <>
       <Navigation />
-      <Routes>
-        <Route path={paths.ROOT.path} element={<Oversikt />} />
-        <Route path={paths.SAKER.path} element={<SakerApp />} />
-        <Route path={paths.MAALING.path} element={<MaalingApp />} />
-        <Route path={paths.TESTREGLAR.path} element={<TestreglarApp />} />
-        <Route path={paths.VERKSEMDER.path} element={<VerksemderApp />} />
-        <Route path={paths.LOEYSINGAR.path} element={<LoeysingApp />} />
-        <Route path={paths.KRAV.path} element={<KravApp />} />
-        <Route path={paths.TEKNIKKAR.path} element={<TeknikkarApp />} />
-        <Route path={paths.DISKUSJON.path} element={<DiskusjonApp />} />
-        <Route path={paths.RESULTAT.path} element={<ResultatApp />} />
-        <Route path={paths.TESTER.path} element={<TesterApp />} />
-        <Route path={paths.MINE_TESTER.path} element={<MineTesterApp />} />
-        <Route path={paths.QUALWEB.path} element={<QualWebApp />} />
-      </Routes>
+      <div className="app">
+        <Routes>
+          <Route path={routes.ROOT.path} element={<Oversikt />} />
+          <Route path={routes.SAKER.path} element={<SakerApp />} />
+          <Route path={routes.MAALING.path} element={<MaalingApp />} />
+          <Route path={routes.TESTREGLAR.path} element={<TestreglarApp />}>
+            <Route path="" element={<Testreglar />} />
+            <Route path={routes.REGELSETT.path} element={<Regelsett />} />
+          </Route>
+          <Route path={routes.VERKSEMDER.path} element={<VerksemderApp />} />
+          <Route path={routes.LOEYSINGAR.path} element={<LoeysingApp />} />
+          <Route path={routes.KRAV.path} element={<KravApp />} />
+          <Route path={routes.TEKNIKKAR.path} element={<TeknikkarApp />} />
+          <Route path={routes.DISKUSJON.path} element={<DiskusjonApp />} />
+          <Route path={routes.RESULTAT.path} element={<ResultatApp />} />
+          <Route path={routes.TESTER.path} element={<TesterApp />} />
+          <Route path={routes.MINE_TESTER.path} element={<MineTesterApp />} />
+          <Route path={routes.QUALWEB.path} element={<QualWebApp />} />
+        </Routes>
+      </div>
     </>
   );
 }
