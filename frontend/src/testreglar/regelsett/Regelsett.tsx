@@ -3,7 +3,7 @@ import React from 'react';
 const Regelsett = () => {
   return (
     <>
-      <div>hei</div>
+      <div>Regelsett</div>
     </>
   );
 };

@@ -8,7 +8,7 @@ const testreglar_dummy = async (): Promise<Testregel[]> => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 
-  await sleep(1000);
+  await sleep(500);
 
   return JSON.parse(response);
 };

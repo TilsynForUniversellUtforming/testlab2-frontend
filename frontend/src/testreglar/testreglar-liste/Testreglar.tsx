@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import useFormatDate from '../../common/hooks/useFormatDate';
@@ -9,6 +10,16 @@ import testreglar_dummy from '../api/testreglar_dummy';
 import StatusBadge from './StatusBadge';
 
 const testRegelColumns: ColumnDef<Testregel>[] = [
+  {
+    id: 'Handling',
+    cell: () => (
+      <Button size="sm" variant="danger">
+        &#10005;
+      </Button>
+    ),
+    header: () => <span>Handling</span>,
+    enableSorting: false,
+  },
   {
     accessorFn: (row) => row.TestregelId,
     id: 'TestregelId',
@@ -77,16 +88,14 @@ const Testreglar = () => {
   });
 
   return (
-    <>
-      <DigdirTable
-        data={testreglar}
-        defaultColumns={testRegelColumns}
-        error={error}
-        loading={loading}
-        showFilters={false}
-        onClickRetry={doFetchTestreglar}
-      />
-    </>
+    <DigdirTable
+      data={testreglar}
+      defaultColumns={testRegelColumns}
+      error={error}
+      loading={loading}
+      showFilters={false} // TODO - fikse filtere
+      onClickRetry={doFetchTestreglar}
+    />
   );
 };
 

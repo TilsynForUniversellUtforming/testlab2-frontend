@@ -17,6 +17,14 @@ const TableHeader = ({ table, header, showFilters, loading }: Props) => {
     return null;
   }
 
+  if (!header.column.getCanSort()) {
+    return (
+      <th colSpan={header.colSpan}>
+        {flexRender(header.column.columnDef.header, header.getContext())}
+      </th>
+    );
+  }
+
   return (
     <th colSpan={header.colSpan}>
       <Button

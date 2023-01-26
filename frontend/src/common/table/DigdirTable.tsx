@@ -140,7 +140,7 @@ const DigdirTable = ({
         filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
       />
-      <Table bordered className="digdir-table">
+      <Table className="digdir-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
