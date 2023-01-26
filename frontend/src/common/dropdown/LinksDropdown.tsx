@@ -1,20 +1,21 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { NavDropdown } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-import { Path } from '../paths';
+import { Route } from '../routes';
 
 interface Props {
   navn: string;
-  pathTypes: Path[];
+  routes: Route[];
 }
 
-export const LinksDropdown = ({ navn, pathTypes }: Props) => {
+export const LinksDropdown = ({ navn, routes }: Props) => {
   return (
-    <NavDropdown title={navn} id="collasible-nav-dropdown">
-      {pathTypes.map((pt) => (
-        <NavDropdown.Item key={pt.navn} href={pt.path}>
-          {pt.navn}
+    <NavDropdown title={navn}>
+      {routes.map((route) => (
+        <NavDropdown.Item key={route.navn} as={Link} to={route.path}>
+          {route.navn}
         </NavDropdown.Item>
       ))}
     </NavDropdown>
