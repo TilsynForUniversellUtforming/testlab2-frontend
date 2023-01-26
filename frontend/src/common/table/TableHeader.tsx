@@ -9,9 +9,10 @@ export interface Props {
   table: Table<any>;
   header: Header<any, unknown>;
   showFilters: boolean;
+  loading: boolean;
 }
 
-const TableHeader = ({ table, header, showFilters }: Props) => {
+const TableHeader = ({ table, header, showFilters, loading }: Props) => {
   if (header.isPlaceholder) {
     return null;
   }
@@ -22,6 +23,7 @@ const TableHeader = ({ table, header, showFilters }: Props) => {
         className="digdir-table__header-button p-0 w-100"
         variant="link"
         onClick={header.column.getToggleSortingHandler()}
+        disabled={loading}
       >
         <Stack direction="horizontal" gap={2}>
           {flexRender(header.column.columnDef.header, header.getContext())}

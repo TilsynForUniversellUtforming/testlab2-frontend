@@ -150,6 +150,7 @@ const DigdirTable = ({
                   table={table}
                   header={header}
                   showFilters={showFilters}
+                  loading={loading}
                 />
               ))}
             </tr>
