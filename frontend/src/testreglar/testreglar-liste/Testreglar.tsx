@@ -4,10 +4,10 @@ import { Button } from 'react-bootstrap';
 
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import useFormatDate from '../../common/hooks/useFormatDate';
+import StatusBadge from '../../common/status-badge/StatusBadge';
 import DigdirTable from '../../common/table/DigdirTable';
-import { Testregel } from '../api/Testregel';
-import testreglar_dummy from '../api/testreglar_dummy';
-import StatusBadge from './StatusBadge';
+import testreglarApi_dummy from '../api/testreglar-api_dummy';
+import { Testregel } from '../api/types';
 
 const testRegelColumns: ColumnDef<Testregel>[] = [
   {
@@ -35,7 +35,16 @@ const testRegelColumns: ColumnDef<Testregel>[] = [
   {
     accessorFn: (row) => row.Status,
     id: 'Status',
-    cell: (info) => <StatusBadge tittel={`${info.getValue()}`} />,
+    cell: (info) => (
+      <StatusBadge
+        title={`${info.getValue()}`}
+        levels={{
+          primary: 'Publisert',
+          danger: 'Utgår',
+          success: 'Klar for testing',
+        }}
+      />
+    ),
     header: () => <span>Status</span>,
   },
   {
@@ -71,7 +80,7 @@ const Testreglar = () => {
 
   const doFetchTestreglar = useCallback(() => {
     const fetchTestreglar = async () => {
-      const data = await testreglar_dummy();
+      const data = await testreglarApi_dummy();
       setTestreglar(data);
     };
 
