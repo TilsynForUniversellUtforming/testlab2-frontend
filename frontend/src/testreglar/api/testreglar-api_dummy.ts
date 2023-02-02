@@ -13,4 +13,16 @@ const testreglarApi_dummy = async (): Promise<Testregel[]> => {
   return JSON.parse(response);
 };
 
+export const deleteTestregel_dummy = async (
+  testregelId: number
+): Promise<Testregel[]> => {
+  const sleep = (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  await sleep(500);
+
+  return JSON.parse(response).filter((t: Testregel) => t.Id !== testregelId);
+};
+
 export default testreglarApi_dummy;
