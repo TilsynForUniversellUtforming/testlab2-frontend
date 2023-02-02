@@ -1,8 +1,10 @@
+import './navigation.scss';
+
 import React from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 
-import LinksDropdown from '../dropdown/LinksDropdown';
 import { routes, testing, verktoey } from '../routes';
+import LinksDropdown from './dropdown/LinksDropdown';
 
 const Navigation = () => {
   return (
