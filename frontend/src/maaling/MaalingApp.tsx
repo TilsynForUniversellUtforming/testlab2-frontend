@@ -1,97 +1,72 @@
 import { useEffect, useState } from 'react';
 
 import AppTitle from '../common/app-title/AppTitle';
+import * as remoteData from '../remote-data';
 
-type Maaling = {
+type maaling = {
   id: number;
   url: string;
 };
-type FetchingData = { state: 'fetching-data' };
-type Loaded = { state: 'loaded'; data: Maaling[] };
-type Failed = { state: 'failed'; error: Error };
-type State = FetchingData | Loaded | Failed;
 
-type Feature = { key: string; active: boolean };
+type feature = { key: string; active: boolean };
 
 const MaalingApp = () => {
-  const [state, setState] = useState<State>({ state: 'fetching-data' });
+  const [maalinger, setMaalinger] = useState<remoteData.t<string, maaling[]>>({
+    type: 'NOT_ASKED',
+  });
   const [showMaalinger, setShowMaalinger] = useState(false);
   useEffect(() => {
-    fetch('/api/v1/maalinger')
-      .then((res) => {
-        if (!res.ok) {
-          const error = new Error(`${res.status} ${res.statusText}`);
-          setState({ state: 'failed', error });
-          throw error;
-        } else {
-          return res.json();
-        }
-      })
-      .then(
-        (maalinger: Maaling[]) => {
-          setState({ state: 'loaded', data: maalinger });
-        },
-        (error) => {
-          setState({ state: 'failed', error });
-        }
-      );
-
-    fetch('/api/v1/features')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`${res.status} ${res.statusText}`);
-        } else {
-          return res.json();
-        }
-      })
-      .then(
-        (features: Feature[]) => {
-          const maalinger = features.find(
+    remoteData.get<maaling[]>('/api/v1/maalinger').then(setMaalinger);
+    remoteData
+      .get<feature[]>('/api/v1/features')
+      .then((features: remoteData.t<string, feature[]>) => {
+        if (features.type === 'SUCCESS') {
+          const maalinger = features.data.find(
             (feature) => feature.key === 'maalinger'
           );
           setShowMaalinger(maalinger?.active ?? false);
-        },
-        (error) => console.error(error.message)
-      );
+        } else {
+          setShowMaalinger(false);
+        }
+      });
   }, []);
   return (
     <>
       <AppTitle title="Måling" />
-      <Maalinger state={state} showMaalinger={showMaalinger} />
+      <Maalinger state={maalinger} showMaalinger={showMaalinger} />
     </>
   );
 };
 
 interface MaalingerProps {
-  state: State;
+  state: remoteData.t<string, maaling[]>;
   showMaalinger: boolean;
 }
 
 function Maalinger({ state, showMaalinger }: MaalingerProps) {
   if (showMaalinger) {
-    let maalinger: JSX.Element;
-    switch (state.state) {
-      case 'fetching-data':
-        maalinger = <p>Laster...</p>;
-        break;
-      case 'loaded':
-        maalinger = (
-          <ol>
-            {state.data.map((maaling) => (
-              <li key={maaling.id}>{maaling.url}</li>
-            ))}
-          </ol>
-        );
-        break;
-      case 'failed':
-        maalinger = <p>Feilet: {state.error.message}</p>;
-        break;
-    }
-
     return (
       <>
         <h3>Målinger</h3>
-        {maalinger}
+        {remoteData.fold(
+          state,
+          () => (
+            <p>Laster...</p>
+          ),
+          () => (
+            <p>Laster...</p>
+          ),
+          (error) => (
+            <p>error</p>
+          ),
+          (maalinger) => (
+            <ol>
+              {maalinger.map((maaling) => (
+                <li key={maaling.id}>{maaling.url}</li>
+              ))}
+            </ol>
+          )
+        )}
       </>
     );
   } else {
