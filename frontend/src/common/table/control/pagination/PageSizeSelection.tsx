@@ -12,6 +12,7 @@ const PageSizeSelection = ({ table, loading }: LoadingTableProps) => (
       onChange={(e) => {
         table.setPageSize(Number(e.target.value));
       }}
+      size="sm"
       disabled={loading}
     >
       {[10, 25, 50, 100].map((pageSize) => (

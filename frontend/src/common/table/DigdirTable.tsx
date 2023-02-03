@@ -21,6 +21,22 @@ import {
   sortingFns,
   useReactTable,
 } from '@tanstack/react-table';
+import classNames from 'classnames';
+import React, { useCallback, useState } from 'react';
+import Table from 'react-bootstrap/Table';
+
+import HideWhenLoading from '../HideWhenLoading';
+import ControlHeader from './control/ControlHeader';
+import PaginationContainer from './control/pagination/PaginationContainer';
+import TableError from './error/TableError';
+import TableBody from './TableBody';
+import TableHeader from './TableHeader';
+
+export interface Style {
+  full?: boolean;
+  small?: boolean;
+  fixed?: boolean;
+}
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -62,32 +78,28 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
-import React, { useCallback, useState } from 'react';
-import Table from 'react-bootstrap/Table';
-
-import HideWhenLoading from '../HideWhenLoading';
-import ControlHeader from './control/ControlHeader';
-import PaginationContainer from './control/pagination/PaginationContainer';
-import TableError from './error/TableError';
-import TableBody from './TableBody';
-import TableHeader from './TableHeader';
-
 interface Props {
   data: any[];
   defaultColumns: ColumnDef<any>[];
   error: any;
-  loading: boolean;
-  showFilters: boolean;
-  onClickRetry: () => void;
+  loading?: boolean;
+  showFilters?: boolean;
+  onClickRetry?: () => void;
+  customStyle?: Style;
 }
 
 const DigdirTable = ({
   data,
   defaultColumns,
   error,
-  loading,
-  showFilters,
+  loading = false,
+  showFilters = false,
   onClickRetry,
+  customStyle = {
+    fixed: false,
+    small: false,
+    full: true,
+  },
 }: Props) => {
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -139,8 +151,16 @@ const DigdirTable = ({
         table={table}
         filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
+        small={customStyle.small}
       />
-      <Table className="digdir-table">
+      <Table
+        className={classNames('digdir-table', {
+          full: customStyle.full,
+          fixed: customStyle.fixed,
+          sm: customStyle.small,
+          bordered: customStyle.small,
+        })}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

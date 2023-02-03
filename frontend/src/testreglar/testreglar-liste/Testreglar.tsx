@@ -8,8 +8,9 @@ import DigdirTable from '../../common/table/DigdirTable';
 import UserActions, {
   ColumnUserAction,
 } from '../../common/table/user-actions/UserActions';
-import testreglarApi_dummy, {
+import {
   deleteTestregel_dummy,
+  getTestreglar_dummy,
 } from '../api/testreglar-api_dummy';
 import { Testregel } from '../api/types';
 
@@ -34,7 +35,7 @@ const Testreglar = () => {
 
   const doFetchTestreglar = useCallback(() => {
     const fetchTestreglar = async () => {
-      const data = await testreglarApi_dummy();
+      const data = await getTestreglar_dummy();
       setTestreglar(data);
     };
 
@@ -58,12 +59,6 @@ const Testreglar = () => {
       cell: ({ row }) => <UserActions {...columnUserAction} row={row} />,
       enableSorting: false,
       size: Object.values(columnUserAction).length,
-    },
-    {
-      accessorFn: (row) => row.TestregelId,
-      id: 'TestregelId',
-      cell: (info) => info.getValue(),
-      header: () => <span>Testregel</span>,
     },
     {
       accessorFn: (row) => row.Navn,
@@ -99,10 +94,10 @@ const Testreglar = () => {
       header: () => <span>Type</span>,
     },
     {
-      accessorFn: (row) => row.Modus,
-      id: 'Modus',
+      accessorFn: (row) => row.TestregelId,
+      id: 'TestregelId',
       cell: (info) => info.getValue(),
-      header: () => <span>Modus</span>,
+      header: () => <span>Testregel</span>,
     },
     {
       accessorFn: (row) => row.Krav,

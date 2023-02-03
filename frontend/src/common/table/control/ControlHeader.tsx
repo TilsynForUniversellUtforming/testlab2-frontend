@@ -11,6 +11,7 @@ export interface Props {
   showFilters: boolean;
   filterValue: string;
   onChangeFilter: (value: string | number) => void;
+  small?: boolean;
 }
 
 const ControlHeader = ({
@@ -19,22 +20,29 @@ const ControlHeader = ({
   showFilters,
   filterValue,
   onChangeFilter,
-}: Props) => (
-  <Stack direction="horizontal" gap={2} className="pb-4">
-    <div>
-      <PageSizeSelection table={table} loading={loading} />
-    </div>
-    {showFilters && (
+  small = false,
+}: Props) => {
+  if (small) {
+    return null;
+  }
+
+  return (
+    <Stack direction="horizontal" gap={2}>
       <div>
-        <DebouncedInput
-          value={filterValue}
-          onChange={onChangeFilter}
-          className="p-2 font-lg shadow border border-block"
-          placeholder="Search all columns..."
-        />
+        <PageSizeSelection table={table} loading={loading} />
       </div>
-    )}
-  </Stack>
-);
+      {showFilters && (
+        <div>
+          <DebouncedInput
+            value={filterValue}
+            onChange={onChangeFilter}
+            className="p-2 font-lg shadow border border-block"
+            placeholder="Search all columns..."
+          />
+        </div>
+      )}
+    </Stack>
+  );
+};
 
 export default ControlHeader;

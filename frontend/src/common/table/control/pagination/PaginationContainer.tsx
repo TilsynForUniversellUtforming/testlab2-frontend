@@ -11,7 +11,7 @@ const PaginationContainer = ({ table }: TableProps) => (
       <Col>
         <PaginationCount table={table} />
       </Col>
-      <Col>
+      <Col className="d-flex flex-row-reverse">
         <PaginationSelect table={table} />
       </Col>
     </Row>
