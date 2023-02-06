@@ -1,35 +1,16 @@
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
+import { ListGroup } from 'react-bootstrap';
+import { useOutletContext } from 'react-router-dom';
 
 import DigdirLinkButton from '../../common/button/DigdirLinkButton';
-import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import routes from '../../common/routes';
 import DigdirTable from '../../common/table/DigdirTable';
-import { getRegelsett_dummy } from '../api/testreglar-api_dummy';
-import { Testregel, TestRegelsett } from '../api/types';
+import { TestRegelsett } from '../api/types';
+import { TestregelContext } from '../types';
 
 const Regelsett = () => {
-  const [regelsett, setRegelsett] = useState<TestRegelsett[]>([]);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
-
-  const doFetchRegelsett = useCallback(() => {
-    const fetchRegelsett = async () => {
-      const data = await getRegelsett_dummy();
-      setRegelsett(data);
-    };
-
-    setLoading(true);
-    setError(undefined);
-
-    fetchRegelsett()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffectOnce(() => {
-    doFetchRegelsett();
-  });
+  const { error, loading, regelsett }: TestregelContext = useOutletContext();
 
   const testRegelColumns: ColumnDef<TestRegelsett>[] = [
     {
@@ -39,17 +20,18 @@ const Regelsett = () => {
       header: () => <span>Navn</span>,
     },
     {
-      accessorFn: (row) => row.testreglar,
+      accessorFn: (row) => row.testreglar.map((tr) => tr.Navn).join(','),
       id: 'TestregelId',
-      cell: (info) => (
-        <ul className="testreglar-regelsett__list">
-          {(info.getValue() as Testregel[]).map((tr) => (
-            <li key={tr.Navn}>{tr.Navn}</li>
+      cell: ({ row }) => (
+        <ListGroup className="testreglar-regelsett__list" as="ol" numbered>
+          {row.original.testreglar.map((tr) => (
+            <ListGroup.Item key={tr.Navn} as="li">
+              {tr.Navn}
+            </ListGroup.Item>
           ))}
-        </ul>
+        </ListGroup>
       ),
       header: () => <span>Testregler</span>,
-      enableSorting: false,
     },
   ];
 
@@ -60,7 +42,7 @@ const Regelsett = () => {
         route={routes.NYTT_REGELSETT}
         disabled={loading}
       />
-      <DigdirTable
+      <DigdirTable<TestRegelsett>
         data={regelsett}
         defaultColumns={testRegelColumns}
         error={error}

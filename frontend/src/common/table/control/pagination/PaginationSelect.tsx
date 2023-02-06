@@ -54,7 +54,7 @@ const PaginationSelect = ({ table }: TableProps) => {
     return <>{pageNumbers}</>;
   };
 
-  if (pageCount === 1) {
+  if (pageCount <= 1) {
     return null;
   }
 

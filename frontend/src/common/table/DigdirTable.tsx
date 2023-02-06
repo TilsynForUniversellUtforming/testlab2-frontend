@@ -1,11 +1,7 @@
 import './digdirTable.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import {
-  compareItems,
-  RankingInfo,
-  rankItem,
-} from '@tanstack/match-sorter-utils';
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,8 +13,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingFn,
-  sortingFns,
+  RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
 import classNames from 'classnames';
@@ -60,50 +55,41 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
-
-  // Only sort by rank if the column has ranking information
-  if (
-    rowA?.columnFiltersMeta[columnId] !== null &&
-    typeof rowA?.columnFiltersMeta[columnId] !== 'undefined'
-  ) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId].itemRank,
-      rowB.columnFiltersMeta[columnId].itemRank
-    );
-  }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
-
-interface Props {
-  data: any[];
-  defaultColumns: ColumnDef<any>[];
+interface Props<T extends object> {
+  data: T[];
+  defaultColumns: ColumnDef<T>[];
   error: any;
   loading?: boolean;
   showFilters?: boolean;
+  onSubmitSelectRows?: () => void; // Funksjon for submit ved row selection, implisitt selectable row
   onClickRetry?: () => void;
   customStyle?: Style;
 }
 
-const DigdirTable = ({
+const DigdirTable = <T extends object>({
   data,
   defaultColumns,
   error,
   loading = false,
-  showFilters = false,
+  showFilters = true,
+  onSubmitSelectRows,
   onClickRetry,
   customStyle = {
     fixed: false,
     small: false,
     full: true,
   },
-}: Props) => {
+}: Props<T>) => {
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  const enableRowSelection = typeof onSubmitSelectRows !== 'undefined';
+
+  const handleRowSelection = (rss: RowSelectionState) => {
+    setRowSelection(rss);
+  };
 
   const table = useReactTable({
     data,
@@ -114,6 +100,15 @@ const DigdirTable = ({
     state: {
       columnFilters,
       globalFilter,
+      rowSelection,
+    },
+    enableRowSelection: enableRowSelection,
+    onRowSelectionChange: (updaterOrValue) => {
+      if (typeof updaterOrValue === 'function') {
+        handleRowSelection(updaterOrValue(rowSelection));
+      } else {
+        handleRowSelection(updaterOrValue);
+      }
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -126,14 +121,6 @@ const DigdirTable = ({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
-
-  const [state, setState] = useState(table.initialState);
-
-  table.setOptions((prev) => ({
-    ...prev,
-    state,
-    onStateChange: setState,
-  }));
 
   const onChangeGlobalFilter = useCallback((value: string | number) => {
     setGlobalFilter(String(value));

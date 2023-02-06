@@ -9,8 +9,6 @@ export interface Props {
 const DigdirCollapse = ({ buttonText, children }: Props) => {
   const [open, setOpen] = useState(false);
 
-  console.log('open', open);
-
   return (
     <>
       <Button

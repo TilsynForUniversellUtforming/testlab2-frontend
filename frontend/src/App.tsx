@@ -1,7 +1,8 @@
 import './index.scss';
 
 import React from 'react';
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { Route, Routes } from 'react-router-dom';
 
 import Navigation from './common/navigation/Navigation';
 import routes from './common/routes';
@@ -18,6 +19,7 @@ import TeknikkarApp from './teknikkar/TeknikkarApp';
 import TesterApp from './tester/TesterApp';
 import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
 import Regelsett from './testreglar/regelsett/Regelsett';
+import RegelsettApp from './testreglar/regelsett/RegelsettApp';
 import Testreglar from './testreglar/testreglar-liste/Testreglar';
 import TestreglarApp from './testreglar/TestreglarApp';
 import VerksemderApp from './verksemder/VerksemderApp';
@@ -26,14 +28,14 @@ function App() {
   return (
     <>
       <Navigation />
-      <div className="app">
+      <Container className="app">
         <Routes>
           <Route path={routes.ROOT.path} element={<Oversikt />} />
           <Route path={routes.SAKER.path} element={<SakerApp />} />
           <Route path={routes.MAALING.path} element={<MaalingApp />} />
           <Route path={routes.TESTREGLAR.path} element={<TestreglarApp />}>
             <Route index element={<Testreglar />} />
-            <Route path={routes.REGELSETT.path} element={<Outlet />}>
+            <Route path={routes.REGELSETT.path} element={<RegelsettApp />}>
               <Route index element={<Regelsett />} />
               <Route
                 path={routes.NYTT_REGELSETT.path}
@@ -51,7 +53,7 @@ function App() {
           <Route path={routes.MINE_TESTER.path} element={<MineTesterApp />} />
           <Route path={routes.QUALWEB.path} element={<QualWebApp />} />
         </Routes>
-      </div>
+      </Container>
     </>
   );
 }

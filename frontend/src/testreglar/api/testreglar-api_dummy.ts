@@ -39,3 +39,15 @@ export const getRegelsett_dummy = async (): Promise<TestRegelsett[]> => {
 
   return JSON.parse(response_regelsett);
 };
+
+export const setRegelsett_dummy = async (
+  regelsett: TestRegelsett
+): Promise<TestRegelsett[]> => {
+  const sleep = (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  await sleep(500);
+
+  return JSON.parse(response_regelsett).add(regelsett);
+};

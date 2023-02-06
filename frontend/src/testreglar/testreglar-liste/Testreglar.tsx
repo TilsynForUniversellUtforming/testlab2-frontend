@@ -1,7 +1,7 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
-import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import useFormatDate from '../../common/hooks/useFormatDate';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import DigdirTable from '../../common/table/DigdirTable';
@@ -13,11 +13,17 @@ import {
   getTestreglar_dummy,
 } from '../api/testreglar-api_dummy';
 import { Testregel } from '../api/types';
+import { TestregelContext } from '../types';
 
 const Testreglar = () => {
-  const [testreglar, setTestreglar] = useState<Testregel[]>([]);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const {
+    error,
+    loading,
+    testreglar,
+    setTestreglar,
+    setError,
+    setLoading,
+  }: TestregelContext = useOutletContext();
 
   const onClickDelete = useCallback((e: Row<Testregel>) => {
     const fetchTestreglar = async () => {
@@ -46,10 +52,6 @@ const Testreglar = () => {
       .catch((e) => setError(e))
       .finally(() => setLoading(false));
   }, []);
-
-  useEffectOnce(() => {
-    doFetchTestreglar();
-  });
 
   const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
 
@@ -109,12 +111,11 @@ const Testreglar = () => {
 
   return (
     <>
-      <DigdirTable
+      <DigdirTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
         error={error}
         loading={loading}
-        showFilters={false} // TODO - fikse filtere
         onClickRetry={doFetchTestreglar}
       />
     </>
