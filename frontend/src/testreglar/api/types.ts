@@ -23,5 +23,3 @@ export type TestRegelsett = {
   namn: string;
   testreglar: Testregel[];
 };
-
-export const DEFAULT_REGELSETT = 'Standard';

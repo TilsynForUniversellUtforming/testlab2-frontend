@@ -108,14 +108,16 @@ const Testreglar = () => {
   ];
 
   return (
-    <DigdirTable
-      data={testreglar}
-      defaultColumns={testRegelColumns}
-      error={error}
-      loading={loading}
-      showFilters={false} // TODO - fikse filtere
-      onClickRetry={doFetchTestreglar}
-    />
+    <>
+      <DigdirTable
+        data={testreglar}
+        defaultColumns={testRegelColumns}
+        error={error}
+        loading={loading}
+        showFilters={false} // TODO - fikse filtere
+        onClickRetry={doFetchTestreglar}
+      />
+    </>
   );
 };
 

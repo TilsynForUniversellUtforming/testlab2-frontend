@@ -1,7 +1,7 @@
 import './index.scss';
 
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 
 import Navigation from './common/navigation/Navigation';
 import routes from './common/routes';
@@ -16,6 +16,7 @@ import ResultatApp from './resultat/ResultatApp';
 import SakerApp from './saker/SakerApp';
 import TeknikkarApp from './teknikkar/TeknikkarApp';
 import TesterApp from './tester/TesterApp';
+import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
 import Regelsett from './testreglar/regelsett/Regelsett';
 import Testreglar from './testreglar/testreglar-liste/Testreglar';
 import TestreglarApp from './testreglar/TestreglarApp';
@@ -31,8 +32,14 @@ function App() {
           <Route path={routes.SAKER.path} element={<SakerApp />} />
           <Route path={routes.MAALING.path} element={<MaalingApp />} />
           <Route path={routes.TESTREGLAR.path} element={<TestreglarApp />}>
-            <Route path="" element={<Testreglar />} />
-            <Route path={routes.REGELSETT.path} element={<Regelsett />} />
+            <Route index element={<Testreglar />} />
+            <Route path={routes.REGELSETT.path} element={<Outlet />}>
+              <Route index element={<Regelsett />} />
+              <Route
+                path={routes.NYTT_REGELSETT.path}
+                element={<CreateRegelsett />}
+              />
+            </Route>
           </Route>
           <Route path={routes.VERKSEMDER.path} element={<VerksemderApp />} />
           <Route path={routes.LOEYSINGAR.path} element={<LoeysingApp />} />

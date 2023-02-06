@@ -1,15 +1,15 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 
+import DigdirLinkButton from '../../common/button/DigdirLinkButton';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
+import routes from '../../common/routes';
 import DigdirTable from '../../common/table/DigdirTable';
 import { getRegelsett_dummy } from '../api/testreglar-api_dummy';
 import { Testregel, TestRegelsett } from '../api/types';
 
 const Regelsett = () => {
   const [regelsett, setRegelsett] = useState<TestRegelsett[]>([]);
-  // const [selectedRegelsett, setSelectedRegelsett] = useState<TestRegelsett>();
-  // const [options, setOptions] = useState<SelectOption[]>([]);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -17,15 +17,6 @@ const Regelsett = () => {
     const fetchRegelsett = async () => {
       const data = await getRegelsett_dummy();
       setRegelsett(data);
-      // const options: SelectOption[] = data.map((tr) => ({
-      //   label: tr.namn,
-      //   value: tr.namn,
-      // }));
-      //
-      // setOptions(options);
-
-      // const defaultRegelsett = data.find((rs) => rs.namn === DEFAULT_REGELSETT);
-      // setSelectedRegelsett(defaultRegelsett);
     };
 
     setLoading(true);
@@ -40,14 +31,6 @@ const Regelsett = () => {
     doFetchRegelsett();
   });
 
-  // const onChangeRegelsett = useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const selected = regelsett.find((rs) => rs.namn === e.target.value);
-  //     setSelectedRegelsett(selected);
-  //   },
-  //   [regelsett]
-  // );
-
   const testRegelColumns: ColumnDef<TestRegelsett>[] = [
     {
       accessorFn: (row) => row.namn,
@@ -59,24 +42,32 @@ const Regelsett = () => {
       accessorFn: (row) => row.testreglar,
       id: 'TestregelId',
       cell: (info) => (
-        <ul>
+        <ul className="testreglar-regelsett__list">
           {(info.getValue() as Testregel[]).map((tr) => (
             <li key={tr.Navn}>{tr.Navn}</li>
           ))}
         </ul>
       ),
       header: () => <span>Testregler</span>,
+      enableSorting: false,
     },
   ];
 
   return (
-    <DigdirTable
-      data={regelsett}
-      defaultColumns={testRegelColumns}
-      error={error}
-      loading={loading}
-      customStyle={{ small: true }}
-    />
+    <>
+      <DigdirLinkButton
+        type="add"
+        route={routes.NYTT_REGELSETT}
+        disabled={loading}
+      />
+      <DigdirTable
+        data={regelsett}
+        defaultColumns={testRegelColumns}
+        error={error}
+        loading={loading}
+        customStyle={{ small: true }}
+      />
+    </>
   );
 };
 
