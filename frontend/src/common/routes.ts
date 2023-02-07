@@ -33,6 +33,7 @@ interface IRoutes {
   MAALING: RouteIcon;
   TESTREGLAR: RouteIcon;
   REGELSETT: NestedRoute;
+  NYTT_REGELSETT: NestedRoute;
   VERKSEMDER: RouteIcon;
   LOEYSINGAR: RouteIcon;
   KRAV: RouteIcon;
@@ -68,6 +69,12 @@ const REGELSETT = {
   path: 'regelsett',
   parentRoute: TESTREGLAR,
 };
+const NYTT_REGELSETT = {
+  navn: 'Nytt regelsett',
+  path: 'ny',
+  parentRoute: REGELSETT,
+};
+
 const VERKSEMDER = {
   navn: 'Verksemder',
   path: 'verksemder',
@@ -120,6 +127,7 @@ export const routes: IRoutes = {
   MAALING: MAALING,
   TESTREGLAR: TESTREGLAR,
   REGELSETT: REGELSETT,
+  NYTT_REGELSETT: NYTT_REGELSETT,
   VERKSEMDER: VERKSEMDER,
   LOEYSINGAR: LOEYSINGAR,
   KRAV: KRAV,

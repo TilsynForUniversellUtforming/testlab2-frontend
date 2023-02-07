@@ -7,11 +7,11 @@ import usePaginationKeyPress from './hooks/usePaginationKeyPress';
 const PaginationSelect = ({ table }: TableProps) => {
   usePaginationKeyPress({ table });
 
-  const PaginationMiddleSection = () => {
-    // eslint-disable-next-line
-    const pageOptions = table.getPageOptions();
-    const pageCount = pageOptions.length;
+  // eslint-disable-next-line
+  const pageOptions = table.getPageOptions();
+  const pageCount = pageOptions.length;
 
+  const PaginationMiddleSection = () => {
     let isPageNumberOutOfRange: boolean;
 
     const pageNumbers = [...pageOptions].map((_, index) => {
@@ -53,6 +53,10 @@ const PaginationSelect = ({ table }: TableProps) => {
 
     return <>{pageNumbers}</>;
   };
+
+  if (pageCount <= 1) {
+    return null;
+  }
 
   return (
     <Pagination>

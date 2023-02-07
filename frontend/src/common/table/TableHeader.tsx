@@ -18,8 +18,11 @@ const TableHeader = ({ table, header, showFilters, loading }: Props) => {
   }
 
   if (!header.column.getCanSort()) {
+    const size: number | undefined = header.column.columnDef.size;
+    const width = size ? `${3 * size}rem` : 'auto';
+
     return (
-      <th colSpan={header.colSpan}>
+      <th colSpan={header.colSpan} style={{ width: width }}>
         {flexRender(header.column.columnDef.header, header.getContext())}
       </th>
     );

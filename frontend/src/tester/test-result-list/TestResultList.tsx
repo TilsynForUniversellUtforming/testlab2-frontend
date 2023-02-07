@@ -81,12 +81,11 @@ const TestResultList = ({
   }
 
   return (
-    <DigdirTable
+    <DigdirTable<TestResult>
       data={testResult}
       defaultColumns={testResultatColumns}
       error={error}
       loading={loading}
-      showFilters={false} // TODO - fikse filtere
       onClickRetry={onClickRetry}
     />
   );

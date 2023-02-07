@@ -3,7 +3,8 @@ import { Alert, Button } from 'react-bootstrap';
 
 interface Props {
   show: boolean;
-  onClickRetry: () => void;
+  // errorText: string; // TODO - Legg inn egen feilmelding per tabell
+  onClickRetry?: () => void;
 }
 
 const TableError = ({ show, onClickRetry }: Props) => (
@@ -11,11 +12,13 @@ const TableError = ({ show, onClickRetry }: Props) => (
     <Alert.Heading>Noe gikk galt</Alert.Heading>
     <p>Noe gikk galt under henting av testreglar, vennligst prøv igjen.</p>
     <hr />
-    <div className="d-flex">
-      <Button onClick={onClickRetry} variant="outline-danger">
-        Hent igjen
-      </Button>
-    </div>
+    {onClickRetry && (
+      <div className="d-flex">
+        <Button onClick={onClickRetry} variant="outline-danger">
+          Hent igjen
+        </Button>
+      </div>
+    )}
   </Alert>
 );
 

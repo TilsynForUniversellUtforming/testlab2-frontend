@@ -3,3 +3,10 @@
     padding-top: 1rem;
   }
 }
+
+.testreglar-regelsett {
+  &__list {
+    max-height: 32rem;
+    overflow-y: auto;
+  }
+}

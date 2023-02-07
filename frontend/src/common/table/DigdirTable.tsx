@@ -1,11 +1,7 @@
 import './digdirTable.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import {
-  compareItems,
-  RankingInfo,
-  rankItem,
-} from '@tanstack/match-sorter-utils';
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,10 +13,25 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingFn,
-  sortingFns,
+  RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
+import classNames from 'classnames';
+import React, { useCallback, useEffect, useState } from 'react';
+import Table from 'react-bootstrap/Table';
+
+import HideWhenLoading from '../HideWhenLoading';
+import ControlHeader from './control/ControlHeader';
+import PaginationContainer from './control/pagination/PaginationContainer';
+import TableError from './error/TableError';
+import TableBody from './TableBody';
+import TableHeader from './TableHeader';
+
+export interface Style {
+  full?: boolean;
+  small?: boolean;
+  fixed?: boolean;
+}
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -44,54 +55,41 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
-
-  // Only sort by rank if the column has ranking information
-  if (
-    rowA?.columnFiltersMeta[columnId] !== null &&
-    typeof rowA?.columnFiltersMeta[columnId] !== 'undefined'
-  ) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId].itemRank,
-      rowB.columnFiltersMeta[columnId].itemRank
-    );
-  }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
-
-import React, { useCallback, useState } from 'react';
-import Table from 'react-bootstrap/Table';
-
-import HideWhenLoading from '../HideWhenLoading';
-import ControlHeader from './control/ControlHeader';
-import PaginationContainer from './control/pagination/PaginationContainer';
-import TableError from './error/TableError';
-import TableBody from './TableBody';
-import TableHeader from './TableHeader';
-
-interface Props {
-  data: any[];
-  defaultColumns: ColumnDef<any>[];
+interface Props<T extends object> {
+  data: T[];
+  defaultColumns: ColumnDef<T>[];
   error: any;
-  loading: boolean;
-  showFilters: boolean;
-  onClickRetry: () => void;
+  loading?: boolean;
+  showFilters?: boolean;
+  onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
+  onClickRetry?: () => void;
+  customStyle?: Style;
 }
 
-const DigdirTable = ({
+const DigdirTable = <T extends object>({
   data,
   defaultColumns,
   error,
-  loading,
-  showFilters,
+  loading = false,
+  showFilters = true,
+  onSelectRows,
   onClickRetry,
-}: Props) => {
+  customStyle = {
+    fixed: false,
+    small: false,
+    full: true,
+  },
+}: Props<T>) => {
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  const enableRowSelection = typeof onSelectRows !== 'undefined';
+
+  const handleRowSelection = (rss: RowSelectionState) => {
+    setRowSelection(rss);
+  };
 
   const table = useReactTable({
     data,
@@ -102,6 +100,15 @@ const DigdirTable = ({
     state: {
       columnFilters,
       globalFilter,
+      rowSelection,
+    },
+    enableRowSelection: enableRowSelection,
+    onRowSelectionChange: (updaterOrValue) => {
+      if (typeof updaterOrValue === 'function') {
+        handleRowSelection(updaterOrValue(rowSelection));
+      } else {
+        handleRowSelection(updaterOrValue);
+      }
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
@@ -115,13 +122,14 @@ const DigdirTable = ({
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
-  const [state, setState] = useState(table.initialState);
-
-  table.setOptions((prev) => ({
-    ...prev,
-    state,
-    onStateChange: setState,
-  }));
+  useEffect(() => {
+    if (enableRowSelection) {
+      const selectedRows = table
+        .getSelectedRowModel()
+        .flatRows.map((fr) => fr.original);
+      onSelectRows(selectedRows);
+    }
+  }, [rowSelection, enableRowSelection]);
 
   const onChangeGlobalFilter = useCallback((value: string | number) => {
     setGlobalFilter(String(value));
@@ -139,8 +147,17 @@ const DigdirTable = ({
         table={table}
         filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
+        small={customStyle.small}
       />
-      <Table className="digdir-table">
+      <Table
+        className={classNames('digdir-table', {
+          full: customStyle.full,
+          fixed: customStyle.fixed,
+          sm: customStyle.small,
+          bordered: customStyle.small,
+        })}
+        hover={enableRowSelection}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

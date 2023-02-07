@@ -1,6 +1,6 @@
 import { Table } from '@tanstack/react-table';
 import React from 'react';
-import { Stack } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 
 import DebouncedInput from '../../DebouncedInput';
 import PageSizeSelection from './pagination/PageSizeSelection';
@@ -11,6 +11,7 @@ export interface Props {
   showFilters: boolean;
   filterValue: string;
   onChangeFilter: (value: string | number) => void;
+  small?: boolean;
 }
 
 const ControlHeader = ({
@@ -19,22 +20,31 @@ const ControlHeader = ({
   showFilters,
   filterValue,
   onChangeFilter,
-}: Props) => (
-  <Stack direction="horizontal" gap={2} className="pb-4">
-    <div>
-      <PageSizeSelection table={table} loading={loading} />
-    </div>
-    {showFilters && (
-      <div>
-        <DebouncedInput
-          value={filterValue}
-          onChange={onChangeFilter}
-          className="p-2 font-lg shadow border border-block"
-          placeholder="Search all columns..."
-        />
-      </div>
-    )}
-  </Stack>
-);
+  small = false,
+}: Props) => {
+  if (small) {
+    return null;
+  }
+
+  return (
+    <Container className="pb-4">
+      <Row>
+        <Col>
+          <PageSizeSelection table={table} loading={loading} />
+        </Col>
+        <Col className="d-flex flex-row-reverse">
+          {showFilters && (
+            <DebouncedInput
+              value={filterValue}
+              onChange={onChangeFilter}
+              placeholder="Søk..."
+              className="w-50 h-25"
+            />
+          )}
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
 export default ControlHeader;

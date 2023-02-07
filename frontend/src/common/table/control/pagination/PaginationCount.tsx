@@ -8,11 +8,11 @@ const PaginationCount = ({ table }: TableProps) => {
   const selectionRowStart = currentRows[0]?.index + 1;
   const selectionRowEnd = currentRows[currentRows.length - 1]?.index + 1;
 
-  return (
-    <>
-      {`Viser ${selectionRowStart} til ${selectionRowEnd} av totalt ${numRows} element`}
-    </>
-  );
+  const middleText = isNaN(selectionRowStart)
+    ? 'ingen'
+    : `${selectionRowStart} til ${selectionRowEnd}`;
+
+  return <>{`Viser ${middleText} av totalt ${numRows} element`}</>;
 };
 
 export default PaginationCount;
