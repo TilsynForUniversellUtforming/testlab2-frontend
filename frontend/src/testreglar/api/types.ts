@@ -23,3 +23,8 @@ export type TestRegelsett = {
   namn: string;
   testreglar: Testregel[];
 };
+
+export type RegelsettRequest = {
+  namn: string;
+  ids: number[];
+};

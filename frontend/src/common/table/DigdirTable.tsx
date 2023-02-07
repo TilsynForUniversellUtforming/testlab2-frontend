@@ -17,7 +17,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 
 import HideWhenLoading from '../HideWhenLoading';
@@ -61,7 +61,7 @@ interface Props<T extends object> {
   error: any;
   loading?: boolean;
   showFilters?: boolean;
-  onSubmitSelectRows?: () => void; // Funksjon for submit ved row selection, implisitt selectable row
+  onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
   onClickRetry?: () => void;
   customStyle?: Style;
 }
@@ -72,7 +72,7 @@ const DigdirTable = <T extends object>({
   error,
   loading = false,
   showFilters = true,
-  onSubmitSelectRows,
+  onSelectRows,
   onClickRetry,
   customStyle = {
     fixed: false,
@@ -85,7 +85,7 @@ const DigdirTable = <T extends object>({
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const enableRowSelection = typeof onSubmitSelectRows !== 'undefined';
+  const enableRowSelection = typeof onSelectRows !== 'undefined';
 
   const handleRowSelection = (rss: RowSelectionState) => {
     setRowSelection(rss);
@@ -122,6 +122,15 @@ const DigdirTable = <T extends object>({
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
+  useEffect(() => {
+    if (enableRowSelection) {
+      const selectedRows = table
+        .getSelectedRowModel()
+        .flatRows.map((fr) => fr.original);
+      onSelectRows(selectedRows);
+    }
+  }, [rowSelection, enableRowSelection]);
+
   const onChangeGlobalFilter = useCallback((value: string | number) => {
     setGlobalFilter(String(value));
   }, []);
@@ -147,6 +156,7 @@ const DigdirTable = <T extends object>({
           sm: customStyle.small,
           bordered: customStyle.small,
         })}
+        hover={enableRowSelection}
       >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -1,18 +1,27 @@
 import { Button } from 'react-bootstrap';
 
-export type ButtonType = 'add';
+export type ButtonType = 'add' | 'submit';
 
 export interface Props {
   type: ButtonType;
+  label?: string;
   onClick?: () => void;
   disabled?: boolean;
 }
 
-const DigdirButton = ({ type, onClick, disabled = false }: Props) => {
+const DigdirButton = ({ type, label, onClick, disabled = false }: Props) => {
   if (type === 'add') {
     return (
       <Button onClick={onClick} variant="success" disabled={disabled}>
-        + Legg til
+        {label ? label : '+ Legg til'}
+      </Button>
+    );
+  }
+
+  if (type === 'submit') {
+    return (
+      <Button onClick={onClick} disabled={disabled}>
+        {label ? label : 'Lagre'}
       </Button>
     );
   }

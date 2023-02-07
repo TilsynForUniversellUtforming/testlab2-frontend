@@ -25,6 +25,11 @@ const IndeterminateCheckbox = ({
       checked={checked}
       disabled={disabled}
       onChange={onChange}
+      style={{
+        width: '1rem',
+        height: '1rem',
+        cursor: 'pointer',
+      }}
     />
   );
 };

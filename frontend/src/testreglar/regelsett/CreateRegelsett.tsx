@@ -1,13 +1,26 @@
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import {
+  Col,
+  Container,
+  Form,
+  ListGroup,
+  Row,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+} from 'react-bootstrap';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import DigdirButton from '../../common/button/DigdirButton';
 import useFormatDate from '../../common/hooks/useFormatDate';
+import useValidate from '../../common/hooks/useValidate';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
 import DigdirTable from '../../common/table/DigdirTable';
-import { Testregel } from '../api/types';
-import { TestregelContext } from '../types';
+import { createRegelsett_dummy } from '../api/testreglar-api_dummy';
+import { RegelsettRequest, Testregel } from '../api/types';
+import { evneAlle, evneList, TestregelContext } from '../types';
 
 const CreateRegelsett = () => {
   const {
@@ -19,23 +32,45 @@ const CreateRegelsett = () => {
     setLoading,
   }: TestregelContext = useOutletContext();
 
-  const handleSubmit = useCallback(() => {
-    console.log('submit');
+  const navigate = useNavigate();
+  const [selection, setSelection] = useState<Testregel[]>([]);
+  const [name, setName] = useState<string>();
+
+  const onChangeRows = useCallback((rowSelection: Testregel[]) => {
+    setSelection(rowSelection);
   }, []);
 
-  // const onSubmit = useCallback(() => {
-  //   const fetchTestreglar = async () => {
-  //     const data = await setRegelsett_dummy(testRegelsett);
-  //     setRegelsett(data);
-  //   };
-  //
-  //   setLoading(true);
-  //   setError(undefined);
-  //
-  //   fetchTestreglar()
-  //     .catch((e) => setError(e))
-  //     .finally(() => setLoading(false));
-  // }, []);
+  const validateRequest = (): RegelsettRequest => {
+    useValidate([
+      { validationType: 'name', value: name },
+      { validationType: 'array', value: selection },
+    ]);
+
+    return {
+      namn: name!,
+      ids: selection.map((tr) => tr.Id),
+    };
+  };
+
+  const onSubmit = useCallback(() => {
+    const request = validateRequest();
+
+    const fetchTestreglar = async () => {
+      const data = await createRegelsett_dummy(request);
+      console.log('data', data);
+      setRegelsett(data);
+    };
+
+    setLoading(true);
+    setError(undefined);
+
+    fetchTestreglar()
+      .catch((e) => setError(e))
+      .finally(() => {
+        setLoading(false);
+        navigate('..');
+      });
+  }, [selection]);
 
   const testRegelColumns = React.useMemo<ColumnDef<Testregel>[]>(
     () => [
@@ -56,7 +91,6 @@ const CreateRegelsett = () => {
             onChange={row.getToggleSelectedHandler()}
           />
         ),
-        enableSorting: false,
         size: 1,
       },
       {
@@ -108,21 +142,85 @@ const CreateRegelsett = () => {
     []
   );
 
+  const submitDisabled =
+    loading ||
+    selection.length === 0 ||
+    !useValidate([{ validationType: 'name', value: name }]);
+
   return (
-    <>
-      {/*<DigdirButton*/}
-      {/*  type="add"*/}
-      {/*  disabled={loading}*/}
-      {/*  // onClick={onSubmit}*/}
-      {/*/>*/}
-      <DigdirTable<Testregel>
-        data={testreglar}
-        defaultColumns={testRegelColumns}
-        error={error}
-        loading={loading}
-        onSubmitSelectRows={handleSubmit}
-      />
-    </>
+    <Container className="pb-4">
+      <Row>
+        <Col>
+          <Form>
+            <Form.Group className="mb-3">
+              <DigdirButton
+                type="submit"
+                disabled={submitDisabled}
+                onClick={onSubmit}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="formCreateRegelsettName">Navn</Form.Label>
+              <Form.Control
+                id="formCreateRegelsettName"
+                size="sm"
+                type="text"
+                value={name ?? ''}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Valgte regelsett</Form.Label>
+              <ListGroup
+                className="testreglar-regelsett__list"
+                as="ol"
+                numbered={selection.length > 0}
+              >
+                {selection.length > 0 &&
+                  selection.map((tr) => (
+                    <ListGroup.Item key={tr.Navn} as="li">
+                      {tr.Navn}
+                    </ListGroup.Item>
+                  ))}
+                {selection.length === 0 && (
+                  <ListGroup.Item as="li">
+                    Ingen testregler valgt
+                  </ListGroup.Item>
+                )}
+              </ListGroup>
+            </Form.Group>
+          </Form>
+        </Col>
+        <Col>
+          <Stack gap={2}>
+            <ToggleButtonGroup
+              type="checkbox"
+              className="mb-2"
+              defaultValue={[evneAlle.value]}
+            >
+              {evneList.map((evne) => (
+                <ToggleButton
+                  id={`${evne.value}-id`}
+                  key={evne.value}
+                  value={evne.value}
+                  variant={'outline-primary'}
+                >
+                  {evne.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+            <DigdirTable<Testregel>
+              data={testreglar}
+              defaultColumns={testRegelColumns}
+              error={error}
+              loading={loading}
+              onSelectRows={onChangeRows}
+              customStyle={{ small: true }}
+            />
+          </Stack>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
