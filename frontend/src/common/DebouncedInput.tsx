@@ -1,4 +1,5 @@
 import React, { InputHTMLAttributes, useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
 
 const DebouncedInput = ({
   value: initialValue,
@@ -25,8 +26,10 @@ const DebouncedInput = ({
   }, [value]);
 
   return (
-    <input
+    <Form.Control
       {...props}
+      size="sm"
+      type="text"
       value={value}
       onChange={(e) => setValue(e.target.value)}
     />

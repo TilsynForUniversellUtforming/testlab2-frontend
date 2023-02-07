@@ -13,7 +13,7 @@ const Navbar = () => {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={NavLink} to={routes.REGELSETT.path} end>
+          <Nav.Link as={NavLink} to={routes.REGELSETT.path}>
             {routes.REGELSETT.navn}
           </Nav.Link>
         </Nav.Item>
