@@ -1,9 +1,11 @@
 import './maalingApp.scss';
 
+import { ColumnDef } from '@tanstack/react-table';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
 import AppTitle from '../common/app-title/AppTitle';
+import DigdirTable from '../common/table/DigdirTable';
 
 type Maaling = {
   id: number;
@@ -78,22 +80,43 @@ interface MaalingerProps {
 }
 
 function Maalinger({ state }: MaalingerProps) {
+  const maalingerColumns: ColumnDef<Maaling>[] = [
+    {
+      id: 'ID',
+      accessorFn: (row) => row.id,
+      enableColumnFilter: false,
+    },
+    { id: 'URL', accessorFn: (row) => row.url, enableColumnFilter: false },
+  ];
+
   let maalinger: JSX.Element;
   switch (state.state) {
     case 'fetching-data':
-      maalinger = <p>Laster...</p>;
+      maalinger = (
+        <DigdirTable
+          data={[]}
+          error={undefined}
+          defaultColumns={maalingerColumns}
+        />
+      );
       break;
     case 'loaded':
       maalinger = (
-        <ol>
-          {state.data.map((maaling) => (
-            <li key={maaling.id}>{maaling.url}</li>
-          ))}
-        </ol>
+        <DigdirTable
+          data={state.data}
+          defaultColumns={maalingerColumns}
+          error={undefined}
+        />
       );
       break;
     case 'failed':
-      maalinger = <p>Feilet: {state.error.message}</p>;
+      maalinger = (
+        <DigdirTable
+          data={[]}
+          defaultColumns={maalingerColumns}
+          error={state.error}
+        />
+      );
       break;
   }
 
