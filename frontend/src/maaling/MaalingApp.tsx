@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import './maalingApp.scss';
+
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { Button, Form } from 'react-bootstrap';
 
 import AppTitle from '../common/app-title/AppTitle';
 
@@ -16,7 +19,8 @@ type Feature = { key: string; active: boolean };
 const MaalingApp = () => {
   const [state, setState] = useState<State>({ state: 'fetching-data' });
   const [showMaalinger, setShowMaalinger] = useState(false);
-  useEffect(() => {
+
+  function fetchMaalinger() {
     fetch('/api/v1/maalinger')
       .then((res) => {
         if (!res.ok) {
@@ -35,6 +39,10 @@ const MaalingApp = () => {
           setState({ state: 'failed', error });
         }
       );
+  }
+
+  useEffect(() => {
+    fetchMaalinger();
 
     fetch('/api/v1/features')
       .then((res) => {
@@ -55,48 +63,90 @@ const MaalingApp = () => {
       );
   }, []);
   return (
-    <>
-      <AppTitle title="Måling" />
-      <Maalinger state={state} showMaalinger={showMaalinger} />
-    </>
+    (showMaalinger && (
+      <>
+        <AppTitle title="Måling" />
+        <NyMaaling onNewMaaling={fetchMaalinger} />
+        <Maalinger state={state} />
+      </>
+    )) || <AppTitle title="Måling" />
   );
 };
 
 interface MaalingerProps {
   state: State;
-  showMaalinger: boolean;
 }
 
-function Maalinger({ state, showMaalinger }: MaalingerProps) {
-  if (showMaalinger) {
-    let maalinger: JSX.Element;
-    switch (state.state) {
-      case 'fetching-data':
-        maalinger = <p>Laster...</p>;
-        break;
-      case 'loaded':
-        maalinger = (
-          <ol>
-            {state.data.map((maaling) => (
-              <li key={maaling.id}>{maaling.url}</li>
-            ))}
-          </ol>
-        );
-        break;
-      case 'failed':
-        maalinger = <p>Feilet: {state.error.message}</p>;
-        break;
-    }
-
-    return (
-      <>
-        <h3>Målinger</h3>
-        {maalinger}
-      </>
-    );
-  } else {
-    return null;
+function Maalinger({ state }: MaalingerProps) {
+  let maalinger: JSX.Element;
+  switch (state.state) {
+    case 'fetching-data':
+      maalinger = <p>Laster...</p>;
+      break;
+    case 'loaded':
+      maalinger = (
+        <ol>
+          {state.data.map((maaling) => (
+            <li key={maaling.id}>{maaling.url}</li>
+          ))}
+        </ol>
+      );
+      break;
+    case 'failed':
+      maalinger = <p>Feilet: {state.error.message}</p>;
+      break;
   }
+
+  return (
+    <section>
+      <h3>Målinger</h3>
+      {maalinger}
+    </section>
+  );
+}
+
+interface NyMaalingProps {
+  onNewMaaling: () => void;
+}
+
+function NyMaaling({ onNewMaaling }: NyMaalingProps) {
+  const [form, setForm] = useState({ url: '' });
+
+  function clearForm() {
+    setForm({ url: '' });
+  }
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    fetch('/api/v1/maalinger', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: form.url }),
+    })
+      .then(clearForm)
+      .then(onNewMaaling);
+  }
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, url: event.currentTarget.value });
+  }
+
+  return (
+    <section>
+      <h3>Ny måling</h3>
+      <Form onSubmit={handleSubmit}>
+        <Form.Label>URL:</Form.Label>
+        <Form.Control
+          type="text"
+          value={form.url}
+          onChange={handleChange}
+        ></Form.Control>
+        <Button type="submit">Lagre</Button>
+      </Form>
+    </section>
+  );
 }
 
 export default MaalingApp;
