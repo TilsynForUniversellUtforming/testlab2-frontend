@@ -9,6 +9,7 @@ export type TestregelContext = {
   setRegelsett: (regelsett: TestRegelsett[]) => void;
   setError: (e: any) => void;
   setLoading: (loading: boolean) => void;
+  refresh: () => void;
 };
 
 export type Evne = {

@@ -6,10 +6,7 @@ import { Outlet } from 'react-router-dom';
 import AppTitle from '../common/app-title/AppTitle';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import routes from '../common/routes';
-import {
-  getRegelsett_dummy,
-  getTestreglar_dummy,
-} from './api/testreglar-api_dummy';
+import { listRegelsett, listTestreglar } from './api/testreglar-api';
 import { Testregel, TestRegelsett } from './api/types';
 import Navbar from './Navbar';
 import { TestregelContext } from './types';
@@ -38,8 +35,8 @@ const TestreglarApp = () => {
 
   const doFetchData = useCallback(() => {
     const fetchData = async () => {
-      const testreglar = await getTestreglar_dummy();
-      const regelsett = await getRegelsett_dummy();
+      const testreglar = await listTestreglar();
+      const regelsett = await listRegelsett();
       setTestreglar(testreglar);
       setRegelsett(regelsett);
       setLoading(false);
@@ -64,6 +61,7 @@ const TestreglarApp = () => {
     setRegelsett: handleRegelsett,
     setError: handleError,
     setLoading: handleLoading,
+    refresh: doFetchData,
   };
 
   return (

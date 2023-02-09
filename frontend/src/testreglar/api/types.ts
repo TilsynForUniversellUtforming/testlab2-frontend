@@ -1,27 +1,17 @@
 export type Testregel = {
-  Id: number;
-  TestregelId: string;
-  Navn: string;
-  Status: string;
-  Dato_endra: string;
-  Type: string;
-  Krav: string;
-  Blinde: boolean;
-  Svaksynte: boolean;
-  Fargeblinde: boolean;
-  Doovblinde: boolean;
-  Doove: boolean;
-  Tunghooyrde: boolean;
-  NedsattKognisjon: boolean;
-  NedsattMotorikk: boolean;
-  Anfall: boolean;
-  Alle: boolean;
-  subRows?: [Testregel];
+  id: number;
+  kravId: number;
+  referanseAct: string;
+  kravTilSamsvar: string;
+  type: string;
+  status: string;
+  kravTittel: string;
 };
 
 export type TestRegelsett = {
+  id: number;
   namn: string;
-  testreglar: Testregel[];
+  testregelList: Testregel[];
 };
 
 export type RegelsettRequest = {

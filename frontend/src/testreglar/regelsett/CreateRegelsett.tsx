@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Col,
   Container,
@@ -13,12 +13,11 @@ import {
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import DigdirButton from '../../common/button/DigdirButton';
-import useFormatDate from '../../common/hooks/useFormatDate';
 import useValidate from '../../common/hooks/useValidate';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
 import DigdirTable from '../../common/table/DigdirTable';
-import { createRegelsett_dummy } from '../api/testreglar-api_dummy';
+import { createRegelsett } from '../api/testreglar-api';
 import { RegelsettRequest, Testregel } from '../api/types';
 import { evneAlle, evneList, TestregelContext } from '../types';
 
@@ -30,7 +29,13 @@ const CreateRegelsett = () => {
     setRegelsett,
     setError,
     setLoading,
+    refresh,
   }: TestregelContext = useOutletContext();
+
+  const selectableTestreglar = useMemo<Testregel[]>(
+    () => testreglar.filter((tr) => tr.referanseAct),
+    [testreglar]
+  );
 
   const navigate = useNavigate();
   const [selection, setSelection] = useState<Testregel[]>([]);
@@ -48,15 +53,15 @@ const CreateRegelsett = () => {
 
     return {
       namn: name!,
-      ids: selection.map((tr) => tr.Id),
+      ids: selection.map((tr) => tr.id),
     };
   };
 
   const onSubmit = useCallback(() => {
     const request = validateRequest();
 
-    const fetchTestreglar = async () => {
-      const data = await createRegelsett_dummy(request);
+    const addRegelsett = async () => {
+      const data = await createRegelsett(request);
       console.log('data', data);
       setRegelsett(data);
     };
@@ -64,8 +69,10 @@ const CreateRegelsett = () => {
     setLoading(true);
     setError(undefined);
 
-    fetchTestreglar()
-      .catch((e) => setError(e))
+    addRegelsett()
+      .catch((e) => {
+        setError(e.message);
+      })
       .finally(() => {
         setLoading(false);
         navigate('..');
@@ -94,13 +101,13 @@ const CreateRegelsett = () => {
         size: 1,
       },
       {
-        accessorFn: (row) => row.Navn,
+        accessorFn: (row) => row.kravTilSamsvar,
         id: 'Navn',
         cell: (info) => info.getValue(),
         header: () => <span>Navn</span>,
       },
       {
-        accessorFn: (row) => row.Status,
+        accessorFn: (row) => row.status,
         id: 'Status',
         cell: (info) => (
           <StatusBadge
@@ -115,25 +122,19 @@ const CreateRegelsett = () => {
         header: () => <span>Status</span>,
       },
       {
-        accessorFn: (row) => row.Dato_endra,
-        id: 'Dato_endra',
-        cell: (info) => useFormatDate(String(info.getValue())),
-        header: () => <span>Dato Endra</span>,
-      },
-      {
-        accessorFn: (row) => row.Type,
+        accessorFn: (row) => row.type,
         id: 'Type',
         cell: (info) => info.getValue(),
         header: () => <span>Type</span>,
       },
       {
-        accessorFn: (row) => row.TestregelId,
+        accessorFn: (row) => row.referanseAct,
         id: 'TestregelId',
         cell: (info) => info.getValue(),
         header: () => <span>Testregel</span>,
       },
       {
-        accessorFn: (row) => row.Krav,
+        accessorFn: (row) => row.kravTittel,
         id: 'Krav',
         cell: (info) => info.getValue(),
         header: () => <span>Krav</span>,
@@ -146,7 +147,6 @@ const CreateRegelsett = () => {
     loading ||
     selection.length === 0 ||
     !useValidate([{ validationType: 'name', value: name }]);
-
   return (
     <Container className="pb-4">
       <Row>
@@ -178,8 +178,8 @@ const CreateRegelsett = () => {
               >
                 {selection.length > 0 &&
                   selection.map((tr) => (
-                    <ListGroup.Item key={tr.Navn} as="li">
-                      {tr.Navn}
+                    <ListGroup.Item key={tr.id} as="li">
+                      {tr.kravTilSamsvar}
                     </ListGroup.Item>
                   ))}
                 {selection.length === 0 && (
@@ -204,17 +204,19 @@ const CreateRegelsett = () => {
                   key={evne.value}
                   value={evne.value}
                   variant={'outline-primary'}
+                  disabled
                 >
                   {evne.label}
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
             <DigdirTable<Testregel>
-              data={testreglar}
+              data={selectableTestreglar}
               defaultColumns={testRegelColumns}
               error={error}
               loading={loading}
               onSelectRows={onChangeRows}
+              onClickRetry={refresh}
               customStyle={{ small: true }}
             />
           </Stack>
