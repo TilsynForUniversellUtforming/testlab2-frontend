@@ -49,25 +49,24 @@ class Maalinger(val restTemplate: RestTemplate, val testingApiProperties: Testin
   @PostMapping
   fun createNew(@RequestBody dto: NewMaalingDTO): ResponseEntity<Any> {
     return runCatching {
-          val validatedURL = validateURL(dto.url).getOrThrow()
-          val validatedNavn = validateNavn(dto.navn).getOrThrow()
-          val location =
-              restTemplate.postForLocation(
-                  "${testingApiProperties.url}/v1/maalinger",
-                  mapOf("navn" to validatedNavn, "url" to validatedURL.toString()))
-                  ?: throw RuntimeException(
-                      "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
-          val newMaaling =
-              restTemplate.getForObject(
-                  "${testingApiProperties.url}${location}", Maaling::class.java)
-                  ?: throw RuntimeException(
-                      "jeg fikk laget en ny måling, men klarte ikke å hente den nye målingen fra serveren")
-          ResponseEntity.created(URI("/maaling/${newMaaling.id}")).build<Any>()
-        }
-        .getOrElse {
-          ResponseEntity.internalServerError()
-              .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
-        }
+        val validatedURL = validateURL(dto.url).getOrThrow()
+        val validatedNavn = validateNavn(dto.navn).getOrThrow()
+        val location =
+          restTemplate.postForLocation(
+            "${testingApiProperties.url}/v1/maalinger",
+            mapOf("navn" to validatedNavn, "url" to validatedURL.toString()))
+            ?: throw RuntimeException(
+              "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
+        val newMaaling =
+          restTemplate.getForObject("${testingApiProperties.url}${location}", Maaling::class.java)
+            ?: throw RuntimeException(
+              "jeg fikk laget en ny måling, men klarte ikke å hente den nye målingen fra serveren")
+        ResponseEntity.created(URI("/maaling/${newMaaling.id}")).build<Any>()
+      }
+      .getOrElse {
+        ResponseEntity.internalServerError()
+          .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
+      }
   }
 
   data class Maaling(val id: Int, val url: String)
