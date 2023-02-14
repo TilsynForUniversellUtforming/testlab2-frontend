@@ -20,6 +20,7 @@ import TesterApp from './tester/TesterApp';
 import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
 import Regelsett from './testreglar/regelsett/Regelsett';
 import RegelsettApp from './testreglar/regelsett/RegelsettApp';
+import CreateTestregel from './testreglar/testreglar-liste/CreateTestregel';
 import EditTestreglar from './testreglar/testreglar-liste/EditTestreglar';
 import Testreglar from './testreglar/testreglar-liste/Testreglar';
 import TestreglarApp from './testreglar/TestreglarApp';
@@ -36,7 +37,10 @@ function App() {
           <Route path={routes.MAALING.path} element={<MaalingApp />} />
           <Route path={routes.TESTREGEL.path} element={<TestreglarApp />}>
             <Route index element={<Testreglar />} />
-            <Route path={routes.CREATE_TESTREGEL.path} element={<></>} />
+            <Route
+              path={routes.CREATE_TESTREGEL.path}
+              element={<CreateTestregel />}
+            />
             <Route
               path={routes.EDIT_TESTREGEL.path}
               element={<EditTestreglar />}

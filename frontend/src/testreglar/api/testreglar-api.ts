@@ -1,6 +1,7 @@
 import {
   RegelsettRequest,
   Testregel,
+  TestregelCreateRequest,
   TestregelEditRequest,
   TestRegelsett,
 } from './types';
@@ -24,9 +25,23 @@ export const listRegelsett = async (): Promise<TestRegelsett[]> => {
   return await regelsett.json();
 };
 
-// export const createTestregel = async (testregel: Testregel): Promise<Testregel[]> => {
-//
-// }
+export const createTestregel = async (
+  testregel: TestregelCreateRequest
+): Promise<Testregel[]> => {
+  return await fetch(`http://localhost:5173/api/v1/testreglar`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(testregel),
+  }).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Kunne ikke lage nytt testregel');
+    }
+  });
+};
 
 export const createRegelsett = async (
   regelsett: RegelsettRequest

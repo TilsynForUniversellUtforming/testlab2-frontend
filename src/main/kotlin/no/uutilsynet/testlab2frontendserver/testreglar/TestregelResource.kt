@@ -1,15 +1,12 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getArray
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.RegelsettRequest
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,16 +15,12 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.exchange
-import org.springframework.web.client.getForObject
-import org.springframework.web.client.postForObject
 
 
 @RestController
 @RequestMapping("api/v1/testreglar", produces = [MediaType.APPLICATION_JSON_VALUE])
-class TestregelResource(val restTemplate: RestTemplate, val testingApiProperties: TestingApiProperties): TestregelApi {
+class TestregelResource(val restTemplate: RestTemplate, testingApiProperties: TestingApiProperties): TestregelApi {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
   @ConfigurationProperties(prefix = "testing.api") data class TestingApiProperties(val url: String)
@@ -35,103 +28,88 @@ class TestregelResource(val restTemplate: RestTemplate, val testingApiProperties
   val regelsettUrl = "${testingApiProperties.url}/v1/testreglar/regelsett"
 
   @GetMapping
-  override fun listTestreglar(): ResponseEntity<Any> =
+  override fun listTestreglar(): List<Testregel> =
     try {
       logger.info("Henter testreglar fra $testreglarUrl")
-      val responseType = object : ParameterizedTypeReference<List<Testregel>>() {}
-      val testreglar: List<Testregel> = restTemplate.getForObject(testreglarUrl, responseType)
-      ResponseEntity.ok(testreglar)
-    } catch (e: RestClientException) {
+      restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+    } catch (e: Error) {
       logger.error("klarte ikke å hente testreglar", e)
-      ResponseEntity.internalServerError().body(e.message)
+      throw Error("Klarte ikke å hente testreglar")
     }
 
   @GetMapping("regelsett")
-  override fun listRegelsett(): ResponseEntity<Any> =
+  override fun listRegelsett(): List<Regelsett> =
     try {
       logger.info("Henter regelsett fra $regelsettUrl")
-      val responseType = object : ParameterizedTypeReference<List<Regelsett>>() {}
-      val regelsett: List<Regelsett> = restTemplate.getForObject(regelsettUrl, responseType)
-      ResponseEntity.ok(regelsett)
-    } catch (e: RestClientException) {
+      restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+    } catch (e: Error) {
       logger.error("klarte ikke å hente regelsett", e)
-      ResponseEntity.internalServerError().body(e.message)
+      throw Error("Klarte ikke å hente regelsett")
     }
 
   @PostMapping
-  override fun createTestregel(@RequestBody testregel: Testregel): ResponseEntity<Any> =
+  override fun createTestregel(@RequestBody testregel: Testregel): List<Testregel> =
     try {
-      logger.info("Lagrer nytt regelsett navn: ${testregel.kravTilSamsvar} fra $regelsettUrl")
-      val responseType = object : ParameterizedTypeReference<List<Testregel>>() {}
-      val testregelList: List<Testregel> = restTemplate.postForObject(testreglarUrl, testregel, responseType)
-      ResponseEntity.ok(testregelList)
-    } catch (e: RestClientException) {
-      logger.error("klarte ikke å hente regelsett", e)
-      ResponseEntity.internalServerError().body(e.message)
+      logger.info("Lagrer nytt testregel navn: ${testregel.kravTilSamsvar} fra $testreglarUrl")
+      restTemplate.postForEntity(testreglarUrl, testregel, Int::class.java)
+      restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+    } catch (e: Error) {
+      logger.error("Klarte ikke å lage testregel", e)
+      throw Error("Klarte ikke å lage testregel")
     }
 
   @PostMapping("regelsett")
-  override fun createRegelsett(@RequestBody regelsettRequest: RegelsettRequest): ResponseEntity<Any> =
+  override fun createRegelsett(@RequestBody regelsettRequest: RegelsettRequest): List<Regelsett> =
     try {
       logger.info("Lagrer nytt regelsett navn: ${regelsettRequest.namn} fra $regelsettUrl")
-      val responseType = object : ParameterizedTypeReference<List<Regelsett>>() {}
-      restTemplate.postForObject(regelsettUrl, regelsettRequest, Int::class.java)
-      val regelsett: List<Regelsett> = restTemplate.getForObject(regelsettUrl, responseType)
-      ResponseEntity.ok(regelsett)
-    } catch (e: RestClientException) {
-      logger.error("klarte ikke å lage regelsett", e)
-      ResponseEntity.internalServerError().body(e.message)
+      restTemplate.postForEntity(regelsettUrl, regelsettRequest, Int::class.java)
+      restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+    } catch (e: Error) {
+      logger.error("Klarte ikke å lage regelsett", e)
+      throw Error("Klarte ikke å lage regelsett")
     }
 
   @PutMapping
-  override fun updateTestregel(@RequestBody testregel: Testregel): ResponseEntity<Any> =
+  override fun updateTestregel(@RequestBody testregel: Testregel): List<Testregel> =
     try {
       logger.info("Oppdaterer testregel id: ${testregel.id} fra $testreglarUrl")
-      val responseType = object : ParameterizedTypeReference<List<Testregel>>() {}
       restTemplate.put(testreglarUrl, testregel, Testregel::class.java)
-      val updatedTestreglar: List<Testregel> = restTemplate.getForObject(testreglarUrl, responseType)
-      ResponseEntity.ok(updatedTestreglar)
-    } catch (e: RestClientException) {
-      logger.error("klarte ikke å oppdatere testregel", e)
-      ResponseEntity.internalServerError().body(e.message)
+      restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+    } catch (e: Error) {
+      logger.error("Klarte ikke å oppdatere testregel", e)
+      throw Error("Klarte ikke å oppdatere testregel")
     }
 
   @PutMapping("regelsett")
-  override fun updateRegelsett(@RequestBody regelsett: Regelsett): ResponseEntity<Any> =
+  override fun updateRegelsett(@RequestBody regelsett: Regelsett): List<Regelsett> =
     try {
       logger.info("Oppdaterer regelsett id: ${regelsett.id} fra $regelsettUrl")
-      val responseType = object : ParameterizedTypeReference<List<Regelsett>>() {}
-      restTemplate.put(regelsettUrl, regelsett, Testregel::class.java)
-      val updatedRegelsett: List<Regelsett> = restTemplate.getForObject(regelsettUrl, responseType)
-      ResponseEntity.ok(updatedRegelsett)
-    } catch (e: RestClientException) {
-      logger.error("klarte ikke å oppdatere regelsett", e)
-      ResponseEntity.internalServerError().body(e.message)
+      restTemplate.put(regelsettUrl, regelsett, Regelsett::class.java)
+      restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+    } catch (e: Error) {
+      logger.error("Klarte ikke å oppdatere regelsett", e)
+      throw Error("Klarte ikke å oppdatere regelsett")
     }
 
   @DeleteMapping("{id}")
-  override fun deleteTestregel(@PathVariable id: Int): ResponseEntity<Any> =
+  override fun deleteTestregel(@PathVariable id: Int): List<Testregel> =
     try {
       logger.info("Sletter testregel id: $id fra $testreglarUrl")
-      val responseType = object : ParameterizedTypeReference<List<Testregel>>() {}
       restTemplate.delete("$testreglarUrl/$id")
-      val testreglar: List<Testregel> = restTemplate.getForObject(testreglarUrl, responseType)
-      ResponseEntity.ok(testreglar)
-    } catch (e: RestClientException) {
-      logger.error("klarte ikke å slette testregel", e)
-      ResponseEntity.internalServerError().body(e.message)
+      restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+    } catch (e: Error) {
+      logger.error("Klarte ikke å slette testregel", e)
+      throw Error("Klarte ikke å slette testregel")
     }
 
   @DeleteMapping("regelsett/{id}")
-  override fun deleteRegelsett(@PathVariable id: Int): ResponseEntity<Any> =
+  override fun deleteRegelsett(@PathVariable id: Int): List<Regelsett> =
     try {
       logger.info("Sletter regelsett id: $id fra $regelsettUrl")
-      val responseType = object : ParameterizedTypeReference<List<Regelsett>>() {}
       restTemplate.delete("$regelsettUrl/$id")
-      val regelsett: List<Regelsett> = restTemplate.getForObject(regelsettUrl, responseType)
-      ResponseEntity.ok(regelsett)
-    } catch (e: RestClientException) {
-      logger.error("klarte ikke å slette regelsett", e)
-      ResponseEntity.internalServerError().body(e.message)
+      restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+    } catch (e: Error) {
+      logger.error("Klarte ikke å slette regelsett", e)
+      throw Error("Klarte ikke å slette regelsett")
     }
 }

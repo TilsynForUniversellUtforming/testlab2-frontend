@@ -26,6 +26,14 @@ export type Testregel = {
   kravTittel: string;
 };
 
+export type TestregelCreateRequest = {
+  kravId?: number;
+  referanseAct?: string;
+  kravTilSamsvar: string;
+  type: TestType;
+  status?: TestStatus;
+};
+
 export type TestregelEditRequest = {
   id: number;
   kravId?: number;
