@@ -20,10 +20,10 @@ import classNames from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 
+import ErrorCard from '../error/ErrorCard';
 import HideWhenLoading from '../HideWhenLoading';
 import ControlHeader from './control/ControlHeader';
 import PaginationContainer from './control/pagination/PaginationContainer';
-import TableError from './error/TableError';
 import TableBody from './TableBody';
 import TableHeader from './TableHeader';
 
@@ -136,7 +136,7 @@ const DigdirTable = <T extends object>({
   }, []);
 
   if (error) {
-    return <TableError show={error} onClickRetry={onClickRetry} />;
+    return <ErrorCard show={error} onClickRetry={onClickRetry} />;
   }
 
   return (

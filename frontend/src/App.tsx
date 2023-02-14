@@ -20,6 +20,7 @@ import TesterApp from './tester/TesterApp';
 import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
 import Regelsett from './testreglar/regelsett/Regelsett';
 import RegelsettApp from './testreglar/regelsett/RegelsettApp';
+import EditTestreglar from './testreglar/testreglar-liste/EditTestreglar';
 import Testreglar from './testreglar/testreglar-liste/Testreglar';
 import TestreglarApp from './testreglar/TestreglarApp';
 import VerksemderApp from './verksemder/VerksemderApp';
@@ -33,12 +34,17 @@ function App() {
           <Route path={routes.ROOT.path} element={<Oversikt />} />
           <Route path={routes.SAKER.path} element={<SakerApp />} />
           <Route path={routes.MAALING.path} element={<MaalingApp />} />
-          <Route path={routes.TESTREGLAR.path} element={<TestreglarApp />}>
+          <Route path={routes.TESTREGEL.path} element={<TestreglarApp />}>
             <Route index element={<Testreglar />} />
+            <Route path={routes.CREATE_TESTREGEL.path} element={<></>} />
+            <Route
+              path={routes.EDIT_TESTREGEL.path}
+              element={<EditTestreglar />}
+            />
             <Route path={routes.REGELSETT.path} element={<RegelsettApp />}>
               <Route index element={<Regelsett />} />
               <Route
-                path={routes.NYTT_REGELSETT.path}
+                path={routes.CREATE_REGELSETT.path}
                 element={<CreateRegelsett />}
               />
             </Route>

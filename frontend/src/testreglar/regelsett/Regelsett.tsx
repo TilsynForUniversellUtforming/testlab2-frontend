@@ -21,7 +21,7 @@ const Regelsett = () => {
     regelsett,
     setError,
     setLoading,
-    setRegelsett,
+    setRegelsettList,
   }: TestregelContext = useOutletContext();
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -49,7 +49,7 @@ const Regelsett = () => {
 
     const deleteAndFetchRegelsett = async () => {
       const data = await deleteRegelsett(deleteRow!.original.id);
-      setRegelsett(data);
+      setRegelsettList(data);
     };
 
     setLoading(true);
@@ -102,7 +102,7 @@ const Regelsett = () => {
       />
       <DigdirLinkButton
         type="add"
-        route={routes.NYTT_REGELSETT}
+        route={routes.CREATE_REGELSETT}
         disabled={loading || error}
       />
       <DigdirTable<TestRegelsett>

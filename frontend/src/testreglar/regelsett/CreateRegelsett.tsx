@@ -26,7 +26,7 @@ const CreateRegelsett = () => {
     error,
     loading,
     testreglar,
-    setRegelsett,
+    setRegelsettList,
     setError,
     setLoading,
     refresh,
@@ -46,10 +46,14 @@ const CreateRegelsett = () => {
   }, []);
 
   const validateRequest = (): RegelsettRequest => {
-    useValidate([
-      { validationType: 'name', value: name },
-      { validationType: 'array', value: selection },
+    const valid = useValidate([
+      { value: name },
+      { isArray: true, value: selection },
     ]);
+
+    if (!valid) {
+      throw new Error('Ugyldig regelsett');
+    }
 
     return {
       namn: name!,
@@ -62,8 +66,7 @@ const CreateRegelsett = () => {
 
     const addRegelsett = async () => {
       const data = await createRegelsett(request);
-      console.log('data', data);
-      setRegelsett(data);
+      setRegelsettList(data);
     };
 
     setLoading(true);
@@ -144,9 +147,7 @@ const CreateRegelsett = () => {
   );
 
   const submitDisabled =
-    loading ||
-    selection.length === 0 ||
-    !useValidate([{ validationType: 'name', value: name }]);
+    loading || selection.length === 0 || !useValidate([{ value: name }]);
   return (
     <Container className="pb-4">
       <Row>

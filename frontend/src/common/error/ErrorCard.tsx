@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 
-import { TestregelContext } from '../../../testreglar/types';
+import { AppContext } from '../types';
 
 interface Props {
   show: boolean;
@@ -10,13 +10,12 @@ interface Props {
   errorText?: string;
 }
 
-const TableError = ({
+const ErrorCard = ({
   show,
   onClickRetry,
   errorText = 'Noe gikk galt, vennligst prøv igjen',
 }: Props) => {
-  // TODO - Pass på at denne alltid kan bruke outletcontext
-  const { error, refresh }: TestregelContext = useOutletContext();
+  const { error, refresh }: AppContext = useOutletContext();
 
   const clickRetry = onClickRetry ? onClickRetry : refresh;
   const errorMsg = error ? error : errorText;
@@ -37,4 +36,4 @@ const TableError = ({
   );
 };
 
-export default TableError;
+export default ErrorCard;

@@ -6,6 +6,6 @@ data class Testregel(
     val referanseAct: String?,
     val kravTilSamsvar: String,
     val type: String,
-    val status: String?,
+    val status: String,
     val kravTittel: String?
 )

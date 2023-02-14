@@ -1,4 +1,9 @@
-import { RegelsettRequest, Testregel, TestRegelsett } from './types';
+import {
+  RegelsettRequest,
+  Testregel,
+  TestregelEditRequest,
+  TestRegelsett,
+} from './types';
 
 export const listTestreglar = async (): Promise<Testregel[]> => {
   const testreglar = await fetch(`http://localhost:5173/api/v1/testreglar`, {
@@ -20,6 +25,7 @@ export const listRegelsett = async (): Promise<TestRegelsett[]> => {
 };
 
 // export const createTestregel = async (testregel: Testregel): Promise<Testregel[]> => {
+//
 // }
 
 export const createRegelsett = async (
@@ -40,7 +46,20 @@ export const createRegelsett = async (
   });
 };
 
-// export const updateTestregel = async () => {};
+export const updateTestregel = async (
+  testregelEditRequest: TestregelEditRequest
+): Promise<Testregel[]> => {
+  const testreglar = await fetch(`http://localhost:5173/api/v1/testreglar`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(testregelEditRequest),
+  });
+
+  return await testreglar.json();
+};
+
 // export const updateRegelsett = async () => {};
 export const deleteTestregel = async (id: number): Promise<Testregel[]> => {
   const testreglar = await fetch(

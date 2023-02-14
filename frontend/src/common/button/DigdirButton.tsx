@@ -5,7 +5,7 @@ export type ButtonType = 'add' | 'submit';
 export interface Props {
   type: ButtonType;
   label?: string;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   disabled?: boolean;
 }
 

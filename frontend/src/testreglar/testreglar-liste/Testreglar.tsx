@@ -1,8 +1,11 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import DigdirLinkButton from '../../common/button/DigdirLinkButton';
+import EditButton from '../../common/button/EditButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
+import routes from '../../common/routes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import DigdirTable from '../../common/table/DigdirTable';
 import UserActions, {
@@ -17,7 +20,7 @@ const Testreglar = () => {
     error,
     loading,
     testreglar,
-    setTestreglar,
+    setTestregelList,
     setError,
     setLoading,
   }: TestregelContext = useOutletContext();
@@ -25,6 +28,11 @@ const Testreglar = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmLabel, setConfirmLabel] = useState<string>();
   const [deleteRow, setDeleteRow] = useState<Row<Testregel>>();
+  const navigate = useNavigate();
+
+  const onClickEdit = useCallback((testregelRow: Row<Testregel>) => {
+    navigate(String(testregelRow.original.id));
+  }, []);
 
   const onCloseModal = useCallback(() => {
     setShowConfirm(false);
@@ -47,7 +55,7 @@ const Testreglar = () => {
 
     const deleteAndFetchTestregel = async () => {
       const data = await deleteTestregel(deleteRow!.original.id);
-      setTestreglar(data);
+      setTestregelList(data);
     };
 
     setLoading(true);
@@ -61,7 +69,7 @@ const Testreglar = () => {
   const doFetchTestreglar = useCallback(() => {
     const fetchTestreglar = async () => {
       const data = await listTestreglar();
-      setTestreglar(data);
+      setTestregelList(data);
     };
 
     setLoading(true);
@@ -84,7 +92,12 @@ const Testreglar = () => {
     {
       accessorFn: (row) => row.kravTilSamsvar,
       id: 'Navn',
-      cell: (info) => info.getValue(),
+      cell: ({ row, getValue }) => (
+        <EditButton
+          onClick={() => onClickEdit(row)}
+          label={String(getValue())}
+        />
+      ),
       header: () => <span>Navn</span>,
     },
     {
@@ -124,6 +137,11 @@ const Testreglar = () => {
 
   return (
     <>
+      <DigdirLinkButton
+        type="add"
+        route={routes.CREATE_REGELSETT}
+        disabled={loading || error}
+      />
       <ConfirmDialog
         label={confirmLabel}
         show={showConfirm}

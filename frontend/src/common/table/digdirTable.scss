@@ -13,6 +13,12 @@
     font-weight: bold;
   }
 
+  &__user-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .sortering {
     &::before,
     &::after {
