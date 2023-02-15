@@ -1,17 +1,17 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
-import React, { useCallback } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import useFormatDate from '../../common/hooks/useFormatDate';
+import DigdirLinkButton from '../../common/button/DigdirLinkButton';
+import EditButton from '../../common/button/EditButton';
+import ConfirmDialog from '../../common/confirm/ConfirmDialog';
+import routes from '../../common/routes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import DigdirTable from '../../common/table/DigdirTable';
 import UserActions, {
   ColumnUserAction,
 } from '../../common/table/user-actions/UserActions';
-import {
-  deleteTestregel_dummy,
-  getTestreglar_dummy,
-} from '../api/testreglar-api_dummy';
+import { deleteTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';
 
@@ -20,38 +20,52 @@ const Testreglar = () => {
     error,
     loading,
     testreglar,
-    setTestreglar,
+    setTestregelList,
     setError,
     setLoading,
+    refresh,
   }: TestregelContext = useOutletContext();
 
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmLabel, setConfirmLabel] = useState<string>();
+  const [deleteRow, setDeleteRow] = useState<Row<Testregel>>();
+  const navigate = useNavigate();
+
+  const onClickEdit = useCallback((testregelRow: Row<Testregel>) => {
+    navigate(String(testregelRow.original.id));
+  }, []);
+
+  const onCloseModal = useCallback(() => {
+    setShowConfirm(false);
+    setDeleteRow(undefined);
+  }, []);
+
   const onClickDelete = useCallback((e: Row<Testregel>) => {
-    const fetchTestreglar = async () => {
-      const data = await deleteTestregel_dummy(e.original.Id);
-      setTestreglar(data);
+    setShowConfirm(true);
+    setConfirmLabel(`Vil du slette testregel "${e.original.kravTilSamsvar}"`);
+    setDeleteRow(e);
+  }, []);
+
+  const doDelete = useCallback(() => {
+    setShowConfirm(false);
+    setDeleteRow(undefined);
+
+    if (typeof deleteRow === 'undefined') {
+      setError('Kunne ikke slette testregel');
+    }
+
+    const deleteAndFetchTestregel = async () => {
+      const data = await deleteTestregel(deleteRow!.original.id);
+      setTestregelList(data);
     };
 
     setLoading(true);
     setError(undefined);
 
-    fetchTestreglar()
+    deleteAndFetchTestregel()
       .catch((e) => setError(e))
       .finally(() => setLoading(false));
-  }, []);
-
-  const doFetchTestreglar = useCallback(() => {
-    const fetchTestreglar = async () => {
-      const data = await getTestreglar_dummy();
-      setTestreglar(data);
-    };
-
-    setLoading(true);
-    setError(undefined);
-
-    fetchTestreglar()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
-  }, []);
+  }, [deleteRow]);
 
   const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
 
@@ -63,13 +77,18 @@ const Testreglar = () => {
       size: Object.values(columnUserAction).length,
     },
     {
-      accessorFn: (row) => row.Navn,
+      accessorFn: (row) => row.kravTilSamsvar,
       id: 'Navn',
-      cell: (info) => info.getValue(),
+      cell: ({ row, getValue }) => (
+        <EditButton
+          onClick={() => onClickEdit(row)}
+          label={String(getValue())}
+        />
+      ),
       header: () => <span>Navn</span>,
     },
     {
-      accessorFn: (row) => row.Status,
+      accessorFn: (row) => row.status,
       id: 'Status',
       cell: (info) => (
         <StatusBadge
@@ -84,25 +103,19 @@ const Testreglar = () => {
       header: () => <span>Status</span>,
     },
     {
-      accessorFn: (row) => row.Dato_endra,
-      id: 'Dato_endra',
-      cell: (info) => useFormatDate(String(info.getValue())),
-      header: () => <span>Dato Endra</span>,
-    },
-    {
-      accessorFn: (row) => row.Type,
+      accessorFn: (row) => row.type,
       id: 'Type',
       cell: (info) => info.getValue(),
       header: () => <span>Type</span>,
     },
     {
-      accessorFn: (row) => row.TestregelId,
+      accessorFn: (row) => row.referanseAct,
       id: 'TestregelId',
       cell: (info) => info.getValue(),
       header: () => <span>Testregel</span>,
     },
     {
-      accessorFn: (row) => row.Krav,
+      accessorFn: (row) => row.kravTittel,
       id: 'Krav',
       cell: (info) => info.getValue(),
       header: () => <span>Krav</span>,
@@ -111,12 +124,23 @@ const Testreglar = () => {
 
   return (
     <>
+      <DigdirLinkButton
+        type="add"
+        route={routes.CREATE_REGELSETT}
+        disabled={loading || error}
+      />
+      <ConfirmDialog
+        label={confirmLabel}
+        show={showConfirm}
+        closeModal={onCloseModal}
+        onSubmit={doDelete}
+      />
       <DigdirTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
         error={error}
         loading={loading}
-        onClickRetry={doFetchTestreglar}
+        onClickRetry={refresh}
       />
     </>
   );

@@ -1,27 +1,52 @@
+export enum TestType {
+  Web = 'Web',
+  App = 'App',
+  Automat = 'Automat',
+}
+
+export enum TestStatus {
+  'Publisert' = 'Publisert',
+  'Ferdig testa' = 'Ferdig testa',
+  'Treng avklaring' = 'Treng avklaring',
+  'Utgår' = 'Utgår',
+  'Klar for testing' = 'Klar for testing',
+  'Ikkje starta' = 'Ikkje starta',
+  'Under arbeid' = 'Under arbeid',
+  'Klar for kvalitetssikring' = 'Klar for kvalitetssikring',
+  'Gjennomgått workshop' = 'Gjennomgått workshop',
+}
+
 export type Testregel = {
-  Id: number;
-  TestregelId: string;
-  Navn: string;
-  Status: string;
-  Dato_endra: string;
-  Type: string;
-  Krav: string;
-  Blinde: boolean;
-  Svaksynte: boolean;
-  Fargeblinde: boolean;
-  Doovblinde: boolean;
-  Doove: boolean;
-  Tunghooyrde: boolean;
-  NedsattKognisjon: boolean;
-  NedsattMotorikk: boolean;
-  Anfall: boolean;
-  Alle: boolean;
-  subRows?: [Testregel];
+  id: number;
+  kravId?: number;
+  referanseAct?: string;
+  kravTilSamsvar: string;
+  type: TestType;
+  status: TestStatus;
+  kravTittel: string;
+};
+
+export type TestregelCreateRequest = {
+  kravId?: number;
+  referanseAct?: string;
+  kravTilSamsvar: string;
+  type: TestType;
+  status?: TestStatus;
+};
+
+export type TestregelEditRequest = {
+  id: number;
+  kravId?: number;
+  referanseAct?: string;
+  kravTilSamsvar: string;
+  type: TestType;
+  status?: TestStatus;
 };
 
 export type TestRegelsett = {
+  id: number;
   namn: string;
-  testreglar: Testregel[];
+  testregelList: Testregel[];
 };
 
 export type RegelsettRequest = {

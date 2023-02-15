@@ -9,10 +9,16 @@ export interface Props {
   disabled?: boolean;
 }
 
-const DigdirLinkButton = ({ type, route, disabled = false }: Props) => (
-  <Link to={route.path}>
-    <DigdirButton type={type} disabled={disabled} />
-  </Link>
-);
+const DigdirLinkButton = ({ type, route, disabled = false }: Props) => {
+  if (disabled) {
+    return <DigdirButton type={type} disabled={disabled} />;
+  }
+
+  return (
+    <Link to={route.path}>
+      <DigdirButton type={type} />
+    </Link>
+  );
+};
 
 export default DigdirLinkButton;

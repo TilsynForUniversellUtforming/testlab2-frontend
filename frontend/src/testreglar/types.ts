@@ -1,15 +1,19 @@
+import { AppContext } from '../common/types';
+import { Krav } from '../krav/types';
 import { Testregel, TestRegelsett } from './api/types';
 
-export type TestregelContext = {
+export interface TestregelContext extends AppContext {
   error: any;
   loading: boolean;
   testreglar: Testregel[];
   regelsett: TestRegelsett[];
-  setTestreglar: (testReglar: Testregel[]) => void;
-  setRegelsett: (regelsett: TestRegelsett[]) => void;
+  krav: Krav[];
+  setTestregelList: (testRegelList: Testregel[]) => void;
+  setRegelsettList: (regelsettList: TestRegelsett[]) => void;
   setError: (e: any) => void;
   setLoading: (loading: boolean) => void;
-};
+  refresh: () => void;
+}
 
 export type Evne = {
   value: string;

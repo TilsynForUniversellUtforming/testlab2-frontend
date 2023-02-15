@@ -31,9 +31,12 @@ interface IRoutes {
   ROOT: Route;
   SAKER: RouteIcon;
   MAALING: RouteIcon;
-  TESTREGLAR: RouteIcon;
+  TESTREGEL: RouteIcon;
+  CREATE_TESTREGEL: NestedRoute;
+  EDIT_TESTREGEL: NestedRoute;
   REGELSETT: NestedRoute;
-  NYTT_REGELSETT: NestedRoute;
+  CREATE_REGELSETT: NestedRoute;
+  EDIT_REGELSETT: NestedRoute;
   VERKSEMDER: RouteIcon;
   LOEYSINGAR: RouteIcon;
   KRAV: RouteIcon;
@@ -59,22 +62,36 @@ const MAALING = {
   path: 'maaling',
   imgSrc: maalingImg,
 };
-const TESTREGLAR = {
+const TESTREGEL = {
   navn: 'Testreglar',
   path: 'testreglar',
   imgSrc: testingImg,
 };
+const CREATE_TESTREGEL = {
+  navn: 'Ny testregel',
+  path: 'ny',
+  parentRoute: TESTREGEL,
+};
+const EDIT_TESTREGEL = {
+  navn: 'Endre testregel',
+  path: ':id',
+  parentRoute: TESTREGEL,
+};
 const REGELSETT = {
   navn: 'Regelsett',
   path: 'regelsett',
-  parentRoute: TESTREGLAR,
+  parentRoute: TESTREGEL,
 };
-const NYTT_REGELSETT = {
+const CREATE_REGELSETT = {
   navn: 'Nytt regelsett',
   path: 'ny',
   parentRoute: REGELSETT,
 };
-
+const EDIT_REGELSETT = {
+  navn: 'Endre regelsett',
+  path: ':id',
+  parentRoute: REGELSETT,
+};
 const VERKSEMDER = {
   navn: 'Verksemder',
   path: 'verksemder',
@@ -125,9 +142,12 @@ export const routes: IRoutes = {
   ROOT: ROOT,
   SAKER: SAKER,
   MAALING: MAALING,
-  TESTREGLAR: TESTREGLAR,
+  TESTREGEL: TESTREGEL,
+  CREATE_TESTREGEL: CREATE_TESTREGEL,
+  EDIT_TESTREGEL: EDIT_TESTREGEL,
   REGELSETT: REGELSETT,
-  NYTT_REGELSETT: NYTT_REGELSETT,
+  CREATE_REGELSETT: CREATE_REGELSETT,
+  EDIT_REGELSETT: EDIT_REGELSETT,
   VERKSEMDER: VERKSEMDER,
   LOEYSINGAR: LOEYSINGAR,
   KRAV: KRAV,
@@ -144,7 +164,7 @@ export const routes: IRoutes = {
 export const verktoey = [
   routes.SAKER,
   routes.MAALING,
-  routes.TESTREGLAR,
+  routes.TESTREGEL,
   routes.VERKSEMDER,
   routes.LOEYSINGAR,
   routes.KRAV,

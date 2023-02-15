@@ -26,7 +26,7 @@ export const deleteTestregel_dummy = async (
   await sleep(500);
 
   return JSON.parse(response_testreglar).filter(
-    (t: Testregel) => t.Id !== testregelId
+    (t: Testregel) => t.id !== testregelId
   );
 };
 
@@ -49,7 +49,7 @@ export const createRegelsett_dummy = async (
 
   const ids = regelsett.ids;
   const testreglar: Testregel[] = JSON.parse(response_testreglar).filter(
-    (tr: Testregel) => ids.includes(tr.Id)
+    (tr: Testregel) => ids.includes(tr.id)
   );
 
   await sleep(500);
