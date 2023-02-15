@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver
 
-import java.net.MalformedURLException
 import java.net.URI
 import java.net.URL
 import org.slf4j.LoggerFactory
@@ -33,37 +32,43 @@ class Maalinger(val restTemplate: RestTemplate, val testingApiProperties: Testin
     }
   }
 
-  data class NewMaalingDTO(val url: String)
+  data class NewMaalingDTO(val navn: String, val url: String)
+
+  fun validateURL(s: String): Result<URL> {
+    return runCatching { URL(s) }
+  }
+
+  fun validateNavn(s: String): Result<String> = runCatching {
+    if (s == "") {
+      throw IllegalArgumentException("navn er tomt")
+    } else {
+      s
+    }
+  }
 
   @PostMapping
   fun createNew(@RequestBody dto: NewMaalingDTO): ResponseEntity<Any> {
-    try {
-      val validatedUrl = URL(dto.url)
-      val location =
-          restTemplate.postForLocation(
-              "${testingApiProperties.url}/v1/maalinger", mapOf("url" to validatedUrl.toString()))
-      if (location == null) {
-        logger.error("jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
-        return ResponseEntity.internalServerError().body("mangler location")
-      }
-
-      val newMaaling =
-          restTemplate.getForObject("${testingApiProperties.url}${location}", Maaling::class.java)
-      if (newMaaling != null) {
-        val id = newMaaling.id
-        return ResponseEntity.created(URI("/maaling/${id}")).build()
-      } else {
-        logger.error(
-            "jeg fikk laget en ny måling, men klarte ikke å hente den nye målingen fra serveren")
-        return ResponseEntity.internalServerError().build()
-      }
-    } catch (e: MalformedURLException) {
-      return ResponseEntity.badRequest().body("'${dto.url}' er ikke en gyldig url")
-    } catch (e: RestClientException) {
-      logger.error("jeg klarte ikke å lage en ny måling", e)
-      return ResponseEntity.internalServerError().body(e.message)
-    }
+    return runCatching {
+          val validatedURL = validateURL(dto.url).getOrThrow()
+          val validatedNavn = validateNavn(dto.navn).getOrThrow()
+          val location =
+              restTemplate.postForLocation(
+                  "${testingApiProperties.url}/v1/maalinger",
+                  mapOf("navn" to validatedNavn, "url" to validatedURL.toString()))
+                  ?: throw RuntimeException(
+                      "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
+          val newMaaling =
+              restTemplate.getForObject(
+                  "${testingApiProperties.url}${location}", Maaling::class.java)
+                  ?: throw RuntimeException(
+                      "jeg fikk laget en ny måling, men klarte ikke å hente den nye målingen fra serveren")
+          ResponseEntity.created(URI("/maaling/${newMaaling.id}")).build<Any>()
+        }
+        .getOrElse {
+          ResponseEntity.internalServerError()
+              .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
+        }
   }
-}
 
-data class Maaling(val id: Int, val url: String)
+  data class Maaling(val id: Int, val url: String)
+}

@@ -1,12 +1,15 @@
 import './maalingApp.scss';
 
+import { ColumnDef } from '@tanstack/react-table';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
 import AppTitle from '../common/app-title/AppTitle';
+import DigdirTable from '../common/table/DigdirTable';
 
 type Maaling = {
   id: number;
+  navn: string;
   url: string;
 };
 type FetchingData = { state: 'fetching-data' };
@@ -78,22 +81,44 @@ interface MaalingerProps {
 }
 
 function Maalinger({ state }: MaalingerProps) {
+  const maalingerColumns: ColumnDef<Maaling>[] = [
+    {
+      id: 'ID',
+      accessorFn: (row) => row.id,
+      enableColumnFilter: false,
+    },
+    { id: 'Navn', accessorFn: (row) => row.navn, enableColumnFilter: false },
+    { id: 'URL', accessorFn: (row) => row.url, enableColumnFilter: false },
+  ];
+
   let maalinger: JSX.Element;
   switch (state.state) {
     case 'fetching-data':
-      maalinger = <p>Laster...</p>;
+      maalinger = (
+        <DigdirTable
+          data={[]}
+          error={undefined}
+          defaultColumns={maalingerColumns}
+        />
+      );
       break;
     case 'loaded':
       maalinger = (
-        <ol>
-          {state.data.map((maaling) => (
-            <li key={maaling.id}>{maaling.url}</li>
-          ))}
-        </ol>
+        <DigdirTable
+          data={state.data}
+          defaultColumns={maalingerColumns}
+          error={undefined}
+        />
       );
       break;
     case 'failed':
-      maalinger = <p>Feilet: {state.error.message}</p>;
+      maalinger = (
+        <DigdirTable
+          data={[]}
+          defaultColumns={maalingerColumns}
+          error={state.error}
+        />
+      );
       break;
   }
 
@@ -110,10 +135,11 @@ interface NyMaalingProps {
 }
 
 function NyMaaling({ onNewMaaling }: NyMaalingProps) {
-  const [form, setForm] = useState({ url: '' });
+  const initialForm = { navn: '', url: '' };
+  const [form, setForm] = useState(initialForm);
 
   function clearForm() {
-    setForm({ url: '' });
+    setForm(initialForm);
   }
 
   function handleSubmit(event: FormEvent) {
@@ -123,27 +149,44 @@ function NyMaaling({ onNewMaaling }: NyMaalingProps) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ url: form.url }),
+      body: JSON.stringify(form),
     })
       .then(clearForm)
       .then(onNewMaaling);
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    setForm({ ...form, url: event.currentTarget.value });
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    setForm({ ...form, [name]: value });
   }
 
   return (
     <section>
       <h3>Ny måling</h3>
       <Form onSubmit={handleSubmit}>
-        <Form.Label>URL:</Form.Label>
-        <Form.Control
-          type="text"
-          value={form.url}
-          onChange={handleChange}
-        ></Form.Control>
-        <Button type="submit">Lagre</Button>
+        <Form.Group className="mb-3">
+          <Form.Label>Navn:</Form.Label>
+          <Form.Control
+            type="text"
+            name="navn"
+            value={form.navn}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>URL:</Form.Label>
+          <Form.Control
+            type="text"
+            name="url"
+            value={form.url}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Lagre
+        </Button>
       </Form>
     </section>
   );
