@@ -9,7 +9,7 @@ const Navbar = () => {
       <Nav variant="tabs">
         <Nav.Item>
           <Nav.Link as={NavLink} to={''} end>
-            {routes.TESTREGLAR.navn}
+            {routes.TESTREGEL.navn}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>

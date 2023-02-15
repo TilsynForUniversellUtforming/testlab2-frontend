@@ -1,6 +1,6 @@
 import { Row } from '@tanstack/react-table';
 import React from 'react';
-import { Button, Stack } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 export interface ColumnUserAction {
   deleteAction?: (row: Row<any>) => void;
@@ -18,7 +18,7 @@ const UserActions = ({
   statisticsAction = undefined,
   row,
 }: ColumnUserActionSelection) => (
-  <Stack direction="horizontal" gap={1}>
+  <div className="digdir-table__user-action">
     {deleteAction && (
       <Button
         size="sm"
@@ -40,7 +40,7 @@ const UserActions = ({
         &#x2211;
       </Button>
     )}
-  </Stack>
+  </div>
 );
 
 export default UserActions;

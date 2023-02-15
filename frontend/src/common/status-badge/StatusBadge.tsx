@@ -13,6 +13,7 @@ interface Props {
 }
 
 const StatusBadge = ({ title, levels }: Props) => {
+  const label = title ? title : 'Ingen';
   return (
     <Badge
       bg={classNames(
@@ -22,7 +23,7 @@ const StatusBadge = ({ title, levels }: Props) => {
         'secondary'
       )}
     >
-      {title}
+      {label}
     </Badge>
   );
 };
