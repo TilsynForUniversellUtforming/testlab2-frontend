@@ -14,21 +14,21 @@ import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("api/v1/krav", produces = [MediaType.APPLICATION_JSON_VALUE])
-class KravResource(val restTemplate: RestTemplate, testingApiProperties: TestingApiProperties) : KravApi {
+class KravResource(val restTemplate: RestTemplate, testingApiProperties: TestingApiProperties) :
+    KravApi {
 
-    val logger = LoggerFactory.getLogger(KravResource::class.java)
+  val logger = LoggerFactory.getLogger(KravResource::class.java)
 
-    @ConfigurationProperties(prefix = "krav.api") data class TestingApiProperties(val url: String)
-    val kravUrl = "${testingApiProperties.url}/v1/krav"
+  @ConfigurationProperties(prefix = "krav.api") data class TestingApiProperties(val url: String)
+  val kravUrl = "${testingApiProperties.url}/v1/krav"
 
-    @GetMapping
-    override fun listKrav(): List<Krav> =
-        try {
-            logger.info("Henter krav fra $kravUrl")
-            restTemplate.getArray<Array<Krav>>(kravUrl).toList()
-        } catch (e: RestClientException) {
-            logger.error("Klarte ikke å hente krav", e)
-            throw Error("Klarte ikke å hente krav")
-        }
-
+  @GetMapping
+  override fun listKrav(): List<Krav> =
+      try {
+        logger.info("Henter krav fra $kravUrl")
+        restTemplate.getArray<Array<Krav>>(kravUrl).toList()
+      } catch (e: RestClientException) {
+        logger.error("Klarte ikke å hente krav", e)
+        throw Error("Klarte ikke å hente krav")
+      }
 }
