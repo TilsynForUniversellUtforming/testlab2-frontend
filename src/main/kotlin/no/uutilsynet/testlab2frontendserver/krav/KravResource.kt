@@ -14,13 +14,12 @@ import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("api/v1/krav", produces = [MediaType.APPLICATION_JSON_VALUE])
-class KravResource(val restTemplate: RestTemplate, testingApiProperties: TestingApiProperties) :
-    KravApi {
+class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiProperties) : KravApi {
 
   val logger = LoggerFactory.getLogger(KravResource::class.java)
 
-  @ConfigurationProperties(prefix = "krav.api") data class TestingApiProperties(val url: String)
-  val kravUrl = "${testingApiProperties.url}/v1/krav"
+  @ConfigurationProperties(prefix = "krav.api") data class KravApiProperties(val url: String)
+  val kravUrl = "${kravApiProperties.url}/v1/krav"
 
   @GetMapping
   override fun listKrav(): List<Krav> =

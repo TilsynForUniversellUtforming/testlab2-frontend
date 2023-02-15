@@ -1,9 +1,11 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getArray
+import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.RegelsettRequest
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.MediaType
@@ -21,7 +23,9 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("api/v1/testreglar", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TestregelResource(
     val restTemplate: RestTemplate,
-    testingApiProperties: TestingApiProperties
+    val testregelService: TestregelService,
+    testingApiProperties: TestingApiProperties,
+    kravApiProperties: KravApiProperties
 ) : TestregelApi {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
@@ -29,11 +33,17 @@ class TestregelResource(
   val testreglarUrl = "${testingApiProperties.url}/v1/testreglar"
   val regelsettUrl = "${testingApiProperties.url}/v1/testreglar/regelsett"
 
+  @ConfigurationProperties(prefix = "krav.api") data class KravApiProperties(val url: String)
+  val kravUrl = "${kravApiProperties.url}/v1/krav"
+
   @GetMapping
   override fun listTestreglar(): List<Testregel> =
       try {
         logger.info("Henter testreglar fra $testreglarUrl")
-        restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+        val testregelDTOlist = restTemplate.getArray<Array<TestregelDTO>>(testreglarUrl).toList()
+        val kravlist = restTemplate.getArray<Array<Krav>>(kravUrl).toList()
+
+        testregelService.getTestregelList(testregelDTOlist, kravlist)
       } catch (e: Error) {
         logger.error("klarte ikke å hente testreglar", e)
         throw Error("Klarte ikke å hente testreglar")
@@ -50,11 +60,11 @@ class TestregelResource(
       }
 
   @PostMapping
-  override fun createTestregel(@RequestBody testregel: Testregel): List<Testregel> =
+  override fun createTestregel(@RequestBody testregel: TestregelDTO): List<Testregel> =
       try {
         logger.info("Lagrer nytt testregel navn: ${testregel.kravTilSamsvar} fra $testreglarUrl")
         restTemplate.postForEntity(testreglarUrl, testregel, Int::class.java)
-        restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+        listTestreglar()
       } catch (e: Error) {
         logger.error("Klarte ikke å lage testregel", e)
         throw Error("Klarte ikke å lage testregel")
@@ -65,18 +75,18 @@ class TestregelResource(
       try {
         logger.info("Lagrer nytt regelsett navn: ${regelsettRequest.namn} fra $regelsettUrl")
         restTemplate.postForEntity(regelsettUrl, regelsettRequest, Int::class.java)
-        restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+        listRegelsett()
       } catch (e: Error) {
         logger.error("Klarte ikke å lage regelsett", e)
         throw Error("Klarte ikke å lage regelsett")
       }
 
   @PutMapping
-  override fun updateTestregel(@RequestBody testregel: Testregel): List<Testregel> =
+  override fun updateTestregel(@RequestBody testregel: TestregelDTO): List<Testregel> =
       try {
         logger.info("Oppdaterer testregel id: ${testregel.id} fra $testreglarUrl")
         restTemplate.put(testreglarUrl, testregel, Testregel::class.java)
-        restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+        listTestreglar()
       } catch (e: Error) {
         logger.error("Klarte ikke å oppdatere testregel", e)
         throw Error("Klarte ikke å oppdatere testregel")
@@ -87,7 +97,7 @@ class TestregelResource(
       try {
         logger.info("Oppdaterer regelsett id: ${regelsett.id} fra $regelsettUrl")
         restTemplate.put(regelsettUrl, regelsett, Regelsett::class.java)
-        restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+        listRegelsett()
       } catch (e: Error) {
         logger.error("Klarte ikke å oppdatere regelsett", e)
         throw Error("Klarte ikke å oppdatere regelsett")
@@ -98,7 +108,7 @@ class TestregelResource(
       try {
         logger.info("Sletter testregel id: $id fra $testreglarUrl")
         restTemplate.delete("$testreglarUrl/$id")
-        restTemplate.getArray<Array<Testregel>>(testreglarUrl).toList()
+        listTestreglar()
       } catch (e: Error) {
         logger.error("Klarte ikke å slette testregel", e)
         throw Error("Klarte ikke å slette testregel")
@@ -109,7 +119,7 @@ class TestregelResource(
       try {
         logger.info("Sletter regelsett id: $id fra $regelsettUrl")
         restTemplate.delete("$regelsettUrl/$id")
-        restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+        listRegelsett()
       } catch (e: Error) {
         logger.error("Klarte ikke å slette regelsett", e)
         throw Error("Klarte ikke å slette regelsett")

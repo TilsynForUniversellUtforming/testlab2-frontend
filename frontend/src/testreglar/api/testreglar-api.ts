@@ -1,3 +1,4 @@
+import { responseToJson } from '../../common/util/util';
 import {
   RegelsettRequest,
   Testregel,
@@ -6,94 +7,69 @@ import {
   TestRegelsett,
 } from './types';
 
-export const listTestreglar = async (): Promise<Testregel[]> => {
-  const testreglar = await fetch(`http://localhost:5173/api/v1/testreglar`, {
+export const listTestreglar = async (): Promise<Testregel[]> =>
+  await fetch(`http://localhost:5173/api/v1/testreglar`, {
     method: 'GET',
-  });
-
-  return await testreglar.json();
-};
-
-export const listRegelsett = async (): Promise<TestRegelsett[]> => {
-  const regelsett = await fetch(
-    `http://localhost:5173/api/v1/testreglar/regelsett`,
-    {
-      method: 'GET',
-    }
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke hente testreglar')
   );
 
-  return await regelsett.json();
-};
+export const listRegelsett = async (): Promise<TestRegelsett[]> =>
+  await fetch(`http://localhost:5173/api/v1/testreglar/regelsett`, {
+    method: 'GET',
+  }).then((response) => responseToJson(response, 'Kunne ikke hente regelsett'));
 
 export const createTestregel = async (
   testregel: TestregelCreateRequest
-): Promise<Testregel[]> => {
-  return await fetch(`http://localhost:5173/api/v1/testreglar`, {
+): Promise<Testregel[]> =>
+  await fetch(`http://localhost:5173/api/v1/testreglar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(testregel),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Kunne ikke lage nytt testregel');
-    }
-  });
-};
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke lage nytt testregel')
+  );
 
 export const createRegelsett = async (
   regelsett: RegelsettRequest
-): Promise<TestRegelsett[]> => {
-  return await fetch(`http://localhost:5173/api/v1/testreglar/regelsett`, {
+): Promise<TestRegelsett[]> =>
+  await fetch(`http://localhost:5173/api/v1/testreglar/regelsett`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(regelsett),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Kunne ikke lage nytt regelsett');
-    }
-  });
-};
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke lage nytt regelsett')
+  );
 
 export const updateTestregel = async (
   testregelEditRequest: TestregelEditRequest
-): Promise<Testregel[]> => {
-  const testreglar = await fetch(`http://localhost:5173/api/v1/testreglar`, {
+): Promise<Testregel[]> =>
+  await fetch(`http://localhost:5173/api/v1/testreglar`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(testregelEditRequest),
-  });
-
-  return await testreglar.json();
-};
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke oppdatere testregel')
+  );
 
 // export const updateRegelsett = async () => {};
-export const deleteTestregel = async (id: number): Promise<Testregel[]> => {
-  const testreglar = await fetch(
-    `http://localhost:5173/api/v1/testreglar/${id}`,
-    {
-      method: 'DELETE',
-    }
+
+export const deleteTestregel = async (id: number): Promise<Testregel[]> =>
+  await fetch(`http://localhost:5173/api/v1/testreglar/${id}`, {
+    method: 'DELETE',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke slette testregel')
   );
 
-  return await testreglar.json();
-};
-
-export const deleteRegelsett = async (id: number) => {
-  const testreglar = await fetch(
-    `http://localhost:5173/api/v1/testreglar/regelsett/${id}`,
-    {
-      method: 'DELETE',
-    }
+export const deleteRegelsett = async (id: number) =>
+  await fetch(`http://localhost:5173/api/v1/testreglar/regelsett/${id}`, {
+    method: 'DELETE',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke slette regelsett')
   );
-
-  return await testreglar.json();
-};

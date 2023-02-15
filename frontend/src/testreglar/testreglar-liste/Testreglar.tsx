@@ -11,7 +11,7 @@ import DigdirTable from '../../common/table/DigdirTable';
 import UserActions, {
   ColumnUserAction,
 } from '../../common/table/user-actions/UserActions';
-import { deleteTestregel, listTestreglar } from '../api/testreglar-api';
+import { deleteTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';
 
@@ -23,6 +23,7 @@ const Testreglar = () => {
     setTestregelList,
     setError,
     setLoading,
+    refresh,
   }: TestregelContext = useOutletContext();
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -65,20 +66,6 @@ const Testreglar = () => {
       .catch((e) => setError(e))
       .finally(() => setLoading(false));
   }, [deleteRow]);
-
-  const doFetchTestreglar = useCallback(() => {
-    const fetchTestreglar = async () => {
-      const data = await listTestreglar();
-      setTestregelList(data);
-    };
-
-    setLoading(true);
-    setError(undefined);
-
-    fetchTestreglar()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
-  }, []);
 
   const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
 
@@ -153,7 +140,7 @@ const Testreglar = () => {
         defaultColumns={testRegelColumns}
         error={error}
         loading={loading}
-        onClickRetry={doFetchTestreglar}
+        onClickRetry={refresh}
       />
     </>
   );

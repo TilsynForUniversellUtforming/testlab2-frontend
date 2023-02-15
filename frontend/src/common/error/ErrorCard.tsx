@@ -18,7 +18,7 @@ const ErrorCard = ({
   const { error, refresh }: AppContext = useOutletContext();
 
   const clickRetry = onClickRetry ? onClickRetry : refresh;
-  const errorMsg = error ? error : errorText;
+  const errorMsg = error ? error.message : errorText;
 
   return (
     <Alert show={show} variant="danger" className="mt-3">

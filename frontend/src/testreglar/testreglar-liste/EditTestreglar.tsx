@@ -39,7 +39,6 @@ const EditTestreglar = () => {
     };
 
     const update = async () => {
-      console.log(request);
       const data = await updateTestregel(request);
       setTestregelList(data);
     };
