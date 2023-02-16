@@ -2,7 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
 import StatusBadge from '../../common/status-badge/StatusBadge';
-import DigdirTable from '../../common/table/DigdirTable';
+import TestlabTable from '../../common/table/TestlabTable';
 import { TestResult } from '../api/types';
 
 export interface Props {
@@ -42,7 +42,7 @@ const testResultatColumns: ColumnDef<TestResult>[] = [
     id: '_elementUtfall',
     cell: (info) => (
       <StatusBadge
-        title={`${info.getValue()}`}
+        label={info.getValue()}
         levels={{
           primary: 'ikkje forekomst',
           danger: 'brot',
@@ -81,7 +81,7 @@ const TestResultList = ({
   }
 
   return (
-    <DigdirTable<TestResult>
+    <TestlabTable<TestResult>
       data={testResult}
       defaultColumns={testResultatColumns}
       error={error}

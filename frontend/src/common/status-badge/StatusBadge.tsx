@@ -8,18 +8,21 @@ export type Levels = {
 };
 
 interface Props {
-  title: string;
+  label?: any;
   levels: Levels;
 }
 
-const StatusBadge = ({ title, levels }: Props) => {
-  const label = title ? title : 'Ingen';
+const StatusBadge = ({ label, levels }: Props) => {
+  if (label == null || typeof label === 'undefined') {
+    return null;
+  }
+
   return (
     <Badge
       bg={classNames(
-        { primary: title === levels.primary },
-        { danger: title === levels.danger },
-        { success: title === levels.success },
+        { primary: label === levels.primary },
+        { danger: label === levels.danger },
+        { success: label === levels.success },
         'secondary'
       )}
     >

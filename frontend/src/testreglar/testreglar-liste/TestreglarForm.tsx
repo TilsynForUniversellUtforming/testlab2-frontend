@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import DigdirForm from '../../common/form/DigdirForm';
+import TestlabForm from '../../common/form/TestlabForm';
 import { Option } from '../../common/types';
 import { enumToOptions } from '../../common/util/util';
 import { Krav } from '../../krav/types';
@@ -52,12 +52,12 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
   });
 
   return (
-    <DigdirForm<Testregel>
+    <TestlabForm<Testregel>
       label={label}
       onSubmit={onSubmit}
       formMethods={formMethods}
     >
-      <DigdirForm.FormInput
+      <TestlabForm.FormInput
         label="Navn"
         name="kravTilSamsvar"
         formValidation={{
@@ -65,7 +65,7 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
           validation: { required: true, minLength: 1 },
         }}
       />
-      <DigdirForm.FormSelect
+      <TestlabForm.FormSelect
         label="Status"
         name="status"
         options={statusOptions}
@@ -74,7 +74,7 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
           validation: { required: true, min: '1' },
         }}
       />
-      <DigdirForm.FormSelect
+      <TestlabForm.FormSelect
         label="Type"
         options={typeOptions}
         name="type"
@@ -83,7 +83,7 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
           validation: { required: true, min: '1' },
         }}
       />
-      <DigdirForm.FormInput
+      <TestlabForm.FormInput
         label="Testregel"
         name="referanseAct"
         formValidation={{
@@ -91,8 +91,12 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
           validation: { pattern: /^(QW-ACT-R)[0-9]{1,2}$/i },
         }}
       />
-      <DigdirForm.FormSelect label="Krav" options={kravOptions} name="kravId" />
-    </DigdirForm>
+      <TestlabForm.FormSelect
+        label="Krav"
+        options={kravOptions}
+        name="kravId"
+      />
+    </TestlabForm>
   );
 };
 

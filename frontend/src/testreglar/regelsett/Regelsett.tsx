@@ -3,10 +3,10 @@ import React, { useCallback, useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 
-import DigdirLinkButton from '../../common/button/DigdirLinkButton';
+import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
 import routes from '../../common/routes';
-import DigdirTable from '../../common/table/DigdirTable';
+import TestlabTable from '../../common/table/TestlabTable';
 import UserActions, {
   ColumnUserAction,
 } from '../../common/table/user-actions/UserActions';
@@ -100,12 +100,12 @@ const Regelsett = () => {
         closeModal={onCloseModal}
         onSubmit={doDelete}
       />
-      <DigdirLinkButton
+      <TestlabLinkButton
         type="add"
         route={routes.CREATE_REGELSETT}
         disabled={loading || error}
       />
-      <DigdirTable<TestRegelsett>
+      <TestlabTable<TestRegelsett>
         data={regelsett}
         defaultColumns={testRegelColumns}
         error={error}

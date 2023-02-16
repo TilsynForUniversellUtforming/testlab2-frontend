@@ -1,6 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.krav
 
-import no.uutilsynet.testlab2frontendserver.common.RestHelper.getArray
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.krav.dto.KravApi
 import org.slf4j.LoggerFactory
@@ -25,7 +25,7 @@ class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiPro
   override fun listKrav(): List<Krav> =
       try {
         logger.info("Henter krav fra $kravUrl")
-        restTemplate.getArray<Array<Krav>>(kravUrl).toList()
+        restTemplate.getList(kravUrl)
       } catch (e: RestClientException) {
         logger.error("Klarte ikke å hente krav", e)
         throw Error("Klarte ikke å hente krav")

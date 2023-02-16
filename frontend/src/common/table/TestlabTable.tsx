@@ -1,4 +1,4 @@
-import './digdirTable.scss';
+import './testlabTable.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
@@ -66,7 +66,7 @@ interface Props<T extends object> {
   customStyle?: Style;
 }
 
-const DigdirTable = <T extends object>({
+const TestlabTable = <T extends object>({
   data,
   defaultColumns,
   error,
@@ -140,7 +140,7 @@ const DigdirTable = <T extends object>({
   }
 
   return (
-    <div className="p-2 digdir-table">
+    <div className="p-2 testlab-table">
       <ControlHeader
         loading={loading}
         showFilters={showFilters}
@@ -150,7 +150,7 @@ const DigdirTable = <T extends object>({
         small={customStyle.small}
       />
       <Table
-        className={classNames('digdir-table', {
+        className={classNames('testlab-table', {
           full: customStyle.full,
           fixed: customStyle.fixed,
           sm: customStyle.small,
@@ -185,4 +185,4 @@ const DigdirTable = <T extends object>({
   );
 };
 
-export default DigdirTable;
+export default TestlabTable;

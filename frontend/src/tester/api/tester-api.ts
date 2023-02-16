@@ -4,7 +4,7 @@ import { TestResponse, TestResult } from './types';
 export const createMaaling = async (
   url: TestInputParameters
 ): Promise<string | null> => {
-  const data = await fetch('http://localhost:5173/api/v1/maalinger', {
+  const data = await fetch('/api/v1/maalinger', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -18,13 +18,13 @@ export const createMaaling = async (
 const fetchTestResultat = async (
   url: TestInputParameters
 ): Promise<TestResult[]> => {
-  const maaling = await fetch(`http://localhost:5173/api${url.url}`, {
+  const maaling = await fetch(`/api${url.url}`, {
     method: 'GET',
   });
 
   const maalingData: MaalingResponse = await maaling.json();
 
-  const data = await fetch('http://localhost:5173/api/v1/tester', {
+  const data = await fetch('/api/v1/tester', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -31,7 +31,7 @@ const TableHeader = ({ table, header, showFilters, loading }: Props) => {
   return (
     <th colSpan={header.colSpan}>
       <Button
-        className="digdir-table__header-button p-0 w-100"
+        className="testlab-table__header-button p-0 w-100"
         variant="link"
         onClick={header.column.getToggleSortingHandler()}
         disabled={loading}

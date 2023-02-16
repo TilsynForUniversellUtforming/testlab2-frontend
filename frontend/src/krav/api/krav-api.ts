@@ -1,7 +1,7 @@
 import { Krav } from '../types';
 
 export const listKrav = async (): Promise<Krav[]> => {
-  const kravList = await fetch(`http://localhost:5173/api/v1/krav`, {
+  const kravList = await fetch(`/api/v1/krav`, {
     method: 'GET',
   });
 

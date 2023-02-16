@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 
 export interface Props {
   label: string;
-  onClick: (e: any) => void;
+  onClick: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const EditButton = ({ label, onClick }: Props) => (

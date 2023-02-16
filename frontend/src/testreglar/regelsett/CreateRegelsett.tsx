@@ -12,11 +12,11 @@ import {
 } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import DigdirButton from '../../common/button/DigdirButton';
+import UserActionButton from '../../common/button/UserActionButton';
 import useValidate from '../../common/hooks/useValidate';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
-import DigdirTable from '../../common/table/DigdirTable';
+import TestlabTable from '../../common/table/TestlabTable';
 import { createRegelsett } from '../api/testreglar-api';
 import { RegelsettRequest, Testregel } from '../api/types';
 import { evneAlle, evneList, TestregelContext } from '../types';
@@ -114,7 +114,7 @@ const CreateRegelsett = () => {
         id: 'Status',
         cell: (info) => (
           <StatusBadge
-            title={`${info.getValue()}`}
+            label={info.getValue()}
             levels={{
               primary: 'Publisert',
               danger: 'Utgår',
@@ -154,7 +154,7 @@ const CreateRegelsett = () => {
         <Col>
           <Form>
             <Form.Group className="mb-3">
-              <DigdirButton
+              <UserActionButton
                 type="submit"
                 disabled={submitDisabled}
                 onClick={onSubmit}
@@ -211,7 +211,7 @@ const CreateRegelsett = () => {
                 </ToggleButton>
               ))}
             </ToggleButtonGroup>
-            <DigdirTable<Testregel>
+            <TestlabTable<Testregel>
               data={selectableTestreglar}
               defaultColumns={testRegelColumns}
               error={error}
