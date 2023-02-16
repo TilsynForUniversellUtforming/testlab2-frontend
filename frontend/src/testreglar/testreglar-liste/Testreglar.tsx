@@ -21,7 +21,7 @@ const Testreglar = () => {
     loading,
     testreglar,
     setTestregelList,
-    setError,
+    setContextError,
     setLoading,
     refresh,
   }: TestregelContext = useOutletContext();
@@ -51,7 +51,7 @@ const Testreglar = () => {
     setDeleteRow(undefined);
 
     if (typeof deleteRow === 'undefined') {
-      setError('Kunne ikke slette testregel');
+      setContextError('Kunne ikke slette testregel');
     }
 
     const deleteAndFetchTestregel = async () => {
@@ -60,10 +60,10 @@ const Testreglar = () => {
     };
 
     setLoading(true);
-    setError(undefined);
+    setContextError(undefined);
 
     deleteAndFetchTestregel()
-      .catch((e) => setError(e))
+      .catch((e) => setContextError(e))
       .finally(() => setLoading(false));
   }, [deleteRow]);
 

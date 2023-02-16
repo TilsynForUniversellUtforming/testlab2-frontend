@@ -16,7 +16,7 @@ const EditTestreglar = () => {
     krav,
     setTestregelList,
     setLoading,
-    setError,
+    setContextError,
   }: TestregelContext = useOutletContext();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -44,11 +44,11 @@ const EditTestreglar = () => {
     };
 
     setLoading(true);
-    setError(undefined);
+    setContextError(undefined);
 
     update()
       .catch((e) => {
-        setError(e.message);
+        setContextError(e.message);
       })
       .finally(() => {
         setLoading(false);

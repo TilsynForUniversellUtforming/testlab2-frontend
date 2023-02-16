@@ -19,7 +19,7 @@ const Regelsett = () => {
     error,
     loading,
     regelsett,
-    setError,
+    setContextError,
     setLoading,
     setRegelsettList,
   }: TestregelContext = useOutletContext();
@@ -44,7 +44,7 @@ const Regelsett = () => {
     setDeleteRow(undefined);
 
     if (typeof deleteRow === 'undefined') {
-      setError('Kunne ikke slette testregel');
+      setContextError('Kunne ikke slette testregel');
     }
 
     const deleteAndFetchRegelsett = async () => {
@@ -53,10 +53,10 @@ const Regelsett = () => {
     };
 
     setLoading(true);
-    setError(undefined);
+    setContextError(undefined);
 
     deleteAndFetchRegelsett()
-      .catch((e) => setError(e))
+      .catch((e) => setContextError(e))
       .finally(() => setLoading(false));
   }, [deleteRow]);
 
