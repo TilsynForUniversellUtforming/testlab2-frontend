@@ -18,7 +18,7 @@ const UserActions = ({
   statisticsAction = undefined,
   row,
 }: ColumnUserActionSelection) => (
-  <div className="digdir-table__user-action">
+  <div className="testlab-table__user-action">
     {deleteAction && (
       <Button
         size="sm"

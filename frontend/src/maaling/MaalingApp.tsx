@@ -5,7 +5,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
 import AppTitle from '../common/app-title/AppTitle';
-import DigdirTable from '../common/table/DigdirTable';
+import TestlabTable from '../common/table/TestlabTable';
 
 type Maaling = {
   id: number;
@@ -95,7 +95,7 @@ function Maalinger({ state }: MaalingerProps) {
   switch (state.state) {
     case 'fetching-data':
       maalinger = (
-        <DigdirTable
+        <TestlabTable
           data={[]}
           error={undefined}
           defaultColumns={maalingerColumns}
@@ -104,7 +104,7 @@ function Maalinger({ state }: MaalingerProps) {
       break;
     case 'loaded':
       maalinger = (
-        <DigdirTable
+        <TestlabTable
           data={state.data}
           defaultColumns={maalingerColumns}
           error={undefined}
@@ -113,7 +113,7 @@ function Maalinger({ state }: MaalingerProps) {
       break;
     case 'failed':
       maalinger = (
-        <DigdirTable
+        <TestlabTable
           data={[]}
           defaultColumns={maalingerColumns}
           error={state.error}

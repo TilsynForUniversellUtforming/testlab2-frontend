@@ -2,12 +2,12 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import DigdirLinkButton from '../../common/button/DigdirLinkButton';
 import EditButton from '../../common/button/EditButton';
+import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
 import routes from '../../common/routes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
-import DigdirTable from '../../common/table/DigdirTable';
+import TestlabTable from '../../common/table/TestlabTable';
 import UserActions, {
   ColumnUserAction,
 } from '../../common/table/user-actions/UserActions';
@@ -92,7 +92,7 @@ const Testreglar = () => {
       id: 'Status',
       cell: (info) => (
         <StatusBadge
-          title={`${info.getValue()}`}
+          label={info.getValue()}
           levels={{
             primary: 'Publisert',
             danger: 'Utgår',
@@ -124,7 +124,7 @@ const Testreglar = () => {
 
   return (
     <>
-      <DigdirLinkButton
+      <TestlabLinkButton
         type="add"
         route={routes.CREATE_REGELSETT}
         disabled={loading || error}
@@ -135,7 +135,7 @@ const Testreglar = () => {
         closeModal={onCloseModal}
         onSubmit={doDelete}
       />
-      <DigdirTable<Testregel>
+      <TestlabTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
         error={error}

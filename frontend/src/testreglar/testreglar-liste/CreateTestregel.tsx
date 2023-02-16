@@ -12,7 +12,6 @@ const CreateTestregel = () => {
   const {
     error,
     loading,
-    testreglar,
     krav,
     setTestregelList,
     setLoading,

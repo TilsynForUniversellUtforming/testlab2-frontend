@@ -1,6 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
-import no.uutilsynet.testlab2frontendserver.common.RestHelper.getArray
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.RegelsettRequest
@@ -40,8 +40,8 @@ class TestregelResource(
   override fun listTestreglar(): List<Testregel> =
       try {
         logger.info("Henter testreglar fra $testreglarUrl")
-        val testregelDTOlist = restTemplate.getArray<Array<TestregelDTO>>(testreglarUrl).toList()
-        val kravlist = restTemplate.getArray<Array<Krav>>(kravUrl).toList()
+        val testregelDTOlist = restTemplate.getList<TestregelDTO>(testreglarUrl)
+        val kravlist = restTemplate.getList<Krav>(kravUrl)
 
         testregelService.getTestregelList(testregelDTOlist, kravlist)
       } catch (e: Error) {
@@ -53,7 +53,7 @@ class TestregelResource(
   override fun listRegelsett(): List<Regelsett> =
       try {
         logger.info("Henter regelsett fra $regelsettUrl")
-        restTemplate.getArray<Array<Regelsett>>(regelsettUrl).toList()
+        restTemplate.getList(regelsettUrl)
       } catch (e: Error) {
         logger.error("klarte ikke å hente regelsett", e)
         throw Error("Klarte ikke å hente regelsett")

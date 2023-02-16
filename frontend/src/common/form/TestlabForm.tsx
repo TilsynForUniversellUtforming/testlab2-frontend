@@ -112,7 +112,7 @@ const FormSelect = <T extends object>({
   );
 };
 
-const DigdirForm = <T extends object>({
+const TestlabForm = <T extends object>({
   label,
   children,
   formMethods,
@@ -141,7 +141,7 @@ const DigdirForm = <T extends object>({
   );
 };
 
-DigdirForm.FormInput = FormInput;
-DigdirForm.FormSelect = FormSelect;
+TestlabForm.FormInput = FormInput;
+TestlabForm.FormSelect = FormSelect;
 
-export default DigdirForm;
+export default TestlabForm;

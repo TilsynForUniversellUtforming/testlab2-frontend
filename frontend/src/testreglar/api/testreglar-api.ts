@@ -8,21 +8,21 @@ import {
 } from './types';
 
 export const listTestreglar = async (): Promise<Testregel[]> =>
-  await fetch(`http://localhost:5173/api/v1/testreglar`, {
+  await fetch(`/api/v1/testreglar`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke hente testreglar')
   );
 
 export const listRegelsett = async (): Promise<TestRegelsett[]> =>
-  await fetch(`http://localhost:5173/api/v1/testreglar/regelsett`, {
+  await fetch(`/api/v1/testreglar/regelsett`, {
     method: 'GET',
   }).then((response) => responseToJson(response, 'Kunne ikke hente regelsett'));
 
 export const createTestregel = async (
   testregel: TestregelCreateRequest
 ): Promise<Testregel[]> =>
-  await fetch(`http://localhost:5173/api/v1/testreglar`, {
+  await fetch(`/api/v1/testreglar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export const createTestregel = async (
 export const createRegelsett = async (
   regelsett: RegelsettRequest
 ): Promise<TestRegelsett[]> =>
-  await fetch(`http://localhost:5173/api/v1/testreglar/regelsett`, {
+  await fetch(`/api/v1/testreglar/regelsett`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export const createRegelsett = async (
 export const updateTestregel = async (
   testregelEditRequest: TestregelEditRequest
 ): Promise<Testregel[]> =>
-  await fetch(`http://localhost:5173/api/v1/testreglar`, {
+  await fetch(`/api/v1/testreglar`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -61,14 +61,14 @@ export const updateTestregel = async (
 // export const updateRegelsett = async () => {};
 
 export const deleteTestregel = async (id: number): Promise<Testregel[]> =>
-  await fetch(`http://localhost:5173/api/v1/testreglar/${id}`, {
+  await fetch(`/api/v1/testreglar/${id}`, {
     method: 'DELETE',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke slette testregel')
   );
 
 export const deleteRegelsett = async (id: number) =>
-  await fetch(`http://localhost:5173/api/v1/testreglar/regelsett/${id}`, {
+  await fetch(`/api/v1/testreglar/regelsett/${id}`, {
     method: 'DELETE',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke slette regelsett')
