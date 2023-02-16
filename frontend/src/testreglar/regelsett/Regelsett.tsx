@@ -1,8 +1,9 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import EditButton from '../../common/button/EditButton';
 import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
 import routes from '../../common/routes';
@@ -23,6 +24,7 @@ const Regelsett = () => {
     setLoading,
     setRegelsettList,
   }: TestregelContext = useOutletContext();
+  const navigate = useNavigate();
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmLabel, setConfirmLabel] = useState<string>();
@@ -60,6 +62,10 @@ const Regelsett = () => {
       .finally(() => setLoading(false));
   }, [deleteRow]);
 
+  const onClickEdit = useCallback((regelsettRow: Row<TestRegelsett>) => {
+    navigate(String(regelsettRow.original.id));
+  }, []);
+
   const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
 
   const testRegelColumns: ColumnDef<TestRegelsett>[] = [
@@ -72,7 +78,12 @@ const Regelsett = () => {
     {
       accessorFn: (row) => row.namn,
       id: 'Navn',
-      cell: (info) => info.getValue(),
+      cell: ({ row, getValue }) => (
+        <EditButton
+          onClick={() => onClickEdit(row)}
+          label={String(getValue())}
+        />
+      ),
       header: () => <span>Navn</span>,
     },
     {

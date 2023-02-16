@@ -61,6 +61,7 @@ interface Props<T extends object> {
   error: any;
   loading?: boolean;
   showFilters?: boolean;
+  selectedRows?: boolean[];
   onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
   onClickRetry?: () => void;
   customStyle?: Style;
@@ -72,6 +73,7 @@ const TestlabTable = <T extends object>({
   error,
   loading = false,
   showFilters = true,
+  selectedRows = [],
   onSelectRows,
   onClickRetry,
   customStyle = {
@@ -83,7 +85,9 @@ const TestlabTable = <T extends object>({
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
+    Object.assign({}, selectedRows) as unknown as RowSelectionState
+  );
 
   const enableRowSelection = typeof onSelectRows !== 'undefined';
 

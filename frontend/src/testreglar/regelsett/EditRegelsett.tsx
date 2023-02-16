@@ -1,22 +1,33 @@
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import { createRegelsett } from '../api/testreglar-api';
-import { RegelsettRequest, TestRegelsett } from '../api/types';
+import { updateRegelsett } from '../api/testreglar-api';
+import { TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 import useValidate from './use-validate';
 
-const CreateRegelsett = () => {
-  const { setRegelsettList, setContextError, setLoading }: TestregelContext =
-    useOutletContext();
+const EditRegelsett = () => {
+  const {
+    regelsett,
+    setRegelsettList,
+    setContextError,
+    setLoading,
+  }: TestregelContext = useOutletContext();
+  const { id } = useParams();
+  const numberId = Number(id);
+
+  const selectedRegelsett: TestRegelsett | undefined = regelsett.find(
+    (tr) => tr.id === numberId
+  );
 
   const navigate = useNavigate();
   const formMethods = useForm<TestRegelsett>({
     defaultValues: {
-      namn: '',
-      testregelList: [],
+      id: selectedRegelsett?.id,
+      namn: selectedRegelsett?.namn,
+      testregelList: selectedRegelsett?.testregelList,
     },
   });
 
@@ -32,13 +43,8 @@ const CreateRegelsett = () => {
       return;
     }
 
-    const request: RegelsettRequest = {
-      namn: regelsett.namn,
-      ids: regelsett.testregelList.map((tr) => tr.id),
-    };
-
     const addRegelsett = async () => {
-      const data = await createRegelsett(request);
+      const data = await updateRegelsett(regelsett);
       setRegelsettList(data);
     };
 
@@ -57,11 +63,12 @@ const CreateRegelsett = () => {
 
   return (
     <RegelsettForm
-      label="Nytt regelset"
+      label="Endre regelset"
       formMethods={formMethods}
+      regelsett={selectedRegelsett}
       onSubmit={onSubmit}
     />
   );
 };
 
-export default CreateRegelsett;
+export default EditRegelsett;
