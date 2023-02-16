@@ -18,6 +18,7 @@ import SakerApp from './saker/SakerApp';
 import TeknikkarApp from './teknikkar/TeknikkarApp';
 import TesterApp from './tester/TesterApp';
 import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
+import EditRegelsett from './testreglar/regelsett/EditRegelsett';
 import Regelsett from './testreglar/regelsett/Regelsett';
 import RegelsettApp from './testreglar/regelsett/RegelsettApp';
 import CreateTestregel from './testreglar/testreglar-liste/CreateTestregel';
@@ -50,6 +51,10 @@ function App() {
               <Route
                 path={routes.CREATE_REGELSETT.path}
                 element={<CreateRegelsett />}
+              />
+              <Route
+                path={routes.EDIT_REGELSETT.path}
+                element={<EditRegelsett />}
               />
             </Route>
           </Route>

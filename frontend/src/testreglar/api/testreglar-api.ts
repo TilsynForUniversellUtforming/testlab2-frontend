@@ -58,7 +58,18 @@ export const updateTestregel = async (
     responseToJson(response, 'Kunne ikke oppdatere testregel')
   );
 
-// export const updateRegelsett = async () => {};
+export const updateRegelsett = async (
+  regelsett: TestRegelsett
+): Promise<TestRegelsett[]> =>
+  await fetch(`/api/v1/testreglar/regelsett`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(regelsett),
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke oppdatere regelsett')
+  );
 
 export const deleteTestregel = async (id: number): Promise<Testregel[]> =>
   await fetch(`/api/v1/testreglar/${id}`, {
