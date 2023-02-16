@@ -28,11 +28,13 @@ export interface FormValidation {
 export interface EditProps<T extends object> {
   label: string;
   formValidation?: FormValidation;
+  hidden?: boolean;
   name: Path<T>;
 }
 
 export interface EditSelectProps<T extends object> extends EditProps<T> {
   options: Option[];
+  multiple?: boolean;
 }
 
 const FormInput = <T extends object>({
@@ -73,6 +75,7 @@ const FormSelect = <T extends object>({
   options,
   name,
   formValidation,
+  multiple = false,
 }: EditSelectProps<T>) => {
   const {
     register,
@@ -95,6 +98,7 @@ const FormSelect = <T extends object>({
             id={label}
             value={field.value}
             isInvalid={hasError}
+            multiple={multiple}
             {...register(name, formValidation?.validation)}
           >
             {options.map((option) => (

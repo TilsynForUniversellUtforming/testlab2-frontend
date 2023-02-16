@@ -65,7 +65,7 @@ const TestreglarApp = () => {
     krav: krav,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
-    setError: handleError,
+    setContextError: handleError,
     setLoading: handleLoading,
     refresh: doFetchData,
   };

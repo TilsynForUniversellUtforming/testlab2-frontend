@@ -1,25 +1,23 @@
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Col,
   Container,
-  Form,
-  ListGroup,
   Row,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
 } from 'react-bootstrap';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import UserActionButton from '../../common/button/UserActionButton';
-import useValidate from '../../common/hooks/useValidate';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { createRegelsett } from '../api/testreglar-api';
-import { RegelsettRequest, Testregel } from '../api/types';
+import { RegelsettRequest, Testregel, TestRegelsett } from '../api/types';
 import { evneAlle, evneList, TestregelContext } from '../types';
+import RegelsettForm from './RegelsettForm';
 
 const CreateRegelsett = () => {
   const {
@@ -27,7 +25,7 @@ const CreateRegelsett = () => {
     loading,
     testreglar,
     setRegelsettList,
-    setError,
+    setContextError,
     setLoading,
     refresh,
   }: TestregelContext = useOutletContext();
@@ -38,31 +36,49 @@ const CreateRegelsett = () => {
   );
 
   const navigate = useNavigate();
-  const [selection, setSelection] = useState<Testregel[]>([]);
-  const [name, setName] = useState<string>();
+  const formMethods = useForm<TestRegelsett>({
+    defaultValues: {
+      namn: '',
+      testregelList: [],
+    },
+  });
 
-  const onChangeRows = useCallback((rowSelection: Testregel[]) => {
-    setSelection(rowSelection);
-  }, []);
+  const { control, setValue, setError, clearErrors } = formMethods;
 
-  const validateRequest = (): RegelsettRequest => {
-    const valid = useValidate([
-      { value: name },
-      { isArray: true, value: selection },
-    ]);
-
-    if (!valid) {
-      throw new Error('Ugyldig regelsett');
+  const validate = (selection: Testregel[]): boolean => {
+    if (selection.length === 0) {
+      setError('testregelList', {
+        type: 'manual',
+        message: 'Testreglar må veljast',
+      });
+      return false;
+    } else {
+      clearErrors('testregelList');
+      return true;
     }
-
-    return {
-      namn: name!,
-      ids: selection.map((tr) => tr.id),
-    };
   };
 
-  const onSubmit = useCallback(() => {
-    const request = validateRequest();
+  const onChangeRows = useCallback((rowSelection: Testregel[]) => {
+    setValue('testregelList', rowSelection);
+    validate(rowSelection);
+  }, []);
+
+  const selection = useWatch({
+    control,
+    name: 'testregelList',
+    defaultValue: [],
+  });
+
+  const onSubmit = useCallback((regelsett: TestRegelsett) => {
+    const validation = validate(regelsett.testregelList);
+    if (!validation) {
+      return;
+    }
+
+    const request: RegelsettRequest = {
+      namn: regelsett.namn,
+      ids: regelsett.testregelList.map((tr) => tr.id),
+    };
 
     const addRegelsett = async () => {
       const data = await createRegelsett(request);
@@ -70,17 +86,17 @@ const CreateRegelsett = () => {
     };
 
     setLoading(true);
-    setError(undefined);
+    setContextError(undefined);
 
     addRegelsett()
       .catch((e) => {
-        setError(e.message);
+        setContextError(e.message);
       })
       .finally(() => {
         setLoading(false);
         navigate('..');
       });
-  }, [selection]);
+  }, []);
 
   const testRegelColumns = React.useMemo<ColumnDef<Testregel>[]>(
     () => [
@@ -146,51 +162,16 @@ const CreateRegelsett = () => {
     []
   );
 
-  const submitDisabled =
-    loading || selection.length === 0 || !useValidate([{ value: name }]);
   return (
     <Container className="pb-4">
       <Row>
         <Col>
-          <Form>
-            <Form.Group className="mb-3">
-              <UserActionButton
-                type="submit"
-                disabled={submitDisabled}
-                onClick={onSubmit}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="formCreateRegelsettName">Navn</Form.Label>
-              <Form.Control
-                id="formCreateRegelsettName"
-                size="sm"
-                type="text"
-                value={name ?? ''}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Valgte regelsett</Form.Label>
-              <ListGroup
-                className="testreglar-regelsett__list"
-                as="ol"
-                numbered={selection.length > 0}
-              >
-                {selection.length > 0 &&
-                  selection.map((tr) => (
-                    <ListGroup.Item key={tr.id} as="li">
-                      {tr.kravTilSamsvar}
-                    </ListGroup.Item>
-                  ))}
-                {selection.length === 0 && (
-                  <ListGroup.Item as="li">
-                    Ingen testregler valgt
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Form.Group>
-          </Form>
+          <RegelsettForm
+            label="Nytt regelsett"
+            formMethods={formMethods}
+            selection={selection}
+            onSubmit={onSubmit}
+          />
         </Col>
         <Col>
           <Stack gap={2}>

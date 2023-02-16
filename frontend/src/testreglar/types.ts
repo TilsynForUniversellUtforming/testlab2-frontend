@@ -10,7 +10,7 @@ export interface TestregelContext extends AppContext {
   krav: Krav[];
   setTestregelList: (testRegelList: Testregel[]) => void;
   setRegelsettList: (regelsettList: TestRegelsett[]) => void;
-  setError: (e: any) => void;
+  setContextError: (e: any) => void;
   setLoading: (loading: boolean) => void;
   refresh: () => void;
 }

@@ -15,7 +15,7 @@ const CreateTestregel = () => {
     krav,
     setTestregelList,
     setLoading,
-    setError,
+    setContextError,
   }: TestregelContext = useOutletContext();
   const navigate = useNavigate();
 
@@ -36,11 +36,11 @@ const CreateTestregel = () => {
     };
 
     setLoading(true);
-    setError(undefined);
+    setContextError(undefined);
 
     create()
       .catch((e) => {
-        setError(e.message);
+        setContextError(e.message);
       })
       .finally(() => {
         setLoading(false);
