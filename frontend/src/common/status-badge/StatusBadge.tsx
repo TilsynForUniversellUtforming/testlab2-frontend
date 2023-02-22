@@ -9,7 +9,7 @@ export type Levels = {
 
 interface Props {
   label?: any;
-  levels: Levels;
+  levels?: Levels;
 }
 
 const StatusBadge = ({ label, levels }: Props) => {
@@ -20,9 +20,9 @@ const StatusBadge = ({ label, levels }: Props) => {
   return (
     <Badge
       bg={classNames(
-        { primary: label === levels.primary },
-        { danger: label === levels.danger },
-        { success: label === levels.success },
+        { primary: label === levels?.primary },
+        { danger: label === levels?.danger },
+        { success: label === levels?.success },
         'secondary'
       )}
     >

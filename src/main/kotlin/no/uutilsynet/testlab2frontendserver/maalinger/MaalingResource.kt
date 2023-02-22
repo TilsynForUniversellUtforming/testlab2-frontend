@@ -1,7 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
-import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
@@ -38,7 +37,8 @@ class MaalingResource(
   @PostMapping
   fun createNew(@RequestBody dto: NyMaalingDTO): ResponseEntity<Any> {
     return runCatching {
-          val location = restTemplate.postForLocation(maalingUrl, dto, Int::class.java)
+          val location =
+              restTemplate.postForLocation(maalingUrl, dto, Int::class.java)
                   ?: throw RuntimeException(
                       "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
           val newMaaling =

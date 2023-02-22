@@ -1,195 +1,72 @@
 import './maalingApp.scss';
 
-import { ColumnDef } from '@tanstack/react-table';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { useCallback, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
-import TestlabTable from '../common/table/TestlabTable';
-
-type Maaling = {
-  id: number;
-  navn: string;
-  url: string;
-};
-type FetchingData = { state: 'fetching-data' };
-type Loaded = { state: 'loaded'; data: Maaling[] };
-type Failed = { state: 'failed'; error: Error };
-type State = FetchingData | Loaded | Failed;
-
-type Feature = { key: string; active: boolean };
+import fetchFeatures from '../common/features/api/features-api';
+import { Feature } from '../common/features/api/types';
+import { useEffectOnce } from '../common/hooks/useEffectOnce';
+import useFetch from '../common/hooks/useFetch';
+import { fetchMaalinger } from './api/maaling-api';
+import { Maaling } from './api/types';
+import { MaalingContext } from './types';
 
 const MaalingApp = () => {
-  const [state, setState] = useState<State>({ state: 'fetching-data' });
+  const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const [maalingList, setMaalingList] = useState<Maaling[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(false);
 
-  function fetchMaalinger() {
-    fetch('/api/v1/maalinger')
-      .then((res) => {
-        if (!res.ok) {
-          const error = new Error(`${res.status} ${res.statusText}`);
-          setState({ state: 'failed', error });
-          throw error;
-        } else {
-          return res.json();
+  const handleError = useCallback((error: any) => {
+    setError(error);
+  }, []);
+
+  const handleLoading = useCallback((loading: boolean) => {
+    setLoading(loading);
+  }, []);
+
+  const doFetchMaalingList = useFetch<Maaling[]>({
+    fetchData: fetchMaalinger,
+    setData: setMaalingList,
+    setError: setError,
+    setLoading: setLoading,
+  });
+
+  useEffectOnce(() => {
+    fetchFeatures().then(
+      (features: Feature[]) => {
+        const showMaalinger =
+          features.find((feature) => feature.key === 'maalinger')?.active ??
+          false;
+        if (showMaalinger) {
+          doFetchMaalingList();
         }
-      })
-      .then(
-        (maalinger: Maaling[]) => {
-          setState({ state: 'loaded', data: maalinger });
-        },
-        (error) => {
-          setState({ state: 'failed', error });
-        }
-      );
+        setShowMaalinger(showMaalinger);
+      },
+      (error) => handleError(error)
+    );
+  });
+
+  const maalingContext: MaalingContext = {
+    error: error,
+    loading: loading,
+    refresh: doFetchMaalingList,
+    setContextError: handleError,
+    setLoading: handleLoading,
+    maalingList: maalingList,
+  };
+
+  if (!showMaalinger) {
+    return <AppTitle title="Måling" />;
   }
 
-  useEffect(() => {
-    fetchMaalinger();
-
-    fetch('/api/v1/features')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`${res.status} ${res.statusText}`);
-        } else {
-          return res.json();
-        }
-      })
-      .then(
-        (features: Feature[]) => {
-          const maalinger = features.find(
-            (feature) => feature.key === 'maalinger'
-          );
-          setShowMaalinger(maalinger?.active ?? false);
-        },
-        (error) => console.error(error.message)
-      );
-  }, []);
   return (
-    (showMaalinger && (
-      <>
-        <AppTitle title="Måling" />
-        <NyMaaling onNewMaaling={fetchMaalinger} />
-        <Maalinger state={state} />
-      </>
-    )) || <AppTitle title="Måling" />
+    <>
+      <AppTitle title="Måling" />
+      <Outlet context={maalingContext} />
+    </>
   );
 };
-
-interface MaalingerProps {
-  state: State;
-}
-
-function Maalinger({ state }: MaalingerProps) {
-  const maalingerColumns: ColumnDef<Maaling>[] = [
-    {
-      id: 'ID',
-      accessorFn: (row) => row.id,
-      enableColumnFilter: false,
-    },
-    { id: 'Navn', accessorFn: (row) => row.navn, enableColumnFilter: false },
-    { id: 'URL', accessorFn: (row) => row.url, enableColumnFilter: false },
-  ];
-
-  let maalinger: JSX.Element;
-  switch (state.state) {
-    case 'fetching-data':
-      maalinger = (
-        <TestlabTable
-          data={[]}
-          error={undefined}
-          defaultColumns={maalingerColumns}
-        />
-      );
-      break;
-    case 'loaded':
-      maalinger = (
-        <TestlabTable
-          data={state.data}
-          defaultColumns={maalingerColumns}
-          error={undefined}
-        />
-      );
-      break;
-    case 'failed':
-      maalinger = (
-        <TestlabTable
-          data={[]}
-          defaultColumns={maalingerColumns}
-          error={state.error}
-        />
-      );
-      break;
-  }
-
-  return (
-    <section>
-      <h3>Målinger</h3>
-      {maalinger}
-    </section>
-  );
-}
-
-interface NyMaalingProps {
-  onNewMaaling: () => void;
-}
-
-function NyMaaling({ onNewMaaling }: NyMaalingProps) {
-  const initialForm = { navn: '', url: '' };
-  const [form, setForm] = useState(initialForm);
-
-  function clearForm() {
-    setForm(initialForm);
-  }
-
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    fetch('/api/v1/maalinger', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(form),
-    })
-      .then(clearForm)
-      .then(onNewMaaling);
-  }
-
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-    setForm({ ...form, [name]: value });
-  }
-
-  return (
-    <section>
-      <h3>Ny måling</h3>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Navn:</Form.Label>
-          <Form.Control
-            type="text"
-            name="navn"
-            value={form.navn}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>URL:</Form.Label>
-          <Form.Control
-            type="text"
-            name="url"
-            value={form.url}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Lagre
-        </Button>
-      </Form>
-    </section>
-  );
-}
 
 export default MaalingApp;

@@ -6,8 +6,10 @@ import { Outlet } from 'react-router-dom';
 
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import useFetch from '../common/hooks/useFetch';
-import { createMaaling, fetchLoysingar } from './api/tester-api';
-import { Loeysing, MaalingInit, MaalingResponse } from './api/types';
+import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
+import { Loeysing } from '../loeysingar/api/types';
+import { createMaaling } from '../maaling/api/maaling-api';
+import { CreatedMaaling, MaalingInit } from '../maaling/api/types';
 import TestingStepper from './TestingStepper';
 import { TesterContext } from './types';
 
@@ -15,7 +17,7 @@ const TesterApp = () => {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
-  const [maaling, setMaaling] = useState<MaalingResponse>();
+  const [maaling, setMaaling] = useState<CreatedMaaling>();
 
   const handleSetLoeysingList = useCallback((loeysingList: Loeysing[]) => {
     setLoeysingList(loeysingList);
