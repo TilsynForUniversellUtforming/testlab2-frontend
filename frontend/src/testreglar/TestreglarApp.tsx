@@ -4,8 +4,8 @@ import React, { useCallback, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
+import appRoutes from '../common/appRoutes';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import routes from '../common/routes';
 import { listKrav } from '../krav/api/krav-api';
 import { Krav } from '../krav/types';
 import { listRegelsett, listTestreglar } from './api/testreglar-api';
@@ -72,7 +72,7 @@ const TestreglarApp = () => {
 
   return (
     <>
-      <AppTitle title={routes.TESTREGEL.navn} />
+      <AppTitle title={appRoutes.TESTREGEL.navn} />
       <Navbar />
       <div className="testreglar__content">
         <Outlet context={testRegelContext} />

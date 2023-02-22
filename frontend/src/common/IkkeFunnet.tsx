@@ -1,12 +1,15 @@
-import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const IkkeFunnet = () => {
-  const error = useRouteError();
-  if (isRouteErrorResponse(error)) {
-    return <div>{error.statusText || error.data.message}</div>;
-  } else {
-    return <div>Ikke funnet</div>;
-  }
-};
+import AppTitle from './app-title/AppTitle';
+
+const IkkeFunnet = () => (
+  <div>
+    <AppTitle title="Ikke funnet" />
+    <p>
+      <Link to="/">Gå til hovedsiden</Link>
+    </p>
+  </div>
+);
 
 export default IkkeFunnet;

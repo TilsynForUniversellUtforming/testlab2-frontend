@@ -1,11 +1,11 @@
 import { NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import { Route } from '../../routes';
+import { AppRoute } from '../../appRoutes';
 
 interface Props {
   navn: string;
-  routes: Route[];
+  routes: AppRoute[];
 }
 
 export const LinksDropdown = ({ navn, routes }: Props) => {

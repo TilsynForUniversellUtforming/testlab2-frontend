@@ -2,10 +2,10 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import appRoutes from '../../common/appRoutes';
 import EditButton from '../../common/button/EditButton';
 import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
-import routes from '../../common/routes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
 import UserActions, {
@@ -126,7 +126,7 @@ const Testreglar = () => {
     <>
       <TestlabLinkButton
         type="add"
-        route={routes.CREATE_REGELSETT}
+        route={appRoutes.CREATE_REGELSETT}
         disabled={loading || error}
       />
       <ConfirmDialog

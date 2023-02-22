@@ -1,5 +1,11 @@
-import { MaalingResponse, TestInputParameters } from '../types';
-import { TestResponse, TestResult } from './types';
+import { responseToJson } from '../../common/util/util';
+import {
+  Loeysing,
+  MaalingResponse,
+  TestInputParameters,
+  TestResponse,
+  TestResult,
+} from './types';
 
 export const createMaaling = async (
   url: TestInputParameters
@@ -37,10 +43,9 @@ const fetchTestResultat = async (
   return json.output;
 };
 
-// export const fetchTestResultat_dummy = async (): Promise<TestResult[]> => {
-//   console.log('FETCHING DUMMY');
-//
-//   return JSON.parse(dummy_response);
-// };
+export const fetchLoysingar = async (): Promise<Loeysing[]> =>
+  await fetch(`/api/v1/maalinger/loeysingar`, {
+    method: 'GET',
+  }).then((response) => responseToJson(response, 'Kunne ikke hente løsninger'));
 
 export default fetchTestResultat;

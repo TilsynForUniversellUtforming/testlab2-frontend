@@ -23,3 +23,22 @@ export type TestResponse = {
   runtimeStatus: string;
   output: TestResult[];
 };
+
+export type Loeysing = {
+  id: number;
+  namn: string;
+  url: string;
+};
+
+export interface TestInputParameters {
+  url: string;
+}
+
+export interface CreateMaalingParameters {
+  urls: string[];
+}
+
+export type MaalingResponse = {
+  id: number;
+  url: string;
+};

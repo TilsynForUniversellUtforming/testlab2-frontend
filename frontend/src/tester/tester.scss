@@ -1,0 +1,13 @@
+.stepper {
+  display: flex;
+  padding: 24px;
+  width: 100%;
+
+  ol {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
