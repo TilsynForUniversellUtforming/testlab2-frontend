@@ -2,14 +2,16 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { LoeysingList, TesterContext } from '../types';
+import { MaalingInit } from '../api/types';
+import { TesterContext } from '../types';
 import LoeysingSelctionForm from './LoeysingSelctionForm';
 
 const LoeysingSelectionApp = () => {
-  const { onSubmitLoeysingar }: TesterContext = useOutletContext();
+  const { onSubmitMaalingInit }: TesterContext = useOutletContext();
 
-  const formMethods = useForm<LoeysingList>({
+  const formMethods = useForm<MaalingInit>({
     defaultValues: {
+      navn: '',
       loeysingList: [],
     },
   });
@@ -18,7 +20,7 @@ const LoeysingSelectionApp = () => {
     <LoeysingSelctionForm
       label="Velg løysingar"
       formMethods={formMethods}
-      onSubmit={onSubmitLoeysingar}
+      onSubmit={onSubmitMaalingInit}
     />
   );
 };

@@ -8,8 +8,5 @@
   &__list {
     max-height: 32rem;
     overflow-y: auto;
-    .invalid {
-      border-color: red;
-    }
   }
 }
