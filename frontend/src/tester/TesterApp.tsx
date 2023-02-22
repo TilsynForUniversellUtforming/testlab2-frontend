@@ -1,75 +1,75 @@
-import { useCallback, useState } from 'react';
+import './tester.scss';
 
-import AppTitle from '../common/app-title/AppTitle';
-import fetchTestResultat, { createMaaling } from './api/tester-api';
-import { TestResult } from './api/types';
-import TestParameters from './test-init/TestParameters';
-import TestResultList from './test-result-list/TestResultList';
-import { TestInputParameters } from './types';
+import React, { useCallback, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { Outlet } from 'react-router-dom';
+
+import { useEffectOnce } from '../common/hooks/useEffectOnce';
+import useFetch from '../common/hooks/useFetch';
+import { fetchLoysingar } from './api/tester-api';
+import { Loeysing } from './api/types';
+import TestingStepper from './TestingStepper';
+import { LoeysingList, TesterContext, TestingForm } from './types';
 
 const TesterApp = () => {
-  const [testInputParameters, setTestInputParameters] =
-    useState<TestInputParameters>({ url: '' });
-  const [testResultat, setTestResultat] = useState<TestResult[]>([]);
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [loeysingList, setLoeysingList] = useState<LoeysingList>({
+    loeysingList: [],
+  });
 
-  const onChangeInput = useCallback(
-    (value: string) => {
-      setTestInputParameters({ url: value });
-      setError(undefined);
-    },
-    [testInputParameters]
-  );
+  const [testingForm, setTestingForm] = useState<TestingForm>();
 
-  const doFetchTestResultat = useCallback(() => {
-    const url = testInputParameters.url;
+  const handleSetLoeysingList = useCallback((loeysingList: Loeysing[]) => {
+    setLoeysingList({ loeysingList: loeysingList });
+  }, []);
 
-    try {
-      // TODO - Ordentlig validering
-      new URL(url);
+  const handleError = useCallback((error: any) => {
+    setError(error);
+  }, []);
 
-      const fetchTestreglar = async () => {
-        const maalingUrl = await createMaaling(testInputParameters);
-        if (maalingUrl != null) {
-          const data = await fetchTestResultat({ url: maalingUrl });
+  const handleLoading = useCallback((loading: boolean) => {
+    setLoading(loading);
+  }, []);
 
-          setTestResultat(data);
-        } else {
-          setError('Kunne ikke snakke med server');
-        }
-      };
+  const onSubmitLoeysingar = useCallback((loeysingList: LoeysingList) => {
+    setTestingForm({ loeysingList: loeysingList, status: 'crawling' });
+  }, []);
 
-      setLoading(true);
-      setError(undefined);
+  const doFetchLoeysingList = useFetch<Loeysing[]>({
+    fetchData: fetchLoysingar,
+    setData: handleSetLoeysingList,
+    setError: handleError,
+    setLoading: handleLoading,
+  });
 
-      fetchTestreglar()
-        .catch((e) => setError(e))
-        .finally(() => setLoading(false));
-    } catch (err: any) {
-      setError(
-        'Ugyldig nettaddresse. Adressen må være på formen http://www.url.no'
-      );
-    }
-  }, [testInputParameters]);
+  useEffectOnce(() => {
+    doFetchLoeysingList();
+  });
+
+  const testRegelContext: TesterContext = {
+    error: error,
+    loading: loading,
+    loeysingList: loeysingList,
+    onSubmitLoeysingar: onSubmitLoeysingar,
+    testingForm: testingForm,
+    setLoeysingList: handleSetLoeysingList,
+    setContextError: handleError,
+    setLoading: handleLoading,
+    refresh: doFetchLoeysingList,
+  };
 
   return (
-    <>
-      <AppTitle title="Start ny test" />
-      <TestParameters
-        value={testInputParameters?.url}
-        loading={loading}
-        error={error}
-        onChange={onChangeInput}
-        onSubmit={doFetchTestResultat}
-      />
-      <TestResultList
-        testResult={testResultat}
-        onClickRetry={doFetchTestResultat}
-        loading={loading}
-        error={error}
-      />
-    </>
+    <Container>
+      <Row>
+        <Col sm={4}>
+          <TestingStepper />
+        </Col>
+        <Col sm={8}>
+          <Outlet context={testRegelContext} />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

@@ -1,10 +1,13 @@
-package no.uutilsynet.testlab2frontendserver
+package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
 import java.net.URL
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.NewMaalingDTO
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestClientException
@@ -13,26 +16,25 @@ import org.springframework.web.client.getForObject
 
 @RestController
 @RequestMapping("api/v1/maalinger")
-class Maalinger(val restTemplate: RestTemplate, val testingApiProperties: TestingApiProperties) {
-  val logger = LoggerFactory.getLogger(Maalinger::class.java)
+class MaalingResource(
+    val restTemplate: RestTemplate,
+    val testingApiProperties: TestingApiProperties
+) {
+  val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
   @ConfigurationProperties(prefix = "testing.api") data class TestingApiProperties(val url: String)
+  val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
   @GetMapping
-  fun list(): ResponseEntity<Any> {
+  fun list(): List<Maaling> {
     return try {
-      val responseType = object : ParameterizedTypeReference<List<Maaling>>() {}
-      val url = testingApiProperties.url
-      logger.info("henter målinger fra ${url}")
-      val maalinger: List<Maaling> = restTemplate.getForObject("${url}/v1/maalinger", responseType)
-      ResponseEntity.ok(maalinger)
+      logger.info("henter målinger fra ${maalingUrl}")
+      restTemplate.getList(maalingUrl)
     } catch (e: RestClientException) {
-      logger.error("jeg klarte ikke å hente målinger", e)
-      ResponseEntity.internalServerError().body(e.message)
+      logger.error("klarte ikke å hente målinger", e)
+      throw Error("Klarte ikke å hente målinger")
     }
   }
-
-  data class NewMaalingDTO(val navn: String, val url: String)
 
   fun validateURL(s: String): Result<URL> {
     return runCatching { URL(s) }
@@ -70,5 +72,13 @@ class Maalinger(val restTemplate: RestTemplate, val testingApiProperties: Testin
         }
   }
 
-  data class Maaling(val id: Int, val url: String)
+  @GetMapping("loeysingar")
+  fun getLoesyingar(): List<Loeysing> =
+      try {
+        logger.info("Henter løsninger fra $testingApiProperties")
+        restTemplate.getList("$maalingUrl/loeysingar")
+      } catch (e: Error) {
+        logger.error("klarte ikke å hente løsninger", e)
+        throw Error("Klarte ikke å hente løsninger")
+      }
 }

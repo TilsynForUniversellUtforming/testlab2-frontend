@@ -14,13 +14,16 @@ import {
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
+import useDefaultSubmitStep from '../../common/form/hooks/useSteps';
+import useValidate, {
+  testreglarMessage,
+} from '../../common/form/hooks/useValidate';
 import TestlabForm from '../../common/form/TestlabForm';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { Testregel, TestRegelsett } from '../api/types';
 import { evneAlle, evneList, TestregelContext } from '../types';
-import useValidate from './use-validate';
 
 export interface Props {
   label: string;
@@ -38,7 +41,13 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
 
   const onChangeRows = useCallback((rowSelection: Testregel[]) => {
     setValue('testregelList', rowSelection);
-    useValidate(rowSelection, setError, clearErrors);
+    useValidate<Testregel, TestRegelsett>({
+      selection: rowSelection,
+      name: 'testregelList',
+      setError: setError,
+      clearErrors: clearErrors,
+      message: testreglarMessage,
+    });
   }, []);
 
   const selection = useWatch({
@@ -124,6 +133,8 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
     []
   );
 
+  const step = useDefaultSubmitStep();
+
   return (
     <Container className="pb-4">
       <Row>
@@ -132,6 +143,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
             label={label}
             onSubmit={onSubmit}
             formMethods={formMethods}
+            step={step}
           >
             <TestlabForm.FormInput
               label="Navn"

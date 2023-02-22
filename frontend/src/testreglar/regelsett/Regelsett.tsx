@@ -3,10 +3,10 @@ import React, { useCallback, useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import appRoutes from '../../common/appRoutes';
 import EditButton from '../../common/button/EditButton';
 import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
-import routes from '../../common/routes';
 import TestlabTable from '../../common/table/TestlabTable';
 import UserActions, {
   ColumnUserAction,
@@ -113,7 +113,7 @@ const Regelsett = () => {
       />
       <TestlabLinkButton
         type="add"
-        route={routes.CREATE_REGELSETT}
+        route={appRoutes.CREATE_REGELSETT}
         disabled={loading || error}
       />
       <TestlabTable<TestRegelsett>

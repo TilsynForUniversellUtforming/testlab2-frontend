@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 
-import { Route } from '../routes';
+import { AppRoute } from '../appRoutes';
 import UserActionButton, { ButtonType } from './UserActionButton';
 
 export interface Props {
   type: ButtonType;
-  route: Route;
+  route: AppRoute;
   disabled?: boolean;
 }
 

@@ -2,11 +2,13 @@ import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import useValidate, {
+  testreglarMessage,
+} from '../../common/form/hooks/useValidate';
 import { createRegelsett } from '../api/testreglar-api';
-import { RegelsettRequest, TestRegelsett } from '../api/types';
+import { RegelsettRequest, Testregel, TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
-import useValidate from './use-validate';
 
 const CreateRegelsett = () => {
   const { setRegelsettList, setContextError, setLoading }: TestregelContext =
@@ -23,11 +25,13 @@ const CreateRegelsett = () => {
   const { setError, clearErrors } = formMethods;
 
   const onSubmit = useCallback((regelsett: TestRegelsett) => {
-    const validation = useValidate(
-      regelsett.testregelList,
-      setError,
-      clearErrors
-    );
+    const validation = useValidate<Testregel, TestRegelsett>({
+      selection: regelsett.testregelList,
+      name: 'testregelList',
+      setError: setError,
+      clearErrors: clearErrors,
+      message: testreglarMessage,
+    });
     if (!validation) {
       return;
     }
@@ -57,7 +61,7 @@ const CreateRegelsett = () => {
 
   return (
     <RegelsettForm
-      label="Nytt regelset"
+      label="Nytt regelsett"
       formMethods={formMethods}
       onSubmit={onSubmit}
     />

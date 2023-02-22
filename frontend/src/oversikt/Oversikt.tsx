@@ -1,4 +1,4 @@
-import { testing, verktoey } from '../common/routes';
+import { testing, verktoey } from '../common/appRoutes';
 import Lenker from './lenker/Lenker';
 
 const Oversikt = () => {

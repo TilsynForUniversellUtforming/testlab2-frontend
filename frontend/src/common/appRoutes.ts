@@ -12,40 +12,36 @@ import testingImg from '../assets/testreglar.svg';
 import verksemderImg from '../assets/verksemder.svg';
 
 /* Typer routes */
-export interface Route {
+export type AppRoute = {
   navn: string;
   path: string;
-}
-
-export interface NestedRoute extends Route {
-  parentRoute: Route;
-}
-
-export interface RouteIcon extends Route {
   imgSrc?: string;
-}
-
-/* Implementering av route objekter */
+  parentRoute?: AppRoute;
+};
 
 interface IRoutes {
-  ROOT: Route;
-  SAKER: RouteIcon;
-  MAALING: RouteIcon;
-  TESTREGEL: RouteIcon;
-  CREATE_TESTREGEL: NestedRoute;
-  EDIT_TESTREGEL: NestedRoute;
-  REGELSETT: NestedRoute;
-  CREATE_REGELSETT: NestedRoute;
-  EDIT_REGELSETT: NestedRoute;
-  VERKSEMDER: RouteIcon;
-  LOEYSINGAR: RouteIcon;
-  KRAV: RouteIcon;
-  TEKNIKKAR: RouteIcon;
-  DISKUSJON: RouteIcon;
-  RESULTAT: RouteIcon;
-  TESTER: RouteIcon;
-  MINE_TESTER: RouteIcon;
-  QUALWEB: RouteIcon;
+  ROOT: AppRoute;
+  SAKER: AppRoute;
+  MAALING: AppRoute;
+  TESTREGEL: AppRoute;
+  CREATE_TESTREGEL: AppRoute;
+  EDIT_TESTREGEL: AppRoute;
+  REGELSETT: AppRoute;
+  CREATE_REGELSETT: AppRoute;
+  EDIT_REGELSETT: AppRoute;
+  VERKSEMDER: AppRoute;
+  LOEYSINGAR: AppRoute;
+  KRAV: AppRoute;
+  TEKNIKKAR: AppRoute;
+  DISKUSJON: AppRoute;
+  RESULTAT: AppRoute;
+  CREATE_TEST: AppRoute;
+  CRAWLING_TEST: AppRoute;
+  KVALITETSSIKRING_TEST: AppRoute;
+  TESTING_TEST: AppRoute;
+  RESULTAT_TEST: AppRoute;
+  MINE_TESTER: AppRoute;
+  QUALWEB: AppRoute;
 }
 
 const ROOT = {
@@ -122,11 +118,36 @@ const RESULTAT = {
   path: 'resultat',
   imgSrc: resultatImg,
 };
-const TESTER = {
+const CREATE_TEST = {
   navn: 'Start ny test',
-  path: 'tester',
+  path: 'test',
   imgSrc: testerImg,
 };
+
+const CRAWLING_TEST = {
+  navn: 'Crawling',
+  path: ':id',
+  parentRoute: CREATE_TEST,
+};
+
+const KVALITETSSIKRING_TEST = {
+  navn: 'Kvalitetssikring',
+  path: ':id/kvalitetssikring',
+  parentRoute: CREATE_TEST,
+};
+
+const TESTING_TEST = {
+  navn: 'Tester',
+  path: ':id/testing',
+  parentRoute: CREATE_TEST,
+};
+
+const RESULTAT_TEST = {
+  navn: 'Resultat',
+  path: ':id/resultat',
+  parentRoute: CREATE_TEST,
+};
+
 const MINE_TESTER = {
   navn: 'Mine Tester',
   path: 'mine-tester',
@@ -138,7 +159,7 @@ const QUALWEB = {
   imgSrc: qualWebImg,
 };
 
-export const routes: IRoutes = {
+export const appRoutes: IRoutes = {
   ROOT: ROOT,
   SAKER: SAKER,
   MAALING: MAALING,
@@ -154,29 +175,39 @@ export const routes: IRoutes = {
   TEKNIKKAR: TEKNIKKAR,
   DISKUSJON: DISKUSJON,
   RESULTAT: RESULTAT,
-  TESTER: TESTER,
+  CREATE_TEST: CREATE_TEST,
+  CRAWLING_TEST: CRAWLING_TEST,
+  KVALITETSSIKRING_TEST: KVALITETSSIKRING_TEST,
+  TESTING_TEST: TESTING_TEST,
+  RESULTAT_TEST: RESULTAT_TEST,
   MINE_TESTER: MINE_TESTER,
   QUALWEB: QUALWEB,
 };
 
-/* Predefinerte lister av routes */
-
 export const verktoey = [
-  routes.SAKER,
-  routes.MAALING,
-  routes.TESTREGEL,
-  routes.VERKSEMDER,
-  routes.LOEYSINGAR,
-  routes.KRAV,
-  routes.TEKNIKKAR,
-  routes.DISKUSJON,
+  appRoutes.SAKER,
+  appRoutes.MAALING,
+  appRoutes.TESTREGEL,
+  appRoutes.VERKSEMDER,
+  appRoutes.LOEYSINGAR,
+  appRoutes.KRAV,
+  appRoutes.TEKNIKKAR,
+  appRoutes.DISKUSJON,
 ];
 
 export const testing = [
-  routes.RESULTAT,
-  routes.MINE_TESTER,
-  routes.QUALWEB,
-  routes.TESTER,
+  appRoutes.RESULTAT,
+  appRoutes.MINE_TESTER,
+  appRoutes.QUALWEB,
+  appRoutes.CREATE_TEST,
 ];
 
-export default routes;
+export const testing_steps = [
+  appRoutes.CREATE_TEST,
+  appRoutes.CRAWLING_TEST,
+  appRoutes.KVALITETSSIKRING_TEST,
+  appRoutes.TESTING_TEST,
+  appRoutes.RESULTAT_TEST,
+];
+
+export default appRoutes;

@@ -10,14 +10,21 @@ import {
   UseFormReturn,
 } from 'react-hook-form';
 import { RegisterOptions } from 'react-hook-form/dist/types/validator';
-import { useNavigate } from 'react-router-dom';
 
 import { Option } from '../types';
+
+export type StepType = 'Start' | 'Middle' | 'Submit';
+
+export type Step = {
+  stepType: StepType;
+  onClickBack: () => void;
+};
 
 export interface Props<T extends object> {
   label?: string;
   onSubmit: SubmitHandler<T>;
   formMethods: UseFormReturn<T>;
+  step: Step;
   children: ReactNode;
 }
 
@@ -116,13 +123,47 @@ const FormSelect = <T extends object>({
   );
 };
 
+const FormButtons = ({ stepType, onClickBack }: Step) => {
+  switch (stepType) {
+    case 'Start':
+      return (
+        <div className="mb-3">
+          <Button variant="secondary" className="me-3" onClick={onClickBack}>
+            Avbryt
+          </Button>
+          <Button type="submit">Neste</Button>
+        </div>
+      );
+    case 'Middle':
+      return (
+        <div className="mb-3">
+          <Button variant="secondary" className="me-3" onClick={onClickBack}>
+            Tilbake
+          </Button>
+          <Button type="submit">Neste</Button>
+        </div>
+      );
+    case 'Submit':
+      return (
+        <div className="mb-3">
+          <Button variant="secondary" className="me-3" onClick={onClickBack}>
+            Tilbake
+          </Button>
+          <Button type="submit">Lagre</Button>
+        </div>
+      );
+    default:
+      throw new Error('Ulovlig tilstand');
+  }
+};
+
 const TestlabForm = <T extends object>({
   label,
   children,
   formMethods,
+  step,
   onSubmit,
 }: Props<T>) => {
-  const navigate = useNavigate();
   const { handleSubmit } = formMethods;
 
   return (
@@ -130,15 +171,11 @@ const TestlabForm = <T extends object>({
       {label && <h3 className="mb-4">{label}</h3>}
       <FormProvider {...formMethods}>
         <Form className="mb-4" onSubmit={handleSubmit(onSubmit)}>
+          <FormButtons
+            stepType={step.stepType}
+            onClickBack={step.onClickBack}
+          />
           {children}
-          <Button
-            variant="secondary"
-            className="me-3"
-            onClick={() => navigate('..')}
-          >
-            Tilbake
-          </Button>
-          <Button type="submit">Lagre</Button>
         </Form>
       </FormProvider>
     </>

@@ -1,0 +1,34 @@
+import classNames from 'classnames';
+import React from 'react';
+import { Col, Container, Row, Stack } from 'react-bootstrap';
+
+import { testing_steps } from '../common/appRoutes';
+import useCurrentStep from './hooks/useCurrentStep';
+
+const TestingStepper = () => {
+  const currentStep = useCurrentStep();
+  const bold = { fontWeight: 'bold' };
+
+  return (
+    <Stack gap={3}>
+      <Container>
+        {testing_steps.map((route, idx) => (
+          <div key={`row_${idx}`}>
+            <Row style={(currentStep?.step ?? 0) >= idx ? bold : undefined}>
+              <Col
+                className={classNames('nav-link disabled', {
+                  active: (currentStep?.step ?? 0) >= idx,
+                })}
+              >
+                {route.navn}
+              </Col>
+              <Col className="d-flex align-items-center justify-content-center"></Col>
+            </Row>
+          </div>
+        ))}
+      </Container>
+    </Stack>
+  );
+};
+
+export default TestingStepper;

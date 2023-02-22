@@ -1,7 +1,7 @@
 import Nav from 'react-bootstrap/Nav';
 import { NavLink } from 'react-router-dom';
 
-import routes from '../common/routes';
+import appRoutes from '../common/appRoutes';
 
 const Navbar = () => {
   return (
@@ -9,12 +9,12 @@ const Navbar = () => {
       <Nav variant="tabs">
         <Nav.Item>
           <Nav.Link as={NavLink} to={''} end>
-            {routes.TESTREGEL.navn}
+            {appRoutes.TESTREGEL.navn}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={NavLink} to={routes.REGELSETT.path}>
-            {routes.REGELSETT.navn}
+          <Nav.Link as={NavLink} to={appRoutes.REGELSETT.path}>
+            {appRoutes.REGELSETT.navn}
           </Nav.Link>
         </Nav.Item>
       </Nav>

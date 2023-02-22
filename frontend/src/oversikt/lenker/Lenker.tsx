@@ -4,11 +4,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
-import { RouteIcon } from '../../common/routes';
+import { AppRoute } from '../../common/appRoutes';
 
 interface Props {
   tittel: string;
-  routes: RouteIcon[];
+  routes: AppRoute[];
 }
 
 const Lenker = ({ tittel, routes }: Props) => {

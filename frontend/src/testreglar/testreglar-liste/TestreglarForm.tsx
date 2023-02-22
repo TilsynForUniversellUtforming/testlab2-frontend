@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
+import useDefaultSubmitStep from '../../common/form/hooks/useSteps';
 import TestlabForm from '../../common/form/TestlabForm';
 import { Option } from '../../common/types';
 import { enumToOptions } from '../../common/util/util';
@@ -51,11 +52,14 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
     },
   });
 
+  const step = useDefaultSubmitStep();
+
   return (
     <TestlabForm<Testregel>
       label={label}
       onSubmit={onSubmit}
       formMethods={formMethods}
+      step={step}
     >
       <TestlabForm.FormInput
         label="Navn"
