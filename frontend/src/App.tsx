@@ -10,6 +10,7 @@ import Navigation from './common/navigation/Navigation';
 import DiskusjonApp from './diskusjon/DiskusjonApp';
 import KravApp from './krav/KravApp';
 import LoeysingApp from './loeysingar/LoeysingApp';
+import MaalingList from './maaling/maaling-list/MaalingList';
 import MaalingApp from './maaling/MaalingApp';
 import MineTesterApp from './mine-tester/MineTesterApp';
 import Oversikt from './oversikt/Oversikt';
@@ -38,7 +39,9 @@ function App() {
         <Routes>
           <Route path={appRoutes.ROOT.path} element={<Oversikt />} />
           <Route path={appRoutes.SAKER.path} element={<SakerApp />} />
-          <Route path={appRoutes.MAALING.path} element={<MaalingApp />} />
+          <Route path={appRoutes.MAALING.path} element={<MaalingApp />}>
+            <Route index element={<MaalingList />} />
+          </Route>
           <Route path={appRoutes.TESTREGEL.path} element={<TestreglarApp />}>
             <Route index element={<Testreglar />} />
             <Route

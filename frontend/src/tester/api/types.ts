@@ -24,21 +24,6 @@ export type TestResponse = {
   output: TestResult[];
 };
 
-export type Loeysing = {
-  id: number;
-  namn: string;
-  url: string;
-};
-
 export interface TestInputParameters {
   url: string;
 }
-
-export type MaalingInit = {
-  navn: string;
-  loeysingList: Loeysing[];
-};
-
-export type MaalingResponse = {
-  url?: string;
-};
