@@ -6,25 +6,23 @@ import { Outlet } from 'react-router-dom';
 
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import useFetch from '../common/hooks/useFetch';
-import { fetchLoysingar } from './api/tester-api';
-import { Loeysing } from './api/types';
+import { createMaaling, fetchLoysingar } from './api/tester-api';
+import { Loeysing, MaalingInit, MaalingResponse } from './api/types';
 import TestingStepper from './TestingStepper';
-import { LoeysingList, TesterContext, TestingForm } from './types';
+import { TesterContext } from './types';
 
 const TesterApp = () => {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const [loeysingList, setLoeysingList] = useState<LoeysingList>({
-    loeysingList: [],
-  });
-
-  const [testingForm, setTestingForm] = useState<TestingForm>();
+  const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
+  const [maaling, setMaaling] = useState<MaalingResponse>();
 
   const handleSetLoeysingList = useCallback((loeysingList: Loeysing[]) => {
-    setLoeysingList({ loeysingList: loeysingList });
+    setLoeysingList(loeysingList);
   }, []);
 
   const handleError = useCallback((error: any) => {
+    setMaaling(undefined);
     setError(error);
   }, []);
 
@@ -32,8 +30,19 @@ const TesterApp = () => {
     setLoading(loading);
   }, []);
 
-  const onSubmitLoeysingar = useCallback((loeysingList: LoeysingList) => {
-    setTestingForm({ loeysingList: loeysingList, status: 'crawling' });
+  const onSubmitMaalingInit = useCallback((maalingInit: MaalingInit) => {
+    handleLoading(true);
+    handleError(undefined);
+
+    const doCreateMaaling = async () => {
+      const data = await createMaaling(maalingInit);
+      setMaaling(data);
+      handleLoading(false);
+    };
+
+    doCreateMaaling()
+      .catch((e) => handleError(e))
+      .finally(() => handleLoading(false));
   }, []);
 
   const doFetchLoeysingList = useFetch<Loeysing[]>({
@@ -51,21 +60,22 @@ const TesterApp = () => {
     error: error,
     loading: loading,
     loeysingList: loeysingList,
-    onSubmitLoeysingar: onSubmitLoeysingar,
-    testingForm: testingForm,
+    onSubmitMaalingInit: onSubmitMaalingInit,
     setLoeysingList: handleSetLoeysingList,
     setContextError: handleError,
     setLoading: handleLoading,
     refresh: doFetchLoeysingList,
   };
 
+  console.log('maaling', maaling);
+
   return (
-    <Container>
+    <Container className="mt-3">
       <Row>
-        <Col sm={4}>
+        <Col sm={3}>
           <TestingStepper />
         </Col>
-        <Col sm={8}>
+        <Col sm={9}>
           <Outlet context={testRegelContext} />
         </Col>
       </Row>

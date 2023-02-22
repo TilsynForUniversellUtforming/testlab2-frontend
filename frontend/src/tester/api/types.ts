@@ -34,11 +34,11 @@ export interface TestInputParameters {
   url: string;
 }
 
-export interface CreateMaalingParameters {
-  urls: string[];
-}
+export type MaalingInit = {
+  navn: string;
+  loeysingList: Loeysing[];
+};
 
 export type MaalingResponse = {
-  id: number;
-  url: string;
+  url?: string;
 };

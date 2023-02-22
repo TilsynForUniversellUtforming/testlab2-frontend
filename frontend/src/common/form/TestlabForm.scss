@@ -1,0 +1,9 @@
+.testlab-form {
+  .list-group {
+    max-height: 32rem;
+    overflow-y: auto;
+    .invalid {
+      border-color: red;
+    }
+  }
+}

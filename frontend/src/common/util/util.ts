@@ -7,11 +7,3 @@ export const enumToOptions = <T extends object>(
     value: value,
     label: key,
   }));
-
-export const responseToJson = (response: Response, errorMessage: string) => {
-  if (response.ok) {
-    return response.json();
-  } else {
-    throw new Error(errorMessage);
-  }
-};

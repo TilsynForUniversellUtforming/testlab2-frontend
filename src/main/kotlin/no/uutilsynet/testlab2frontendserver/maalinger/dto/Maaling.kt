@@ -1,3 +1,9 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
-data class Maaling(val id: Int, val url: String)
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class Maaling(val navn: String,
+                   val id: Int,
+                   val aksjoner: List<Aksjon>)

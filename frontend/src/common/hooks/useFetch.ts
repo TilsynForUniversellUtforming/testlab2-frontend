@@ -15,12 +15,12 @@ const useFetch = <T extends object>({
 }: Props<T>) => {
   return useCallback(() => {
     setLoading(true);
+    setError(undefined);
 
     const doFetch = async () => {
       const data = await fetchData();
       setData(data);
       setLoading(false);
-      setError(undefined);
     };
 
     doFetch()

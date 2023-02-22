@@ -1,4 +1,4 @@
-import { responseToJson } from '../../common/util/util';
+import { responseToJson } from '../../common/util/api/util';
 import {
   RegelsettRequest,
   Testregel,

@@ -5,14 +5,13 @@ import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.NewMaalingDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.NyMaalingDTO
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
 
 @RestController
 @RequestMapping("api/v1/maalinger")
@@ -36,27 +35,10 @@ class MaalingResource(
     }
   }
 
-  fun validateURL(s: String): Result<URL> {
-    return runCatching { URL(s) }
-  }
-
-  fun validateNavn(s: String): Result<String> = runCatching {
-    if (s == "") {
-      throw IllegalArgumentException("navn er tomt")
-    } else {
-      s
-    }
-  }
-
   @PostMapping
-  fun createNew(@RequestBody dto: NewMaalingDTO): ResponseEntity<Any> {
+  fun createNew(@RequestBody dto: NyMaalingDTO): ResponseEntity<Any> {
     return runCatching {
-          val validatedURL = validateURL(dto.url).getOrThrow()
-          val validatedNavn = validateNavn(dto.navn).getOrThrow()
-          val location =
-              restTemplate.postForLocation(
-                  "${testingApiProperties.url}/v1/maalinger",
-                  mapOf("navn" to validatedNavn, "url" to validatedURL.toString()))
+          val location = restTemplate.postForLocation(maalingUrl, dto, Int::class.java)
                   ?: throw RuntimeException(
                       "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
           val newMaaling =

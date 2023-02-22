@@ -7,14 +7,17 @@ import useCurrentStep from './hooks/useCurrentStep';
 
 const TestingStepper = () => {
   const currentStep = useCurrentStep();
-  const bold = { fontWeight: 'bold' };
 
   return (
     <Stack gap={3}>
       <Container>
         {testing_steps.map((route, idx) => (
           <div key={`row_${idx}`}>
-            <Row style={(currentStep?.step ?? 0) >= idx ? bold : undefined}>
+            <Row
+              className={classNames({
+                'fw-bold': (currentStep?.step ?? 0) >= idx,
+              })}
+            >
               <Col
                 className={classNames('nav-link disabled', {
                   active: (currentStep?.step ?? 0) >= idx,

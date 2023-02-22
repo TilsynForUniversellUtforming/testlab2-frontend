@@ -3,10 +3,8 @@ import React, { useCallback, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
-import useFetch from '../../common/hooks/useFetch';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
-import fetchTestResultat from '../api/tester-api';
 import { TestResult } from '../api/types';
 import { TesterContext } from '../types';
 
@@ -81,12 +79,9 @@ const TestResultListApp = () => {
     setTestresult(testResult);
   }, []);
 
-  const doFetchLoeysingList = useFetch<TestResult[]>({
-    fetchData: fetchTestResultat,
-    setData: handleSetTestResult,
-    setError: setContextError,
-    setLoading: setLoading,
-  });
+  const doFetchLoeysingList = () => {
+    console.log('Henter resultat');
+  };
 
   useEffectOnce(() => {
     doFetchLoeysingList();
