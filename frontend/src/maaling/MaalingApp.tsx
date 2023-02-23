@@ -4,8 +4,7 @@ import { useCallback, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
-import fetchFeatures from '../common/features/api/features-api';
-import { Feature } from '../common/features/api/types';
+import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import useFetch from '../common/hooks/useFetch';
 import { fetchMaalinger } from './api/maaling-api';
@@ -33,19 +32,13 @@ const MaalingApp = () => {
     setLoading: setLoading,
   });
 
+  const handleInitMaalinger = () => {
+    doFetchMaalingList();
+    setShowMaalinger(true);
+  };
+
   useEffectOnce(() => {
-    fetchFeatures().then(
-      (features: Feature[]) => {
-        const showMaalinger =
-          features.find((feature) => feature.key === 'maalinger')?.active ??
-          false;
-        if (showMaalinger) {
-          doFetchMaalingList();
-        }
-        setShowMaalinger(showMaalinger);
-      },
-      (error) => handleError(error)
-    );
+    useFeatureToggles('maalinger', handleInitMaalinger);
   });
 
   const maalingContext: MaalingContext = {
@@ -58,7 +51,7 @@ const MaalingApp = () => {
   };
 
   if (!showMaalinger) {
-    return <AppTitle title="Måling" />;
+    return <AppTitle title="Måling - Ingen visning" />;
   }
 
   return (

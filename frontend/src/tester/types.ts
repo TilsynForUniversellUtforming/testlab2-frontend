@@ -1,5 +1,6 @@
 import { AppContext } from '../common/types';
-import { Loeysing, MaalingInit } from './api/types';
+import { Loeysing } from '../loeysingar/api/types';
+import { MaalingInit } from '../maaling/api/types';
 
 export interface TesterContext extends AppContext {
   onSubmitMaalingInit: (maalingInit: MaalingInit) => void;

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Step } from '../TestlabForm';
+import { Step } from '../TestlabFormButtons';
 
 const useDefaultSubmitStep = () => {
   const navigate = useNavigate();

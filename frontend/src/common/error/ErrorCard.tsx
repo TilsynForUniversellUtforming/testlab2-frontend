@@ -15,10 +15,15 @@ const ErrorCard = ({
   onClickRetry,
   errorText = 'Noe gikk galt, vennligst prøv igjen',
 }: Props) => {
-  const { error, refresh }: AppContext = useOutletContext();
+  const appContext: AppContext = useOutletContext();
+  let errorMsg = errorText;
+  let clickRetry = onClickRetry;
 
-  const clickRetry = onClickRetry ? onClickRetry : refresh;
-  const errorMsg = error ? error.message : errorText;
+  if (appContext) {
+    const { error, refresh } = appContext;
+    clickRetry = onClickRetry ? onClickRetry : refresh;
+    errorMsg = error ? error.message : errorText;
+  }
 
   return (
     <Alert show={show} variant="danger" className="mt-3">
