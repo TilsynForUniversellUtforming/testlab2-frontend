@@ -36,6 +36,7 @@ interface IRoutes {
   DISKUSJON: AppRoute;
   RESULTAT: AppRoute;
   CREATE_TEST: AppRoute;
+  // EDIT_TEST: AppRoute;
   CRAWLING_TEST: AppRoute;
   KVALITETSSIKRING_TEST: AppRoute;
   TESTING_TEST: AppRoute;
@@ -119,14 +120,20 @@ const RESULTAT = {
   imgSrc: resultatImg,
 };
 const CREATE_TEST = {
-  navn: 'Start ny test',
+  navn: 'Ny test',
   path: 'test',
   imgSrc: testerImg,
 };
 
+// const EDIT_TEST = {
+//   navn: '',
+//   path: ':id',
+//   parentRoute: CREATE_TEST,
+// }
+
 const CRAWLING_TEST = {
   navn: 'Crawling',
-  path: ':id',
+  path: ':id/crawling',
   parentRoute: CREATE_TEST,
 };
 
@@ -176,6 +183,7 @@ export const appRoutes: IRoutes = {
   DISKUSJON: DISKUSJON,
   RESULTAT: RESULTAT,
   CREATE_TEST: CREATE_TEST,
+  // EDIT_TEST: EDIT_TEST,
   CRAWLING_TEST: CRAWLING_TEST,
   KVALITETSSIKRING_TEST: KVALITETSSIKRING_TEST,
   TESTING_TEST: TESTING_TEST,
@@ -202,12 +210,46 @@ export const testing = [
   appRoutes.CREATE_TEST,
 ];
 
-export const testing_steps = [
-  appRoutes.CREATE_TEST,
-  appRoutes.CRAWLING_TEST,
-  appRoutes.KVALITETSSIKRING_TEST,
-  appRoutes.TESTING_TEST,
-  appRoutes.RESULTAT_TEST,
+export type StepRoute = {
+  step: number;
+  route: AppRoute;
+};
+
+export const testing_steps: StepRoute[] = [
+  {
+    step: 1,
+    route: appRoutes.CREATE_TEST,
+  },
+  // {
+  //   step: 1,
+  //   route: appRoutes.EDIT_TEST
+  // },
+  {
+    step: 2,
+    route: appRoutes.CRAWLING_TEST,
+  },
+  {
+    step: 3,
+    route: appRoutes.KVALITETSSIKRING_TEST,
+  },
+  {
+    step: 4,
+    route: appRoutes.TESTING_TEST,
+  },
+  {
+    step: 5,
+    route: appRoutes.RESULTAT_TEST,
+  },
 ];
+
+export const getFullPath = (route: AppRoute, id?: string) => {
+  const path = route.parentRoute?.path
+    ? [route.parentRoute.path, route.path].join('/')
+    : route.path;
+  if (id) {
+    return path.replace(':id', id);
+  }
+  return path;
+};
 
 export default appRoutes;

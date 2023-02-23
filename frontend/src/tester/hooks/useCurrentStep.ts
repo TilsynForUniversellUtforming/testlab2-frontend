@@ -1,27 +1,23 @@
-import { useMatch } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
-import { testing_steps } from '../../common/appRoutes';
+import { StepRoute, testing_steps } from '../../common/appRoutes';
 
-export interface StepRoute {
-  step: number;
-  path: string;
-}
+export type StepRouteActive = StepRoute & {
+  active: boolean;
+};
 
-const useCurrentStep = (): StepRoute | undefined => {
-  const routes = testing_steps.map((route, idx) => {
-    const finalPath = [];
-    if (route?.parentRoute) {
-      finalPath.push(route?.parentRoute.path);
-    }
-    finalPath.push(route.path);
+const useCurrentStep = (): StepRouteActive[] => {
+  const { pathname } = useLocation();
+  const { id } = useParams();
+  const fixedPath = pathname.replace(String(id), ':id').replace(/\/$/g, '');
+  const activeStep = testing_steps.find((sr) =>
+    fixedPath.endsWith(sr.route.path)
+  )?.step;
 
-    return {
-      step: idx,
-      path: `/${finalPath.join('/')}`,
-    };
-  });
-
-  return routes.find((r) => useMatch(r.path));
+  return testing_steps.map((sr) => ({
+    ...sr,
+    active: sr.step <= (activeStep ?? 0),
+  }));
 };
 
 export default useCurrentStep;
