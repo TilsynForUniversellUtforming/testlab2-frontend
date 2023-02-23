@@ -9,7 +9,8 @@ import useValidate from '../../common/form/hooks/useValidate';
 import TestlabForm from '../../common/form/TestlabForm';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
-import { Loeysing, MaalingInit } from '../api/types';
+import { Loeysing } from '../../loeysingar/api/types';
+import { MaalingInit } from '../../maaling/api/types';
 import { TesterContext } from '../types';
 
 export interface Props {
