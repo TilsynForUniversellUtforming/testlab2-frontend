@@ -34,8 +34,18 @@ class MaalingResource(
     }
   }
 
+  @GetMapping("{id}")
+  fun getMaaling(@PathVariable id: Int): ResponseEntity<Maaling> {
+    val maaling =
+      restTemplate.getForObject(
+        "${maalingUrl}/${id}", Maaling::class.java)
+        ?: throw RuntimeException(
+          "Klarte ikke å hente den måling fra server")
+    return ResponseEntity.ok(maaling)
+  }
+
   @PostMapping
-  fun createNew(@RequestBody dto: NyMaalingDTO): ResponseEntity<Any> {
+  fun createNew(@RequestBody dto: NyMaalingDTO): ResponseEntity<out Any> {
     return runCatching {
           val location =
               restTemplate.postForLocation(maalingUrl, dto, Int::class.java)
@@ -46,7 +56,7 @@ class MaalingResource(
                   "${testingApiProperties.url}${location}", Maaling::class.java)
                   ?: throw RuntimeException(
                       "jeg fikk laget en ny måling, men klarte ikke å hente den nye målingen fra serveren")
-          ResponseEntity.created(URI("/maaling/${newMaaling.id}")).build<Any>()
+          ResponseEntity.created(URI("/maaling/${newMaaling.id}")).body(newMaaling)
         }
         .getOrElse {
           ResponseEntity.internalServerError()

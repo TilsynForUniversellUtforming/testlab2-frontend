@@ -7,12 +7,12 @@ import { TesterContext } from '../types';
 import LoeysingSelctionForm from './LoeysingSelctionForm';
 
 const LoeysingSelectionApp = () => {
-  const { onSubmitMaalingInit }: TesterContext = useOutletContext();
+  const { onSubmitMaalingInit, maaling }: TesterContext = useOutletContext();
 
   const formMethods = useForm<MaalingInit>({
     defaultValues: {
-      navn: '',
-      loeysingList: [],
+      navn: maaling?.navn ?? '',
+      loeysingList: maaling?.loeysingList ?? [],
     },
   });
 

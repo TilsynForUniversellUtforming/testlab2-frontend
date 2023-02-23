@@ -18,6 +18,8 @@ import QualWebApp from './qualweb/QualWebApp';
 import ResultatApp from './resultat/ResultatApp';
 import SakerApp from './saker/SakerApp';
 import TeknikkarApp from './teknikkar/TeknikkarApp';
+import CrawlingApp from './tester/crawling/CrawlingApp';
+import KvalitetssikringApp from './tester/kvalitetssikring/KvalitetssikringApp';
 import LoeysingSelectionApp from './tester/loeysingar/LoeysingSelectionApp';
 import TestResultListApp from './tester/test-result-list/TestResultListApp';
 import TesterApp from './tester/TesterApp';
@@ -72,13 +74,17 @@ function App() {
           <Route path={appRoutes.RESULTAT.path} element={<ResultatApp />} />
           <Route path={appRoutes.CREATE_TEST.path} element={<TesterApp />}>
             <Route index element={<LoeysingSelectionApp />} />
+            {/*<Route*/}
+            {/*  path={appRoutes.EDIT_TEST.path}*/}
+            {/*  element={<LoeysingSelectionApp />}*/}
+            {/*/>*/}
             <Route
               path={appRoutes.CRAWLING_TEST.path}
-              element={<>CRAWLING</>}
+              element={<CrawlingApp />}
             />
             <Route
               path={appRoutes.KVALITETSSIKRING_TEST.path}
-              element={<>KVALITETSSIKRING</>}
+              element={<KvalitetssikringApp />}
             />
             <Route path={appRoutes.TESTING_TEST.path} element={<>TESTING</>} />
             <Route

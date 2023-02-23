@@ -3,8 +3,10 @@ import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
 import { Col, Container, Form, ListGroup, Row } from 'react-bootstrap';
 import { UseFormReturn, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
+import { Navigate, useOutletContext } from 'react-router-dom';
 
+import appRoutes from '../../common/appRoutes';
+import { useDefaultStartStep } from '../../common/form/hooks/useSteps';
 import useValidate from '../../common/form/hooks/useValidate';
 import TestlabForm from '../../common/form/TestlabForm';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
@@ -21,7 +23,7 @@ export interface Props {
 
 const LoeysingSelctionForm = ({ label, formMethods, onSubmit }: Props) => {
   const { formState } = formMethods;
-  const { error, loading, loeysingList, refresh }: TesterContext =
+  const { error, loading, loeysingList, maaling, refresh }: TesterContext =
     useOutletContext();
 
   const { control, setValue, setError, clearErrors } = formMethods;
@@ -88,6 +90,14 @@ const LoeysingSelctionForm = ({ label, formMethods, onSubmit }: Props) => {
     []
   );
 
+  const step = useDefaultStartStep('..');
+
+  if (maaling) {
+    const maalingId = String(maaling.id);
+    const path = appRoutes.CRAWLING_TEST.path.replace(':id', maalingId);
+    return <Navigate to={path} />;
+  }
+
   return (
     <Container className="pb-4">
       <TestlabForm<MaalingInit>
@@ -145,7 +155,7 @@ const LoeysingSelctionForm = ({ label, formMethods, onSubmit }: Props) => {
           </Col>
         </Row>
         <Row>
-          <TestlabForm.FormButtons />
+          <TestlabForm.FormButtons step={step} />
         </Row>
       </TestlabForm>
     </Container>

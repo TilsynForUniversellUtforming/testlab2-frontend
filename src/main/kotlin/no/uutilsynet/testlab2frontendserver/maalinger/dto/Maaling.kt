@@ -8,5 +8,5 @@ data class Maaling(
     val navn: String,
     val status: String,
     val aksjoner: List<Aksjon>,
-    val loeysing: List<Loeysing>?
+    val loeysingList: List<Loeysing>?
 )

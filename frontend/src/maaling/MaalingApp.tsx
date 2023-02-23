@@ -7,7 +7,7 @@ import AppTitle from '../common/app-title/AppTitle';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import useFetch from '../common/hooks/useFetch';
-import { fetchMaalinger } from './api/maaling-api';
+import { fetchMaalingList } from './api/maaling-api';
 import { Maaling } from './api/types';
 import { MaalingContext } from './types';
 
@@ -26,7 +26,7 @@ const MaalingApp = () => {
   }, []);
 
   const doFetchMaalingList = useFetch<Maaling[]>({
-    fetchData: fetchMaalinger,
+    fetchData: fetchMaalingList,
     setData: setMaalingList,
     setError: setError,
     setLoading: setLoading,

@@ -9,7 +9,7 @@ import useFetch from '../common/hooks/useFetch';
 import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
 import { Loeysing } from '../loeysingar/api/types';
 import { createMaaling } from '../maaling/api/maaling-api';
-import { CreatedMaaling, MaalingInit } from '../maaling/api/types';
+import { Maaling, MaalingInit } from '../maaling/api/types';
 import TestingStepper from './TestingStepper';
 import { TesterContext } from './types';
 
@@ -17,7 +17,7 @@ const TesterApp = () => {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
-  const [maaling, setMaaling] = useState<CreatedMaaling>();
+  const [maaling, setMaaling] = useState<Maaling | undefined>(undefined);
 
   const handleSetLoeysingList = useCallback((loeysingList: Loeysing[]) => {
     setLoeysingList(loeysingList);
@@ -32,12 +32,16 @@ const TesterApp = () => {
     setLoading(loading);
   }, []);
 
+  const handleSetmaaling = useCallback((maaling: Maaling) => {
+    setMaaling(maaling);
+  }, []);
+
   const onSubmitMaalingInit = useCallback((maalingInit: MaalingInit) => {
     handleLoading(true);
     handleError(undefined);
 
     const doCreateMaaling = async () => {
-      const data = await createMaaling(maalingInit);
+      const data: Maaling = await createMaaling(maalingInit);
       setMaaling(data);
       handleLoading(false);
     };
@@ -62,14 +66,14 @@ const TesterApp = () => {
     error: error,
     loading: loading,
     loeysingList: loeysingList,
+    maaling: maaling,
+    setMaaling: handleSetmaaling,
     onSubmitMaalingInit: onSubmitMaalingInit,
     setLoeysingList: handleSetLoeysingList,
     setContextError: handleError,
     setLoading: handleLoading,
     refresh: doFetchLoeysingList,
   };
-
-  console.log('maaling', maaling);
 
   return (
     <Container className="mt-3">

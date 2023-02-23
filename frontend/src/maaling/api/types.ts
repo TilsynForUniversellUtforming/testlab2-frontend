@@ -14,10 +14,20 @@ export type CreatedMaaling = {
   url?: string;
 };
 
+export type CrawlStatus = 'ikke_ferdig' | 'feilet';
+
+export type CrawlResultat = {
+  status: CrawlStatus;
+  loeysing: Loeysing;
+};
+
+export type MaalingStatus = 'planlegging' | 'crawling';
+
 export type Maaling = {
   id: number;
   navn: string;
-  status: string;
+  status: MaalingStatus;
   aksjoner: Aksjon[];
   loeysingList?: Loeysing[];
+  crawlResultat?: CrawlResultat[];
 };
