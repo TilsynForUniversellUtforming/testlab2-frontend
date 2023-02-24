@@ -2,22 +2,27 @@ import './tester.scss';
 
 import React, { useCallback, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import useFetch from '../common/hooks/useFetch';
 import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
 import { Loeysing } from '../loeysingar/api/types';
-import { createMaaling } from '../maaling/api/maaling-api';
+import {
+  createMaaling,
+  fetchMaaling,
+  updateMaaling,
+} from '../maaling/api/maaling-api';
 import { Maaling, MaalingInit } from '../maaling/api/types';
 import TestingStepper from './TestingStepper';
 import { TesterContext } from './types';
 
 const TesterApp = () => {
   const [error, setError] = useState<string>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [maaling, setMaaling] = useState<Maaling | undefined>(undefined);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const handleSetLoeysingList = useCallback((loeysingList: Loeysing[]) => {
     setLoeysingList(loeysingList);
@@ -37,29 +42,54 @@ const TesterApp = () => {
   }, []);
 
   const onSubmitMaalingInit = useCallback((maalingInit: MaalingInit) => {
-    handleLoading(true);
-    handleError(undefined);
+    setLoading(true);
+    setError(undefined);
 
     const doCreateMaaling = async () => {
-      const data: Maaling = await createMaaling(maalingInit);
-      setMaaling(data);
-      handleLoading(false);
+      let maaling: Maaling;
+      if (id) {
+        maaling = await fetchMaaling(Number(id));
+      } else {
+        maaling = await createMaaling(maalingInit);
+      }
+      const updated = await updateMaaling(maaling.id);
+      if (!updated.id) {
+        setError('Kunne ikke starte crawling');
+      } else {
+        setMaaling(updated);
+        navigate(`${updated.id}/crawling`);
+      }
     };
 
     doCreateMaaling()
-      .catch((e) => handleError(e))
-      .finally(() => handleLoading(false));
+      .catch((e) => setError(e))
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  const doFetchLoeysingList = useFetch<Loeysing[]>({
-    fetchData: fetchLoysingar,
-    setData: handleSetLoeysingList,
-    setError: handleError,
-    setLoading: handleLoading,
-  });
+  const doFetchData = useCallback(() => {
+    setLoading(true);
+    setError(undefined);
+
+    const fetchData = async () => {
+      const loeysingList = await fetchLoysingar();
+      if (id) {
+        const maaling = await fetchMaaling(Number(id));
+        setMaaling(maaling);
+      }
+      setLoeysingList(loeysingList);
+      setLoading(false);
+      setError(undefined);
+    };
+
+    fetchData()
+      .catch((e) => setError(e))
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffectOnce(() => {
-    doFetchLoeysingList();
+    doFetchData();
   });
 
   const testRegelContext: TesterContext = {
@@ -68,11 +98,11 @@ const TesterApp = () => {
     loeysingList: loeysingList,
     maaling: maaling,
     setMaaling: handleSetmaaling,
-    onSubmitMaalingInit: onSubmitMaalingInit,
+    onSubmitMaalingLoeysingList: onSubmitMaalingInit,
     setLoeysingList: handleSetLoeysingList,
     setContextError: handleError,
     setLoading: handleLoading,
-    refresh: doFetchLoeysingList,
+    refresh: doFetchData,
   };
 
   return (

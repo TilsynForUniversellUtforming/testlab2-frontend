@@ -17,6 +17,13 @@ const StatusBadge = ({ label, levels }: Props) => {
     return null;
   }
 
+  const sanitizedLabel = String(label)
+    .replace('_', ' ')
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
   return (
     <Badge
       bg={classNames(
@@ -26,7 +33,7 @@ const StatusBadge = ({ label, levels }: Props) => {
         'secondary'
       )}
     >
-      {label}
+      {sanitizedLabel}
     </Badge>
   );
 };

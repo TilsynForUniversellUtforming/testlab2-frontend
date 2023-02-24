@@ -20,7 +20,7 @@ const MaalingList = () => {
     const { id, status } = maaling;
     let path = '/';
     if (status === 'planlegging') {
-      path += getFullPath(appRoutes.CREATE_TEST, String(id));
+      path += getFullPath(appRoutes.EDIT_TEST, String(id));
     } else if (status === 'crawling') {
       path += getFullPath(appRoutes.CRAWLING_TEST, String(id));
     }
@@ -42,7 +42,16 @@ const MaalingList = () => {
     {
       accessorFn: (row) => row.status,
       id: 'Status',
-      cell: (info) => <StatusBadge label={info.getValue()} />,
+      cell: (info) => (
+        <StatusBadge
+          label={info.getValue()}
+          levels={{
+            primary: 'crawling',
+            danger: 'feilet',
+            success: 'ferdig',
+          }}
+        />
+      ),
     },
   ];
 

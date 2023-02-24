@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 export interface Props<T extends object> {
   fetchData: (fetchProps?: any) => Promise<T>;
+  fetchProps?: any;
   setData: (data: T) => void;
   setError: (error: any) => void;
   setLoading: (loading: boolean) => void;
@@ -9,6 +10,7 @@ export interface Props<T extends object> {
 
 const useFetch = <T extends object>({
   fetchData,
+  fetchProps,
   setData,
   setError,
   setLoading,
@@ -18,7 +20,7 @@ const useFetch = <T extends object>({
     setError(undefined);
 
     const doFetch = async () => {
-      const data = await fetchData();
+      const data = await fetchData(fetchProps);
       setData(data);
       setLoading(false);
     };

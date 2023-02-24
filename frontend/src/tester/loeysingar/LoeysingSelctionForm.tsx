@@ -2,31 +2,38 @@ import { ColumnDef } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
 import { Col, Container, Form, ListGroup, Row } from 'react-bootstrap';
-import { UseFormReturn, useWatch } from 'react-hook-form';
-import { Navigate, useOutletContext } from 'react-router-dom';
+import { useForm, useWatch } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
 
-import appRoutes from '../../common/appRoutes';
-import { useDefaultStartStep } from '../../common/form/hooks/useSteps';
 import useValidate from '../../common/form/hooks/useValidate';
 import TestlabForm from '../../common/form/TestlabForm';
+import { Step } from '../../common/form/TestlabFormButtons';
 import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { Loeysing } from '../../loeysingar/api/types';
-import { MaalingInit } from '../../maaling/api/types';
+import { Maaling, MaalingInit } from '../../maaling/api/types';
 import { TesterContext } from '../types';
 
 export interface Props {
   label: string;
-  formMethods: UseFormReturn<MaalingInit>;
+  maaling?: Maaling;
   onSubmit: (maalingInit: MaalingInit) => void;
+  step: Step;
 }
 
-const LoeysingSelctionForm = ({ label, formMethods, onSubmit }: Props) => {
-  const { formState } = formMethods;
-  const { error, loading, loeysingList, maaling, refresh }: TesterContext =
+const LoeysingSelctionForm = ({ label, maaling, onSubmit, step }: Props) => {
+  const { error, loading, loeysingList, refresh }: TesterContext =
     useOutletContext();
 
+  const formMethods = useForm<MaalingInit>({
+    defaultValues: {
+      navn: maaling?.navn ?? '',
+      loeysingList: maaling?.loeysingList ?? [],
+    },
+  });
+
   const { control, setValue, setError, clearErrors } = formMethods;
+  const { formState } = formMethods;
 
   const onChangeRows = useCallback((rowSelection: Loeysing[]) => {
     setValue('loeysingList', rowSelection);
@@ -42,14 +49,13 @@ const LoeysingSelctionForm = ({ label, formMethods, onSubmit }: Props) => {
   const selection = useWatch({
     control,
     name: 'loeysingList',
-    defaultValue: [],
   });
 
   const listErrors = formState.errors['loeysingList'];
 
   const selectedRows = useMemo(() => {
     const rowArray: boolean[] = [];
-    loeysingList.forEach((tr) => (rowArray[tr.id - 1] = true));
+    maaling?.loeysingList.forEach((tr) => (rowArray[tr.id - 1] = true));
     return rowArray;
   }, []);
 
@@ -89,14 +95,6 @@ const LoeysingSelctionForm = ({ label, formMethods, onSubmit }: Props) => {
     ],
     []
   );
-
-  const step = useDefaultStartStep('..');
-
-  if (maaling) {
-    const maalingId = String(maaling.id);
-    const path = appRoutes.CRAWLING_TEST.path.replace(':id', maalingId);
-    return <Navigate to={path} />;
-  }
 
   return (
     <Container className="pb-4">

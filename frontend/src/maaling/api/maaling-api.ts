@@ -1,5 +1,5 @@
 import { responseToJson } from '../../common/util/api/util';
-import { Maaling, MaalingInit } from './types';
+import { Maaling, MaalingInit, MaalingStatus } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
@@ -9,6 +9,20 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
     },
     body: JSON.stringify(maaling),
   }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
+
+export const updateMaaling = async (
+  id: number,
+  status: MaalingStatus = 'crawling'
+): Promise<Maaling> =>
+  await fetch(`/api/v1/maalinger/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: status,
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke oppdatere måling')
+  );
 
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
   fetch('/api/v1/maalinger', {

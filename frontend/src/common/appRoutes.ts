@@ -36,7 +36,7 @@ interface IRoutes {
   DISKUSJON: AppRoute;
   RESULTAT: AppRoute;
   CREATE_TEST: AppRoute;
-  // EDIT_TEST: AppRoute;
+  EDIT_TEST: AppRoute;
   CRAWLING_TEST: AppRoute;
   KVALITETSSIKRING_TEST: AppRoute;
   TESTING_TEST: AppRoute;
@@ -125,11 +125,11 @@ const CREATE_TEST = {
   imgSrc: testerImg,
 };
 
-// const EDIT_TEST = {
-//   navn: '',
-//   path: ':id',
-//   parentRoute: CREATE_TEST,
-// }
+const EDIT_TEST = {
+  navn: '',
+  path: ':id',
+  parentRoute: CREATE_TEST,
+};
 
 const CRAWLING_TEST = {
   navn: 'Crawling',
@@ -183,7 +183,7 @@ export const appRoutes: IRoutes = {
   DISKUSJON: DISKUSJON,
   RESULTAT: RESULTAT,
   CREATE_TEST: CREATE_TEST,
-  // EDIT_TEST: EDIT_TEST,
+  EDIT_TEST: EDIT_TEST,
   CRAWLING_TEST: CRAWLING_TEST,
   KVALITETSSIKRING_TEST: KVALITETSSIKRING_TEST,
   TESTING_TEST: TESTING_TEST,
@@ -220,10 +220,10 @@ export const testing_steps: StepRoute[] = [
     step: 1,
     route: appRoutes.CREATE_TEST,
   },
-  // {
-  //   step: 1,
-  //   route: appRoutes.EDIT_TEST
-  // },
+  {
+    step: 1,
+    route: appRoutes.EDIT_TEST,
+  },
   {
     step: 2,
     route: appRoutes.CRAWLING_TEST,

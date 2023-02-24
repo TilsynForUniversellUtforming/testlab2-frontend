@@ -7,6 +7,6 @@ data class Maaling(
     val id: Int,
     val navn: String,
     val status: String,
-    val aksjoner: List<Aksjon>,
-    val loeysingList: List<Loeysing>?
+    val loeysingList: List<Loeysing>?,
+    val crawlResultat: List<CrawlResultat>?
 )

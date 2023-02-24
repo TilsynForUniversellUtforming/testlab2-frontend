@@ -1,26 +1,30 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Spinner } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 
-import { MaalingInit } from '../../maaling/api/types';
+import {
+  useDefaultMiddleStep,
+  useDefaultStartStep,
+} from '../../common/form/hooks/useSteps';
 import { TesterContext } from '../types';
 import LoeysingSelctionForm from './LoeysingSelctionForm';
 
 const LoeysingSelectionApp = () => {
-  const { onSubmitMaalingInit, maaling }: TesterContext = useOutletContext();
+  const { onSubmitMaalingLoeysingList, loading, maaling }: TesterContext =
+    useOutletContext();
 
-  const formMethods = useForm<MaalingInit>({
-    defaultValues: {
-      navn: maaling?.navn ?? '',
-      loeysingList: maaling?.loeysingList ?? [],
-    },
-  });
+  const step = maaling ? useDefaultMiddleStep() : useDefaultStartStep();
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <LoeysingSelctionForm
       label="Velg løysingar"
-      formMethods={formMethods}
-      onSubmit={onSubmitMaalingInit}
+      onSubmit={onSubmitMaalingLoeysingList}
+      maaling={maaling}
+      step={step}
     />
   );
 };
