@@ -14,9 +14,9 @@ const useDefaultSubmitStep = () => {
   return step;
 };
 
-export const useDefaultStartStep = (cancelPath: string) => {
+export const useDefaultStartStep = () => {
   const navigate = useNavigate();
-  const onClickBack = () => navigate(cancelPath);
+  const onClickBack = () => navigate('..');
 
   const step: Step = {
     stepType: 'Start',
@@ -26,9 +26,9 @@ export const useDefaultStartStep = (cancelPath: string) => {
   return step;
 };
 
-export const useDefaultMiddleStep = (backPath: string) => {
+export const useDefaultMiddleStep = () => {
   const navigate = useNavigate();
-  const onClickBack = () => navigate(backPath);
+  const onClickBack = () => navigate(-1);
 
   const step: Step = {
     stepType: 'Start',

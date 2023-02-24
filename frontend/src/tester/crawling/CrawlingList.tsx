@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 
+import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
 import { CrawlResultat } from '../../maaling/api/types';
 
@@ -14,9 +15,18 @@ const CrawlingList = ({ crawlList, error, loading }: Props) => {
   const crawlColumns = useMemo<ColumnDef<CrawlResultat>[]>(
     () => [
       {
-        accessorFn: (row) => row.status,
+        accessorFn: (row) => row.type,
         id: 'status',
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <StatusBadge
+            label={info.getValue()}
+            levels={{
+              primary: 'ikke_ferdig',
+              danger: 'feilet',
+              success: 'ferdig',
+            }}
+          />
+        ),
         header: () => <span>Status</span>,
       },
       {

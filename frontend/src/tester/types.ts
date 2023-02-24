@@ -5,7 +5,7 @@ import { Maaling, MaalingInit } from '../maaling/api/types';
 export interface TesterContext extends AppContext {
   maaling?: Maaling;
   setMaaling: (maaling: Maaling) => void;
-  onSubmitMaalingInit: (maalingInit: MaalingInit) => void;
+  onSubmitMaalingLoeysingList: (maalingInit: MaalingInit) => void;
   loeysingList: Loeysing[];
   setLoeysingList: (loeysingList: []) => void;
 }

@@ -8,19 +8,36 @@ const TestingStepper = () => {
   const steps = useCurrentStep();
 
   return (
-    <Stack gap={3}>
+    <Stack gap={5}>
       <Container>
-        {steps.map((sr) => (
+        {steps.map((sr, idx) => (
           <div key={`row_${sr.route.path}`}>
-            <Row
-              className={classNames({
-                'fw-bold': sr.active,
-                'text-primary': sr.active,
-              })}
-            >
-              <Col>{sr.route.navn}</Col>
-              <Col className="d-flex align-items-center justify-content-center"></Col>
+            <Row className="text-center">
+              <Col
+                className={classNames({
+                  'fw-bold': sr.active,
+                  'text-primary': sr.active,
+                })}
+              >
+                {sr.route.navn}
+              </Col>
             </Row>
+            {idx > 0 && idx < steps.length - 1 && (
+              <Col>
+                <div
+                  className="d-flex justify-content-center"
+                  style={{ height: '100px' }}
+                >
+                  <div
+                    className={classNames(
+                      { 'bg-primary': sr.active },
+                      { 'bg-secondary': !sr.active }
+                    )}
+                    style={{ width: '.125rem' }}
+                  ></div>
+                </div>
+              </Col>
+            )}
           </div>
         ))}
       </Container>

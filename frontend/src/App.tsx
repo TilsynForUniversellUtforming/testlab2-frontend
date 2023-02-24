@@ -74,10 +74,10 @@ function App() {
           <Route path={appRoutes.RESULTAT.path} element={<ResultatApp />} />
           <Route path={appRoutes.CREATE_TEST.path} element={<TesterApp />}>
             <Route index element={<LoeysingSelectionApp />} />
-            {/*<Route*/}
-            {/*  path={appRoutes.EDIT_TEST.path}*/}
-            {/*  element={<LoeysingSelectionApp />}*/}
-            {/*/>*/}
+            <Route
+              path={appRoutes.EDIT_TEST.path}
+              element={<LoeysingSelectionApp />}
+            />
             <Route
               path={appRoutes.CRAWLING_TEST.path}
               element={<CrawlingApp />}
