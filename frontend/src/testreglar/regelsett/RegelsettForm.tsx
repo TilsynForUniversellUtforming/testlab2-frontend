@@ -132,7 +132,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
   return (
     <Container className="pb-4">
       <TestlabForm<TestRegelsett>
-        label={label}
+        heading={label}
         onSubmit={onSubmit}
         formMethods={formMethods}
       >

@@ -1,17 +1,15 @@
-import diskusjonImg from '../assets/diskusjon.svg';
 import kravImg from '../assets/krav.png';
 import loeysingImg from '../assets/loeysingar.svg';
 import maalingImg from '../assets/maaling.svg';
-import mineTestarImg from '../assets/mine_testar.png';
-import qualWebImg from '../assets/qualweb.png';
-import resultatImg from '../assets/resultat.svg';
 import sakerImg from '../assets/saker.png';
-import teknikkarImg from '../assets/teknikkar.png';
-import testerImg from '../assets/tester.png';
 import testingImg from '../assets/testreglar.svg';
 import verksemderImg from '../assets/verksemder.svg';
 
-/* Typer routes */
+export const createPath = 'ny';
+export const idPath = ':id';
+export const editPath = 'endre';
+export const listPath = 'liste';
+
 export type AppRoute = {
   navn: string;
   path: string;
@@ -21,235 +19,243 @@ export type AppRoute = {
 
 interface IRoutes {
   ROOT: AppRoute;
-  SAKER: AppRoute;
-  MAALING: AppRoute;
-  TESTREGEL: AppRoute;
-  CREATE_TESTREGEL: AppRoute;
-  EDIT_TESTREGEL: AppRoute;
-  REGELSETT: AppRoute;
-  CREATE_REGELSETT: AppRoute;
-  EDIT_REGELSETT: AppRoute;
-  VERKSEMDER: AppRoute;
-  LOEYSINGAR: AppRoute;
-  KRAV: AppRoute;
-  TEKNIKKAR: AppRoute;
-  DISKUSJON: AppRoute;
-  RESULTAT: AppRoute;
-  CREATE_TEST: AppRoute;
-  EDIT_TEST: AppRoute;
-  CRAWLING_TEST: AppRoute;
-  KVALITETSSIKRING_TEST: AppRoute;
-  TESTING_TEST: AppRoute;
-  RESULTAT_TEST: AppRoute;
-  MINE_TESTER: AppRoute;
-  QUALWEB: AppRoute;
+  TESTREGEL_LIST: AppRoute;
+  TESTREGEL_CREATE: AppRoute;
+  TESTREGEL_EDIT: AppRoute;
+  REGELSETT_LIST: AppRoute;
+  REGELSETT_CREATE: AppRoute;
+  REGELSETT_EDIT: AppRoute;
+  VERKSEMD_LIST: AppRoute;
+  VERKSEMD_CREATE: AppRoute;
+  VERKSEMD_EDIT: AppRoute;
+  LOEYSING_LIST: AppRoute;
+  LOEYSING_CREATE: AppRoute;
+  LOEYSING_EDIT: AppRoute;
+  KRAV_LIST: AppRoute;
+  KRAV_CREATE: AppRoute;
+  KRAV_EDIT: AppRoute;
+  SAK_LIST: AppRoute;
+  SAK_ROOT: AppRoute;
+  SAK: AppRoute;
+  SAK_CREATE: AppRoute;
+  SAK_EDIT: AppRoute;
+  MAALING_LIST: AppRoute;
+  MAALING_CREATE: AppRoute;
+  MAALING_EDIT: AppRoute;
+  TEST: AppRoute;
+  TEST_CONFIRM: AppRoute;
+  TEST_CRAWLING_LIST: AppRoute;
+  TEST_CRAWLING_RESULT_LIST: AppRoute;
+  TEST_TESTING_LIST: AppRoute;
+  TEST_RESULT_LIST: AppRoute;
 }
 
 const ROOT = {
   navn: 'uu',
   path: '/',
 };
-const SAKER = {
+const SAK_ROOT = {
+  navn: 'Sak',
+  path: 'sak',
+};
+const SAK_LIST = {
   navn: 'Saker',
   path: 'saker',
   imgSrc: sakerImg,
 };
-const MAALING = {
+const SAK = {
+  navn: 'Sak',
+  path: idPath,
+  parentRoute: SAK_ROOT,
+};
+const SAK_CREATE = {
+  navn: 'Ny sak',
+  path: createPath,
+  parentRoute: SAK_ROOT,
+};
+const SAK_EDIT = {
+  navn: 'Endre sak',
+  path: editPath,
+  parentRoute: SAK_ROOT,
+};
+const MAALING_LIST = {
   navn: 'Måling',
-  path: 'maaling',
+  path: 'maalinger',
   imgSrc: maalingImg,
 };
-const TESTREGEL = {
+const MAALING_CREATE = {
+  navn: 'Måling',
+  path: 'maaling',
+  parentRoute: MAALING_LIST,
+};
+const MAALING_EDIT = {
+  navn: 'Måling',
+  path: idPath,
+  parentRoute: MAALING_LIST,
+};
+
+const TESTREGEL_LIST = {
   navn: 'Testreglar',
   path: 'testreglar',
   imgSrc: testingImg,
 };
-const CREATE_TESTREGEL = {
+const TESTREGEL_CREATE = {
   navn: 'Ny testregel',
-  path: 'ny',
-  parentRoute: TESTREGEL,
+  path: createPath,
+  parentRoute: TESTREGEL_LIST,
 };
-const EDIT_TESTREGEL = {
+const TESTREGEL_EDIT = {
   navn: 'Endre testregel',
-  path: ':id',
-  parentRoute: TESTREGEL,
+  path: idPath,
+  parentRoute: TESTREGEL_LIST,
 };
-const REGELSETT = {
+
+const REGELSETT_LIST = {
   navn: 'Regelsett',
   path: 'regelsett',
-  parentRoute: TESTREGEL,
+  parentRoute: TESTREGEL_LIST,
 };
-const CREATE_REGELSETT = {
+const REGELSETT_CREATE = {
   navn: 'Nytt regelsett',
-  path: 'ny',
-  parentRoute: REGELSETT,
+  path: createPath,
+  parentRoute: REGELSETT_LIST,
 };
-const EDIT_REGELSETT = {
+const REGELSETT_EDIT = {
   navn: 'Endre regelsett',
-  path: ':id',
-  parentRoute: REGELSETT,
+  path: idPath,
+  parentRoute: REGELSETT_LIST,
 };
-const VERKSEMDER = {
+
+const VERKSEMD_LIST = {
   navn: 'Verksemder',
   path: 'verksemder',
   imgSrc: verksemderImg,
 };
-const LOEYSINGAR = {
+const VERKSEMD_CREATE = {
+  navn: 'Ny verksemd',
+  path: createPath,
+  parentRoute: VERKSEMD_LIST,
+};
+const VERKSEMD_EDIT = {
+  navn: 'Endre verksemder',
+  path: idPath,
+  parentRoute: VERKSEMD_LIST,
+};
+
+const LOEYSING_LIST = {
   navn: 'Løysingar',
   path: 'loeysingar',
   imgSrc: loeysingImg,
 };
-const KRAV = {
+const LOEYSING_CREATE = {
+  navn: 'Ny løysing',
+  path: createPath,
+  parentRoute: VERKSEMD_LIST,
+};
+const LOEYSING_EDIT = {
+  navn: 'Endre løysingar',
+  path: idPath,
+  parentRoute: VERKSEMD_LIST,
+};
+
+const KRAV_LIST = {
   navn: 'Krav',
   path: 'krav',
   imgSrc: kravImg,
 };
-const TEKNIKKAR = {
-  navn: 'Teknikkar',
-  path: 'teknikkar',
-  imgSrc: teknikkarImg,
+const KRAV_CREATE = {
+  navn: 'Krav',
+  path: createPath,
+  parentRoute: KRAV_LIST,
 };
-const DISKUSJON = {
-  navn: 'Diskusjon',
-  path: 'diskusjon',
-  imgSrc: diskusjonImg,
+const KRAV_EDIT = {
+  navn: 'Krav',
+  path: idPath,
+  parentRoute: KRAV_LIST,
 };
-const RESULTAT = {
-  navn: 'Resultat',
-  path: 'resultat',
-  imgSrc: resultatImg,
-};
-const CREATE_TEST = {
-  navn: 'Ny test',
+
+const TEST = {
+  navn: 'Test',
   path: 'test',
-  imgSrc: testerImg,
 };
 
-const EDIT_TEST = {
-  navn: '',
-  path: ':id',
-  parentRoute: CREATE_TEST,
+const TEST_CONFIRM = {
+  navn: 'Endre test',
+  path: idPath,
+  parentRoute: TEST,
 };
 
-const CRAWLING_TEST = {
+const TEST_CRAWLING_LIST = {
   navn: 'Crawling',
   path: ':id/crawling',
-  parentRoute: CREATE_TEST,
+  parentRoute: TEST,
 };
 
-const KVALITETSSIKRING_TEST = {
+const TEST_CRAWLING_RESULT_LIST = {
   navn: 'Kvalitetssikring',
   path: ':id/kvalitetssikring',
-  parentRoute: CREATE_TEST,
+  parentRoute: TEST,
 };
 
-const TESTING_TEST = {
+const TEST_TESTING_LIST = {
   navn: 'Tester',
   path: ':id/testing',
-  parentRoute: CREATE_TEST,
+  parentRoute: TEST,
 };
 
-const RESULTAT_TEST = {
+const TEST_RESULT_LIST = {
   navn: 'Resultat',
   path: ':id/resultat',
-  parentRoute: CREATE_TEST,
-};
-
-const MINE_TESTER = {
-  navn: 'Mine Tester',
-  path: 'mine-tester',
-  imgSrc: mineTestarImg,
-};
-const QUALWEB = {
-  navn: 'QualWeb',
-  path: 'qualweb',
-  imgSrc: qualWebImg,
+  parentRoute: TEST,
 };
 
 export const appRoutes: IRoutes = {
   ROOT: ROOT,
-  SAKER: SAKER,
-  MAALING: MAALING,
-  TESTREGEL: TESTREGEL,
-  CREATE_TESTREGEL: CREATE_TESTREGEL,
-  EDIT_TESTREGEL: EDIT_TESTREGEL,
-  REGELSETT: REGELSETT,
-  CREATE_REGELSETT: CREATE_REGELSETT,
-  EDIT_REGELSETT: EDIT_REGELSETT,
-  VERKSEMDER: VERKSEMDER,
-  LOEYSINGAR: LOEYSINGAR,
-  KRAV: KRAV,
-  TEKNIKKAR: TEKNIKKAR,
-  DISKUSJON: DISKUSJON,
-  RESULTAT: RESULTAT,
-  CREATE_TEST: CREATE_TEST,
-  EDIT_TEST: EDIT_TEST,
-  CRAWLING_TEST: CRAWLING_TEST,
-  KVALITETSSIKRING_TEST: KVALITETSSIKRING_TEST,
-  TESTING_TEST: TESTING_TEST,
-  RESULTAT_TEST: RESULTAT_TEST,
-  MINE_TESTER: MINE_TESTER,
-  QUALWEB: QUALWEB,
+  TESTREGEL_LIST: TESTREGEL_LIST,
+  TESTREGEL_CREATE: TESTREGEL_CREATE,
+  TESTREGEL_EDIT: TESTREGEL_EDIT,
+  REGELSETT_LIST: REGELSETT_LIST,
+  REGELSETT_CREATE: REGELSETT_CREATE,
+  REGELSETT_EDIT: REGELSETT_EDIT,
+  VERKSEMD_LIST: VERKSEMD_LIST,
+  VERKSEMD_CREATE: VERKSEMD_CREATE,
+  VERKSEMD_EDIT: VERKSEMD_EDIT,
+  LOEYSING_LIST: LOEYSING_LIST,
+  LOEYSING_CREATE: LOEYSING_CREATE,
+  LOEYSING_EDIT: LOEYSING_EDIT,
+  KRAV_LIST: KRAV_LIST,
+  KRAV_CREATE: KRAV_CREATE,
+  KRAV_EDIT: KRAV_EDIT,
+  SAK_LIST: SAK_LIST,
+  SAK_ROOT: SAK_ROOT,
+  SAK: SAK,
+  SAK_EDIT: SAK_EDIT,
+  SAK_CREATE: SAK_CREATE,
+  MAALING_LIST: MAALING_LIST,
+  MAALING_CREATE: MAALING_CREATE,
+  MAALING_EDIT: MAALING_EDIT,
+  TEST: TEST,
+  TEST_CONFIRM: TEST_CONFIRM,
+  TEST_CRAWLING_LIST: TEST_CRAWLING_LIST,
+  TEST_CRAWLING_RESULT_LIST: TEST_CRAWLING_RESULT_LIST,
+  TEST_TESTING_LIST: TEST_TESTING_LIST,
+  TEST_RESULT_LIST: TEST_RESULT_LIST,
 };
 
 export const verktoey = [
-  appRoutes.SAKER,
-  appRoutes.MAALING,
-  appRoutes.TESTREGEL,
-  appRoutes.VERKSEMDER,
-  appRoutes.LOEYSINGAR,
-  appRoutes.KRAV,
-  appRoutes.TEKNIKKAR,
-  appRoutes.DISKUSJON,
-];
-
-export const testing = [
-  appRoutes.RESULTAT,
-  appRoutes.MINE_TESTER,
-  appRoutes.QUALWEB,
-  appRoutes.CREATE_TEST,
-];
-
-export type StepRoute = {
-  step: number;
-  route: AppRoute;
-};
-
-export const testing_steps: StepRoute[] = [
-  {
-    step: 1,
-    route: appRoutes.CREATE_TEST,
-  },
-  {
-    step: 1,
-    route: appRoutes.EDIT_TEST,
-  },
-  {
-    step: 2,
-    route: appRoutes.CRAWLING_TEST,
-  },
-  {
-    step: 3,
-    route: appRoutes.KVALITETSSIKRING_TEST,
-  },
-  {
-    step: 4,
-    route: appRoutes.TESTING_TEST,
-  },
-  {
-    step: 5,
-    route: appRoutes.RESULTAT_TEST,
-  },
+  appRoutes.SAK_LIST,
+  appRoutes.MAALING_LIST,
+  appRoutes.TESTREGEL_LIST,
+  appRoutes.VERKSEMD_LIST,
+  appRoutes.LOEYSING_LIST,
+  appRoutes.KRAV_LIST,
 ];
 
 export const getFullPath = (route: AppRoute, id?: string) => {
   const path = route.parentRoute?.path
     ? [route.parentRoute.path, route.path].join('/')
     : route.path;
-  if (id) {
-    return path.replace(':id', id);
-  }
-  return path;
+  return `/${id ? path.replace(idPath, id) : path}`;
 };
 
 export default appRoutes;

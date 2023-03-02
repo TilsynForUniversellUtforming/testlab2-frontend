@@ -1,9 +1,8 @@
 import './maalingApp.scss';
 
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import useFetch from '../common/hooks/useFetch';
@@ -13,7 +12,7 @@ import { MaalingContext } from './types';
 
 const MaalingApp = () => {
   const [error, setError] = useState<string>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(false);
 
@@ -38,28 +37,20 @@ const MaalingApp = () => {
   };
 
   useEffectOnce(() => {
-    useFeatureToggles('maalinger', handleInitMaalinger);
+    useFeatureToggles('maalinger', handleInitMaalinger, handleLoading);
   });
 
   const maalingContext: MaalingContext = {
     error: error,
     loading: loading,
+    showMaalinger: showMaalinger,
     refresh: doFetchMaalingList,
     setContextError: handleError,
     setLoading: handleLoading,
     maalingList: maalingList,
   };
 
-  if (!showMaalinger) {
-    return <AppTitle title="Måling - Ingen visning" />;
-  }
-
-  return (
-    <>
-      <AppTitle title="Måling" />
-      <Outlet context={maalingContext} />
-    </>
-  );
+  return <Outlet context={maalingContext} />;
 };
 
 export default MaalingApp;

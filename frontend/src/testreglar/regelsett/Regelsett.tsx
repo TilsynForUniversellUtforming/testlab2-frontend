@@ -113,7 +113,7 @@ const Regelsett = () => {
       />
       <TestlabLinkButton
         type="add"
-        route={appRoutes.CREATE_REGELSETT}
+        route={appRoutes.REGELSETT_CREATE}
         disabled={loading || error}
       />
       <TestlabTable<TestRegelsett>

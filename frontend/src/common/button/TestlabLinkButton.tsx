@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { AppRoute } from '../appRoutes';
-import UserActionButton, { ButtonType } from './UserActionButton';
+import ActionButton, { ButtonType } from './ActionButton';
 
 export interface Props {
   type: ButtonType;
@@ -11,12 +11,12 @@ export interface Props {
 
 const TestlabLinkButton = ({ type, route, disabled = false }: Props) => {
   if (disabled) {
-    return <UserActionButton type={type} disabled={disabled} />;
+    return <ActionButton type={type} disabled={disabled} />;
   }
 
   return (
     <Link to={route.path}>
-      <UserActionButton type={type} />
+      <ActionButton type={type} />
     </Link>
   );
 };

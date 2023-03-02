@@ -9,12 +9,12 @@ const Navbar = () => {
       <Nav variant="tabs">
         <Nav.Item>
           <Nav.Link as={NavLink} to={''} end>
-            {appRoutes.TESTREGEL.navn}
+            {appRoutes.TESTREGEL_LIST.navn}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={NavLink} to={appRoutes.REGELSETT.path}>
-            {appRoutes.REGELSETT.navn}
+          <Nav.Link as={NavLink} to={appRoutes.REGELSETT_LIST.path}>
+            {appRoutes.REGELSETT_LIST.navn}
           </Nav.Link>
         </Nav.Item>
       </Nav>
