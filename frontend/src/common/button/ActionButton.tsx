@@ -10,12 +10,7 @@ export interface Props {
   disabled?: boolean;
 }
 
-const UserActionButton = ({
-  type,
-  label,
-  onClick,
-  disabled = false,
-}: Props) => {
+const ActionButton = ({ type, label, onClick, disabled = false }: Props) => {
   if (type === 'add') {
     return (
       <Button onClick={onClick} variant="success" disabled={disabled}>
@@ -35,4 +30,4 @@ const UserActionButton = ({
   return null;
 };
 
-export default UserActionButton;
+export default ActionButton;

@@ -3,6 +3,7 @@ import fetchFeatures from '../api/features-api';
 const useFeatureToggles = (
   key: string,
   callback: () => void,
+  loadingCallback: (loading: boolean) => void,
   errorCallback?: (e: any) => void
 ) => {
   fetchFeatures()
@@ -20,7 +21,7 @@ const useFeatureToggles = (
       if (errorCallback) {
         errorCallback(e.message);
       } else {
-        throw e;
+        loadingCallback(false);
       }
     });
 };

@@ -140,7 +140,7 @@ const TestlabTable = <T extends object>({
   }, []);
 
   if (error) {
-    return <ErrorCard show={error} onClickRetry={onClickRetry} />;
+    return <ErrorCard show={error} onClick={onClickRetry} />;
   }
 
   return (

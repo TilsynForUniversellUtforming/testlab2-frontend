@@ -1,18 +1,17 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Button } from 'react-bootstrap';
-
-import useDefaultSubmitStep from './hooks/useSteps';
+import { useNavigate } from 'react-router-dom';
 
 export type StepType = 'Start' | 'Middle' | 'Submit';
 
-export type Step = {
+export type TestlabFormButtonStep = {
   stepType: StepType;
   onClickBack: () => void;
 };
 
 export interface ButtonProps {
-  step?: Step;
+  step?: TestlabFormButtonStep;
   className?: string;
 }
 
@@ -36,7 +35,14 @@ const FormButton = ({
 );
 
 const TestlabFormButtons = ({ step, className }: ButtonProps) => {
-  const buttonStep = step ? step : useDefaultSubmitStep();
+  const navigate = useNavigate();
+
+  const defaultStep: TestlabFormButtonStep = {
+    stepType: 'Submit',
+    onClickBack: () => navigate('..'),
+  };
+
+  const buttonStep = step ? step : defaultStep;
   const { stepType, onClickBack } = buttonStep;
 
   switch (stepType) {

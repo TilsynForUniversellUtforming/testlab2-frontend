@@ -53,7 +53,7 @@ const TestreglarForm = ({ label, onSubmit, testregel, krav }: Props) => {
 
   return (
     <TestlabForm<Testregel>
-      label={label}
+      heading={label}
       onSubmit={onSubmit}
       formMethods={formMethods}
     >

@@ -72,7 +72,7 @@ const TestreglarApp = () => {
 
   return (
     <>
-      <AppTitle title={appRoutes.TESTREGEL.navn} />
+      <AppTitle title={appRoutes.TESTREGEL_LIST.navn} />
       <Navbar />
       <div className="testreglar__content">
         <Outlet context={testRegelContext} />

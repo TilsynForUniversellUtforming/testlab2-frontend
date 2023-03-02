@@ -1,5 +1,6 @@
 import './TestlabForm.scss';
 
+import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 import { Form } from 'react-bootstrap';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
@@ -10,7 +11,8 @@ import TestlabFormInput from './TestlabFormInput';
 import TestlabFormSelect from './TestlabFormSelect';
 
 export interface Props<T extends object> {
-  label?: string;
+  heading?: string;
+  subHeading?: string;
   onSubmit: SubmitHandler<T>;
   formMethods: UseFormReturn<T>;
   children: ReactNode;
@@ -22,7 +24,8 @@ export interface FormValidation {
 }
 
 const TestlabForm = <T extends object>({
-  label,
+  heading,
+  subHeading,
   children,
   formMethods,
   onSubmit,
@@ -31,7 +34,14 @@ const TestlabForm = <T extends object>({
 
   return (
     <>
-      {label && <h3 className="mb-4">{label}</h3>}
+      <div className={classNames({ 'mb-4': heading || subHeading })}>
+        {heading && <h2>{heading}</h2>}
+        {subHeading && (
+          <div role="doc-subtitle" className="text-secondary">
+            {subHeading}
+          </div>
+        )}
+      </div>
       <FormProvider {...formMethods}>
         <Form className="mb-4 testlab-form" onSubmit={handleSubmit(onSubmit)}>
           {children}
