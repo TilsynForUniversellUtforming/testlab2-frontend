@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
@@ -9,12 +9,14 @@ import { SakContext } from './types';
 
 const SakApp = () => {
   const { id } = useParams();
-  const { pathname } = useLocation();
-  console.log(pathname);
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
+
+  const handleSetMaaling = (maaling: Maaling) => {
+    setMaaling(maaling);
+  };
 
   const handleError = useCallback((error: any) => {
     setMaaling(undefined);
@@ -55,25 +57,12 @@ const SakApp = () => {
     error: error,
     loading: loading,
     maaling: maaling,
+    setMaaling: handleSetMaaling,
     setContextError: handleError,
     setLoading: handleLoading,
     refresh: doFetchData,
   };
 
-  /*
-          try {
-          const updated = await startCrawling(maaling.id);
-          if (!updated.id) {
-            setError('Noko gjekk gale ved oppretting av måling');
-          } else {
-            navigate(
-              getFullPath(appRoutes.TEST_CRAWLING_LIST, String(updated.id))
-            );
-          }
-        } catch (e) {
-          setError('Kunne ikkje starte crawling');
-        }
-   */
   return (
     <>
       <AppTitle title="Ny sak" subTitle="Opprett en ny sak" />

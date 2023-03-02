@@ -6,6 +6,7 @@ import { TestRegelsett } from '../testreglar/api/types';
 
 export interface SakContext extends AppContext {
   maaling?: Maaling;
+  setMaaling: (maaling: Maaling) => void;
 }
 
 export type MaalingFormState = {

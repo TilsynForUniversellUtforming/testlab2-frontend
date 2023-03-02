@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import { appRoutes, getFullPath } from '../common/appRoutes';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
@@ -13,7 +13,7 @@ import { TestRegelsett } from '../testreglar/api/types';
 import SakStepForm from './form/SakStepForm';
 import Stepper from './form/Stepper';
 import useSakForm from './hooks/useSakForm';
-import { MaalingFormState, sakSteps } from './types';
+import { MaalingFormState, SakContext, sakSteps } from './types';
 
 const SakCreate = () => {
   const defaultState: MaalingFormState = {
@@ -23,6 +23,7 @@ const SakCreate = () => {
   };
 
   const navigate = useNavigate();
+  const { setMaaling }: SakContext = useOutletContext();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>();
@@ -43,7 +44,8 @@ const SakCreate = () => {
 
       try {
         const maaling = await createMaaling(maalingInit);
-        navigate(getFullPath(appRoutes.SAK, String(maaling.id)));
+        setMaaling(maaling);
+        navigate(getFullPath(appRoutes.SAK, String(32)));
       } catch (e) {
         setError('Kunne ikkje lage måling');
       }
