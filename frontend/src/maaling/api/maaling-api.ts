@@ -10,7 +10,16 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
     body: JSON.stringify(maaling),
   }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
 
-export const updateMaaling = async (
+export const updateMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
+  await fetch('/api/v1/maalinger', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(maaling),
+  }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
+
+export const startCrawling = async (
   id: number,
   status: MaalingStatus = 'crawling'
 ): Promise<Maaling> =>

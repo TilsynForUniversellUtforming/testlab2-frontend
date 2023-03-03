@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 
 import TestlabForm from '../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
-import { MaalingFormState, SakFormBaseProps } from '../../types';
+import { SakFormBaseProps, SakFormState } from '../../types';
 import SakFormContainer from '../SakFormContainer';
 
-const SakInitForm = ({
+const SakInitStep = ({
   heading,
   subHeading,
   maalingFormState,
@@ -16,7 +16,7 @@ const SakInitForm = ({
 }: SakFormBaseProps) => {
   const navigate = useNavigate();
 
-  const formMethods = useForm<MaalingFormState>({
+  const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
 
@@ -53,4 +53,4 @@ const SakInitForm = ({
   );
 };
 
-export default SakInitForm;
+export default SakInitStep;

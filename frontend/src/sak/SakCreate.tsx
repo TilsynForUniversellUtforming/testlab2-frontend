@@ -2,39 +2,40 @@ import React, { useCallback, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
+import AppTitle from '../common/app-title/AppTitle';
 import { appRoutes, getFullPath } from '../common/appRoutes';
-import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
-import { Loeysing } from '../loeysingar/api/types';
 import { createMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
-import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
-import { TestRegelsett } from '../testreglar/api/types';
 import SakStepForm from './form/SakStepForm';
 import Stepper from './form/Stepper';
 import useSakForm from './hooks/useSakForm';
-import { MaalingFormState, SakContext, sakSteps } from './types';
+import { SakContext, SakFormState, sakSteps } from './types';
 
 const SakCreate = () => {
-  const defaultState: MaalingFormState = {
+  const navigate = useNavigate();
+
+  const {
+    regelsettList,
+    loeysingList,
+    setMaaling,
+    loading,
+    setLoading,
+    error,
+    setContextError,
+  }: SakContext = useOutletContext();
+
+  const defaultState: SakFormState = {
     navn: '',
     loeysingList: [],
     regelsett: undefined,
   };
 
-  const navigate = useNavigate();
-  const { setMaaling }: SakContext = useOutletContext();
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>();
-  const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
-  const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [maalingFormState, setMaalingFormState] =
-    useState<MaalingFormState>(defaultState);
+    useState<SakFormState>(defaultState);
 
-  const doSubmitMaaling = useCallback((maalingFormState: MaalingFormState) => {
+  const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
     setLoading(true);
-    setError(undefined);
+    setContextError(undefined);
 
     const doCreateMaaling = async () => {
       const maalingInit: MaalingInit = {
@@ -43,44 +44,21 @@ const SakCreate = () => {
       };
 
       try {
+        // TODO - Bytt ut med createSak
         const maaling = await createMaaling(maalingInit);
         setMaaling(maaling);
-        navigate(getFullPath(appRoutes.SAK, String(32)));
+        navigate(getFullPath(appRoutes.SAK, String(maaling.id)));
       } catch (e) {
-        setError('Kunne ikkje lage måling');
+        setContextError('Kunne ikkje lage måling');
       }
     };
 
     doCreateMaaling()
-      .catch((e) => setError(e))
+      .catch((e) => setContextError(e))
       .finally(() => {
         setLoading(false);
       });
   }, []);
-
-  const doFetchData = useCallback(() => {
-    setLoading(true);
-    setError(undefined);
-
-    const doFetch = async () => {
-      const loeysingList = await fetchLoysingar();
-      setLoeysingList(loeysingList);
-
-      // TODO Bytt ut med riktig kall
-      const regelsett = await getRegelsett_dummy();
-      setRegelsettList(regelsett);
-
-      setLoading(false);
-    };
-
-    doFetch()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffectOnce(() => {
-    doFetchData();
-  });
 
   const {
     steps,
@@ -91,7 +69,7 @@ const SakCreate = () => {
     goToStep,
   } = useSakForm(sakSteps);
 
-  const handleSubmit = (maalingFormState: MaalingFormState) => {
+  const handleSubmit = (maalingFormState: SakFormState) => {
     setMaalingFormState(maalingFormState);
     if (!isLastStep) {
       return setNextStep();
@@ -101,23 +79,30 @@ const SakCreate = () => {
   };
 
   return (
-    <Row>
-      <Col sm={3}>
-        <Stepper currentStep={currentStep} steps={steps} goToStep={goToStep} />
-      </Col>
-      <Col sm={9}>
-        <SakStepForm
-          maalingFormState={maalingFormState}
-          step={currentStep}
-          loading={loading}
-          error={error}
-          onClickBack={setPreviousStep}
-          onSubmit={handleSubmit}
-          regelsettList={regelsettList}
-          loeysingList={loeysingList}
-        />
-      </Col>
-    </Row>
+    <>
+      <AppTitle title="Ny sak" subTitle="Opprett en ny sak" />
+      <Row>
+        <Col sm={3}>
+          <Stepper
+            currentStep={currentStep}
+            steps={steps}
+            goToStep={goToStep}
+          />
+        </Col>
+        <Col sm={9}>
+          <SakStepForm
+            maalingFormState={maalingFormState}
+            step={currentStep}
+            loading={loading}
+            error={error}
+            onClickBack={setPreviousStep}
+            onSubmit={handleSubmit}
+            regelsettList={regelsettList}
+            loeysingList={loeysingList}
+          />
+        </Col>
+      </Row>
+    </>
   );
 };
 

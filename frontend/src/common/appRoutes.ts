@@ -34,14 +34,19 @@ interface IRoutes {
   KRAV_LIST: AppRoute;
   KRAV_CREATE: AppRoute;
   KRAV_EDIT: AppRoute;
+
   SAK_LIST: AppRoute;
   SAK_ROOT: AppRoute;
   SAK: AppRoute;
   SAK_CREATE: AppRoute;
   SAK_EDIT: AppRoute;
+
   MAALING_LIST: AppRoute;
+  MAALING_ROOT: AppRoute;
+  MAALING: AppRoute;
   MAALING_CREATE: AppRoute;
   MAALING_EDIT: AppRoute;
+
   TEST: AppRoute;
   TEST_CONFIRM: AppRoute;
   TEST_CRAWLING_LIST: AppRoute;
@@ -78,22 +83,30 @@ const SAK_EDIT = {
   path: editPath,
   parentRoute: SAK_ROOT,
 };
-const MAALING_LIST = {
-  navn: 'Måling',
-  path: 'maalinger',
-  imgSrc: maalingImg,
-};
-const MAALING_CREATE = {
+const MAALING_ROOT = {
   navn: 'Måling',
   path: 'maaling',
-  parentRoute: MAALING_LIST,
 };
-const MAALING_EDIT = {
+const MAALING_LIST = {
+  navn: 'Målinger',
+  path: listPath,
+  imgSrc: maalingImg,
+};
+const MAALING = {
   navn: 'Måling',
   path: idPath,
-  parentRoute: MAALING_LIST,
+  parentRoute: MAALING_ROOT,
 };
-
+const MAALING_CREATE = {
+  navn: 'Ny måling',
+  path: createPath,
+  parentRoute: MAALING_ROOT,
+};
+const MAALING_EDIT = {
+  navn: 'Endre måling',
+  path: editPath,
+  parentRoute: MAALING_ROOT,
+};
 const TESTREGEL_LIST = {
   navn: 'Testreglar',
   path: 'testreglar',
@@ -231,9 +244,13 @@ export const appRoutes: IRoutes = {
   SAK: SAK,
   SAK_EDIT: SAK_EDIT,
   SAK_CREATE: SAK_CREATE,
+
   MAALING_LIST: MAALING_LIST,
-  MAALING_CREATE: MAALING_CREATE,
+  MAALING_ROOT: MAALING_ROOT,
+  MAALING: MAALING,
   MAALING_EDIT: MAALING_EDIT,
+  MAALING_CREATE: MAALING_CREATE,
+
   TEST: TEST,
   TEST_CONFIRM: TEST_CONFIRM,
   TEST_CRAWLING_LIST: TEST_CRAWLING_LIST,
@@ -251,7 +268,7 @@ export const verktoey = [
   appRoutes.KRAV_LIST,
 ];
 
-export const getFullPath = (route: AppRoute, id?: string) => {
+export const getFullPath = (route: AppRoute, id?: string): string => {
   const path = route.parentRoute?.path
     ? [route.parentRoute.path, route.path].join('/')
     : route.path;

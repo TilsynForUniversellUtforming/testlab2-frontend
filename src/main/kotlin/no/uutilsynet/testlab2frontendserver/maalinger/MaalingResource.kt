@@ -63,6 +63,10 @@ class MaalingResource(
                 .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
           }
 
+  @PutMapping
+  fun updateMaaling(@RequestBody maaling: Maaling): ResponseEntity<out Any> =
+    ResponseEntity.internalServerError().body("Endring av måling er ikke implementert")
+
   @PutMapping("{id}")
   fun updateStatus(@PathVariable id: Int, @RequestBody status: String): ResponseEntity<out Any> =
       runCatching {

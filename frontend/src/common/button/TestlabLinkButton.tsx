@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { AppRoute } from '../appRoutes';
+import { AppRoute, getFullPath } from '../appRoutes';
 import ActionButton, { ButtonType } from './ActionButton';
 
 export interface Props {
@@ -15,7 +15,7 @@ const TestlabLinkButton = ({ type, route, disabled = false }: Props) => {
   }
 
   return (
-    <Link to={route.path}>
+    <Link to={getFullPath(route)}>
       <ActionButton type={type} />
     </Link>
   );

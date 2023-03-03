@@ -4,13 +4,13 @@ import { UseFormReturn } from 'react-hook-form';
 
 import TestlabForm from '../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../common/form/TestlabFormButtons';
-import { MaalingFormState } from '../types';
+import { SakFormState } from '../types';
 
 export interface Props {
   heading: string;
   subHeading?: string;
-  formMethods: UseFormReturn<MaalingFormState>;
-  onSubmit: (maaingFormState: MaalingFormState) => void;
+  formMethods: UseFormReturn<SakFormState>;
+  onSubmit: (maaingFormState: SakFormState) => void;
   buttonStep: TestlabFormButtonStep;
   children: ReactNode;
 }
@@ -23,7 +23,7 @@ const SakFormContainer = ({
   buttonStep,
   children,
 }: Props) => (
-  <TestlabForm<MaalingFormState>
+  <TestlabForm<SakFormState>
     heading={heading}
     subHeading={subHeading}
     onSubmit={onSubmit}

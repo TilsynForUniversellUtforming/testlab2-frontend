@@ -2,21 +2,21 @@ import React, { ReactElement } from 'react';
 
 import { Loeysing } from '../../loeysingar/api/types';
 import { TestRegelsett } from '../../testreglar/api/types';
-import { MaalingFormState, SakFormBaseProps, SakStep } from '../types';
-import SakConfirmForm from './steps/SakConfirmForm';
-import SakInitForm from './steps/SakInitForm';
-import SakLoeysingForm from './steps/SakLoeysingForm';
-import SakTestreglarForm from './steps/SakTestreglarForm';
+import { SakFormBaseProps, SakFormState, SakStep } from '../types';
+import SakConfirmStep from './steps/SakConfirmStep';
+import SakInitStep from './steps/SakInitStep';
+import SakLoeysingStep from './steps/SakLoeysingStep';
+import SakTestreglarStep from './steps/SakTestreglarStep';
 
 export interface Props<T extends SakFormBaseProps> {
   error: any;
   step: SakStep;
   loading: boolean;
-  maalingFormState: MaalingFormState;
+  maalingFormState: SakFormState;
   loeysingList: Loeysing[];
   regelsettList: TestRegelsett[];
   onClickBack: () => void;
-  onSubmit: (maalingFormState: MaalingFormState) => void;
+  onSubmit: (maalingFormState: SakFormState) => void;
 }
 
 const SakStepForm = <T extends SakFormBaseProps>({
@@ -32,7 +32,7 @@ const SakStepForm = <T extends SakFormBaseProps>({
   switch (step.sakStepType) {
     case 'Init':
       return (
-        <SakInitForm
+        <SakInitStep
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
           heading={step.heading}
@@ -41,7 +41,7 @@ const SakStepForm = <T extends SakFormBaseProps>({
       );
     case 'Loeysing':
       return (
-        <SakLoeysingForm
+        <SakLoeysingStep
           error={error}
           loading={loading}
           loeysingList={loeysingList}
@@ -54,7 +54,7 @@ const SakStepForm = <T extends SakFormBaseProps>({
       );
     case 'Testregel':
       return (
-        <SakTestreglarForm
+        <SakTestreglarStep
           regelsettList={regelsettList}
           onClickBack={onClickBack}
           heading={step.heading}
@@ -65,7 +65,7 @@ const SakStepForm = <T extends SakFormBaseProps>({
       );
     case 'Confirm':
       return (
-        <SakConfirmForm
+        <SakConfirmStep
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
           onClickBack={onClickBack}

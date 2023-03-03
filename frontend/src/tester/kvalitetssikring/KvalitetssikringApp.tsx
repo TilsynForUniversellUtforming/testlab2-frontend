@@ -12,7 +12,15 @@ const KvalitetssikringApp = () => {
   const loesyingList = maaling?.loeysingList;
 
   if (loading) {
-    return <Spinner />;
+    return (
+      <Spinner
+        as="span"
+        animation="border"
+        size="sm"
+        role="status"
+        aria-hidden="true"
+      />
+    );
   }
 
   if (
