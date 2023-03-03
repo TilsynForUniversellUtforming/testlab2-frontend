@@ -1,10 +1,13 @@
 import { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
+import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
+import { Loeysing } from '../loeysingar/api/types';
 import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
+import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
+import { TestRegelsett } from '../testreglar/api/types';
 import { SakContext } from './types';
 
 const SakApp = () => {
@@ -13,6 +16,8 @@ const SakApp = () => {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
+  const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
+  const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
 
   const handleSetMaaling = (maaling: Maaling) => {
     setMaaling(maaling);
@@ -27,17 +32,18 @@ const SakApp = () => {
     setLoading(loading);
   }, []);
 
-  const doFetchData = useCallback(() => {
+  const doFetchMaaling = useCallback(() => {
     setLoading(true);
     setError(undefined);
 
     const fetchData = async () => {
       if (id) {
         try {
+          // TODO - Bytt ut med fetchSak
           const maaling = await fetchMaaling(Number(id));
           setMaaling(maaling);
         } catch (e) {
-          setError('Måling finnes ikkje');
+          setError('SakOverview finnes ikkje');
         }
       }
       setLoading(false);
@@ -49,26 +55,48 @@ const SakApp = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const doFetchMaalingParams = useCallback(() => {
+    setLoading(true);
+    setError(undefined);
+
+    const doFetch = async () => {
+      const loeysingList = await fetchLoysingar();
+      setLoeysingList(loeysingList);
+
+      // TODO Bytt ut med riktig kall
+      const regelsett = await getRegelsett_dummy();
+      setRegelsettList(regelsett);
+
+      setLoading(false);
+    };
+
+    doFetch()
+      .catch((e) => setError(e))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const refresh = () => {
+    doFetchMaaling();
+    doFetchMaalingParams();
+  };
+
   useEffectOnce(() => {
-    doFetchData();
+    refresh();
   });
 
   const sakContext: SakContext = {
     error: error,
+    setContextError: handleError,
     loading: loading,
+    setLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
-    setContextError: handleError,
-    setLoading: handleLoading,
-    refresh: doFetchData,
+    refresh: refresh,
+    loeysingList: loeysingList,
+    regelsettList: regelsettList,
   };
 
-  return (
-    <>
-      <AppTitle title="Ny sak" subTitle="Opprett en ny sak" />
-      <Outlet context={sakContext} />
-    </>
-  );
+  return <Outlet context={sakContext} />;
 };
 
 export default SakApp;

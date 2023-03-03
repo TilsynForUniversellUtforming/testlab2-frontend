@@ -5,11 +5,16 @@ import { Maaling } from '../maaling/api/types';
 import { TestRegelsett } from '../testreglar/api/types';
 
 export interface SakContext extends AppContext {
+  regelsettList: TestRegelsett[];
+  loeysingList: Loeysing[];
+  // TODO - Bytt ut med sak
   maaling?: Maaling;
+  // TODO - Bytt ut med setSak
   setMaaling: (maaling: Maaling) => void;
+  setLoading: (loading: boolean) => void;
 }
 
-export type MaalingFormState = {
+export type SakFormState = {
   navn?: string;
   loeysingList: Loeysing[];
   regelsett?: TestRegelsett;
@@ -69,6 +74,6 @@ export const sakSteps: SakStep[] = [
 export interface SakFormBaseProps {
   heading: string;
   subHeading?: string;
-  maalingFormState: MaalingFormState;
-  onSubmit: (maalingFormState: MaalingFormState) => void;
+  maalingFormState: SakFormState;
+  onSubmit: (maalingFormState: SakFormState) => void;
 }

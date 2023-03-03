@@ -9,18 +9,18 @@ import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import IndeterminateCheckbox from '../../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../../common/table/TestlabTable';
 import { Loeysing } from '../../../loeysingar/api/types';
-import { MaalingFormState, SakFormBaseProps } from '../../types';
+import { SakFormBaseProps, SakFormState } from '../../types';
 import SakFormContainer from '../SakFormContainer';
 
 interface Props extends SakFormBaseProps {
   error: any;
   loading: boolean;
-  onSubmit: (maalingFormState: MaalingFormState) => void;
+  onSubmit: (maalingFormState: SakFormState) => void;
   loeysingList: Loeysing[];
   onClickBack: () => void;
 }
 
-const SakLoeysingForm = ({
+const SakLoeysingStep = ({
   heading,
   subHeading,
   onClickBack,
@@ -30,7 +30,7 @@ const SakLoeysingForm = ({
   maalingFormState,
   loeysingList,
 }: Props) => {
-  const formMethods = useForm<MaalingFormState>({
+  const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
 
@@ -38,7 +38,7 @@ const SakLoeysingForm = ({
 
   const onChangeRows = (rowSelection: Loeysing[]) => {
     setValue('loeysingList', rowSelection);
-    useValidate<Loeysing, MaalingFormState>({
+    useValidate<Loeysing, SakFormState>({
       selection: rowSelection,
       name: 'loeysingList',
       setError: setError,
@@ -156,4 +156,4 @@ const SakLoeysingForm = ({
   );
 };
 
-export default SakLoeysingForm;
+export default SakLoeysingStep;

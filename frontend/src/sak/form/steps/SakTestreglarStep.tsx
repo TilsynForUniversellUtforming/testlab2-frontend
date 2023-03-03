@@ -5,7 +5,7 @@ import TestlabForm from '../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import { Option } from '../../../common/types';
 import { TestRegelsett } from '../../../testreglar/api/types';
-import { MaalingFormState, SakFormBaseProps } from '../../types';
+import { SakFormBaseProps, SakFormState } from '../../types';
 import SakFormContainer from '../SakFormContainer';
 
 interface Props extends SakFormBaseProps {
@@ -13,7 +13,7 @@ interface Props extends SakFormBaseProps {
   onClickBack: () => void;
 }
 
-const SakTestreglarForm = ({
+const SakTestreglarStep = ({
   regelsettList,
   heading,
   subHeading,
@@ -26,7 +26,7 @@ const SakTestreglarForm = ({
     value: String(rs.id),
   }));
 
-  const formMethods = useForm<MaalingFormState>({
+  const formMethods = useForm<SakFormState>({
     defaultValues: {
       navn: maalingFormState.navn,
       loeysingList: maalingFormState.loeysingList,
@@ -60,4 +60,4 @@ const SakTestreglarForm = ({
   );
 };
 
-export default SakTestreglarForm;
+export default SakTestreglarStep;

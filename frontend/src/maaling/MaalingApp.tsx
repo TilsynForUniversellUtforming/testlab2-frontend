@@ -40,6 +40,21 @@ const MaalingApp = () => {
     useFeatureToggles('maalinger', handleInitMaalinger, handleLoading);
   });
 
+  /*
+          try {
+          const updated = await startCrawling(maaling.id);
+          if (!updated.id) {
+            setError('Noko gjekk gale ved oppretting av måling');
+          } else {
+            navigate(
+              getFullPath(appRoutes.TEST_CRAWLING_LIST, String(updated.id))
+            );
+          }
+        } catch (e) {
+          setError('Kunne ikkje starte crawling');
+        }
+   */
+
   const maalingContext: MaalingContext = {
     error: error,
     loading: loading,

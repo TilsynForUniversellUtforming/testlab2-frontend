@@ -6,14 +6,14 @@ import ErrorCard from '../../../common/error/ErrorCard';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import { useEffectOnce } from '../../../common/hooks/useEffectOnce';
 import { isDefined } from '../../../common/util/util';
-import { MaalingFormState, SakFormBaseProps } from '../../types';
+import { SakFormBaseProps, SakFormState } from '../../types';
 import SakFormContainer from '../SakFormContainer';
 
 interface SakConfirmContentProps {
   error: any;
   loading: boolean;
-  maalingFormState: MaalingFormState;
-  formErrors?: FieldErrors<MaalingFormState>;
+  maalingFormState: SakFormState;
+  formErrors?: FieldErrors<SakFormState>;
 }
 
 interface Props extends SakFormBaseProps {
@@ -31,7 +31,15 @@ const SakConfirmContent = ({
   const { navn, loeysingList, regelsett } = maalingFormState;
 
   if (loading) {
-    return <Spinner />;
+    return (
+      <Spinner
+        as="span"
+        animation="border"
+        size="sm"
+        role="status"
+        aria-hidden="true"
+      />
+    );
   }
 
   if (error) {
@@ -101,7 +109,7 @@ const SakConfirmContent = ({
   );
 };
 
-const SakConfirmForm = ({
+const SakConfirmStep = ({
   heading,
   maalingFormState,
   onSubmit,
@@ -111,7 +119,7 @@ const SakConfirmForm = ({
 }: Props) => {
   const { navn, loeysingList, regelsett } = maalingFormState;
 
-  const formMethods = useForm<MaalingFormState>({
+  const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
 
@@ -176,4 +184,4 @@ const SakConfirmForm = ({
   );
 };
 
-export default SakConfirmForm;
+export default SakConfirmStep;

@@ -11,9 +11,14 @@ import KravApp from './krav/KravApp';
 import LoeysingApp from './loeysingar/LoeysingApp';
 import MaalingList from './maaling/list/MaalingList';
 import MaalingApp from './maaling/MaalingApp';
+import MaalingCreate from './maaling/MaalingCreate';
+import MaalingEdit from './maaling/MaalingEdit';
+import MaalingOverview from './maaling/overview/MaalingOverview';
+import MaalingOverviewApp from './maaling/overview/MaalingOverviewApp';
 import Oversikt from './oversikt/Oversikt';
 import SakList from './sak/list/SakList';
-import Sak from './sak/Sak';
+import SakOverview from './sak/overview/SakOverview';
+import SakOverviewApp from './sak/overview/SakOverviewApp';
 import SakApp from './sak/SakApp';
 import SakCreate from './sak/SakCreate';
 import SakEdit from './sak/SakEdit';
@@ -35,19 +40,28 @@ function App() {
   return (
     <>
       <Navigation />
-      <Container style={{ paddingTop: '1rem' }}>
+      <Container className="pt-4">
         <Routes>
           <Route path={appRoutes.ROOT.path} element={<Oversikt />} />
+
           <Route path={appRoutes.SAK_LIST.path} element={<SakList />} />
           <Route path={appRoutes.SAK_ROOT.path} element={<SakApp />}>
             <Route path={createPath} element={<SakCreate />} />
-            <Route path={idPath} element={<Sak />}>
+            <Route path={idPath} element={<SakOverviewApp />}>
+              <Route index element={<SakOverview />} />
               <Route path={editPath} element={<SakEdit />} />
             </Route>
           </Route>
-          <Route path={appRoutes.MAALING_LIST.path} element={<MaalingApp />}>
-            <Route index element={<MaalingList />} />
+
+          <Route path={appRoutes.MAALING_LIST.path} element={<MaalingList />} />
+          <Route path={appRoutes.MAALING_ROOT.path} element={<MaalingApp />}>
+            <Route path={createPath} element={<MaalingCreate />} />
+            <Route path={idPath} element={<MaalingOverviewApp />}>
+              <Route index element={<MaalingOverview />} />
+              <Route path={editPath} element={<MaalingEdit />} />
+            </Route>
           </Route>
+
           <Route
             path={appRoutes.TESTREGEL_LIST.path}
             element={<TestreglarApp />}

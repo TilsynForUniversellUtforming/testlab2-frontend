@@ -1,24 +1,24 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
-import React, { useCallback } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath } from '../../common/appRoutes';
 import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ErrorCard from '../../common/error/ErrorCard';
+import useFeatureToggles from '../../common/features/hooks/useFeatureToggles';
+import { useEffectOnce } from '../../common/hooks/useEffectOnce';
+import useFetch from '../../common/hooks/useFetch';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
+import { fetchMaalingList } from '../api/maaling-api';
 import { Maaling } from '../api/types';
-import { MaalingContext } from '../types';
 
 const MaalingList = () => {
-  const {
-    error,
-    loading,
-    refresh,
-    maalingList,
-    showMaalinger,
-  }: MaalingContext = useOutletContext();
+  const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(true);
+  const [maalingList, setMaalingList] = useState<Maaling[]>([]);
+  const [showMaalinger, setShowMaalinger] = useState(false);
 
   const navigate = useNavigate();
 
@@ -34,6 +34,22 @@ const MaalingList = () => {
 
     return path;
   }, []);
+
+  const doFetchMaalingList = useFetch<Maaling[]>({
+    fetchData: fetchMaalingList,
+    setData: setMaalingList,
+    setError: setError,
+    setLoading: setLoading,
+  });
+
+  const handleInitMaalinger = () => {
+    doFetchMaalingList();
+    setShowMaalinger(true);
+  };
+
+  useEffectOnce(() => {
+    useFeatureToggles('maalinger', handleInitMaalinger, setLoading);
+  });
 
   const maalingColumns: ColumnDef<Maaling>[] = [
     {
@@ -73,13 +89,13 @@ const MaalingList = () => {
   return (
     <>
       <AppTitle title="Måling" />
-      <TestlabLinkButton type="add" route={appRoutes.MAALING_CREATE} />
+      <TestlabLinkButton type="add" route={appRoutes.SAK_CREATE} />
       <TestlabTable<Maaling>
         data={maalingList}
         defaultColumns={maalingColumns}
         error={error}
         loading={loading}
-        onClickRetry={refresh}
+        onClickRetry={doFetchMaalingList}
       />
     </>
   );
