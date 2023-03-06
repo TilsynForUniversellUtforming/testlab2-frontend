@@ -19,7 +19,7 @@ export const updateMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
     body: JSON.stringify(maaling),
   }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
 
-export const startCrawling = async (
+export const updateMaalingStatus = async (
   id: number,
   status: MaalingStatus = 'crawling'
 ): Promise<Maaling> =>

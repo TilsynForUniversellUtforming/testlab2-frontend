@@ -1,4 +1,4 @@
-import { TestInputParameters, TestResponse, TestResult } from './types';
+import { TestInputParameters, TestResult, TestResultat } from './types';
 
 const fetchTestResultat = async (
   url: TestInputParameters
@@ -15,7 +15,7 @@ const fetchTestResultat = async (
     body: JSON.stringify({ maalingId: 1 }),
   });
 
-  const json: TestResponse = await data.json();
+  const json: TestResultat = await data.json();
 
   return json.output;
 };

@@ -15,13 +15,15 @@ const SakApp = () => {
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
+  // TODO - Bytt ut med sak
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
 
-  const handleSetMaaling = (maaling: Maaling) => {
+  // TODO - Bytt ut med sak
+  const handleSetMaaling = useCallback((maaling: Maaling) => {
     setMaaling(maaling);
-  };
+  }, []);
 
   const handleError = useCallback((error: any) => {
     setMaaling(undefined);
@@ -32,7 +34,7 @@ const SakApp = () => {
     setLoading(loading);
   }, []);
 
-  const doFetchMaaling = useCallback(() => {
+  const doFetchData = useCallback(() => {
     setLoading(true);
     setError(undefined);
 
@@ -43,9 +45,15 @@ const SakApp = () => {
           const maaling = await fetchMaaling(Number(id));
           setMaaling(maaling);
         } catch (e) {
-          setError('SakOverview finnes ikkje');
+          setError('Sak finnes ikkje');
         }
       }
+      const loeysingList = await fetchLoysingar();
+      setLoeysingList(loeysingList);
+
+      // TODO Bytt ut med riktig kall
+      const regelsett = await getRegelsett_dummy();
+      setRegelsettList(regelsett);
       setLoading(false);
       setError(undefined);
     };
@@ -55,33 +63,8 @@ const SakApp = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const doFetchMaalingParams = useCallback(() => {
-    setLoading(true);
-    setError(undefined);
-
-    const doFetch = async () => {
-      const loeysingList = await fetchLoysingar();
-      setLoeysingList(loeysingList);
-
-      // TODO Bytt ut med riktig kall
-      const regelsett = await getRegelsett_dummy();
-      setRegelsettList(regelsett);
-
-      setLoading(false);
-    };
-
-    doFetch()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const refresh = () => {
-    doFetchMaaling();
-    doFetchMaalingParams();
-  };
-
   useEffectOnce(() => {
-    refresh();
+    doFetchData();
   });
 
   const sakContext: SakContext = {
@@ -91,7 +74,7 @@ const SakApp = () => {
     setLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
-    refresh: refresh,
+    refresh: doFetchData,
     loeysingList: loeysingList,
     regelsettList: regelsettList,
   };

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { StepType } from '../../common/form/TestlabFormButtons';
 import { SakStep } from '../types';
 
 export type CurrentStep = {
@@ -19,11 +18,6 @@ const useSakForm = (steps: SakStep[]): CurrentStep => {
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
   const isFirstStep = currentStepIdx <= 0;
   const isLastStep = currentStepIdx >= steps.length - 1;
-  const stepType: StepType = isFirstStep
-    ? 'Start'
-    : isLastStep
-    ? 'Submit'
-    : 'Middle';
 
   const setNextStep = () => {
     setCurrentStepIdx((currentStepIdx) => {

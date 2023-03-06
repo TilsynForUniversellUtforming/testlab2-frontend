@@ -4,7 +4,7 @@ import java.net.URL
 
 data class CrawlResultat(
     val loeysing: Loeysing,
-    val type: String,
+    val type: CrawlStatus,
     val statusUrl: URL?,
     val feilmelding: String?,
 )

@@ -1,15 +1,12 @@
 import { Loeysing } from '../../loeysingar/api/types';
+import { TestResultat } from '../../tester/api/types';
 
 export type MaalingInit = {
   navn: string;
   loeysingList: Loeysing[];
 };
 
-export type CreatedMaaling = {
-  url?: string;
-};
-
-export type CrawlStatus = 'ikke_ferdig' | 'feilet';
+export type CrawlStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
 export type CrawlResultat = {
   type: CrawlStatus;
@@ -23,5 +20,9 @@ export type Maaling = {
   navn: string;
   loeysingList: Loeysing[];
   status: MaalingStatus;
-  crawlResultat?: CrawlResultat[];
+  crawlResultat: CrawlResultat[];
+  numCrawlPerforming: number;
+  numCrawlFinished: number;
+  numCrawlError: number;
+  testResultat?: TestResultat[];
 };
