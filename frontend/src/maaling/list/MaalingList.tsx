@@ -1,5 +1,5 @@
-import { ColumnDef, Row } from '@tanstack/react-table';
-import React, { useCallback, useState } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
@@ -22,19 +22,6 @@ const MaalingList = () => {
 
   const navigate = useNavigate();
 
-  const getLink = useCallback((row: Row<Maaling>): string => {
-    const maaling = row.original;
-    const { id, status } = maaling;
-    let path = '';
-    if (status === 'planlegging') {
-      path = getFullPath(appRoutes.SAK, String(id));
-    } else if (status === 'crawling') {
-      path = getFullPath(appRoutes.TEST_CRAWLING_LIST, String(id));
-    }
-
-    return path;
-  }, []);
-
   const doFetchMaalingList = useFetch<Maaling[]>({
     fetchData: fetchMaalingList,
     setData: setMaalingList,
@@ -56,7 +43,9 @@ const MaalingList = () => {
       accessorFn: (row) => row.navn,
       id: 'Navn',
       cell: ({ row, getValue }) => (
-        <Link to={`../${getLink(row)}`}>{String(getValue())}</Link>
+        <Link to={getFullPath(appRoutes.MAALING, String(row.original.id))}>
+          {String(getValue())}
+        </Link>
       ),
       header: () => <span>Navn</span>,
     },

@@ -4,6 +4,8 @@ export type TestElement = {
   accessibleName: string;
 };
 
+export type RuntimeStatus = 'Pending' | 'Running' | 'Completed';
+
 export type TestResult = {
   _idSuksesskriterium: string;
   _idTestregel: string;
@@ -18,9 +20,9 @@ export type TestResult = {
   _ikkjeForekomst: boolean;
 };
 
-export type TestResponse = {
+export type TestResultat = {
   instanceId: string;
-  runtimeStatus: string;
+  runtimeStatus: RuntimeStatus;
   output: TestResult[];
 };
 

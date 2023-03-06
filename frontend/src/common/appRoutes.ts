@@ -89,7 +89,7 @@ const MAALING_ROOT = {
 };
 const MAALING_LIST = {
   navn: 'Målinger',
-  path: listPath,
+  path: 'maalinger',
   imgSrc: maalingImg,
 };
 const MAALING = {
