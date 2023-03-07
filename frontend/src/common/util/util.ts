@@ -8,9 +8,13 @@ export const enumToOptions = <T extends object>(
     label: key,
   }));
 
-export const isDefined = (value: any): boolean => {
+export const isDefined = <T>(value: T | undefined | null): value is T => {
   if (typeof value === 'string') {
     return value.length > 0;
+  }
+
+  if (typeof value === 'number') {
+    return !isNaN(value);
   }
 
   if (Array.isArray(value)) {
@@ -18,8 +22,8 @@ export const isDefined = (value: any): boolean => {
   }
 
   if (typeof value === 'object') {
-    return Object.keys(value).length > 0;
+    return value !== null && Object.keys(value).length > 0;
   }
 
-  return typeof value !== 'undefined' && value != null;
+  return value != null;
 };

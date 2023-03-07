@@ -1,4 +1,5 @@
 import React from 'react';
+import { Col } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 
 import TestlabForm from '../../../common/form/TestlabForm';
@@ -47,15 +48,17 @@ const SakTestreglarStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <TestlabForm.FormSelect<TestRegelsett>
-        label="Testreglar"
-        name="id"
-        formValidation={{
-          errorMessage: 'Testreglar må veljast',
-          validation: { required: true, minLength: 1 },
-        }}
-        options={regelsettOptions}
-      />
+      <Col md={6}>
+        <TestlabForm.FormSelect<TestRegelsett>
+          label="Testreglar"
+          name="id"
+          formValidation={{
+            errorMessage: 'Testreglar må veljast',
+            validation: { required: true, minLength: 1 },
+          }}
+          options={regelsettOptions}
+        />
+      </Col>
     </SakFormContainer>
   );
 };
