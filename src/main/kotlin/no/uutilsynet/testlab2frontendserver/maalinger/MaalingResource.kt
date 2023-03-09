@@ -1,13 +1,18 @@
 package no.uutilsynet.testlab2frontendserver.maalinger
 
-import java.lang.IllegalArgumentException
 import java.net.URI
+import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlStatus
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.AzCrawlResponse
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.NyMaalingDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.toNyMaalingDTO
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpEntity
@@ -40,44 +45,45 @@ class MaalingResource(
 
   @GetMapping("{id}")
   fun getMaaling(@PathVariable id: Int): ResponseEntity<Maaling> {
-    val maaling =
+
+    val maalingDTO =
         restTemplate.getForObject("${maalingUrl}/${id}", MaalingDTO::class.java)
             ?: throw RuntimeException("Klarte ikke å hente den måling fra server")
-    val crawling =
-        Maaling(
-            id = maaling.id,
-            navn = maaling.navn,
-            status = maaling.status,
-            loeysingList =
-                if (!maaling.crawlResultat.isNullOrEmpty())
-                    maaling.crawlResultat.map { it.loeysing }
-                else {
-                  if (maaling.loeysingList.isNullOrEmpty()) {
-                    emptyList()
-                  } else {
-                    maaling.loeysingList
-                  }
-                },
-            crawlResultat =
-                if (maaling.crawlResultat.isNullOrEmpty()) emptyList() else maaling.crawlResultat,
-            numCrawlPerforming =
-                if (maaling.crawlResultat.isNullOrEmpty()) 0
-                else maaling.crawlResultat.count { it.type == CrawlStatus.ikke_ferdig },
-            numCrawlFinished =
-                if (maaling.crawlResultat.isNullOrEmpty()) 0
-                else maaling.crawlResultat.count { it.type == CrawlStatus.ferdig },
-            numCrawlError =
-                if (maaling.crawlResultat.isNullOrEmpty()) 0
-                else maaling.crawlResultat.count { it.type == CrawlStatus.feilet },
-        )
-    return ResponseEntity.ok(crawling)
+
+    // TODO - flytt til testing-app
+    val maaling =
+        if (maalingDTO.status === MaalingStatus.kvalitetssikring &&
+            maalingDTO.crawlResultat != null) {
+          val crawlResultat: List<CrawlResultat> =
+              try {
+                maalingDTO.crawlResultat.map {
+                  val urlList: List<URL> =
+                      it.statusUrl?.let { url ->
+                        restTemplate
+                            .getForObject(url.toString(), AzCrawlResponse::class.java)
+                            ?.output
+                      }
+                          ?: emptyList()
+                  it.toCrawlResultat(urlList)
+                }
+              } catch (e: Throwable) {
+                logger.error(
+                    "Måling ${maalingDTO.id} med status ${maalingDTO.status} har ingen output etter crawling")
+                emptyList()
+              }
+
+          maalingDTO.toMaaling().copy(crawlResultat = crawlResultat)
+        } else maalingDTO.toMaaling()
+    // TODO - flytt til testing-app
+
+    return ResponseEntity.ok(maaling)
   }
 
   @PostMapping
-  fun createNew(@RequestBody dto: NyMaalingDTO): ResponseEntity<out Any> =
+  fun createNew(@RequestBody dto: MaalingInit): ResponseEntity<out Any> =
       runCatching {
             val location =
-                restTemplate.postForLocation(maalingUrl, dto, Int::class.java)
+                restTemplate.postForLocation(maalingUrl, dto.toNyMaalingDTO(), Int::class.java)
                     ?: throw RuntimeException(
                         "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
             val newMaaling =
@@ -101,7 +107,7 @@ class MaalingResource(
       runCatching {
             restTemplate.put(
                 "${maalingUrl}/${id}/status",
-                HttpEntity(mapOf("status" to status.validateStatus())))
+                HttpEntity(mapOf("status" to MaalingStatus.valueOf(status))))
             getMaaling(id)
           }
           .getOrElse {
@@ -117,9 +123,4 @@ class MaalingResource(
         logger.error("klarte ikke å hente løsninger", e)
         throw Error("Klarte ikke å hente løsninger")
       }
-
-  fun String.validateStatus(): String =
-      if (this !in listOf("planlegging", "crawling"))
-          throw IllegalArgumentException("Ugyldig status")
-      else this
 }

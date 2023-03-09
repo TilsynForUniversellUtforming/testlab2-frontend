@@ -5,6 +5,9 @@ export type Levels = {
   primary: string;
   danger: string;
   success: string;
+  isPrimary?: boolean;
+  isDanger?: boolean;
+  isSuccess?: boolean;
 };
 
 interface Props {
@@ -27,9 +30,9 @@ const StatusBadge = ({ label, levels }: Props) => {
   return (
     <Badge
       bg={classNames(
-        { primary: label === levels?.primary },
-        { danger: label === levels?.danger },
-        { success: label === levels?.success },
+        { primary: label === levels?.primary || levels?.isPrimary },
+        { danger: label === levels?.danger || levels?.isDanger },
+        { success: label === levels?.success || levels?.isSuccess },
         'secondary'
       )}
     >

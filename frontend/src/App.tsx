@@ -22,8 +22,8 @@ import SakOverviewApp from './sak/overview/SakOverviewApp';
 import SakApp from './sak/SakApp';
 import SakCreate from './sak/SakCreate';
 import SakEdit from './sak/SakEdit';
-import CrawlingApp from './tester/crawling/CrawlingApp';
 import KvalitetssikringApp from './tester/kvalitetssikring/KvalitetssikringApp';
+import SideutvalApp from './tester/sideutval/SideutvalApp';
 import TestResultListApp from './tester/test-result-list/TestResultListApp';
 import TesterApp from './tester/TesterApp';
 import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
@@ -101,8 +101,8 @@ function App() {
           <Route path={appRoutes.KRAV_LIST.path} element={<KravApp />} />
           <Route path={appRoutes.TEST.path} element={<TesterApp />}>
             <Route
-              path={appRoutes.TEST_CRAWLING_LIST.path}
-              element={<CrawlingApp />}
+              path={appRoutes.TEST_SIDEUTVAL_LIST.path}
+              element={<SideutvalApp />}
             />
             <Route
               path={appRoutes.TEST_CRAWLING_RESULT_LIST.path}

@@ -47,7 +47,7 @@ const SakCreate = () => {
         // TODO - Bytt ut med createSak
         const maaling = await createMaaling(maalingInit);
         setMaaling(maaling);
-        navigate(getFullPath(appRoutes.SAK, String(maaling.id)));
+        navigate(getFullPath(appRoutes.MAALING, String(maaling.id)));
       } catch (e) {
         setContextError('Kunne ikkje lage måling');
       }

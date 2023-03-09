@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import java.net.URL
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class CrawlResultat(
+data class CrawlResultatDTO(
     val loeysing: Loeysing,
     val type: CrawlStatus,
+    val statusUrl: URL?,
     val feilmelding: String?,
-    val urlList: List<URL>?
+    val nettsider: List<URL>?,
 )
-
-fun CrawlResultatDTO.toCrawlResultat(urlList: List<URL> = emptyList()) =
-    CrawlResultat(this.loeysing, this.type, this.feilmelding, urlList)
