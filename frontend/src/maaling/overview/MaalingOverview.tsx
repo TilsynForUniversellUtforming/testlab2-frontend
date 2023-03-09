@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Col,
-  Container,
-  ListGroup,
-  Row,
-  Spinner,
-} from 'react-bootstrap';
+import { Button, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import {
   Link,
   useNavigate,
@@ -14,11 +7,12 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import { appRoutes, getFullPath } from '../../common/appRoutes';
+import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import StatusIcon from '../../common/status-badge/StatusIcon';
 import { MaalingContext } from '../types';
+import MaalingSkeleton from './skeleton/MaalingSkeleton';
 
 const MaalingOverview = () => {
   const { loading, error, maaling, handleStartCrawling }: MaalingContext =
@@ -27,15 +21,7 @@ const MaalingOverview = () => {
   const navigate = useNavigate();
 
   if (loading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <MaalingSkeleton />;
   }
 
   if (!maaling || error) {
@@ -58,7 +44,12 @@ const MaalingOverview = () => {
               <Row>
                 <Col className="fw-bold">Sak:</Col>
                 <Col>
-                  <Link to={getFullPath(appRoutes.MAALING, id)}>
+                  <Link
+                    to={getFullPath(appRoutes.MAALING, {
+                      pathParam: idPath,
+                      id: String(id),
+                    })}
+                  >
                     {maaling.navn}
                   </Link>
                 </Col>
@@ -149,18 +140,14 @@ const MaalingOverview = () => {
               )}
               {(maaling.status === 'crawling' ||
                 maaling.status === 'kvalitetssikring') && (
-                <Button
-                  onClick={() =>
-                    navigate(
-                      getFullPath(
-                        appRoutes.TEST_SIDEUTVAL_LIST,
-                        String(maaling.id)
-                      )
-                    )
-                  }
+                <Link
+                  to={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+                    pathParam: idPath,
+                    id: String(maaling.id),
+                  })}
                 >
-                  Se sideutvalg
-                </Button>
+                  <Button>Se sideutvalg</Button>
+                </Link>
               )}
             </ListGroup.Item>
           </ListGroup>

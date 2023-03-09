@@ -3,7 +3,7 @@ import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
-import { appRoutes, getFullPath } from '../common/appRoutes';
+import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import { createMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
@@ -47,7 +47,12 @@ const SakCreate = () => {
         // TODO - Bytt ut med createSak
         const maaling = await createMaaling(maalingInit);
         setMaaling(maaling);
-        navigate(getFullPath(appRoutes.MAALING, String(maaling.id)));
+        navigate(
+          getFullPath(appRoutes.MAALING, {
+            pathParam: idPath,
+            id: String(maaling.id),
+          })
+        );
       } catch (e) {
         setContextError('Kunne ikkje lage måling');
       }

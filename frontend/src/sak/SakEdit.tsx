@@ -3,7 +3,7 @@ import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
-import { appRoutes, getFullPath } from '../common/appRoutes';
+import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
@@ -48,7 +48,12 @@ const SakEdit = () => {
         // TODO - Bytt ut med updateSak
         const maaling = await updateMaaling(maalingInit);
         setMaaling(maaling);
-        navigate(getFullPath(appRoutes.SAK, String(maaling.id)));
+        navigate(
+          getFullPath(appRoutes.SAK, {
+            pathParam: idPath,
+            id: String(maaling.id),
+          })
+        );
       } catch (e) {
         setContextError('Kunne ikkje lage sak');
       }

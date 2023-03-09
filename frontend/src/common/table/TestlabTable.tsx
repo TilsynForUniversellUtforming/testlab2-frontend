@@ -33,6 +33,8 @@ export interface Style {
   fixed?: boolean;
 }
 
+export type FilterPreference = 'all' | 'none' | 'searchbar' | 'rowsearch';
+
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
@@ -60,7 +62,7 @@ interface Props<T extends object> {
   defaultColumns: ColumnDef<T>[];
   error: any;
   loading?: boolean;
-  showFilters?: boolean;
+  filterPreference?: FilterPreference;
   selectedRows?: boolean[];
   onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
   onClickRetry?: () => void;
@@ -72,7 +74,7 @@ const TestlabTable = <T extends object>({
   defaultColumns,
   error,
   loading = false,
-  showFilters = true,
+  filterPreference = 'all',
   selectedRows = [],
   onSelectRows,
   onClickRetry,
@@ -147,7 +149,7 @@ const TestlabTable = <T extends object>({
     <div className="p-2 testlab-table">
       <ControlHeader
         loading={loading}
-        showFilters={showFilters}
+        filterPreference={filterPreference}
         table={table}
         filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
@@ -170,7 +172,7 @@ const TestlabTable = <T extends object>({
                   key={header.id}
                   table={table}
                   header={header}
-                  showFilters={showFilters}
+                  filterPreference={filterPreference}
                   loading={loading}
                 />
               ))}

@@ -11,3 +11,7 @@ export interface MaalingContext extends AppContext {
   showMaalinger: boolean;
   handleStartCrawling: (maaling: Maaling) => void;
 }
+
+export type CrawlUrl = {
+  url: string;
+};
