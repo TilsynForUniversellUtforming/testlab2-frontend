@@ -4,15 +4,16 @@ import React from 'react';
 import { Button, Stack } from 'react-bootstrap';
 
 import TableFilter from './control/filter/TableFilter';
+import { FilterPreference } from './TestlabTable';
 
 export interface Props {
   table: Table<any>;
   header: Header<any, unknown>;
-  showFilters: boolean;
+  filterPreference: FilterPreference;
   loading: boolean;
 }
 
-const TableHeader = ({ table, header, showFilters, loading }: Props) => {
+const TableHeader = ({ table, header, filterPreference, loading }: Props) => {
   if (header.isPlaceholder) {
     return null;
   }
@@ -27,6 +28,9 @@ const TableHeader = ({ table, header, showFilters, loading }: Props) => {
       </th>
     );
   }
+
+  const showFilters =
+    filterPreference !== 'none' && filterPreference !== 'searchbar';
 
   return (
     <th colSpan={header.colSpan}>

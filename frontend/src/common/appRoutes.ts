@@ -268,11 +268,26 @@ export const verktoey = [
   appRoutes.KRAV_LIST,
 ];
 
-export const getFullPath = (route: AppRoute, id?: string): string => {
-  const path = route.parentRoute?.path
+export type IdReplacement = {
+  id: string;
+  pathParam: string;
+};
+
+export const getFullPath = (
+  route: AppRoute,
+  ...ids: IdReplacement[]
+): string => {
+  let path = route.parentRoute?.path
     ? [route.parentRoute.path, route.path].join('/')
     : route.path;
-  return `/${id ? path.replace(idPath, id) : path}`;
+
+  if (ids) {
+    for (const { id, pathParam } of ids) {
+      path = path.replace(pathParam, id);
+    }
+  }
+
+  return `/${path}`;
 };
 
 export default appRoutes;

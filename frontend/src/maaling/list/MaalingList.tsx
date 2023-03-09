@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
-import { appRoutes, getFullPath } from '../../common/appRoutes';
+import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ErrorCard from '../../common/error/ErrorCard';
 import useFeatureToggles from '../../common/features/hooks/useFeatureToggles';
@@ -43,7 +43,12 @@ const MaalingList = () => {
       accessorFn: (row) => row.navn,
       id: 'Navn',
       cell: ({ row, getValue }) => (
-        <Link to={getFullPath(appRoutes.MAALING, String(row.original.id))}>
+        <Link
+          to={getFullPath(appRoutes.MAALING, {
+            pathParam: idPath,
+            id: String(row.original.id),
+          })}
+        >
           {String(getValue())}
         </Link>
       ),

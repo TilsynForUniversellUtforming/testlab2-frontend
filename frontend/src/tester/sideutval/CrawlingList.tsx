@@ -1,10 +1,11 @@
-import { ColumnDef } from '@tanstack/react-table';
-import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { ColumnDef, Row } from '@tanstack/react-table';
+import React, { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { appRoutes, getFullPath } from '../../common/appRoutes';
+import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
+import UserActions from '../../common/table/user-actions/UserActions';
 import { CrawlResultat } from '../../maaling/api/types';
 
 export interface Props {
@@ -14,21 +15,42 @@ export interface Props {
 }
 
 const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
+  const navigate = useNavigate();
+
+  const onClickEdit = useCallback((row: Row<CrawlResultat>) => {
+    const path = getFullPath(
+      appRoutes.TEST_CRAWLING_RESULT_LIST,
+      { pathParam: idPath, id: String(maalingId) },
+      {
+        pathParam: ':loeysingId',
+        id: String(row.original.loeysing.id),
+      }
+    );
+
+    navigate(path);
+  }, []);
+
   const crawlColumns = useMemo<ColumnDef<CrawlResultat>[]>(
     () => [
       {
+        id: 'Handling',
+        cell: ({ row }) => {
+          const tooltip = `Gå til løysing ${row.original.loeysing.url}`;
+          return (
+            <UserActions
+              editAction={onClickEdit}
+              editTooltip={tooltip}
+              row={row}
+            />
+          );
+        },
+        enableSorting: false,
+        size: 1,
+      },
+      {
         accessorFn: (row) => row.loeysing.url,
         id: 'url',
-        cell: ({ row }) => (
-          <Link
-            to={`${getFullPath(
-              appRoutes.TEST_SIDEUTVAL_LIST,
-              String(maalingId)
-            )}/${row.original.loeysing.id}`}
-          >
-            {row.original.loeysing.url}
-          </Link>
-        ),
+        cell: ({ row }) => <span>{row.original.loeysing.url}</span>,
         header: () => <span>Løsying</span>,
       },
       {
@@ -73,6 +95,7 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
       data={crawlList}
       defaultColumns={crawlColumns}
       error={error}
+      filterPreference="searchbar"
     />
   );
 };

@@ -3,7 +3,7 @@ import './maalingApp.scss';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
-import { appRoutes, getFullPath } from '../common/appRoutes';
+import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
@@ -49,7 +49,10 @@ const MaalingApp = () => {
           setError('Noko gjekk gale ved oppretting av måling');
         } else {
           navigate(
-            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, String(maaling.id))
+            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+              pathParam: idPath,
+              id: String(maaling.id),
+            })
           );
         }
       } catch (e) {

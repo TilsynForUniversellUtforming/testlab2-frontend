@@ -3,12 +3,13 @@ import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import DebouncedInput from '../../DebouncedInput';
+import { FilterPreference } from '../TestlabTable';
 import PageSizeSelection from './pagination/PageSizeSelection';
 
 export interface Props {
   loading: boolean;
   table: Table<any>;
-  showFilters: boolean;
+  filterPreference: FilterPreference;
   filterValue: string;
   onChangeFilter: (value: string | number) => void;
   small?: boolean;
@@ -17,7 +18,7 @@ export interface Props {
 const ControlHeader = ({
   loading,
   table,
-  showFilters,
+  filterPreference,
   filterValue,
   onChangeFilter,
   small = false,
@@ -25,6 +26,9 @@ const ControlHeader = ({
   if (small) {
     return null;
   }
+
+  const showFilters =
+    filterPreference !== 'none' && filterPreference !== 'rowsearch';
 
   return (
     <Container className="pb-4">
