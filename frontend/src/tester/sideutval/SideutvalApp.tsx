@@ -54,7 +54,7 @@ const SideutvalApp = () => {
 
   return (
     <>
-      <AppTitle title="Sideutval" />
+      <AppTitle title="Sideutval" subTitle={maaling?.navn} />
       <CrawlingList
         maalingId={Number(id)}
         crawlList={crawlResultat}
