@@ -147,12 +147,13 @@ const MaalingOverview = () => {
                   Start sideutvalg
                 </Button>
               )}
-              {maaling.status === 'crawling' && (
+              {(maaling.status === 'crawling' ||
+                maaling.status === 'kvalitetssikring') && (
                 <Button
                   onClick={() =>
                     navigate(
                       getFullPath(
-                        appRoutes.TEST_CRAWLING_LIST,
+                        appRoutes.TEST_SIDEUTVAL_LIST,
                         String(maaling.id)
                       )
                     )

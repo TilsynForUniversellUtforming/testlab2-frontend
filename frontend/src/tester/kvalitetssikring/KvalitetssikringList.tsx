@@ -1,13 +1,7 @@
-import { ColumnDef, Row, Table } from '@tanstack/react-table';
-import React, { useCallback, useMemo } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import React, { useMemo } from 'react';
 
 import TestlabTable from '../../common/table/TestlabTable';
-import UserActions, {
-  ColumnUserAction,
-} from '../../common/table/user-actions/UserActions';
-import UserTableActions, {
-  HeaderUserAction,
-} from '../../common/table/user-actions/UserTableAction';
 import { Loeysing } from '../../loeysingar/api/types';
 
 export interface Props {
@@ -17,38 +11,38 @@ export interface Props {
 }
 
 const KvalitetssikringList = ({ error, loading, loeysingList }: Props) => {
-  const doStart = (loeysing: Loeysing) => {
-    console.log('starter crawl for ' + loeysing.url);
-  };
-
-  const onClickStart = useCallback((e: Row<Loeysing>) => {
-    doStart(e.original);
-  }, []);
-
-  const onClickStartAll = useCallback((e: Table<Loeysing>) => {
-    e.getCoreRowModel().rows.map((row) => {
-      doStart(row.original);
-    });
-  }, []);
-
-  const headerUserAction: HeaderUserAction = {
-    startAllAction: onClickStartAll,
-  };
-  const columnUserAction: ColumnUserAction = { startAction: onClickStart };
+  // const doStart = (loeysing: Loeysing) => {
+  //   console.log('starter test for ' + loeysing.url);
+  // };
+  //
+  // const onClickStart = useCallback((e: Row<Loeysing>) => {
+  //   doStart(e.original);
+  // }, []);
+  //
+  // const onClickStartAll = useCallback((e: Table<Loeysing>) => {
+  //   e.getCoreRowModel().rows.map((row) => {
+  //     doStart(row.original);
+  //   });
+  // }, []);
+  //
+  // // const headerUserAction: HeaderUserAction = {
+  // //   startAllAction: onClickStartAll,
+  // // };
+  // const columnUserAction: ColumnUserAction = { startAction: onClickStart };
 
   const loeysingColumns = useMemo<ColumnDef<Loeysing>[]>(
     () => [
-      {
-        id: 'Handling',
-        cell: ({ row }) => <UserActions {...columnUserAction} row={row} />,
-        enableSorting: false,
-        header: ({ table }) => (
-          <span>
-            <UserTableActions {...headerUserAction} table={table} />
-          </span>
-        ),
-        size: 1,
-      },
+      // {
+      //   id: 'Handling',
+      //   cell: ({ row }) => <UserActions {...columnUserAction} row={row} />,
+      //   enableSorting: false,
+      //   header: ({ table }) => (
+      //     <span>
+      //       <UserTableActions {...headerUserAction} table={table} />
+      //     </span>
+      //   ),
+      //   size: 1,
+      // },
       {
         accessorFn: (row) => row.namn,
         id: 'Navn',

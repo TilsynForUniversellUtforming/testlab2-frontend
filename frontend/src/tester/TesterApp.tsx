@@ -1,9 +1,10 @@
 import './tester.scss';
 
 import React, { useCallback, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import { Outlet, useParams } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
+import ErrorCard from '../common/error/ErrorCard';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
@@ -22,6 +23,10 @@ const TesterApp = () => {
 
   const handleLoading = useCallback((loading: boolean) => {
     setLoading(loading);
+  }, []);
+
+  const handleSetMaaling = useCallback((maaling: Maaling) => {
+    setMaaling(maaling);
   }, []);
 
   const doFetchData = useCallback(() => {
@@ -49,20 +54,23 @@ const TesterApp = () => {
   });
 
   const testRegelContext: TesterContext = {
+    maaling: maaling,
+    setMaaling: handleSetMaaling,
     error: error,
     loading: loading,
-    maaling: maaling,
     setContextError: handleError,
     setLoading: handleLoading,
-    refresh: doFetchData,
   };
 
-  return (
-    <>
-      <AppTitle title="Tester" />
-      <Outlet context={testRegelContext} />
-    </>
-  );
+  if (loading) {
+    return <Spinner />;
+  }
+
+  if (typeof maaling === 'undefined') {
+    return <ErrorCard errorText="Ingen måling funnet" />;
+  }
+
+  return <Outlet context={testRegelContext} />;
 };
 
 export default TesterApp;

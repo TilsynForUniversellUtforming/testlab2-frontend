@@ -8,5 +8,5 @@ data class MaalingDTO(
     val navn: String,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>?,
-    val crawlResultat: List<CrawlResultat>?
+    val crawlResultat: List<CrawlResultatDTO>?
 )

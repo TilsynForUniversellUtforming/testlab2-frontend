@@ -49,7 +49,7 @@ interface IRoutes {
 
   TEST: AppRoute;
   TEST_CONFIRM: AppRoute;
-  TEST_CRAWLING_LIST: AppRoute;
+  TEST_SIDEUTVAL_LIST: AppRoute;
   TEST_CRAWLING_RESULT_LIST: AppRoute;
   TEST_TESTING_LIST: AppRoute;
   TEST_RESULT_LIST: AppRoute;
@@ -198,15 +198,15 @@ const TEST_CONFIRM = {
   parentRoute: TEST,
 };
 
-const TEST_CRAWLING_LIST = {
-  navn: 'Crawling',
-  path: ':id/crawling',
+const TEST_SIDEUTVAL_LIST = {
+  navn: 'Sideutval',
+  path: ':id/sideutval',
   parentRoute: TEST,
 };
 
 const TEST_CRAWLING_RESULT_LIST = {
   navn: 'Kvalitetssikring',
-  path: ':id/kvalitetssikring',
+  path: ':id/sideutval/:loeysingId',
   parentRoute: TEST,
 };
 
@@ -253,7 +253,7 @@ export const appRoutes: IRoutes = {
 
   TEST: TEST,
   TEST_CONFIRM: TEST_CONFIRM,
-  TEST_CRAWLING_LIST: TEST_CRAWLING_LIST,
+  TEST_SIDEUTVAL_LIST: TEST_SIDEUTVAL_LIST,
   TEST_CRAWLING_RESULT_LIST: TEST_CRAWLING_RESULT_LIST,
   TEST_TESTING_LIST: TEST_TESTING_LIST,
   TEST_RESULT_LIST: TEST_RESULT_LIST,

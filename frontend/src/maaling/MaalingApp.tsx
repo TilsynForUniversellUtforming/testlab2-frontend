@@ -49,7 +49,7 @@ const MaalingApp = () => {
           setError('Noko gjekk gale ved oppretting av måling');
         } else {
           navigate(
-            getFullPath(appRoutes.TEST_CRAWLING_LIST, String(maaling.id))
+            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, String(maaling.id))
           );
         }
       } catch (e) {

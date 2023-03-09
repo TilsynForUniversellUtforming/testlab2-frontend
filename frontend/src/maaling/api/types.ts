@@ -11,9 +11,10 @@ export type CrawlStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 export type CrawlResultat = {
   type: CrawlStatus;
   loeysing: Loeysing;
+  urlList?: string[];
 };
 
-export type MaalingStatus = 'planlegging' | 'crawling';
+export type MaalingStatus = 'planlegging' | 'crawling' | 'kvalitetssikring';
 
 export type Maaling = {
   id: number;
