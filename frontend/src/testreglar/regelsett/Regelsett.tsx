@@ -17,11 +17,11 @@ import { TestregelContext } from '../types';
 
 const Regelsett = () => {
   const {
-    error,
-    loading,
+    contextError,
+    contextLoading,
     regelsett,
     setContextError,
-    setLoading,
+    setContextLoading,
     setRegelsettList,
   }: TestregelContext = useOutletContext();
   const navigate = useNavigate();
@@ -54,12 +54,12 @@ const Regelsett = () => {
       setRegelsettList(data);
     };
 
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     deleteAndFetchRegelsett()
       .catch((e) => setContextError(e))
-      .finally(() => setLoading(false));
+      .finally(() => setContextLoading(false));
   }, [deleteRow]);
 
   const onClickEdit = useCallback((regelsettRow: Row<TestRegelsett>) => {
@@ -114,13 +114,13 @@ const Regelsett = () => {
       <TestlabLinkButton
         type="add"
         route={appRoutes.REGELSETT_CREATE}
-        disabled={loading || error}
+        disabled={contextLoading || contextError}
       />
       <TestlabTable<TestRegelsett>
         data={regelsett}
         defaultColumns={testRegelColumns}
-        error={error}
-        loading={loading}
+        error={contextError}
+        loading={contextLoading}
         customStyle={{ small: true }}
       />
     </>

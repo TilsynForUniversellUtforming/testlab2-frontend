@@ -1,5 +1,5 @@
 import { responseToJson } from '../../common/util/api/util';
-import { Maaling, MaalingInit, MaalingStatus } from './types';
+import { Maaling, MaalingEdit, MaalingInit, MaalingStatus } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
@@ -10,14 +10,16 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
     body: JSON.stringify(maaling),
   }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
 
-export const updateMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
+export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maaling),
-  }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke oppdatere måling')
+  );
 
 export const updateMaalingStatus = async (
   id: number,
@@ -42,3 +44,13 @@ export const fetchMaaling = async (id: number): Promise<Maaling> =>
   fetch(`/api/v1/maalinger/${id}`, {
     method: 'GET',
   }).then((response) => responseToJson(response, 'Kunne ikke hente måling'));
+
+export const restartCrawling = async (
+  maalingId: number,
+  loeysingId: number
+): Promise<Maaling> =>
+  fetch(`/api/v1/maalinger/${maalingId}/${loeysingId}`, {
+    method: 'PUT',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje restarte måling')
+  );

@@ -35,14 +35,20 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
       {
         id: 'Handling',
         cell: ({ row }) => {
+          const status = row.original.type;
           const tooltip = `Gå til løysing ${row.original.loeysing.url}`;
-          return (
-            <UserActions
-              editAction={onClickEdit}
-              editTooltip={tooltip}
-              row={row}
-            />
-          );
+
+          if (status !== 'ikke_ferdig') {
+            return (
+              <UserActions
+                editAction={onClickEdit}
+                editTooltip={tooltip}
+                row={row}
+              />
+            );
+          } else {
+            return null;
+          }
         },
         enableSorting: false,
         size: 1,

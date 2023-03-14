@@ -10,12 +10,12 @@ import TestreglarForm from './TestreglarForm';
 
 const EditTestreglar = () => {
   const {
-    error,
-    loading,
+    contextError,
+    contextLoading,
     testreglar,
     krav,
     setTestregelList,
-    setLoading,
+    setContextLoading,
     setContextError,
   }: TestregelContext = useOutletContext();
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const EditTestreglar = () => {
       setTestregelList(data);
     };
 
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     update()
@@ -51,12 +51,12 @@ const EditTestreglar = () => {
         setContextError(e.message);
       })
       .finally(() => {
-        setLoading(false);
+        setContextLoading(false);
         navigate('..');
       });
   }, []);
 
-  if (loading) {
+  if (contextLoading) {
     return (
       <Spinner
         as="span"
@@ -68,8 +68,8 @@ const EditTestreglar = () => {
     );
   }
 
-  if (error || typeof testregel === 'undefined') {
-    return <ErrorCard show={error} />;
+  if (contextError || typeof testregel === 'undefined') {
+    return <ErrorCard show={contextError} />;
   }
 
   return (

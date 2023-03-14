@@ -19,7 +19,10 @@ import useValidate, {
 } from '../../common/form/hooks/useValidate';
 import TestlabForm from '../../common/form/TestlabForm';
 import StatusBadge from '../../common/status-badge/StatusBadge';
-import IndeterminateCheckbox from '../../common/table/control/toggle/IndeterminateCheckbox';
+import {
+  HeaderCheckbox,
+  RowCheckbox,
+} from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { Testregel, TestRegelsett } from '../api/types';
 import { evneAlle, evneList, TestregelContext } from '../types';
@@ -33,8 +36,12 @@ export interface Props {
 
 const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
   const { formState } = formMethods;
-  const { error, loading, testreglar, refresh }: TestregelContext =
-    useOutletContext();
+  const {
+    contextError,
+    contextLoading,
+    testreglar,
+    refresh,
+  }: TestregelContext = useOutletContext();
 
   const { control, setValue, setError, clearErrors } = formMethods;
 
@@ -69,21 +76,8 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
     () => [
       {
         id: 'Handling',
-        header: ({ table }) => (
-          <IndeterminateCheckbox
-            checked={table.getIsAllRowsSelected()}
-            indeterminate={table.getIsSomeRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
-        cell: ({ row }) => (
-          <IndeterminateCheckbox
-            checked={row.getIsSelected()}
-            disabled={!row.getCanSelect()}
-            indeterminate={row.getIsSomeSelected()}
-            onChange={row.getToggleSelectedHandler()}
-          />
-        ),
+        header: ({ table }) => <HeaderCheckbox table={table} />,
+        cell: ({ row }) => <RowCheckbox row={row} />,
         size: 1,
       },
       {
@@ -198,8 +192,8 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
               <TestlabTable<Testregel>
                 data={selectableTestreglar}
                 defaultColumns={testRegelColumns}
-                error={error}
-                loading={loading}
+                error={contextError}
+                loading={contextLoading}
                 selectedRows={selectedRows}
                 onSelectRows={onChangeRows}
                 onClickRetry={refresh}

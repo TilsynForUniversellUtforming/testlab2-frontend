@@ -1,16 +1,12 @@
 package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
-import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.AzCrawlResponse
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toNyMaalingDTO
 import org.slf4j.LoggerFactory
@@ -33,10 +29,10 @@ class MaalingResource(
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
   @GetMapping
-  fun list(): List<MaalingDTO> {
+  fun list(): List<Maaling> {
     return try {
       logger.info("henter målinger fra ${maalingUrl}")
-      restTemplate.getList(maalingUrl)
+      restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
       logger.error("klarte ikke å hente målinger", e)
       throw Error("Klarte ikke å hente målinger")
@@ -50,33 +46,7 @@ class MaalingResource(
         restTemplate.getForObject("${maalingUrl}/${id}", MaalingDTO::class.java)
             ?: throw RuntimeException("Klarte ikke å hente den måling fra server")
 
-    // TODO - flytt til testing-app
-    val maaling =
-        if (maalingDTO.status === MaalingStatus.kvalitetssikring &&
-            maalingDTO.crawlResultat != null) {
-          val crawlResultat: List<CrawlResultat> =
-              try {
-                maalingDTO.crawlResultat.map {
-                  val urlList: List<URL> =
-                      it.statusUrl?.let { url ->
-                        restTemplate
-                            .getForObject(url.toString(), AzCrawlResponse::class.java)
-                            ?.output
-                      }
-                          ?: emptyList()
-                  it.toCrawlResultat(urlList)
-                }
-              } catch (e: Throwable) {
-                logger.error(
-                    "Måling ${maalingDTO.id} med status ${maalingDTO.status} har ingen output etter crawling")
-                emptyList()
-              }
-
-          maalingDTO.toMaaling().copy(crawlResultat = crawlResultat)
-        } else maalingDTO.toMaaling()
-    // TODO - flytt til testing-app
-
-    return ResponseEntity.ok(maaling)
+    return ResponseEntity.ok(maalingDTO.toMaaling())
   }
 
   @PostMapping
@@ -123,4 +93,17 @@ class MaalingResource(
         logger.error("klarte ikke å hente løsninger", e)
         throw Error("Klarte ikke å hente løsninger")
       }
+
+  @PutMapping("{id}/{loeysingId}")
+  fun restartCrawlForMaalingLoeysing(
+      @PathVariable id: Int,
+      @PathVariable loeysingId: Int,
+  ): ResponseEntity<out Any> =
+      runCatching {
+            restTemplate.put("${maalingUrl}/${id}/${loeysingId}", Unit)
+            getMaaling(id)
+          }
+          .getOrElse {
+            ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
+          }
 }

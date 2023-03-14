@@ -4,11 +4,15 @@ import { Col, Form, Row } from 'react-bootstrap';
 import { LoadingTableProps } from '../../types';
 
 const PageSizeSelection = ({ table, loading }: LoadingTableProps) => (
-  <Form className="w-50">
+  <Form>
     <Row>
-      <Form.Label column htmlFor="formPageSizeSelection" className="p-0">
-        Elementer per side
-      </Form.Label>
+      <Col>
+        <Form.Label column htmlFor="formPageSizeSelection">
+          Elementer per side
+        </Form.Label>
+      </Col>
+    </Row>
+    <Row className="w-50">
       <Col>
         <Form.Select
           id="formPageSizeSelection"
@@ -18,7 +22,6 @@ const PageSizeSelection = ({ table, loading }: LoadingTableProps) => (
           }}
           size="sm"
           disabled={loading}
-          className="w-75"
         >
           {[10, 25, 50, 100].map((pageSize) => (
             <option key={`pageSize_${pageSize}`} value={pageSize}>

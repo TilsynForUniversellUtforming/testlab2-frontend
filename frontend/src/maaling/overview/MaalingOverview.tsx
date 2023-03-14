@@ -15,16 +15,20 @@ import { MaalingContext } from '../types';
 import MaalingSkeleton from './skeleton/MaalingSkeleton';
 
 const MaalingOverview = () => {
-  const { loading, error, maaling, handleStartCrawling }: MaalingContext =
-    useOutletContext();
+  const {
+    contextLoading,
+    contextError,
+    maaling,
+    handleStartCrawling,
+  }: MaalingContext = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  if (loading) {
+  if (contextLoading) {
     return <MaalingSkeleton />;
   }
 
-  if (!maaling || error) {
+  if (!maaling || contextError) {
     return <ErrorCard />;
   }
 

@@ -10,11 +10,11 @@ import TestreglarForm from './TestreglarForm';
 
 const CreateTestregel = () => {
   const {
-    error,
-    loading,
+    contextError,
+    contextLoading,
     krav,
     setTestregelList,
-    setLoading,
+    setContextLoading,
     setContextError,
   }: TestregelContext = useOutletContext();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const CreateTestregel = () => {
       setTestregelList(data);
     };
 
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     create()
@@ -43,12 +43,12 @@ const CreateTestregel = () => {
         setContextError(e.message);
       })
       .finally(() => {
-        setLoading(false);
+        setContextLoading(false);
         navigate('..');
       });
   }, []);
 
-  if (loading) {
+  if (contextLoading) {
     return (
       <Spinner
         as="span"
@@ -60,8 +60,8 @@ const CreateTestregel = () => {
     );
   }
 
-  if (error) {
-    return <ErrorCard show={error} />;
+  if (contextError) {
+    return <ErrorCard show={contextError} />;
   }
 
   return (

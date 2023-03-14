@@ -10,7 +10,7 @@ import SakNavbar from './SakNavbar';
 const SakOverviewApp = () => {
   const context: SakContext = useOutletContext();
 
-  if (context.loading) {
+  if (context.contextLoading) {
     return (
       <Spinner
         as="span"
@@ -22,7 +22,7 @@ const SakOverviewApp = () => {
     );
   }
 
-  if (!context.maaling || context.error) {
+  if (!context.maaling || context.contextError) {
     return <ErrorCard />;
   }
 

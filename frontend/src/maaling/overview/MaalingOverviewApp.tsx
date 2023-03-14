@@ -10,7 +10,7 @@ import MaalingNavbar from './MaalingNavbar';
 const MaalingOverviewApp = () => {
   const context: MaalingContext = useOutletContext();
 
-  if (context.loading) {
+  if (context.contextLoading) {
     return (
       <Spinner
         as="span"
@@ -22,7 +22,7 @@ const MaalingOverviewApp = () => {
     );
   }
 
-  if (!context.maaling || context.error) {
+  if (!context.maaling || context.contextError) {
     return <ErrorCard />;
   }
 

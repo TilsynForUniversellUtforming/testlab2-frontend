@@ -15,7 +15,7 @@ const EditRegelsett = () => {
     regelsett,
     setRegelsettList,
     setContextError,
-    setLoading,
+    setContextLoading,
   }: TestregelContext = useOutletContext();
   const { id } = useParams();
   const numberId = Number(id);
@@ -52,7 +52,7 @@ const EditRegelsett = () => {
       setRegelsettList(data);
     };
 
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     addRegelsett()
@@ -60,7 +60,7 @@ const EditRegelsett = () => {
         setContextError(e.message);
       })
       .finally(() => {
-        setLoading(false);
+        setContextLoading(false);
         navigate('..');
       });
   }, []);
