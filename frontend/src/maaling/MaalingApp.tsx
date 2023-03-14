@@ -105,10 +105,10 @@ const MaalingApp = () => {
   });
 
   const maalingContext: MaalingContext = {
-    error: error,
+    contextError: error,
     setContextError: handleError,
-    loading: loading,
-    setLoading: handleLoading,
+    contextLoading: loading,
+    setContextLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
     refresh: refresh,

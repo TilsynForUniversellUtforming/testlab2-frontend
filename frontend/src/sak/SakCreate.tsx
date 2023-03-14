@@ -18,9 +18,9 @@ const SakCreate = () => {
     regelsettList,
     loeysingList,
     setMaaling,
-    loading,
-    setLoading,
-    error,
+    contextLoading,
+    setContextLoading,
+    contextError,
     setContextError,
   }: SakContext = useOutletContext();
 
@@ -34,7 +34,7 @@ const SakCreate = () => {
     useState<SakFormState>(defaultState);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     const doCreateMaaling = async () => {
@@ -61,7 +61,7 @@ const SakCreate = () => {
     doCreateMaaling()
       .catch((e) => setContextError(e))
       .finally(() => {
-        setLoading(false);
+        setContextLoading(false);
       });
   }, []);
 
@@ -98,8 +98,8 @@ const SakCreate = () => {
           <SakStepForm
             maalingFormState={maalingFormState}
             step={currentStep}
-            loading={loading}
-            error={error}
+            loading={contextLoading}
+            error={contextError}
             onClickBack={setPreviousStep}
             onSubmit={handleSubmit}
             regelsettList={regelsettList}

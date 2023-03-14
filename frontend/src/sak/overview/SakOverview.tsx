@@ -6,9 +6,10 @@ import ErrorCard from '../../common/error/ErrorCard';
 import { SakContext } from '../types';
 
 const SakOverview = () => {
-  const { loading, error, maaling }: SakContext = useOutletContext();
+  const { contextLoading, contextError, maaling }: SakContext =
+    useOutletContext();
 
-  if (loading) {
+  if (contextLoading) {
     return (
       <Spinner
         as="span"
@@ -20,7 +21,7 @@ const SakOverview = () => {
     );
   }
 
-  if (!maaling || error) {
+  if (!maaling || contextError) {
     return <ErrorCard />;
   }
 

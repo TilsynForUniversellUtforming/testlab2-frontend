@@ -17,12 +17,12 @@ import { TestregelContext } from '../types';
 
 const Testreglar = () => {
   const {
-    error,
-    loading,
+    contextError,
+    contextLoading,
     testreglar,
     setTestregelList,
     setContextError,
-    setLoading,
+    setContextLoading,
     refresh,
   }: TestregelContext = useOutletContext();
 
@@ -59,12 +59,12 @@ const Testreglar = () => {
       setTestregelList(data);
     };
 
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     deleteAndFetchTestregel()
       .catch((e) => setContextError(e))
-      .finally(() => setLoading(false));
+      .finally(() => setContextLoading(false));
   }, [deleteRow]);
 
   const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
@@ -127,7 +127,7 @@ const Testreglar = () => {
       <TestlabLinkButton
         type="add"
         route={appRoutes.REGELSETT_CREATE}
-        disabled={loading || error}
+        disabled={contextLoading || contextError}
       />
       <ConfirmDialog
         label={confirmLabel}
@@ -138,8 +138,8 @@ const Testreglar = () => {
       <TestlabTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
-        error={error}
-        loading={loading}
+        error={contextError}
+        loading={contextLoading}
         onClickRetry={refresh}
       />
     </>

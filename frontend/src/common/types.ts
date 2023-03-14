@@ -1,9 +1,9 @@
 export interface AppContext {
-  error?: any;
-  loading: boolean;
+  contextError?: any;
+  contextLoading: boolean;
   refresh?: () => void;
   setContextError: (e: any) => void;
-  setLoading: (loading: boolean) => void;
+  setContextLoading: (loading: boolean) => void;
 }
 
 export type Option = {

@@ -6,7 +6,10 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
-import IndeterminateCheckbox from '../../../common/table/control/toggle/IndeterminateCheckbox';
+import {
+  HeaderCheckbox,
+  RowCheckbox,
+} from '../../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../../common/table/TestlabTable';
 import { Loeysing } from '../../../loeysingar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../types';
@@ -66,21 +69,8 @@ const SakLoeysingStep = ({
     () => [
       {
         id: 'Handling',
-        header: ({ table }) => (
-          <IndeterminateCheckbox
-            checked={table.getIsAllRowsSelected()}
-            indeterminate={table.getIsSomeRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        ),
-        cell: ({ row }) => (
-          <IndeterminateCheckbox
-            checked={row.getIsSelected()}
-            disabled={!row.getCanSelect()}
-            indeterminate={row.getIsSomeSelected()}
-            onChange={row.getToggleSelectedHandler()}
-          />
-        ),
+        header: ({ table }) => <HeaderCheckbox table={table} />,
+        cell: ({ row }) => <RowCheckbox row={row} />,
         size: 1,
       },
       {

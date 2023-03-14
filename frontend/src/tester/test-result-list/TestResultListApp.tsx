@@ -72,8 +72,12 @@ const TestResultListApp = () => {
 
   const [testResult, setTestresult] = useState<TestResult[]>([]);
 
-  const { error, loading, setLoading, setContextError }: TesterContext =
-    useOutletContext();
+  const {
+    contextError,
+    contextLoading,
+    setContextLoading,
+    setContextError,
+  }: TesterContext = useOutletContext();
 
   const handleSetTestResult = useCallback((testResult: TestResult[]) => {
     setTestresult(testResult);
@@ -87,7 +91,7 @@ const TestResultListApp = () => {
     doFetchLoeysingList();
   });
 
-  if (!error && !loading && !testResult.length) {
+  if (!contextError && !contextLoading && !testResult.length) {
     return null;
   }
 
@@ -95,8 +99,8 @@ const TestResultListApp = () => {
     <TestlabTable<TestResult>
       data={testResult}
       defaultColumns={testResultatColumns}
-      error={error}
-      loading={loading}
+      error={contextError}
+      loading={contextLoading}
       onClickRetry={doFetchLoeysingList}
     />
   );

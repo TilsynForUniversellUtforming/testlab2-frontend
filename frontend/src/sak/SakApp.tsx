@@ -68,10 +68,10 @@ const SakApp = () => {
   });
 
   const sakContext: SakContext = {
-    error: error,
+    contextError: error,
     setContextError: handleError,
-    loading: loading,
-    setLoading: handleLoading,
+    contextLoading: loading,
+    setContextLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
     refresh: doFetchData,

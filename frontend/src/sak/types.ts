@@ -11,7 +11,7 @@ export interface SakContext extends AppContext {
   maaling?: Maaling;
   // TODO - Bytt ut med setSak
   setMaaling: (maaling: Maaling) => void;
-  setLoading: (loading: boolean) => void;
+  setContextLoading: (loading: boolean) => void;
 }
 
 export type SakFormState = {

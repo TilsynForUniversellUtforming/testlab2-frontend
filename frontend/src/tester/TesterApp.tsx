@@ -56,10 +56,10 @@ const TesterApp = () => {
   const testRegelContext: TesterContext = {
     maaling: maaling,
     setMaaling: handleSetMaaling,
-    error: error,
-    loading: loading,
+    contextError: error,
+    contextLoading: loading,
     setContextError: handleError,
-    setLoading: handleLoading,
+    setContextLoading: handleLoading,
   };
 
   if (loading) {

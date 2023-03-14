@@ -58,15 +58,15 @@ const TestreglarApp = () => {
   });
 
   const testRegelContext: TestregelContext = {
-    error: error,
-    loading: loading,
+    contextError: error,
+    contextLoading: loading,
     testreglar: testreglar,
     regelsett: regelsett,
     krav: krav,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
     setContextError: handleError,
-    setLoading: handleLoading,
+    setContextLoading: handleLoading,
     refresh: doFetchData,
   };
 

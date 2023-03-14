@@ -11,5 +11,5 @@ data class CrawlResultat(
     val urlList: List<URL>?
 )
 
-fun CrawlResultatDTO.toCrawlResultat(urlList: List<URL> = emptyList()) =
-    CrawlResultat(this.loeysing, this.type, this.feilmelding, urlList)
+fun CrawlResultatDTO.toCrawlResultat() =
+    CrawlResultat(this.loeysing, this.type, this.feilmelding, this.nettsider)

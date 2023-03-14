@@ -33,16 +33,19 @@ const ControlHeader = ({
   return (
     <Container className="pb-4">
       <Row>
-        <Col>
+        <Col sm={4}>
           <PageSizeSelection table={table} loading={loading} />
         </Col>
-        <Col className="d-flex flex-row-reverse">
+        <Col
+          sm={{ span: 4, offset: 4 }}
+          className="d-flex justify-content-center align-items-end"
+        >
           {showFilters && (
             <DebouncedInput
               value={filterValue}
               onChange={onChangeFilter}
               placeholder="Søk..."
-              className="w-50 h-25"
+              className="h-25"
             />
           )}
         </Col>

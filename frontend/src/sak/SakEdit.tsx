@@ -5,7 +5,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import AppTitle from '../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import { updateMaaling } from '../maaling/api/maaling-api';
-import { MaalingInit } from '../maaling/api/types';
+import { MaalingEdit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
 import Stepper from './form/Stepper';
 import useSakForm from './hooks/useSakForm';
@@ -19,9 +19,9 @@ const SakEdit = () => {
     regelsettList,
     loeysingList,
     setMaaling,
-    loading,
-    setLoading,
-    error,
+    contextLoading,
+    setContextLoading,
+    contextError,
     setContextError,
   }: SakContext = useOutletContext();
 
@@ -35,34 +35,39 @@ const SakEdit = () => {
     useState<SakFormState>(defaultState);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     const doEditMaaling = async () => {
-      const maalingInit: MaalingInit = {
-        navn: maalingFormState.navn!,
-        loeysingList: maalingFormState.loeysingList,
-      };
+      if (maaling) {
+        const maalingEdit: MaalingEdit = {
+          id: maaling.id,
+          navn: maalingFormState.navn!,
+          loeysingList: maalingFormState.loeysingList,
+        };
 
-      try {
-        // TODO - Bytt ut med updateSak
-        const maaling = await updateMaaling(maalingInit);
-        setMaaling(maaling);
-        navigate(
-          getFullPath(appRoutes.SAK, {
-            pathParam: idPath,
-            id: String(maaling.id),
-          })
-        );
-      } catch (e) {
-        setContextError('Kunne ikkje lage sak');
+        try {
+          // TODO - Bytt ut med updateSak
+          const maaling = await updateMaaling(maalingEdit);
+          setMaaling(maaling);
+          navigate(
+            getFullPath(appRoutes.SAK, {
+              pathParam: idPath,
+              id: String(maaling.id),
+            })
+          );
+        } catch (e) {
+          setContextError('Kunne ikkje lage sak');
+        }
+      } else {
+        setContextError('Kunne ikkje oppdatere sak');
       }
     };
 
     doEditMaaling()
       .catch((e) => setContextError(e))
       .finally(() => {
-        setLoading(false);
+        setContextLoading(false);
       });
   }, []);
 
@@ -99,8 +104,8 @@ const SakEdit = () => {
           <SakStepForm
             maalingFormState={maalingFormState}
             step={currentStep}
-            loading={loading}
-            error={error}
+            loading={contextLoading}
+            error={contextError}
             onClickBack={setPreviousStep}
             onSubmit={handleSubmit}
             regelsettList={regelsettList}

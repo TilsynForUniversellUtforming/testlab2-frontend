@@ -1,3 +1,4 @@
+import { Row, Table } from '@tanstack/react-table';
 import React, { HTMLProps } from 'react';
 
 interface Props {
@@ -34,4 +35,23 @@ const IndeterminateCheckbox = ({
   );
 };
 
-export default IndeterminateCheckbox;
+export const HeaderCheckbox = <T extends object>({
+  table,
+}: {
+  table: Table<T>;
+}) => (
+  <IndeterminateCheckbox
+    checked={table.getIsAllRowsSelected()}
+    indeterminate={table.getIsSomeRowsSelected()}
+    onChange={table.getToggleAllRowsSelectedHandler()}
+  />
+);
+
+export const RowCheckbox = <T extends object>({ row }: { row: Row<T> }) => (
+  <IndeterminateCheckbox
+    checked={row.getIsSelected()}
+    disabled={!row.getCanSelect()}
+    indeterminate={row.getIsSomeSelected()}
+    onChange={row.getToggleSelectedHandler()}
+  />
+);

@@ -11,8 +11,11 @@ import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
 const CreateRegelsett = () => {
-  const { setRegelsettList, setContextError, setLoading }: TestregelContext =
-    useOutletContext();
+  const {
+    setRegelsettList,
+    setContextError,
+    setContextLoading,
+  }: TestregelContext = useOutletContext();
 
   const navigate = useNavigate();
   const formMethods = useForm<TestRegelsett>({
@@ -46,7 +49,7 @@ const CreateRegelsett = () => {
       setRegelsettList(data);
     };
 
-    setLoading(true);
+    setContextLoading(true);
     setContextError(undefined);
 
     addRegelsett()
@@ -54,7 +57,7 @@ const CreateRegelsett = () => {
         setContextError(e.message);
       })
       .finally(() => {
-        setLoading(false);
+        setContextLoading(false);
         navigate('..');
       });
   }, []);

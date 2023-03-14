@@ -6,6 +6,12 @@ export type MaalingInit = {
   loeysingList: Loeysing[];
 };
 
+export type MaalingEdit = {
+  id: number;
+  navn: string;
+  loeysingList: Loeysing[];
+};
+
 export type CrawlStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
 export type CrawlResultat = {
