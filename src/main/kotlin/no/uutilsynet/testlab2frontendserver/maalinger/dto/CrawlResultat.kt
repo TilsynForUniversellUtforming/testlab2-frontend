@@ -6,7 +6,7 @@ import java.net.URL
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CrawlResultat(
     val loeysing: Loeysing,
-    val type: CrawlStatus,
+    val type: JobStatus,
     val feilmelding: String?,
     val urlList: List<URL>?
 )

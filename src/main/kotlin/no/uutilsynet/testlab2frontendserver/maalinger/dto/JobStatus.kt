@@ -1,6 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
-enum class CrawlStatus {
+enum class JobStatus {
   ikke_ferdig,
   feilet,
   ferdig
