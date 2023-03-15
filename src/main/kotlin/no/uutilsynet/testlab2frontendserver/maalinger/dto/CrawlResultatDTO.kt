@@ -6,7 +6,7 @@ import java.net.URL
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CrawlResultatDTO(
     val loeysing: Loeysing,
-    val type: CrawlStatus,
+    val type: JobStatus,
     val statusUrl: URL?,
     val feilmelding: String?,
     val nettsider: List<URL>?,

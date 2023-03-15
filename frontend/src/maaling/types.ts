@@ -10,6 +10,7 @@ export interface MaalingContext extends AppContext {
   regelsettList: TestRegelsett[];
   showMaalinger: boolean;
   handleStartCrawling: (maaling: Maaling) => void;
+  handleStartTest: (maaling: Maaling) => void;
 }
 
 export type CrawlUrl = {

@@ -12,15 +12,19 @@ export type MaalingEdit = {
   loeysingList: Loeysing[];
 };
 
-export type CrawlStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
+export type MaalingStatus = 'planlegging' | 'crawling' | 'kvalitetssikring';
+export type JobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
 export type CrawlResultat = {
-  type: CrawlStatus;
+  type: JobStatus;
   loeysing: Loeysing;
   urlList?: string[];
 };
-
-export type MaalingStatus = 'planlegging' | 'crawling' | 'kvalitetssikring';
+export type JobStatistics = {
+  numPerforming: number;
+  numFinished: number;
+  numError: number;
+};
 
 export type Maaling = {
   id: number;
@@ -28,8 +32,7 @@ export type Maaling = {
   loeysingList: Loeysing[];
   status: MaalingStatus;
   crawlResultat: CrawlResultat[];
-  numCrawlPerforming: number;
-  numCrawlFinished: number;
-  numCrawlError: number;
+  crawlStatistics: JobStatistics;
+  testStatistics: JobStatistics;
   testResultat?: TestResultat[];
 };

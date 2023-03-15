@@ -65,6 +65,10 @@ const MaalingApp = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const doStartTest = useCallback((maaling: Maaling) => {
+    console.log(maaling);
+  }, []);
+
   const doFetchData = useCallback(() => {
     setLoading(true);
     setError(undefined);
@@ -116,6 +120,7 @@ const MaalingApp = () => {
     regelsettList: regelsettList,
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
+    handleStartTest: doStartTest,
   };
 
   return <Outlet context={maalingContext} />;

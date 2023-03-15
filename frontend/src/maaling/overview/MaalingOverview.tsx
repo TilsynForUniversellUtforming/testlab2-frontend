@@ -1,18 +1,12 @@
 import React from 'react';
-import { Button, Col, Container, ListGroup, Row } from 'react-bootstrap';
-import {
-  Link,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from 'react-router-dom';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useOutletContext, useParams } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
-import StatusBadge from '../../common/status-badge/StatusBadge';
-import StatusIcon from '../../common/status-badge/StatusIcon';
 import { MaalingContext } from '../types';
+import MaalingParametersContainer from './parameters/MaalingParametersContainer';
 import MaalingSkeleton from './skeleton/MaalingSkeleton';
+import MaalingStatusContainer from './status/MaalingStatusContainer';
 
 const MaalingOverview = () => {
   const {
@@ -20,141 +14,32 @@ const MaalingOverview = () => {
     contextError,
     maaling,
     handleStartCrawling,
+    handleStartTest,
   }: MaalingContext = useOutletContext();
   const { id } = useParams();
-  const navigate = useNavigate();
 
   if (contextLoading) {
     return <MaalingSkeleton />;
   }
 
-  if (!maaling || contextError) {
-    return <ErrorCard />;
+  if (contextError) {
+    return <ErrorCard errorText={contextError} />;
+  } else if (!maaling || !id) {
+    return <ErrorCard errorText="Finner ikkje måling" />;
   }
 
   return (
     <Container>
       <Row>
         <Col>
-          <ListGroup as="ol" className="w-75">
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Type:</Col>
-                {/*TODO - Ikke implementert for måling ennå */}
-                <Col>Kontroll</Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Sak:</Col>
-                <Col>
-                  <Link
-                    to={getFullPath(appRoutes.MAALING, {
-                      pathParam: idPath,
-                      id: String(id),
-                    })}
-                  >
-                    {maaling.navn}
-                  </Link>
-                </Col>
-                {/*TODO - Kommenter ut til når opplegg for sak er laget*/}
-                {/*<Col><Link to={getFullPath(appRoutes.SAK, maaling.sakId)}>{maaling.sakNavn}</Link></Col>*/}
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Dato start:</Col>
-                <Col>{new Date().toISOString()}</Col>
-                {/*TODO - Kommenter ut til når måling har dato*/}
-                {/*<Col>{maaling.dateStart}</Col>*/}
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Dato avslutta:</Col>
-                <Col>Pågår</Col>
-                {/*TODO - Kommenter ut til når måling har dato*/}
-                {/*<Col>{maaling.dateEnd}</Col>*/}
-              </Row>
-            </ListGroup.Item>
-          </ListGroup>
+          <MaalingParametersContainer id={id} maaling={maaling} />
         </Col>
         <Col>
-          <ListGroup as="ol" className="w-50">
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Status:</Col>
-                <Col className="d-flex justify-content-center align-items-center">
-                  <StatusBadge
-                    label={maaling.status}
-                    levels={{
-                      primary: 'crawling',
-                      danger: 'feilet',
-                      success: 'ferdig',
-                    }}
-                  />
-                </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <Row>
-                    <Col md={8}>
-                      Sideutvalg ({maaling.numCrawlFinished}/
-                      {maaling.loeysingList.length})
-                    </Col>
-                    <Col md={4}>
-                      <StatusIcon
-                        finished={
-                          maaling.numCrawlFinished ===
-                          maaling.loeysingList.length
-                        }
-                      />
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col md={8}>
-                      Testing ({maaling.testResultat?.length ?? 0}/
-                      {maaling.loeysingList.length})
-                    </Col>
-                    <Col md={4}>
-                      <StatusIcon />
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col md={8}>Publisert</Col>
-                    {/*TODO - Ikke implementert for måling ennå */}
-                    <Col md={4}>
-                      <StatusIcon />
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-              </ListGroup>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              {maaling.status === 'planlegging' && (
-                <Button onClick={() => handleStartCrawling(maaling)}>
-                  Start sideutvalg
-                </Button>
-              )}
-              {(maaling.status === 'crawling' ||
-                maaling.status === 'kvalitetssikring') && (
-                <Link
-                  to={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
-                    pathParam: idPath,
-                    id: String(maaling.id),
-                  })}
-                >
-                  <Button>Se sideutvalg</Button>
-                </Link>
-              )}
-            </ListGroup.Item>
-          </ListGroup>
+          <MaalingStatusContainer
+            maaling={maaling}
+            handleStartCrawling={handleStartCrawling}
+            handleStartTest={handleStartTest}
+          />
         </Col>
       </Row>
     </Container>
