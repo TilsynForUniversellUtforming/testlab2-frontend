@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
-import ConfirmDialog from '../../common/confirm/ConfirmDialog';
+import ConfirmModalButton from '../../common/confirm/ConfirmModalButton';
 import ErrorCard from '../../common/error/ErrorCard';
 import { restartCrawling } from '../../maaling/api/maaling-api';
 import { CrawlUrl } from '../../maaling/types';
@@ -18,8 +18,6 @@ const KvalitetssikringApp = () => {
   const [loading, setLoading] = useState(contextLoading);
   const [error, setError] = useState(contextError);
   const [urlRowSelection, setUrlRowSelection] = useState<CrawlUrl[]>([]);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmLabel, setConfirmLabel] = useState<string>();
 
   const navigate = useNavigate();
 
@@ -57,13 +55,7 @@ const KvalitetssikringApp = () => {
   }));
 
   const onClickRestart = useCallback(() => {
-    setConfirmLabel('Vil du starta sideutval på nytt?');
-    setShowConfirm(true);
     setLoading(true);
-  }, []);
-
-  const doRestart = useCallback(() => {
-    setShowConfirm(false);
     const fetchData = async () => {
       const restartedMaaling = await restartCrawling(
         maaling.id,
@@ -99,10 +91,6 @@ const KvalitetssikringApp = () => {
     setUrlRowSelection(rowSelection);
   }, []);
 
-  const onCloseModal = useCallback(() => {
-    setShowConfirm(false);
-  }, []);
-
   return (
     <>
       <AppTitle
@@ -110,30 +98,28 @@ const KvalitetssikringApp = () => {
         subTitle={loeysingCrawResultat.loeysing.url}
       />
       <div className="mb-3">
-        <Button
+        <ConfirmModalButton
           className="me-3"
-          onClick={onClickRemoveUrl}
+          onConfirm={onClickRemoveUrl}
+          message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
+          label="Fjern valgte nettsted frå måling"
           disabled={urlRowSelection.length === 0 || loading}
-        >
-          Fjern valgte nettsted frå måling
-        </Button>
-        <Button
+        />
+        <ConfirmModalButton
           className="me-3"
-          onClick={onClickDeleteLoeysing}
+          message={`Vil du slette ${loeysingCrawResultat.loeysing.url} frå måling?`}
+          onConfirm={onClickDeleteLoeysing}
           disabled={loading}
-        >
-          Ta nettsted ut av måling
-        </Button>
-        <Button onClick={onClickRestart} disabled={loading}>
-          Nytt sideutval for nettstad
-        </Button>
+          label="Ta nettsted ut av måling"
+        />
+        <ConfirmModalButton
+          className="me-3"
+          message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
+          onConfirm={onClickRestart}
+          disabled={loading}
+          label="Nytt sideutval for nettstad"
+        />
       </div>
-      <ConfirmDialog
-        label={confirmLabel}
-        show={showConfirm}
-        closeModal={onCloseModal}
-        onSubmit={doRestart}
-      />
       <KvalitetssikringList
         crawlUrls={crawlUrls}
         onSelectRows={onSelectRows}
