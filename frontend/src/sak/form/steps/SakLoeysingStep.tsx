@@ -1,7 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { Col, Form, ListGroup } from 'react-bootstrap';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../common/form/hooks/useValidate';
@@ -103,34 +102,30 @@ const SakLoeysingStep = ({
       buttonStep={buttonStep}
     >
       <>
-        <Col>
-          <Form.Group className="mb-3">
-            <Form.Label>Valgte løysingar</Form.Label>
-            <ListGroup as="ol" numbered={selection.length > 0}>
+        <div>
+          <form className="mb-3">
+            <span>Valgte løysingar</span>
+            {/*numbered={selection.length > 0}*/}
+            <ol>
               {selection.length > 0 &&
-                selection.map((tr) => (
-                  <ListGroup.Item key={tr.id} as="li">
-                    {tr.url}
-                  </ListGroup.Item>
-                ))}
+                selection.map((tr) => <li key={tr.id}>{tr.url}</li>)}
               {selection.length === 0 && (
-                <ListGroup.Item
-                  as="li"
+                <li
                   className={classNames({ invalid: listErrors })}
-                  disabled
+                  // disabled
                 >
                   Ingen løysingar valgt
-                </ListGroup.Item>
+                </li>
               )}
-            </ListGroup>
+            </ol>
             {listErrors && (
               <div className="invalid-feedback d-block">
                 {listErrors?.message}
               </div>
             )}
-          </Form.Group>
-        </Col>
-        <Col>
+          </form>
+        </div>
+        <div>
           <TestlabTable<Loeysing>
             data={loeysingList}
             defaultColumns={loeysingColumns}
@@ -140,7 +135,7 @@ const SakLoeysingStep = ({
             onSelectRows={onChangeRows}
             customStyle={{ small: true }}
           />
-        </Col>
+        </div>
       </>
     </SakFormContainer>
   );

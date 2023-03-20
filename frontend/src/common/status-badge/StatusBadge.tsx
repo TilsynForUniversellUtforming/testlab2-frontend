@@ -1,5 +1,6 @@
+import './status-badge.scss';
+
 import classNames from 'classnames';
-import { Badge } from 'react-bootstrap';
 
 export type Levels = {
   primary: string;
@@ -28,8 +29,9 @@ const StatusBadge = ({ label, levels }: Props) => {
     .join(' ');
 
   return (
-    <Badge
-      bg={classNames(
+    <div
+      className={classNames(
+        'status-badge',
         { primary: label === levels?.primary || levels?.isPrimary },
         { danger: label === levels?.danger || levels?.isDanger },
         { success: label === levels?.success || levels?.isSuccess },
@@ -37,7 +39,7 @@ const StatusBadge = ({ label, levels }: Props) => {
       )}
     >
       {sanitizedLabel}
-    </Badge>
+    </div>
   );
 };
 

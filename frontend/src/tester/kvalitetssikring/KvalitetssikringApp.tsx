@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
@@ -22,15 +21,7 @@ const KvalitetssikringApp = () => {
   const navigate = useNavigate();
 
   if (contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <span>SPINNER</span>;
   }
 
   const crawlResultat = maaling?.crawlResultat;

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import ErrorCard from '../../common/error/ErrorCard';
@@ -29,20 +28,20 @@ const MaalingOverview = () => {
   }
 
   return (
-    <Container>
-      <Row>
-        <Col>
+    <div>
+      <div>
+        <div>
           <MaalingParametersContainer id={id} maaling={maaling} />
-        </Col>
-        <Col>
+        </div>
+        <div>
           <MaalingStatusContainer
             maaling={maaling}
             handleStartCrawling={handleStartCrawling}
             handleStartTest={handleStartTest}
           />
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 

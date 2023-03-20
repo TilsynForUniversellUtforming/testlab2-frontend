@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 export type StepType = 'Start' | 'Middle' | 'Submit';
@@ -27,10 +26,11 @@ const FormButton = ({
   className?: string;
 }) => (
   <div className={classNames('mb-3', className)}>
-    <Button variant="secondary" className="me-3" onClick={onClickBack}>
+    {/*variant="secondary"*/}
+    <button className="me-3" onClick={onClickBack}>
       {textBack}
-    </Button>
-    <Button type="submit">{textNext}</Button>
+    </button>
+    <button type="submit">{textNext}</button>
   </div>
 );
 

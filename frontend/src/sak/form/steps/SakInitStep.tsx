@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,7 +32,8 @@ const SakInitStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <Col md={8}>
+      {/*md={8}*/}
+      <div>
         <TestlabForm.FormInput
           label="Tittel"
           name="navn"
@@ -42,13 +42,13 @@ const SakInitStep = ({
             validation: { required: true, minLength: 1 },
           }}
         />
-        <Form.Label column htmlFor="type-sak" className="p-0">
+        <label htmlFor="type-sak" className="p-0">
           Type sak
-        </Form.Label>
-        <Form.Select id="type-sak" disabled>
+        </label>
+        <select id="type-sak" disabled>
           <option>Type sak</option>
-        </Form.Select>
-      </Col>
+        </select>
+      </div>
     </SakFormContainer>
   );
 };

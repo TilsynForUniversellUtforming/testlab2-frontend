@@ -1,16 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
-import {
-  Col,
-  Container,
-  Form,
-  ListGroup,
-  Row,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-} from 'react-bootstrap';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
@@ -25,7 +15,7 @@ import {
 } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { Testregel, TestRegelsett } from '../api/types';
-import { evneAlle, evneList, TestregelContext } from '../types';
+import { TestregelContext } from '../types';
 
 export interface Props {
   label: string;
@@ -124,15 +114,15 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
   );
 
   return (
-    <Container className="pb-4">
+    <>
       <TestlabForm<TestRegelsett>
         heading={label}
         onSubmit={onSubmit}
         formMethods={formMethods}
       >
-        <Row>
-          <Col>
-            <Form.Group className="mb-3">
+        <div>
+          <div>
+            <div className="mb-3">
               <TestlabForm.FormInput
                 label="Navn"
                 name="namn"
@@ -141,54 +131,33 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
                   validation: { required: true, minLength: 1 },
                 }}
               />
-              <Form.Label>Valgte regelsett</Form.Label>
-              <ListGroup
+              <span>Valgte regelsett</span>
+              <ol
                 className="testreglar-regelsett__list"
-                as="ol"
-                numbered={selection.length > 0}
+                // numbered={selection.length > 0}
               >
                 {selection.length > 0 &&
                   selection.map((tr) => (
-                    <ListGroup.Item key={tr.id} as="li">
-                      {tr.kravTilSamsvar}
-                    </ListGroup.Item>
+                    <li key={tr.id}>{tr.kravTilSamsvar}</li>
                   ))}
                 {selection.length === 0 && (
-                  <ListGroup.Item
-                    as="li"
+                  <li
                     className={classNames({ invalid: listErrors })}
-                    disabled
+                    // disabled
                   >
                     Ingen testregler valgt
-                  </ListGroup.Item>
+                  </li>
                 )}
-              </ListGroup>
+              </ol>
               {listErrors && (
                 <div className="invalid-feedback d-block">
                   {listErrors?.message}
                 </div>
               )}
-            </Form.Group>
-          </Col>
-          <Col>
-            <Stack gap={2}>
-              <ToggleButtonGroup
-                type="checkbox"
-                className="mb-2"
-                defaultValue={[evneAlle.value]}
-              >
-                {evneList.map((evne) => (
-                  <ToggleButton
-                    id={`${evne.value}-id`}
-                    key={evne.value}
-                    value={evne.value}
-                    variant={'outline-primary'}
-                    disabled
-                  >
-                    {evne.label}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
+            </div>
+          </div>
+          <div>
+            <div>
               <TestlabTable<Testregel>
                 data={selectableTestreglar}
                 defaultColumns={testRegelColumns}
@@ -199,14 +168,14 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
                 onClickRetry={refresh}
                 customStyle={{ small: true }}
               />
-            </Stack>
-          </Col>
-        </Row>
-        <Row>
+            </div>
+          </div>
+        </div>
+        <div>
           <TestlabForm.FormButtons />
-        </Row>
+        </div>
       </TestlabForm>
-    </Container>
+    </>
   );
 };
 

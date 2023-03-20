@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import ErrorCard from '../../common/error/ErrorCard';
@@ -57,15 +56,7 @@ const EditTestreglar = () => {
   }, []);
 
   if (contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <span>SPINNER</span>;
   }
 
   if (contextError || typeof testregel === 'undefined') {

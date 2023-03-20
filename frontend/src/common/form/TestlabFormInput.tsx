@@ -1,6 +1,4 @@
 import React from 'react';
-import { Form, FormControl } from 'react-bootstrap';
-import Feedback from 'react-bootstrap/Feedback';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
 import { FormValidation } from './TestlabForm';
@@ -29,17 +27,20 @@ const TestlabFormInput = <T extends object>({
       name={name}
       control={control}
       render={({ field }) => (
-        <Form.Group className="mb-3">
-          <Form.Label>{label}</Form.Label>
-          <FormControl
+        <div className="mb-3">
+          <label htmlFor="input-el">{label}</label>
+          <input
+            id="input-el"
+            type="text"
             value={field.value}
-            isInvalid={hasError}
+            // isInvalid={hasError}
             {...register(name, formValidation?.validation)}
           />
           {hasError && formValidation?.errorMessage && (
-            <Feedback type="invalid">{formValidation?.errorMessage}</Feedback>
+            // type="invalid"
+            <div>{formValidation?.errorMessage}</div>
           )}
-        </Form.Group>
+        </div>
       )}
     />
   );

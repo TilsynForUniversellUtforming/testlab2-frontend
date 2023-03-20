@@ -1,5 +1,4 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
 import { Outlet, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
@@ -11,15 +10,7 @@ const SakOverviewApp = () => {
   const context: SakContext = useOutletContext();
 
   if (context.contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <span>SPINNER</span>;
   }
 
   if (!context.maaling || context.contextError) {

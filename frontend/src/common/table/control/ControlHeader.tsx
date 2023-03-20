@@ -1,6 +1,5 @@
 import { Table } from '@tanstack/react-table';
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 
 import DebouncedInput from '../../DebouncedInput';
 import { FilterPreference } from '../TestlabTable';
@@ -31,13 +30,14 @@ const ControlHeader = ({
     filterPreference !== 'none' && filterPreference !== 'rowsearch';
 
   return (
-    <Container className="pb-4">
-      <Row>
-        <Col sm={4}>
+    <div className="pb-4">
+      <div>
+        {/*sm={4}*/}
+        <div>
           <PageSizeSelection table={table} loading={loading} />
-        </Col>
-        <Col
-          sm={{ span: 4, offset: 4 }}
+        </div>
+        <div
+          // sm={{ span: 4, offset: 4 }}
           className="d-flex justify-content-center align-items-end"
         >
           {showFilters && (
@@ -48,9 +48,9 @@ const ControlHeader = ({
               className="h-25"
             />
           )}
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 

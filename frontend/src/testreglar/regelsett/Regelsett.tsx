@@ -1,6 +1,5 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import appRoutes from '../../common/appRoutes';
@@ -91,13 +90,11 @@ const Regelsett = () => {
         row.testregelList.map((tr) => tr.kravTilSamsvar).join(','),
       id: 'TestregelId',
       cell: ({ row }) => (
-        <ListGroup className="testreglar-regelsett__list" as="ol" numbered>
+        <ol className="testreglar-regelsett__list">
           {row.original.testregelList.map((tr) => (
-            <ListGroup.Item key={tr.id} as="li">
-              {tr.kravTilSamsvar}
-            </ListGroup.Item>
+            <li key={tr.id}>{tr.kravTilSamsvar}</li>
           ))}
-        </ListGroup>
+        </ol>
       ),
       header: () => <span>Testregler</span>,
     },

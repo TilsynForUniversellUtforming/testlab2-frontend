@@ -1,21 +1,20 @@
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 
 import { TableProps } from '../../types';
 import PaginationCount from './PaginationCount';
 import PaginationSelect from './PaginationSelect';
 
 const PaginationContainer = ({ table }: TableProps) => (
-  <Container>
-    <Row>
-      <Col>
+  <div>
+    <div>
+      <div>
         <PaginationCount table={table} />
-      </Col>
-      <Col className="d-flex flex-row-reverse">
+      </div>
+      <div className="d-flex flex-row-reverse">
         <PaginationSelect table={table} />
-      </Col>
-    </Row>
-  </Container>
+      </div>
+    </div>
+  </div>
 );
 
 export default PaginationContainer;

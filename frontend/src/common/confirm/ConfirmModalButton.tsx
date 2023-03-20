@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
 
@@ -31,13 +30,13 @@ const ConfirmButton = ({
   };
 
   return (
-    <Button
+    <button
       onClick={handleClickConfirmation}
       disabled={disabled}
       className={className}
     >
       {label}
-    </Button>
+    </button>
   );
 };
 

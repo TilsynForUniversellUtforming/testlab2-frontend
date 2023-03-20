@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext, useRef, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
+
+import ConfirmDialog from './ConfirmDialog';
 
 type ConfirmData = {
   headerTitle: string;
@@ -44,21 +44,13 @@ const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ConfirmModalContext.Provider value={{ confirm }}>
       {children}
-
-      <Modal show={show} onHide={handleCancel} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{headerTitle}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancel}>
-            Lukk
-          </Button>
-          <Button variant="primary" onClick={handleOk}>
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ConfirmDialog
+        show={show}
+        headerTitle={headerTitle}
+        message={message}
+        closeModal={handleCancel}
+        onSubmit={handleOk}
+      />
     </ConfirmModalContext.Provider>
   );
 };

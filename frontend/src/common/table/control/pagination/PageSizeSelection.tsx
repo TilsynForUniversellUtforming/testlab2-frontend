@@ -1,26 +1,23 @@
 import React from 'react';
-import { Col, Form, Row } from 'react-bootstrap';
 
 import { LoadingTableProps } from '../../types';
 
 const PageSizeSelection = ({ table, loading }: LoadingTableProps) => (
-  <Form>
-    <Row>
-      <Col>
-        <Form.Label column htmlFor="formPageSizeSelection">
-          Elementer per side
-        </Form.Label>
-      </Col>
-    </Row>
-    <Row className="w-50">
-      <Col>
-        <Form.Select
+  <form>
+    <div>
+      <div>
+        <label htmlFor="formPageSizeSelection">Elementer per side</label>
+      </div>
+    </div>
+    <div className="w-50">
+      <div>
+        <select
           id="formPageSizeSelection"
           value={table.getState().pagination.pageSize}
           onChange={(e) => {
             table.setPageSize(Number(e.target.value));
           }}
-          size="sm"
+          // size="sm"
           disabled={loading}
         >
           {[10, 25, 50, 100].map((pageSize) => (
@@ -28,10 +25,10 @@ const PageSizeSelection = ({ table, loading }: LoadingTableProps) => (
               {pageSize}
             </option>
           ))}
-        </Form.Select>
-      </Col>
-    </Row>
-  </Form>
+        </select>
+      </div>
+    </div>
+  </form>
 );
 
 export default PageSizeSelection;

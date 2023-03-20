@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 export type ButtonType = 'add' | 'submit';
 
@@ -12,18 +11,19 @@ export interface Props {
 
 const ActionButton = ({ type, label, onClick, disabled = false }: Props) => {
   if (type === 'add') {
+    //variant="success"
     return (
-      <Button onClick={onClick} variant="success" disabled={disabled}>
+      <button type="button" onClick={onClick} disabled={disabled}>
         {label ? label : '+ Legg til'}
-      </Button>
+      </button>
     );
   }
 
   if (type === 'submit') {
     return (
-      <Button onClick={onClick} disabled={disabled}>
+      <button onClick={onClick} disabled={disabled}>
         {label ? label : 'Lagre'}
-      </Button>
+      </button>
     );
   }
 

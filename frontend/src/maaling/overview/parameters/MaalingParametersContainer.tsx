@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, ListGroup, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../../common/appRoutes';
@@ -11,18 +10,18 @@ export interface Props {
 }
 
 const MaalingParametersContainer = ({ id, maaling }: Props) => (
-  <ListGroup as="ol" className="w-75">
-    <ListGroup.Item as="li">
-      <Row>
-        <Col className="fw-bold">Type:</Col>
+  <ol className="w-75">
+    <li>
+      <div>
+        <div className="fw-bold">Type:</div>
         {/*TODO - Ikke implementert for måling ennå */}
-        <Col>Kontroll</Col>
-      </Row>
-    </ListGroup.Item>
-    <ListGroup.Item as="li">
-      <Row>
-        <Col className="fw-bold">Sak:</Col>
-        <Col>
+        <div>Kontroll</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <div className="fw-bold">Sak:</div>
+        <div>
           <Link
             to={getFullPath(appRoutes.MAALING, {
               pathParam: idPath,
@@ -31,28 +30,28 @@ const MaalingParametersContainer = ({ id, maaling }: Props) => (
           >
             {maaling.navn}
           </Link>
-        </Col>
+        </div>
         {/*TODO - Kommenter ut til når opplegg for sak er laget*/}
-        {/*<Col><Link to={getFullPath(appRoutes.SAK, maaling.sakId)}>{maaling.sakNavn}</Link></Col>*/}
-      </Row>
-    </ListGroup.Item>
-    <ListGroup.Item as="li">
-      <Row>
-        <Col className="fw-bold">Dato start:</Col>
-        <Col>{new Date().toISOString()}</Col>
+        {/*<div><Link to={getFullPath(appRoutes.SAK, maaling.sakId)}>{maaling.sakNavn}</Link></div>*/}
+      </div>
+    </li>
+    <li>
+      <div>
+        <div className="fw-bold">Dato start:</div>
+        <div>{new Date().toISOString()}</div>
         {/*TODO - Kommenter ut til når måling har dato*/}
-        {/*<Col>{maaling.dateStart}</Col>*/}
-      </Row>
-    </ListGroup.Item>
-    <ListGroup.Item as="li">
-      <Row>
-        <Col className="fw-bold">Dato avslutta:</Col>
-        <Col>Pågår</Col>
+        {/*<div>{maaling.dateStart}</div>*/}
+      </div>
+    </li>
+    <li>
+      <div>
+        <div className="fw-bold">Dato avslutta:</div>
+        <div>Pågår</div>
         {/*TODO - Kommenter ut til når måling har dato*/}
-        {/*<Col>{maaling.dateEnd}</Col>*/}
-      </Row>
-    </ListGroup.Item>
-  </ListGroup>
+        {/*<div>{maaling.dateEnd}</div>*/}
+      </div>
+    </li>
+  </ol>
 );
 
 export default MaalingParametersContainer;

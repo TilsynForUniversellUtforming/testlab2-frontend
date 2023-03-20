@@ -1,5 +1,4 @@
-import React from 'react';
-import { Accordion, ListGroup, Spinner, Stack } from 'react-bootstrap';
+import React, { useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 
 import ErrorCard from '../../../common/error/ErrorCard';
@@ -29,17 +28,14 @@ const SakConfirmContent = ({
   formErrors,
 }: SakConfirmContentProps) => {
   const { navn, loeysingList, regelsett } = maalingFormState;
+  const [displayRegelsett, setDisplayRegelsett] = useState(false);
+
+  const toggleRegelsettDisplay = () => {
+    setDisplayRegelsett(!displayRegelsett);
+  };
 
   if (loading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <span>SPINNER</span>;
   }
 
   if (error) {
@@ -54,58 +50,58 @@ const SakConfirmContent = ({
     (regelsett?.testregelList?.length ?? 0) > 0;
 
   return (
-    <Stack gap={5}>
-      <div>
+    <ul>
+      <li>
         <h4>Namn</h4>
         <div>{navn}</div>
         {navnError && (
           <div className="invalid-feedback d-block">{navnError?.message}</div>
         )}
-      </div>
-      <div>
+      </li>
+      <li>
         <h4>Valgte løysingar</h4>
-        <ListGroup as="ol" className="w-50 ">
+        <ol className="w-50 ">
           {loeysingList.map((lo) => (
-            <ListGroup.Item key={lo.id} as="li">
+            <li key={lo.id}>
               <div className="fw-bold">{lo.namn}</div>
               {lo.url}
-            </ListGroup.Item>
+            </li>
           ))}
-        </ListGroup>
+        </ol>
         {loeysingError && (
           <div className="invalid-feedback d-block">
             {loeysingError?.message}
           </div>
         )}
-      </div>
-      <div>
+      </li>
+      <li>
         <h4>Regelsett</h4>
         {showRegelsett && (
-          <Accordion className="w-50">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>
+          <div className="w-50">
+            <div>
+              <button onClick={toggleRegelsettDisplay}>
                 {regelsett.namn} ({regelsett.testregelList.length})
-              </Accordion.Header>
-              <Accordion.Body>
-                <ListGroup>
+              </button>
+              <div>
+                <ul>
                   {regelsett.testregelList.map((tr) => (
-                    <ListGroup.Item key={tr.id} as="li">
+                    <li key={tr.id}>
                       <div className="fw-bold">{tr.kravTilSamsvar}</div>
                       {tr.referanseAct}
-                    </ListGroup.Item>
+                    </li>
                   ))}
-                </ListGroup>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
+                </ul>
+              </div>
+            </div>
+          </div>
         )}
         {regelsettError && (
           <div className="invalid-feedback d-block">
             {regelsettError?.message}
           </div>
         )}
-      </div>
-    </Stack>
+      </li>
+    </ul>
   );
 };
 

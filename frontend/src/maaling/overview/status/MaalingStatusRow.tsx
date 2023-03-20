@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import StatusIcon from '../../../common/status-badge/StatusIcon';
@@ -18,17 +17,19 @@ const StatusLink = ({ label, finished, linkPath }: Props) => {
   }
 };
 
-const MaalingStatusRow = ({ label, finished, linkPath }: Props) => {
+const MaalingStatusdiv = ({ label, finished, linkPath }: Props) => {
   return (
-    <Row>
-      <Col md={8}>
+    <div>
+      {/*md={8}*/}
+      <div>
         <StatusLink label={label} finished={finished} linkPath={linkPath} />
-      </Col>
-      <Col md={4}>
+      </div>
+      {/*md={4}*/}
+      <div>
         <StatusIcon finished={finished} />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 };
 
-export default MaalingStatusRow;
+export default MaalingStatusdiv;

@@ -1,29 +1,51 @@
+import './confirm-dialog.scss';
+
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
 
 export interface Props {
-  label?: string;
+  headerTitle?: string;
+  message: string;
   show: boolean;
   closeModal: () => void;
   onSubmit: (e: any) => void;
 }
 
-const ConfirmDialog = ({ label, show, closeModal, onSubmit }: Props) => {
-  const confirmLabel = label ? label : 'Er du sikker?';
+const ConfirmDialog = ({
+  headerTitle,
+  message,
+  show,
+  closeModal,
+  onSubmit,
+}: Props) => {
+  const confirmLabel = message ? message : 'Er du sikker?';
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  };
 
   return (
     <>
-      <Modal show={show} onHide={closeModal} animation={false} centered>
-        <Modal.Body>{confirmLabel}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
-            Lukk
-          </Button>
-          <Button variant="primary" onClick={onSubmit}>
-            OK
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {show && (
+        <div
+          role="presentation"
+          className="modal-overlay"
+          onClick={closeModal}
+          onKeyDown={handleKeyDown}
+        >
+          <span className="invisible">Lukk vindu</span>
+          <div className="modal-box">
+            {headerTitle && <div>{headerTitle}</div>}
+            <div>{confirmLabel}</div>
+            <div>
+              {/*variant="secondary"*/}
+              <button onClick={closeModal}>Lukk</button>
+              {/*variant="primary"*/}
+              <button onClick={onSubmit}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

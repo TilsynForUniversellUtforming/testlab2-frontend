@@ -1,7 +1,6 @@
 import { flexRender, Header, Table } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React from 'react';
-import { Button, Stack } from 'react-bootstrap';
 
 import TableFilter from './control/filter/TableFilter';
 import { FilterPreference } from './TestlabTable';
@@ -34,13 +33,13 @@ const TableHeader = ({ table, header, filterPreference, loading }: Props) => {
 
   return (
     <th colSpan={header.colSpan}>
-      <Button
+      {/*variant="link"*/}
+      <button
         className="testlab-table__header-button p-0 w-100"
-        variant="link"
         onClick={header.column.getToggleSortingHandler()}
         disabled={loading}
       >
-        <Stack direction="horizontal" gap={2}>
+        <div>
           {flexRender(header.column.columnDef.header, header.getContext())}
           <i
             className={classNames(
@@ -49,8 +48,8 @@ const TableHeader = ({ table, header, filterPreference, loading }: Props) => {
               { 'sort-desc': header.column?.getIsSorted() === 'desc' }
             )}
           />
-        </Stack>
-      </Button>
+        </div>
+      </button>
       {header.column.getCanFilter() && showFilters ? (
         <div>
           <TableFilter column={header.column} table={table} />

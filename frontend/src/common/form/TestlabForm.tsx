@@ -1,7 +1,6 @@
 import './TestlabForm.scss';
 
 import React, { ReactNode } from 'react';
-import { Form } from 'react-bootstrap';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { RegisterOptions } from 'react-hook-form/dist/types/validator';
 
@@ -54,9 +53,9 @@ const TestlabForm = <T extends object>({
     <>
       <FormProvider {...formMethods}>
         <FormHeader heading={heading} subHeading={subHeading} />
-        <Form className="mb-4 testlab-form" onSubmit={handleSubmit(onSubmit)}>
+        <form className="mb-4 testlab-form" onSubmit={handleSubmit(onSubmit)}>
           {children}
-        </Form>
+        </form>
       </FormProvider>
     </>
   );

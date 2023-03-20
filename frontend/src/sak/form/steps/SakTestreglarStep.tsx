@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 
 import TestlabForm from '../../../common/form/TestlabForm';
@@ -48,7 +47,8 @@ const SakTestreglarStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <Col md={6}>
+      {/*md={6}*/}
+      <div>
         <TestlabForm.FormSelect<TestRegelsett>
           label="Testreglar"
           name="id"
@@ -58,7 +58,7 @@ const SakTestreglarStep = ({
           }}
           options={regelsettOptions}
         />
-      </Col>
+      </div>
     </SakFormContainer>
   );
 };

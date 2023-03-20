@@ -1,7 +1,6 @@
 import './tester.scss';
 
 import React, { useCallback, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { Outlet, useParams } from 'react-router-dom';
 
 import ErrorCard from '../common/error/ErrorCard';
@@ -63,7 +62,7 @@ const TesterApp = () => {
   };
 
   if (loading) {
-    return <Spinner />;
+    return <span>SPINNER</span>;
   }
 
   if (typeof maaling === 'undefined') {

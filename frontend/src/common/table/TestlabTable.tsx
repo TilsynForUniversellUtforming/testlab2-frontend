@@ -18,7 +18,6 @@ import {
 } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
-import Table from 'react-bootstrap/Table';
 
 import ErrorCard from '../error/ErrorCard';
 import HideWhenLoading from '../HideWhenLoading';
@@ -155,14 +154,14 @@ const TestlabTable = <T extends object>({
         onChangeFilter={onChangeGlobalFilter}
         small={customStyle.small}
       />
-      <Table
+      <table
         className={classNames('testlab-table', {
           full: customStyle.full,
           fixed: customStyle.fixed,
           sm: customStyle.small,
           bordered: customStyle.small,
         })}
-        hover={enableRowSelection}
+        // hover={enableRowSelection}
       >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -182,7 +181,7 @@ const TestlabTable = <T extends object>({
         <tbody>
           <TableBody table={table} loading={loading} />
         </tbody>
-      </Table>
+      </table>
       <div className="h-2" />
       <HideWhenLoading loading={loading}>
         <PaginationContainer table={table} />

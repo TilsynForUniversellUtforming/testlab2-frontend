@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 import { UseFormReturn } from 'react-hook-form';
 
 import TestlabForm from '../../common/form/TestlabForm';
@@ -29,14 +28,14 @@ const SakFormContainer = ({
     onSubmit={onSubmit}
     formMethods={formMethods}
   >
-    <Container>
-      <Row className="pb-4">{children}</Row>
-      <Row>
-        <Col>
+    <>
+      <div className="pb-4">{children}</div>
+      <div>
+        <div>
           <TestlabForm.FormButtons step={buttonStep} />
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </>
   </TestlabForm>
 );
 

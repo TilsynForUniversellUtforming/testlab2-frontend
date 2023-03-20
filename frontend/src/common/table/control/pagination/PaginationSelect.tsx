@@ -1,5 +1,4 @@
 import React from 'react';
-import { Pagination } from 'react-bootstrap';
 
 import { TableProps } from '../../types';
 import usePaginationKeyPress from './hooks/usePaginationKeyPress';
@@ -32,20 +31,22 @@ const PaginationSelect = ({ table }: TableProps) => {
         isPageNumberOutOfRange = false;
 
         return (
-          <Pagination.Item
+          // Pagination.Item
+          <button
             key={pageNumber}
             // eslint-disable-next-line
             onClick={() => table.setPageIndex(index)}
-            active={pageNumber === currentPage}
+            // active={pageNumber === currentPage}
           >
             {pageNumber}
-          </Pagination.Item>
+          </button>
         );
       }
 
       if (!isPageNumberOutOfRange) {
         isPageNumberOutOfRange = true;
-        return <Pagination.Ellipsis key={pageNumber} disabled />;
+        // Pagination.Ellipsis - disabled
+        return <div key={pageNumber}>...</div>;
       }
 
       return null;
@@ -59,25 +60,35 @@ const PaginationSelect = ({ table }: TableProps) => {
   }
 
   return (
-    <Pagination>
-      <Pagination.First
+    <div>
+      {/*Pagination.First*/}
+      <button
         disabled={!table.getCanPreviousPage()}
         onClick={() => table.setPageIndex(0)}
-      />
-      <Pagination.Prev
+      >{`<<`}</button>
+      {/*Pagination.Prev*/}
+      <button
         disabled={!table.getCanPreviousPage()}
         onClick={() => table.previousPage()}
-      />
+      >
+        {`<`}
+      </button>
       <PaginationMiddleSection />
-      <Pagination.Next
+      {/*Pagination.Next*/}
+      <button
         disabled={!table.getCanNextPage()}
         onClick={() => table.nextPage()}
-      />
-      <Pagination.Last
+      >
+        {`>`}
+      </button>
+      {/*Pagination.Last*/}
+      <button
         disabled={!table.getCanNextPage()}
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-      />
-    </Pagination>
+      >
+        {`>>`}
+      </button>
+    </div>
   );
 };
 

@@ -1,6 +1,4 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
-import Feedback from 'react-bootstrap/Feedback';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Option } from '../types';
@@ -30,15 +28,15 @@ const TestlabFormSelect = <T extends object>({
       name={name}
       control={control}
       render={({ field }) => (
-        <Form.Group className="mb-3">
-          <Form.Label column htmlFor={label} className="p-0">
+        <div className="mb-3">
+          <label htmlFor={label} className="p-0">
             {label}
-          </Form.Label>
-          <Form.Select
+          </label>
+          <select
             aria-label={label}
             id={label}
             value={field.value}
-            isInvalid={hasError}
+            // isInvalid={hasError}
             multiple={multiple}
             {...register(name, formValidation?.validation)}
           >
@@ -47,11 +45,12 @@ const TestlabFormSelect = <T extends object>({
                 {option.label}
               </option>
             ))}
-          </Form.Select>
+          </select>
           {hasError && formValidation?.errorMessage && (
-            <Feedback type="invalid">{formValidation?.errorMessage}</Feedback>
+            // type="invalid"
+            <div>{formValidation?.errorMessage}</div>
           )}
-        </Form.Group>
+        </div>
       )}
     />
   );

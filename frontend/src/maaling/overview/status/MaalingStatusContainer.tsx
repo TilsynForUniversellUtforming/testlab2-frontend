@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, Col, ListGroup, Row } from 'react-bootstrap';
 
 import { appRoutes, getFullPath, idPath } from '../../../common/appRoutes';
 import StatusBadge from '../../../common/status-badge/StatusBadge';
@@ -18,11 +17,11 @@ const MaalingStatusContainer = ({
   handleStartCrawling,
   handleStartTest,
 }: Props) => (
-  <ListGroup as="ol" className="w-50">
-    <ListGroup.Item as="li">
-      <Row>
-        <Col className="fw-bold">Status:</Col>
-        <Col className="d-flex justify-content-center align-items-center">
+  <ol className="w-50">
+    <li>
+      <div>
+        <div className="fw-bold">Status:</div>
+        <div className="d-flex justify-content-center align-items-center">
           <StatusBadge
             label={maaling.status}
             levels={{
@@ -31,12 +30,12 @@ const MaalingStatusContainer = ({
               success: 'ferdig',
             }}
           />
-        </Col>
-      </Row>
-    </ListGroup.Item>
-    <ListGroup.Item>
-      <ListGroup variant="flush">
-        <ListGroup.Item>
+        </div>
+      </div>
+    </li>
+    <li>
+      <ul>
+        <li>
           <MaalingStatusRow
             label={`Sideutvalg (${maaling.crawlStatistics.numFinished}/${maaling.loeysingList.length})`}
             finished={
@@ -48,8 +47,8 @@ const MaalingStatusContainer = ({
               id: String(maaling.id),
             })}
           />
-        </ListGroup.Item>
-        <ListGroup.Item>
+        </li>
+        <li>
           <MaalingStatusRow
             label={`Testing (${maaling.testStatistics.numFinished}/${maaling.loeysingList.length})`}
             finished={
@@ -60,29 +59,31 @@ const MaalingStatusContainer = ({
               id: String(maaling.id),
             })}
           />
-        </ListGroup.Item>
-        <ListGroup.Item>
-          <Row>
-            <Col md={8}>Publisert</Col>
-            <Col md={4}>
+        </li>
+        <li>
+          <div>
+            {/*md={8}*/}
+            <div>Publisert</div>
+            {/*md={4}*/}
+            <div>
               <StatusIcon />
-            </Col>
-          </Row>
-        </ListGroup.Item>
-      </ListGroup>
-    </ListGroup.Item>
-    <ListGroup.Item>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </li>
+    <li>
       {maaling.status === 'planlegging' && (
-        <Button onClick={() => handleStartCrawling(maaling)}>
+        <button onClick={() => handleStartCrawling(maaling)}>
           Start sideutvalg
-        </Button>
+        </button>
       )}
       {(maaling.status === 'crawling' ||
         maaling.status === 'kvalitetssikring') && (
-        <Button onClick={() => handleStartTest(maaling)}>Start test</Button>
+        <button onClick={() => handleStartTest(maaling)}>Start test</button>
       )}
-    </ListGroup.Item>
-  </ListGroup>
+    </li>
+  </ol>
 );
 
 export default MaalingStatusContainer;
