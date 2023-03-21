@@ -1,6 +1,13 @@
 import './testlabTable.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import {
+  Table,
+  TableBody,
+  TableFooter,
+  TableHeader,
+  TableRow,
+} from '@digdir/design-system-react';
 import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
@@ -16,15 +23,15 @@ import {
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
-import classNames from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ErrorCard from '../error/ErrorCard';
 import HideWhenLoading from '../HideWhenLoading';
 import ControlHeader from './control/ControlHeader';
+import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
-import TableBody from './TableBody';
-import TableHeader from './TableHeader';
+import TestlabTableBody from './TestlabTableBody';
+import TestlabTableHeader from './TestlabTableHeader';
 
 export interface Style {
   full?: boolean;
@@ -144,8 +151,11 @@ const TestlabTable = <T extends object>({
     return <ErrorCard show={error} onClick={onClickRetry} />;
   }
 
+  const headerGroup = table.getHeaderGroups()[0];
+  const headerRow = table.getPreFilteredRowModel().flatRows[0];
+
   return (
-    <div className="p-2 testlab-table">
+    <div className="testlab-table">
       <ControlHeader
         loading={loading}
         filterPreference={filterPreference}
@@ -154,38 +164,39 @@ const TestlabTable = <T extends object>({
         onChangeFilter={onChangeGlobalFilter}
         small={customStyle.small}
       />
-      <table
-        className={classNames('testlab-table', {
-          full: customStyle.full,
-          fixed: customStyle.fixed,
-          sm: customStyle.small,
-          bordered: customStyle.small,
-        })}
-        // hover={enableRowSelection}
-      >
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHeader
-                  key={header.id}
-                  table={table}
-                  header={header}
-                  filterPreference={filterPreference}
-                  loading={loading}
-                />
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          <TableBody table={table} loading={loading} />
-        </tbody>
-      </table>
-      <div className="h-2" />
-      <HideWhenLoading loading={loading}>
-        <PaginationContainer table={table} />
-      </HideWhenLoading>
+      <Table className="testlab-table__table">
+        <TableHeader>
+          <TableRow>
+            {headerGroup.headers.map((header) => (
+              <TestlabTableHeader
+                header={header}
+                loading={loading}
+                key={header.column.id}
+              />
+            ))}
+          </TableRow>
+          <TableRow>
+            {headerGroup.headers.map((header) => (
+              <TableFilter
+                headerRow={headerRow}
+                column={header.column}
+                filterPreference={filterPreference}
+                key={header.column.id}
+              />
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TestlabTableBody table={table} loading={loading} />
+        </TableBody>
+        <HideWhenLoading loading={loading}>
+          <TableFooter>
+            <TableRow>
+              <PaginationContainer table={table} />
+            </TableRow>
+          </TableFooter>
+        </HideWhenLoading>
+      </Table>
     </div>
   );
 };

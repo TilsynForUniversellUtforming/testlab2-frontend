@@ -84,7 +84,7 @@ const SakCreate = () => {
 
   return (
     <>
-      <AppTitle title="Ny sak" subTitle="Opprett en ny sak" />
+      <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
       <div>
         {/*sm={3}*/}
         <div>

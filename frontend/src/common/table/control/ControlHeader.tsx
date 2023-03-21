@@ -30,25 +30,20 @@ const ControlHeader = ({
     filterPreference !== 'none' && filterPreference !== 'rowsearch';
 
   return (
-    <div className="pb-4">
-      <div>
-        {/*sm={4}*/}
-        <div>
-          <PageSizeSelection table={table} loading={loading} />
-        </div>
-        <div
-          // sm={{ span: 4, offset: 4 }}
-          className="d-flex justify-content-center align-items-end"
-        >
-          {showFilters && (
-            <DebouncedInput
-              value={filterValue}
-              onChange={onChangeFilter}
-              placeholder="Søk..."
-              className="h-25"
-            />
-          )}
-        </div>
+    <div className="control-header">
+      <div className="control-header__size-selection">
+        <PageSizeSelection table={table} loading={loading} />
+      </div>
+      <div className="control-header__input">
+        {showFilters && (
+          <DebouncedInput
+            label="Fritt søk"
+            value={filterValue}
+            onChange={onChangeFilter}
+            placeholder="Søk..."
+            className="h-25"
+          />
+        )}
       </div>
     </div>
   );

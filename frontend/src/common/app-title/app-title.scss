@@ -1,3 +1,10 @@
 .app-title {
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
+  &__heading {
+    margin: 0;
+  }
+
+  &__sub-heading {
+    color: var(--colors-grey-700);
+  }
 }

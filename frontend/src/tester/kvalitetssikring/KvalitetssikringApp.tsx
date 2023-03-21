@@ -85,8 +85,8 @@ const KvalitetssikringApp = () => {
   return (
     <>
       <AppTitle
-        title="Sideutvalg"
-        subTitle={loeysingCrawResultat.loeysing.url}
+        heading="Sideutvalg"
+        subHeading={loeysingCrawResultat.loeysing.url}
       />
       <div className="mb-3">
         <ConfirmModalButton

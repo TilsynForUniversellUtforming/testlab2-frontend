@@ -1,6 +1,4 @@
-import './dropdown.scss';
-
-import { Button, ButtonVariant } from '@digdir/design-system-react';
+import { Button } from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@digdir/ds-icons';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,10 +20,16 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
   return (
     <div className="dropdown">
       <Button
-        variant={ButtonVariant.Quiet}
         onClick={handleShowRoutes}
-        icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
         className="dropdown__button"
+        icon={
+          show ? (
+            <ChevronUpIcon color="white" />
+          ) : (
+            <ChevronDownIcon color="white" />
+          )
+        }
+        iconPlacement="right"
       >
         {navn}
       </Button>
@@ -33,9 +37,10 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
         <ul className="dropdown-content">
           {routes.map((route) => (
             <li className="dropdown-content__item" key={route.navn}>
-              {/*onClick={handleShowRoutes}*/}
               <Link to={route.path} className="link">
-                {route.navn}
+                <button onClick={handleShowRoutes} className="link-button">
+                  {route.navn}
+                </button>
               </Link>
             </li>
           ))}

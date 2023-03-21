@@ -1,14 +1,14 @@
 import './app-title.scss';
 
 export interface AppTitleProps {
-  title: string;
-  subTitle?: string;
+  heading: string;
+  subHeading?: string;
 }
 
-const AppTitle = ({ title, subTitle }: AppTitleProps) => (
+const AppTitle = ({ heading, subHeading }: AppTitleProps) => (
   <div className="app-title">
-    <h2 className="p-0">{title}</h2>
-    {subTitle && <div className="text-muted">{subTitle}</div>}
+    {subHeading && <div className="app-title__sub-heading">{subHeading}</div>}
+    <h2 className="app-title__heading">{heading}</h2>
   </div>
 );
 

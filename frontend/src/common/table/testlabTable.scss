@@ -1,16 +1,19 @@
 .testlab-table {
-  border-collapse: collapse;
-  .full {
-    width: 100%;
-  }
-  .fixed {
+  &__table {
+    margin-bottom: 1rem;
     table-layout: fixed;
   }
 
   &__header-button {
     text-decoration: none;
-    color: black;
-    font-weight: bold;
+    padding: 0;
+    background: none;
+    color: inherit;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    width: 100%;
   }
 
   &__user-action {
@@ -19,41 +22,28 @@
     justify-content: center;
   }
 
-  .sortering {
-    &::before,
-    &::after {
-      content: '';
-      position: relative;
-      border: 4px solid transparent;
+  .control-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    padding-bottom: 1rem;
+
+    &__size-selection {
+      grid-column: 1 / 2;
     }
 
-    &::before {
-      border-bottom-color: #bdbdbd;
-      bottom: 10px;
+    &__input {
+      grid-column: 3 / 4;
     }
+  }
 
-    &::after {
-      border-top-color: #bdbdbd;
-      top: 10px;
-    }
-
-    &.sort-asc {
-      &::before {
-        border-bottom-color: #3f3f3f;
-      }
-
-      &::after {
-        content: none;
-      }
-    }
-
-    &.sort-desc {
-      &::before {
-        content: none;
-      }
-
-      &::after {
-        border-top-color: #3f3f3f;
+  .pagination-container {
+    text-align: right;
+    &__button-list {
+      display: inline-flex;
+      .number-button {
+        margin: 0 0.25rem;
+        width: 0.5rem;
       }
     }
   }

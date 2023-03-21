@@ -21,7 +21,7 @@ const MaalingOverviewApp = () => {
 
   return (
     <>
-      <AppTitle title={navn} />
+      <AppTitle heading={navn} />
       <div className="pb-4">
         <MaalingNavbar />
       </div>

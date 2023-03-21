@@ -90,7 +90,7 @@ const SakEdit = () => {
 
   return (
     <>
-      <AppTitle title="Endre sak" />
+      <AppTitle heading="Endre sak" />
       <div>
         {/*sm={3}*/}
         <div>

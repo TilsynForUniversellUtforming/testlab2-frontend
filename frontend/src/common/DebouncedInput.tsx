@@ -1,15 +1,21 @@
+import { TextField } from '@digdir/design-system-react';
 import React, { InputHTMLAttributes, useEffect, useState } from 'react';
+
+export type Props = {
+  value: string | number;
+  placeholder: string;
+  onChange: (value: string | number) => void;
+  debounce?: number;
+  label?: string;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>;
 
 const DebouncedInput = ({
   value: initialValue,
+  placeholder,
   onChange,
   debounce = 500,
-  ...props
-}: {
-  value: string | number;
-  onChange: (value: string | number) => void;
-  debounce?: number;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
+  label,
+}: Props) => {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -25,11 +31,14 @@ const DebouncedInput = ({
   }, [value]);
 
   return (
-    <input
-      {...props}
+    <TextField
+      label={label}
       type="text"
-      value={value}
+      placeholder={placeholder}
+      value={String(value)}
       onChange={(e) => setValue(e.target.value)}
+      name="debounced-input"
+      autoComplete="new-password"
     />
   );
 };

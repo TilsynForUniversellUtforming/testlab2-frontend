@@ -9,7 +9,7 @@ import { getFullPath, verktoey } from '../common/appRoutes';
 const Oversikt = () => {
   return (
     <div>
-      <AppTitle title="Verktøy" />
+      <AppTitle heading="Verktøy" />
       <div className="lenker">
         {verktoey.map((route) => (
           <div className="lenker__item" key={route.navn}>

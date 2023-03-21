@@ -21,7 +21,7 @@ const SakOverviewApp = () => {
 
   return (
     <>
-      <AppTitle title={navn} />
+      <AppTitle heading={navn} />
       <div className="pb-4">
         <SakNavbar />
       </div>
