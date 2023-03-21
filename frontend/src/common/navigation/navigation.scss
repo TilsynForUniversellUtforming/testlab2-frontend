@@ -1,7 +1,20 @@
-.navbar__dropdown > a {
-  color: white;
-  &:focus,
-  &:hover {
-    color: white;
+.navigation {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: var(--colors-blue-100);
+  .navigation__item {
+    padding: 0 1rem;
+    .link {
+      display: block;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--colors-grey-900);
+      width: 100%;
+      &:hover {
+        color: var(--colors-blue-500);
+      }
+    }
   }
 }

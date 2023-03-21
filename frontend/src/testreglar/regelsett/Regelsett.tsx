@@ -26,7 +26,7 @@ const Regelsett = () => {
   const navigate = useNavigate();
 
   const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmLabel, setConfirmLabel] = useState<string>();
+  const [confirmLabel, setConfirmLabel] = useState<string>('');
   const [deleteRow, setDeleteRow] = useState<Row<TestRegelsett>>();
 
   const onCloseModal = useCallback(() => {
@@ -103,7 +103,7 @@ const Regelsett = () => {
   return (
     <>
       <ConfirmDialog
-        label={confirmLabel}
+        message={confirmLabel}
         show={showConfirm}
         closeModal={onCloseModal}
         onSubmit={doDelete}

@@ -39,79 +39,86 @@ function App() {
   return (
     <>
       <Navigation />
-      {/*Container className="pt-4"*/}
-      <Routes>
-        <Route path={appRoutes.ROOT.path} element={<Oversikt />} />
+      <div className="app-container">
+        <Routes>
+          <Route path={appRoutes.ROOT.path} element={<Oversikt />} />
 
-        <Route path={appRoutes.SAK_LIST.path} element={<SakList />} />
-        <Route path={appRoutes.SAK_ROOT.path} element={<SakApp />}>
-          <Route path={createPath} element={<SakCreate />} />
-          <Route path={idPath} element={<SakOverviewApp />}>
-            <Route index element={<SakOverview />} />
-            <Route path={editPath} element={<SakEdit />} />
+          <Route path={appRoutes.SAK_LIST.path} element={<SakList />} />
+          <Route path={appRoutes.SAK_ROOT.path} element={<SakApp />}>
+            <Route path={createPath} element={<SakCreate />} />
+            <Route path={idPath} element={<SakOverviewApp />}>
+              <Route index element={<SakOverview />} />
+              <Route path={editPath} element={<SakEdit />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route path={appRoutes.MAALING_LIST.path} element={<MaalingList />} />
-        <Route path={appRoutes.MAALING_ROOT.path} element={<MaalingApp />}>
-          <Route path={createPath} element={<MaalingCreate />} />
-          <Route path={idPath} element={<MaalingOverviewApp />}>
-            <Route index element={<MaalingOverview />} />
-            <Route path={editPath} element={<MaalingEdit />} />
+          <Route path={appRoutes.MAALING_LIST.path} element={<MaalingList />} />
+          <Route path={appRoutes.MAALING_ROOT.path} element={<MaalingApp />}>
+            <Route path={createPath} element={<MaalingCreate />} />
+            <Route path={idPath} element={<MaalingOverviewApp />}>
+              <Route index element={<MaalingOverview />} />
+              <Route path={editPath} element={<MaalingEdit />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route path={appRoutes.TESTREGEL_LIST.path} element={<TestreglarApp />}>
-          <Route index element={<Testreglar />} />
           <Route
-            path={appRoutes.TESTREGEL_CREATE.path}
-            element={<CreateTestregel />}
-          />
-          <Route
-            path={appRoutes.TESTREGEL_EDIT.path}
-            element={<EditTestreglar />}
-          />
-          <Route
-            path={appRoutes.REGELSETT_LIST.path}
-            element={<RegelsettApp />}
+            path={appRoutes.TESTREGEL_LIST.path}
+            element={<TestreglarApp />}
           >
-            <Route index element={<Regelsett />} />
+            <Route index element={<Testreglar />} />
             <Route
-              path={appRoutes.REGELSETT_CREATE.path}
-              element={<CreateRegelsett />}
+              path={appRoutes.TESTREGEL_CREATE.path}
+              element={<CreateTestregel />}
             />
             <Route
-              path={appRoutes.REGELSETT_EDIT.path}
-              element={<EditRegelsett />}
+              path={appRoutes.TESTREGEL_EDIT.path}
+              element={<EditTestreglar />}
+            />
+            <Route
+              path={appRoutes.REGELSETT_LIST.path}
+              element={<RegelsettApp />}
+            >
+              <Route index element={<Regelsett />} />
+              <Route
+                path={appRoutes.REGELSETT_CREATE.path}
+                element={<CreateRegelsett />}
+              />
+              <Route
+                path={appRoutes.REGELSETT_EDIT.path}
+                element={<EditRegelsett />}
+              />
+            </Route>
+          </Route>
+          <Route
+            path={appRoutes.VERKSEMD_LIST.path}
+            element={<VerksemderApp />}
+          />
+          <Route
+            path={appRoutes.LOEYSING_LIST.path}
+            element={<LoeysingApp />}
+          />
+          <Route path={appRoutes.KRAV_LIST.path} element={<KravApp />} />
+          <Route path={appRoutes.TEST.path} element={<TesterApp />}>
+            <Route
+              path={appRoutes.TEST_SIDEUTVAL_LIST.path}
+              element={<SideutvalApp />}
+            />
+            <Route
+              path={appRoutes.TEST_CRAWLING_RESULT_LIST.path}
+              element={<KvalitetssikringApp />}
+            />
+            <Route
+              path={appRoutes.TEST_TESTING_LIST.path}
+              element={<>TESTING</>}
+            />
+            <Route
+              path={appRoutes.TEST_RESULT_LIST.path}
+              element={<TestResultListApp />}
             />
           </Route>
-        </Route>
-        <Route
-          path={appRoutes.VERKSEMD_LIST.path}
-          element={<VerksemderApp />}
-        />
-        <Route path={appRoutes.LOEYSING_LIST.path} element={<LoeysingApp />} />
-        <Route path={appRoutes.KRAV_LIST.path} element={<KravApp />} />
-        <Route path={appRoutes.TEST.path} element={<TesterApp />}>
-          <Route
-            path={appRoutes.TEST_SIDEUTVAL_LIST.path}
-            element={<SideutvalApp />}
-          />
-          <Route
-            path={appRoutes.TEST_CRAWLING_RESULT_LIST.path}
-            element={<KvalitetssikringApp />}
-          />
-          <Route
-            path={appRoutes.TEST_TESTING_LIST.path}
-            element={<>TESTING</>}
-          />
-          <Route
-            path={appRoutes.TEST_RESULT_LIST.path}
-            element={<TestResultListApp />}
-          />
-        </Route>
-        <Route path="*" element={<IkkeFunnet />} />
-      </Routes>
+          <Route path="*" element={<IkkeFunnet />} />
+        </Routes>
+      </div>
     </>
   );
 }
