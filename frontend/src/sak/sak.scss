@@ -8,6 +8,53 @@
 
   &__stepper {
     grid-column: 1 / 4;
+    .sak-stepper {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+
+      &__container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      &__text {
+        grid-column: 1;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding-bottom: 2.5rem;
+        color: var(--colors-grey-600);
+
+        .title {
+          font-weight: bold;
+        }
+        .active {
+          color: var(--colors-blue-800);
+        }
+      }
+      &__icon {
+        grid-column: 2 / 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 2.5rem;
+
+        .icon-wrapper {
+          .icon-button {
+            border: 1px solid var(--colors-grey-200);
+            background-color: white;
+            cursor: pointer;
+            font-size: large;
+            color: var(--colors-grey-600);
+          }
+          .icon-button.active {
+            background-color: var(--colors-blue-700);
+            color: white;
+          }
+        }
+      }
+    }
   }
 
   &__form {

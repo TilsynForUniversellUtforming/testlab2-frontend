@@ -1,3 +1,4 @@
+import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -48,7 +49,7 @@ const CreateTestregel = () => {
   }, []);
 
   if (contextLoading) {
-    return <span>SPINNER</span>;
+    return <Spinner title="Hentar testreglar" variant={'default'} />;
   }
 
   if (contextError) {

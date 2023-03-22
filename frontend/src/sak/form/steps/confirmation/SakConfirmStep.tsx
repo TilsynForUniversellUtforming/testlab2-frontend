@@ -1,4 +1,4 @@
-import { ErrorMessage } from '@digdir/design-system-react';
+import { ErrorMessage, Spinner } from '@digdir/design-system-react';
 import React, { useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 
@@ -46,7 +46,7 @@ const SakConfirmContent = ({
   };
 
   if (loading) {
-    return <span>SPINNER</span>;
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   if (error) {

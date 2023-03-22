@@ -1,3 +1,4 @@
+import { Spinner } from '@digdir/design-system-react';
 import React from 'react';
 import { Outlet, useOutletContext } from 'react-router-dom';
 
@@ -10,7 +11,7 @@ const SakOverviewApp = () => {
   const context: SakContext = useOutletContext();
 
   if (context.contextLoading) {
-    return <span>SPINNER</span>;
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   if (!context.maaling || context.contextError) {

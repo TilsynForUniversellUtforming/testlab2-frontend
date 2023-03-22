@@ -13,74 +13,47 @@ const Stepper = ({ steps, currentStep, goToStep }: Props) => {
   const currentIdx = currentStep.index;
 
   return (
-    <ul>
+    <div className="sak-stepper" aria-hidden="true">
       {steps.map((step) => {
         const active = step.index <= currentIdx;
 
         return (
-          <li key={step.stepperTitle}>
-            <div>
-              {/*sm={7}*/}
+          <div
+            className="sak-stepper__container"
+            key={step.index}
+            style={{ gridRow: `${step.index + 1}` }}
+          >
+            <div className="sak-stepper__text">
               <div>
-                <div
-                  className={classNames('fs-5', {
-                    'text-secondary': !active,
-                  })}
-                >
+                <div className={classNames('title', { active: active })}>
                   {step.stepperTitle}
                 </div>
-                <div
-                  className={classNames('d-none d-xl-flex', {
-                    'text-secondary': active,
-                    'text-muted': !active,
-                  })}
-                >
+                <div className={classNames({ active: active })}>
                   {step.stepperSubTitle}
                 </div>
               </div>
-              {/*sm={5}*/}
-              <div>
-                <div className="d-none d-xl-flex align-items-center justify-content-center">
-                  <button
-                    onClick={() => goToStep(step.index)}
-                    className={classNames('border border-1', {
-                      'bg-white': !active,
-                      '.bg-light': active,
-                    })}
-                    style={{
-                      width: '5rem',
-                      height: '5rem',
-                      borderRadius: '50%',
-                    }}
-                  >
-                    <div
-                      className={classNames('fs-2', {
-                        'text-secondary': active,
-                        'text-muted': !active,
-                      })}
-                    >
-                      {step.icon}
-                    </div>
-                  </button>
-                </div>
-                <div
-                  className="d-none d-xl-flex justify-content-center"
-                  style={{ height: '50px' }}
+            </div>
+            <div className="sak-stepper__icon">
+              <div className="icon-wrapper">
+                <button
+                  onClick={() => goToStep(step.index)}
+                  className={classNames('icon-button', {
+                    active: active,
+                  })}
+                  style={{
+                    width: '5rem',
+                    height: '5rem',
+                    borderRadius: '50%',
+                  }}
                 >
-                  <div
-                    className={classNames(
-                      { 'bg-secondary': active },
-                      { 'bg-light': !active }
-                    )}
-                    style={{ width: '2px' }}
-                  ></div>
-                </div>
+                  {step.icon}
+                </button>
               </div>
             </div>
-          </li>
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 };
 

@@ -1,5 +1,6 @@
 import './tester.scss';
 
+import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
@@ -62,7 +63,7 @@ const TesterApp = () => {
   };
 
   if (loading) {
-    return <span>SPINNER</span>;
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   if (typeof maaling === 'undefined') {

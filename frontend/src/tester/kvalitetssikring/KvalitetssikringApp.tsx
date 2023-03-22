@@ -1,3 +1,4 @@
+import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
@@ -21,7 +22,7 @@ const KvalitetssikringApp = () => {
   const navigate = useNavigate();
 
   if (contextLoading) {
-    return <span>SPINNER</span>;
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   const crawlResultat = maaling?.crawlResultat;
