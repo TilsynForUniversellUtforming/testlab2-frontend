@@ -87,7 +87,7 @@ const MaalingList = () => {
       <TestlabTable<Maaling>
         data={maalingList}
         defaultColumns={maalingColumns}
-        error={error}
+        fetchError={error}
         loading={loading}
         onClickRetry={doFetchMaalingList}
       />

@@ -17,7 +17,7 @@ export interface SakContext extends AppContext {
 export type SakFormState = {
   navn?: string;
   loeysingList: Loeysing[];
-  regelsett?: TestRegelsett;
+  regelsettId?: string;
   currentStep?: AppRoute;
 };
 

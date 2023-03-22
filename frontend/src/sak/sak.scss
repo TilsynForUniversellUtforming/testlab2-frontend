@@ -1,0 +1,63 @@
+.sak {
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 1fr;
+    padding-bottom: 2.5rem;
+  }
+
+  &__stepper {
+    grid-column: 1 / 4;
+  }
+
+  &__form {
+    grid-column: 4 / 13;
+
+    .sak-init {
+      grid-column: 1 / 6;
+    }
+
+    .sak-loeysing {
+      &__selection {
+        grid-column: 9 / 13;
+        .item {
+          padding: 1rem 0;
+        }
+      }
+
+      &__table {
+        grid-column: 1 / 8;
+      }
+    }
+
+    .sak-testreglar,
+    .sak-confirm {
+      grid-column: 1 / 7;
+    }
+
+    .sak-confirm {
+      &__header {
+        margin: 0;
+      }
+      &__list {
+        list-style: none;
+      }
+      &__muted {
+        color: var(--colors-grey-600);
+      }
+      .accordion-list {
+        max-height: 32rem;
+        overflow-y: auto;
+        &__item {
+          border-bottom: 1px solid var(--colors-grey-500);
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+      li {
+        padding: 1rem 0;
+      }
+    }
+  }
+}

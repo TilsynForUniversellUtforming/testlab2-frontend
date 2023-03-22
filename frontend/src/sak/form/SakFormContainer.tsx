@@ -29,11 +29,9 @@ const SakFormContainer = ({
     formMethods={formMethods}
   >
     <>
-      <div className="pb-4">{children}</div>
+      <div className="sak__container">{children}</div>
       <div>
-        <div>
-          <TestlabForm.FormButtons step={buttonStep} />
-        </div>
+        <TestlabForm.FormButtons step={buttonStep} />
       </div>
     </>
   </TestlabForm>

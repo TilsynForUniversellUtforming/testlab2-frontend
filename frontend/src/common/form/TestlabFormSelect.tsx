@@ -1,3 +1,4 @@
+import { ErrorMessage, Select } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -6,7 +7,6 @@ import { EditProps } from './TestlabFormInput';
 
 export interface EditSelectProps<T extends object> extends EditProps<T> {
   options: Option[];
-  multiple?: boolean;
 }
 
 const TestlabFormSelect = <T extends object>({
@@ -14,10 +14,8 @@ const TestlabFormSelect = <T extends object>({
   options,
   name,
   formValidation,
-  multiple = false,
 }: EditSelectProps<T>) => {
   const {
-    register,
     control,
     formState: { errors },
   } = useFormContext();
@@ -27,30 +25,19 @@ const TestlabFormSelect = <T extends object>({
     <Controller
       name={name}
       control={control}
-      render={({ field }) => (
-        <div className="mb-3">
-          <label htmlFor={label} className="p-0">
-            {label}
-          </label>
-          <select
-            aria-label={label}
-            id={label}
-            value={field.value}
-            // isInvalid={hasError}
-            multiple={multiple}
-            {...register(name, formValidation?.validation)}
-          >
-            {options.map((option: Option) => (
-              <option value={option.value} key={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+      render={({ field: { onChange, value } }) => (
+        <>
+          <Select
+            label={label}
+            value={value}
+            onChange={onChange}
+            options={options}
+            error={hasError}
+          />
           {hasError && formValidation?.errorMessage && (
-            // type="invalid"
-            <div>{formValidation?.errorMessage}</div>
+            <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>
           )}
-        </div>
+        </>
       )}
     />
   );

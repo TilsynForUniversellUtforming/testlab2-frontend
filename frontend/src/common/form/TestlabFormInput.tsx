@@ -1,3 +1,4 @@
+import { ErrorMessage, TextField } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
@@ -16,7 +17,6 @@ const TestlabFormInput = <T extends object>({
   formValidation,
 }: EditProps<T>) => {
   const {
-    register,
     control,
     formState: { errors },
   } = useFormContext();
@@ -26,21 +26,22 @@ const TestlabFormInput = <T extends object>({
     <Controller
       name={name}
       control={control}
-      render={({ field }) => (
-        <div className="mb-3">
-          <label htmlFor="input-el">{label}</label>
-          <input
-            id="input-el"
+      rules={formValidation?.validation}
+      render={({ field: { onChange, onBlur, value } }) => (
+        <>
+          <TextField
             type="text"
-            value={field.value}
-            // isInvalid={hasError}
-            {...register(name, formValidation?.validation)}
+            value={value}
+            label={label}
+            isValid={!hasError}
+            onChange={onChange}
+            onBlur={onBlur}
+            name={name}
           />
           {hasError && formValidation?.errorMessage && (
-            // type="invalid"
-            <div>{formValidation?.errorMessage}</div>
+            <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>
           )}
-        </div>
+        </>
       )}
     />
   );

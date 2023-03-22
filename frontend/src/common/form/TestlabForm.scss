@@ -1,9 +1,20 @@
 .testlab-form {
-  .list-group {
-    max-height: 32rem;
-    overflow-y: auto;
-    .invalid {
-      border-color: red;
+  &__header {
+    margin-bottom: 2.5rem;
+    .heading {
+      margin: 0 0 10px 0;
+    }
+    p {
+      margin: 0;
+      color: var(--colors-grey-600);
+    }
+  }
+
+  &__navigation-buttons {
+    display: flex;
+    justify-content: start;
+    button + button {
+      margin-left: 1rem;
     }
   }
 }

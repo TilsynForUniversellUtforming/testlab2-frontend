@@ -1,5 +1,5 @@
+import { ErrorMessage, List, ListItem } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
-import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -101,42 +101,33 @@ const SakLoeysingStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <>
-        <div>
-          <form className="mb-3">
-            <span>Valgte løysingar</span>
-            {/*numbered={selection.length > 0}*/}
-            <ol>
-              {selection.length > 0 &&
-                selection.map((tr) => <li key={tr.id}>{tr.url}</li>)}
-              {selection.length === 0 && (
-                <li
-                  className={classNames({ invalid: listErrors })}
-                  // disabled
-                >
-                  Ingen løysingar valgt
-                </li>
-              )}
-            </ol>
-            {listErrors && (
-              <div className="invalid-feedback d-block">
-                {listErrors?.message}
-              </div>
-            )}
-          </form>
-        </div>
-        <div>
-          <TestlabTable<Loeysing>
-            data={loeysingList}
-            defaultColumns={loeysingColumns}
-            error={error}
-            loading={loading}
-            selectedRows={selectedRows}
-            onSelectRows={onChangeRows}
-            customStyle={{ small: true }}
-          />
-        </div>
-      </>
+      <div className="sak-loeysing__table">
+        <TestlabTable<Loeysing>
+          data={loeysingList}
+          defaultColumns={loeysingColumns}
+          fetchError={error}
+          inputError={listErrors?.message}
+          loading={loading}
+          selectedRows={selectedRows}
+          onSelectRows={onChangeRows}
+          customStyle={{ small: true }}
+        />
+        {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+      </div>
+      <div className="sak-loeysing__selection">
+        <h4>Valgte løysingar</h4>
+        {selection.length > 0 && (
+          <List>
+            {selection.length > 0 &&
+              selection.map((tr) => (
+                <ListItem key={tr.id}>
+                  <div className="item">{tr.url}</div>
+                </ListItem>
+              ))}
+          </List>
+        )}
+        {selection.length === 0 && <div>Ingen løysingar valgt</div>}
+      </div>
     </SakFormContainer>
   );
 };

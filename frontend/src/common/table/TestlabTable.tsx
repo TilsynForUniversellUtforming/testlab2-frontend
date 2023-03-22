@@ -66,7 +66,8 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 interface Props<T extends object> {
   data: T[];
   defaultColumns: ColumnDef<T>[];
-  error: any;
+  fetchError: any;
+  inputError?: string;
   loading?: boolean;
   filterPreference?: FilterPreference;
   selectedRows?: boolean[];
@@ -78,7 +79,7 @@ interface Props<T extends object> {
 const TestlabTable = <T extends object>({
   data,
   defaultColumns,
-  error,
+  fetchError,
   loading = false,
   filterPreference = 'all',
   selectedRows = [],
@@ -147,8 +148,8 @@ const TestlabTable = <T extends object>({
     setGlobalFilter(String(value));
   }, []);
 
-  if (error) {
-    return <ErrorCard show={error} onClick={onClickRetry} />;
+  if (fetchError) {
+    return <ErrorCard show={fetchError} onClick={onClickRetry} />;
   }
 
   const headerGroup = table.getHeaderGroups()[0];

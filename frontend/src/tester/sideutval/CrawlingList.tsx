@@ -100,7 +100,7 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
     <TestlabTable<CrawlResultat>
       data={crawlList}
       defaultColumns={crawlColumns}
-      error={error}
+      fetchError={error}
       filterPreference="searchbar"
     />
   );

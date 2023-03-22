@@ -2,6 +2,7 @@ import {
   Button,
   ButtonColor,
   ButtonVariant,
+  TableCell,
 } from '@digdir/design-system-react';
 import {
   ChevronLeftIcon,
@@ -75,43 +76,38 @@ const PaginationMiddleSection = ({ table }: TableProps) => {
 const PaginationSelect = ({ table }: TableProps) => {
   usePaginationKeyPress({ table });
 
-  const pageOptions = table.getPageOptions();
-  const pageCount = pageOptions.length;
-
-  if (pageCount <= 1) {
-    return null;
-  }
-
   return (
-    <div className="pagination-container">
-      <div className="pagination-container__button-list">
-        <Button
-          disabled={!table.getCanPreviousPage()}
-          onClick={() => table.setPageIndex(0)}
-          icon={<ChevronsLeftIcon />}
-          variant={ButtonVariant.Quiet}
-        />
-        <Button
-          disabled={!table.getCanPreviousPage()}
-          onClick={() => table.previousPage()}
-          icon={<ChevronLeftIcon />}
-          variant={ButtonVariant.Quiet}
-        />
-        <PaginationMiddleSection table={table} />
-        <Button
-          disabled={!table.getCanNextPage()}
-          onClick={() => table.nextPage()}
-          icon={<ChevronRightIcon />}
-          variant={ButtonVariant.Quiet}
-        />
-        <Button
-          disabled={!table.getCanNextPage()}
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          icon={<ChevronsRightIcon />}
-          variant={ButtonVariant.Quiet}
-        />
+    <TableCell>
+      <div className="pagination-container">
+        <div className="pagination-container__button-list">
+          <Button
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.setPageIndex(0)}
+            icon={<ChevronsLeftIcon />}
+            variant={ButtonVariant.Quiet}
+          />
+          <Button
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
+            icon={<ChevronLeftIcon />}
+            variant={ButtonVariant.Quiet}
+          />
+          <PaginationMiddleSection table={table} />
+          <Button
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
+            icon={<ChevronRightIcon />}
+            variant={ButtonVariant.Quiet}
+          />
+          <Button
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            icon={<ChevronsRightIcon />}
+            variant={ButtonVariant.Quiet}
+          />
+        </div>
       </div>
-    </div>
+    </TableCell>
   );
 };
 

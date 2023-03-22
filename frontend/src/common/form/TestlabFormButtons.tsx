@@ -1,3 +1,4 @@
+import { Button, ButtonVariant } from '@digdir/design-system-react';
 import classNames from 'classnames';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,12 +26,11 @@ const FormButton = ({
   onClickBack: () => void;
   className?: string;
 }) => (
-  <div className={classNames('mb-3', className)}>
-    {/*variant="secondary"*/}
-    <button className="me-3" onClick={onClickBack}>
+  <div className={classNames('testlab-form__navigation-buttons', className)}>
+    <Button type="button" variant={ButtonVariant.Outline} onClick={onClickBack}>
       {textBack}
-    </button>
-    <button type="submit">{textNext}</button>
+    </Button>
+    <Button type="submit">{textNext}</Button>
   </div>
 );
 

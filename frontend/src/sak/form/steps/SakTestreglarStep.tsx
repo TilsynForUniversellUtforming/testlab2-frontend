@@ -30,7 +30,7 @@ const SakTestreglarStep = ({
     defaultValues: {
       navn: maalingFormState.navn,
       loeysingList: maalingFormState.loeysingList,
-      regelsett: regelsettList[0],
+      regelsettId: maalingFormState.regelsettId,
     },
   });
 
@@ -47,14 +47,13 @@ const SakTestreglarStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      {/*md={6}*/}
-      <div>
-        <TestlabForm.FormSelect<TestRegelsett>
+      <div className="sak-testreglar">
+        <TestlabForm.FormSelect<SakFormState>
           label="Testreglar"
-          name="id"
+          name="regelsettId"
           formValidation={{
             errorMessage: 'Testreglar må veljast',
-            validation: { required: true, minLength: 1 },
+            validation: { required: true, min: '1' },
           }}
           options={regelsettOptions}
         />

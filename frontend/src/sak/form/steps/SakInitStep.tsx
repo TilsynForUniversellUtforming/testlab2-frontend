@@ -1,3 +1,4 @@
+import { Select } from '@digdir/design-system-react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -32,9 +33,8 @@ const SakInitStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      {/*md={8}*/}
-      <div>
-        <TestlabForm.FormInput
+      <div className="sak-init">
+        <TestlabForm.FormInput<SakFormState>
           label="Tittel"
           name="navn"
           formValidation={{
@@ -42,12 +42,11 @@ const SakInitStep = ({
             validation: { required: true, minLength: 1 },
           }}
         />
-        <label htmlFor="type-sak" className="p-0">
-          Type sak
-        </label>
-        <select id="type-sak" disabled>
-          <option>Type sak</option>
-        </select>
+        <Select
+          disabled
+          label="Type sak"
+          options={[{ label: 'Type sak', value: 'ts' }]}
+        />
       </div>
     </SakFormContainer>
   );

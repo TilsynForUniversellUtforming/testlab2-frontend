@@ -138,7 +138,7 @@ const Testreglar = () => {
       <TestlabTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
-        error={contextError}
+        fetchError={contextError}
         loading={contextLoading}
         onClickRetry={refresh}
       />

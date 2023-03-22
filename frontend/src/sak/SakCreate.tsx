@@ -1,3 +1,5 @@
+import './sak.scss';
+
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -26,7 +28,7 @@ const SakCreate = () => {
   const defaultState: SakFormState = {
     navn: '',
     loeysingList: [],
-    regelsett: undefined,
+    regelsettId: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -40,6 +42,7 @@ const SakCreate = () => {
       const maalingInit: MaalingInit = {
         navn: maalingFormState.navn!,
         loeysingList: maalingFormState.loeysingList,
+        // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
       };
 
       try {
@@ -85,17 +88,15 @@ const SakCreate = () => {
   return (
     <>
       <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
-      <div>
-        {/*sm={3}*/}
-        <div>
+      <div className="sak__container">
+        <div className="sak__stepper">
           <Stepper
             currentStep={currentStep}
             steps={steps}
             goToStep={goToStep}
           />
         </div>
-        {/*sm={9}*/}
-        <div>
+        <div className="sak__form">
           <SakStepForm
             maalingFormState={maalingFormState}
             step={currentStep}

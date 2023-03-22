@@ -116,7 +116,7 @@ const Regelsett = () => {
       <TestlabTable<TestRegelsett>
         data={regelsett}
         defaultColumns={testRegelColumns}
-        error={contextError}
+        fetchError={contextError}
         loading={contextLoading}
         customStyle={{ small: true }}
       />

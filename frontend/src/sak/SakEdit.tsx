@@ -27,7 +27,7 @@ const SakEdit = () => {
   const defaultState: SakFormState = {
     navn: maaling?.navn ?? '',
     loeysingList: maaling?.loeysingList ?? [],
-    regelsett: undefined,
+    regelsettId: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =

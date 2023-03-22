@@ -161,7 +161,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
               <TestlabTable<Testregel>
                 data={selectableTestreglar}
                 defaultColumns={testRegelColumns}
-                error={contextError}
+                fetchError={contextError}
                 loading={contextLoading}
                 selectedRows={selectedRows}
                 onSelectRows={onChangeRows}
