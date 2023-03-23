@@ -23,7 +23,7 @@ export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
 
 export const updateMaalingStatus = async (
   id: number,
-  status: MaalingStatus = 'crawling'
+  status: MaalingStatus
 ): Promise<Maaling> =>
   await fetch(`/api/v1/maalinger/${id}`, {
     method: 'PUT',

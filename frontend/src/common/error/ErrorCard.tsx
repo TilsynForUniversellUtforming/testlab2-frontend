@@ -1,3 +1,6 @@
+import './error-card.scss';
+
+import { Button, FieldSet } from '@digdir/design-system-react';
 import React from 'react';
 
 interface Props {
@@ -17,19 +20,9 @@ const ErrorCard = ({
 }: Props) => (
   <>
     {show && (
-      <div className="mt-3">
-        <div>{errorHeader}</div>
-        <p>{errorText}</p>
-        {onClick && (
-          <>
-            <hr />
-            <div className="d-flex">
-              {/*variant="outline-danger"*/}
-              <button onClick={onClick}>{buttonText}</button>
-            </div>
-          </>
-        )}
-      </div>
+      <FieldSet description={errorText} legend={errorHeader}>
+        {onClick && <Button onClick={onClick}>{buttonText}</Button>}
+      </FieldSet>
     )}
   </>
 );

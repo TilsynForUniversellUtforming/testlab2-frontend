@@ -42,7 +42,7 @@ const MaalingApp = () => {
 
     const startCrawling = async () => {
       try {
-        const updated = await updateMaalingStatus(maaling.id);
+        const updated = await updateMaalingStatus(maaling.id, 'crawling');
         if (!updated.id) {
           setError('Noko gjekk gale ved oppretting av måling');
         } else {
@@ -64,7 +64,30 @@ const MaalingApp = () => {
   }, []);
 
   const doStartTest = useCallback((maaling: Maaling) => {
-    console.log(maaling);
+    setLoading(true);
+    setError(undefined);
+
+    const startTesting = async () => {
+      try {
+        const updated = await updateMaalingStatus(maaling.id, 'testing');
+        if (!updated.id) {
+          setError('Noko gjekk gale ved oppdatering av måling');
+        } else {
+          navigate(
+            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+              pathParam: idPath,
+              id: String(maaling.id),
+            })
+          );
+        }
+      } catch (e) {
+        setError('Kunne ikkje starte test');
+      }
+    };
+
+    startTesting()
+      .catch((e) => setError(e))
+      .finally(() => setLoading(false));
   }, []);
 
   const doFetchData = useCallback(() => {

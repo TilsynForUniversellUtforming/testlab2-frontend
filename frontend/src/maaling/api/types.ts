@@ -1,5 +1,4 @@
 import { Loeysing } from '../../loeysingar/api/types';
-import { TestResultat } from '../../tester/api/types';
 
 export type MaalingInit = {
   navn: string;
@@ -12,7 +11,11 @@ export type MaalingEdit = {
   loeysingList: Loeysing[];
 };
 
-export type MaalingStatus = 'planlegging' | 'crawling' | 'kvalitetssikring';
+export type MaalingStatus =
+  | 'planlegging'
+  | 'crawling'
+  | 'kvalitetssikring'
+  | 'testing';
 export type JobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
 export type CrawlResultat = {
@@ -26,6 +29,13 @@ export type JobStatistics = {
   numError: number;
 };
 
+export type TestResult = {
+  tilstand: JobStatus;
+  loeysing: Loeysing;
+  sistOppdatert: string;
+  statusURL: string;
+};
+
 export type Maaling = {
   id: number;
   navn: string;
@@ -34,5 +44,5 @@ export type Maaling = {
   crawlResultat: CrawlResultat[];
   crawlStatistics: JobStatistics;
   testStatistics: JobStatistics;
-  testResultat?: TestResultat[];
+  testResult: TestResult[];
 };

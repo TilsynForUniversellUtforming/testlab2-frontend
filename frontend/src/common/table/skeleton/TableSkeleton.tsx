@@ -13,7 +13,7 @@ const TableSkeleton = ({ table }: TableProps) => {
       {[...Array(10)].map((_, i) => (
         <tr key={`skeleton_row_${i}`}>
           {[...Array(tableLength)].map((_, i) => (
-            <td key={`skeleton_col_${i}`}>
+            <td className="table-skeleton" key={`skeleton_col_${i}`}>
               <Skeleton />
             </td>
           ))}
