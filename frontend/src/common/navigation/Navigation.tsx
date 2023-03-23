@@ -1,23 +1,23 @@
 import './navigation.scss';
 
 import React from 'react';
-import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 import { appRoutes, verktoey } from '../appRoutes';
 import LinksDropdown from './dropdown/LinksDropdown';
 
 const Navigation = () => {
   return (
-    <Navbar bg="dark" variant="dark">
-      <Container>
-        <Navbar.Brand href={appRoutes.ROOT.path}>
+    <div className="navigation">
+      <div className="navigation__item">
+        <Link to={appRoutes.ROOT.path} className="link">
           {appRoutes.ROOT.navn}
-        </Navbar.Brand>
-        <Nav className="me-auto">
-          <LinksDropdown navn="Verktøy" routes={verktoey} />
-        </Nav>
-      </Container>
-    </Navbar>
+        </Link>
+      </div>
+      <div className="navigation__item">
+        <LinksDropdown navn="Verktøy" routes={verktoey} />
+      </div>
+    </div>
   );
 };
 

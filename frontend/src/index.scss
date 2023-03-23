@@ -1,6 +1,14 @@
+@import '@altinn/figma-design-tokens/dist/tokens.css';
+
 $blaasvart: #1e2b3c;
 
 body {
   font-family: 'Inter', sans-serif;
   color: $blaasvart;
+}
+
+.app-container {
+  padding: 1rem 2rem;
+  max-width: 1920px;
+  margin: 0 auto;
 }

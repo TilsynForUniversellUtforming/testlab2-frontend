@@ -1,6 +1,6 @@
+import { Button, ButtonVariant } from '@digdir/design-system-react';
 import classNames from 'classnames';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 export type StepType = 'Start' | 'Middle' | 'Submit';
@@ -26,8 +26,8 @@ const FormButton = ({
   onClickBack: () => void;
   className?: string;
 }) => (
-  <div className={classNames('mb-3', className)}>
-    <Button variant="secondary" className="me-3" onClick={onClickBack}>
+  <div className={classNames('testlab-form__navigation-buttons', className)}>
+    <Button type="button" variant={ButtonVariant.Outline} onClick={onClickBack}>
       {textBack}
     </Button>
     <Button type="submit">{textNext}</Button>

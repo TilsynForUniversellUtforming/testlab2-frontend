@@ -1,7 +1,6 @@
 import './index.scss';
 
 import React from 'react';
-import { Container } from 'react-bootstrap';
 import { Route, Routes } from 'react-router-dom';
 
 import appRoutes, { createPath, editPath, idPath } from './common/appRoutes';
@@ -40,7 +39,7 @@ function App() {
   return (
     <>
       <Navigation />
-      <Container className="pt-4">
+      <div className="app-container">
         <Routes>
           <Route path={appRoutes.ROOT.path} element={<Oversikt />} />
 
@@ -119,7 +118,7 @@ function App() {
           </Route>
           <Route path="*" element={<IkkeFunnet />} />
         </Routes>
-      </Container>
+      </div>
     </>
   );
 }

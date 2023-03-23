@@ -1,5 +1,5 @@
+import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import ErrorCard from '../../common/error/ErrorCard';
@@ -49,15 +49,7 @@ const CreateTestregel = () => {
   }, []);
 
   if (contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <Spinner title="Hentar testreglar" variant={'default'} />;
   }
 
   if (contextError) {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Alert, Button } from 'react-bootstrap';
 
 interface Props {
   show?: boolean;
@@ -16,20 +15,23 @@ const ErrorCard = ({
   errorHeader = 'Noko gjekk gale',
   errorText = 'Ver vennleg og prøv igjen',
 }: Props) => (
-  <Alert show={show} variant="danger" className="mt-3">
-    <Alert.Heading>{errorHeader}</Alert.Heading>
-    <p>{errorText}</p>
-    {onClick && (
-      <>
-        <hr />
-        <div className="d-flex">
-          <Button onClick={onClick} variant="outline-danger">
-            {buttonText}
-          </Button>
-        </div>
-      </>
+  <>
+    {show && (
+      <div className="mt-3">
+        <div>{errorHeader}</div>
+        <p>{errorText}</p>
+        {onClick && (
+          <>
+            <hr />
+            <div className="d-flex">
+              {/*variant="outline-danger"*/}
+              <button onClick={onClick}>{buttonText}</button>
+            </div>
+          </>
+        )}
+      </div>
     )}
-  </Alert>
+  </>
 );
 
 export default ErrorCard;

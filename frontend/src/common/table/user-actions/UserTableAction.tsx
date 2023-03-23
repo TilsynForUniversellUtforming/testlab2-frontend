@@ -1,6 +1,6 @@
+import { Button } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 export interface HeaderUserAction {
   startAllAction?: (table: Table<any>) => void;
@@ -17,8 +17,6 @@ const UserTableActions = ({
   <div className="testlab-table__user-action">
     {startAllAction && (
       <Button
-        size="sm"
-        variant="success"
         onClick={() => {
           startAllAction(table);
         }}

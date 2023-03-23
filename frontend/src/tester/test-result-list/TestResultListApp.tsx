@@ -99,7 +99,7 @@ const TestResultListApp = () => {
     <TestlabTable<TestResult>
       data={testResult}
       defaultColumns={testResultatColumns}
-      error={contextError}
+      fetchError={contextError}
       loading={contextLoading}
       onClickRetry={doFetchLoeysingList}
     />

@@ -82,12 +82,12 @@ const MaalingList = () => {
 
   return (
     <>
-      <AppTitle title="Måling" />
+      <AppTitle heading="Måling" />
       <TestlabLinkButton type="add" route={appRoutes.SAK_CREATE} />
       <TestlabTable<Maaling>
         data={maalingList}
         defaultColumns={maalingColumns}
-        error={error}
+        fetchError={error}
         loading={loading}
         onClickRetry={doFetchMaalingList}
       />

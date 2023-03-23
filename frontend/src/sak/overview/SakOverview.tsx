@@ -1,5 +1,5 @@
+import { Spinner } from '@digdir/design-system-react';
 import React from 'react';
-import { ListGroup, Spinner, Stack } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 
 import ErrorCard from '../../common/error/ErrorCard';
@@ -10,15 +10,7 @@ const SakOverview = () => {
     useOutletContext();
 
   if (contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   if (!maaling || contextError) {
@@ -26,19 +18,17 @@ const SakOverview = () => {
   }
 
   return (
-    <Stack gap={5}>
-      <div>
-        <h4>Løysingar</h4>
-        <ListGroup as="ol" className="w-50 ">
-          {maaling.loeysingList.map((lo) => (
-            <ListGroup.Item key={lo.id} as="li">
-              <div className="fw-bold">{lo.namn}</div>
-              {lo.url}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </div>
-    </Stack>
+    <div>
+      <h4>Løysingar</h4>
+      <ol className="w-50 ">
+        {maaling.loeysingList.map((lo) => (
+          <li key={lo.id}>
+            <div className="fw-bold">{lo.namn}</div>
+            {lo.url}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 };
 

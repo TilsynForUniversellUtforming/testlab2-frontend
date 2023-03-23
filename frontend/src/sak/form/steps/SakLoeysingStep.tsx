@@ -1,7 +1,6 @@
+import { ErrorMessage, List, ListItem } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
-import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { Col, Form, ListGroup } from 'react-bootstrap';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../common/form/hooks/useValidate';
@@ -102,46 +101,33 @@ const SakLoeysingStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <>
-        <Col>
-          <Form.Group className="mb-3">
-            <Form.Label>Valgte løysingar</Form.Label>
-            <ListGroup as="ol" numbered={selection.length > 0}>
-              {selection.length > 0 &&
-                selection.map((tr) => (
-                  <ListGroup.Item key={tr.id} as="li">
-                    {tr.url}
-                  </ListGroup.Item>
-                ))}
-              {selection.length === 0 && (
-                <ListGroup.Item
-                  as="li"
-                  className={classNames({ invalid: listErrors })}
-                  disabled
-                >
-                  Ingen løysingar valgt
-                </ListGroup.Item>
-              )}
-            </ListGroup>
-            {listErrors && (
-              <div className="invalid-feedback d-block">
-                {listErrors?.message}
-              </div>
-            )}
-          </Form.Group>
-        </Col>
-        <Col>
-          <TestlabTable<Loeysing>
-            data={loeysingList}
-            defaultColumns={loeysingColumns}
-            error={error}
-            loading={loading}
-            selectedRows={selectedRows}
-            onSelectRows={onChangeRows}
-            customStyle={{ small: true }}
-          />
-        </Col>
-      </>
+      <div className="sak-loeysing__table">
+        <TestlabTable<Loeysing>
+          data={loeysingList}
+          defaultColumns={loeysingColumns}
+          fetchError={error}
+          inputError={listErrors?.message}
+          loading={loading}
+          selectedRows={selectedRows}
+          onSelectRows={onChangeRows}
+          customStyle={{ small: true }}
+        />
+        {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+      </div>
+      <div className="sak-loeysing__selection">
+        <h4>Valgte løysingar</h4>
+        {selection.length > 0 && (
+          <List>
+            {selection.length > 0 &&
+              selection.map((tr) => (
+                <ListItem key={tr.id}>
+                  <div className="item">{tr.url}</div>
+                </ListItem>
+              ))}
+          </List>
+        )}
+        {selection.length === 0 && <div>Ingen løysingar valgt</div>}
+      </div>
     </SakFormContainer>
   );
 };

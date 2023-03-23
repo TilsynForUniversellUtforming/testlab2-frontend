@@ -1,3 +1,5 @@
+import './link-button.scss';
+
 import { Link } from 'react-router-dom';
 
 import { AppRoute, getFullPath } from '../appRoutes';
@@ -15,9 +17,11 @@ const TestlabLinkButton = ({ type, route, disabled = false }: Props) => {
   }
 
   return (
-    <Link to={getFullPath(route)}>
-      <ActionButton type={type} />
-    </Link>
+    <div className="link-button-wrapper">
+      <Link to={getFullPath(route)}>
+        <ActionButton type={type} />
+      </Link>
+    </div>
   );
 };
 

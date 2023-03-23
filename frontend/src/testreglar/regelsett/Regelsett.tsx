@@ -1,6 +1,5 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import appRoutes from '../../common/appRoutes';
@@ -27,7 +26,7 @@ const Regelsett = () => {
   const navigate = useNavigate();
 
   const [showConfirm, setShowConfirm] = useState(false);
-  const [confirmLabel, setConfirmLabel] = useState<string>();
+  const [confirmLabel, setConfirmLabel] = useState<string>('');
   const [deleteRow, setDeleteRow] = useState<Row<TestRegelsett>>();
 
   const onCloseModal = useCallback(() => {
@@ -91,13 +90,11 @@ const Regelsett = () => {
         row.testregelList.map((tr) => tr.kravTilSamsvar).join(','),
       id: 'TestregelId',
       cell: ({ row }) => (
-        <ListGroup className="testreglar-regelsett__list" as="ol" numbered>
+        <ol className="testreglar-regelsett__list">
           {row.original.testregelList.map((tr) => (
-            <ListGroup.Item key={tr.id} as="li">
-              {tr.kravTilSamsvar}
-            </ListGroup.Item>
+            <li key={tr.id}>{tr.kravTilSamsvar}</li>
           ))}
-        </ListGroup>
+        </ol>
       ),
       header: () => <span>Testregler</span>,
     },
@@ -106,7 +103,7 @@ const Regelsett = () => {
   return (
     <>
       <ConfirmDialog
-        label={confirmLabel}
+        message={confirmLabel}
         show={showConfirm}
         closeModal={onCloseModal}
         onSubmit={doDelete}
@@ -119,7 +116,7 @@ const Regelsett = () => {
       <TestlabTable<TestRegelsett>
         data={regelsett}
         defaultColumns={testRegelColumns}
-        error={contextError}
+        fetchError={contextError}
         loading={contextLoading}
         customStyle={{ small: true }}
       />
