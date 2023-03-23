@@ -11,25 +11,23 @@ export interface Props {
 
 const StatusLink = ({ label, finished, linkPath }: Props) => {
   if (!finished) {
-    return <>{label}</>;
+    return <div className="status-icon-wrapper">{label}</div>;
   } else {
     return <Link to={linkPath}>{label}</Link>;
   }
 };
 
-const MaalingStatusdiv = ({ label, finished, linkPath }: Props) => {
+const MaalingStatusRow = ({ label, finished, linkPath }: Props) => {
   return (
-    <div>
-      {/*md={8}*/}
-      <div>
+    <>
+      <div className="link-text">
         <StatusLink label={label} finished={finished} linkPath={linkPath} />
       </div>
-      {/*md={4}*/}
-      <div>
+      <div className="status-icon-wrapper">
         <StatusIcon finished={finished} />
       </div>
-    </div>
+    </>
   );
 };
 
-export default MaalingStatusdiv;
+export default MaalingStatusRow;

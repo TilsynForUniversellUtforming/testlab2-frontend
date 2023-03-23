@@ -1,3 +1,4 @@
+import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -10,17 +11,16 @@ export interface Props {
 }
 
 const MaalingParametersContainer = ({ id, maaling }: Props) => (
-  <ol className="w-75">
-    <li>
-      <div>
-        <div className="fw-bold">Type:</div>
-        {/*TODO - Ikke implementert for måling ennå */}
+  <List>
+    <ListItem>
+      <div className="parameter__item">
+        <div className="bold-text">Type</div>
         <div>Kontroll</div>
       </div>
-    </li>
-    <li>
-      <div>
-        <div className="fw-bold">Sak:</div>
+    </ListItem>
+    <ListItem>
+      <div className="parameter__item">
+        <div className="bold-text">Sak</div>
         <div>
           <Link
             to={getFullPath(appRoutes.MAALING, {
@@ -31,27 +31,21 @@ const MaalingParametersContainer = ({ id, maaling }: Props) => (
             {maaling.navn}
           </Link>
         </div>
-        {/*TODO - Kommenter ut til når opplegg for sak er laget*/}
-        {/*<div><Link to={getFullPath(appRoutes.SAK, maaling.sakId)}>{maaling.sakNavn}</Link></div>*/}
       </div>
-    </li>
-    <li>
-      <div>
-        <div className="fw-bold">Dato start:</div>
+    </ListItem>
+    <ListItem>
+      <div className="parameter__item">
+        <div className="bold-text">Dato start</div>
         <div>{new Date().toISOString()}</div>
-        {/*TODO - Kommenter ut til når måling har dato*/}
-        {/*<div>{maaling.dateStart}</div>*/}
       </div>
-    </li>
-    <li>
-      <div>
-        <div className="fw-bold">Dato avslutta:</div>
+    </ListItem>
+    <ListItem>
+      <div className="parameter__item">
+        <div className="bold-text">Dato avslutta</div>
         <div>Pågår</div>
-        {/*TODO - Kommenter ut til når måling har dato*/}
-        {/*<div>{maaling.dateEnd}</div>*/}
       </div>
-    </li>
-  </ol>
+    </ListItem>
+  </List>
 );
 
 export default MaalingParametersContainer;

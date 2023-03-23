@@ -1,3 +1,5 @@
+import './kvalitetssikring.scss';
+
 import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
@@ -89,23 +91,20 @@ const KvalitetssikringApp = () => {
         heading="Sideutvalg"
         subHeading={loeysingCrawResultat.loeysing.url}
       />
-      <div className="mb-3">
+      <div className="kvalitetssikring__user-actions">
         <ConfirmModalButton
-          className="me-3"
           onConfirm={onClickRemoveUrl}
           message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
           label="Fjern valgte nettsted frå måling"
           disabled={urlRowSelection.length === 0 || loading}
         />
         <ConfirmModalButton
-          className="me-3"
           message={`Vil du slette ${loeysingCrawResultat.loeysing.url} frå måling?`}
           onConfirm={onClickDeleteLoeysing}
           disabled={loading}
           label="Ta nettsted ut av måling"
         />
         <ConfirmModalButton
-          className="me-3"
           message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
           onConfirm={onClickRestart}
           disabled={loading}

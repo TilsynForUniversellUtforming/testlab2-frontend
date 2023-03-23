@@ -1,5 +1,6 @@
 import './confirm-dialog.scss';
 
+import { Button, ButtonVariant } from '@digdir/design-system-react';
 import React from 'react';
 
 export interface Props {
@@ -35,13 +36,13 @@ const ConfirmDialog = ({
         >
           <span className="invisible">Lukk vindu</span>
           <div className="modal-box">
-            {headerTitle && <div>{headerTitle}</div>}
-            <div>{confirmLabel}</div>
-            <div>
-              {/*variant="secondary"*/}
-              <button onClick={closeModal}>Lukk</button>
-              {/*variant="primary"*/}
-              <button onClick={onSubmit}>OK</button>
+            {headerTitle && <div className="modal-header">{headerTitle}</div>}
+            <div className="modal-text">{confirmLabel}</div>
+            <div className="modal-buttons">
+              <Button variant={ButtonVariant.Outline} onClick={closeModal}>
+                Lukk
+              </Button>
+              <Button onClick={onSubmit}>OK</Button>
             </div>
           </div>
         </div>

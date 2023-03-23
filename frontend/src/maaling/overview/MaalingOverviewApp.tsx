@@ -1,14 +1,26 @@
-import { Spinner } from '@digdir/design-system-react';
+import { Spinner, Tabs } from '@digdir/design-system-react';
 import React from 'react';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
+import {
+  appRoutes,
+  editPath,
+  getFullPath,
+  idPath,
+} from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
 import { MaalingContext } from '../types';
-import MaalingNavbar from './MaalingNavbar';
 
 const MaalingOverviewApp = () => {
   const context: MaalingContext = useOutletContext();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   if (context.contextLoading) {
     return <Spinner title="Hentar målingar" variant={'default'} />;
@@ -20,13 +32,44 @@ const MaalingOverviewApp = () => {
 
   const { navn } = context.maaling;
 
+  const handleChange = (name: string) => {
+    if (name === 'Rediger måling') {
+      navigate(editPath);
+    } else {
+      navigate(
+        getFullPath(appRoutes.MAALING, { id: String(id), pathParam: idPath })
+      );
+    }
+  };
+
   return (
     <>
       <AppTitle heading={navn} />
-      <div className="pb-4">
-        <MaalingNavbar />
-      </div>
-      <Outlet context={context} />
+      <Tabs
+        items={[
+          {
+            name: 'Oversikt',
+            content: <Outlet context={context} />,
+          },
+          {
+            name: 'Rediger måling',
+            content: <Outlet context={context} />,
+          },
+          {
+            name: 'Nettløysingar',
+            content: <Outlet context={context} />,
+          },
+          {
+            name: 'Testreglar',
+            content: <Outlet context={context} />,
+          },
+          {
+            name: 'Testresultat',
+            content: <Outlet context={context} />,
+          },
+        ]}
+        onChange={handleChange}
+      />
     </>
   );
 };

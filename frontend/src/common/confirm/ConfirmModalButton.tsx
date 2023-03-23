@@ -1,3 +1,4 @@
+import { Button } from '@digdir/design-system-react';
 import React from 'react';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
@@ -30,13 +31,13 @@ const ConfirmButton = ({
   };
 
   return (
-    <button
+    <Button
       onClick={handleClickConfirmation}
       disabled={disabled}
       className={className}
     >
       {label}
-    </button>
+    </Button>
   );
 };
 

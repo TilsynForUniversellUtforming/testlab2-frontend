@@ -1,0 +1,9 @@
+.kvalitetssikring {
+  &__user-actions {
+    display: flex;
+    padding-bottom: 1rem;
+    > button {
+      margin-right: 1rem;
+    }
+  }
+}

@@ -1,3 +1,5 @@
+import './maaling-overview.scss';
+
 import React from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
@@ -28,18 +30,16 @@ const MaalingOverview = () => {
   }
 
   return (
-    <div>
-      <div>
-        <div>
-          <MaalingParametersContainer id={id} maaling={maaling} />
-        </div>
-        <div>
-          <MaalingStatusContainer
-            maaling={maaling}
-            handleStartCrawling={handleStartCrawling}
-            handleStartTest={handleStartTest}
-          />
-        </div>
+    <div className="maaling-overview">
+      <div className="parameter">
+        <MaalingParametersContainer id={id} maaling={maaling} />
+      </div>
+      <div className="status">
+        <MaalingStatusContainer
+          maaling={maaling}
+          handleStartCrawling={handleStartCrawling}
+          handleStartTest={handleStartTest}
+        />
       </div>
     </div>
   );
