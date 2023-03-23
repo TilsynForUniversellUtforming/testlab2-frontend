@@ -35,7 +35,7 @@ class MaalingResource(
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
       logger.error("klarte ikke å hente målinger", e)
-      throw Error("Klarte ikke å hente målinger")
+      throw RuntimeException("Klarte ikke å hente målinger")
     }
   }
 
@@ -91,7 +91,7 @@ class MaalingResource(
         restTemplate.getList("$maalingUrl/loeysingar")
       } catch (e: Error) {
         logger.error("klarte ikke å hente løsninger", e)
-        throw Error("Klarte ikke å hente løsninger")
+        throw RuntimeException("Klarte ikke å hente løsninger")
       }
 
   @PutMapping("{id}/{loeysingId}")
