@@ -130,7 +130,7 @@ const Testreglar = () => {
         disabled={contextLoading || contextError}
       />
       <ConfirmDialog
-        label={confirmLabel}
+        message={confirmLabel ?? ''}
         show={showConfirm}
         closeModal={onCloseModal}
         onSubmit={doDelete}
