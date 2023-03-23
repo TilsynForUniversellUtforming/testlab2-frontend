@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import { Loeysing } from '../../loeysingar/api/types';
 import { TestRegelsett } from '../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState, SakStep } from '../types';
-import SakConfirmStep from './steps/SakConfirmStep';
+import SakConfirmStep from './steps/confirmation/SakConfirmStep';
 import SakInitStep from './steps/SakInitStep';
 import SakLoeysingStep from './steps/SakLoeysingStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
@@ -67,6 +67,7 @@ const SakStepForm = <T extends SakFormBaseProps>({
       return (
         <SakConfirmStep
           maalingFormState={maalingFormState}
+          regelsettList={regelsettList}
           onSubmit={onSubmit}
           onClickBack={onClickBack}
           heading={step.heading}

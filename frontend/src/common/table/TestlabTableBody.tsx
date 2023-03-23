@@ -1,10 +1,11 @@
+import { TableCell, TableRow } from '@digdir/design-system-react';
 import { flexRender } from '@tanstack/react-table';
 import React from 'react';
 
 import TableSkeleton from './skeleton/TableSkeleton';
 import { LoadingTableProps } from './types';
 
-const TableBody = ({ loading, table }: LoadingTableProps) => {
+const TestlabTableBody = ({ loading, table }: LoadingTableProps) => {
   if (loading) {
     return <TableSkeleton table={table} />;
   }
@@ -12,16 +13,16 @@ const TableBody = ({ loading, table }: LoadingTableProps) => {
   return (
     <>
       {table.getRowModel().rows.map((row) => (
-        <tr key={row.id}>
+        <TableRow key={row.id}>
           {row.getVisibleCells().map((cell) => (
-            <td key={cell.id}>
+            <TableCell key={cell.id}>
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </td>
+            </TableCell>
           ))}
-        </tr>
+        </TableRow>
       ))}
     </>
   );
 };
 
-export default TableBody;
+export default TestlabTableBody;

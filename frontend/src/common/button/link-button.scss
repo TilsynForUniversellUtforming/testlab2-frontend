@@ -1,0 +1,8 @@
+.link-button-wrapper {
+  width: -moz-fit-content;
+  width: fit-content;
+  padding-bottom: 1rem;
+  > a {
+    text-decoration: none;
+  }
+}

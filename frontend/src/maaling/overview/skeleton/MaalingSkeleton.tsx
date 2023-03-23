@@ -1,96 +1,98 @@
 import React from 'react';
-import { Col, Container, ListGroup, Row } from 'react-bootstrap';
 import Skeleton from 'react-loading-skeleton';
 
 const MaalingSkeleton = () => {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <ListGroup as="ol" className="w-75">
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Type:</Col>
-                <Col>
+    <>
+      <div>
+        <div>
+          <ol className="w-75">
+            <li>
+              <div>
+                <div className="fw-bold">Type:</div>
+                <div>
                   <Skeleton />
-                </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Sak:</Col>
-                <Col>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <div className="fw-bold">Sak:</div>
+                <div>
                   <Skeleton />
-                </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Dato start:</Col>
-                <Col>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <div className="fw-bold">Dato start:</div>
+                <div>
                   <Skeleton />
-                </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Dato avslutta:</Col>
-                <Col>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <div className="fw-bold">Dato avslutta:</div>
+                <div>
                   <Skeleton />
-                </Col>
-              </Row>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-        <Col>
-          <ListGroup as="ol" className="w-50">
-            <ListGroup.Item as="li">
-              <Row>
-                <Col className="fw-bold">Status:</Col>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <div>
+          <ol className="w-50">
+            <li>
+              <div>
+                <div className="fw-bold">Status:</div>
                 <Skeleton width={70} />
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <Row>
-                    <Col md={8}>
+              </div>
+            </li>
+            <li>
+              <ul>
+                <li>
+                  <div>
+                    {/*md={8}*/}
+                    <div>
                       <div>Sideutvalg</div>
                       <div>
                         <Skeleton />
                       </div>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col md={8}>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    {/*md={8}*/}
+                    <div>
                       <div>Testing</div>
                       <div>
                         <Skeleton />
                       </div>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col md={8}>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    {/*md={8}*/}
+                    <div>
                       <div>Publisert</div>
                       <div>
                         <Skeleton />
                       </div>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-              </ListGroup>
-            </ListGroup.Item>
-            <ListGroup.Item>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li>
               <Skeleton height={50} />
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-      </Row>
-    </Container>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </>
   );
 };
 

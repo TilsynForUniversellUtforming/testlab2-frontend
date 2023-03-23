@@ -1,5 +1,7 @@
+import './kvalitetssikring.scss';
+
+import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
@@ -22,15 +24,7 @@ const KvalitetssikringApp = () => {
   const navigate = useNavigate();
 
   if (contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   const crawlResultat = maaling?.crawlResultat;
@@ -94,26 +88,23 @@ const KvalitetssikringApp = () => {
   return (
     <>
       <AppTitle
-        title="Sideutvalg"
-        subTitle={loeysingCrawResultat.loeysing.url}
+        heading="Sideutvalg"
+        subHeading={loeysingCrawResultat.loeysing.url}
       />
-      <div className="mb-3">
+      <div className="kvalitetssikring__user-actions">
         <ConfirmModalButton
-          className="me-3"
           onConfirm={onClickRemoveUrl}
           message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
           label="Fjern valgte nettsted frå måling"
           disabled={urlRowSelection.length === 0 || loading}
         />
         <ConfirmModalButton
-          className="me-3"
           message={`Vil du slette ${loeysingCrawResultat.loeysing.url} frå måling?`}
           onConfirm={onClickDeleteLoeysing}
           disabled={loading}
           label="Ta nettsted ut av måling"
         />
         <ConfirmModalButton
-          className="me-3"
           message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
           onConfirm={onClickRestart}
           disabled={loading}

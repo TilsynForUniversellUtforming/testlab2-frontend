@@ -1,6 +1,5 @@
 import { Table } from '@tanstack/react-table';
 import React from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
 
 import DebouncedInput from '../../DebouncedInput';
 import { FilterPreference } from '../TestlabTable';
@@ -31,26 +30,21 @@ const ControlHeader = ({
     filterPreference !== 'none' && filterPreference !== 'rowsearch';
 
   return (
-    <Container className="pb-4">
-      <Row>
-        <Col sm={4}>
-          <PageSizeSelection table={table} loading={loading} />
-        </Col>
-        <Col
-          sm={{ span: 4, offset: 4 }}
-          className="d-flex justify-content-center align-items-end"
-        >
-          {showFilters && (
-            <DebouncedInput
-              value={filterValue}
-              onChange={onChangeFilter}
-              placeholder="Søk..."
-              className="h-25"
-            />
-          )}
-        </Col>
-      </Row>
-    </Container>
+    <div className="control-header">
+      <div className="control-header__size-selection">
+        <PageSizeSelection table={table} loading={loading} />
+      </div>
+      <div className="control-header__input">
+        {showFilters && (
+          <DebouncedInput
+            label="Fritt søk"
+            value={filterValue}
+            onChange={onChangeFilter}
+            placeholder="Søk..."
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

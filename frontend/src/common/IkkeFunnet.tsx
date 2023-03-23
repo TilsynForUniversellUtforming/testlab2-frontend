@@ -5,7 +5,7 @@ import AppTitle from './app-title/AppTitle';
 
 const IkkeFunnet = () => (
   <div>
-    <AppTitle title="Ikke funnet" />
+    <AppTitle heading="Ikke funnet" />
     <p>
       <Link to="/">Gå til hovedsiden</Link>
     </p>

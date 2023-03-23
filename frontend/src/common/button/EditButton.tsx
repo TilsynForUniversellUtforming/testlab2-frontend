@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 export interface Props {
   label: string;
@@ -7,9 +6,10 @@ export interface Props {
 }
 
 const EditButton = ({ label, onClick }: Props) => (
-  <Button variant="link" onClick={onClick} className="text-start p-0">
+  // variant="link"
+  <button onClick={onClick} className="text-start p-0">
     {label}
-  </Button>
+  </button>
 );
 
 export default EditButton;

@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Col, Container, Row, Stack } from 'react-bootstrap';
 
 import { SakStep } from '../types';
 
@@ -14,74 +13,47 @@ const Stepper = ({ steps, currentStep, goToStep }: Props) => {
   const currentIdx = currentStep.index;
 
   return (
-    <Stack gap={5}>
-      <Container>
-        {steps.map((step) => {
-          const active = step.index <= currentIdx;
+    <div className="sak-stepper" aria-hidden="true">
+      {steps.map((step) => {
+        const active = step.index <= currentIdx;
 
-          return (
-            <div key={step.stepperTitle}>
-              <Row>
-                <Col sm={7}>
-                  <div
-                    className={classNames('fs-5', {
-                      'text-secondary': !active,
-                    })}
-                  >
-                    {step.stepperTitle}
-                  </div>
-                  <div
-                    className={classNames('d-none d-xl-flex', {
-                      'text-secondary': active,
-                      'text-muted': !active,
-                    })}
-                  >
-                    {step.stepperSubTitle}
-                  </div>
-                </Col>
-                <Col sm={5}>
-                  <div className="d-none d-xl-flex align-items-center justify-content-center">
-                    <button
-                      onClick={() => goToStep(step.index)}
-                      className={classNames('border border-1', {
-                        'bg-white': !active,
-                        '.bg-light': active,
-                      })}
-                      style={{
-                        width: '5rem',
-                        height: '5rem',
-                        borderRadius: '50%',
-                      }}
-                    >
-                      <div
-                        className={classNames('fs-2', {
-                          'text-secondary': active,
-                          'text-muted': !active,
-                        })}
-                      >
-                        {step.icon}
-                      </div>
-                    </button>
-                  </div>
-                  <div
-                    className="d-none d-xl-flex justify-content-center"
-                    style={{ height: '50px' }}
-                  >
-                    <div
-                      className={classNames(
-                        { 'bg-secondary': active },
-                        { 'bg-light': !active }
-                      )}
-                      style={{ width: '2px' }}
-                    ></div>
-                  </div>
-                </Col>
-              </Row>
+        return (
+          <div
+            className="sak-stepper__container"
+            key={step.index}
+            style={{ gridRow: `${step.index + 1}` }}
+          >
+            <div className="sak-stepper__text">
+              <div>
+                <div className={classNames('title', { active: active })}>
+                  {step.stepperTitle}
+                </div>
+                <div className={classNames({ active: active })}>
+                  {step.stepperSubTitle}
+                </div>
+              </div>
             </div>
-          );
-        })}
-      </Container>
-    </Stack>
+            <div className="sak-stepper__icon">
+              <div className="icon-wrapper">
+                <button
+                  onClick={() => goToStep(step.index)}
+                  className={classNames('icon-button', {
+                    active: active,
+                  })}
+                  style={{
+                    width: '5rem',
+                    height: '5rem',
+                    borderRadius: '50%',
+                  }}
+                >
+                  {step.icon}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

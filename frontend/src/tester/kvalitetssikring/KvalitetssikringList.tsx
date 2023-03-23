@@ -44,7 +44,7 @@ const KvalitetssikringList = ({
       data={crawlUrls}
       defaultColumns={urlColumns}
       onSelectRows={onSelectRows}
-      error={error}
+      fetchError={error}
       loading={loading}
       filterPreference={'searchbar'}
     />

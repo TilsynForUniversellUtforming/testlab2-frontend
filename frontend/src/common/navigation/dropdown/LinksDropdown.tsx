@@ -1,4 +1,6 @@
-import { NavDropdown } from 'react-bootstrap';
+import { Button } from '@digdir/design-system-react';
+import { ChevronDownIcon, ChevronUpIcon } from '@digdir/ds-icons';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { AppRoute } from '../../appRoutes';
@@ -9,14 +11,42 @@ interface Props {
 }
 
 export const LinksDropdown = ({ navn, routes }: Props) => {
+  const [show, setShow] = useState(false);
+
+  const handleShowRoutes = () => {
+    setShow(!show);
+  };
+
   return (
-    <NavDropdown title={navn} className="navbar__dropdown">
-      {routes.map((route) => (
-        <NavDropdown.Item key={route.navn} as={Link} to={route.path}>
-          {route.navn}
-        </NavDropdown.Item>
-      ))}
-    </NavDropdown>
+    <div className="dropdown">
+      <Button
+        onClick={handleShowRoutes}
+        className="dropdown__button"
+        icon={
+          show ? (
+            <ChevronUpIcon color="white" />
+          ) : (
+            <ChevronDownIcon color="white" />
+          )
+        }
+        iconPlacement="right"
+      >
+        {navn}
+      </Button>
+      {show && (
+        <ul className="dropdown-content">
+          {routes.map((route) => (
+            <li className="dropdown-content__item" key={route.navn}>
+              <Link to={route.path} className="link">
+                <button onClick={handleShowRoutes} className="link-button">
+                  {route.navn}
+                </button>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
+import { Spinner } from '@digdir/design-system-react';
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
 import { Outlet, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
@@ -11,15 +11,7 @@ const SakOverviewApp = () => {
   const context: SakContext = useOutletContext();
 
   if (context.contextLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-    );
+    return <Spinner title="Hentar sak" variant={'default'} />;
   }
 
   if (!context.maaling || context.contextError) {
@@ -30,7 +22,7 @@ const SakOverviewApp = () => {
 
   return (
     <>
-      <AppTitle title={navn} />
+      <AppTitle heading={navn} />
       <div className="pb-4">
         <SakNavbar />
       </div>

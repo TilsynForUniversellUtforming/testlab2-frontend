@@ -130,7 +130,7 @@ const Testreglar = () => {
         disabled={contextLoading || contextError}
       />
       <ConfirmDialog
-        label={confirmLabel}
+        message={confirmLabel ?? ''}
         show={showConfirm}
         closeModal={onCloseModal}
         onSubmit={doDelete}
@@ -138,7 +138,7 @@ const Testreglar = () => {
       <TestlabTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
-        error={contextError}
+        fetchError={contextError}
         loading={contextLoading}
         onClickRetry={refresh}
       />

@@ -1,5 +1,3 @@
-import './maalingApp.scss';
-
 import React, { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 

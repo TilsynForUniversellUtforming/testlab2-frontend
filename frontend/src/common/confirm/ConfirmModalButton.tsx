@@ -1,5 +1,5 @@
+import { Button } from '@digdir/design-system-react';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
 

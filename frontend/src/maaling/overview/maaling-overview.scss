@@ -1,0 +1,55 @@
+.maaling-overview {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 1fr;
+  padding-top: 2.5rem;
+
+  .bold-text {
+    font-weight: bold;
+  }
+
+  .parameter {
+    grid-column: 1 / 2;
+
+    &__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    &__item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+      padding: 1rem 0;
+    }
+  }
+
+  .status {
+    grid-column: 3 / 4;
+
+    &__item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr;
+      padding-bottom: 1rem;
+      &:last-child {
+        padding-bottom: 0;
+      }
+
+      .link-text {
+        display: inline-flex;
+        align-items: center;
+        padding-left: 1rem;
+      }
+      .status-icon-wrapper {
+        display: inline-flex;
+        justify-content: center;
+      }
+    }
+
+    &__list-item {
+      padding: 1rem 0;
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
@@ -28,7 +27,7 @@ const SakEdit = () => {
   const defaultState: SakFormState = {
     navn: maaling?.navn ?? '',
     loeysingList: maaling?.loeysingList ?? [],
-    regelsett: undefined,
+    regelsettId: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -91,16 +90,18 @@ const SakEdit = () => {
 
   return (
     <>
-      <AppTitle title="Endre sak" />
-      <Row>
-        <Col sm={3}>
+      <AppTitle heading="Endre sak" />
+      <div>
+        {/*sm={3}*/}
+        <div>
           <Stepper
             currentStep={currentStep}
             steps={steps}
             goToStep={goToStep}
           />
-        </Col>
-        <Col sm={9}>
+        </div>
+        {/*sm={9}*/}
+        <div>
           <SakStepForm
             maalingFormState={maalingFormState}
             step={currentStep}
@@ -111,8 +112,8 @@ const SakEdit = () => {
             regelsettList={regelsettList}
             loeysingList={loeysingList}
           />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </>
   );
 };

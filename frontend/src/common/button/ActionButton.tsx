@@ -1,5 +1,5 @@
+import { Button, ButtonColor } from '@digdir/design-system-react';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 export type ButtonType = 'add' | 'submit';
 
@@ -13,7 +13,12 @@ export interface Props {
 const ActionButton = ({ type, label, onClick, disabled = false }: Props) => {
   if (type === 'add') {
     return (
-      <Button onClick={onClick} variant="success" disabled={disabled}>
+      <Button
+        type="button"
+        color={ButtonColor.Success}
+        onClick={onClick}
+        disabled={disabled}
+      >
         {label ? label : '+ Legg til'}
       </Button>
     );

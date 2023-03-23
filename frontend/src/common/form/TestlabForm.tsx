@@ -1,7 +1,6 @@
 import './TestlabForm.scss';
 
 import React, { ReactNode } from 'react';
-import { Form } from 'react-bootstrap';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import { RegisterOptions } from 'react-hook-form/dist/types/validator';
 
@@ -30,10 +29,10 @@ const FormHeader = ({
   subHeading?: string;
 }) => {
   return (
-    <header className="mb-4">
-      <h2>{heading}</h2>
+    <header className="testlab-form__header">
+      <h2 className="heading">{heading}</h2>
       {subHeading && (
-        <p role="doc-subtitle" className="text-secondary">
+        <p role="doc-subtitle" className="sub-heading">
           {subHeading}
         </p>
       )}
@@ -51,14 +50,12 @@ const TestlabForm = <T extends object>({
   const { handleSubmit } = formMethods;
 
   return (
-    <>
-      <FormProvider {...formMethods}>
-        <FormHeader heading={heading} subHeading={subHeading} />
-        <Form className="mb-4 testlab-form" onSubmit={handleSubmit(onSubmit)}>
-          {children}
-        </Form>
-      </FormProvider>
-    </>
+    <FormProvider {...formMethods}>
+      <FormHeader heading={heading} subHeading={subHeading} />
+      <form className="testlab-form" onSubmit={handleSubmit(onSubmit)}>
+        {children}
+      </form>
+    </FormProvider>
   );
 };
 

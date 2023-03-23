@@ -1,5 +1,6 @@
+import './sak.scss';
+
 import React, { useCallback, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
@@ -27,7 +28,7 @@ const SakCreate = () => {
   const defaultState: SakFormState = {
     navn: '',
     loeysingList: [],
-    regelsett: undefined,
+    regelsettId: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -41,6 +42,7 @@ const SakCreate = () => {
       const maalingInit: MaalingInit = {
         navn: maalingFormState.navn!,
         loeysingList: maalingFormState.loeysingList,
+        // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
       };
 
       try {
@@ -85,16 +87,16 @@ const SakCreate = () => {
 
   return (
     <>
-      <AppTitle title="Ny sak" subTitle="Opprett en ny sak" />
-      <Row>
-        <Col sm={3}>
+      <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
+      <div className="sak__container">
+        <div className="sak__stepper">
           <Stepper
             currentStep={currentStep}
             steps={steps}
             goToStep={goToStep}
           />
-        </Col>
-        <Col sm={9}>
+        </div>
+        <div className="sak__form">
           <SakStepForm
             maalingFormState={maalingFormState}
             step={currentStep}
@@ -105,8 +107,8 @@ const SakCreate = () => {
             regelsettList={regelsettList}
             loeysingList={loeysingList}
           />
-        </Col>
-      </Row>
+        </div>
+      </div>
     </>
   );
 };

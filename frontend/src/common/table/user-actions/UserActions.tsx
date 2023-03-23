@@ -1,6 +1,5 @@
 import { Row } from '@tanstack/react-table';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 export interface ColumnUserAction {
   deleteAction?: (row: Row<any>) => void;
@@ -34,64 +33,64 @@ const UserActions = ({
 }: ColumnUserActionSelection) => (
   <div className="testlab-table__user-action">
     {deleteAction && (
-      <Button
-        size="sm"
-        variant="danger"
+      <button
+        // size="sm"
+        // variant="danger"
         onClick={() => {
           deleteAction(row);
         }}
         title={deleteTooltip}
       >
         &#10005;
-      </Button>
+      </button>
     )}
     {editAction && (
-      <Button
-        size="sm"
-        variant="info"
+      <button
+        // size="sm"
+        // variant="info"
         onClick={() => {
           editAction(row);
         }}
         title={editTooltip}
       >
         &#9998;
-      </Button>
+      </button>
     )}
     {statisticsAction && (
-      <Button
-        size="sm"
-        variant="secondary"
+      <button
+        // size="sm"
+        // variant="secondary"
         onClick={() => {
           statisticsAction(row);
         }}
         title={statisticsTooltip}
       >
         &#x2211;
-      </Button>
+      </button>
     )}
     {startAction && (
-      <Button
-        size="sm"
-        variant="success"
+      <button
+        // size="sm"
+        // variant="success"
         onClick={() => {
           startAction(row);
         }}
         title={startTooltip}
       >
         &#9658;
-      </Button>
+      </button>
     )}
     {redoAction && (
-      <Button
-        size="sm"
-        variant="secondary"
+      <button
+        // size="sm"
+        // variant="secondary"
         onClick={() => {
           redoAction(row);
         }}
         title={redoTooltip}
       >
         &#x21BB;
-      </Button>
+      </button>
     )}
   </div>
 );
