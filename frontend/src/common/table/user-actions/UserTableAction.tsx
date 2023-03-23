@@ -1,3 +1,4 @@
+import { Button } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
@@ -15,15 +16,13 @@ const UserTableActions = ({
 }: HeaderUserActionSelection) => (
   <div className="testlab-table__user-action">
     {startAllAction && (
-      <button
-        // size="sm"
-        // variant="success"
+      <Button
         onClick={() => {
           startAllAction(table);
         }}
       >
         &#9658;
-      </button>
+      </Button>
     )}
   </div>
 );
