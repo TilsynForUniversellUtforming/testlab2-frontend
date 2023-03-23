@@ -41,7 +41,6 @@ const ControlHeader = ({
             value={filterValue}
             onChange={onChangeFilter}
             placeholder="Søk..."
-            className="h-25"
           />
         )}
       </div>
