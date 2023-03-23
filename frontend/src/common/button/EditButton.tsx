@@ -1,3 +1,4 @@
+import { Button } from '@digdir/design-system-react';
 import React from 'react';
 
 export interface Props {
@@ -6,10 +7,9 @@ export interface Props {
 }
 
 const EditButton = ({ label, onClick }: Props) => (
-  // variant="link"
-  <button onClick={onClick} className="text-start p-0">
+  <Button onClick={onClick} className="text-start p-0">
     {label}
-  </button>
+  </Button>
 );
 
 export default EditButton;

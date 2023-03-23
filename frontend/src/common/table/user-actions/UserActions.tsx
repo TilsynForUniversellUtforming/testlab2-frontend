@@ -1,3 +1,4 @@
+import { Button, ButtonColor } from '@digdir/design-system-react';
 import { Row } from '@tanstack/react-table';
 import React from 'react';
 
@@ -33,64 +34,59 @@ const UserActions = ({
 }: ColumnUserActionSelection) => (
   <div className="testlab-table__user-action">
     {deleteAction && (
-      <button
-        // size="sm"
-        // variant="danger"
+      <Button
+        color={ButtonColor.Danger}
         onClick={() => {
           deleteAction(row);
         }}
         title={deleteTooltip}
       >
         &#10005;
-      </button>
+      </Button>
     )}
     {editAction && (
-      <button
-        // size="sm"
-        // variant="info"
+      <Button
+        color={ButtonColor.Inverted}
         onClick={() => {
           editAction(row);
         }}
         title={editTooltip}
       >
         &#9998;
-      </button>
+      </Button>
     )}
     {statisticsAction && (
-      <button
-        // size="sm"
-        // variant="secondary"
+      <Button
+        color={ButtonColor.Secondary}
         onClick={() => {
           statisticsAction(row);
         }}
         title={statisticsTooltip}
       >
         &#x2211;
-      </button>
+      </Button>
     )}
     {startAction && (
-      <button
-        // size="sm"
-        // variant="success"
+      <Button
+        color={ButtonColor.Success}
         onClick={() => {
           startAction(row);
         }}
         title={startTooltip}
       >
         &#9658;
-      </button>
+      </Button>
     )}
     {redoAction && (
-      <button
-        // size="sm"
-        // variant="secondary"
+      <Button
+        color={ButtonColor.Secondary}
         onClick={() => {
           redoAction(row);
         }}
         title={redoTooltip}
       >
         &#x21BB;
-      </button>
+      </Button>
     )}
   </div>
 );

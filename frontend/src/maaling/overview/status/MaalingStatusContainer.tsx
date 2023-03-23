@@ -35,7 +35,15 @@ const MaalingStatusContainer = ({
       <div className="status-list status__list-item">
         <div className="status__item">
           <MaalingStatusRow
-            label={`Sideutvalg (${maaling.crawlStatistics.numFinished}/${maaling.loeysingList.length})`}
+            label={`Sideutvalg (${
+              maaling.testResult.length > 0
+                ? maaling.testResult.length
+                : maaling.crawlStatistics.numFinished
+            }/${
+              maaling.testResult.length > 0
+                ? maaling.testResult.length
+                : maaling.loeysingList.length
+            })`}
             finished={
               maaling.crawlStatistics.numFinished ===
               maaling.loeysingList.length
@@ -48,11 +56,11 @@ const MaalingStatusContainer = ({
         </div>
         <div className="status__item">
           <MaalingStatusRow
-            label={`Testing (${maaling.testStatistics.numFinished}/${maaling.loeysingList.length})`}
+            label={`Testing (${maaling.testStatistics.numFinished}/${maaling.testResult.length})`}
             finished={
-              maaling.testStatistics.numFinished === maaling.loeysingList.length
+              maaling.testStatistics.numFinished === maaling.testResult.length
             }
-            linkPath={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+            linkPath={getFullPath(appRoutes.TEST_RESULT_LIST, {
               pathParam: idPath,
               id: String(maaling.id),
             })}
@@ -73,6 +81,9 @@ const MaalingStatusContainer = ({
         {(maaling.status === 'crawling' ||
           maaling.status === 'kvalitetssikring') && (
           <Button onClick={() => handleStartTest(maaling)}>Start test</Button>
+        )}
+        {maaling.status === 'testing' && (
+          <Button onClick={() => console.log('Publiser')}>Publiser</Button>
         )}
       </div>
     </ListItem>
