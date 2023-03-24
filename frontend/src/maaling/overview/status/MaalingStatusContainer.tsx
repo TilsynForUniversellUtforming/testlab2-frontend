@@ -56,8 +56,13 @@ const MaalingStatusContainer = ({
         </div>
         <div className="status__item">
           <MaalingStatusRow
-            label={`Testing (${maaling.testStatistics.numFinished}/${maaling.testResult.length})`}
+            label={`Testing (${maaling.testStatistics.numFinished}/${
+              maaling.testResult.length > 0
+                ? maaling.testResult.length
+                : maaling.loeysingList.length
+            })`}
             finished={
+              maaling.testResult.length > 0 &&
               maaling.testStatistics.numFinished === maaling.testResult.length
             }
             linkPath={getFullPath(appRoutes.TEST_RESULT_LIST, {
