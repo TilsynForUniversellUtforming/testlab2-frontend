@@ -25,6 +25,7 @@ import KvalitetssikringApp from './tester/kvalitetssikring/KvalitetssikringApp';
 import SideutvalApp from './tester/sideutval/SideutvalApp';
 import TestResultListApp from './tester/test-result-list/TestResultListApp';
 import TesterApp from './tester/TesterApp';
+import TestingListApp from './tester/testing-list/TestingListApp';
 import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
 import EditRegelsett from './testreglar/regelsett/EditRegelsett';
 import Regelsett from './testreglar/regelsett/Regelsett';
@@ -109,7 +110,7 @@ function App() {
             />
             <Route
               path={appRoutes.TEST_TESTING_LIST.path}
-              element={<>TESTING</>}
+              element={<TestingListApp />}
             />
             <Route
               path={appRoutes.TEST_RESULT_LIST.path}

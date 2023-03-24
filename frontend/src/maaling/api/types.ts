@@ -16,10 +16,12 @@ export type MaalingStatus =
   | 'crawling'
   | 'kvalitetssikring'
   | 'testing';
-export type JobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
+export type CrawlJobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
+
+export type TestJobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
 
 export type CrawlResultat = {
-  type: JobStatus;
+  type: CrawlJobStatus;
   loeysing: Loeysing;
   urlList?: string[];
 };
@@ -30,7 +32,7 @@ export type JobStatistics = {
 };
 
 export type TestResult = {
-  tilstand: JobStatus;
+  tilstand: TestJobStatus;
   loeysing: Loeysing;
   sistOppdatert: string;
   statusURL: string;

@@ -218,7 +218,7 @@ const TEST_TESTING_LIST = {
 
 const TEST_RESULT_LIST = {
   navn: 'Resultat',
-  path: ':id/resultat',
+  path: ':id/resultat/:loeysingId',
   parentRoute: TEST,
 };
 

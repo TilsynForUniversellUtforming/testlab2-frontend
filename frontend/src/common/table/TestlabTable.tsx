@@ -164,6 +164,8 @@ const TestlabTable = <T extends object>({
 
   const headerGroup = table.getHeaderGroups()[0];
   const headerRow = table.getPreFilteredRowModel().flatRows[0];
+  const showFilters =
+    filterPreference !== 'none' && filterPreference !== 'searchbar';
 
   return (
     <div className="testlab-table">
@@ -186,16 +188,17 @@ const TestlabTable = <T extends object>({
               />
             ))}
           </TableRow>
-          <TableRow>
-            {headerGroup.headers.map((header) => (
-              <TableFilter
-                headerRow={headerRow}
-                column={header.column}
-                filterPreference={filterPreference}
-                key={header.column.id}
-              />
-            ))}
-          </TableRow>
+          {showFilters && (
+            <TableRow>
+              {headerGroup.headers.map((header) => (
+                <TableFilter
+                  headerRow={headerRow}
+                  column={header.column}
+                  key={header.column.id}
+                />
+              ))}
+            </TableRow>
+          )}
         </TableHeader>
         <TableBody>
           <TestlabTableBody table={table} loading={loading} />

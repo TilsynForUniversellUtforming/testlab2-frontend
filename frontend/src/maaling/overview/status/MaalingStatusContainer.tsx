@@ -16,83 +16,74 @@ const MaalingStatusContainer = ({
   maaling,
   handleStartCrawling,
   handleStartTest,
-}: Props) => (
-  <List>
-    <ListItem>
-      <div className="status__list-item">
-        <div className="bold-text">Status</div>
-        <StatusBadge
-          label={maaling.status}
-          levels={{
-            primary: 'crawling',
-            danger: 'feilet',
-            success: 'ferdig',
-          }}
-        />
-      </div>
-    </ListItem>
-    <ListItem>
-      <div className="status-list status__list-item">
-        <div className="status__item">
-          <MaalingStatusRow
-            label={`Sideutvalg (${
-              maaling.testResult.length > 0
-                ? maaling.testResult.length
-                : maaling.crawlStatistics.numFinished
-            }/${
-              maaling.testResult.length > 0
-                ? maaling.testResult.length
-                : maaling.loeysingList.length
-            })`}
-            finished={
-              maaling.crawlStatistics.numFinished ===
-              maaling.loeysingList.length
-            }
-            linkPath={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })}
-          />
+}: Props) => {
+  return (
+    <List>
+      <ListItem>
+        <div className="status__list-item">
+          <div className="bold-text">Status</div>
+          <StatusBadge label={maaling.status} />
         </div>
-        <div className="status__item">
-          <MaalingStatusRow
-            label={`Testing (${maaling.testStatistics.numFinished}/${
-              maaling.testResult.length > 0
-                ? maaling.testResult.length
-                : maaling.loeysingList.length
-            })`}
-            finished={
-              maaling.testResult.length > 0 &&
-              maaling.testStatistics.numFinished === maaling.testResult.length
-            }
-            linkPath={getFullPath(appRoutes.TEST_RESULT_LIST, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })}
-          />
+      </ListItem>
+      <ListItem>
+        <div className="status-list status__list-item">
+          <div className="status__item">
+            <MaalingStatusRow
+              label={`Sideutvalg (${
+                maaling.testResult.length > 0
+                  ? maaling.loeysingList.length
+                  : maaling.crawlStatistics.numFinished
+              }/${maaling.loeysingList.length})`}
+              finished={
+                maaling.crawlResultat.length === maaling.loeysingList.length ||
+                maaling.testResult.length > 0
+              }
+              linkPath={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+                pathParam: idPath,
+                id: String(maaling.id),
+              })}
+            />
+          </div>
+          <div className="status__item">
+            <MaalingStatusRow
+              label={`Testing (${maaling.testStatistics.numFinished}/${maaling.loeysingList.length})`}
+              finished={
+                maaling.testResult.length > 0 &&
+                maaling.testResult.length === maaling.loeysingList.length
+              }
+              linkPath={getFullPath(appRoutes.TEST_TESTING_LIST, {
+                pathParam: idPath,
+                id: String(maaling.id),
+              })}
+            />
+          </div>
+          <div className="status__item">
+            <MaalingStatusRow
+              label="Publisert"
+              finished={false}
+              linkPath={''}
+            />
+          </div>
         </div>
-        <div className="status__item">
-          <MaalingStatusRow label="Publisert" finished={false} linkPath={''} />
+      </ListItem>
+      <ListItem>
+        <div className="status__list-item">
+          {maaling.status === 'planlegging' && (
+            <Button onClick={() => handleStartCrawling(maaling)}>
+              Start sideutvalg
+            </Button>
+          )}
+          {(maaling.status === 'crawling' ||
+            maaling.status === 'kvalitetssikring') && (
+            <Button onClick={() => handleStartTest(maaling)}>Start test</Button>
+          )}
+          {maaling.status === 'testing' && (
+            <Button onClick={() => console.log('Publiser')}>Publiser</Button>
+          )}
         </div>
-      </div>
-    </ListItem>
-    <ListItem>
-      <div className="status__list-item">
-        {maaling.status === 'planlegging' && (
-          <Button onClick={() => handleStartCrawling(maaling)}>
-            Start sideutvalg
-          </Button>
-        )}
-        {(maaling.status === 'crawling' ||
-          maaling.status === 'kvalitetssikring') && (
-          <Button onClick={() => handleStartTest(maaling)}>Start test</Button>
-        )}
-        {maaling.status === 'testing' && (
-          <Button onClick={() => console.log('Publiser')}>Publiser</Button>
-        )}
-      </div>
-    </ListItem>
-  </List>
-);
+      </ListItem>
+    </List>
+  );
+};
 
 export default MaalingStatusContainer;
