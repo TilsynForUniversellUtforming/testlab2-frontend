@@ -32,14 +32,7 @@ import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableBody from './TestlabTableBody';
 import TestlabTableHeader from './TestlabTableHeader';
-
-export interface Style {
-  full?: boolean;
-  small?: boolean;
-  fixed?: boolean;
-}
-
-export type FilterPreference = 'all' | 'none' | 'searchbar' | 'rowsearch';
+import { TableFilterPreference, TableStyle } from './types';
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -69,13 +62,30 @@ interface Props<T extends object> {
   fetchError: any;
   inputError?: string;
   loading?: boolean;
-  filterPreference?: FilterPreference;
+  filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
   onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
   onClickRetry?: () => void;
-  customStyle?: Style;
+  customStyle?: TableStyle;
 }
 
+/**
+ * A TanStack table component for displaying and manipulating data.
+ *
+ * @template T - The type of data displayed in the table.
+ * @param {object} props - The props for the component.
+ * @param {T[]} props.data - The data to be displayed in the table.
+ * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
+ * @param {*} props.fetchError - Any error that occurred during fetching.
+ * @param {string} [props.inputError] - Any error that occurred during user input.
+ * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
+ * @param {FilterPreference} [props.filterPreference='all'] - The default filter preference.
+ * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
+ * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected.
+ * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
+ * @param {Style} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
+ * @returns {JSX.Element} - The React component for the TestlabTable.
+ */
 const TestlabTable = <T extends object>({
   data,
   defaultColumns,
