@@ -34,8 +34,7 @@ const StatusBadge = ({ label, levels }: Props) => {
         'status-badge',
         { primary: label === levels?.primary || levels?.isPrimary },
         { danger: label === levels?.danger || levels?.isDanger },
-        { success: label === levels?.success || levels?.isSuccess },
-        'secondary'
+        { success: label === levels?.success || levels?.isSuccess }
       )}
     >
       {sanitizedLabel}

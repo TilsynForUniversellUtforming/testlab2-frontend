@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.net.URL
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class MaalingDTO(
@@ -9,5 +10,6 @@ data class MaalingDTO(
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>?,
     val crawlResultat: List<CrawlResultatDTO>?,
-    val testKoeyringar: List<TestResult>?
+    val testKoeyringar: List<TestKoeyring>?,
+    val statusURL: URL?,
 )

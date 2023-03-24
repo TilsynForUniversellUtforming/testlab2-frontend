@@ -3,9 +3,9 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dto
 import java.net.URL
 import java.time.LocalDate
 
-data class TestResult(
+data class TestKoeyring(
     val tilstand: JobStatus,
     val loeysing: Loeysing,
     val sistOppdatert: LocalDate,
-    val statusURL: URL,
+    val statusURL: URL?,
 )

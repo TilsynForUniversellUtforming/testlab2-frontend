@@ -10,8 +10,8 @@ data class JobStatistics(
   companion object {
     fun List<JobStatus>.toJobStatistics() =
         JobStatistics(
-            numPerforming = this.count { it == JobStatus.ikke_ferdig },
+            numPerforming = this.count { it == JobStatus.ikke_ferdig || it == JobStatus.starta },
             numFinished = this.count { it == JobStatus.ferdig },
-            numError = this.count { it == JobStatus.feilet })
+            numError = this.count { it == JobStatus.feilet || it == JobStatus.feila })
   }
 }

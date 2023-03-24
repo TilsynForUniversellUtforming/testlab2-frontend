@@ -10,7 +10,7 @@ data class Maaling(
     val loeysingList: List<Loeysing>,
     val crawlResultat: List<CrawlResultat>,
     val crawlStatistics: JobStatistics,
-    val testResult: List<TestResult>,
+    val testResult: List<TestKoeyring>,
     val testStatistics: JobStatistics,
 )
 
@@ -20,8 +20,11 @@ fun MaalingDTO.toMaaling() =
         navn = this.navn,
         status = this.status,
         loeysingList =
-            if (!this.crawlResultat.isNullOrEmpty()) this.crawlResultat.map { it.loeysing }
-            else {
+            if (!this.crawlResultat.isNullOrEmpty()) {
+              this.crawlResultat.map { it.loeysing }
+            } else if (!this.testKoeyringar.isNullOrEmpty()) {
+              this.testKoeyringar.map { it.loeysing }
+            } else {
               if (this.loeysingList.isNullOrEmpty()) {
                 emptyList()
               } else {
@@ -35,5 +38,4 @@ fun MaalingDTO.toMaaling() =
                 ?: JobStatistics(0, 0, 0),
         testResult = if (this.testKoeyringar.isNullOrEmpty()) emptyList() else this.testKoeyringar,
         testStatistics = this.testKoeyringar?.map { it.tilstand }?.toJobStatistics()
-                ?: JobStatistics(0, 0, 0),
-    )
+                ?: JobStatistics(0, 0, 0))
