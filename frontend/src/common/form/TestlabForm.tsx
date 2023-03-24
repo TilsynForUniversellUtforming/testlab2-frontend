@@ -2,7 +2,6 @@ import './TestlabForm.scss';
 
 import React, { ReactNode } from 'react';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
-import { RegisterOptions } from 'react-hook-form/dist/types/validator';
 
 import TestlabFormButtons from './TestlabFormButtons';
 import TestlabFormInput from './TestlabFormInput';
@@ -14,11 +13,6 @@ export interface Props<T extends object> {
   onSubmit: SubmitHandler<T>;
   formMethods: UseFormReturn<T>;
   children: ReactNode;
-}
-
-export interface FormValidation {
-  validation: RegisterOptions;
-  errorMessage: string;
 }
 
 const FormHeader = ({
@@ -40,6 +34,17 @@ const FormHeader = ({
   );
 };
 
+/**
+ * React component for a generic form, wrapped in a form provider from 'react-hook-form'.
+ * @template T - Type for form data.
+ * @param {Props<T>} props - Props for the TestlabForm component.
+ * @param {string} props.heading - Main heading for the form.
+ * @param {string} [props.subHeading] - Sub-heading for the form, optional.
+ * @param {SubmitHandler<T>} props.onSubmit - Submit handler function for the form.
+ * @param {UseFormReturn<T>} props.formMethods - React hook form methods for the form.
+ * @param {ReactNode} props.children - React children to render within the form.
+ * @return {JSX.Element} The React component for the TestlabForm.
+ */
 const TestlabForm = <T extends object>({
   heading,
   subHeading,

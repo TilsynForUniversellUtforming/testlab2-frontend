@@ -16,10 +16,3 @@ export interface MaalingContext extends AppContext {
 export type CrawlUrl = {
   url: string;
 };
-
-export type MaalingNameId = { name: string; id: number };
-
-export type MaalingListTableType = {
-  nameId: MaalingNameId;
-  status: string;
-};

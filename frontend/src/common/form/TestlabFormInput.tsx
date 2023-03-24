@@ -2,7 +2,7 @@ import { ErrorMessage, TextField } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
-import { FormValidation } from './TestlabForm';
+import { FormValidation } from './types';
 
 export interface EditProps<T extends object> {
   label: string;

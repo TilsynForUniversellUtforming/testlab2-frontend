@@ -1,4 +1,4 @@
-/* https://usehooks-ts.com/ */
+/* https://usehooks-ts.com/react-hook/use-event-listener */
 
 import { RefObject, useEffect, useRef } from 'react';
 
