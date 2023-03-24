@@ -2,13 +2,13 @@ import { Table } from '@tanstack/react-table';
 import React from 'react';
 
 import DebouncedInput from '../../DebouncedInput';
-import { FilterPreference } from '../TestlabTable';
+import { TableFilterPreference } from '../types';
 import PageSizeSelection from './pagination/PageSizeSelection';
 
 export interface Props {
   loading: boolean;
   table: Table<any>;
-  filterPreference: FilterPreference;
+  filterPreference: TableFilterPreference;
   filterValue: string;
   onChangeFilter: (value: string | number) => void;
   small?: boolean;
