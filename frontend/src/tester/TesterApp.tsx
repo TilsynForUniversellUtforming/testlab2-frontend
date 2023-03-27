@@ -4,7 +4,6 @@ import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
 import ErrorCard from '../common/error/ErrorCard';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchMaaling } from '../maaling/api/maaling-api';
@@ -71,12 +70,7 @@ const TesterApp = () => {
     return <ErrorCard errorText="Ingen måling funnet" />;
   }
 
-  return (
-    <>
-      <AppTitle heading="Test" subHeading={maaling?.navn} />
-      <Outlet context={testRegelContext} />
-    </>
-  );
+  return <Outlet context={testRegelContext} />;
 };
 
 export default TesterApp;

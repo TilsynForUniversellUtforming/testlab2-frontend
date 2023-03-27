@@ -9,12 +9,14 @@ export interface EditProps<T extends object> {
   formValidation?: FormValidation;
   hidden?: boolean;
   name: Path<T>;
+  numeric?: boolean;
 }
 
 const TestlabFormInput = <T extends object>({
   label,
   name,
   formValidation,
+  numeric = false,
 }: EditProps<T>) => {
   const {
     control,
@@ -37,6 +39,7 @@ const TestlabFormInput = <T extends object>({
             onChange={onChange}
             onBlur={onBlur}
             name={name}
+            inputMode={numeric ? 'numeric' : 'text'}
           />
           {hasError && formValidation?.errorMessage && (
             <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>

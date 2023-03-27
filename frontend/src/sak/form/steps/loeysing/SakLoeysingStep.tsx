@@ -1,18 +1,18 @@
-import { ErrorMessage, List, ListItem } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import useValidate from '../../../common/form/hooks/useValidate';
-import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
+import useValidate from '../../../../common/form/hooks/useValidate';
+import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import {
   HeaderCheckbox,
   RowCheckbox,
-} from '../../../common/table/control/toggle/IndeterminateCheckbox';
-import TestlabTable from '../../../common/table/TestlabTable';
-import { Loeysing } from '../../../loeysingar/api/types';
-import { SakFormBaseProps, SakFormState } from '../../types';
-import SakFormContainer from '../SakFormContainer';
+} from '../../../../common/table/control/toggle/IndeterminateCheckbox';
+import { Loeysing } from '../../../../loeysingar/api/types';
+import { SakFormBaseProps, SakFormState } from '../../../types';
+import SakFormContainer from '../../SakFormContainer';
+import SakCrawlParameters from './SakCrawlParameters';
+import SakLoeysingTable from './SakLoeysingTable';
 
 interface Props extends SakFormBaseProps {
   error: any;
@@ -53,8 +53,6 @@ const SakLoeysingStep = ({
     control,
     name: 'loeysingList',
   });
-
-  const listErrors = formState.errors['loeysingList'];
 
   const selectedRows = useMemo(() => {
     const rowArray: boolean[] = [];
@@ -101,33 +99,17 @@ const SakLoeysingStep = ({
       onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <div className="sak-loeysing__table">
-        <TestlabTable<Loeysing>
-          data={loeysingList}
-          defaultColumns={loeysingColumns}
-          fetchError={error}
-          inputError={listErrors?.message}
-          loading={loading}
-          selectedRows={selectedRows}
-          onSelectRows={onChangeRows}
-          customStyle={{ small: true }}
-        />
-        {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
-      </div>
-      <div className="sak-loeysing__selection">
-        <h4>Valgte løysingar</h4>
-        {selection.length > 0 && (
-          <List>
-            {selection.length > 0 &&
-              selection.map((tr) => (
-                <ListItem key={tr.id}>
-                  <div className="item">{tr.url}</div>
-                </ListItem>
-              ))}
-          </List>
-        )}
-        {selection.length === 0 && <div>Ingen løysingar valgt</div>}
-      </div>
+      <SakLoeysingTable
+        loeysingList={loeysingList}
+        loeysingColumns={loeysingColumns}
+        error={error}
+        loading={loading}
+        formState={formState}
+        selectedRows={selectedRows}
+        onChangeRows={onChangeRows}
+        selection={selection}
+      />
+      <SakCrawlParameters />
     </SakFormContainer>
   );
 };

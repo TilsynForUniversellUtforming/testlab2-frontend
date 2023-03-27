@@ -4,8 +4,8 @@ import { Loeysing } from '../../loeysingar/api/types';
 import { TestRegelsett } from '../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState, SakStep } from '../types';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
+import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
 import SakInitStep from './steps/SakInitStep';
-import SakLoeysingStep from './steps/SakLoeysingStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
 export interface Props<T extends SakFormBaseProps> {

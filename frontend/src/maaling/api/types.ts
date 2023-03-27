@@ -1,8 +1,14 @@
 import { Loeysing } from '../../loeysingar/api/types';
 
+export type CrawlParameters = {
+  maxLinksPerPage: number;
+  numLinksToSelect: number;
+};
+
 export type MaalingInit = {
   navn: string;
   loeysingList: Loeysing[];
+  crawlParameters: CrawlParameters;
 };
 
 export type MaalingEdit = {
@@ -16,6 +22,7 @@ export type MaalingStatus =
   | 'crawling'
   | 'kvalitetssikring'
   | 'testing';
+
 export type CrawlJobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
 export type TestJobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';

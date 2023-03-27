@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
+import AppTitle from '../../common/app-title/AppTitle';
 import ErrorCard from '../../common/error/ErrorCard';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import StatusBadge from '../../common/status-badge/StatusBadge';
@@ -80,6 +81,10 @@ const TestResultListApp = () => {
     []
   );
 
+  const selectedLoeysing = maaling?.testResult.find(
+    (tr) => tr.loeysing.id === Number(loeysingId)
+  );
+
   const fetchTestresultat = useCallback(() => {
     setLoading(true);
     setError(undefined);
@@ -87,12 +92,9 @@ const TestResultListApp = () => {
     const doFetchTestresultat = async () => {
       try {
         if (maaling) {
-          const testResultToFetch = maaling.testResult.find(
-            (tr) => tr.loeysing.id === Number(loeysingId)
-          );
-          if (testResultToFetch) {
+          if (selectedLoeysing) {
             const resultat = await fetchTestResultat(
-              testResultToFetch.statusURL
+              selectedLoeysing.statusURL
             );
             setTestresult(resultat);
           } else {
@@ -121,16 +123,24 @@ const TestResultListApp = () => {
     return <ErrorCard errorText={error} />;
   } else if (!contextError && !loading && !testResult.length) {
     return <ErrorCard errorText="Finner ikkje testresultat" />;
+  } else if (!selectedLoeysing) {
+    return <ErrorCard errorText="Testresultat finnes ikkje for løysing" />;
   }
 
   return (
-    <TestlabTable<AzTestResult>
-      data={testResult}
-      defaultColumns={testResultatColumns}
-      fetchError={error}
-      loading={loading}
-      onClickRetry={fetchTestresultat}
-    />
+    <>
+      <AppTitle
+        heading="Testresultat"
+        subHeading={selectedLoeysing?.loeysing?.namn}
+      />
+      <TestlabTable<AzTestResult>
+        data={testResult}
+        defaultColumns={testResultatColumns}
+        fetchError={error}
+        loading={loading}
+        onClickRetry={fetchTestresultat}
+      />
+    </>
   );
 };
 

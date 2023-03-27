@@ -7,6 +7,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.StatusDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toNyMaalingDTO
 import org.slf4j.LoggerFactory
@@ -100,10 +101,12 @@ class MaalingResource(
       @PathVariable loeysingId: Int,
   ): ResponseEntity<out Any> =
       runCatching {
-            restTemplate.put("${maalingUrl}/${id}/${loeysingId}", Unit)
+            restTemplate.put(
+                "${maalingUrl}/${id}/status",
+                StatusDTO(MaalingStatus.crawling.status, listOf(loeysingId)))
             getMaaling(id)
           }
           .getOrElse {
-            ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
+            ResponseEntity.internalServerError().body("Kunne ikke restarte måling ${it.message}")
           }
 }

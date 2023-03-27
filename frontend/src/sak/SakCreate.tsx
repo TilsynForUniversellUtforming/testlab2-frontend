@@ -1,6 +1,6 @@
 import './sak.scss';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
@@ -20,50 +20,70 @@ const SakCreate = () => {
     loeysingList,
     setMaaling,
     contextLoading,
-    setContextLoading,
     contextError,
-    setContextError,
   }: SakContext = useOutletContext();
+
+  const [error, setError] = useState(contextError);
+  const [loading, setLoading] = useState(contextLoading);
 
   const defaultState: SakFormState = {
     navn: '',
     loeysingList: [],
     regelsettId: undefined,
+    maxLinksPerPage: 2000,
+    numLinksToSelect: 300,
   };
 
   const [maalingFormState, setMaalingFormState] =
     useState<SakFormState>(defaultState);
 
+  useEffect(() => {
+    setLoading(contextLoading);
+    setError(contextError);
+  }, [contextLoading, contextError]);
+
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    setContextLoading(true);
-    setContextError(undefined);
-
     const doCreateMaaling = async () => {
-      const maalingInit: MaalingInit = {
-        navn: maalingFormState.navn!,
-        loeysingList: maalingFormState.loeysingList,
-        // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
-      };
+      setLoading(true);
+      setError(undefined);
 
-      try {
-        // TODO - Bytt ut med createSak
-        const maaling = await createMaaling(maalingInit);
-        setMaaling(maaling);
-        navigate(
-          getFullPath(appRoutes.MAALING, {
-            pathParam: idPath,
-            id: String(maaling.id),
-          })
-        );
-      } catch (e) {
-        setContextError('Kunne ikkje lage måling');
+      if (
+        maalingFormState.navn &&
+        maalingFormState.maxLinksPerPage &&
+        maalingFormState.numLinksToSelect
+      ) {
+        const maalingInit: MaalingInit = {
+          navn: maalingFormState.navn,
+          loeysingList: maalingFormState.loeysingList,
+          crawlParameters: {
+            maxLinksPerPage: maalingFormState.maxLinksPerPage,
+            numLinksToSelect: maalingFormState.numLinksToSelect,
+          },
+          // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
+        };
+
+        try {
+          // TODO - Bytt ut med createSak
+          const maaling = await createMaaling(maalingInit);
+          setMaaling(maaling);
+          navigate(
+            getFullPath(appRoutes.MAALING, {
+              pathParam: idPath,
+              id: String(maaling.id),
+            })
+          );
+        } catch (e) {
+          setError('Kunne ikkje lage måling');
+        }
+      } else {
+        setError('Måling manglar parametre');
       }
     };
 
     doCreateMaaling()
-      .catch((e) => setContextError(e))
+      .catch((e) => setError(e))
       .finally(() => {
-        setContextLoading(false);
+        setLoading(false);
       });
   }, []);
 
@@ -100,8 +120,8 @@ const SakCreate = () => {
           <SakStepForm
             maalingFormState={maalingFormState}
             step={currentStep}
-            loading={contextLoading}
-            error={contextError}
+            loading={loading}
+            error={error}
             onClickBack={setPreviousStep}
             onSubmit={handleSubmit}
             regelsettList={regelsettList}
