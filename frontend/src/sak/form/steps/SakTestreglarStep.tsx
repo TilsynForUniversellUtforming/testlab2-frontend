@@ -27,11 +27,7 @@ const SakTestreglarStep = ({
   }));
 
   const formMethods = useForm<SakFormState>({
-    defaultValues: {
-      navn: maalingFormState.navn,
-      loeysingList: maalingFormState.loeysingList,
-      regelsettId: maalingFormState.regelsettId,
-    },
+    defaultValues: maalingFormState,
   });
 
   const buttonStep: TestlabFormButtonStep = {

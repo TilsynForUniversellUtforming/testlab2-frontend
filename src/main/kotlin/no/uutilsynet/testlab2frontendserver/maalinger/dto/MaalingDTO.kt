@@ -12,4 +12,5 @@ data class MaalingDTO(
     val crawlResultat: List<CrawlResultatDTO>?,
     val testKoeyringar: List<TestKoeyring>?,
     val statusURL: URL?,
+    val crawlParameters: CrawlParameters?,
 )

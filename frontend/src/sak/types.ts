@@ -18,6 +18,8 @@ export type SakFormState = {
   navn?: string;
   loeysingList: Loeysing[];
   regelsettId?: string;
+  maxLinksPerPage: number;
+  numLinksToSelect: number;
   currentStep?: AppRoute;
 };
 

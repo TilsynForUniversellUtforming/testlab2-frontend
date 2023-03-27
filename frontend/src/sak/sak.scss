@@ -75,6 +75,13 @@
       &__table {
         grid-column: 1 / 8;
       }
+
+      &__crawl-wrapper {
+        grid-column: 1 / 4;
+      }
+      &__crawl-input {
+        padding-top: 1rem;
+      }
     }
 
     .sak-testreglar,

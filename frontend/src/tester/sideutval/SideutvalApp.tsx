@@ -36,8 +36,8 @@ const SideutvalApp = () => {
       }
     };
 
-    fetchData().catch((e) => {
-      setError(e);
+    fetchData().catch(() => {
+      setError('Klarte ikkje å hente måling');
     });
   }, []);
 

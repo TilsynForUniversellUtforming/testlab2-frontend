@@ -28,6 +28,8 @@ const SakEdit = () => {
     navn: maaling?.navn ?? '',
     loeysingList: maaling?.loeysingList ?? [],
     regelsettId: undefined,
+    maxLinksPerPage: 2000,
+    numLinksToSelect: 300,
   };
 
   const [maalingFormState, setMaalingFormState] =

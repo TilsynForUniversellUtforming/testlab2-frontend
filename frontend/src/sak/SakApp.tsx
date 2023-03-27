@@ -35,10 +35,10 @@ const SakApp = () => {
   }, []);
 
   const doFetchData = useCallback(() => {
-    setLoading(true);
-    setError(undefined);
-
     const fetchData = async () => {
+      setLoading(true);
+      setError(undefined);
+
       if (id) {
         try {
           // TODO - Bytt ut med fetchSak

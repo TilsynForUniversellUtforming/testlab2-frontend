@@ -33,7 +33,8 @@ const SakConfirmContent = ({
   maalingFormState,
   formErrors,
 }: SakConfirmContentProps) => {
-  const { navn, loeysingList, regelsettId } = maalingFormState;
+  const { navn, loeysingList, regelsettId, maxLinksPerPage, numLinksToSelect } =
+    maalingFormState;
   const [displayLoeysingList, setDisplayLoeysingList] = useState(false);
   const [displayRegelsett, setDisplayRegelsett] = useState(false);
 
@@ -85,11 +86,20 @@ const SakConfirmContent = ({
           <ConfirmationAccordionList
             onToggle={toggleLoesyingList}
             open={displayLoeysingList}
-            accordionHeader="Valgte løysingar"
-            subtitle={`(${loeysingList.length})`}
+            accordionHeader="Løysingsparametre"
+            subtitle={`Valgte løysingar (${loeysingList.length})`}
             listItems={loesysingListItems}
             errorMessage={loeysingError?.message}
           />
+        </li>
+        <li>
+          <h4 className="sak-confirm__header">Nettsider til sideutval</h4>
+          <div className="sak-confirm__muted">{maxLinksPerPage}</div>
+          <br />
+          <h4 className="sak-confirm__header">
+            Nettsider som blir valde frå utval
+          </h4>
+          <div className="sak-confirm__muted">{numLinksToSelect}</div>
         </li>
         <li>
           <ConfirmationAccordionList
