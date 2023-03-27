@@ -1,4 +1,3 @@
-import { Spinner } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -118,13 +117,9 @@ const TestResultListApp = () => {
     fetchTestresultat();
   });
 
-  if (loading) {
-    return <Spinner title="Hentar testresultat" />;
-  }
-
   if (error) {
     return <ErrorCard errorText={error} />;
-  } else if (!contextError && !contextLoading && !testResult.length) {
+  } else if (!contextError && !loading && !testResult.length) {
     return <ErrorCard errorText="Finner ikkje testresultat" />;
   }
 
@@ -133,7 +128,7 @@ const TestResultListApp = () => {
       data={testResult}
       defaultColumns={testResultatColumns}
       fetchError={error}
-      loading={contextLoading}
+      loading={loading}
       onClickRetry={fetchTestresultat}
     />
   );

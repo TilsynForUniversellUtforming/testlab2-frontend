@@ -1,5 +1,4 @@
 import './testlabTable.scss';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 import {
   Table,
@@ -26,7 +25,6 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ErrorCard from '../error/ErrorCard';
-import HideWhenLoading from '../HideWhenLoading';
 import ControlHeader from './control/ControlHeader';
 import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
@@ -203,13 +201,11 @@ const TestlabTable = <T extends object>({
         <TableBody>
           <TestlabTableBody table={table} loading={loading} />
         </TableBody>
-        <HideWhenLoading loading={loading}>
-          <TableFooter>
-            <TableRow>
-              <PaginationContainer table={table} />
-            </TableRow>
-          </TableFooter>
-        </HideWhenLoading>
+        <TableFooter>
+          <TableRow>
+            <PaginationContainer table={table} loading={loading} />
+          </TableRow>
+        </TableFooter>
       </Table>
     </div>
   );
