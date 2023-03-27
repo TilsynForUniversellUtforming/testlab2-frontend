@@ -30,8 +30,8 @@ const SakCreate = () => {
     navn: '',
     loeysingList: [],
     regelsettId: undefined,
-    maxLinksPerPage: 2000,
-    numLinksToSelect: 300,
+    maxLinksPerPage: 100,
+    numLinksToSelect: 30,
   };
 
   const [maalingFormState, setMaalingFormState] =
