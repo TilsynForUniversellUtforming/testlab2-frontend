@@ -21,7 +21,8 @@ export type MaalingStatus =
   | 'planlegging'
   | 'crawling'
   | 'kvalitetssikring'
-  | 'testing';
+  | 'testing'
+  | 'testing_ferdig';
 
 export type CrawlJobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
