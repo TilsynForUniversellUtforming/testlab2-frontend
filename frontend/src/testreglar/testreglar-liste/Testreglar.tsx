@@ -8,9 +8,6 @@ import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
-import UserActions, {
-  ColumnUserAction,
-} from '../../common/table/user-actions/UserActions';
 import { deleteTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';
@@ -67,15 +64,7 @@ const Testreglar = () => {
       .finally(() => setContextLoading(false));
   }, [deleteRow]);
 
-  const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
-
   const testRegelColumns: ColumnDef<Testregel>[] = [
-    {
-      id: 'Handling',
-      cell: ({ row }) => <UserActions {...columnUserAction} row={row} />,
-      enableSorting: false,
-      size: Object.values(columnUserAction).length,
-    },
     {
       accessorFn: (row) => row.kravTilSamsvar,
       id: 'Navn',

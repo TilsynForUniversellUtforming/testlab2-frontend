@@ -21,6 +21,11 @@ export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
     responseToJson(response, 'Kunne ikke oppdatere måling')
   );
 
+export const deleteMaaling = async (maaling: Maaling): Promise<Maaling[]> =>
+  fetch(`/api/v1/maalinger/${maaling.id}`, {
+    method: 'DELETE',
+  }).then((response) => responseToJson(response, 'Kunne ikke hente målinger'));
+
 export const updateMaalingStatus = async (
   id: number,
   status: MaalingStatus

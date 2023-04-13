@@ -44,7 +44,7 @@ const MaalingStatusContainer = ({
               })}
             />
           </div>
-          <div className="status__item">
+          <div className="status__item centered">
             <MaalingStatusRow
               label={`Testing (${maaling.testStatistics.numFinished}/${maaling.loeysingList.length})`}
               finished={
@@ -57,7 +57,7 @@ const MaalingStatusContainer = ({
               })}
             />
           </div>
-          <div className="status__item">
+          <div className="status__item centered">
             <MaalingStatusRow
               label="Publisert"
               finished={false}
@@ -66,22 +66,26 @@ const MaalingStatusContainer = ({
           </div>
         </div>
       </ListItem>
-      <ListItem>
-        <div className="status__list-item">
-          {maaling.status === 'planlegging' && (
-            <Button onClick={() => handleStartCrawling(maaling)}>
-              Start sideutvalg
-            </Button>
-          )}
-          {(maaling.status === 'crawling' ||
-            maaling.status === 'kvalitetssikring') && (
-            <Button onClick={() => handleStartTest(maaling)}>Start test</Button>
-          )}
-          {maaling.status === 'testing' && (
-            <Button onClick={() => console.log('Publiser')}>Publiser</Button>
-          )}
-        </div>
-      </ListItem>
+      {maaling.status !== 'testing' && (
+        <ListItem>
+          <div className="status__list-item centered">
+            {maaling.status === 'planlegging' && (
+              <Button onClick={() => handleStartCrawling(maaling)}>
+                Start sideutvalg
+              </Button>
+            )}
+            {(maaling.status === 'crawling' ||
+              maaling.status === 'kvalitetssikring') && (
+              <Button onClick={() => handleStartTest(maaling)}>
+                Start test
+              </Button>
+            )}
+            {maaling.status === 'testing_ferdig' && (
+              <Button onClick={() => console.log('Publiser')}>Publiser</Button>
+            )}
+          </div>
+        </ListItem>
+      )}
     </List>
   );
 };

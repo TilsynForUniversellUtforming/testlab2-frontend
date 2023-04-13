@@ -7,10 +7,9 @@ import AppTitle from '../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import { createMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
-import SakStepForm from './form/SakStepForm';
-import Stepper from './form/Stepper';
+import SakStepFormContainer from './form/SakStepFormContainer';
 import useSakForm from './hooks/useSakForm';
-import { SakContext, SakFormState, sakSteps } from './types';
+import { defaultSakSteps, SakContext, SakFormState } from './types';
 
 const SakCreate = () => {
   const navigate = useNavigate();
@@ -54,7 +53,7 @@ const SakCreate = () => {
       ) {
         const maalingInit: MaalingInit = {
           navn: maalingFormState.navn,
-          loeysingList: maalingFormState.loeysingList,
+          loeysingIdList: maalingFormState.loeysingList.map((l) => l.id),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
@@ -73,7 +72,7 @@ const SakCreate = () => {
             })
           );
         } catch (e) {
-          setError('Kunne ikkje lage måling');
+          setError('Kunne ikkje oppdatere måling');
         }
       } else {
         setError('Måling manglar parametre');
@@ -94,7 +93,7 @@ const SakCreate = () => {
     setPreviousStep,
     setNextStep,
     goToStep,
-  } = useSakForm(sakSteps);
+  } = useSakForm(defaultSakSteps);
 
   const handleSubmit = (maalingFormState: SakFormState) => {
     setMaalingFormState(maalingFormState);
@@ -108,27 +107,18 @@ const SakCreate = () => {
   return (
     <>
       <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
-      <div className="sak__container">
-        <div className="sak__stepper">
-          <Stepper
-            currentStep={currentStep}
-            steps={steps}
-            goToStep={goToStep}
-          />
-        </div>
-        <div className="sak__form">
-          <SakStepForm
-            maalingFormState={maalingFormState}
-            step={currentStep}
-            loading={loading}
-            error={error}
-            onClickBack={setPreviousStep}
-            onSubmit={handleSubmit}
-            regelsettList={regelsettList}
-            loeysingList={loeysingList}
-          />
-        </div>
-      </div>
+      <SakStepFormContainer
+        currentStep={currentStep}
+        steps={steps}
+        goToStep={goToStep}
+        setPreviousStep={setPreviousStep}
+        maalingFormState={maalingFormState}
+        loading={loading}
+        error={error}
+        onSubmit={handleSubmit}
+        regelsettList={regelsettList}
+        loeysingList={loeysingList}
+      />
     </>
   );
 };

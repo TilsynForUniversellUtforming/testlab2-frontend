@@ -51,7 +51,11 @@ const SakConfirmContent = ({
   }
 
   if (error) {
-    return <ErrorCard show errorText={error} />;
+    return (
+      <div className="sak-confirm">
+        <ErrorCard show errorText={error} />
+      </div>
+    );
   }
 
   const navnError = formErrors?.navn;
