@@ -7,9 +7,6 @@ import EditButton from '../../common/button/EditButton';
 import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
 import TestlabTable from '../../common/table/TestlabTable';
-import UserActions, {
-  ColumnUserAction,
-} from '../../common/table/user-actions/UserActions';
 import { deleteRegelsett } from '../api/testreglar-api';
 import { TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
@@ -65,15 +62,7 @@ const Regelsett = () => {
     navigate(String(regelsettRow.original.id));
   }, []);
 
-  const columnUserAction: ColumnUserAction = { deleteAction: onClickDelete };
-
   const testRegelColumns: ColumnDef<TestRegelsett>[] = [
-    {
-      id: 'Handling',
-      cell: ({ row }) => <UserActions {...columnUserAction} row={row} />,
-      enableSorting: false,
-      size: Object.values(columnUserAction).length,
-    },
     {
       accessorFn: (row) => row.namn,
       id: 'Navn',

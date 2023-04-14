@@ -95,20 +95,20 @@ const KvalitetssikringApp = () => {
         <ConfirmModalButton
           onConfirm={onClickRemoveUrl}
           message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
-          label="Fjern valgte nettsted frå måling"
+          title="Fjern valgte nettsted frå måling"
           disabled={urlRowSelection.length === 0 || loading}
         />
         <ConfirmModalButton
           message={`Vil du slette ${loeysingCrawResultat.loeysing.url} frå måling?`}
           onConfirm={onClickDeleteLoeysing}
           disabled={loading}
-          label="Ta nettsted ut av måling"
+          title="Ta nettsted ut av måling"
         />
         <ConfirmModalButton
           message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
           onConfirm={onClickRestart}
           disabled={loading}
-          label="Nytt sideutval for nettstad"
+          title="Nytt sideutval for nettstad"
         />
       </div>
       <KvalitetssikringList

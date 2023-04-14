@@ -7,14 +7,15 @@ export type CrawlParameters = {
 
 export type MaalingInit = {
   navn: string;
-  loeysingList: Loeysing[];
+  loeysingIdList: number[];
   crawlParameters: CrawlParameters;
 };
 
 export type MaalingEdit = {
   id: number;
   navn: string;
-  loeysingList: Loeysing[];
+  loeysingIdList?: number[];
+  crawlParameters?: CrawlParameters;
 };
 
 export type MaalingStatus =

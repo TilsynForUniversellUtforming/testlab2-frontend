@@ -31,47 +31,52 @@ export type SakStep = {
   subHeading?: string;
   stepperTitle: string;
   stepperSubTitle: string;
-  icon: string;
   sakStepType: SakStepType;
 };
 
-export const sakSteps: SakStep[] = [
-  {
-    index: 0,
-    heading: 'La oss opprette en sak',
-    subHeading: 'Fortell oss litt om saken du vil opprette',
-    stepperTitle: 'Saken',
-    stepperSubTitle: 'Om saken',
-    sakStepType: 'Init',
-    icon: '✎',
-  },
-  {
-    index: 1,
-    heading: 'Vel løysingar',
-    subHeading: 'Vel kva løysingar du vil bruka i saken',
-    stepperTitle: 'Løysingar',
-    stepperSubTitle: 'Utval nettløysingar',
-    sakStepType: 'Loeysing',
-    icon: '@',
-  },
-  {
-    index: 2,
-    heading: 'Vel Regelsett',
-    subHeading: 'Vel kva testregel du vil bruka i saken',
-    stepperTitle: 'Testreglar',
-    stepperSubTitle: 'Krav og testing',
-    sakStepType: 'Testregel',
-    icon: '§',
-  },
-  {
-    index: 3,
-    heading: 'Oppsummering',
-    stepperTitle: 'Oppsummert',
-    stepperSubTitle: '',
-    sakStepType: 'Confirm',
-    icon: '∑',
-  },
+const initStep: SakStep = {
+  index: 0,
+  heading: 'La oss opprette en sak',
+  subHeading: 'Fortell oss litt om saken du vil opprette',
+  stepperTitle: 'Saken',
+  stepperSubTitle: 'Om saken',
+  sakStepType: 'Init',
+};
+
+const loeysingStep: SakStep = {
+  index: 1,
+  heading: 'Vel løysingar',
+  subHeading: 'Vel kva løysingar du vil bruka i saken',
+  stepperTitle: 'Løysingar',
+  stepperSubTitle: 'Utval nettløysingar',
+  sakStepType: 'Loeysing',
+};
+
+const regelsettStep: SakStep = {
+  index: 2,
+  heading: 'Vel Regelsett',
+  subHeading: 'Vel kva testregel du vil bruka i saken',
+  stepperTitle: 'Testreglar',
+  stepperSubTitle: 'Krav og testing',
+  sakStepType: 'Testregel',
+};
+
+const summaryStep: SakStep = {
+  index: 3,
+  heading: 'Oppsummering',
+  stepperTitle: 'Oppsummert',
+  stepperSubTitle: '',
+  sakStepType: 'Confirm',
+};
+
+export const defaultSakSteps: SakStep[] = [
+  initStep,
+  loeysingStep,
+  regelsettStep,
+  summaryStep,
 ];
+
+export const startedSakSteps = [initStep, summaryStep];
 
 export interface SakFormBaseProps {
   heading: string;

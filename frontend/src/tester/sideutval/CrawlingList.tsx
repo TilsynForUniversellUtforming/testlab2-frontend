@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
-import UserActions from '../../common/table/user-actions/UserActions';
+import UserAction from '../../common/table/user-actions/UserAction';
 import { CrawlResultat } from '../../maaling/api/types';
 
 export interface Props {
@@ -40,10 +40,12 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
 
           if (status !== 'ikke_ferdig') {
             return (
-              <UserActions
-                editAction={onClickEdit}
-                editTooltip={tooltip}
+              <UserAction<CrawlResultat>
+                action={onClickEdit}
+                columnUserAction="statistics"
                 row={row}
+                title={tooltip}
+                message="Se crawlresultat"
               />
             );
           } else {

@@ -2,14 +2,15 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters.Companion.validateParameters
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.StatusDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.toNyMaalingDTO
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpEntity
@@ -30,7 +31,7 @@ class MaalingResource(
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
   @GetMapping
-  fun list(): List<Maaling> {
+  fun listMaaling(): List<Maaling> {
     return try {
       logger.info("henter målinger fra ${maalingUrl}")
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
@@ -51,10 +52,13 @@ class MaalingResource(
   }
 
   @PostMapping
-  fun createNew(@RequestBody dto: MaalingInit): ResponseEntity<out Any> =
+  fun createNew(@RequestBody maaling: MaalingInit): ResponseEntity<out Any> =
       runCatching {
             val location =
-                restTemplate.postForLocation(maalingUrl, dto.toNyMaalingDTO(), Int::class.java)
+                restTemplate.postForLocation(
+                    maalingUrl,
+                    maaling.copy(crawlParameters = maaling.crawlParameters.validateParameters()),
+                    Int::class.java)
                     ?: throw RuntimeException(
                         "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
             val newMaaling =
@@ -70,8 +74,29 @@ class MaalingResource(
           }
 
   @PutMapping
-  fun updateMaaling(@RequestBody maaling: MaalingDTO): ResponseEntity<out Any> =
-      ResponseEntity.internalServerError().body("Endring av måling er ikke implementert")
+  fun updateMaaling(@RequestBody maaling: MaalingEdit): ResponseEntity<out Any> =
+      runCatching {
+            restTemplate.put(
+                maalingUrl,
+                maaling.copy(crawlParameters = maaling.crawlParameters?.validateParameters()),
+                Int::class.java)
+            getMaaling(maaling.id)
+          }
+          .getOrElse {
+            ResponseEntity.internalServerError()
+                .body("noe gikk galt da jeg forsøkte å endre en måling: ${it.message}")
+          }
+
+  @DeleteMapping("{id}")
+  fun deleteMaalingList(@PathVariable id: Int): ResponseEntity<out Any> =
+      runCatching {
+            restTemplate.delete("$maalingUrl/$id")
+            ResponseEntity.ok().body(listMaaling())
+          }
+          .getOrElse {
+            ResponseEntity.internalServerError()
+                .body("noe gikk galt da jeg forsøkte å slette en måling: ${it.message}")
+          }
 
   @PutMapping("{id}")
   fun updateStatus(@PathVariable id: Int, @RequestBody status: String): ResponseEntity<out Any> =
