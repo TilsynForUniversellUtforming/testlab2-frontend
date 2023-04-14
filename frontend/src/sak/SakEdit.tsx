@@ -5,10 +5,14 @@ import AppTitle from '../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
-import SakStepForm from './form/SakStepForm';
-import Stepper from './form/Stepper';
+import SakStepFormContainer from './form/SakStepFormContainer';
 import useSakForm from './hooks/useSakForm';
-import { SakContext, SakFormState, sakSteps } from './types';
+import {
+  defaultSakSteps,
+  SakContext,
+  SakFormState,
+  startedSakSteps,
+} from './types';
 
 const SakEdit = () => {
   const navigate = useNavigate();
@@ -19,15 +23,16 @@ const SakEdit = () => {
     loeysingList,
     setMaaling,
     contextLoading,
-    setContextLoading,
     contextError,
-    setContextError,
   }: SakContext = useOutletContext();
+
+  const [error, setError] = useState(contextError);
+  const [loading, setLoading] = useState(contextLoading);
 
   const defaultState: SakFormState = {
     navn: maaling?.navn ?? '',
     loeysingList: maaling?.loeysingList ?? [],
-    regelsettId: undefined,
+    regelsettId: '1',
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
   };
@@ -36,15 +41,20 @@ const SakEdit = () => {
     useState<SakFormState>(defaultState);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    setContextLoading(true);
-    setContextError(undefined);
-
     const doEditMaaling = async () => {
+      setLoading(true);
+      setError(undefined);
+
       if (maaling) {
         const maalingEdit: MaalingEdit = {
           id: maaling.id,
           navn: maalingFormState.navn!,
-          loeysingList: maalingFormState.loeysingList,
+          loeysingIdList: maalingFormState.loeysingList.map((l) => l.id),
+          crawlParameters: {
+            maxLinksPerPage: maalingFormState.maxLinksPerPage,
+            numLinksToSelect: maalingFormState.numLinksToSelect,
+          },
+          // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
         };
 
         try {
@@ -52,25 +62,28 @@ const SakEdit = () => {
           const maaling = await updateMaaling(maalingEdit);
           setMaaling(maaling);
           navigate(
-            getFullPath(appRoutes.SAK, {
+            getFullPath(appRoutes.MAALING, {
               pathParam: idPath,
               id: String(maaling.id),
             })
           );
         } catch (e) {
-          setContextError('Kunne ikkje lage sak');
+          setError('Kunne ikkje lage sak');
         }
       } else {
-        setContextError('Kunne ikkje oppdatere sak');
+        setError('Kunne ikkje oppdatere sak');
       }
     };
 
     doEditMaaling()
-      .catch((e) => setContextError(e))
+      .catch((e) => setError(e))
       .finally(() => {
-        setContextLoading(false);
+        setLoading(false);
       });
   }, []);
+
+  const sakSteps =
+    maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
 
   const {
     steps,
@@ -92,30 +105,19 @@ const SakEdit = () => {
 
   return (
     <>
-      <AppTitle heading="Endre sak" />
-      <div>
-        {/*sm={3}*/}
-        <div>
-          <Stepper
-            currentStep={currentStep}
-            steps={steps}
-            goToStep={goToStep}
-          />
-        </div>
-        {/*sm={9}*/}
-        <div>
-          <SakStepForm
-            maalingFormState={maalingFormState}
-            step={currentStep}
-            loading={contextLoading}
-            error={contextError}
-            onClickBack={setPreviousStep}
-            onSubmit={handleSubmit}
-            regelsettList={regelsettList}
-            loeysingList={loeysingList}
-          />
-        </div>
-      </div>
+      <AppTitle heading="Endre sak" subHeading="Opprett en ny sak" />
+      <SakStepFormContainer
+        currentStep={currentStep}
+        steps={steps}
+        goToStep={goToStep}
+        setPreviousStep={setPreviousStep}
+        maalingFormState={maalingFormState}
+        loading={loading}
+        error={error}
+        onSubmit={handleSubmit}
+        regelsettList={regelsettList}
+        loeysingList={loeysingList}
+      />
     </>
   );
 };

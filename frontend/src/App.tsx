@@ -11,7 +11,6 @@ import LoeysingApp from './loeysingar/LoeysingApp';
 import MaalingList from './maaling/list/MaalingList';
 import MaalingApp from './maaling/MaalingApp';
 import MaalingCreate from './maaling/MaalingCreate';
-import MaalingEdit from './maaling/MaalingEdit';
 import MaalingOverview from './maaling/overview/MaalingOverview';
 import MaalingOverviewApp from './maaling/overview/MaalingOverviewApp';
 import Oversikt from './oversikt/Oversikt';
@@ -58,7 +57,7 @@ function App() {
             <Route path={createPath} element={<MaalingCreate />} />
             <Route path={idPath} element={<MaalingOverviewApp />}>
               <Route index element={<MaalingOverview />} />
-              <Route path={editPath} element={<MaalingEdit />} />
+              <Route path={editPath} element={<SakEdit />} />
             </Route>
           </Route>
 

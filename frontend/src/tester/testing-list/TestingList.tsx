@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
-import UserActions from '../../common/table/user-actions/UserActions';
+import UserAction from '../../common/table/user-actions/UserAction';
 import { TestResult } from '../../maaling/api/types';
 
 export interface Props {
@@ -40,10 +40,12 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
 
           if (status !== 'starta' && status !== 'feila') {
             return (
-              <UserActions
-                editAction={onClickEdit}
-                editTooltip={tooltip}
+              <UserAction<TestResult>
+                action={onClickEdit}
+                columnUserAction="statistics"
                 row={row}
+                title={tooltip}
+                message="Se testresultat"
               />
             );
           } else {

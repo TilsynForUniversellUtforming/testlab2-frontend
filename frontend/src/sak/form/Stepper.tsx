@@ -1,13 +1,35 @@
+import { FileTextIcon, Globe2Icon, ListIcon, ToolIcon } from '@digdir/ds-icons';
 import classNames from 'classnames';
 import React from 'react';
 
-import { SakStep } from '../types';
+import { SakStep, SakStepType } from '../types';
 
 interface Props {
   currentStep: SakStep;
   steps: SakStep[];
   goToStep: (stepIdx: number) => void;
 }
+
+const StepperIcon = ({
+  sakStepType,
+  active,
+}: {
+  sakStepType: SakStepType;
+  active: boolean;
+}) => {
+  const color = active ? 'white' : '#68707c';
+
+  switch (sakStepType) {
+    case 'Init':
+      return <FileTextIcon color={color} />;
+    case 'Loeysing':
+      return <Globe2Icon color={color} />;
+    case 'Testregel':
+      return <ToolIcon color={color} />;
+    case 'Confirm':
+      return <ListIcon color={color} />;
+  }
+};
 
 const Stepper = ({ steps, currentStep, goToStep }: Props) => {
   const currentIdx = currentStep.index;
@@ -46,7 +68,7 @@ const Stepper = ({ steps, currentStep, goToStep }: Props) => {
                     borderRadius: '50%',
                   }}
                 >
-                  {step.icon}
+                  <StepperIcon active={active} sakStepType={step.sakStepType} />
                 </button>
               </div>
             </div>

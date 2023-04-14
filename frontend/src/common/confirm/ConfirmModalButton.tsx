@@ -1,28 +1,32 @@
-import { Button } from '@digdir/design-system-react';
+import { Button, ButtonColor } from '@digdir/design-system-react';
 import React from 'react';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
 
 export interface Props {
   className?: string;
-  label: string;
+  title: string;
   message: string;
   onConfirm: () => void;
   disabled?: boolean;
+  icon?: JSX.Element;
+  color?: ButtonColor;
 }
 
 const ConfirmButton = ({
   className,
-  label,
+  title,
   message,
   onConfirm,
   disabled,
+  color,
+  icon,
 }: Props) => {
   const confirmModal = useConfirmModal();
 
   const handleClickConfirmation = async () => {
     const confirmed = await confirmModal.confirm({
-      headerTitle: label,
+      headerTitle: title,
       message: message,
     });
     if (confirmed) {
@@ -30,31 +34,49 @@ const ConfirmButton = ({
     }
   };
 
+  if (icon) {
+    return (
+      <Button
+        onClick={handleClickConfirmation}
+        disabled={disabled}
+        className={className}
+        color={color}
+        icon={icon}
+        title={title}
+      />
+    );
+  }
   return (
     <Button
       onClick={handleClickConfirmation}
       disabled={disabled}
       className={className}
+      color={color}
+      title={title}
     >
-      {label}
+      {title}
     </Button>
   );
 };
 
 const ConfirmModalButton = ({
   className,
-  label,
+  title,
   message,
   onConfirm,
   disabled = false,
+  color = ButtonColor.Primary,
+  icon,
 }: Props) => (
   <ConfirmModalProvider>
     <ConfirmButton
       className={className}
-      label={label}
+      title={title}
       message={message}
       onConfirm={onConfirm}
       disabled={disabled}
+      color={color}
+      icon={icon}
     />
   </ConfirmModalProvider>
 );

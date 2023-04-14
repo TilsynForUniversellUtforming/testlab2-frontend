@@ -63,6 +63,7 @@ interface Props<T extends object> {
   filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
   onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
+  disableMultiRowSelection?: boolean;
   onClickRetry?: () => void;
   customStyle?: TableStyle;
 }
@@ -79,7 +80,8 @@ interface Props<T extends object> {
  * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
  * @param {FilterPreference} [props.filterPreference='all'] - The default filter preference.
  * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
- * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected.
+ * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected. If defined the row selection is implicitly active
+ * @param {boolean} [props.disableMultiRowSelection=false] - Whether the user can select multiple rows
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
  * @param {Style} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
  * @returns {JSX.Element} - The React component for the TestlabTable.
@@ -92,6 +94,7 @@ const TestlabTable = <T extends object>({
   filterPreference = 'all',
   selectedRows = [],
   onSelectRows,
+  disableMultiRowSelection = false,
   onClickRetry,
   customStyle = {
     fixed: false,
@@ -124,6 +127,7 @@ const TestlabTable = <T extends object>({
       rowSelection,
     },
     enableRowSelection: enableRowSelection,
+    enableMultiRowSelection: enableRowSelection && !disableMultiRowSelection,
     onRowSelectionChange: (updaterOrValue) => {
       if (typeof updaterOrValue === 'function') {
         handleRowSelection(updaterOrValue(rowSelection));
