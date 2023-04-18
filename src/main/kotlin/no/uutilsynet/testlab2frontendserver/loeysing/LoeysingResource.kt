@@ -4,6 +4,7 @@ import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.maalinger.MaalingResource
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.ResponseEntity
@@ -29,6 +30,7 @@ class LoeysingResource(
 
   @ConfigurationProperties(prefix = "testing.api") data class TestingApiProperties(val url: String)
   val loeysingUrl = "${testingApiProperties.url}/v1/loeysing"
+  val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
   data class CreateLoeysingDTO(
       val namn: String,
@@ -40,22 +42,20 @@ class LoeysingResource(
   @GetMapping("{id}")
   fun getLoeysing(@PathVariable id: Int): ResponseEntity<Loeysing> =
       try {
-        logger.info("Henter løsning fra $testingApiProperties")
         val url = "$loeysingUrl/$id"
         restTemplate.getForObject(url)
       } catch (e: Error) {
-        logger.error("klarte ikke å hente løsninger", e)
-        throw RuntimeException("Klarte ikke å hente løsninger")
+        logger.error("Klarte ikkje å hente løysing med id $id", e)
+        throw RuntimeException("Klarte ikkje å hente løysing")
       }
 
   @GetMapping
   fun getLoeysingList(): List<Loeysing> =
       try {
-        logger.info("Henter løsninger fra $testingApiProperties")
         restTemplate.getList(loeysingUrl)
       } catch (e: Error) {
-        logger.error("klarte ikke å hente løsninger", e)
-        throw RuntimeException("Klarte ikke å hente løsninger")
+        logger.error("Klarte ikkje å hente løysingar", e)
+        throw RuntimeException("Klarte ikkje å hente løysingar")
       }
 
   @PostMapping
@@ -63,16 +63,16 @@ class LoeysingResource(
       runCatching {
             val location =
                 restTemplate.postForLocation(loeysingUrl, dto, Int::class.java)
-                    ?: throw RuntimeException("Kunne ikkje hente location fra servaren")
+                    ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
             val createdLoeysing =
                 restTemplate.getForObject(
                     "${testingApiProperties.url}${location}", Loeysing::class.java)
-                    ?: throw RuntimeException("Kunne ikkje hente løysing fra servaren")
+                    ?: throw RuntimeException("Kunne ikkje hente løysing frå servaren")
             ResponseEntity.created(URI("/loeysing/${createdLoeysing.id}")).body(getLoeysingList())
           }
           .getOrElse {
             ResponseEntity.internalServerError()
-                .body("noe gikk galt da eg forsøkte å lage en ny løysing: ${it.message}")
+                .body("noko gikk gjekk da eg forsøkte å lage ei ny løysing")
           }
 
   @PutMapping
@@ -82,21 +82,33 @@ class LoeysingResource(
             ResponseEntity.ok(getLoeysingList())
           }
           .getOrElse {
-            logger.error("klarte ikke å oppdatere løsninger", it)
+            logger.error("Could not update solution", it)
             ResponseEntity.internalServerError()
-                .body("noe gikk galt da jeg forsøkte å endre en måling: ${it.message}")
+                .body("noko gjekk gale då eg prøvde å endre ei løysing")
           }
 
   @DeleteMapping
   fun deleteLoeysingList(@RequestBody dto: DeleteLoeysingDTO): ResponseEntity<out Any> =
       runCatching {
-            for (id in dto.loeysingIdList) {
-              restTemplate.delete("$loeysingUrl/$id")
+            val maalingList =
+                restTemplate.getList<MaalingDTO>(maalingUrl).filterNot {
+                  it.loeysingList != null &&
+                      it.loeysingList.any { l -> dto.loeysingIdList.contains(l.id) }
+                }
+
+            if (maalingList.isEmpty()) {
+              for (id in dto.loeysingIdList) {
+                restTemplate.delete("$loeysingUrl/$id")
+              }
+              ResponseEntity.ok().body(getLoeysingList())
+            } else {
+              ResponseEntity.badRequest()
+                  .body(
+                      "Løysing blir brukt i følgjande målingar: ${maalingList.joinToString(",") { it.navn }}")
             }
-            ResponseEntity.ok().body(getLoeysingList())
           }
           .getOrElse {
             ResponseEntity.internalServerError()
-                .body("noe gikk galt da jeg forsøkte å slette en måling: ${it.message}")
+                .body("noe gikk galt da jeg forsøkte å slette ei løysing: ${it.message}")
           }
 }
