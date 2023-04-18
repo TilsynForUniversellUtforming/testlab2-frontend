@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
+import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
 import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
@@ -48,7 +48,7 @@ const SakApp = () => {
           setError('Sak finnes ikkje');
         }
       }
-      const loeysingList = await fetchLoysingar();
+      const loeysingList = await fetchLoeysingList();
       setLoeysingList(loeysingList);
 
       // TODO Bytt ut med riktig kall

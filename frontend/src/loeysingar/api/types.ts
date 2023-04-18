@@ -3,3 +3,8 @@ export type Loeysing = {
   namn: string;
   url: string;
 };
+
+export type LoeysingInit = {
+  namn: string;
+  url: string;
+};

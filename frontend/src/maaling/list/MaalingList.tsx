@@ -1,20 +1,15 @@
-import './maaling-list.scss';
-
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
-import TestlabLinkButton from '../../common/button/TestlabLinkButton';
-import ConfirmModalButton from '../../common/confirm/ConfirmModalButton';
 import ErrorCard from '../../common/error/ErrorCard';
 import useFeatureToggles from '../../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import useFetch from '../../common/hooks/useFetch';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
-import TestlabTable from '../../common/table/TestlabTable';
+import UserActionTable from '../../common/table/UserActionTable';
 import { deleteMaaling, fetchMaalingList } from '../api/maaling-api';
 import { Maaling } from '../api/types';
 
@@ -41,15 +36,15 @@ const MaalingList = () => {
     setError(undefined);
 
     if (maalingRowSelection.length === 0) {
-      setError('Kunne ikke slette testregel');
+      setError('Kunne ikkje slette måling');
     }
 
-    const deleteAndFetchTestregel = async () => {
+    const deleteAndFetchMaaling = async () => {
       const data = await deleteMaaling(maalingRowSelection[0]);
       setMaalingList(data);
     };
 
-    deleteAndFetchTestregel()
+    deleteAndFetchMaaling()
       .catch((e) => setError(e))
       .finally(() => setLoading(false));
   }, [maalingRowSelection]);
@@ -123,31 +118,25 @@ const MaalingList = () => {
   }
 
   return (
-    <div className="maaling-list">
-      <AppTitle heading="Måling" />
-      <div className="maaling-list__user-actions">
-        <div className="maaling-list__action">
-          <TestlabLinkButton type="add" route={appRoutes.SAK_CREATE} />
-        </div>
-        <div className="maaling-list__action">
-          <ConfirmModalButton
-            title="Slett måling"
-            disabled={maalingRowSelection.length === 0}
-            message={deleteMessage}
-            onConfirm={onClickDelete}
-          />
-        </div>
-      </div>
-      <TestlabTable<Maaling>
-        data={maalingList}
-        defaultColumns={maalingColumns}
-        fetchError={error}
-        loading={loading}
-        onClickRetry={doFetchMaalingList}
-        onSelectRows={onSelectRows}
-        disableMultiRowSelection
-      />
-    </div>
+    <UserActionTable<Maaling>
+      heading="Måling"
+      createRoute={appRoutes.SAK_CREATE}
+      deleteConfirmationModalProps={{
+        title: 'Slett måling',
+        disabled: maalingRowSelection.length === 0,
+        message: deleteMessage,
+        onConfirm: onClickDelete,
+      }}
+      tableProps={{
+        data: maalingList,
+        defaultColumns: maalingColumns,
+        fetchError: error,
+        loading: loading,
+        onClickRetry: doFetchMaalingList,
+        onSelectRows: onSelectRows,
+        disableMultiRowSelection: true,
+      }}
+    />
   );
 };
 

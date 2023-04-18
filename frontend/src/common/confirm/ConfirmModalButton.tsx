@@ -3,7 +3,7 @@ import React from 'react';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
 
-export interface Props {
+export interface ConfirmModalProps {
   className?: string;
   title: string;
   message: string;
@@ -21,7 +21,7 @@ const ConfirmButton = ({
   disabled,
   color,
   icon,
-}: Props) => {
+}: ConfirmModalProps) => {
   const confirmModal = useConfirmModal();
 
   const handleClickConfirmation = async () => {
@@ -67,7 +67,7 @@ const ConfirmModalButton = ({
   disabled = false,
   color = ButtonColor.Primary,
   icon,
-}: Props) => (
+}: ConfirmModalProps) => (
   <ConfirmModalProvider>
     <ConfirmButton
       className={className}

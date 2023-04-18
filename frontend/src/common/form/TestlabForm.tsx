@@ -7,7 +7,7 @@ import TestlabFormButtons from './TestlabFormButtons';
 import TestlabFormInput from './TestlabFormInput';
 import TestlabFormSelect from './TestlabFormSelect';
 
-export interface Props<T extends object> {
+export interface TestlabFormProps<T extends object> {
   heading: string;
   subHeading?: string;
   onSubmit: SubmitHandler<T>;
@@ -37,7 +37,7 @@ const FormHeader = ({
 /**
  * React component for a generic form, wrapped in a form provider from 'react-hook-form'.
  * @template T - Type for form data.
- * @param {Props<T>} props - Props for the TestlabForm component.
+ * @param {TestlabFormProps<T>} props - Props for the TestlabForm component.
  * @param {string} props.heading - Main heading for the form.
  * @param {string} [props.subHeading] - Sub-heading for the form, optional.
  * @param {SubmitHandler<T>} props.onSubmit - Submit handler function for the form.
@@ -51,7 +51,7 @@ const TestlabForm = <T extends object>({
   children,
   formMethods,
   onSubmit,
-}: Props<T>) => {
+}: TestlabFormProps<T>) => {
   const { handleSubmit } = formMethods;
 
   return (

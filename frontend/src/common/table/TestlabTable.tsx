@@ -54,7 +54,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-interface Props<T extends object> {
+export interface TestlabTableProps<T extends object> {
   data: T[];
   defaultColumns: ColumnDef<T>[];
   fetchError: any;
@@ -97,11 +97,9 @@ const TestlabTable = <T extends object>({
   disableMultiRowSelection = false,
   onClickRetry,
   customStyle = {
-    fixed: false,
     small: false,
-    full: true,
   },
-}: Props<T>) => {
+}: TestlabTableProps<T>) => {
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -160,8 +158,15 @@ const TestlabTable = <T extends object>({
     setGlobalFilter(String(value));
   }, []);
 
+  const handleClickRetry = () => {
+    table.toggleAllRowsSelected(false);
+    if (onClickRetry) {
+      onClickRetry();
+    }
+  };
+
   if (fetchError) {
-    return <ErrorCard show={fetchError} onClick={onClickRetry} />;
+    return <ErrorCard show={fetchError} onClick={handleClickRetry} />;
   }
 
   const headerGroup = table.getHeaderGroups()[0];

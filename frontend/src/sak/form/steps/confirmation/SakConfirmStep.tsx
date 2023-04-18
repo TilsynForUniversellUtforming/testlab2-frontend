@@ -38,7 +38,7 @@ const SakConfirmContent = ({
   const [displayLoeysingList, setDisplayLoeysingList] = useState(false);
   const [displayRegelsett, setDisplayRegelsett] = useState(false);
 
-  const toggleLoesyingList = () => {
+  const toggleLoeysingList = () => {
     setDisplayLoeysingList(!displayLoeysingList);
   };
 
@@ -65,7 +65,7 @@ const SakConfirmContent = ({
     (rs) => rs.id === Number(regelsettId)
   );
 
-  const loesysingListItems = loeysingList.map((lo) => ({
+  const loeysingListItems = loeysingList.map((lo) => ({
     id: lo.id,
     header: lo.namn,
     text: lo.url,
@@ -88,11 +88,11 @@ const SakConfirmContent = ({
         </li>
         <li>
           <ConfirmationAccordionList
-            onToggle={toggleLoesyingList}
+            onToggle={toggleLoeysingList}
             open={displayLoeysingList}
             accordionHeader="Løysingsparametre"
             subtitle={`Valgte løysingar (${loeysingList.length})`}
-            listItems={loesysingListItems}
+            listItems={loeysingListItems}
             errorMessage={loeysingError?.message}
           />
         </li>

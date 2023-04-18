@@ -4,7 +4,7 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import { fetchLoysingar } from '../loeysingar/api/loeysingar-api';
+import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
 import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
 import { TestRegelsett } from '../testreglar/api/types';
@@ -105,7 +105,7 @@ const MaalingApp = () => {
       }
 
       // TODO Hent løsninger i sak
-      const loeysingList = await fetchLoysingar();
+      const loeysingList = await fetchLoeysingList();
       setLoeysingList(loeysingList);
 
       // TODO Hent regelsett i sak

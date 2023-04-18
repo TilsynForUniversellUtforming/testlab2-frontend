@@ -3,7 +3,6 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters.Companion.validateParameters
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
@@ -109,16 +108,6 @@ class MaalingResource(
           .getOrElse {
             ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
           }
-
-  @GetMapping("loeysingar")
-  fun getLoesyingar(): List<Loeysing> =
-      try {
-        logger.info("Henter løsninger fra $testingApiProperties")
-        restTemplate.getList("$maalingUrl/loeysingar")
-      } catch (e: Error) {
-        logger.error("klarte ikke å hente løsninger", e)
-        throw RuntimeException("Klarte ikke å hente løsninger")
-      }
 
   @PutMapping("{id}/{loeysingId}")
   fun restartCrawlForMaalingLoeysing(
