@@ -41,11 +41,19 @@ export const createLoysing = async (
 
 export const deleteLoysingList = async (
   loeysingIdList: number[]
-): Promise<Loeysing[]> =>
-  await fetch(`/api/v1/loeysing`, {
+): Promise<Loeysing[]> => {
+  const response = await fetch(`/api/v1/loeysing`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ loeysingIdList: loeysingIdList }),
-  }).then((response) => responseToJson(response, 'Kunne ikkje slette løysing'));
+  });
+
+  if (response.ok) {
+    return response.json();
+  } else {
+    const message = await response.text();
+    throw Error(message);
+  }
+};
