@@ -7,7 +7,10 @@ import appRoutes, { createPath, editPath, idPath } from './common/appRoutes';
 import IkkeFunnet from './common/IkkeFunnet';
 import Navigation from './common/navigation/Navigation';
 import KravApp from './krav/KravApp';
+import LoeysingList from './loeysingar/list/LoeysingList';
 import LoeysingApp from './loeysingar/LoeysingApp';
+import LoeysingCreate from './loeysingar/LoeysingCreate';
+import LoeysingEdit from './loeysingar/LoeysingEdit';
 import MaalingList from './maaling/list/MaalingList';
 import MaalingApp from './maaling/MaalingApp';
 import MaalingCreate from './maaling/MaalingCreate';
@@ -93,10 +96,11 @@ function App() {
             path={appRoutes.VERKSEMD_LIST.path}
             element={<VerksemderApp />}
           />
-          <Route
-            path={appRoutes.LOEYSING_LIST.path}
-            element={<LoeysingApp />}
-          />
+          <Route path={appRoutes.LOEYSING_ROOT.path} element={<LoeysingApp />}>
+            <Route index element={<LoeysingList />} />
+            <Route path={createPath} element={<LoeysingCreate />} />
+            <Route path={idPath} element={<LoeysingEdit />} />
+          </Route>
           <Route path={appRoutes.KRAV_LIST.path} element={<KravApp />} />
           <Route path={appRoutes.TEST.path} element={<TesterApp />}>
             <Route

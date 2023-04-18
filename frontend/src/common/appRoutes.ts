@@ -28,9 +28,6 @@ interface IRoutes {
   VERKSEMD_LIST: AppRoute;
   VERKSEMD_CREATE: AppRoute;
   VERKSEMD_EDIT: AppRoute;
-  LOEYSING_LIST: AppRoute;
-  LOEYSING_CREATE: AppRoute;
-  LOEYSING_EDIT: AppRoute;
   KRAV_LIST: AppRoute;
   KRAV_CREATE: AppRoute;
   KRAV_EDIT: AppRoute;
@@ -46,6 +43,11 @@ interface IRoutes {
   MAALING: AppRoute;
   MAALING_CREATE: AppRoute;
   MAALING_EDIT: AppRoute;
+
+  LOEYSING_ROOT: AppRoute;
+  LOEYSING_LIST: AppRoute;
+  LOEYSING_CREATE: AppRoute;
+  LOEYSING_EDIT: AppRoute;
 
   TEST: AppRoute;
   TEST_CONFIRM: AppRoute;
@@ -155,20 +157,26 @@ const VERKSEMD_EDIT = {
   parentRoute: VERKSEMD_LIST,
 };
 
-const LOEYSING_LIST = {
+const LOEYSING_ROOT = {
   navn: 'Løysingar',
   path: 'loeysingar',
   imgSrc: loeysingImg,
 };
+
+const LOEYSING_LIST = {
+  navn: 'Løysingar',
+  path: listPath,
+  parentRoute: LOEYSING_ROOT,
+};
 const LOEYSING_CREATE = {
   navn: 'Ny løysing',
   path: createPath,
-  parentRoute: VERKSEMD_LIST,
+  parentRoute: LOEYSING_ROOT,
 };
 const LOEYSING_EDIT = {
   navn: 'Endre løysingar',
   path: idPath,
-  parentRoute: VERKSEMD_LIST,
+  parentRoute: LOEYSING_ROOT,
 };
 
 const KRAV_LIST = {
@@ -233,12 +241,15 @@ export const appRoutes: IRoutes = {
   VERKSEMD_LIST: VERKSEMD_LIST,
   VERKSEMD_CREATE: VERKSEMD_CREATE,
   VERKSEMD_EDIT: VERKSEMD_EDIT,
-  LOEYSING_LIST: LOEYSING_LIST,
-  LOEYSING_CREATE: LOEYSING_CREATE,
-  LOEYSING_EDIT: LOEYSING_EDIT,
   KRAV_LIST: KRAV_LIST,
   KRAV_CREATE: KRAV_CREATE,
   KRAV_EDIT: KRAV_EDIT,
+
+  LOEYSING_ROOT: LOEYSING_ROOT,
+  LOEYSING_LIST: LOEYSING_LIST,
+  LOEYSING_CREATE: LOEYSING_CREATE,
+  LOEYSING_EDIT: LOEYSING_EDIT,
+
   SAK_LIST: SAK_LIST,
   SAK_ROOT: SAK_ROOT,
   SAK: SAK,
@@ -264,7 +275,7 @@ export const verktoey = [
   appRoutes.MAALING_LIST,
   appRoutes.TESTREGEL_LIST,
   appRoutes.VERKSEMD_LIST,
-  appRoutes.LOEYSING_LIST,
+  appRoutes.LOEYSING_ROOT,
   appRoutes.KRAV_LIST,
 ];
 
