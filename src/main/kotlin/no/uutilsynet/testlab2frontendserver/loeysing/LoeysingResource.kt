@@ -26,7 +26,7 @@ class LoeysingResource(
     val testingApiProperties: TestingApiProperties
 ) {
 
-  val logger = LoggerFactory.getLogger(MaalingResource::class.java)
+  val logger = LoggerFactory.getLogger(LoeysingResource::class.java)
 
   @ConfigurationProperties(prefix = "testing.api") data class TestingApiProperties(val url: String)
   val loeysingUrl = "${testingApiProperties.url}/v1/loeysing"
