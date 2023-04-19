@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
-import java.net.URL
 import java.time.LocalDate
 
 data class TestKoeyring(
