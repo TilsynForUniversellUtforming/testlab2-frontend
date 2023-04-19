@@ -54,11 +54,9 @@ const SakEdit = () => {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
           },
-          // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
         };
 
         try {
-          // TODO - Bytt ut med updateSak
           const maaling = await updateMaaling(maalingEdit);
           setMaaling(maaling);
           navigate(

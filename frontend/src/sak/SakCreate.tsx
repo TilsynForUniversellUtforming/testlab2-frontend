@@ -58,11 +58,9 @@ const SakCreate = () => {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
           },
-          // TODO - Legg til regelsett: regelsettList.find(rs => rs.id === Number(maalingFormState.regelsett))
         };
 
         try {
-          // TODO - Bytt ut med createSak
           const maaling = await createMaaling(maalingInit);
           setMaaling(maaling);
           navigate(

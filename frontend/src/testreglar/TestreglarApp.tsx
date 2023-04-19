@@ -1,10 +1,12 @@
 import './testreglar.scss';
 
 import React, { useCallback, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
 import appRoutes from '../common/appRoutes';
+import ErrorCard from '../common/error/ErrorCard';
+import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { listKrav } from '../krav/api/krav-api';
 import { Krav } from '../krav/types';
@@ -19,6 +21,8 @@ const TestreglarApp = () => {
   const [error, setError] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
   const [krav, setKrav] = useState<Krav[]>([]);
+  const [showTestreglar, setShowTestreglar] = useState(false);
+  const navigate = useNavigate();
 
   const handleTestreglar = useCallback((testregelList: Testregel[]) => {
     setTestreglar(testregelList);
@@ -38,23 +42,30 @@ const TestreglarApp = () => {
 
   const doFetchData = useCallback(() => {
     const fetchData = async () => {
-      const testreglar = await listTestreglar();
-      const regelsett = await listRegelsett();
-      const krav = await listKrav();
-      setTestreglar(testreglar);
-      setRegelsett(regelsett);
-      setKrav(krav);
-      setLoading(false);
-      setError(undefined);
+      try {
+        const testreglar = await listTestreglar();
+        const regelsett = await listRegelsett();
+        const krav = await listKrav();
+        setTestreglar(testreglar);
+        setRegelsett(regelsett);
+        setKrav(krav);
+        setLoading(false);
+        setError(undefined);
+      } catch (e) {
+        setError(e);
+      }
     };
 
-    fetchData()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    fetchData().finally(() => setLoading(false));
+  }, []);
+
+  const fetchTestreglar = useCallback(() => {
+    doFetchData();
+    setShowTestreglar(true);
   }, []);
 
   useEffectOnce(() => {
-    doFetchData();
+    useFeatureToggles('testreglar', fetchTestreglar, handleLoading);
   });
 
   const testRegelContext: TestregelContext = {
@@ -69,6 +80,18 @@ const TestreglarApp = () => {
     setContextLoading: handleLoading,
     refresh: doFetchData,
   };
+
+  if (!loading && !showTestreglar) {
+    return (
+      <ErrorCard
+        errorHeader="Testreglar"
+        errorText="Testreglar låst"
+        buttonText="Tilbake"
+        onClick={() => navigate('..')}
+        centered
+      />
+    );
+  }
 
   return (
     <>

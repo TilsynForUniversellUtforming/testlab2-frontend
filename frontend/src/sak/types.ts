@@ -7,9 +7,7 @@ import { TestRegelsett } from '../testreglar/api/types';
 export interface SakContext extends AppContext {
   regelsettList: TestRegelsett[];
   loeysingList: Loeysing[];
-  // TODO - Bytt ut med sak
   maaling?: Maaling;
-  // TODO - Bytt ut med setSak
   setMaaling: (maaling: Maaling) => void;
   setContextLoading: (loading: boolean) => void;
 }
