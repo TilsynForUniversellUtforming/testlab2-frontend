@@ -2,11 +2,10 @@ package no.uutilsynet.testlab2frontendserver.loeysing
 
 import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.maalinger.MaalingResource
+import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import org.slf4j.LoggerFactory
-import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,7 +27,6 @@ class LoeysingResource(
 
   val logger = LoggerFactory.getLogger(LoeysingResource::class.java)
 
-  @ConfigurationProperties(prefix = "testing.api") data class TestingApiProperties(val url: String)
   val loeysingUrl = "${testingApiProperties.url}/v1/loeysing"
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 

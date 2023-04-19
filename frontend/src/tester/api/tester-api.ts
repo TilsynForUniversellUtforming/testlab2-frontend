@@ -1,13 +1,19 @@
-import { responseToJson } from '../../common/util/api/util';
-import { AzTestResult } from './types';
+import { TestResultat } from './types';
 
-const fetchTestResultat = async (url: string): Promise<AzTestResult[]> =>
-  await fetch('/api/v1/testing', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url: url }),
-  }).then((response) => responseToJson(response, 'Kunne ikke hente resultat'));
+const fetchTestResultatLoeysing = async (
+  id: number,
+  loeysingId: number
+): Promise<TestResultat[]> => {
+  const response = await fetch(`/api/v1/testing/${id}/loeysing/${loeysingId}`, {
+    method: 'GET',
+  });
 
-export default fetchTestResultat;
+  if (response.ok) {
+    return response.json();
+  } else {
+    const message = await response.text();
+    throw Error(message);
+  }
+};
+
+export default fetchTestResultatLoeysing;

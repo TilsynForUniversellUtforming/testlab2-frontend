@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
+import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters.Companion.validateParameters
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
@@ -11,7 +12,6 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.StatusDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import org.slf4j.LoggerFactory
-import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -26,7 +26,6 @@ class MaalingResource(
 ) {
   val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
-  @ConfigurationProperties(prefix = "testing.api") data class TestingApiProperties(val url: String)
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
   @GetMapping

@@ -38,7 +38,7 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
           const status = row.original.tilstand;
           const tooltip = `Gå til løysing ${row.original.loeysing.url}`;
 
-          if (status !== 'starta' && status !== 'feila') {
+          if (status === 'ferdig') {
             return (
               <UserAction<TestResult>
                 action={onClickEdit}
