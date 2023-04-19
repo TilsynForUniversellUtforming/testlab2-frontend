@@ -44,7 +44,6 @@ export type TestResult = {
   tilstand: TestJobStatus;
   loeysing: Loeysing;
   sistOppdatert: string;
-  statusURL: string;
 };
 
 export type Maaling = {

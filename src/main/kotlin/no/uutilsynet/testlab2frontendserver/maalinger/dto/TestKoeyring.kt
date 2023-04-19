@@ -7,5 +7,4 @@ data class TestKoeyring(
     val tilstand: JobStatus,
     val loeysing: Loeysing,
     val sistOppdatert: LocalDate,
-    val statusURL: URL?,
 )

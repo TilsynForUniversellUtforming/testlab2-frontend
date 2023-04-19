@@ -1,34 +1,39 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
-import no.uutilsynet.testlab2frontendserver.testing.dto.AzTestResult
-import no.uutilsynet.testlab2frontendserver.testing.dto.AzTestResultOutput
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
+import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.testing.dto.TestResultat
 import org.slf4j.LoggerFactory
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("api/v1/testing")
-class TestResource(
-    val restTemplate: RestTemplate,
-) {
+class TestResource(val restTemplate: RestTemplate, val testingApiProperties: TestingApiProperties) {
   val logger = LoggerFactory.getLogger(TestResource::class.java)
 
-  data class AzUrl(val url: String)
+  val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
-  // TODO - Midlertidig API
-  @PostMapping
-  fun getTestResultFromUrl(@RequestBody azUrl: AzUrl): ResponseEntity<List<AzTestResultOutput>> {
-    logger.info("Henter testresultat")
+  @GetMapping("{id}")
+  fun getTestResultatForMaaling(@PathVariable id: Int): List<TestResultat> =
+      runCatching { restTemplate.getList<TestResultat>("$maalingUrl/$id/testresultat") }
+          .getOrElse {
+            logger.info("Kunne ikkje hente testresultat for måling: $id")
+            throw RuntimeException("Klarte ikkje å hente løysing")
+          }
 
-    // TODO - Hent resultat fra testlab og ikke azure
-    val azTestResult: AzTestResult =
-        restTemplate.getForObject(azUrl.url, AzTestResult::class.java)
-            ?: throw RuntimeException("Finner ingen testresultat")
-
-    return ResponseEntity.ok(azTestResult.output)
-  }
+  @GetMapping("{id}/loeysing/{loeysingId}")
+  fun getTestResultatForMaalingLoeysing(
+      @PathVariable id: Int,
+      @PathVariable loeysingId: Int
+  ): List<TestResultat> =
+      runCatching { restTemplate.getList<TestResultat>("$maalingUrl/$id/testresultat/$loeysingId") }
+          .getOrElse {
+            logger.info(
+                "Kunne ikkje hente testresultat for måling med id $id og løsying med id $loeysingId")
+            throw RuntimeException("Klarte ikkje å hente løysing")
+          }
 }

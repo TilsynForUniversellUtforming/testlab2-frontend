@@ -1,12 +1,15 @@
-export type ElementOmtale = {
+export type ACTElement = {
   htmlCode: string;
   pointer: string;
 };
 
-export type AzTestResult = {
-  side: URL;
+export type TestResultat = {
   suksesskriterium: string[];
-  elementResultat: string;
+  side: string;
   testregelId: string;
-  elementOmtale: ElementOmtale[];
+  sideNivaa: number;
+  testVartUtfoert: Date;
+  elementUtfall: string;
+  elementResultat: string;
+  elementOmtale: ACTElement;
 };

@@ -7,8 +7,8 @@ import ErrorCard from '../../common/error/ErrorCard';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
-import fetchTestResultat from '../api/tester-api';
-import { AzTestResult } from '../api/types';
+import fetchTestResultatLoeysing from '../api/tester-api';
+import { TestResultat } from '../api/types';
 import { TesterContext } from '../types';
 
 const decodeBase64 = (base64String?: string) => {
@@ -29,12 +29,12 @@ const TestResultListApp = () => {
   const { contextError, contextLoading, maaling }: TesterContext =
     useOutletContext();
 
-  const [testResult, setTestresult] = useState<AzTestResult[]>([]);
+  const [testResult, setTestresult] = useState<TestResultat[]>([]);
 
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
 
-  const testResultatColumns = React.useMemo<ColumnDef<AzTestResult>[]>(
+  const testResultatColumns = React.useMemo<ColumnDef<TestResultat>[]>(
     () => [
       {
         accessorFn: (row) => row.testregelId,
@@ -66,13 +66,13 @@ const TestResultListApp = () => {
         header: () => <span>Status</span>,
       },
       {
-        accessorFn: (row) => row.elementOmtale[0].htmlCode,
+        accessorFn: (row) => row.elementOmtale.htmlCode,
         id: 'htmlCode',
         cell: (info) => <span>{decodeBase64(String(info.getValue()))}</span>,
         header: () => <span>HTML element</span>,
       },
       {
-        accessorFn: (row) => row.elementOmtale[0].pointer,
+        accessorFn: (row) => row.elementOmtale.pointer,
         id: 'pointer',
         cell: (info) => info.getValue(),
         header: () => <span>Peker</span>,
@@ -93,8 +93,9 @@ const TestResultListApp = () => {
       try {
         if (maaling) {
           if (selectedLoeysing) {
-            const resultat = await fetchTestResultat(
-              selectedLoeysing.statusURL
+            const resultat = await fetchTestResultatLoeysing(
+              maaling.id,
+              Number(loeysingId)
             );
             setTestresult(resultat);
           } else {
@@ -133,7 +134,7 @@ const TestResultListApp = () => {
         heading="Testresultat"
         subHeading={selectedLoeysing?.loeysing?.namn}
       />
-      <TestlabTable<AzTestResult>
+      <TestlabTable<TestResultat>
         data={testResult}
         defaultColumns={testResultatColumns}
         fetchError={error}
