@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("api/v1")
 class IndexController {
   @GetMapping
   fun getIndex(response: HttpServletResponse) {
