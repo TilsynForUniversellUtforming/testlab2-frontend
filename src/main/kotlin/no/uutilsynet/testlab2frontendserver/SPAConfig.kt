@@ -11,8 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.resource.ResourceResolver
 import org.springframework.web.servlet.resource.ResourceResolverChain
 
-// https://stackoverflow.com/questions/75429187/react-route-v6-does-not-work-in-sprint-boot-app-whitelabel-error-404
-
 @Configuration
 class SinglePageAppConfig : WebMvcConfigurer {
 
