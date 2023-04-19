@@ -110,9 +110,11 @@ const MaalingList = () => {
   if (!loading && !showMaalinger) {
     return (
       <ErrorCard
+        errorHeader="Måling"
         errorText="Målinger låst"
         buttonText="Tilbake"
         onClick={() => navigate('..')}
+        centered
       />
     );
   }

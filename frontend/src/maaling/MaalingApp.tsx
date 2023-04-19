@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
+import ErrorCard from '../common/error/ErrorCard';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
@@ -104,11 +105,9 @@ const MaalingApp = () => {
         }
       }
 
-      // TODO Hent løsninger i sak
       const loeysingList = await fetchLoeysingList();
       setLoeysingList(loeysingList);
 
-      // TODO Hent regelsett i sak
       const regelsett = await getRegelsett_dummy();
       setRegelsettList(regelsett);
       setLoading(false);
@@ -120,13 +119,13 @@ const MaalingApp = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const refresh = useCallback(() => {
-    useFeatureToggles('maalinger', doFetchData, handleLoading);
+  const fetchMaalinger = useCallback(() => {
+    doFetchData();
     setShowMaalinger(true);
   }, []);
 
   useEffectOnce(() => {
-    refresh();
+    useFeatureToggles('maalinger', fetchMaalinger, handleLoading);
   });
 
   const maalingContext: MaalingContext = {
@@ -136,13 +135,25 @@ const MaalingApp = () => {
     setContextLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
-    refresh: refresh,
+    refresh: fetchMaalinger,
     loeysingList: loeysingList,
     regelsettList: regelsettList,
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,
   };
+
+  if (!loading && !showMaalinger) {
+    return (
+      <ErrorCard
+        errorHeader="Måling"
+        errorText="Målinger låst"
+        buttonText="Tilbake"
+        onClick={() => navigate('..')}
+        centered
+      />
+    );
+  }
 
   return <Outlet context={maalingContext} />;
 };

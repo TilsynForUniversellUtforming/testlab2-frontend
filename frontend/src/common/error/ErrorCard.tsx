@@ -1,6 +1,7 @@
 import './error-card.scss';
 
 import { Button, FieldSet } from '@digdir/design-system-react';
+import classNames from 'classnames';
 import React from 'react';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   buttonText?: string;
   errorHeader?: string;
   errorText?: string;
+  centered?: boolean;
 }
 
 const ErrorCard = ({
@@ -17,12 +19,15 @@ const ErrorCard = ({
   buttonText = 'Prøv igjen',
   errorHeader = 'Noko gjekk gale',
   errorText = 'Ver vennleg og prøv igjen',
+  centered = false,
 }: Props) => (
   <>
     {show && (
-      <FieldSet description={errorText} legend={errorHeader}>
-        {onClick && <Button onClick={onClick}>{buttonText}</Button>}
-      </FieldSet>
+      <div className={classNames('error-card', { centered: centered })}>
+        <FieldSet description={errorText} legend={errorHeader}>
+          {onClick && <Button onClick={onClick}>{buttonText}</Button>}
+        </FieldSet>
+      </div>
     )}
   </>
 );

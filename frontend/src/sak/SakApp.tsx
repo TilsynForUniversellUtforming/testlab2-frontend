@@ -15,12 +15,10 @@ const SakApp = () => {
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
-  // TODO - Bytt ut med sak
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
 
-  // TODO - Bytt ut med sak
   const handleSetMaaling = useCallback((maaling: Maaling) => {
     setMaaling(maaling);
   }, []);
@@ -41,7 +39,6 @@ const SakApp = () => {
 
       if (id) {
         try {
-          // TODO - Bytt ut med fetchSak
           const maaling = await fetchMaaling(Number(id));
           setMaaling(maaling);
         } catch (e) {
@@ -51,7 +48,6 @@ const SakApp = () => {
       const loeysingList = await fetchLoeysingList();
       setLoeysingList(loeysingList);
 
-      // TODO Bytt ut med riktig kall
       const regelsett = await getRegelsett_dummy();
       setRegelsettList(regelsett);
       setLoading(false);
