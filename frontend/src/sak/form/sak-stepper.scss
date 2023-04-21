@@ -1,0 +1,70 @@
+.sak-stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+
+  &__button {
+    padding: 0;
+    text-align: left;
+    background: none;
+    color: var(--colors-blue-700);
+    border: none;
+    margin-bottom: 2rem;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    min-width: 100%;
+
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .title {
+          font-weight: bold;
+        }
+      }
+
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        border: 1px solid var(--colors-blue-700);
+        min-width: 5rem;
+
+        &.active {
+          background-color: var(--colors-blue-700);
+        }
+      }
+
+      @media screen and (max-width: 1024px) {
+        .icon {
+          display: none;
+        }
+      }
+    }
+
+    &:focus-visible {
+      outline: var(--semantic-tab_focus-outline-color) solid 2px;
+      outline-offset: 2px;
+      border-radius: 3px;
+    }
+
+    &:hover {
+      color: var(--colors-blue-800);
+      .icon {
+        background-color: var(--colors-blue-100);
+        &.active {
+          background-color: var(--colors-blue-800);
+        }
+      }
+    }
+  }
+}
