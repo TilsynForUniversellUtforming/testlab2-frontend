@@ -9,6 +9,9 @@ import { SakFormBaseProps, SakFormState } from '../../types';
 import SakFormContainer from '../SakFormContainer';
 
 const SakInitStep = ({
+  currentStep,
+  steps,
+  goToStep,
   heading,
   subHeading,
   maalingFormState,
@@ -21,12 +24,15 @@ const SakInitStep = ({
   });
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Start',
+    stepType: 'Submit',
     onClickBack: () => navigate('/'),
   };
 
   return (
     <SakFormContainer
+      currentStep={currentStep}
+      steps={steps}
+      goToStep={goToStep}
       heading={heading}
       subHeading={subHeading}
       formMethods={formMethods}

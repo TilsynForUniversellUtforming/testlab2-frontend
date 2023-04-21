@@ -3,10 +3,12 @@ import classNames from 'classnames';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export type StepType = 'Start' | 'Middle' | 'Submit';
+export type StepType = 'Start' | 'Middle' | 'Submit' | 'Custom';
 
 export type TestlabFormButtonStep = {
   stepType: StepType;
+  customBackText?: string;
+  customNextText?: string;
   onClickBack: () => void;
 };
 
@@ -69,6 +71,15 @@ const TestlabFormButtons = ({ step, className }: ButtonProps) => {
         <FormButton
           textBack="Tilbake"
           textNext="Lagre"
+          onClickBack={onClickBack}
+          className={className}
+        />
+      );
+    case 'Custom':
+      return (
+        <FormButton
+          textBack={step?.customBackText ? step.customBackText : 'Tilbake'}
+          textNext={step?.customNextText ? step.customNextText : 'Lagre'}
           onClickBack={onClickBack}
           className={className}
         />

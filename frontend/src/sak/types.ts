@@ -81,4 +81,7 @@ export interface SakFormBaseProps {
   subHeading?: string;
   maalingFormState: SakFormState;
   onSubmit: (maalingFormState: SakFormState) => void;
+  currentStep: SakStep;
+  steps: SakStep[];
+  goToStep: (stepIdx: number) => void;
 }

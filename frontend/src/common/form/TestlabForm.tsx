@@ -56,8 +56,8 @@ const TestlabForm = <T extends object>({
 
   return (
     <FormProvider {...formMethods}>
-      <FormHeader heading={heading} subHeading={subHeading} />
       <form className="testlab-form" onSubmit={handleSubmit(onSubmit)}>
+        <FormHeader heading={heading} subHeading={subHeading} />
         {children}
       </form>
     </FormProvider>

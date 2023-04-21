@@ -1,3 +1,5 @@
+import './sak-stepper.scss';
+
 import { FileTextIcon, Globe2Icon, ListIcon, ToolIcon } from '@digdir/ds-icons';
 import classNames from 'classnames';
 import React from 'react';
@@ -17,7 +19,7 @@ const StepperIcon = ({
   sakStepType: SakStepType;
   active: boolean;
 }) => {
-  const color = active ? 'white' : '#68707c';
+  const color = active ? 'white' : '#0062ba';
 
   switch (sakStepType) {
     case 'Init':
@@ -40,13 +42,15 @@ const Stepper = ({ steps, currentStep, goToStep }: Props) => {
         const active = step.index <= currentIdx;
 
         return (
-          <div
-            className="sak-stepper__container"
+          <button
+            onClick={() => goToStep(step.index)}
+            type="submit"
+            className="sak-stepper__button"
             key={step.index}
-            style={{ gridRow: `${step.index + 1}` }}
+            name="navn"
           >
-            <div className="sak-stepper__text">
-              <div>
+            <div className="wrapper">
+              <div className="text">
                 <div className={classNames('title', { active: active })}>
                   {step.stepperTitle}
                 </div>
@@ -54,25 +58,11 @@ const Stepper = ({ steps, currentStep, goToStep }: Props) => {
                   {step.stepperSubTitle}
                 </div>
               </div>
-            </div>
-            <div className="sak-stepper__icon">
-              <div className="icon-wrapper">
-                <button
-                  onClick={() => goToStep(step.index)}
-                  className={classNames('icon-button', {
-                    active: active,
-                  })}
-                  style={{
-                    width: '5rem',
-                    height: '5rem',
-                    borderRadius: '50%',
-                  }}
-                >
-                  <StepperIcon active={active} sakStepType={step.sakStepType} />
-                </button>
+              <div className={classNames('icon', { active: active })}>
+                <StepperIcon active={active} sakStepType={step.sakStepType} />
               </div>
             </div>
-          </div>
+          </button>
         );
       })}
     </div>

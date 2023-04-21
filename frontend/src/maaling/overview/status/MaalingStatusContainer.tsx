@@ -35,8 +35,9 @@ const MaalingStatusContainer = ({
                   : maaling.crawlStatistics.numFinished
               }/${maaling.loeysingList.length})`}
               finished={
-                maaling.crawlResultat.length === maaling.loeysingList.length ||
-                maaling.testResult.length > 0
+                maaling.loeysingList.length > 0 &&
+                (maaling.crawlResultat.length === maaling.loeysingList.length ||
+                  maaling.testResult.length > 0)
               }
               linkPath={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
                 pathParam: idPath,

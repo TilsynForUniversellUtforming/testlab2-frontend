@@ -7,7 +7,7 @@ import AppTitle from '../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import { createMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
-import SakStepFormContainer from './form/SakStepFormContainer';
+import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
 import { defaultSakSteps, SakContext, SakFormState } from './types';
 
@@ -105,14 +105,14 @@ const SakCreate = () => {
   return (
     <>
       <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
-      <SakStepFormContainer
+      <SakStepForm
+        maalingFormState={maalingFormState}
         currentStep={currentStep}
         steps={steps}
         goToStep={goToStep}
-        setPreviousStep={setPreviousStep}
-        maalingFormState={maalingFormState}
         loading={loading}
         error={error}
+        onClickBack={setPreviousStep}
         onSubmit={handleSubmit}
         regelsettList={regelsettList}
         loeysingList={loeysingList}

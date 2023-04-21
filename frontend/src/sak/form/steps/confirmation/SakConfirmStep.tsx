@@ -121,6 +121,9 @@ const SakConfirmContent = ({
 };
 
 const SakConfirmStep = ({
+  currentStep,
+  steps,
+  goToStep,
   heading,
   maalingFormState,
   onSubmit,
@@ -175,12 +178,17 @@ const SakConfirmStep = ({
   };
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Submit',
+    stepType: 'Custom',
     onClickBack: onClickBack,
+    customBackText: 'Tilbake',
+    customNextText: 'Opprett sak',
   };
 
   return (
     <SakFormContainer
+      currentStep={currentStep}
+      steps={steps}
+      goToStep={goToStep}
       heading={heading}
       formMethods={formMethods}
       onSubmit={handleSubmit}

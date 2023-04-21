@@ -3,18 +3,19 @@ import { UseFormReturn } from 'react-hook-form';
 
 import TestlabForm from '../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../common/form/TestlabFormButtons';
-import { SakFormState } from '../types';
+import { SakFormBaseProps, SakFormState } from '../types';
+import Stepper from './Stepper';
 
-export interface Props {
-  heading: string;
-  subHeading?: string;
+export interface Props extends Omit<SakFormBaseProps, 'maalingFormState'> {
   formMethods: UseFormReturn<SakFormState>;
-  onSubmit: (maaingFormState: SakFormState) => void;
   buttonStep: TestlabFormButtonStep;
   children: ReactNode;
 }
 
 const SakFormContainer = ({
+  currentStep,
+  steps,
+  goToStep,
   heading,
   subHeading,
   formMethods,
@@ -22,19 +23,22 @@ const SakFormContainer = ({
   buttonStep,
   children,
 }: Props) => (
-  <TestlabForm<SakFormState>
-    heading={heading}
-    subHeading={subHeading}
-    onSubmit={onSubmit}
-    formMethods={formMethods}
-  >
-    <>
-      <div className="sak__container">{children}</div>
-      <div>
+  <div className="sak">
+    <TestlabForm<SakFormState>
+      heading={heading}
+      subHeading={subHeading}
+      onSubmit={onSubmit}
+      formMethods={formMethods}
+    >
+      <div className="sak__stepper">
+        <Stepper currentStep={currentStep} steps={steps} goToStep={goToStep} />
+      </div>
+      <div className="sak__form">
+        <div className="sak__container">{children}</div>
         <TestlabForm.FormButtons step={buttonStep} />
       </div>
-    </>
-  </TestlabForm>
+    </TestlabForm>
+  </div>
 );
 
 export default SakFormContainer;

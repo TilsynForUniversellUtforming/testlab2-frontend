@@ -10,7 +10,9 @@ import SakTestreglarStep from './steps/SakTestreglarStep';
 
 export interface Props<T extends SakFormBaseProps> {
   error: any;
-  step: SakStep;
+  steps: SakStep[];
+  goToStep: (stepIdx: number) => void;
+  currentStep: SakStep;
   loading: boolean;
   maalingFormState: SakFormState;
   loeysingList: Loeysing[];
@@ -20,7 +22,9 @@ export interface Props<T extends SakFormBaseProps> {
 }
 
 const SakStepForm = <T extends SakFormBaseProps>({
-  step,
+  steps,
+  goToStep,
+  currentStep,
   maalingFormState,
   loading,
   error,
@@ -29,25 +33,31 @@ const SakStepForm = <T extends SakFormBaseProps>({
   onClickBack,
   onSubmit,
 }: Props<T>): ReactElement<T> => {
-  switch (step.sakStepType) {
+  switch (currentStep.sakStepType) {
     case 'Init':
       return (
         <SakInitStep
+          steps={steps}
+          goToStep={goToStep}
+          currentStep={currentStep}
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
-          heading={step.heading}
-          subHeading={step.subHeading}
+          heading={currentStep.heading}
+          subHeading={currentStep.subHeading}
         />
       );
     case 'Loeysing':
       return (
         <SakLoeysingStep
+          steps={steps}
+          goToStep={goToStep}
+          currentStep={currentStep}
           error={error}
           loading={loading}
           loeysingList={loeysingList}
           maalingFormState={maalingFormState}
-          heading={step.heading}
-          subHeading={step.subHeading}
+          heading={currentStep.heading}
+          subHeading={currentStep.subHeading}
           onSubmit={onSubmit}
           onClickBack={onClickBack}
         />
@@ -55,10 +65,13 @@ const SakStepForm = <T extends SakFormBaseProps>({
     case 'Testregel':
       return (
         <SakTestreglarStep
+          steps={steps}
+          goToStep={goToStep}
+          currentStep={currentStep}
           regelsettList={regelsettList}
           onClickBack={onClickBack}
-          heading={step.heading}
-          subHeading={step.subHeading}
+          heading={currentStep.heading}
+          subHeading={currentStep.subHeading}
           onSubmit={onSubmit}
           maalingFormState={maalingFormState}
         />
@@ -66,11 +79,14 @@ const SakStepForm = <T extends SakFormBaseProps>({
     case 'Confirm':
       return (
         <SakConfirmStep
+          steps={steps}
+          goToStep={goToStep}
+          currentStep={currentStep}
           maalingFormState={maalingFormState}
           regelsettList={regelsettList}
           onSubmit={onSubmit}
           onClickBack={onClickBack}
-          heading={step.heading}
+          heading={currentStep.heading}
           error={error}
           loading={loading}
         />

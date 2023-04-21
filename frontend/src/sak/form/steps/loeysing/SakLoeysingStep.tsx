@@ -23,6 +23,9 @@ interface Props extends SakFormBaseProps {
 }
 
 const SakLoeysingStep = ({
+  currentStep,
+  steps,
+  goToStep,
   heading,
   subHeading,
   onClickBack,
@@ -87,12 +90,15 @@ const SakLoeysingStep = ({
   );
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Middle',
+    stepType: 'Submit',
     onClickBack: onClickBack,
   };
 
   return (
     <SakFormContainer
+      currentStep={currentStep}
+      steps={steps}
+      goToStep={goToStep}
       heading={heading}
       subHeading={subHeading}
       formMethods={formMethods}
