@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
@@ -25,12 +26,15 @@ class TestResource(val restTemplate: RestTemplate, val testingApiProperties: Tes
             throw RuntimeException("Klarte ikkje å hente løysing")
           }
 
-  @GetMapping("{id}/loeysing/{loeysingId}")
+  @GetMapping("{id}/resultat?loeysingId={loeysingId}")
   fun getTestResultatForMaalingLoeysing(
       @PathVariable id: Int,
-      @PathVariable loeysingId: Int
+      @RequestParam loeysingId: Int
   ): List<TestResultat> =
-      runCatching { restTemplate.getList<TestResultat>("$maalingUrl/$id/testresultat/$loeysingId") }
+      runCatching {
+            restTemplate.getList<TestResultat>(
+                "$maalingUrl/$id/testresultat?loeysingId=$loeysingId")
+          }
           .getOrElse {
             logger.info(
                 "Kunne ikkje hente testresultat for måling med id $id og løsying med id $loeysingId")
