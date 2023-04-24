@@ -3,6 +3,7 @@ import { AppContext } from '../common/types';
 import { Loeysing } from '../loeysingar/api/types';
 import { Maaling } from '../maaling/api/types';
 import { TestRegelsett } from '../testreglar/api/types';
+import { FormStepState } from './hooks/useSakForm';
 
 export interface SakContext extends AppContext {
   regelsettList: TestRegelsett[];
@@ -77,11 +78,7 @@ export const defaultSakSteps: SakStep[] = [
 export const startedSakSteps = [initStep, summaryStep];
 
 export interface SakFormBaseProps {
-  heading: string;
-  subHeading?: string;
+  formStepState: FormStepState;
   maalingFormState: SakFormState;
   onSubmit: (maalingFormState: SakFormState) => void;
-  currentStep: SakStep;
-  steps: SakStep[];
-  goToStep: (stepIdx: number) => void;
 }

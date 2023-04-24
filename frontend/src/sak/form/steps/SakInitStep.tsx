@@ -6,14 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import TestlabForm from '../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import { SakFormBaseProps, SakFormState } from '../../types';
-import SakFormContainer from '../SakFormContainer';
+import Stepper from '../Stepper';
 
 const SakInitStep = ({
-  currentStep,
-  steps,
-  goToStep,
-  heading,
-  subHeading,
+  formStepState,
   maalingFormState,
   onSubmit,
 }: SakFormBaseProps) => {
@@ -24,37 +20,45 @@ const SakInitStep = ({
   });
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Submit',
+    stepType: 'Start',
     onClickBack: () => navigate('/'),
   };
 
+  const { heading, subHeading } = formStepState.currentStep;
+
   return (
-    <SakFormContainer
-      currentStep={currentStep}
-      steps={steps}
-      goToStep={goToStep}
-      heading={heading}
-      subHeading={subHeading}
-      formMethods={formMethods}
-      onSubmit={onSubmit}
-      buttonStep={buttonStep}
-    >
-      <div className="sak-init">
-        <TestlabForm.FormInput<SakFormState>
-          label="Tittel"
-          name="navn"
-          formValidation={{
-            errorMessage: 'Tittel kan ikkje væra tom',
-            validation: { required: true, minLength: 1 },
-          }}
-        />
-        <Select
-          disabled
-          label="Type sak"
-          options={[{ label: 'Type sak', value: 'ts' }]}
-        />
-      </div>
-    </SakFormContainer>
+    <div className="sak">
+      <TestlabForm<SakFormState>
+        heading={heading}
+        subHeading={subHeading}
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+      >
+        <div className="sak__stepper">
+          <Stepper formStepState={formStepState} />
+        </div>
+        <div className="sak__form">
+          <div className="sak__container">
+            <div className="sak-init">
+              <TestlabForm.FormInput<SakFormState>
+                label="Tittel"
+                name="navn"
+                formValidation={{
+                  errorMessage: 'Tittel kan ikkje væra tom',
+                  validation: { required: true, minLength: 1 },
+                }}
+              />
+              <Select
+                disabled
+                label="Type sak"
+                options={[{ label: 'Type sak', value: 'ts' }]}
+              />
+            </div>
+          </div>
+          <TestlabForm.FormButtons step={buttonStep} />
+        </div>
+      </TestlabForm>
+    </div>
   );
 };
 

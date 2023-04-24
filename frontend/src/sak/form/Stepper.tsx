@@ -4,12 +4,11 @@ import { FileTextIcon, Globe2Icon, ListIcon, ToolIcon } from '@digdir/ds-icons';
 import classNames from 'classnames';
 import React from 'react';
 
-import { SakStep, SakStepType } from '../types';
+import { FormStepState } from '../hooks/useSakForm';
+import { SakStepType } from '../types';
 
 interface Props {
-  currentStep: SakStep;
-  steps: SakStep[];
-  goToStep: (stepIdx: number) => void;
+  formStepState: FormStepState;
 }
 
 const StepperIcon = ({
@@ -33,8 +32,9 @@ const StepperIcon = ({
   }
 };
 
-const Stepper = ({ steps, currentStep, goToStep }: Props) => {
-  const currentIdx = currentStep.index;
+const Stepper = ({ formStepState }: Props) => {
+  const { steps, currentStepIdx, goToStep } = formStepState;
+  const currentIdx = currentStepIdx;
 
   return (
     <div className="sak-stepper" aria-hidden="true">
@@ -47,7 +47,6 @@ const Stepper = ({ steps, currentStep, goToStep }: Props) => {
             type="submit"
             className="sak-stepper__button"
             key={step.index}
-            name="navn"
           >
             <div className="wrapper">
               <div className="text">

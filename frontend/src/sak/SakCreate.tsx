@@ -84,36 +84,30 @@ const SakCreate = () => {
       });
   }, []);
 
-  const {
-    steps,
-    currentStep,
-    isLastStep,
-    setPreviousStep,
-    setNextStep,
-    goToStep,
-  } = useSakForm(defaultSakSteps);
+  const formStepState = useSakForm(defaultSakSteps);
+  const { isLastStep, setNextStep, nextStepIdx } = formStepState;
 
-  const handleSubmit = (maalingFormState: SakFormState) => {
-    setMaalingFormState(maalingFormState);
-    if (!isLastStep) {
-      return setNextStep();
-    } else {
-      doSubmitMaaling(maalingFormState);
-    }
-  };
+  const handleSubmit = useCallback(
+    (maalingFormState: SakFormState) => {
+      setMaalingFormState(maalingFormState);
+      if (!isLastStep || typeof nextStepIdx !== 'undefined') {
+        return setNextStep();
+      } else {
+        doSubmitMaaling(maalingFormState);
+      }
+    },
+    [isLastStep, nextStepIdx]
+  );
 
   return (
     <>
       <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
       <SakStepForm
+        formStepState={formStepState}
         maalingFormState={maalingFormState}
-        currentStep={currentStep}
-        steps={steps}
-        goToStep={goToStep}
+        onSubmit={handleSubmit}
         loading={loading}
         error={error}
-        onClickBack={setPreviousStep}
-        onSubmit={handleSubmit}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
       />

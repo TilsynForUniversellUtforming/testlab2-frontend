@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 
 import ErrorCard from '../../../../common/error/ErrorCard';
+import TestlabForm from '../../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import { useEffectOnce } from '../../../../common/hooks/useEffectOnce';
 import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
-import SakFormContainer from '../../SakFormContainer';
+import Stepper from '../../Stepper';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
@@ -23,7 +24,6 @@ interface Props extends SakFormBaseProps {
   regelsettList: TestRegelsett[];
   error: any;
   loading: boolean;
-  onClickBack: () => void;
 }
 
 const SakConfirmContent = ({
@@ -121,18 +121,15 @@ const SakConfirmContent = ({
 };
 
 const SakConfirmStep = ({
-  currentStep,
-  steps,
-  goToStep,
-  heading,
+  formStepState,
   maalingFormState,
   onSubmit,
-  onClickBack,
   error,
   loading,
   regelsettList,
 }: Props) => {
   const { navn, loeysingList, regelsettId } = maalingFormState;
+  const { currentStep, onClickBack, nextStepIdx } = formStepState;
 
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
@@ -172,36 +169,42 @@ const SakConfirmStep = ({
   useEffectOnce(() => handleFormErrors());
 
   const handleSubmit = () => {
-    if (!isDefined(errors)) {
+    if (!isDefined(errors) || typeof nextStepIdx !== 'undefined') {
       onSubmit(maalingFormState);
     }
   };
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Custom',
+    stepType: 'Submit',
     onClickBack: onClickBack,
-    customBackText: 'Tilbake',
-    customNextText: 'Opprett sak',
   };
 
   return (
-    <SakFormContainer
-      currentStep={currentStep}
-      steps={steps}
-      goToStep={goToStep}
-      heading={heading}
-      formMethods={formMethods}
-      onSubmit={handleSubmit}
-      buttonStep={buttonStep}
-    >
-      <SakConfirmContent
-        regelsettList={regelsettList}
-        maalingFormState={maalingFormState}
-        error={error}
-        loading={loading}
-        formErrors={errors}
-      />
-    </SakFormContainer>
+    <div className="sak">
+      <TestlabForm<SakFormState>
+        heading={currentStep.heading}
+        subHeading={currentStep.subHeading}
+        onSubmit={handleSubmit}
+        formMethods={formMethods}
+      >
+        <div className="sak__stepper">
+          <Stepper formStepState={formStepState} />
+        </div>
+        <div className="sak__form">
+          <div className="sak__container">
+            {' '}
+            <SakConfirmContent
+              regelsettList={regelsettList}
+              maalingFormState={maalingFormState}
+              error={error}
+              loading={loading}
+              formErrors={errors}
+            />
+          </div>
+          <TestlabForm.FormButtons step={buttonStep} />
+        </div>
+      </TestlabForm>
+    </div>
   );
 };
 

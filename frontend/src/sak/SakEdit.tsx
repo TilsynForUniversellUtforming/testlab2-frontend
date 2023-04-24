@@ -83,18 +83,12 @@ const SakEdit = () => {
   const sakSteps =
     maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
 
-  const {
-    steps,
-    currentStep,
-    isLastStep,
-    setPreviousStep,
-    setNextStep,
-    goToStep,
-  } = useSakForm(sakSteps);
+  const formStepState = useSakForm(sakSteps);
+  const { isLastStep, setNextStep, nextStepIdx } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
     setMaalingFormState(maalingFormState);
-    if (!isLastStep) {
+    if (!isLastStep || typeof nextStepIdx !== 'undefined') {
       return setNextStep();
     } else {
       doSubmitMaaling(maalingFormState);
@@ -103,16 +97,13 @@ const SakEdit = () => {
 
   return (
     <>
-      <AppTitle heading="Endre sak" subHeading="Opprett en ny sak" />
+      <AppTitle heading="Endre sak" subHeading="Endre ein sak" />
       <SakStepForm
+        formStepState={formStepState}
         maalingFormState={maalingFormState}
-        currentStep={currentStep}
-        steps={steps}
-        goToStep={goToStep}
+        onSubmit={handleSubmit}
         loading={loading}
         error={error}
-        onClickBack={setPreviousStep}
-        onSubmit={handleSubmit}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
       />

@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../../common/form/hooks/useValidate';
+import TestlabForm from '../../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import {
   HeaderCheckbox,
@@ -10,29 +11,21 @@ import {
 } from '../../../../common/table/control/toggle/IndeterminateCheckbox';
 import { Loeysing } from '../../../../loeysingar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
-import SakFormContainer from '../../SakFormContainer';
-import SakCrawlParameters from './SakCrawlParameters';
+import Stepper from '../../Stepper';
 import SakLoeysingTable from './SakLoeysingTable';
 
 interface Props extends SakFormBaseProps {
   error: any;
   loading: boolean;
-  onSubmit: (maalingFormState: SakFormState) => void;
   loeysingList: Loeysing[];
-  onClickBack: () => void;
 }
 
 const SakLoeysingStep = ({
-  currentStep,
-  steps,
-  goToStep,
-  heading,
-  subHeading,
-  onClickBack,
+  formStepState,
+  maalingFormState,
   error,
   loading,
   onSubmit,
-  maalingFormState,
   loeysingList,
 }: Props) => {
   const formMethods = useForm<SakFormState>({
@@ -40,6 +33,7 @@ const SakLoeysingStep = ({
   });
 
   const { control, setValue, setError, clearErrors, formState } = formMethods;
+  const { onClickBack, currentStep } = formStepState;
 
   const onChangeRows = (rowSelection: Loeysing[]) => {
     setValue('loeysingList', rowSelection);
@@ -90,33 +84,38 @@ const SakLoeysingStep = ({
   );
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Submit',
+    stepType: 'Middle',
     onClickBack: onClickBack,
   };
 
   return (
-    <SakFormContainer
-      currentStep={currentStep}
-      steps={steps}
-      goToStep={goToStep}
-      heading={heading}
-      subHeading={subHeading}
-      formMethods={formMethods}
-      onSubmit={onSubmit}
-      buttonStep={buttonStep}
-    >
-      <SakLoeysingTable
-        loeysingList={loeysingList}
-        loeysingColumns={loeysingColumns}
-        error={error}
-        loading={loading}
-        formState={formState}
-        selectedRows={selectedRows}
-        onChangeRows={onChangeRows}
-        selection={selection}
-      />
-      <SakCrawlParameters />
-    </SakFormContainer>
+    <div className="sak">
+      <TestlabForm<SakFormState>
+        heading={currentStep.heading}
+        subHeading={currentStep.subHeading}
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+      >
+        <div className="sak__stepper">
+          <Stepper formStepState={formStepState} />
+        </div>
+        <div className="sak__form">
+          <div className="sak__container">
+            <SakLoeysingTable
+              loeysingList={loeysingList}
+              loeysingColumns={loeysingColumns}
+              error={error}
+              loading={loading}
+              formState={formState}
+              selectedRows={selectedRows}
+              onChangeRows={onChangeRows}
+              selection={selection}
+            />
+          </div>
+          <TestlabForm.FormButtons step={buttonStep} />
+        </div>
+      </TestlabForm>
+    </div>
   );
 };
 
