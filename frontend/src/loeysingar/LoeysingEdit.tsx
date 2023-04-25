@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import ErrorCard from '../common/error/ErrorCard';
-import { updateLoysing } from './api/loeysing-api';
+import { updateLoeysing } from './api/loeysing-api';
 import { Loeysing, LoeysingInit } from './api/types';
 import LoeysingForm from './form/LoeysingForm';
 import { LoeysingContext } from './types';
@@ -34,7 +34,7 @@ const LoeysingEdit = () => {
         };
 
         try {
-          const updatedLoeysingList = await updateLoysing(loeysing);
+          const updatedLoeysingList = await updateLoeysing(loeysing);
           setLoeysingList(updatedLoeysingList);
           navigate('..');
         } catch (e) {

@@ -2,7 +2,7 @@ import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import { createLoysing } from './api/loeysing-api';
+import { createLoeysing } from './api/loeysing-api';
 import { LoeysingInit } from './api/types';
 import LoeysingForm from './form/LoeysingForm';
 import { LoeysingContext } from './types';
@@ -28,14 +28,14 @@ const LoeysingCreate = () => {
         };
 
         try {
-          const updatedLoeysingList = await createLoysing(loeysing);
+          const updatedLoeysingList = await createLoeysing(loeysing);
           setLoeysingList(updatedLoeysingList);
           navigate('..');
         } catch (e) {
           setContextError('Kunne ikkje opprette løysing');
         }
       } else {
-        setContextError('Løysingparameter ikkje gylding');
+        setContextError('Løysingparameter ikkje gyldig');
       }
     };
 

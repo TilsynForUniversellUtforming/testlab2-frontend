@@ -9,7 +9,7 @@ import {
   RowCheckbox,
 } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import UserActionTable from '../../common/table/UserActionTable';
-import { deleteLoysingList } from '../api/loeysing-api';
+import { deleteLoeysingList } from '../api/loeysing-api';
 import { Loeysing } from '../api/types';
 import { LoeysingContext } from '../types';
 
@@ -48,7 +48,7 @@ const LoeysingList = () => {
     const deleteAndFetchLoeysing = async () => {
       try {
         const loeysingIdList = loeysingRowSelection.map((l) => l.id);
-        const data = await deleteLoysingList(loeysingIdList);
+        const data = await deleteLoeysingList(loeysingIdList);
         setLoeysingList(data);
       } catch (e: unknown) {
         setShowError(true);
