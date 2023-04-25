@@ -6,7 +6,7 @@ import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import { Option } from '../../../common/types';
 import { TestRegelsett } from '../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../types';
-import Stepper from '../Stepper';
+import SakStepFormWrapper from '../SakStepFormWrapper';
 
 interface Props extends SakFormBaseProps {
   regelsettList: TestRegelsett[];
@@ -35,34 +35,24 @@ const SakTestreglarStep = ({
   };
 
   return (
-    <div className="sak">
-      <TestlabForm<SakFormState>
-        heading={currentStep.heading}
-        subHeading={currentStep.subHeading}
-        onSubmit={onSubmit}
-        formMethods={formMethods}
-      >
-        <div className="sak__stepper">
-          <Stepper formStepState={formStepState} />
-        </div>
-        <div className="sak__form">
-          <div className="sak__container">
-            <div className="sak-testreglar">
-              <TestlabForm.FormSelect<SakFormState>
-                label="Testreglar"
-                name="regelsettId"
-                formValidation={{
-                  errorMessage: 'Testreglar må veljast',
-                  validation: { required: true, min: '1' },
-                }}
-                options={regelsettOptions}
-              />
-            </div>
-          </div>
-          <TestlabForm.FormButtons step={buttonStep} />
-        </div>
-      </TestlabForm>
-    </div>
+    <SakStepFormWrapper
+      formStepState={formStepState}
+      onSubmit={onSubmit}
+      formMethods={formMethods}
+      buttonStep={buttonStep}
+    >
+      <div className="sak-testreglar">
+        <TestlabForm.FormSelect<SakFormState>
+          label="Testreglar"
+          name="regelsettId"
+          formValidation={{
+            errorMessage: 'Testreglar må veljast',
+            validation: { required: true, min: '1' },
+          }}
+          options={regelsettOptions}
+        />
+      </div>
+    </SakStepFormWrapper>
   );
 };
 

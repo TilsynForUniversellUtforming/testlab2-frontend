@@ -25,8 +25,9 @@ const TestlabFormSelect = <T extends object>({
     <Controller
       name={name}
       control={control}
+      rules={formValidation?.validation}
       render={({ field: { onChange, value } }) => (
-        <>
+        <div className="testlab-form__select">
           <Select
             label={label}
             value={value}
@@ -37,7 +38,7 @@ const TestlabFormSelect = <T extends object>({
           {hasError && formValidation?.errorMessage && (
             <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>
           )}
-        </>
+        </div>
       )}
     />
   );

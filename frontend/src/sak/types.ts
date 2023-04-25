@@ -19,6 +19,9 @@ export type SakFormState = {
   regelsettId?: string;
   maxLinksPerPage: number;
   numLinksToSelect: number;
+  sakType?: Saktype;
+  advisor?: string;
+  sakNumber?: string;
   currentStep?: AppRoute;
 };
 
@@ -82,3 +85,11 @@ export interface SakFormBaseProps {
   maalingFormState: SakFormState;
   onSubmit: (maalingFormState: SakFormState) => void;
 }
+
+export type Saktype =
+  | 'Dispensasjonssøknad'
+  | 'IKT-fagleg uttale'
+  | 'Forenklet kontroll'
+  | 'Statusmåling'
+  | 'Tilsyn'
+  | 'Anna';

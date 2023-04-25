@@ -1,4 +1,3 @@
-import { Select } from '@digdir/design-system-react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import TestlabForm from '../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import { SakFormBaseProps, SakFormState } from '../../types';
-import Stepper from '../Stepper';
+import SakStepFormWrapper from '../SakStepFormWrapper';
 
 const SakInitStep = ({
   formStepState,
@@ -24,41 +23,52 @@ const SakInitStep = ({
     onClickBack: () => navigate('/'),
   };
 
-  const { heading, subHeading } = formStepState.currentStep;
-
   return (
-    <div className="sak">
-      <TestlabForm<SakFormState>
-        heading={heading}
-        subHeading={subHeading}
-        onSubmit={onSubmit}
-        formMethods={formMethods}
-      >
-        <div className="sak__stepper">
-          <Stepper formStepState={formStepState} />
-        </div>
-        <div className="sak__form">
-          <div className="sak__container">
-            <div className="sak-init">
-              <TestlabForm.FormInput<SakFormState>
-                label="Tittel"
-                name="navn"
-                formValidation={{
-                  errorMessage: 'Tittel kan ikkje væra tom',
-                  validation: { required: true, minLength: 1 },
-                }}
-              />
-              <Select
-                disabled
-                label="Type sak"
-                options={[{ label: 'Type sak', value: 'ts' }]}
-              />
-            </div>
-          </div>
-          <TestlabForm.FormButtons step={buttonStep} />
-        </div>
-      </TestlabForm>
-    </div>
+    <SakStepFormWrapper
+      formStepState={formStepState}
+      onSubmit={onSubmit}
+      formMethods={formMethods}
+      buttonStep={buttonStep}
+    >
+      <div className="sak-init">
+        <TestlabForm.FormInput<SakFormState>
+          label="Tittel"
+          name="navn"
+          formValidation={{
+            errorMessage: 'Tittel kan ikkje væra tom',
+            validation: { required: true, minLength: 1 },
+          }}
+        />
+        {/*<TestlabForm.FormSelect<SakFormState>*/}
+        {/*  label="Type sak"*/}
+        {/*  name="sakType"*/}
+        {/*  options={[*/}
+        {/*    {label: 'Dispensasjonssøknad', value: 'Dispensasjonssøknad'},*/}
+        {/*    {label: 'IKT-fagleg uttale', value: 'IKT-fagleg uttale'},*/}
+        {/*    {label: 'Forenklet kontroll', value: 'Forenklet kontroll'},*/}
+        {/*    {label: 'Statusmåling', value: 'Statusmåling'},*/}
+        {/*    {label: 'Tilsyn', value: 'Tilsyn'},*/}
+        {/*    {label: 'Anna', value: 'Anna'},*/}
+        {/*  ]}*/}
+        {/*  formValidation={{*/}
+        {/*    errorMessage: 'Type sak må vejast',*/}
+        {/*    validation: { required: true },*/}
+        {/*  }}*/}
+        {/*/>*/}
+        {/*<TestlabForm.FormInput<SakFormState>*/}
+        {/*  label="Sakshandsamar"*/}
+        {/*  name="advisor"*/}
+        {/*  formValidation={{*/}
+        {/*    errorMessage: 'Sakshandsamar kan ikkje væra tom',*/}
+        {/*    validation: { required: true, minLength: 1 },*/}
+        {/*  }}*/}
+        {/*/>*/}
+        {/*<TestlabForm.FormInput<SakFormState>*/}
+        {/*  label="Saksnummer (valfritt)"*/}
+        {/*  name="sakNumber"*/}
+        {/*/>*/}
+      </div>
+    </SakStepFormWrapper>
   );
 };
 

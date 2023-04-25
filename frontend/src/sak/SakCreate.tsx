@@ -31,6 +31,9 @@ const SakCreate = () => {
     regelsettId: undefined,
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
+    sakType: undefined,
+    advisor: '',
+    sakNumber: '',
   };
 
   const [maalingFormState, setMaalingFormState] =

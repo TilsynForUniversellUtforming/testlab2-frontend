@@ -3,7 +3,6 @@ import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../../common/form/hooks/useValidate';
-import TestlabForm from '../../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import {
   HeaderCheckbox,
@@ -11,7 +10,7 @@ import {
 } from '../../../../common/table/control/toggle/IndeterminateCheckbox';
 import { Loeysing } from '../../../../loeysingar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
-import Stepper from '../../Stepper';
+import SakStepFormWrapper from '../../SakStepFormWrapper';
 import SakLoeysingTable from './SakLoeysingTable';
 
 interface Props extends SakFormBaseProps {
@@ -89,33 +88,23 @@ const SakLoeysingStep = ({
   };
 
   return (
-    <div className="sak">
-      <TestlabForm<SakFormState>
-        heading={currentStep.heading}
-        subHeading={currentStep.subHeading}
-        onSubmit={onSubmit}
-        formMethods={formMethods}
-      >
-        <div className="sak__stepper">
-          <Stepper formStepState={formStepState} />
-        </div>
-        <div className="sak__form">
-          <div className="sak__container">
-            <SakLoeysingTable
-              loeysingList={loeysingList}
-              loeysingColumns={loeysingColumns}
-              error={error}
-              loading={loading}
-              formState={formState}
-              selectedRows={selectedRows}
-              onChangeRows={onChangeRows}
-              selection={selection}
-            />
-          </div>
-          <TestlabForm.FormButtons step={buttonStep} />
-        </div>
-      </TestlabForm>
-    </div>
+    <SakStepFormWrapper
+      formStepState={formStepState}
+      onSubmit={onSubmit}
+      formMethods={formMethods}
+      buttonStep={buttonStep}
+    >
+      <SakLoeysingTable
+        loeysingList={loeysingList}
+        loeysingColumns={loeysingColumns}
+        error={error}
+        loading={loading}
+        formState={formState}
+        selectedRows={selectedRows}
+        onChangeRows={onChangeRows}
+        selection={selection}
+      />
+    </SakStepFormWrapper>
   );
 };
 

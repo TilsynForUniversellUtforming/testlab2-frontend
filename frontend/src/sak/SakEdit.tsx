@@ -35,6 +35,7 @@ const SakEdit = () => {
     regelsettId: '1',
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
+    sakType: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =

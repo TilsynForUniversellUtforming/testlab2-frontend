@@ -30,7 +30,7 @@ const TestlabFormInput = <T extends object>({
       control={control}
       rules={formValidation?.validation}
       render={({ field: { onChange, onBlur, value } }) => (
-        <>
+        <div className="testlab-form__input">
           <TextField
             type="text"
             value={value}
@@ -44,7 +44,7 @@ const TestlabFormInput = <T extends object>({
           {hasError && formValidation?.errorMessage && (
             <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>
           )}
-        </>
+        </div>
       )}
     />
   );

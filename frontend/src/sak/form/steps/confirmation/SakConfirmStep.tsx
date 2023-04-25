@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 
 import ErrorCard from '../../../../common/error/ErrorCard';
-import TestlabForm from '../../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import { useEffectOnce } from '../../../../common/hooks/useEffectOnce';
 import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
-import Stepper from '../../Stepper';
+import SakStepFormWrapper from '../../SakStepFormWrapper';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
@@ -180,31 +179,20 @@ const SakConfirmStep = ({
   };
 
   return (
-    <div className="sak">
-      <TestlabForm<SakFormState>
-        heading={currentStep.heading}
-        subHeading={currentStep.subHeading}
-        onSubmit={handleSubmit}
-        formMethods={formMethods}
-      >
-        <div className="sak__stepper">
-          <Stepper formStepState={formStepState} />
-        </div>
-        <div className="sak__form">
-          <div className="sak__container">
-            {' '}
-            <SakConfirmContent
-              regelsettList={regelsettList}
-              maalingFormState={maalingFormState}
-              error={error}
-              loading={loading}
-              formErrors={errors}
-            />
-          </div>
-          <TestlabForm.FormButtons step={buttonStep} />
-        </div>
-      </TestlabForm>
-    </div>
+    <SakStepFormWrapper
+      formStepState={formStepState}
+      onSubmit={onSubmit}
+      formMethods={formMethods}
+      buttonStep={buttonStep}
+    >
+      <SakConfirmContent
+        regelsettList={regelsettList}
+        maalingFormState={maalingFormState}
+        error={error}
+        loading={loading}
+        formErrors={errors}
+      />
+    </SakStepFormWrapper>
   );
 };
 
