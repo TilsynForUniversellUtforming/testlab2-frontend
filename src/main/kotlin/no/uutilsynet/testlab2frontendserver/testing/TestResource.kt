@@ -26,7 +26,7 @@ class TestResource(val restTemplate: RestTemplate, val testingApiProperties: Tes
             throw RuntimeException("Klarte ikkje å hente løysing")
           }
 
-  @GetMapping("{id}/resultat?loeysingId={loeysingId}")
+  @GetMapping("{id}/resultat")
   fun getTestResultatForMaalingLoeysing(
       @PathVariable id: Int,
       @RequestParam loeysingId: Int
