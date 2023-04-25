@@ -17,6 +17,26 @@ const MaalingStatusContainer = ({
   handleStartCrawling,
   handleStartTest,
 }: Props) => {
+  const numberCrawled =
+    maaling.testResult.length > 0
+      ? maaling.loeysingList.length
+      : maaling.crawlStatistics.numFinished;
+  const crawlingJobFinished = [
+    'kvalitetssikring',
+    'testing',
+    'testing_ferdig',
+  ].includes(maaling.status);
+  const crawlingFailed =
+    crawlingJobFinished && numberCrawled !== maaling.loeysingList.length;
+  const showCrawlLink = ['crawling', 'kvalitetssikring'].includes(
+    maaling.status
+  );
+
+  const numberTested = maaling.testStatistics.numFinished;
+  const testingJobFinished = maaling.status === 'testing_ferdig';
+  const testingFailed = maaling.testStatistics.numError > 0;
+  const showTestLink = ['testing', 'testing_ferdig'].includes(maaling.status);
+
   return (
     <List>
       <ListItem>
@@ -29,15 +49,10 @@ const MaalingStatusContainer = ({
         <div className="status-list status__list-item">
           <div className="status__item">
             <MaalingStatusRow
-              label={`Sideutvalg (${
-                maaling.testResult.length > 0
-                  ? maaling.loeysingList.length
-                  : maaling.crawlStatistics.numFinished
-              }/${maaling.loeysingList.length})`}
-              finished={
-                maaling.crawlResultat.length === maaling.loeysingList.length ||
-                maaling.testResult.length > 0
-              }
+              label={`Sideutvalg (${numberCrawled}/${maaling.loeysingList.length})`}
+              showLink={showCrawlLink}
+              finished={crawlingJobFinished}
+              error={crawlingFailed}
               linkPath={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
                 pathParam: idPath,
                 id: String(maaling.id),
@@ -46,11 +61,10 @@ const MaalingStatusContainer = ({
           </div>
           <div className="status__item centered">
             <MaalingStatusRow
-              label={`Testing (${maaling.testStatistics.numFinished}/${maaling.loeysingList.length})`}
-              finished={
-                maaling.testResult.length > 0 &&
-                maaling.testResult.length === maaling.loeysingList.length
-              }
+              label={`Testing (${numberTested}/${maaling.loeysingList.length})`}
+              showLink={showTestLink}
+              finished={testingJobFinished}
+              error={testingFailed}
               linkPath={getFullPath(appRoutes.TEST_TESTING_LIST, {
                 pathParam: idPath,
                 id: String(maaling.id),
@@ -60,7 +74,9 @@ const MaalingStatusContainer = ({
           <div className="status__item centered">
             <MaalingStatusRow
               label="Publisert"
+              showLink={false}
               finished={false}
+              error={false}
               linkPath={''}
             />
           </div>

@@ -122,8 +122,6 @@ const TestResultListApp = () => {
 
   if (error) {
     return <ErrorCard errorText={error} />;
-  } else if (!contextError && !loading && !testResult.length) {
-    return <ErrorCard errorText="Finner ikkje testresultat" />;
   } else if (!selectedLoeysing) {
     return <ErrorCard errorText="Testresultat finnes ikkje for løysing" />;
   }

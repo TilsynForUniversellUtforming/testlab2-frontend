@@ -3,28 +3,39 @@ import { Link } from 'react-router-dom';
 
 import StatusIcon from '../../../common/status-badge/StatusIcon';
 
-export interface Props {
+interface StatusLinkProps {
   label: string;
-  finished: boolean;
+  showLink: boolean;
   linkPath: string;
 }
 
-const StatusLink = ({ label, finished, linkPath }: Props) => {
-  if (!finished) {
+export interface Props extends StatusLinkProps {
+  finished: boolean;
+  error: boolean;
+}
+
+const StatusLink = ({ label, showLink, linkPath }: StatusLinkProps) => {
+  if (!showLink) {
     return <div className="status-icon-wrapper">{label}</div>;
   } else {
     return <Link to={linkPath}>{label}</Link>;
   }
 };
 
-const MaalingStatusRow = ({ label, finished, linkPath }: Props) => {
+const MaalingStatusRow = ({
+  label,
+  finished,
+  showLink,
+  linkPath,
+  error,
+}: Props) => {
   return (
     <>
       <div className="link-text">
-        <StatusLink label={label} finished={finished} linkPath={linkPath} />
+        <StatusLink label={label} showLink={showLink} linkPath={linkPath} />
       </div>
       <div className="status-icon-wrapper">
-        <StatusIcon finished={finished} />
+        <StatusIcon finished={finished} error={error} />
       </div>
     </>
   );
