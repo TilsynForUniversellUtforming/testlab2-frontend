@@ -20,19 +20,17 @@ fun MaalingDTO.toMaaling() = this.toMaaling(emptyList())
 fun MaalingDTO.toMaaling(
     crawlResultat: List<CrawlResultat>,
 ): Maaling {
-  val maalingCrawlResultat: List<CrawlResultat> =
-      crawlResultat.ifEmpty { this.crawlResultat?.map { it.toCrawlResultat() } ?: emptyList() }
-  val maalingTestResultat: List<TestKoeyring> = this.testKoeyringar ?: emptyList()
+  val maalingTestKoeyringList: List<TestKoeyring> = this.testKoeyringar ?: emptyList()
 
   return Maaling(
       id = this.id,
       navn = this.navn,
       status = this.status,
       loeysingList =
-          if (maalingCrawlResultat.isNotEmpty()) {
-            maalingCrawlResultat.map { it.loeysing }
-          } else if (maalingTestResultat.isNotEmpty()) {
-            maalingTestResultat.map { it.loeysing }
+          if (crawlResultat.isNotEmpty()) {
+            crawlResultat.map { it.loeysing }
+          } else if (maalingTestKoeyringList.isNotEmpty()) {
+            maalingTestKoeyringList.map { it.loeysing }
           } else {
             if (this.loeysingList.isNullOrEmpty()) {
               emptyList()
@@ -40,9 +38,9 @@ fun MaalingDTO.toMaaling(
               this.loeysingList
             }
           },
-      crawlResultat = maalingCrawlResultat.ifEmpty { emptyList() },
-      crawlStatistics = maalingCrawlResultat.map { it.type }.toJobStatistics(),
-      testResult = maalingTestResultat.ifEmpty { emptyList() },
-      testStatistics = maalingTestResultat.map { it.tilstand }.toJobStatistics(),
+      crawlResultat = crawlResultat.ifEmpty { emptyList() },
+      crawlStatistics = crawlResultat.map { it.type }.toJobStatistics(),
+      testResult = maalingTestKoeyringList.ifEmpty { emptyList() },
+      testStatistics = maalingTestKoeyringList.map { it.tilstand }.toJobStatistics(),
       crawlParameters = this.crawlParameters)
 }

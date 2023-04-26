@@ -51,9 +51,8 @@ class MaalingResource(
 
     val maaling =
         when (maalingDTO.status) {
-          MaalingStatus.testing,
-          MaalingStatus.testing_ferdig -> maalingDTO.toMaaling(getCrawlResultatList(maalingDTO.id))
-          else -> maalingDTO.toMaaling()
+          MaalingStatus.planlegging -> maalingDTO.toMaaling()
+          else -> maalingDTO.toMaaling(getCrawlResultatList(maalingDTO.id))
         }
 
     return ResponseEntity.ok(maaling)
@@ -118,7 +117,7 @@ class MaalingResource(
             ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
           }
 
-  @GetMapping("{id}/crawling")
+  @GetMapping("{id}/crawlresultat")
   fun getCrawlResultatList(
       @PathVariable id: Int,
   ): List<CrawlResultat> =
@@ -129,7 +128,7 @@ class MaalingResource(
           }
           .getOrElse {
             logger.info("Kunne ikkje hente crawl resultat for måling med id $id")
-            throw RuntimeException("Klarte ikkje å hente løysing")
+            throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
 
   @PutMapping("{id}/{loeysingId}")
