@@ -28,9 +28,7 @@ const MaalingStatusContainer = ({
   ].includes(maaling.status);
   const crawlingFailed =
     crawlingJobFinished && numberCrawled !== maaling.loeysingList.length;
-  const showCrawlLink = ['crawling', 'kvalitetssikring'].includes(
-    maaling.status
-  );
+  const showCrawlLink = maaling.status !== 'planlegging';
 
   const numberTested = maaling.testStatistics.numFinished;
   const testingJobFinished = maaling.status === 'testing_ferdig';
