@@ -1,3 +1,4 @@
+import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
@@ -67,6 +68,10 @@ const MaalingApp = () => {
   const doStartTest = useCallback((maaling: Maaling) => {
     setLoading(true);
     setError(undefined);
+
+    if (maaling.crawlResultat.find((cr) => cr.type === 'feilet')) {
+      setError('Kunne ikkje starte test, måling har feil i sideutval');
+    }
 
     const startTesting = async () => {
       try {
@@ -153,6 +158,10 @@ const MaalingApp = () => {
         centered
       />
     );
+  }
+
+  if (loading) {
+    return <Spinner title="Venter på målinger" />;
   }
 
   return <Outlet context={maalingContext} />;
