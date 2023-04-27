@@ -26,10 +26,9 @@ class SinglePageAppConfig : WebMvcConfigurer {
   override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
     registry
         .setOrder(2)
-        .addResourceHandler("/index.html")
+        .addResourceHandler("/assets/**")
         .addResourceLocations("classpath:/public/")
-        .setCacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).mustRevalidate())
-        .setCacheControl(CacheControl.noCache())
+        .setCachePeriod(Duration.ofDays(7).seconds.toInt())
         .resourceChain(true)
         .addResolver(resolver)
 
@@ -37,7 +36,8 @@ class SinglePageAppConfig : WebMvcConfigurer {
         .setOrder(3)
         .addResourceHandler("/**")
         .addResourceLocations("classpath:/public/")
-        .setCachePeriod(Duration.ofDays(7).seconds.toInt())
+        .setCacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).mustRevalidate())
+        .setCacheControl(CacheControl.noCache())
         .resourceChain(true)
         .addResolver(resolver)
   }
