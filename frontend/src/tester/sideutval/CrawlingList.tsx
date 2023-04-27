@@ -93,9 +93,19 @@ const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
           const crawlSuccess =
             status === 'ferdig' && typeof urlLength !== 'undefined';
 
-          const label = crawlSuccess
-            ? `Ferdig - Fant ${urlLength} sider`
-            : status;
+          let label: string;
+          if (crawlSuccess) {
+            label = `Ferdig - Fant ${urlLength} sider`;
+          } else if (status === 'ikke_ferdig') {
+            const framgang = row.original.framgang;
+            if (framgang?.lenkerCrawla && framgang?.maxLenker) {
+              label = `Crawler ${framgang.lenkerCrawla} av ${framgang.maxLenker}`;
+            } else {
+              label = 'Crawler';
+            }
+          } else {
+            label = status;
+          }
 
           return (
             <StatusBadge
