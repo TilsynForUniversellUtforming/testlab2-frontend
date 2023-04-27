@@ -26,6 +26,10 @@ const ControlHeader = ({
     return null;
   }
 
+  const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
+  const hasElements = tableElementSize > 0;
+  const displayPageSizeSelection = tableElementSize > 10;
+
   const showFilters =
     filterPreference !== 'none' &&
     filterPreference !== 'rowsearch' &&
@@ -45,6 +49,7 @@ const ControlHeader = ({
             value={filterValue}
             onChange={onChangeFilter}
             placeholder="Søk..."
+            disabled={loading}
           />
         )}
       </div>
