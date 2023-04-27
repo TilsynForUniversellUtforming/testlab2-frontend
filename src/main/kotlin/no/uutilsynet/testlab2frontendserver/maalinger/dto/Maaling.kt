@@ -39,7 +39,13 @@ fun MaalingDTO.toMaaling(
             }
           },
       crawlResultat = crawlResultat.ifEmpty { emptyList() },
-      crawlStatistics = crawlResultat.map { it.type }.toJobStatistics(),
+      crawlStatistics =
+          crawlResultat
+              .map {
+                if (it.type == JobStatus.ferdig && it.urlList.isNullOrEmpty()) JobStatus.feilet
+                else it.type
+              }
+              .toJobStatistics(),
       testResult = maalingTestKoeyringList.ifEmpty { emptyList() },
       testStatistics = maalingTestKoeyringList.map { it.tilstand }.toJobStatistics(),
       crawlParameters = this.crawlParameters)

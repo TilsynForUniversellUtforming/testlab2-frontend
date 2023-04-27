@@ -27,13 +27,17 @@ const ControlHeader = ({
   }
 
   const showFilters =
-    filterPreference !== 'none' && filterPreference !== 'rowsearch';
+    filterPreference !== 'none' &&
+    filterPreference !== 'rowsearch' &&
+    hasElements;
 
   return (
     <div className="control-header">
-      <div className="control-header__size-selection">
-        <PageSizeSelection table={table} loading={loading} />
-      </div>
+      {displayPageSizeSelection && (
+        <div className="control-header__size-selection">
+          <PageSizeSelection table={table} loading={loading} />
+        </div>
+      )}
       <div className="control-header__input">
         {showFilters && (
           <DebouncedInput

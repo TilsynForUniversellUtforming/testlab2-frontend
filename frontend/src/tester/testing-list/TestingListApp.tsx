@@ -16,7 +16,7 @@ const TestingListApp = () => {
   );
   const [error, setError] = useState<string | undefined>(contextError);
 
-  const [refreshing, setRefreshing] = useState(true);
+  const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
 
   const doFetchData = useCallback(() => {
     const fetchData = async () => {

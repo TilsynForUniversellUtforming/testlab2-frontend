@@ -57,7 +57,7 @@ const getButtonColor = (columnUserAction: ColumnUserAction) => {
     case 'start':
       return ButtonColor.Success;
     case 'redo':
-      return ButtonColor.Secondary;
+      return ButtonColor.Primary;
   }
 };
 
