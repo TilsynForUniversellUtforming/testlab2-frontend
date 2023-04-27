@@ -49,27 +49,28 @@ const MaalingOverviewApp = () => {
         items={[
           {
             name: 'Oversikt',
-            content: <Outlet context={context} />,
+            content: <></>,
           },
           {
             name: 'Rediger måling',
-            content: <Outlet context={context} />,
+            content: <></>,
           },
           {
             name: 'Nettløysingar',
-            content: <Outlet context={context} />,
+            content: <></>,
           },
           {
             name: 'Testreglar',
-            content: <Outlet context={context} />,
+            content: <></>,
           },
           {
             name: 'Testresultat',
-            content: <Outlet context={context} />,
+            content: <></>,
           },
         ]}
         onChange={handleChange}
       />
+      <Outlet context={context} />
     </>
   );
 };

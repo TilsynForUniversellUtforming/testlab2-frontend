@@ -26,14 +26,22 @@ const ControlHeader = ({
     return null;
   }
 
+  const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
+  const hasElements = tableElementSize > 0;
+  const displayPageSizeSelection = tableElementSize > 10;
+
   const showFilters =
-    filterPreference !== 'none' && filterPreference !== 'rowsearch';
+    filterPreference !== 'none' &&
+    filterPreference !== 'rowsearch' &&
+    hasElements;
 
   return (
     <div className="control-header">
-      <div className="control-header__size-selection">
-        <PageSizeSelection table={table} loading={loading} />
-      </div>
+      {displayPageSizeSelection && (
+        <div className="control-header__size-selection">
+          <PageSizeSelection table={table} loading={loading} />
+        </div>
+      )}
       <div className="control-header__input">
         {showFilters && (
           <DebouncedInput
@@ -41,6 +49,7 @@ const ControlHeader = ({
             value={filterValue}
             onChange={onChangeFilter}
             placeholder="Søk..."
+            disabled={loading}
           />
         )}
       </div>
