@@ -11,8 +11,11 @@ data class CrawlResultat(
     val type: JobStatus,
     val sistOppdatert: LocalDateTime,
     val feilmelding: String?,
-    val urlList: List<URL>?
+    val urlList: List<URL>?,
+    val framgang: Framgang?
 )
+
+data class Framgang(val lenkerCrawla: Int, val maxLenker: Int)
 
 fun CrawlResultatDTO.toCrawlResultat() =
     CrawlResultat(
@@ -20,4 +23,5 @@ fun CrawlResultatDTO.toCrawlResultat() =
         this.type,
         this.sistOppdatert.toLocalDateTime(),
         this.feilmelding,
-        this.nettsider)
+        this.nettsider,
+        this.framgang)
