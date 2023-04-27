@@ -27,13 +27,21 @@ class SinglePageAppConfig : WebMvcConfigurer {
     registry
         .setOrder(2)
         .addResourceHandler("/assets/**")
-        .addResourceLocations("classpath:/public/")
+        .addResourceLocations("classpath:/public/assets/")
         .setCachePeriod(Duration.ofDays(7).seconds.toInt())
         .resourceChain(true)
         .addResolver(resolver)
 
     registry
         .setOrder(3)
+        .addResourceHandler("/favicon.ico")
+        .addResourceLocations("classpath:/public/")
+        .setCachePeriod(Duration.ofDays(365).seconds.toInt())
+        .resourceChain(true)
+        .addResolver(resolver)
+
+    registry
+        .setOrder(4)
         .addResourceHandler("/**")
         .addResourceLocations("classpath:/public/")
         .setCacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).mustRevalidate())
