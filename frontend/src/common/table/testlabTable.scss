@@ -2,6 +2,7 @@
   &__table {
     margin-bottom: 1rem;
     table-layout: fixed;
+    overflow-wrap: break-word;
   }
 
   &__header-button {
