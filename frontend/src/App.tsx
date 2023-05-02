@@ -1,11 +1,12 @@
 import './index.scss';
 
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import appRoutes, { createPath, editPath, idPath } from './common/appRoutes';
-import IkkeFunnet from './common/IkkeFunnet';
+import AppErrorBoundary from './common/error-boundary/AppErrorBoundary';
 import Navigation from './common/navigation/Navigation';
+import Page404 from './common/Page404';
 import KravApp from './krav/KravApp';
 import LoeysingList from './loeysingar/list/LoeysingList';
 import LoeysingApp from './loeysingar/LoeysingApp';
@@ -38,93 +39,175 @@ import Testreglar from './testreglar/testreglar-liste/Testreglar';
 import TestreglarApp from './testreglar/TestreglarApp';
 import VerksemderApp from './verksemder/VerksemderApp';
 
-function App() {
-  return (
-    <>
-      <Navigation />
-      <div className="app-container">
-        <Routes>
-          <Route path={appRoutes.ROOT.path} element={<Oversikt />} />
+const AppContainer = () => (
+  <>
+    <Navigation />
+    <div className="app-container">
+      <Outlet />
+    </div>
+  </>
+);
 
-          <Route path={appRoutes.SAK_LIST.path} element={<SakList />} />
-          <Route path={appRoutes.SAK_ROOT.path} element={<SakApp />}>
-            <Route path={createPath} element={<SakCreate />} />
-            <Route path={idPath} element={<SakOverviewApp />}>
-              <Route index element={<SakOverview />} />
-              <Route path={editPath} element={<SakEdit />} />
-            </Route>
-          </Route>
+const App = () => {
+  const router = createBrowserRouter([
+    {
+      element: <AppContainer />,
+      errorElement: <AppErrorBoundary />,
+      children: [
+        {
+          path: appRoutes.ROOT.path,
+          element: <Oversikt />,
+        },
+        {
+          path: appRoutes.SAK_LIST.path,
+          element: <SakList />,
+        },
+        {
+          path: appRoutes.SAK_ROOT.path,
+          element: <SakApp />,
+          children: [
+            {
+              path: createPath,
+              element: <SakCreate />,
+            },
+            {
+              path: idPath,
+              element: <SakOverviewApp />,
+              children: [
+                {
+                  index: true,
+                  element: <SakOverview />,
+                },
+                {
+                  path: editPath,
+                  element: <SakEdit />,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: appRoutes.MAALING_LIST.path,
+          element: <MaalingList />,
+        },
+        {
+          path: appRoutes.MAALING_ROOT.path,
+          element: <MaalingApp />,
+          children: [
+            {
+              path: createPath,
+              element: <MaalingCreate />,
+            },
+            {
+              path: idPath,
+              element: <MaalingOverviewApp />,
+              children: [
+                {
+                  index: true,
+                  element: <MaalingOverview />,
+                },
+                {
+                  path: editPath,
+                  element: <SakEdit />,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: appRoutes.TESTREGEL_LIST.path,
+          element: <TestreglarApp />,
+          children: [
+            {
+              index: true,
+              element: <Testreglar />,
+            },
+            {
+              path: appRoutes.TESTREGEL_CREATE.path,
+              element: <CreateTestregel />,
+            },
+            {
+              path: appRoutes.TESTREGEL_EDIT.path,
+              element: <EditTestreglar />,
+            },
+            {
+              path: appRoutes.REGELSETT_LIST.path,
+              element: <RegelsettApp />,
+              children: [
+                {
+                  index: true,
+                  element: <Regelsett />,
+                },
+                {
+                  path: appRoutes.REGELSETT_CREATE.path,
+                  element: <CreateRegelsett />,
+                },
+                {
+                  path: appRoutes.REGELSETT_EDIT.path,
+                  element: <EditRegelsett />,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: appRoutes.VERKSEMD_LIST.path,
+          element: <VerksemderApp />,
+        },
+        {
+          path: appRoutes.LOEYSING_ROOT.path,
+          element: <LoeysingApp />,
+          children: [
+            {
+              index: true,
+              element: <LoeysingList />,
+            },
+            {
+              path: createPath,
+              element: <LoeysingCreate />,
+            },
+            {
+              path: idPath,
+              element: <LoeysingEdit />,
+            },
+          ],
+        },
+        {
+          path: appRoutes.KRAV_LIST.path,
+          element: <KravApp />,
+        },
+        {
+          path: appRoutes.TEST.path,
+          element: <TesterApp />,
+          children: [
+            {
+              path: appRoutes.TEST_SIDEUTVAL_LIST.path,
+              element: <SideutvalApp />,
+            },
+            {
+              path: appRoutes.TEST_CRAWLING_RESULT_LIST.path,
+              element: <KvalitetssikringApp />,
+            },
+            {
+              path: appRoutes.TEST_TESTING_LIST.path,
+              element: <TestingListApp />,
+            },
+            {
+              path: appRoutes.TEST_TESTING_LIST.path,
+              element: <TestResultListApp />,
+            },
+          ],
+        },
 
-          <Route path={appRoutes.MAALING_LIST.path} element={<MaalingList />} />
-          <Route path={appRoutes.MAALING_ROOT.path} element={<MaalingApp />}>
-            <Route path={createPath} element={<MaalingCreate />} />
-            <Route path={idPath} element={<MaalingOverviewApp />}>
-              <Route index element={<MaalingOverview />} />
-              <Route path={editPath} element={<SakEdit />} />
-            </Route>
-          </Route>
+        {
+          path: '*',
+          element: <Page404 />,
+        },
+      ],
+    },
+  ]);
 
-          <Route
-            path={appRoutes.TESTREGEL_LIST.path}
-            element={<TestreglarApp />}
-          >
-            <Route index element={<Testreglar />} />
-            <Route
-              path={appRoutes.TESTREGEL_CREATE.path}
-              element={<CreateTestregel />}
-            />
-            <Route
-              path={appRoutes.TESTREGEL_EDIT.path}
-              element={<EditTestreglar />}
-            />
-            <Route
-              path={appRoutes.REGELSETT_LIST.path}
-              element={<RegelsettApp />}
-            >
-              <Route index element={<Regelsett />} />
-              <Route
-                path={appRoutes.REGELSETT_CREATE.path}
-                element={<CreateRegelsett />}
-              />
-              <Route
-                path={appRoutes.REGELSETT_EDIT.path}
-                element={<EditRegelsett />}
-              />
-            </Route>
-          </Route>
-          <Route
-            path={appRoutes.VERKSEMD_LIST.path}
-            element={<VerksemderApp />}
-          />
-          <Route path={appRoutes.LOEYSING_ROOT.path} element={<LoeysingApp />}>
-            <Route index element={<LoeysingList />} />
-            <Route path={createPath} element={<LoeysingCreate />} />
-            <Route path={idPath} element={<LoeysingEdit />} />
-          </Route>
-          <Route path={appRoutes.KRAV_LIST.path} element={<KravApp />} />
-          <Route path={appRoutes.TEST.path} element={<TesterApp />}>
-            <Route
-              path={appRoutes.TEST_SIDEUTVAL_LIST.path}
-              element={<SideutvalApp />}
-            />
-            <Route
-              path={appRoutes.TEST_CRAWLING_RESULT_LIST.path}
-              element={<KvalitetssikringApp />}
-            />
-            <Route
-              path={appRoutes.TEST_TESTING_LIST.path}
-              element={<TestingListApp />}
-            />
-            <Route
-              path={appRoutes.TEST_RESULT_LIST.path}
-              element={<TestResultListApp />}
-            />
-          </Route>
-          <Route path="*" element={<IkkeFunnet />} />
-        </Routes>
-      </div>
-    </>
-  );
-}
+  return <RouterProvider router={router} />;
+};
 
 export default App;

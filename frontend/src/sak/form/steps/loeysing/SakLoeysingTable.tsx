@@ -10,7 +10,7 @@ import { SakFormState } from '../../../types';
 export interface Props {
   loeysingList: Loeysing[];
   loeysingColumns: ColumnDef<Loeysing>[];
-  error: any;
+  error: Error | undefined;
   loading: boolean;
   formState: FormState<SakFormState>;
   selectedRows: boolean[];
@@ -36,7 +36,7 @@ const SakLoeysingTable = ({
         <TestlabTable<Loeysing>
           data={loeysingList}
           defaultColumns={loeysingColumns}
-          fetchError={error}
+          displayError={{ error }}
           inputError={listErrors?.message}
           loading={loading}
           selectedRows={selectedRows}

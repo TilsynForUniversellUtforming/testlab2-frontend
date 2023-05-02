@@ -5,18 +5,19 @@ import React, { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
 import ErrorCard from '../common/error/ErrorCard';
+import toError from '../common/error/util';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
 import { TesterContext } from './types';
 
 const TesterApp = () => {
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>(undefined);
   const { id } = useParams();
 
-  const handleError = useCallback((error: any) => {
+  const handleError = useCallback((error: Error | undefined) => {
     setMaaling(undefined);
     setError(error);
   }, []);
@@ -35,18 +36,20 @@ const TesterApp = () => {
 
     const fetchData = async () => {
       if (id) {
-        const maaling = await fetchMaaling(Number(id));
-        setMaaling(maaling);
+        try {
+          const maaling = await fetchMaaling(Number(id));
+          setMaaling(maaling);
+        } catch (e) {
+          setError(toError(e, 'Fann ikkje måling'));
+        }
       } else {
-        setError('Måling finnes ikkje');
+        setError(new Error('Måling finnes ikkje'));
       }
       setLoading(false);
       setError(undefined);
     };
 
-    fetchData()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    fetchData().finally(() => setLoading(false));
   }, []);
 
   useEffectOnce(() => {
@@ -67,7 +70,7 @@ const TesterApp = () => {
   }
 
   if (typeof maaling === 'undefined') {
-    return <ErrorCard errorText="Ingen måling funnet" />;
+    return <ErrorCard error={new Error('Fann ikkje måling')} />;
   }
 
   return <Outlet context={testRegelContext} />;

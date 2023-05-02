@@ -4,6 +4,7 @@ import { useOutletContext, useParams } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
@@ -99,21 +100,19 @@ const TestResultListApp = () => {
             );
             setTestresult(resultat);
           } else {
-            setError('Testresultat finnes ikkje for løysing');
+            setError(new Error('Testresultat finnes ikkje for løysing'));
           }
         } else {
-          setError('Testresultat finnes ikkje');
+          setError(new Error('Testresultat finnes ikkje'));
         }
       } catch (e) {
-        setError('Kunne ikkje finne testresultat');
+        setError(toError(e, 'Kunne ikkje finne testresultat'));
       }
     };
 
-    doFetchTestresultat()
-      .catch((e) => setError(e))
-      .finally(() => {
-        setLoading(false);
-      });
+    doFetchTestresultat().finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   useEffectOnce(() => {
@@ -121,9 +120,11 @@ const TestResultListApp = () => {
   });
 
   if (error) {
-    return <ErrorCard errorText={error} />;
+    return <ErrorCard error={error} />;
   } else if (!selectedLoeysing) {
-    return <ErrorCard errorText="Testresultat finnes ikkje for løysing" />;
+    return (
+      <ErrorCard error={new Error('Testresultat finnes ikkje for løysing')} />
+    );
   }
 
   return (
@@ -135,7 +136,7 @@ const TestResultListApp = () => {
       <TestlabTable<TestResultat>
         data={testResult}
         defaultColumns={testResultatColumns}
-        fetchError={error}
+        displayError={{ error }}
         loading={loading}
         onClickRetry={fetchTestresultat}
       />

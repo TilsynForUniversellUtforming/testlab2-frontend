@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import useFeatureToggles from '../../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
 import useFetch from '../../common/hooks/useFetch';
@@ -14,7 +15,7 @@ import { deleteMaaling, fetchMaalingList } from '../api/maaling-api';
 import { Maaling } from '../api/types';
 
 const MaalingList = () => {
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(false);
@@ -36,17 +37,19 @@ const MaalingList = () => {
     setError(undefined);
 
     if (maalingRowSelection.length === 0) {
-      setError('Kunne ikkje slette måling');
+      setError(new Error('Kunne ikkje slette måling, ingen målinger valgt'));
     }
 
     const deleteAndFetchMaaling = async () => {
-      const data = await deleteMaaling(maalingRowSelection[0]);
-      setMaalingList(data);
+      try {
+        const data = await deleteMaaling(maalingRowSelection[0]);
+        setMaalingList(data);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje slette måling'));
+      }
     };
 
-    deleteAndFetchMaaling()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    deleteAndFetchMaaling().finally(() => setLoading(false));
   }, [maalingRowSelection]);
 
   const onSelectRows = useCallback((rowSelection: Maaling[]) => {
@@ -57,7 +60,7 @@ const MaalingList = () => {
     } else if (rowSelection.length === 1) {
       setDeleteMessage(rowSelection[0].navn);
     } else {
-      setError('Flere målinger valgt');
+      setError(new Error('Flere målinger valgt'));
     }
   }, []);
 
@@ -111,10 +114,9 @@ const MaalingList = () => {
     return (
       <ErrorCard
         errorHeader="Måling"
-        errorText="Målinger låst"
+        error={new Error('Målinger låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
-        centered
       />
     );
   }
@@ -132,7 +134,11 @@ const MaalingList = () => {
       tableProps={{
         data: maalingList,
         defaultColumns: maalingColumns,
-        fetchError: error,
+        displayError: {
+          onClick: doFetchMaalingList,
+          buttonText: 'Prøv igjen',
+          error: error,
+        },
         loading: loading,
         onClickRetry: doFetchMaalingList,
         onSelectRows: onSelectRows,

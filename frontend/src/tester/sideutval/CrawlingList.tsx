@@ -13,7 +13,7 @@ import { CrawlResultat } from '../../maaling/api/types';
 export interface Props {
   crawlList: CrawlResultat[];
   loading: boolean;
-  error: any;
+  error: Error | undefined;
   onClickRestart: (row: Row<CrawlResultat>) => void;
 }
 
@@ -120,7 +120,7 @@ const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
       data={crawlList}
       defaultColumns={crawlColumns}
       loading={loading}
-      fetchError={error}
+      displayError={{ error }}
       filterPreference="searchbar"
     />
   );

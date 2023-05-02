@@ -9,7 +9,7 @@ import SakInitStep from './steps/SakInitStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
 export interface Props<T extends SakFormBaseProps> {
-  error: any;
+  error: Error | undefined;
   step: SakStep;
   loading: boolean;
   maalingFormState: SakFormState;

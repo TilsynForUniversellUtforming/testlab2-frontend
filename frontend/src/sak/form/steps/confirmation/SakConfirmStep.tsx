@@ -13,7 +13,7 @@ import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
   regelsettList: TestRegelsett[];
-  error: any;
+  error: Error | undefined;
   loading: boolean;
   maalingFormState: SakFormState;
   formErrors?: FieldErrors<SakFormState>;
@@ -21,7 +21,7 @@ interface SakConfirmContentProps {
 
 interface Props extends SakFormBaseProps {
   regelsettList: TestRegelsett[];
-  error: any;
+  error: Error | undefined;
   loading: boolean;
   onClickBack: () => void;
 }
@@ -53,7 +53,7 @@ const SakConfirmContent = ({
   if (error) {
     return (
       <div className="sak-confirm">
-        <ErrorCard show errorText={error} />
+        <ErrorCard error={error} />
       </div>
     );
   }

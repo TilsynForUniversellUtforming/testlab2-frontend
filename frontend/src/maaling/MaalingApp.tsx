@@ -4,6 +4,7 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import ErrorCard from '../common/error/ErrorCard';
+import toError from '../common/error/util';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
@@ -18,7 +19,7 @@ const MaalingApp = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
@@ -29,7 +30,7 @@ const MaalingApp = () => {
     setMaaling(maaling);
   }, []);
 
-  const handleError = useCallback((error: any) => {
+  const handleError = useCallback((error: Error | undefined) => {
     setMaaling(undefined);
     setError(error);
   }, []);
@@ -46,7 +47,7 @@ const MaalingApp = () => {
       try {
         const updated = await updateMaalingStatus(maaling.id, 'crawling');
         if (!updated.id) {
-          setError('Noko gjekk gale ved oppretting av måling');
+          setError(new Error('Kunne ikkje starte crawling'));
         } else {
           navigate(
             getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
@@ -56,13 +57,11 @@ const MaalingApp = () => {
           );
         }
       } catch (e) {
-        setError('Kunne ikkje starte crawling');
+        setError(toError(e, 'Kunne ikkje starte crawling'));
       }
     };
 
-    startCrawling()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    startCrawling().finally(() => setLoading(false));
   }, []);
 
   const doStartTest = useCallback((maaling: Maaling) => {
@@ -70,14 +69,16 @@ const MaalingApp = () => {
     setError(undefined);
 
     if (maaling.crawlResultat.find((cr) => cr.type === 'feilet')) {
-      setError('Kunne ikkje starte test, måling har feil i sideutval');
+      setError(
+        new Error('Kunne ikkje starte test, måling har feil i sideutval')
+      );
     }
 
     const startTesting = async () => {
       try {
         const updated = await updateMaalingStatus(maaling.id, 'testing');
         if (!updated.id) {
-          setError('Noko gjekk gale ved oppdatering av måling');
+          setError(new Error('Noko gjekk gale ved oppdatering av måling'));
         } else {
           navigate(
             getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
@@ -87,13 +88,11 @@ const MaalingApp = () => {
           );
         }
       } catch (e) {
-        setError('Kunne ikkje starte test');
+        setError(toError(e, 'Kunne ikkje starte test'));
       }
     };
 
-    startTesting()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    startTesting().finally(() => setLoading(false));
   }, []);
 
   const doFetchData = useCallback(() => {
@@ -106,12 +105,16 @@ const MaalingApp = () => {
           const maaling = await fetchMaaling(Number(id));
           setMaaling(maaling);
         } catch (e) {
-          setError('Måling finnes ikkje');
+          setError(toError(e, 'Måling finnes ikkje'));
         }
       }
 
-      const loeysingList = await fetchLoeysingList();
-      setLoeysingList(loeysingList);
+      try {
+        const loeysingList = await fetchLoeysingList();
+        setLoeysingList(loeysingList);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente løsyngar'));
+      }
 
       const regelsett = await getRegelsett_dummy();
       setRegelsettList(regelsett);
@@ -119,9 +122,7 @@ const MaalingApp = () => {
       setError(undefined);
     };
 
-    fetchData()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    fetchData().finally(() => setLoading(false));
   }, []);
 
   const fetchMaalinger = useCallback(() => {
@@ -152,10 +153,9 @@ const MaalingApp = () => {
     return (
       <ErrorCard
         errorHeader="Måling"
-        errorText="Målinger låst"
+        error={new Error('Målinger låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
-        centered
       />
     );
   }

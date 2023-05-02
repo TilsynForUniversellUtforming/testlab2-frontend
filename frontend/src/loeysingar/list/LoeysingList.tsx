@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 
 import appRoutes, { getFullPath, idPath } from '../../common/appRoutes';
-import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import {
   HeaderCheckbox,
   RowCheckbox,
@@ -24,14 +24,10 @@ const LoeysingList = () => {
 
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
-  const [showError, setShowError] = useState(false);
   const [loeysingRowSelection, setLoeysingRowSelection] = useState<Loeysing[]>(
     []
   );
   const [deleteMessage, setDeleteMessage] = useState<string>('');
-  const handleHideError = () => {
-    setShowError(false);
-  };
 
   useEffect(() => {
     setLoading(contextLoading);
@@ -42,7 +38,7 @@ const LoeysingList = () => {
     setError(undefined);
 
     if (loeysingRowSelection.length === 0) {
-      setError('Kunne ikkje slette løysing');
+      setError(new Error('Kunne ikkje slette løysing, ingen løysing valgt'));
     }
 
     const deleteAndFetchLoeysing = async () => {
@@ -50,13 +46,8 @@ const LoeysingList = () => {
         const loeysingIdList = loeysingRowSelection.map((l) => l.id);
         const data = await deleteLoeysingList(loeysingIdList);
         setLoeysingList(data);
-      } catch (e: unknown) {
-        setShowError(true);
-        if (e instanceof Error) {
-          setError(e.message);
-        } else {
-          setError(e);
-        }
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje slette løysing'));
       }
     };
 
@@ -133,17 +124,11 @@ const LoeysingList = () => {
         tableProps={{
           data: loeysingList,
           defaultColumns: loeysingColumns,
-          fetchError: contextError,
+          displayError: { error: error },
           loading: loading,
           onSelectRows: onSelectRows,
           onClickRetry: onClickRefresh,
         }}
-      />
-      <ErrorCard
-        errorText={error}
-        buttonText="Lukk"
-        onClick={handleHideError}
-        show={showError}
       />
     </>
   );
