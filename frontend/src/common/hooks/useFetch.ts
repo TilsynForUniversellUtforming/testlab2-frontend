@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import toError from '../error/util';
+
 export interface Props<T extends object> {
   fetchData: (fetchProps?: any) => Promise<T>;
   fetchProps?: any;
@@ -36,11 +38,7 @@ const useFetch = <T extends object>({
         setData(data);
         setLoading(false);
       } catch (e) {
-        if (e instanceof Error) {
-          setError(e);
-        } else {
-          setError(new Error(String(e)));
-        }
+        setError(toError(e, String(e)));
       }
     };
 
