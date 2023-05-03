@@ -1,6 +1,11 @@
 import './sak-stepper.scss';
 
-import { FileTextIcon, Globe2Icon, ListIcon, ToolIcon } from '@digdir/ds-icons';
+import {
+  EarthIcon,
+  FileTextIcon,
+  TasklistIcon,
+  WrenchIcon,
+} from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -22,13 +27,13 @@ const StepperIcon = ({
 
   switch (sakStepType) {
     case 'Init':
-      return <FileTextIcon color={color} />;
+      return <FileTextIcon color={color} fontSize="2rem" />;
     case 'Loeysing':
-      return <Globe2Icon color={color} />;
+      return <EarthIcon color={color} fontSize="2rem" />;
     case 'Testregel':
-      return <ToolIcon color={color} />;
+      return <WrenchIcon color={color} fontSize="2rem" />;
     case 'Confirm':
-      return <ListIcon color={color} />;
+      return <TasklistIcon color={color} fontSize="2rem" />;
   }
 };
 

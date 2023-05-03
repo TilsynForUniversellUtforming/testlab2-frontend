@@ -1,11 +1,11 @@
 import { Button, ButtonColor } from '@digdir/design-system-react';
 import {
-  BarChart2Icon,
-  CloseIcon,
-  EditIcon,
+  ArrowCirclepathIcon,
+  BarChartIcon,
+  PencilIcon,
   PlayIcon,
-  RepeatIcon,
-} from '@digdir/ds-icons';
+  XMarkIcon,
+} from '@navikt/aksel-icons';
 import { Row } from '@tanstack/react-table';
 import React from 'react';
 
@@ -34,15 +34,15 @@ const ActionIcon = ({
 }) => {
   switch (columnUserAction) {
     case 'delete':
-      return <CloseIcon color="white" />;
+      return <XMarkIcon color="white" fontSize="1.5rem" />;
     case 'edit':
-      return <EditIcon color="white" />;
+      return <PencilIcon color="white" fontSize="1.5rem" />;
     case 'statistics':
-      return <BarChart2Icon color="white" />;
+      return <BarChartIcon color="white" fontSize="1.5rem" />;
     case 'start':
-      return <PlayIcon color="white" />;
+      return <PlayIcon color="white" fontSize="1.5rem" />;
     case 'redo':
-      return <RepeatIcon color="white" />;
+      return <ArrowCirclepathIcon color="white" fontSize="1.5rem" />;
   }
 };
 

@@ -193,7 +193,7 @@ const App = () => {
               element: <TestingListApp />,
             },
             {
-              path: appRoutes.TEST_TESTING_LIST.path,
+              path: appRoutes.TEST_RESULT_LIST.path,
               element: <TestResultListApp />,
             },
           ],
