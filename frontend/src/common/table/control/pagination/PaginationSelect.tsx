@@ -4,12 +4,12 @@ import {
   ButtonVariant,
 } from '@digdir/design-system-react';
 import {
+  ChevronLeftDoubleIcon,
   ChevronLeftIcon,
+  ChevronRightDoubleIcon,
   ChevronRightIcon,
-  ChevronsLeftIcon,
-  ChevronsRightIcon,
-  MoreHorizontalIcon,
-} from '@digdir/ds-icons';
+  MenuElipsisHorizontalIcon,
+} from '@navikt/aksel-icons';
 import React from 'react';
 
 import { TableProps } from '../../types';
@@ -60,7 +60,7 @@ const PaginationMiddleSection = ({ table }: TableProps) => {
         <Button
           variant={ButtonVariant.Quiet}
           key={pageNumber}
-          icon={<MoreHorizontalIcon />}
+          icon={<MenuElipsisHorizontalIcon color="black" />}
           disabled
         />
       );
@@ -80,26 +80,26 @@ const PaginationSelect = ({ table }: TableProps) => {
       <Button
         disabled={!table.getCanPreviousPage()}
         onClick={() => table.setPageIndex(0)}
-        icon={<ChevronsLeftIcon />}
+        icon={<ChevronLeftDoubleIcon color="black" />}
         variant={ButtonVariant.Quiet}
       />
       <Button
         disabled={!table.getCanPreviousPage()}
         onClick={() => table.previousPage()}
-        icon={<ChevronLeftIcon />}
+        icon={<ChevronLeftIcon color="black" />}
         variant={ButtonVariant.Quiet}
       />
       <PaginationMiddleSection table={table} />
       <Button
         disabled={!table.getCanNextPage()}
         onClick={() => table.nextPage()}
-        icon={<ChevronRightIcon />}
+        icon={<ChevronRightIcon color="black" />}
         variant={ButtonVariant.Quiet}
       />
       <Button
         disabled={!table.getCanNextPage()}
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-        icon={<ChevronsRightIcon />}
+        icon={<ChevronRightDoubleIcon color="black" />}
         variant={ButtonVariant.Quiet}
       />
     </div>

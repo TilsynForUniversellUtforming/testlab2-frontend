@@ -1,6 +1,10 @@
 import './status-icon.scss';
 
-import { AlertTriangleIcon, CheckIcon, CloseIcon } from '@digdir/ds-icons';
+import {
+  CheckmarkIcon,
+  ExclamationmarkTriangleIcon,
+  XMarkIcon,
+} from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -11,11 +15,18 @@ export interface Props {
 
 const Icon = ({ finished, error }: Props) => {
   if (error) {
-    return <AlertTriangleIcon color={'var(--colors-red-600)'} />;
+    return (
+      <ExclamationmarkTriangleIcon
+        color={'var(--colors-red-600)'}
+        fontSize="1.5rem"
+      />
+    );
   } else if (finished) {
-    return <CheckIcon color={'var(--colors-green-700)'} />;
+    return (
+      <CheckmarkIcon color={'var(--colors-green-700)'} fontSize="1.5rem" />
+    );
   } else {
-    return <CloseIcon color={'var(--colors-grey-600)'} />;
+    return <XMarkIcon color={'var(--colors-grey-600)'} fontSize="1.5rem" />;
   }
 };
 

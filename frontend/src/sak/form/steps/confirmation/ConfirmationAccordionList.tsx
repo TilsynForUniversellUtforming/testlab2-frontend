@@ -1,8 +1,8 @@
 import {
-  Accordion,
-  AccordionContent,
-  AccordionHeader,
   ErrorMessage,
+  LegacyAccordion,
+  LegacyAccordionContent,
+  LegacyAccordionHeader,
   ListItem,
 } from '@digdir/design-system-react';
 import React from 'react';
@@ -40,9 +40,11 @@ const ConfirmationAccordionList = ({
   }
 
   return (
-    <Accordion onClick={onToggle} open={open}>
-      <AccordionHeader subtitle={subtitle}>{accordionHeader}</AccordionHeader>
-      <AccordionContent>
+    <LegacyAccordion onClick={onToggle} open={open}>
+      <LegacyAccordionHeader subtitle={subtitle}>
+        {accordionHeader}
+      </LegacyAccordionHeader>
+      <LegacyAccordionContent>
         <ol className="accordion-list">
           {listItems.map((li) => (
             <li className="accordion-list__item" key={li.id}>
@@ -51,8 +53,8 @@ const ConfirmationAccordionList = ({
             </li>
           ))}
         </ol>
-      </AccordionContent>
-    </Accordion>
+      </LegacyAccordionContent>
+    </LegacyAccordion>
   );
 };
 

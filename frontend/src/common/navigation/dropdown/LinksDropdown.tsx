@@ -1,5 +1,5 @@
 import { Button } from '@digdir/design-system-react';
-import { ChevronDownIcon, ChevronUpIcon } from '@digdir/ds-icons';
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 

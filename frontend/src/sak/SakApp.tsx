@@ -45,9 +45,6 @@ const SakApp = () => {
         } catch (e) {
           setError(toError(e, 'Kunne ikkje hente sak'));
         }
-      } else {
-        setError(new Error('Sak finnes ikkje'));
-        return;
       }
 
       try {
