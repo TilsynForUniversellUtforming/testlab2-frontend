@@ -19,9 +19,11 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
+import { TableOptions } from '@tanstack/table-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
@@ -100,6 +102,7 @@ const TestlabTable = <T extends object>({
     small: false,
   },
 }: TestlabTableProps<T>) => {
+  const isLoading = loading ?? false;
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -113,9 +116,9 @@ const TestlabTable = <T extends object>({
     setRowSelection(rss);
   };
 
-  const table = useReactTable({
-    data,
-    columns,
+  const tableOptions: TableOptions<T> = {
+    data: data,
+    columns: columns,
     filterFns: {
       fuzzy: fuzzyFilter,
     },
@@ -143,14 +146,16 @@ const TestlabTable = <T extends object>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
-  });
+  };
+
+  const table = useReactTable(tableOptions);
 
   useEffect(() => {
     if (enableRowSelection) {
       const selectedRows = table
         .getSelectedRowModel()
         .flatRows.map((fr) => fr.original);
-      onSelectRows(selectedRows);
+      onSelectRows?.(selectedRows);
     }
   }, [rowSelection, enableRowSelection]);
 
@@ -177,27 +182,27 @@ const TestlabTable = <T extends object>({
   }
 
   const headerGroup = table.getHeaderGroups()[0];
-  const headerRow = table.getPreFilteredRowModel().flatRows[0];
+  const headerRow = table.getPreFilteredRowModel().flatRows[0] as Row<T>;
   const showFilters =
     filterPreference !== 'none' && filterPreference !== 'searchbar';
 
   return (
     <div className="testlab-table">
       <ControlHeader
-        loading={loading}
-        filterPreference={filterPreference}
+        loading={isLoading}
+        filterPreference={filterPreference ?? 'all'}
         table={table}
         filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
-        small={customStyle.small}
+        small={customStyle?.small}
       />
       <Table className="testlab-table__table">
         <TableHeader>
           <TableRow>
             {headerGroup.headers.map((header) => (
-              <TestlabTableHeader
+              <TestlabTableHeader<T>
                 header={header}
-                loading={loading}
+                loading={isLoading}
                 key={header.column.id}
               />
             ))}
@@ -205,7 +210,7 @@ const TestlabTable = <T extends object>({
           {showFilters && (
             <TableRow>
               {headerGroup.headers.map((header) => (
-                <TableFilter
+                <TableFilter<T>
                   headerRow={headerRow}
                   column={header.column}
                   key={header.column.id}
@@ -215,11 +220,11 @@ const TestlabTable = <T extends object>({
           )}
         </TableHeader>
         <TableBody>
-          <TestlabTableBody table={table} loading={loading} />
+          <TestlabTableBody table={table} loading={isLoading} />
         </TableBody>
         <TableFooter>
           <TableRow>
-            <PaginationContainer table={table} loading={loading} />
+            <PaginationContainer table={table} loading={isLoading} />
           </TableRow>
         </TableFooter>
       </Table>
