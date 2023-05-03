@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
+import toError from '../common/error/util';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
@@ -13,7 +14,7 @@ import { SakContext } from './types';
 const SakApp = () => {
   const { id } = useParams();
 
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
@@ -23,7 +24,7 @@ const SakApp = () => {
     setMaaling(maaling);
   }, []);
 
-  const handleError = useCallback((error: any) => {
+  const handleError = useCallback((error: Error | undefined) => {
     setMaaling(undefined);
     setError(error);
   }, []);
@@ -42,21 +43,29 @@ const SakApp = () => {
           const maaling = await fetchMaaling(Number(id));
           setMaaling(maaling);
         } catch (e) {
-          setError('Sak finnes ikkje');
+          setError(toError(e, 'Kunne ikkje hente sak'));
         }
+      } else {
+        setError(new Error('Sak finnes ikkje'));
+        return;
       }
-      const loeysingList = await fetchLoeysingList();
-      setLoeysingList(loeysingList);
 
-      const regelsett = await getRegelsett_dummy();
-      setRegelsettList(regelsett);
-      setLoading(false);
-      setError(undefined);
+      try {
+        const loeysingList = await fetchLoeysingList();
+        setLoeysingList(loeysingList);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente løysingar'));
+      }
+
+      try {
+        const regelsett = await getRegelsett_dummy();
+        setRegelsettList(regelsett);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente regelsett'));
+      }
     };
 
-    fetchData()
-      .catch((e) => setError(e))
-      .finally(() => setLoading(false));
+    fetchData().finally(() => setLoading(false));
   }, []);
 
   useEffectOnce(() => {

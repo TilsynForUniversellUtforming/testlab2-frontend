@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
+import { TestlabError } from '../../common/error/ErrorCard';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
 import UserAction from '../../common/table/user-actions/UserAction';
@@ -11,7 +12,7 @@ import { TestResult } from '../../maaling/api/types';
 export interface Props {
   maalingId: number;
   testResultList: TestResult[];
-  error: any;
+  error?: TestlabError;
 }
 
 const TestingList = ({ maalingId, testResultList, error }: Props) => {
@@ -98,7 +99,7 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
     <TestlabTable<TestResult>
       data={testResultList}
       defaultColumns={testColumns}
-      fetchError={error}
+      displayError={error}
       filterPreference="searchbar"
     />
   );

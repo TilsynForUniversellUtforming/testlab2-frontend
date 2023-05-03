@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import { updateTestregel } from '../api/testreglar-api';
 import { Testregel, TestregelEditRequest } from '../api/types';
 import { TestregelContext } from '../types';
@@ -38,22 +39,22 @@ const EditTestreglar = () => {
       status: testregel.status,
     };
 
-    const update = async () => {
-      const data = await updateTestregel(request);
-      setTestregelList(data);
-    };
-
     setContextLoading(true);
     setContextError(undefined);
 
-    update()
-      .catch((e) => {
-        setContextError(e.message);
-      })
-      .finally(() => {
-        setContextLoading(false);
-        navigate('..');
-      });
+    const update = async () => {
+      try {
+        const data = await updateTestregel(request);
+        setTestregelList(data);
+      } catch (e) {
+        setContextError(toError(e, 'Kunne ikkje endre testregel'));
+      }
+    };
+
+    update().finally(() => {
+      setContextLoading(false);
+      navigate('..');
+    });
   }, []);
 
   if (contextLoading) {
@@ -61,7 +62,7 @@ const EditTestreglar = () => {
   }
 
   if (contextError || typeof testregel === 'undefined') {
-    return <ErrorCard show={contextError} />;
+    return <ErrorCard error={contextError} />;
   }
 
   return (

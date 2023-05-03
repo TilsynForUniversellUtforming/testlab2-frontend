@@ -24,7 +24,7 @@ import {
 } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import ErrorCard from '../error/ErrorCard';
+import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import ControlHeader from './control/ControlHeader';
 import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
@@ -57,7 +57,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 export interface TestlabTableProps<T extends object> {
   data: T[];
   defaultColumns: ColumnDef<T>[];
-  fetchError: any;
+  displayError?: TestlabError;
   inputError?: string;
   loading?: boolean;
   filterPreference?: TableFilterPreference;
@@ -75,7 +75,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {object} props - The props for the component.
  * @param {T[]} props.data - The data to be displayed in the table.
  * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
- * @param {*} props.fetchError - Any error that occurred during fetching.
+ * @param {TestlabError} props.displayError - The error to show in the error card.
  * @param {string} [props.inputError] - Any error that occurred during user input.
  * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
  * @param {FilterPreference} [props.filterPreference='all'] - The default filter preference.
@@ -89,7 +89,7 @@ export interface TestlabTableProps<T extends object> {
 const TestlabTable = <T extends object>({
   data,
   defaultColumns,
-  fetchError,
+  displayError,
   loading = false,
   filterPreference = 'all',
   selectedRows = [],
@@ -165,8 +165,15 @@ const TestlabTable = <T extends object>({
     }
   };
 
-  if (fetchError) {
-    return <ErrorCard show={fetchError} onClick={handleClickRetry} />;
+  if (displayError?.error) {
+    return (
+      <ErrorCard
+        errorHeader={displayError.errorHeader}
+        error={displayError.error}
+        onClick={displayError.onClick ?? handleClickRetry}
+        buttonText={displayError.buttonText ?? 'Prøv igjen'}
+      />
+    );
   }
 
   const headerGroup = table.getHeaderGroups()[0];

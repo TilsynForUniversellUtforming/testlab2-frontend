@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import { createTestregel } from '../api/testreglar-api';
 import { Testregel, TestregelCreateRequest } from '../api/types';
 import { TestregelContext } from '../types';
@@ -31,21 +32,21 @@ const CreateTestregel = () => {
     };
 
     const create = async () => {
-      const data = await createTestregel(request);
-      setTestregelList(data);
+      try {
+        const data = await createTestregel(request);
+        setTestregelList(data);
+      } catch (e) {
+        setContextError(toError(e, 'Kunne ikkje lage testregel'));
+      }
     };
 
     setContextLoading(true);
     setContextError(undefined);
 
-    create()
-      .catch((e) => {
-        setContextError(e.message);
-      })
-      .finally(() => {
-        setContextLoading(false);
-        navigate('..');
-      });
+    create().finally(() => {
+      setContextLoading(false);
+      navigate('..');
+    });
   }, []);
 
   if (contextLoading) {
@@ -53,7 +54,7 @@ const CreateTestregel = () => {
   }
 
   if (contextError) {
-    return <ErrorCard show={contextError} />;
+    return <ErrorCard error={contextError} />;
   }
 
   return (

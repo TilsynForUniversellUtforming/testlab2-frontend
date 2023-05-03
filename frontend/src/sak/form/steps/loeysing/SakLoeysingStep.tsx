@@ -15,7 +15,7 @@ import SakCrawlParameters from './SakCrawlParameters';
 import SakLoeysingTable from './SakLoeysingTable';
 
 interface Props extends SakFormBaseProps {
-  error: any;
+  error: Error | undefined;
   loading: boolean;
   onSubmit: (maalingFormState: SakFormState) => void;
   loeysingList: Loeysing[];

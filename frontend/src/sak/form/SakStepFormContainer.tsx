@@ -13,7 +13,7 @@ export interface Props {
   setPreviousStep: () => void;
   maalingFormState: SakFormState;
   loading: boolean;
-  error: any;
+  error: Error | undefined;
   onSubmit: (maalingFormState: SakFormState) => void;
   regelsettList: TestRegelsett[];
   loeysingList: Loeysing[];
