@@ -11,9 +11,19 @@
     border: none;
     margin-bottom: 2rem;
     font: inherit;
-    cursor: pointer;
+    cursor: default;
     outline: inherit;
     min-width: 100%;
+
+    &.active {
+      cursor: pointer;
+      &:hover {
+        color: var(--colors-blue-800);
+        .icon.active {
+          background-color: var(--fds-semantic-surface-neutral-selected);
+        }
+      }
+    }
 
     .wrapper {
       display: flex;
@@ -38,9 +48,10 @@
         border-radius: 50%;
         border: 1px solid var(--colors-blue-700);
         min-width: 5rem;
+        color: var(--colors-blue-700);
 
         &.active {
-          background-color: var(--colors-blue-700);
+          background-color: var(--fds-semantic-surface-neutral-selected);
         }
       }
 
@@ -55,16 +66,6 @@
       outline: var(--semantic-tab_focus-outline-color) solid 2px;
       outline-offset: 2px;
       border-radius: 3px;
-    }
-
-    &:hover {
-      color: var(--colors-blue-800);
-      .icon {
-        background-color: var(--colors-blue-100);
-        &.active {
-          background-color: var(--colors-blue-800);
-        }
-      }
     }
   }
 }

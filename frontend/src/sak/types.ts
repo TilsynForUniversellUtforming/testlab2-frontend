@@ -48,7 +48,7 @@ const initStep: SakStepBase = {
   heading: 'La oss opprette en sak',
   subHeading: 'Fortell oss litt om saken du vil opprette',
   stepperTitle: 'Saken',
-  stepperSubTitle: 'Om saken',
+  stepperSubTitle: 'Om saka',
   sakStepType: 'Init',
 };
 

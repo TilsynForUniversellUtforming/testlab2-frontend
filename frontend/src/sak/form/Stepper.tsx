@@ -1,5 +1,6 @@
 import './sak-stepper.scss';
 
+import { semanticSurfaceActionDefault } from '@digdir/design-system-tokens';
 import {
   EarthIcon,
   FileTextIcon,
@@ -16,24 +17,22 @@ interface Props {
   formStepState: FormStepState;
 }
 
-const StepperIcon = ({
-  sakStepType,
-  active,
-}: {
-  sakStepType: SakStepType;
-  active: boolean;
-}) => {
-  const color = active ? 'white' : '#0062ba';
-
+const StepperIcon = ({ sakStepType }: { sakStepType: SakStepType }) => {
   switch (sakStepType) {
     case 'Init':
-      return <FileTextIcon color={color} fontSize="2rem" />;
+      return (
+        <FileTextIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+      );
     case 'Loeysing':
-      return <EarthIcon color={color} fontSize="2rem" />;
+      return <EarthIcon color={semanticSurfaceActionDefault} fontSize="2rem" />;
     case 'Testregel':
-      return <WrenchIcon color={color} fontSize="2rem" />;
+      return (
+        <WrenchIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+      );
     case 'Confirm':
-      return <TasklistIcon color={color} fontSize="2rem" />;
+      return (
+        <TasklistIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+      );
   }
 };
 
@@ -49,21 +48,18 @@ const Stepper = ({ formStepState }: Props) => {
         return (
           <button
             onClick={() => goToStep(step.index)}
-            type="submit"
-            className="sak-stepper__button"
+            type="button"
+            className={classNames('sak-stepper__button', { active: active })}
             key={step.index}
+            disabled={!active}
           >
             <div className="wrapper">
-              <div className="text">
-                <div className={classNames('title', { active: active })}>
-                  {step.stepperTitle}
-                </div>
-                <div className={classNames({ active: active })}>
-                  {step.stepperSubTitle}
-                </div>
+              <div className={classNames('text', { active: active })}>
+                <div className="title">{step.stepperTitle}</div>
+                {step.stepperSubTitle}
               </div>
               <div className={classNames('icon', { active: active })}>
-                <StepperIcon active={active} sakStepType={step.sakStepType} />
+                <StepperIcon sakStepType={step.sakStepType} />
               </div>
             </div>
           </button>

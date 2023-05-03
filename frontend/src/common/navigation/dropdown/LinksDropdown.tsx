@@ -1,4 +1,8 @@
-import { Button } from '@digdir/design-system-react';
+import {
+  Button,
+  ButtonColor,
+  ButtonVariant,
+} from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -30,6 +34,8 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
           )
         }
         iconPlacement="right"
+        variant={ButtonVariant.Quiet}
+        color={ButtonColor.Inverted}
       >
         {navn}
       </Button>
