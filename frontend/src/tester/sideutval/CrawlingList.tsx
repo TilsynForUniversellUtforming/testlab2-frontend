@@ -1,26 +1,34 @@
-import { ColumnDef, Row } from '@tanstack/react-table';
-import React, { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import './sideutval.scss';
 
-import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
+import { ColumnDef, Row } from '@tanstack/react-table';
+import React, { useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import appRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
 import UserAction from '../../common/table/user-actions/UserAction';
 import { CrawlResultat } from '../../maaling/api/types';
 
 export interface Props {
-  maalingId: number;
   crawlList: CrawlResultat[];
-  error: any;
+  loading: boolean;
+  error: Error | undefined;
+  onClickRestart: (row: Row<CrawlResultat>) => void;
 }
 
-const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
+const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const onClickEdit = useCallback((row: Row<CrawlResultat>) => {
+  const onClickEdit = (row: Row<CrawlResultat>) => {
+    if (!id) {
+      throw Error('Måling finnes ikkje');
+    }
+
     const path = getFullPath(
       appRoutes.TEST_CRAWLING_RESULT_LIST,
-      { pathParam: idPath, id: String(maalingId) },
+      { pathParam: idPath, id: id },
       {
         pathParam: ':loeysingId',
         id: String(row.original.loeysing.id),
@@ -28,7 +36,7 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
     );
 
     navigate(path);
-  }, []);
+  };
 
   const crawlColumns = useMemo<ColumnDef<CrawlResultat>[]>(
     () => [
@@ -36,29 +44,38 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
         id: 'Handling',
         cell: ({ row }) => {
           const status = row.original.type;
-          const tooltip = `Gå til løysing ${row.original.loeysing.url}`;
 
           if (status !== 'ikke_ferdig') {
             return (
-              <UserAction<CrawlResultat>
-                action={onClickEdit}
-                columnUserAction="statistics"
-                row={row}
-                title={tooltip}
-                message="Se crawlresultat"
-              />
+              <div className="sideutval__table-actions">
+                <UserAction<CrawlResultat>
+                  action={onClickEdit}
+                  columnUserAction="statistics"
+                  row={row}
+                  title={`Gå til løysing ${row.original.loeysing.url}`}
+                  message="Se crawlresultat"
+                />
+                <UserAction<CrawlResultat>
+                  action={onClickRestart}
+                  columnUserAction={'redo'}
+                  row={row}
+                  message={`Start sideutval for ${row.original.loeysing.url} på nytt`}
+                  title={`Nytt sideutval for ${row.original.loeysing.namn}`}
+                  confirm
+                />
+              </div>
             );
           } else {
             return null;
           }
         },
         enableSorting: false,
-        size: 1,
+        size: 2,
       },
       {
         accessorFn: (row) => row.loeysing.url,
         id: 'url',
-        cell: ({ row }) => <span>{row.original.loeysing.url}</span>,
+        cell: (info) => info.getValue(),
         header: () => <span>Løsying</span>,
       },
       {
@@ -76,9 +93,19 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
           const crawlSuccess =
             status === 'ferdig' && typeof urlLength !== 'undefined';
 
-          const label = crawlSuccess
-            ? `Ferdig - Fant ${urlLength} sider`
-            : status;
+          let label: string;
+          if (crawlSuccess) {
+            label = `Ferdig - Fant ${urlLength} sider`;
+          } else if (status === 'ikke_ferdig') {
+            const framgang = row.original.framgang;
+            if (framgang != null) {
+              label = `Crawler ${framgang.lenkerCrawla} av ${framgang.maxLenker}`;
+            } else {
+              label = 'Crawler';
+            }
+          } else {
+            label = status;
+          }
 
           return (
             <StatusBadge
@@ -102,7 +129,8 @@ const CrawlingList = ({ maalingId, crawlList, error }: Props) => {
     <TestlabTable<CrawlResultat>
       data={crawlList}
       defaultColumns={crawlColumns}
-      fetchError={error}
+      loading={loading}
+      displayError={{ error }}
       filterPreference="searchbar"
     />
   );

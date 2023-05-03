@@ -29,8 +29,14 @@ export type CrawlJobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 
 export type TestJobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
 
+export type Framgang = {
+  lenkerCrawla: number;
+  maxLenker: number;
+};
+
 export type CrawlResultat = {
   type: CrawlJobStatus;
+  framgang?: Framgang;
   loeysing: Loeysing;
   urlList?: string[];
 };

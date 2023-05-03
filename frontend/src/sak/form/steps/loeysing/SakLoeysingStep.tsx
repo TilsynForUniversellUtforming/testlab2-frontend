@@ -14,7 +14,7 @@ import SakStepFormWrapper from '../../SakStepFormWrapper';
 import SakLoeysingTable from './SakLoeysingTable';
 
 interface Props extends SakFormBaseProps {
-  error: any;
+  error: Error | undefined;
   loading: boolean;
   loeysingList: Loeysing[];
 }

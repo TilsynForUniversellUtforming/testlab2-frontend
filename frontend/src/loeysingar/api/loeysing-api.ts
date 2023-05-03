@@ -15,7 +15,7 @@ export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
     responseToJson(response, 'Kunne ikkje hente løysingar')
   );
 
-export const updateLoysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
+export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
   await fetch('/api/v1/loeysing', {
     method: 'PUT',
     headers: {
@@ -26,7 +26,7 @@ export const updateLoysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
     responseToJson(response, 'Kunne ikkje oppdatere løysing')
   );
 
-export const createLoysing = async (
+export const createLoeysing = async (
   loeysingInit: LoeysingInit
 ): Promise<Loeysing[]> =>
   await fetch('/api/v1/loeysing', {
@@ -39,7 +39,7 @@ export const createLoysing = async (
     responseToJson(response, 'Kunne ikkje opprette løysing')
   );
 
-export const deleteLoysingList = async (
+export const deleteLoeysingList = async (
   loeysingIdList: number[]
 ): Promise<Loeysing[]> => {
   const response = await fetch(`/api/v1/loeysing`, {

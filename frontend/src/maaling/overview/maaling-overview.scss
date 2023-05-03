@@ -1,15 +1,13 @@
 .maaling-overview {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 1fr;
-  padding-top: 2.5rem;
+  display: flex;
 
   .bold-text {
     font-weight: bold;
   }
 
   .parameter {
-    grid-column: 1 / 2;
+    padding-right: 20%;
+    min-width: 20%;
 
     &__list {
       list-style: none;
@@ -26,7 +24,7 @@
   }
 
   .status {
-    grid-column: 3 / 4;
+    min-width: 20%;
 
     &__item {
       display: grid;

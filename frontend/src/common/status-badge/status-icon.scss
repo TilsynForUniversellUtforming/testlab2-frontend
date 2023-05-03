@@ -10,4 +10,8 @@
   &.finished {
     border-color: var(--colors-green-700);
   }
+
+  &.error {
+    border-color: var(--colors-red-600);
+  }
 }

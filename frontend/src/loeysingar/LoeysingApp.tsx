@@ -10,7 +10,7 @@ import { LoeysingContext } from './types';
 
 const LoeysingApp = () => {
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const doFetchLoeysingList = useFetch<Loeysing[]>({
@@ -28,7 +28,7 @@ const LoeysingApp = () => {
     setLoading(loading);
   }, []);
 
-  const handleError = useCallback((error: string) => {
+  const handleError = useCallback((error: Error | undefined) => {
     setError(error);
   }, []);
 
@@ -39,7 +39,7 @@ const LoeysingApp = () => {
   if (!loading && error) {
     return (
       <ErrorCard
-        errorText="Kunne ikkje hente løysingar"
+        error={error}
         buttonText="Prøv på nytt"
         onClick={doFetchLoeysingList}
       />

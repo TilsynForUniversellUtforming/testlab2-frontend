@@ -27,6 +27,14 @@ export type SakFormState = {
 
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
 
+export type SakStepBase = {
+  heading: string;
+  subHeading?: string;
+  stepperTitle: string;
+  stepperSubTitle: string;
+  sakStepType: SakStepType;
+};
+
 export type SakStep = {
   index: number;
   heading: string;
@@ -36,8 +44,7 @@ export type SakStep = {
   sakStepType: SakStepType;
 };
 
-const initStep: SakStep = {
-  index: 0,
+const initStep: SakStepBase = {
   heading: 'La oss opprette en sak',
   subHeading: 'Fortell oss litt om saken du vil opprette',
   stepperTitle: 'Saken',
@@ -45,8 +52,7 @@ const initStep: SakStep = {
   sakStepType: 'Init',
 };
 
-const loeysingStep: SakStep = {
-  index: 1,
+const loeysingStep: SakStepBase = {
   heading: 'Vel løysingar',
   subHeading: 'Vel kva løysingar du vil bruka i saken',
   stepperTitle: 'Løysingar',
@@ -54,8 +60,7 @@ const loeysingStep: SakStep = {
   sakStepType: 'Loeysing',
 };
 
-const regelsettStep: SakStep = {
-  index: 2,
+const regelsettStep: SakStepBase = {
   heading: 'Vel Regelsett',
   subHeading: 'Vel kva testregel du vil bruka i saken',
   stepperTitle: 'Testreglar',
@@ -63,8 +68,7 @@ const regelsettStep: SakStep = {
   sakStepType: 'Testregel',
 };
 
-const summaryStep: SakStep = {
-  index: 3,
+const summaryStep: SakStepBase = {
   heading: 'Oppsummering',
   stepperTitle: 'Oppsummert',
   stepperSubTitle: '',
@@ -72,13 +76,16 @@ const summaryStep: SakStep = {
 };
 
 export const defaultSakSteps: SakStep[] = [
-  initStep,
-  loeysingStep,
-  regelsettStep,
-  summaryStep,
+  { ...initStep, index: 0 },
+  { ...loeysingStep, index: 1 },
+  { ...regelsettStep, index: 2 },
+  { ...summaryStep, index: 3 },
 ];
 
-export const startedSakSteps = [initStep, summaryStep];
+export const startedSakSteps = [
+  { ...initStep, index: 0 },
+  { ...summaryStep, index: 1 },
+];
 
 export interface SakFormBaseProps {
   formStepState: FormStepState;

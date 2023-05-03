@@ -4,8 +4,9 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import appRoutes from '../../common/appRoutes';
 import EditButton from '../../common/button/EditButton';
-import TestlabLinkButton from '../../common/button/TestlabLinkButton';
+import TableActionButton from '../../common/button/TableActionButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
+import toError from '../../common/error/util';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
 import { deleteTestregel } from '../api/testreglar-api';
@@ -48,20 +49,24 @@ const Testreglar = () => {
     setDeleteRow(undefined);
 
     if (typeof deleteRow === 'undefined') {
-      setContextError('Kunne ikke slette testregel');
+      setContextError(
+        new Error('Kunne ikke slette testregel, ingen testregel valgt')
+      );
     }
-
-    const deleteAndFetchTestregel = async () => {
-      const data = await deleteTestregel(deleteRow!.original.id);
-      setTestregelList(data);
-    };
 
     setContextLoading(true);
     setContextError(undefined);
 
-    deleteAndFetchTestregel()
-      .catch((e) => setContextError(e))
-      .finally(() => setContextLoading(false));
+    const deleteAndFetchTestregel = async () => {
+      try {
+        const data = await deleteTestregel(deleteRow!.original.id);
+        setTestregelList(data);
+      } catch (e) {
+        setContextError(toError(e, 'Kunne ikkje slette testregel'));
+      }
+    };
+
+    deleteAndFetchTestregel().finally(() => setContextLoading(false));
   }, [deleteRow]);
 
   const testRegelColumns: ColumnDef<Testregel>[] = [
@@ -113,10 +118,10 @@ const Testreglar = () => {
 
   return (
     <>
-      <TestlabLinkButton
-        type="add"
+      <TableActionButton
+        action="add"
         route={appRoutes.REGELSETT_CREATE}
-        disabled={contextLoading || contextError}
+        disabled={contextLoading || typeof contextError !== 'undefined'}
       />
       <ConfirmDialog
         message={confirmLabel ?? ''}
@@ -127,7 +132,7 @@ const Testreglar = () => {
       <TestlabTable<Testregel>
         data={testreglar}
         defaultColumns={testRegelColumns}
-        fetchError={contextError}
+        displayError={{ error: contextError }}
         loading={contextLoading}
         onClickRetry={refresh}
       />

@@ -4,12 +4,15 @@ import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters.Companion.validateParameters
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultat
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.StatusDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -46,7 +49,13 @@ class MaalingResource(
         restTemplate.getForObject("${maalingUrl}/${id}", MaalingDTO::class.java)
             ?: throw RuntimeException("Klarte ikke å hente den måling fra server")
 
-    return ResponseEntity.ok(maalingDTO.toMaaling())
+    val maaling =
+        when (maalingDTO.status) {
+          MaalingStatus.planlegging -> maalingDTO.toMaaling()
+          else -> maalingDTO.toMaaling(getCrawlResultatList(maalingDTO.id))
+        }
+
+    return ResponseEntity.ok(maaling)
   }
 
   @PostMapping
@@ -106,6 +115,20 @@ class MaalingResource(
           }
           .getOrElse {
             ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
+          }
+
+  @GetMapping("{id}/crawlresultat")
+  fun getCrawlResultatList(
+      @PathVariable id: Int,
+  ): List<CrawlResultat> =
+      runCatching {
+            restTemplate.getList<CrawlResultatDTO>("$maalingUrl/$id/crawlresultat").map {
+              it.toCrawlResultat()
+            }
+          }
+          .getOrElse {
+            logger.info("Kunne ikkje hente crawl resultat for måling med id $id")
+            throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
 
   @PutMapping("{id}/{loeysingId}")

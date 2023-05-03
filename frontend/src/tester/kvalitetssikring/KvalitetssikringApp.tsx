@@ -1,17 +1,20 @@
 import './kvalitetssikring.scss';
 
 import { Spinner } from '@digdir/design-system-react';
-import React, { useCallback, useState } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ConfirmModalButton from '../../common/confirm/ConfirmModalButton';
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
+import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '../../common/table/TestlabTable';
 import { restartCrawling } from '../../maaling/api/maaling-api';
 import { CrawlUrl } from '../../maaling/types';
 import { TesterContext } from '../types';
-import KvalitetssikringList from './KvalitetssikringList';
 
 const KvalitetssikringApp = () => {
   const { loeysingId } = useParams();
@@ -20,7 +23,6 @@ const KvalitetssikringApp = () => {
   const [loading, setLoading] = useState(contextLoading);
   const [error, setError] = useState(contextError);
   const [urlRowSelection, setUrlRowSelection] = useState<CrawlUrl[]>([]);
-
   const navigate = useNavigate();
 
   if (contextLoading) {
@@ -33,44 +35,53 @@ const KvalitetssikringApp = () => {
   );
 
   if (typeof maaling === 'undefined') {
-    return <ErrorCard errorText="Maaling finnes ikkje" />;
+    return <ErrorCard error={new Error('Maaling finnes ikkje')} />;
   } else if (typeof crawlResultat === 'undefined') {
-    return <ErrorCard errorText="Finner ikkje resultat etter sideutval" />;
-  } else if (typeof loeysingId === 'undefined') {
-    return <ErrorCard errorText="Løsysing eksisterar ikkje på måling" />;
-  } else if (typeof loeysingCrawResultat?.urlList === 'undefined') {
     return (
-      <ErrorCard errorText="Sideutval på løsysing eksisterar ikkje på måling" />
+      <ErrorCard error={new Error('Finner ikkje resultat etter sideutval')} />
+    );
+  } else if (typeof loeysingId === 'undefined') {
+    return (
+      <ErrorCard error={new Error('Løsysing eksisterar ikkje på måling')} />
+    );
+  } else if (typeof loeysingCrawResultat === 'undefined') {
+    return (
+      <ErrorCard
+        error={new Error('Sideutval på løsysing eksisterar ikkje på måling')}
+      />
     );
   }
 
-  const crawlUrls: CrawlUrl[] = loeysingCrawResultat.urlList.map((url) => ({
-    url,
-  }));
+  const crawlUrls: CrawlUrl[] =
+    loeysingCrawResultat.urlList?.map((url) => ({
+      url,
+    })) ?? [];
 
   const onClickRestart = useCallback(() => {
     setLoading(true);
+    setError(undefined);
+
     const fetchData = async () => {
-      const restartedMaaling = await restartCrawling(
-        maaling.id,
-        loeysingCrawResultat.loeysing.id
-      );
-      setMaaling(restartedMaaling);
-      setLoading(false);
-      setError(undefined);
+      try {
+        const restartedMaaling = await restartCrawling(
+          maaling.id,
+          loeysingCrawResultat.loeysing.id
+        );
+        setMaaling(restartedMaaling);
+      } catch (e) {
+        setError(toError(e, 'Noko gikk gale ved omstart av sideutval'));
+      }
     };
 
-    fetchData()
-      .catch((e) => setError(e))
-      .finally(() => {
-        setLoading(false);
-        navigate(
-          getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
-            id: String(maaling.id),
-            pathParam: idPath,
-          })
-        );
-      });
+    fetchData().finally(() => {
+      setLoading(false);
+      navigate(
+        getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+          id: String(maaling.id),
+          pathParam: idPath,
+        })
+      );
+    });
   }, []);
 
   const onClickDeleteLoeysing = useCallback(() => {
@@ -85,6 +96,22 @@ const KvalitetssikringApp = () => {
     setUrlRowSelection(rowSelection);
   }, []);
 
+  const urlColumns = useMemo<ColumnDef<CrawlUrl>[]>(
+    () => [
+      {
+        id: 'Handling',
+        cell: ({ row }) => <RowCheckbox row={row} />,
+        size: 1,
+      },
+      {
+        accessorFn: (row) => row.url,
+        id: 'url',
+        cell: ({ row }) => <a href={row.original.url}>{row.original.url}</a>,
+        header: () => <span>URL</span>,
+      },
+    ],
+    []
+  );
   return (
     <>
       <AppTitle
@@ -95,7 +122,7 @@ const KvalitetssikringApp = () => {
         <ConfirmModalButton
           onConfirm={onClickRemoveUrl}
           message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
-          title="Fjern valgte nettsted frå måling"
+          title="Fjern valgte nettsider frå måling"
           disabled={urlRowSelection.length === 0 || loading}
         />
         <ConfirmModalButton
@@ -111,11 +138,13 @@ const KvalitetssikringApp = () => {
           title="Nytt sideutval for nettstad"
         />
       </div>
-      <KvalitetssikringList
-        crawlUrls={crawlUrls}
+      <TestlabTable<CrawlUrl>
+        data={crawlUrls}
+        defaultColumns={urlColumns}
         onSelectRows={onSelectRows}
-        error={error}
+        displayError={{ error }}
         loading={loading}
+        filterPreference={'searchbar'}
       />
     </>
   );

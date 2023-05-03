@@ -36,7 +36,6 @@ const MaalingParametersContainer = ({ id, maaling }: Props) => (
     <ListItem>
       <div className="parameter__item">
         <div className="bold-text">Dato start</div>
-        {/*<div>{new Date().toISOString()}</div>*/}
       </div>
     </ListItem>
     <ListItem>

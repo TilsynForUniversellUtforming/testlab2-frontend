@@ -12,4 +12,5 @@ data class CrawlResultatDTO(
     val statusUrl: URL?,
     val feilmelding: String?,
     val nettsider: List<URL>?,
+    val framgang: Framgang?
 )

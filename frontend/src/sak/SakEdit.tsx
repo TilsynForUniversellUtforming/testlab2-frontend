@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
+import toError from '../common/error/util';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
@@ -67,18 +68,16 @@ const SakEdit = () => {
             })
           );
         } catch (e) {
-          setError('Kunne ikkje lage sak');
+          setError(toError(e, 'Kunne ikkje lage sak'));
         }
       } else {
-        setError('Kunne ikkje oppdatere sak');
+        setError(new Error('Kunne ikkje oppdatere sak'));
       }
     };
 
-    doEditMaaling()
-      .catch((e) => setError(e))
-      .finally(() => {
-        setLoading(false);
-      });
+    doEditMaaling().finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   const sakSteps =

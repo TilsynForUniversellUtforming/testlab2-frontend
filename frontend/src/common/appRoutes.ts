@@ -288,6 +288,10 @@ export const getFullPath = (
   route: AppRoute,
   ...ids: IdReplacement[]
 ): string => {
+  if (route === appRoutes.ROOT) {
+    return '..';
+  }
+
   let path = route.parentRoute?.path
     ? [route.parentRoute.path, route.path].join('/')
     : route.path;

@@ -4,7 +4,7 @@ import React from 'react';
 
 import AppTitle from '../app-title/AppTitle';
 import { AppRoute } from '../appRoutes';
-import TestlabLinkButton from '../button/TestlabLinkButton';
+import TableActionButton from '../button/TableActionButton';
 import ConfirmModalButton, {
   ConfirmModalProps,
 } from '../confirm/ConfirmModalButton';
@@ -38,7 +38,7 @@ const UserActionTable = <T extends object>({
       <AppTitle heading={heading} />
       <div className="standard-table__user-actions">
         <div className="standard-table__action">
-          <TestlabLinkButton type="add" route={createRoute} />
+          <TableActionButton action="add" route={createRoute} />
         </div>
         <div className="standard-table__action">
           <ConfirmModalButton {...deleteConfirmationModalProps} />

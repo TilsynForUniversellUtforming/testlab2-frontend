@@ -26,18 +26,26 @@ class SinglePageAppConfig : WebMvcConfigurer {
   override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
     registry
         .setOrder(2)
-        .addResourceHandler("/index.html")
-        .addResourceLocations("classpath:/public/")
-        .setCacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).mustRevalidate())
-        .setCacheControl(CacheControl.noCache())
+        .addResourceHandler("/assets/**")
+        .addResourceLocations("classpath:/public/assets/")
+        .setCachePeriod(Duration.ofDays(7).seconds.toInt())
         .resourceChain(true)
         .addResolver(resolver)
 
     registry
         .setOrder(3)
+        .addResourceHandler("/favicon.ico")
+        .addResourceLocations("classpath:/public/")
+        .setCachePeriod(Duration.ofDays(365).seconds.toInt())
+        .resourceChain(true)
+        .addResolver(resolver)
+
+    registry
+        .setOrder(4)
         .addResourceHandler("/**")
         .addResourceLocations("classpath:/public/")
-        .setCachePeriod(Duration.ofDays(7).seconds.toInt())
+        .setCacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).mustRevalidate())
+        .setCacheControl(CacheControl.noCache())
         .resourceChain(true)
         .addResolver(resolver)
   }

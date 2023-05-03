@@ -9,7 +9,7 @@ import SakInitStep from './steps/SakInitStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
 export interface Props<T> extends SakFormBaseProps {
-  error: any;
+  error: Error | undefined;
   loading: boolean;
   loeysingList: Loeysing[];
   regelsettList: TestRegelsett[];

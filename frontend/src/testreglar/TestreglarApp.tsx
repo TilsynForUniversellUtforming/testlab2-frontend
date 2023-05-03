@@ -36,7 +36,7 @@ const TestreglarApp = () => {
     setLoading(loading);
   }, []);
 
-  const handleError = useCallback((error: any) => {
+  const handleError = useCallback((error: Error | undefined) => {
     setError(error);
   }, []);
 
@@ -85,10 +85,9 @@ const TestreglarApp = () => {
     return (
       <ErrorCard
         errorHeader="Testreglar"
-        errorText="Testreglar låst"
+        error={new Error('Testreglar låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
-        centered
       />
     );
   }

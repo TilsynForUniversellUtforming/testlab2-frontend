@@ -4,9 +4,12 @@ const fetchTestResultatLoeysing = async (
   id: number,
   loeysingId: number
 ): Promise<TestResultat[]> => {
-  const response = await fetch(`/api/v1/testing/${id}/loeysing/${loeysingId}`, {
-    method: 'GET',
-  });
+  const response = await fetch(
+    `/api/v1/testing/${id}/resultat?loeysingId=${loeysingId}`,
+    {
+      method: 'GET',
+    }
+  );
 
   if (response.ok) {
     return response.json();

@@ -52,14 +52,10 @@ const CreateRegelsett = () => {
     setContextLoading(true);
     setContextError(undefined);
 
-    addRegelsett()
-      .catch((e) => {
-        setContextError(e.message);
-      })
-      .finally(() => {
-        setContextLoading(false);
-        navigate('..');
-      });
+    addRegelsett().finally(() => {
+      setContextLoading(false);
+      navigate('..');
+    });
   }, []);
 
   return (

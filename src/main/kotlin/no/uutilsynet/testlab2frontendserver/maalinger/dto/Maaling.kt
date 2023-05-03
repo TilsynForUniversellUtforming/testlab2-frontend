@@ -15,29 +15,38 @@ data class Maaling(
     val crawlParameters: CrawlParameters?,
 )
 
-fun MaalingDTO.toMaaling() =
-    Maaling(
-        id = this.id,
-        navn = this.navn,
-        status = this.status,
-        loeysingList =
-            if (!this.crawlResultat.isNullOrEmpty()) {
-              this.crawlResultat.map { it.loeysing }
-            } else if (!this.testKoeyringar.isNullOrEmpty()) {
-              this.testKoeyringar.map { it.loeysing }
+fun MaalingDTO.toMaaling() = this.toMaaling(emptyList())
+
+fun MaalingDTO.toMaaling(
+    crawlResultat: List<CrawlResultat>,
+): Maaling {
+  val maalingTestKoeyringList: List<TestKoeyring> = this.testKoeyringar ?: emptyList()
+
+  return Maaling(
+      id = this.id,
+      navn = this.navn,
+      status = this.status,
+      loeysingList =
+          if (crawlResultat.isNotEmpty()) {
+            crawlResultat.map { it.loeysing }
+          } else if (maalingTestKoeyringList.isNotEmpty()) {
+            maalingTestKoeyringList.map { it.loeysing }
+          } else {
+            if (this.loeysingList.isNullOrEmpty()) {
+              emptyList()
             } else {
-              if (this.loeysingList.isNullOrEmpty()) {
-                emptyList()
-              } else {
-                this.loeysingList
+              this.loeysingList
+            }
+          },
+      crawlResultat = crawlResultat.ifEmpty { emptyList() },
+      crawlStatistics =
+          crawlResultat
+              .map {
+                if (it.type == JobStatus.ferdig && it.urlList.isNullOrEmpty()) JobStatus.feilet
+                else it.type
               }
-            },
-        crawlResultat =
-            if (this.crawlResultat.isNullOrEmpty()) emptyList()
-            else this.crawlResultat.map { it.toCrawlResultat() },
-        crawlStatistics = this.crawlResultat?.map { it.type }?.toJobStatistics()
-                ?: JobStatistics(0, 0, 0),
-        testResult = if (this.testKoeyringar.isNullOrEmpty()) emptyList() else this.testKoeyringar,
-        testStatistics = this.testKoeyringar?.map { it.tilstand }?.toJobStatistics()
-                ?: JobStatistics(0, 0, 0),
-        crawlParameters = this.crawlParameters)
+              .toJobStatistics(),
+      testResult = maalingTestKoeyringList.ifEmpty { emptyList() },
+      testStatistics = maalingTestKoeyringList.map { it.tilstand }.toJobStatistics(),
+      crawlParameters = this.crawlParameters)
+}

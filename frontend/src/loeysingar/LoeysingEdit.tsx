@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import ErrorCard from '../common/error/ErrorCard';
-import { updateLoysing } from './api/loeysing-api';
+import { updateLoeysing } from './api/loeysing-api';
 import { Loeysing, LoeysingInit } from './api/types';
 import LoeysingForm from './form/LoeysingForm';
 import { LoeysingContext } from './types';
@@ -34,32 +34,38 @@ const LoeysingEdit = () => {
         };
 
         try {
-          const updatedLoeysingList = await updateLoysing(loeysing);
+          const updatedLoeysingList = await updateLoeysing(loeysing);
           setLoeysingList(updatedLoeysingList);
           navigate('..');
         } catch (e) {
-          setContextError('Kunne ikkje endre løysing');
+          setContextError(new Error('Kunne ikkje endre løysing'));
         }
       } else {
-        setContextError('Løysingparameter ikkje gylding');
+        setContextError(new Error('Løysingparameter ikkje gylding'));
       }
     };
 
-    doEditLoeysing()
-      .catch((e) => setContextError(e))
-      .finally(() => {
-        setContextLoading(false);
-      });
+    doEditLoeysing().finally(() => {
+      setContextLoading(false);
+    });
   }, []);
 
   if (contextLoading) {
     return <Spinner title="Henter løysing" />;
   }
 
-  if (contextError || typeof loeysing === 'undefined') {
+  if (contextError) {
     return (
       <ErrorCard
-        errorText={contextError ?? 'Finner ikkje løysing'}
+        error={contextError ?? 'Finner ikkje løysing'}
+        buttonText="Tilbake"
+        onClick={() => navigate('..')}
+      />
+    );
+  } else if (typeof loeysing === 'undefined') {
+    return (
+      <ErrorCard
+        error={new Error('Finner ikkje løysing')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
       />
