@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import appRoutes from '../../common/appRoutes';
 import EditButton from '../../common/button/EditButton';
-import TestlabLinkButton from '../../common/button/TestlabLinkButton';
+import TableActionButton from '../../common/button/TableActionButton';
 import ConfirmDialog from '../../common/confirm/ConfirmDialog';
 import TestlabTable from '../../common/table/TestlabTable';
 import { deleteRegelsett } from '../api/testreglar-api';
@@ -42,7 +42,7 @@ const Regelsett = () => {
     setDeleteRow(undefined);
 
     if (typeof deleteRow === 'undefined') {
-      setContextError('Kunne ikke slette testregel');
+      setContextError(new Error('Kunne ikke slette testregel'));
     }
 
     const deleteAndFetchRegelsett = async () => {
@@ -97,15 +97,15 @@ const Regelsett = () => {
         closeModal={onCloseModal}
         onSubmit={doDelete}
       />
-      <TestlabLinkButton
-        type="add"
+      <TableActionButton
+        action="add"
         route={appRoutes.REGELSETT_CREATE}
-        disabled={contextLoading || contextError}
+        disabled={contextLoading || typeof contextError !== 'undefined'}
       />
       <TestlabTable<TestRegelsett>
         data={regelsett}
         defaultColumns={testRegelColumns}
-        fetchError={contextError}
+        displayError={{ error: contextError }}
         loading={contextLoading}
         customStyle={{ small: true }}
       />

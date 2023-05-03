@@ -9,6 +9,7 @@ import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ConfirmModalButton from '../../common/confirm/ConfirmModalButton';
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { restartCrawling } from '../../maaling/api/maaling-api';
@@ -34,14 +35,20 @@ const KvalitetssikringApp = () => {
   );
 
   if (typeof maaling === 'undefined') {
-    return <ErrorCard errorText="Maaling finnes ikkje" />;
+    return <ErrorCard error={new Error('Maaling finnes ikkje')} />;
   } else if (typeof crawlResultat === 'undefined') {
-    return <ErrorCard errorText="Finner ikkje resultat etter sideutval" />;
+    return (
+      <ErrorCard error={new Error('Finner ikkje resultat etter sideutval')} />
+    );
   } else if (typeof loeysingId === 'undefined') {
-    return <ErrorCard errorText="Løsysing eksisterar ikkje på måling" />;
+    return (
+      <ErrorCard error={new Error('Løsysing eksisterar ikkje på måling')} />
+    );
   } else if (typeof loeysingCrawResultat === 'undefined') {
     return (
-      <ErrorCard errorText="Sideutval på løsysing eksisterar ikkje på måling" />
+      <ErrorCard
+        error={new Error('Sideutval på løsysing eksisterar ikkje på måling')}
+      />
     );
   }
 
@@ -62,7 +69,7 @@ const KvalitetssikringApp = () => {
         );
         setMaaling(restartedMaaling);
       } catch (e) {
-        setError('Noko gikk gale ved restart av sideutval');
+        setError(toError(e, 'Noko gikk gale ved omstart av sideutval'));
       }
     };
 
@@ -135,7 +142,7 @@ const KvalitetssikringApp = () => {
         data={crawlUrls}
         defaultColumns={urlColumns}
         onSelectRows={onSelectRows}
-        fetchError={error}
+        displayError={{ error }}
         loading={loading}
         filterPreference={'searchbar'}
       />

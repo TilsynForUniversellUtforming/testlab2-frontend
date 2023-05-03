@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
-import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { fetchMaaling } from '../../maaling/api/maaling-api';
 import { TestResult } from '../../maaling/api/types';
@@ -14,16 +14,15 @@ const TestingListApp = () => {
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
-  const [error, setError] = useState<string | undefined>(contextError);
-
+  const [error, setError] = useState<Error | undefined>(contextError);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
 
-  const doFetchData = useCallback(() => {
-    const fetchData = async () => {
+  const doFetchData = useCallback(async () => {
+    try {
       if (id) {
         const refreshedMaaling = await fetchMaaling(Number(id));
         if (!refreshedMaaling) {
-          setError('Måling finnes ikkje');
+          setError(new Error('Fann ikkje måling'));
         }
 
         if (refreshedMaaling.status !== 'testing') {
@@ -32,31 +31,20 @@ const TestingListApp = () => {
 
         setTestResult(refreshedMaaling.testResult);
       } else {
-        setError('Måling finnes ikkje');
+        setError(new Error('Måling finnes ikkje'));
       }
-    };
-
-    fetchData().catch((e) => {
-      setError(e);
-    });
+    } catch (e) {
+      setError(toError(e, 'Kunne ikkje hente måling'));
+    }
   }, []);
 
-  useInterval(
-    () => {
-      doFetchData();
-    },
-    refreshing ? 15000 : null
-  );
-
-  if (typeof id === 'undefined') {
-    return <ErrorCard errorText="Ingen testresultat funnet" />;
-  }
+  useInterval(() => doFetchData(), refreshing ? 15000 : null);
 
   return (
     <TestingList
       maalingId={Number(id)}
       testResultList={testResult}
-      error={error}
+      error={{ error: error, onClick: doFetchData, buttonText: 'Prøv igjen' }}
     />
   );
 };

@@ -5,6 +5,7 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
+import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { fetchMaaling, restartCrawling } from '../../maaling/api/maaling-api';
 import { CrawlResultat } from '../../maaling/api/types';
@@ -23,35 +24,24 @@ const SideutvalApp = () => {
   const [refreshing, setRefreshing] = useState(maaling?.status === 'crawling');
   const navigate = useNavigate();
 
-  const doFetchData = useCallback(() => {
-    const fetchData = async () => {
-      if (id) {
-        const refreshedMaaling = await fetchMaaling(Number(id));
-        if (!refreshedMaaling) {
-          setError('Måling finnes ikkje');
-        }
-
-        if (refreshedMaaling.status !== 'crawling') {
-          setRefreshing(false);
-        }
-
-        setCrawlResult(refreshedMaaling.crawlResultat);
-      } else {
-        setError('Måling finnes ikkje');
+  const doFetchData = useCallback(async () => {
+    if (id) {
+      const refreshedMaaling = await fetchMaaling(Number(id));
+      if (!refreshedMaaling) {
+        setError(new Error('Fann ikkje måling'));
       }
-    };
 
-    fetchData().catch(() => {
-      setError('Klarte ikkje å hente måling');
-    });
+      if (refreshedMaaling.status !== 'crawling') {
+        setRefreshing(false);
+      }
+
+      setCrawlResult(refreshedMaaling.crawlResultat);
+    } else {
+      setError(new Error('Måling finnes ikkje'));
+    }
   }, []);
 
-  useInterval(
-    () => {
-      doFetchData();
-    },
-    refreshing ? 15000 : null
-  );
+  useInterval(() => doFetchData(), refreshing ? 15000 : null);
 
   const onClickRestart = useCallback((row: Row<CrawlResultat>) => {
     setLoading(true);
@@ -69,7 +59,7 @@ const SideutvalApp = () => {
         const restartedMaaling = await restartCrawling(maaling.id, loeysingId);
         setCrawlResult(restartedMaaling.crawlResultat);
       } catch (e) {
-        setError('Noko gikk gale ved restart av sideutval');
+        setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
       }
     };
 
@@ -85,7 +75,7 @@ const SideutvalApp = () => {
   }, []);
 
   if (typeof maaling === 'undefined' || typeof id === 'undefined') {
-    return <ErrorCard errorText="Ingen måling funnet" />;
+    return <ErrorCard error={new Error('Ingen måling funnet')} />;
   }
 
   return (

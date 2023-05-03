@@ -1,8 +1,8 @@
 export interface AppContext {
-  contextError?: any;
+  contextError?: Error;
   contextLoading: boolean;
   refresh?: () => void;
-  setContextError: (e: any) => void;
+  setContextError: (e: Error | undefined) => void;
   setContextLoading: (loading: boolean) => void;
 }
 

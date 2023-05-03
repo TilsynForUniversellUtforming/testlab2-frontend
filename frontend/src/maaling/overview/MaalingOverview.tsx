@@ -24,9 +24,9 @@ const MaalingOverview = () => {
   }
 
   if (contextError) {
-    return <ErrorCard errorText={contextError} />;
+    return <ErrorCard error={contextError} />;
   } else if (!maaling || !id) {
-    return <ErrorCard errorText="Finner ikkje måling" />;
+    return <ErrorCard error={new Error('Finner ikkje måling')} />;
   }
 
   return (

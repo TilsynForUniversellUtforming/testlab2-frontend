@@ -1,8 +1,20 @@
 .error-card {
-  &.centered {
-    margin-top: 1.5rem;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  &__content {
+    border: 3px solid var(--semantic-border-danger-default);
+    padding: 1rem;
+    border-radius: 3px;
+    width: fit-content;
+  }
+  &__header {
+    text-align: center;
+  }
+  &__button {
     display: flex;
     justify-content: center;
-    align-items: center;
   }
 }

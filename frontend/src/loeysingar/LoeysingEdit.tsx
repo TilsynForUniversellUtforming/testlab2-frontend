@@ -38,28 +38,34 @@ const LoeysingEdit = () => {
           setLoeysingList(updatedLoeysingList);
           navigate('..');
         } catch (e) {
-          setContextError('Kunne ikkje endre løysing');
+          setContextError(new Error('Kunne ikkje endre løysing'));
         }
       } else {
-        setContextError('Løysingparameter ikkje gylding');
+        setContextError(new Error('Løysingparameter ikkje gylding'));
       }
     };
 
-    doEditLoeysing()
-      .catch((e) => setContextError(e))
-      .finally(() => {
-        setContextLoading(false);
-      });
+    doEditLoeysing().finally(() => {
+      setContextLoading(false);
+    });
   }, []);
 
   if (contextLoading) {
     return <Spinner title="Henter løysing" />;
   }
 
-  if (contextError || typeof loeysing === 'undefined') {
+  if (contextError) {
     return (
       <ErrorCard
-        errorText={contextError ?? 'Finner ikkje løysing'}
+        error={contextError ?? 'Finner ikkje løysing'}
+        buttonText="Tilbake"
+        onClick={() => navigate('..')}
+      />
+    );
+  } else if (typeof loeysing === 'undefined') {
+    return (
+      <ErrorCard
+        error={new Error('Finner ikkje løysing')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
       />
