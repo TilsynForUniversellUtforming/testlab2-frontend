@@ -45,24 +45,24 @@ export type SakStep = {
 };
 
 const initStep: SakStepBase = {
-  heading: 'La oss opprette en sak',
-  subHeading: 'Fortell oss litt om saken du vil opprette',
-  stepperTitle: 'Saken',
+  heading: 'La oss opprette ei sak',
+  subHeading: 'Fortell oss litt om saka du vil opprette.',
+  stepperTitle: 'Saka',
   stepperSubTitle: 'Om saka',
   sakStepType: 'Init',
 };
 
 const loeysingStep: SakStepBase = {
-  heading: 'Vel løysingar',
-  subHeading: 'Vel kva løysingar du vil bruka i saken',
+  heading: 'La oss legge til løysingar',
+  subHeading: 'Vel aktuelle løysingar og kven som har ansvar for dei i saka.',
   stepperTitle: 'Løysingar',
   stepperSubTitle: 'Utval nettløysingar',
   sakStepType: 'Loeysing',
 };
 
 const regelsettStep: SakStepBase = {
-  heading: 'Vel Regelsett',
-  subHeading: 'Vel kva testregel du vil bruka i saken',
+  heading: 'La oss legge til testreglar',
+  subHeading: 'Vel aktuelle testreglar.',
   stepperTitle: 'Testreglar',
   stepperSubTitle: 'Krav og testing',
   sakStepType: 'Testregel',
@@ -70,8 +70,9 @@ const regelsettStep: SakStepBase = {
 
 const summaryStep: SakStepBase = {
   heading: 'Oppsummering',
-  stepperTitle: 'Oppsummert',
-  stepperSubTitle: '',
+  subHeading: 'Sjå over at alt er på plass.',
+  stepperTitle: 'Oppsummering',
+  stepperSubTitle: 'Sjå over og opprett',
   sakStepType: 'Confirm',
 };
 

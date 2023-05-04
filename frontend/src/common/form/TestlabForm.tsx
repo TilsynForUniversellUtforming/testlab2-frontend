@@ -4,35 +4,17 @@ import React, { ReactNode } from 'react';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
 import TestlabFormButtons from './TestlabFormButtons';
+import TestlabFormHeader from './TestlabFormHeader';
 import TestlabFormInput from './TestlabFormInput';
 import TestlabFormSelect from './TestlabFormSelect';
 
 export interface TestlabFormProps<T extends object> {
-  heading: string;
+  heading?: string;
   subHeading?: string;
   onSubmit: SubmitHandler<T>;
   formMethods: UseFormReturn<T>;
   children: ReactNode;
 }
-
-const FormHeader = ({
-  heading,
-  subHeading,
-}: {
-  heading: string;
-  subHeading?: string;
-}) => {
-  return (
-    <header className="testlab-form__header">
-      <h2 className="heading">{heading}</h2>
-      {subHeading && (
-        <p role="doc-subtitle" className="sub-heading">
-          {subHeading}
-        </p>
-      )}
-    </header>
-  );
-};
 
 /**
  * React component for a generic form, wrapped in a form provider from 'react-hook-form'.
@@ -55,9 +37,27 @@ const TestlabForm = <T extends object>({
   const { handleSubmit } = formMethods;
 
   return (
-    <FormProvider {...formMethods}>
+    <FormProvider
+      watch={formMethods.watch}
+      getValues={formMethods.getValues}
+      getFieldState={formMethods.getFieldState}
+      setError={formMethods.setError}
+      clearErrors={formMethods.clearErrors}
+      setValue={formMethods.setValue}
+      trigger={formMethods.trigger}
+      formState={formMethods.formState}
+      resetField={formMethods.resetField}
+      reset={formMethods.reset}
+      handleSubmit={formMethods.handleSubmit}
+      unregister={formMethods.unregister}
+      control={formMethods.control}
+      register={formMethods.register}
+      setFocus={formMethods.setFocus}
+    >
       <form className="testlab-form" onSubmit={handleSubmit(onSubmit)}>
-        <FormHeader heading={heading} subHeading={subHeading} />
+        {heading && (
+          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+        )}
         {children}
       </form>
     </FormProvider>

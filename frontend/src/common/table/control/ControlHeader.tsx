@@ -45,10 +45,10 @@ const ControlHeader = ({
       <div className="control-header__input">
         {showFilters && (
           <DebouncedInput
-            label="Fritt søk"
+            label="Søk"
             value={filterValue}
             onChange={onChangeFilter}
-            placeholder="Søk..."
+            placeholder=""
             disabled={loading}
           />
         )}

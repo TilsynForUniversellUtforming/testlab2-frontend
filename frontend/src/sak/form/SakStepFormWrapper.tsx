@@ -3,6 +3,7 @@ import { UseFormReturn } from 'react-hook-form';
 
 import TestlabForm from '../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../common/form/TestlabFormButtons';
+import TestlabFormHeader from '../../common/form/TestlabFormHeader';
 import { SakFormBaseProps, SakFormState } from '../types';
 import Stepper from './Stepper';
 
@@ -23,16 +24,10 @@ const SakStepFormWrapper = ({
 
   return (
     <div className="sak">
-      <TestlabForm<SakFormState>
-        heading={heading}
-        subHeading={subHeading}
-        onSubmit={onSubmit}
-        formMethods={formMethods}
-      >
-        <div className="sak__stepper">
-          <Stepper formStepState={formStepState} />
-        </div>
+      <TestlabForm<SakFormState> onSubmit={onSubmit} formMethods={formMethods}>
+        <Stepper formStepState={formStepState} />
         <div className="sak__form">
+          <TestlabFormHeader heading={heading} subHeading={subHeading} />
           <div className="sak__container">{children}</div>
           <TestlabForm.FormButtons step={buttonStep} />
         </div>
