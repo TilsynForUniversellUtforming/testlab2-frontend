@@ -5,7 +5,7 @@ import React from 'react';
 
 import { appRoutes, verktoey } from '../appRoutes';
 import TestlabLinkButton from '../button/TestlabLinkButton';
-import LinksDropdown from './dropdown/LinksDropdown';
+import LinksDropdown from '../dropdown/LinksDropdown';
 
 const Navigation = () => {
   return (

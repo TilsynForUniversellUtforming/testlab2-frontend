@@ -26,13 +26,14 @@ import {
 import { TableOptions } from '@tanstack/table-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
+import TableActionDropdown from '../dropdown/TableActionDropdown';
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import ControlHeader from './control/ControlHeader';
 import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableBody from './TestlabTableBody';
 import TestlabTableHeader from './TestlabTableHeader';
-import { TableFilterPreference, TableStyle } from './types';
+import { TableFilterPreference, TableRowAction, TableStyle } from './types';
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -68,6 +69,7 @@ export interface TestlabTableProps<T extends object> {
   disableMultiRowSelection?: boolean;
   onClickRetry?: () => void;
   customStyle?: TableStyle;
+  rowActions?: TableRowAction[];
 }
 
 /**
@@ -86,6 +88,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {boolean} [props.disableMultiRowSelection=false] - Whether the user can select multiple rows
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
  * @param {Style} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
+ * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @returns {JSX.Element} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
@@ -101,7 +104,9 @@ const TestlabTable = <T extends object>({
   customStyle = {
     small: false,
   },
+  rowActions,
 }: TestlabTableProps<T>) => {
+  console.log('selectedRows i TABLE', selectedRows);
   const isLoading = loading ?? false;
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -109,8 +114,9 @@ const TestlabTable = <T extends object>({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
     Object.assign({}, selectedRows) as unknown as RowSelectionState
   );
+  console.log('rowSelection i TABLE', rowSelection);
 
-  const enableRowSelection = typeof onSelectRows !== 'undefined';
+  const rowSelectionEnabled = typeof onSelectRows !== 'undefined';
 
   const handleRowSelection = (rss: RowSelectionState) => {
     setRowSelection(rss);
@@ -127,8 +133,8 @@ const TestlabTable = <T extends object>({
       globalFilter,
       rowSelection,
     },
-    enableRowSelection: enableRowSelection,
-    enableMultiRowSelection: enableRowSelection && !disableMultiRowSelection,
+    enableRowSelection: rowSelectionEnabled,
+    enableMultiRowSelection: rowSelectionEnabled && !disableMultiRowSelection,
     onRowSelectionChange: (updaterOrValue) => {
       if (typeof updaterOrValue === 'function') {
         handleRowSelection(updaterOrValue(rowSelection));
@@ -151,13 +157,13 @@ const TestlabTable = <T extends object>({
   const table = useReactTable(tableOptions);
 
   useEffect(() => {
-    if (enableRowSelection) {
-      const selectedRows = table
+    if (rowSelectionEnabled) {
+      const selectedTableRows = table
         .getSelectedRowModel()
         .flatRows.map((fr) => fr.original);
-      onSelectRows?.(selectedRows);
+      onSelectRows?.(selectedTableRows);
     }
-  }, [rowSelection, enableRowSelection]);
+  }, [rowSelection, rowSelectionEnabled]);
 
   const onChangeGlobalFilter = useCallback((value: string | number) => {
     setGlobalFilter(String(value));
@@ -196,6 +202,9 @@ const TestlabTable = <T extends object>({
         onChangeFilter={onChangeGlobalFilter}
         small={customStyle?.small}
       />
+      {rowSelectionEnabled && rowActions && (
+        <TableActionDropdown actions={rowActions} />
+      )}
       <Table className="testlab-table__table">
         <TableHeader>
           <TableRow>

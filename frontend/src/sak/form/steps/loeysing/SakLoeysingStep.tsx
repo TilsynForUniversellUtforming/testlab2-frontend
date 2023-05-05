@@ -6,7 +6,7 @@ import {
   SingleSelectOption,
 } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../../common/form/hooks/useValidate';
@@ -47,12 +47,25 @@ const SakLoeysingStep = ({
   const { onClickBack } = formStepState;
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
+  const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
   const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
 
-  const handleSelectRow = (loesyingVerksemd: LoeysingVerksemd[]) => {
+  const handleSelectRow = (selection: LoeysingVerksemd[]) => {
+    const values = getValues('loeysingList');
+    const selectionIds = selection.map(
+      (s) => `${s.loeysing.id}_${s.verksemd.id}`
+    );
+
     const rowArray: boolean[] = [];
-    loesyingVerksemd.forEach((tr) => (rowArray[tr.loeysing.id - 1] = true));
+    values.forEach(
+      (tr, idx) =>
+        (rowArray[idx] = selectionIds.includes(
+          `${tr.loeysing.id}_${tr.verksemd.id}`
+        ))
+    );
+
     setSelectedRows(rowArray);
+    setRowSelection(selection);
   };
 
   const loeysingOptions: SingleSelectOption[] = useMemo(
@@ -105,6 +118,17 @@ const SakLoeysingStep = ({
       }
     }
   };
+
+  const onClickRemove = useCallback(() => {
+    const oldValues = getValues('loeysingList');
+    const newLoeysingList = oldValues.filter(
+      (_, index) => !selectedRows[index]
+    );
+    // setValue('loeysingList', newLoeysingList);
+    const unselected = newLoeysingList.map(() => false);
+    console.log('unselected i LOSY', unselected);
+    setSelectedRows(unselected);
+  }, []);
 
   const selection = useWatch<SakFormState>({
     control,
@@ -185,6 +209,9 @@ const SakLoeysingStep = ({
             selectedRows={selectedRows}
             onSelectRows={handleSelectRow}
             customStyle={{ small: true }}
+            rowActions={[
+              { action: 'delete', label: 'Slett rad', onClick: onClickRemove },
+            ]}
           />
           {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
         </div>
