@@ -21,11 +21,16 @@
     }
 
     .sak-loeysing {
-      &__input-buttons {
+      &__input-wrapper {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        align-items: end;
+        padding-bottom: 1rem;
+      }
+
+      &__input-select {
+        width: 35%;
       }
 
       &__crawl-wrapper {

@@ -5,6 +5,11 @@ import { Maaling } from '../maaling/api/types';
 import { TestRegelsett } from '../testreglar/api/types';
 import { FormStepState } from './hooks/useSakForm';
 
+export type LoeysingVerksemd = {
+  loeysing: Loeysing;
+  verksemd: Loeysing;
+};
+
 export interface SakContext extends AppContext {
   regelsettList: TestRegelsett[];
   loeysingList: Loeysing[];
@@ -15,7 +20,7 @@ export interface SakContext extends AppContext {
 
 export type SakFormState = {
   navn?: string;
-  loeysingList: Loeysing[];
+  loeysingList: LoeysingVerksemd[];
   regelsettId?: string;
   maxLinksPerPage: number;
   numLinksToSelect: number;

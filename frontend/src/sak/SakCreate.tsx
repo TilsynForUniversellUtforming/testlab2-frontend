@@ -57,7 +57,9 @@ const SakCreate = () => {
       ) {
         const maalingInit: MaalingInit = {
           navn: maalingFormState.navn,
-          loeysingIdList: maalingFormState.loeysingList.map((l) => l.id),
+          loeysingIdList: maalingFormState.loeysingList.map(
+            (l) => l.loeysing.id
+          ),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,

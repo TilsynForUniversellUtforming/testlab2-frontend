@@ -22,7 +22,8 @@ const TestlabFormInput = <T extends object>({
     control,
     formState: { errors },
   } = useFormContext<T>();
-  const hasError = !!errors[name];
+  const error = errors as any;
+  const hasError = !!error[name];
 
   return (
     <Controller

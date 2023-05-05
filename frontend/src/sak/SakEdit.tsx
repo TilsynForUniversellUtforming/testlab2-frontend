@@ -32,7 +32,9 @@ const SakEdit = () => {
 
   const defaultState: SakFormState = {
     navn: maaling?.navn ?? '',
-    loeysingList: maaling?.loeysingList ?? [],
+    loeysingList: maaling?.loeysingList
+      ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
+      : [],
     regelsettId: '1',
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
@@ -51,7 +53,9 @@ const SakEdit = () => {
         const maalingEdit: MaalingEdit = {
           id: maaling.id,
           navn: maalingFormState.navn!,
-          loeysingIdList: maalingFormState.loeysingList.map((l) => l.id),
+          loeysingIdList: maalingFormState.loeysingList.map(
+            (l) => l.loeysing.id
+          ),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
