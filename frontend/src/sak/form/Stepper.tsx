@@ -37,13 +37,12 @@ const StepperIcon = ({ sakStepType }: { sakStepType: SakStepType }) => {
 };
 
 const Stepper = ({ formStepState }: Props) => {
-  const { steps, currentStepIdx, goToStep } = formStepState;
-  const currentIdx = currentStepIdx;
+  const { steps, nextStepIdx, goToStep } = formStepState;
 
   return (
     <div className="sak-stepper" aria-hidden="true">
       {steps.map((step) => {
-        const active = step.index <= currentIdx;
+        const active = step.index < nextStepIdx;
 
         return (
           <button

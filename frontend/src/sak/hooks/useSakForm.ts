@@ -17,7 +17,7 @@ import { SakStep } from '../types';
  */
 export type FormStepState = {
   currentStepIdx: number;
-  nextStepIdx: number | undefined;
+  nextStepIdx: number;
   steps: SakStep[];
   currentStep: SakStep;
   isFirstStep: boolean;
@@ -34,31 +34,30 @@ export type FormStepState = {
  */
 const useSakForm = (steps: SakStep[]): FormStepState => {
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
-  const [nextStepIdx, setNextStepIdx] = useState<number | undefined>(undefined);
+  const [nextStepIdx, setNextStepIdx] = useState<number>(1);
   const isFirstStep = currentStepIdx <= 0;
   const isLastStep = currentStepIdx >= steps.length - 1;
 
   const setNextStep = () => {
-    if (typeof nextStepIdx !== 'undefined') {
-      setNextStepIdx(undefined);
-      setCurrentStepIdx(nextStepIdx);
-    } else {
-      setCurrentStepIdx((currentStepIdx) => {
-        if (isLastStep) {
-          return currentStepIdx;
-        } else {
-          return currentStepIdx + 1;
-        }
-      });
-    }
+    setNextStepIdx((currentNext) => {
+      if (isLastStep) {
+        return currentNext;
+      } else {
+        return currentNext + 1;
+      }
+    });
+    setCurrentStepIdx((currentStepIdx) => {
+      if (isLastStep) {
+        return currentStepIdx;
+      } else {
+        return currentStepIdx + 1;
+      }
+    });
   };
 
   const goToStep = (stepIdx: number) => {
-    if (stepIdx < currentStepIdx) {
-      setNextStepIdx(undefined);
+    if (stepIdx < currentStepIdx || stepIdx < nextStepIdx) {
       setCurrentStepIdx(stepIdx);
-    } else {
-      setNextStepIdx(stepIdx);
     }
   };
 

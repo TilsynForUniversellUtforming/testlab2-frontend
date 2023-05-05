@@ -21,15 +21,11 @@
     }
 
     .sak-loeysing {
-      &__selection {
-        grid-column: 11 / 12;
-        .item {
-          padding: 1rem 0;
-        }
-      }
-
-      &__table {
-        grid-column: 1 / 10;
+      &__input-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
       }
 
       &__crawl-wrapper {

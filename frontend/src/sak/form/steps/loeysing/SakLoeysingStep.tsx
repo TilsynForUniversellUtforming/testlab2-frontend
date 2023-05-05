@@ -1,3 +1,10 @@
+import {
+  Button,
+  ButtonColor,
+  ErrorMessage,
+  Select,
+  SingleSelectOption,
+} from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -8,10 +15,10 @@ import {
   HeaderCheckbox,
   RowCheckbox,
 } from '../../../../common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '../../../../common/table/TestlabTable';
 import { Loeysing } from '../../../../loeysingar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';
-import SakLoeysingTable from './SakLoeysingTable';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
@@ -31,10 +38,31 @@ const SakLoeysingStep = ({
     defaultValues: maalingFormState,
   });
 
-  const { control, setValue, setError, clearErrors, formState } = formMethods;
+  const { control, setValue, getValues, setError, clearErrors, formState } =
+    formMethods;
   const { onClickBack, currentStep } = formStepState;
 
-  const onChangeRows = (rowSelection: Loeysing[]) => {
+  const loeysingOptions: SingleSelectOption[] = useMemo(
+    () =>
+      loeysingList.map((l) => ({
+        label: l.namn,
+        formattedLabel: (
+          <>
+            <b>{l.namn}</b>
+            <div>{l.url}</div>
+          </>
+        ),
+        value: String(l.id),
+      })),
+    []
+  );
+
+  const verksemdOptions: SingleSelectOption[] = loeysingList.map((l) => ({
+    label: l.namn,
+    value: String(l.id),
+  }));
+
+  const onSelectLoeysing = (rowSelection: Loeysing[]) => {
     setValue('loeysingList', rowSelection);
     useValidate<Loeysing, SakFormState>({
       selection: rowSelection,
@@ -45,10 +73,10 @@ const SakLoeysingStep = ({
     });
   };
 
-  const selection = useWatch({
+  const selection = useWatch<SakFormState>({
     control,
     name: 'loeysingList',
-  });
+  }) as Loeysing[];
 
   const selectedRows = useMemo(() => {
     const rowArray: boolean[] = [];
@@ -62,8 +90,8 @@ const SakLoeysingStep = ({
     () => [
       {
         id: 'Handling',
-        header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => <RowCheckbox row={row} />,
+        header: ({ table }) => <HeaderCheckbox<Loeysing> table={table} />,
+        cell: ({ row }) => <RowCheckbox<Loeysing> row={row} />,
         size: 1,
       },
       {
@@ -87,6 +115,8 @@ const SakLoeysingStep = ({
     onClickBack: onClickBack,
   };
 
+  const listErrors = formState.errors['loeysingList'];
+
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
@@ -94,16 +124,28 @@ const SakLoeysingStep = ({
       formMethods={formMethods}
       buttonStep={buttonStep}
     >
-      <SakLoeysingTable
-        loeysingList={loeysingList}
-        loeysingColumns={loeysingColumns}
-        error={error}
-        loading={loading}
-        formState={formState}
-        selectedRows={selectedRows}
-        onChangeRows={onChangeRows}
-        selection={selection}
-      />
+      <div className="sak-loeysing">
+        <div className="sak-loeysing__input-buttons">
+          <Select options={loeysingOptions} label="Loeysing" />
+          <Select options={verksemdOptions} label="Verksemd" />
+          <Button title="Legg til" color={ButtonColor.Success}>
+            Legg til
+          </Button>
+        </div>
+        <div className="sak-loeysing__table">
+          <TestlabTable<Loeysing>
+            data={selection}
+            defaultColumns={loeysingColumns}
+            displayError={{ error }}
+            inputError={listErrors?.message}
+            loading={loading}
+            selectedRows={selectedRows}
+            // onSelectRows={onChangeRows}
+            customStyle={{ small: true }}
+          />
+          {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+        </div>
+      </div>
     </SakStepFormWrapper>
   );
 };

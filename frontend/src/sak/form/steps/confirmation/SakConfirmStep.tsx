@@ -9,6 +9,7 @@ import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';
+import SakCrawlParameters from '../loeysing/SakCrawlParameters';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
@@ -113,6 +114,9 @@ const SakConfirmContent = ({
             listItems={regelsettListItems}
             errorMessage={regelsettError?.message}
           />
+        </li>
+        <li>
+          <SakCrawlParameters />
         </li>
       </ul>
     </div>
