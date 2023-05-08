@@ -91,18 +91,18 @@ const SakCreate = () => {
   }, []);
 
   const formStepState = useSakForm(defaultSakSteps);
-  const { isLastStep, setNextStep, nextStepIdx } = formStepState;
+  const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = useCallback(
     (maalingFormState: SakFormState) => {
       setMaalingFormState(maalingFormState);
-      if (!isLastStep || typeof nextStepIdx !== 'undefined') {
+      if (!isLastStep) {
         return setNextStep();
       } else {
         doSubmitMaaling(maalingFormState);
       }
     },
-    [isLastStep, nextStepIdx]
+    [isLastStep]
   );
 
   return (

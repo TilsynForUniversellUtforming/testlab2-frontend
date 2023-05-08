@@ -182,12 +182,6 @@ const SakConfirmStep = ({
 
   useEffectOnce(() => handleFormErrors());
 
-  const handleSubmit = () => {
-    if (!isDefined(errors) || typeof nextStepIdx !== 'undefined') {
-      onSubmit(maalingFormState);
-    }
-  };
-
   const buttonStep: TestlabFormButtonStep = {
     stepType: 'Submit',
     onClickBack: onClickBack,

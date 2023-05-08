@@ -91,11 +91,11 @@ const SakEdit = () => {
     maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
 
   const formStepState = useSakForm(sakSteps);
-  const { isLastStep, setNextStep, nextStepIdx } = formStepState;
+  const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
     setMaalingFormState(maalingFormState);
-    if (!isLastStep || typeof nextStepIdx !== 'undefined') {
+    if (!isLastStep) {
       return setNextStep();
     } else {
       doSubmitMaaling(maalingFormState);
