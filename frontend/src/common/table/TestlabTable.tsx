@@ -106,7 +106,6 @@ const TestlabTable = <T extends object>({
   },
   rowActions,
 }: TestlabTableProps<T>) => {
-  console.log('selectedRows i TABLE', selectedRows);
   const isLoading = loading ?? false;
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -114,7 +113,6 @@ const TestlabTable = <T extends object>({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
     Object.assign({}, selectedRows) as unknown as RowSelectionState
   );
-  console.log('rowSelection i TABLE', rowSelection);
 
   const rowSelectionEnabled = typeof onSelectRows !== 'undefined';
 

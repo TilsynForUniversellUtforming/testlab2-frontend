@@ -48,25 +48,10 @@ const SakLoeysingStep = ({
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
-  const [selectedRows, setSelectedRows] = useState<boolean[]>([]);
 
-  const handleSelectRow = (selection: LoeysingVerksemd[]) => {
-    const values = getValues('loeysingList');
-    const selectionIds = selection.map(
-      (s) => `${s.loeysing.id}_${s.verksemd.id}`
-    );
-
-    const rowArray: boolean[] = [];
-    values.forEach(
-      (tr, idx) =>
-        (rowArray[idx] = selectionIds.includes(
-          `${tr.loeysing.id}_${tr.verksemd.id}`
-        ))
-    );
-
-    setSelectedRows(rowArray);
+  const handleSelectRow = useCallback((selection: LoeysingVerksemd[]) => {
     setRowSelection(selection);
-  };
+  }, []);
 
   const loeysingOptions: SingleSelectOption[] = useMemo(
     () =>
@@ -122,13 +107,13 @@ const SakLoeysingStep = ({
   const onClickRemove = useCallback(() => {
     const oldValues = getValues('loeysingList');
     const newLoeysingList = oldValues.filter(
-      (_, index) => !selectedRows[index]
+      (ov) =>
+        !rowSelection
+          .map((rs) => `${rs.loeysing.id}_${rs.verksemd.id}`)
+          .includes(`${ov.loeysing.id}_${ov.verksemd.id}`)
     );
-    // setValue('loeysingList', newLoeysingList);
-    const unselected = newLoeysingList.map(() => false);
-    console.log('unselected i LOSY', unselected);
-    setSelectedRows(unselected);
-  }, []);
+    setValue('loeysingList', newLoeysingList);
+  }, [rowSelection, setValue]);
 
   const selection = useWatch<SakFormState>({
     control,
@@ -182,6 +167,7 @@ const SakLoeysingStep = ({
               options={loeysingOptions}
               label="Loeysing"
               onChange={setLoeysingId}
+              value={loeysingId}
             />
           </div>
           <div className="sak-loeysing__input-select">
@@ -189,6 +175,7 @@ const SakLoeysingStep = ({
               options={verksemdOptions}
               label="Ansvarlig verksemd (i saka)"
               onChange={setVerksemdId}
+              value={verksemdId}
             />
           </div>
           <Button
@@ -206,7 +193,6 @@ const SakLoeysingStep = ({
             displayError={{ error }}
             inputError={listErrors?.message}
             loading={loading}
-            selectedRows={selectedRows}
             onSelectRows={handleSelectRow}
             customStyle={{ small: true }}
             rowActions={[
