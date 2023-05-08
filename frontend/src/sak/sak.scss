@@ -21,6 +21,7 @@
     }
 
     .sak-loeysing {
+      width: 75%;
       &__input-wrapper {
         display: flex;
         flex-direction: row;
@@ -32,28 +33,31 @@
       &__input-select {
         width: 35%;
       }
-
-      &__crawl-wrapper {
-        grid-column: 1 / 4;
-      }
-      &__crawl-input {
-        padding-top: 1rem;
-      }
     }
 
     .sak-testreglar {
-      grid-column: 1 / 7;
-    }
-    .sak-confirm {
-      grid-column: 1 / 10;
+      width: 75%;
+      &__input-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1rem;
+      }
+
+      &__input-select {
+        width: 50%;
+      }
     }
 
     .sak-confirm {
+      min-width: 50vw;
       &__header {
         margin: 0;
       }
       &__list {
         list-style: none;
+        width: 100%;
       }
       &__muted {
         color: var(--colors-grey-600);
@@ -72,5 +76,8 @@
         padding: 1rem 0;
       }
     }
+  }
+  &__crawl-input {
+    padding-top: 1rem;
   }
 }

@@ -1,5 +1,4 @@
 import { Button } from '@digdir/design-system-react';
-import { semanticSurfaceActionDefault } from '@digdir/design-system-tokens';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import React, { useState } from 'react';
 
@@ -21,13 +20,7 @@ export const TableActionDropdown = ({ actions }: Props) => {
       <Button
         onClick={handleShowRoutes}
         className="dropdown__button"
-        icon={
-          show ? (
-            <ChevronUpIcon color={semanticSurfaceActionDefault} />
-          ) : (
-            <ChevronDownIcon color={semanticSurfaceActionDefault} />
-          )
-        }
+        icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
         iconPlacement="right"
         variant="outline"
       >

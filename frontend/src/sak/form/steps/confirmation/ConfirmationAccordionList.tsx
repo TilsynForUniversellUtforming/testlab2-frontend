@@ -17,7 +17,7 @@ export interface Props {
   onToggle: () => void;
   open: boolean;
   accordionHeader: string;
-  subtitle: string;
+  subtitle?: string;
   listItems: ListItem[];
   errorMessage?: string;
 }
@@ -25,7 +25,6 @@ export interface Props {
 const ConfirmationAccordionList = ({
   onToggle,
   open,
-  subtitle,
   accordionHeader,
   listItems,
   errorMessage,
@@ -41,9 +40,7 @@ const ConfirmationAccordionList = ({
 
   return (
     <LegacyAccordion onClick={onToggle} open={open}>
-      <LegacyAccordionHeader subtitle={subtitle}>
-        {accordionHeader}
-      </LegacyAccordionHeader>
+      <LegacyAccordionHeader>{accordionHeader}</LegacyAccordionHeader>
       <LegacyAccordionContent>
         <ol className="accordion-list">
           {listItems.map((li) => (

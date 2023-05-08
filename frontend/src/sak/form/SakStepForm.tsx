@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 
 import { Loeysing } from '../../loeysingar/api/types';
 import { TestRegelsett } from '../../testreglar/api/types';
+import { User } from '../../user/api/types';
 import { SakFormBaseProps } from '../types';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
 import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
@@ -13,6 +14,7 @@ export interface Props<T> extends SakFormBaseProps {
   loading: boolean;
   loeysingList: Loeysing[];
   regelsettList: TestRegelsett[];
+  advisors: User[];
 }
 
 const SakStepForm = <T extends object>({
@@ -20,6 +22,7 @@ const SakStepForm = <T extends object>({
   loading,
   loeysingList,
   regelsettList,
+  advisors,
   maalingFormState,
   onSubmit,
   formStepState,
@@ -33,6 +36,7 @@ const SakStepForm = <T extends object>({
           formStepState={formStepState}
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
+          advisors={advisors}
         />
       );
     case 'Loeysing':
@@ -52,6 +56,8 @@ const SakStepForm = <T extends object>({
           formStepState={formStepState}
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
+          error={error}
+          loading={loading}
           regelsettList={regelsettList}
         />
       );

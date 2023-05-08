@@ -21,6 +21,7 @@ const SakCreate = () => {
     setMaaling,
     contextLoading,
     contextError,
+    advisors,
   }: SakContext = useOutletContext();
 
   const [error, setError] = useState(contextError);
@@ -30,10 +31,11 @@ const SakCreate = () => {
     navn: '',
     loeysingList: [],
     regelsettId: undefined,
+    testregelList: [],
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
     sakType: undefined,
-    advisor: '',
+    advisor: undefined,
     sakNumber: '',
   };
 
@@ -114,6 +116,7 @@ const SakCreate = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        advisors={advisors}
       />
     </>
   );

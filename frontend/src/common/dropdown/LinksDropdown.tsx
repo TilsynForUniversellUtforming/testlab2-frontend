@@ -28,13 +28,7 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
       <Button
         onClick={handleShowRoutes}
         className="dropdown__button"
-        icon={
-          show ? (
-            <ChevronUpIcon color="white" />
-          ) : (
-            <ChevronDownIcon color="white" />
-          )
-        }
+        icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
         iconPlacement="right"
         variant={ButtonVariant.Quiet}
         color={ButtonColor.Inverted}

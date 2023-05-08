@@ -25,6 +25,7 @@ const SakEdit = () => {
     setMaaling,
     contextLoading,
     contextError,
+    advisors,
   }: SakContext = useOutletContext();
 
   const [error, setError] = useState(contextError);
@@ -36,9 +37,11 @@ const SakEdit = () => {
       ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
       : [],
     regelsettId: '1',
+    testregelList: [],
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
     sakType: undefined,
+    advisor: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -110,6 +113,7 @@ const SakEdit = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        advisors={advisors}
       />
     </>
   );

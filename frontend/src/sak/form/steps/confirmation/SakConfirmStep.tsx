@@ -1,4 +1,4 @@
-import { ErrorMessage, Spinner } from '@digdir/design-system-react';
+import { Spinner } from '@digdir/design-system-react';
 import React, { useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 
@@ -9,7 +9,6 @@ import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../../types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';
-import SakCrawlParameters from '../loeysing/SakCrawlParameters';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
@@ -27,16 +26,20 @@ interface Props extends SakFormBaseProps {
 }
 
 const SakConfirmContent = ({
-  regelsettList,
   error,
   loading,
   maalingFormState,
   formErrors,
 }: SakConfirmContentProps) => {
-  const { navn, loeysingList, regelsettId, maxLinksPerPage, numLinksToSelect } =
+  const { navn, sakType, advisor, loeysingList, testregelList } =
     maalingFormState;
+  const [displaySak, setDisplaySak] = useState(true);
   const [displayLoeysingList, setDisplayLoeysingList] = useState(false);
   const [displayRegelsett, setDisplayRegelsett] = useState(false);
+
+  const toggleDisplaySak = () => {
+    setDisplaySak(!displaySak);
+  };
 
   const toggleLoeysingList = () => {
     setDisplayLoeysingList(!displayLoeysingList);
@@ -47,7 +50,7 @@ const SakConfirmContent = ({
   };
 
   if (loading) {
-    return <Spinner title="Hentar sak" variant={'default'} />;
+    return <Spinner title="Hentar sak" variant="default" />;
   }
 
   if (error) {
@@ -58,21 +61,39 @@ const SakConfirmContent = ({
     );
   }
 
-  const navnError = formErrors?.navn;
+  const sakError = [formErrors?.navn, formErrors?.sakType, formErrors?.advisor]
+    .map((e) => e?.message)
+    .filter(isDefined)
+    .join(', ');
   const loeysingError = formErrors?.loeysingList;
-  const regelsettError = formErrors?.regelsettId;
-  const selectedRegeslett = regelsettList.find(
-    (rs) => rs.id === Number(regelsettId)
-  );
+  const testregelError = formErrors?.testregelList;
+
+  const sakItems = [
+    {
+      id: 1,
+      header: 'Namn',
+      text: navn ?? '',
+    },
+    {
+      id: 2,
+      header: 'Sakstype',
+      text: sakType ?? '',
+    },
+    {
+      id: 3,
+      header: 'Sakshandsamar',
+      text: advisor?.name ?? '',
+    },
+  ];
 
   const loeysingListItems = loeysingList.map((lo) => ({
-    id: lo.id,
-    header: lo.namn,
-    text: lo.url,
+    id: lo.loeysing.id,
+    header: `Løysing: ${lo.loeysing.namn} - Ansvarleg verksemd: ${lo.verksemd.namn}`,
+    text: lo.loeysing.url,
   }));
 
-  const regelsettListItems =
-    selectedRegeslett?.testregelList.map((tr) => ({
+  const testregelItems =
+    testregelList.map((tr) => ({
       id: tr.id,
       header: tr.kravTilSamsvar,
       text: tr?.referanseAct ?? '',
@@ -82,41 +103,31 @@ const SakConfirmContent = ({
     <div className="sak-confirm">
       <ul className="sak-confirm__list">
         <li>
-          <h4 className="sak-confirm__header">Namn</h4>
-          <div className="sak-confirm__muted">{navn}</div>
-          {navnError && <ErrorMessage>{navnError?.message}</ErrorMessage>}
+          <ConfirmationAccordionList
+            onToggle={toggleDisplaySak}
+            open={displaySak}
+            accordionHeader="Om saka"
+            listItems={sakItems}
+            errorMessage={sakError.length > 0 ? sakError : undefined}
+          />
         </li>
         <li>
           <ConfirmationAccordionList
             onToggle={toggleLoeysingList}
             open={displayLoeysingList}
-            accordionHeader="Løysingsparametre"
-            subtitle={`Valgte løysingar (${loeysingList.length})`}
+            accordionHeader="Løysingar"
             listItems={loeysingListItems}
             errorMessage={loeysingError?.message}
           />
         </li>
         <li>
-          <h4 className="sak-confirm__header">Nettsider til sideutval</h4>
-          <div className="sak-confirm__muted">{maxLinksPerPage}</div>
-          <br />
-          <h4 className="sak-confirm__header">
-            Nettsider som blir valde frå utval
-          </h4>
-          <div className="sak-confirm__muted">{numLinksToSelect}</div>
-        </li>
-        <li>
           <ConfirmationAccordionList
             onToggle={toggleRegelsettDisplay}
             open={displayRegelsett}
-            accordionHeader="Valgte regelsett"
-            subtitle={`${selectedRegeslett?.namn} (${selectedRegeslett?.testregelList.length})`}
-            listItems={regelsettListItems}
-            errorMessage={regelsettError?.message}
+            accordionHeader="Testreglar"
+            listItems={testregelItems}
+            errorMessage={testregelError?.message}
           />
-        </li>
-        <li>
-          <SakCrawlParameters />
         </li>
       </ul>
     </div>
@@ -131,8 +142,8 @@ const SakConfirmStep = ({
   loading,
   regelsettList,
 }: Props) => {
-  const { navn, loeysingList, regelsettId } = maalingFormState;
-  const { currentStep, onClickBack, nextStepIdx } = formStepState;
+  const { navn, loeysingList, testregelList } = maalingFormState;
+  const { onClickBack, nextStepIdx } = formStepState;
 
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
@@ -161,8 +172,8 @@ const SakConfirmStep = ({
       });
     }
 
-    if (!isDefined(regelsettId)) {
-      setError('regelsettId', {
+    if (!isDefined(testregelList)) {
+      setError('testregelList', {
         type: 'manual',
         message: 'Regelsett må veljast',
       });

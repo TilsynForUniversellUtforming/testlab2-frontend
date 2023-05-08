@@ -59,6 +59,9 @@ const Stepper = ({ formStepState }: Props) => {
               </div>
               <div className={classNames('icon', { active: active })}>
                 <StepperIcon sakStepType={step.sakStepType} />
+                {steps.length - 1 > step.index && (
+                  <div className="icon__line"></div>
+                )}
               </div>
             </div>
           </button>

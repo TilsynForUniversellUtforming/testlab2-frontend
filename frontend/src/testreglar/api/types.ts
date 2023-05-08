@@ -24,6 +24,7 @@ export type Testregel = {
   type: TestType;
   status: TestStatus;
   kravTittel: string;
+  Krav: string;
 };
 
 export type TestregelCreateRequest = {

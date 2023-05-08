@@ -83,15 +83,26 @@ const SakLoeysingStep = ({
           ...oldValues,
           { loeysing: loeysing, verksemd: verksemd },
         ];
-        setValue('loeysingList', newLoeysingList);
+        const filteredValues = newLoeysingList.filter(
+          (value, idx, self) =>
+            self.findIndex((v) => v.loeysing.id === value.loeysing.id) === idx
+        );
+        if (filteredValues.length !== newLoeysingList.length) {
+          setError('loeysingList', {
+            type: 'manual',
+            message: 'Løysingar må vera unike',
+          });
+        } else {
+          setValue('loeysingList', filteredValues);
 
-        useValidate<LoeysingVerksemd, SakFormState>({
-          selection: newLoeysingList,
-          name: 'loeysingList',
-          setError: setError,
-          clearErrors: clearErrors,
-          message: 'Løysing og verksemd må veljast',
-        });
+          useValidate<LoeysingVerksemd, SakFormState>({
+            selection: newLoeysingList,
+            name: 'loeysingList',
+            setError: setError,
+            clearErrors: clearErrors,
+            message: 'Løysing og verksemd må veljast',
+          });
+        }
 
         setLoeysingId(undefined);
         setVerksemdId(undefined);
@@ -153,10 +164,21 @@ const SakLoeysingStep = ({
 
   const listErrors = formState.errors['loeysingList'];
 
+  const onSubmitLoeysing = (data: SakFormState) => {
+    if (data.loeysingList.length === 0) {
+      setError('loeysingList', {
+        type: 'manual',
+        message: 'Løysing og verksemd må veljast',
+      });
+    } else {
+      onSubmit(data);
+    }
+  };
+
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
-      onSubmit={onSubmit}
+      onSubmit={onSubmitLoeysing}
       formMethods={formMethods}
       buttonStep={buttonStep}
     >

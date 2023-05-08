@@ -5,8 +5,8 @@ import { SakFormState } from '../../../types';
 
 const SakCrawlParameters = () => {
   return (
-    <div className="sak-loeysing__crawl-wrapper">
-      <div className="sak-loeysing__crawl-input">
+    <div className="sak__crawl-wrapper">
+      <div className="sak__crawl-input">
         <TestlabForm.FormInput<SakFormState>
           label="Nettsider til sideutval"
           name="maxLinksPerPage"
@@ -21,7 +21,7 @@ const SakCrawlParameters = () => {
           }}
         />
       </div>
-      <div className="sak-loeysing__crawl-input">
+      <div className="sak__crawl-input">
         <TestlabForm.FormInput<SakFormState>
           label="Nettsider som blir valde frå utval"
           name="numLinksToSelect"
