@@ -1,6 +1,7 @@
 import { AppContext } from '../common/types';
 import { Loeysing } from '../loeysingar/api/types';
 import { TestRegelsett } from '../testreglar/api/types';
+import { User } from '../user/api/types';
 import { Maaling } from './api/types';
 
 export interface MaalingContext extends AppContext {
@@ -8,6 +9,7 @@ export interface MaalingContext extends AppContext {
   setMaaling: (maaling: Maaling) => void;
   loeysingList: Loeysing[];
   regelsettList: TestRegelsett[];
+  advisors: User[];
   showMaalinger: boolean;
   handleStartCrawling: (maaling: Maaling) => void;
   handleStartTest: (maaling: Maaling) => void;

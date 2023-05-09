@@ -7,8 +7,8 @@ export interface AppTitleProps {
 
 const AppTitle = ({ heading, subHeading }: AppTitleProps) => (
   <div className="app-title">
-    {subHeading && <div className="app-title__sub-heading">{subHeading}</div>}
     <h2 className="app-title__heading">{heading}</h2>
+    {subHeading && <div className="app-title__sub-heading">{subHeading}</div>}
   </div>
 );
 

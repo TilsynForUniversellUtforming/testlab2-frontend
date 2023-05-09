@@ -2,9 +2,10 @@
   padding-bottom: 1rem;
   &__heading {
     margin: 0;
+    padding-bottom: 1rem;
   }
 
   &__sub-heading {
-    color: var(--colors-grey-600);
+    color: var(--fds-semantic-text-neutral-subtle);
   }
 }

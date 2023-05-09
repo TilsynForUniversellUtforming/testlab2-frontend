@@ -6,7 +6,7 @@ import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import toError from '../common/error/util';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
-import SakStepFormContainer from './form/SakStepFormContainer';
+import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
 import {
   defaultSakSteps,
@@ -25,6 +25,7 @@ const SakEdit = () => {
     setMaaling,
     contextLoading,
     contextError,
+    advisors,
   }: SakContext = useOutletContext();
 
   const [error, setError] = useState(contextError);
@@ -32,10 +33,15 @@ const SakEdit = () => {
 
   const defaultState: SakFormState = {
     navn: maaling?.navn ?? '',
-    loeysingList: maaling?.loeysingList ?? [],
+    loeysingList: maaling?.loeysingList
+      ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
+      : [],
     regelsettId: '1',
+    testregelList: [],
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
+    sakType: undefined,
+    advisor: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -50,7 +56,9 @@ const SakEdit = () => {
         const maalingEdit: MaalingEdit = {
           id: maaling.id,
           navn: maalingFormState.navn!,
-          loeysingIdList: maalingFormState.loeysingList.map((l) => l.id),
+          loeysingIdList: maalingFormState.loeysingList.map(
+            (l) => l.loeysing.id
+          ),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
@@ -82,14 +90,8 @@ const SakEdit = () => {
   const sakSteps =
     maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
 
-  const {
-    steps,
-    currentStep,
-    isLastStep,
-    setPreviousStep,
-    setNextStep,
-    goToStep,
-  } = useSakForm(sakSteps);
+  const formStepState = useSakForm(sakSteps);
+  const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
     setMaalingFormState(maalingFormState);
@@ -102,18 +104,16 @@ const SakEdit = () => {
 
   return (
     <>
-      <AppTitle heading="Endre sak" subHeading="Opprett en ny sak" />
-      <SakStepFormContainer
-        currentStep={currentStep}
-        steps={steps}
-        goToStep={goToStep}
-        setPreviousStep={setPreviousStep}
+      <AppTitle heading="Endre sak" subHeading="Endre ein sak" />
+      <SakStepForm
+        formStepState={formStepState}
         maalingFormState={maalingFormState}
+        onSubmit={handleSubmit}
         loading={loading}
         error={error}
-        onSubmit={handleSubmit}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        advisors={advisors}
       />
     </>
   );

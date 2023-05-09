@@ -9,6 +9,8 @@ import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
 import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
 import { TestRegelsett } from '../testreglar/api/types';
+import { User } from '../user/api/types';
+import { getAdvisors_dummy } from '../user/api/user-api';
 import { SakContext } from './types';
 
 const SakApp = () => {
@@ -19,6 +21,7 @@ const SakApp = () => {
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
+  const [advisorList, setAdvisorList] = useState<User[]>([]);
 
   const handleSetMaaling = useCallback((maaling: Maaling) => {
     setMaaling(maaling);
@@ -60,6 +63,13 @@ const SakApp = () => {
       } catch (e) {
         setError(toError(e, 'Kunne ikkje hente regelsett'));
       }
+
+      try {
+        const advisorList = await getAdvisors_dummy();
+        setAdvisorList(advisorList);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente brukere'));
+      }
     };
 
     fetchData().finally(() => setLoading(false));
@@ -79,6 +89,7 @@ const SakApp = () => {
     refresh: doFetchData,
     loeysingList: loeysingList,
     regelsettList: regelsettList,
+    advisors: advisorList,
   };
 
   return <Outlet context={sakContext} />;

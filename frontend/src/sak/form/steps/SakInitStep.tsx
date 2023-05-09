@@ -1,20 +1,25 @@
-import { Select } from '@digdir/design-system-react';
-import React from 'react';
+import { Button } from '@digdir/design-system-react';
+import { CogIcon } from '@navikt/aksel-icons';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import TestlabForm from '../../../common/form/TestlabForm';
 import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
-import { SakFormBaseProps, SakFormState } from '../../types';
-import SakFormContainer from '../SakFormContainer';
+import TestlabFormInput from '../../../common/form/TestlabFormInput';
+import TestlabFormSelect from '../../../common/form/TestlabFormSelect';
+import { User } from '../../../user/api/types';
+import { SakFormBaseProps, SakFormState, saktypeOptions } from '../../types';
+import SakStepFormWrapper from '../SakStepFormWrapper';
+import SakCrawlParameters from './loeysing/SakCrawlParameters';
 
 const SakInitStep = ({
-  heading,
-  subHeading,
+  formStepState,
   maalingFormState,
   onSubmit,
-}: SakFormBaseProps) => {
+  advisors,
+}: SakFormBaseProps & { advisors: User[] }) => {
   const navigate = useNavigate();
+  const [displayAdvanced, setDisplayAdvanced] = useState(false);
 
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
@@ -25,16 +30,28 @@ const SakInitStep = ({
     onClickBack: () => navigate('/'),
   };
 
+  const toggleAdvancedDisplay = () => {
+    setDisplayAdvanced(!displayAdvanced);
+  };
+
   return (
-    <SakFormContainer
-      heading={heading}
-      subHeading={subHeading}
-      formMethods={formMethods}
+    <SakStepFormWrapper
+      formStepState={formStepState}
       onSubmit={onSubmit}
+      formMethods={formMethods}
       buttonStep={buttonStep}
     >
       <div className="sak-init">
-        <TestlabForm.FormInput<SakFormState>
+        <TestlabFormSelect<SakFormState>
+          label="Type sak"
+          name="sakType"
+          options={saktypeOptions}
+          formValidation={{
+            errorMessage: 'Type sak må vejast',
+            validation: { required: true },
+          }}
+        />
+        <TestlabFormInput<SakFormState>
           label="Tittel"
           name="navn"
           formValidation={{
@@ -42,13 +59,34 @@ const SakInitStep = ({
             validation: { required: true, minLength: 1 },
           }}
         />
-        <Select
-          disabled
-          label="Type sak"
-          options={[{ label: 'Type sak', value: 'ts' }]}
+        <TestlabFormSelect<SakFormState>
+          label="Sakshandsamar"
+          name="advisor"
+          options={advisors.map((a) => ({
+            label: a.name,
+            value: String(a.id),
+          }))}
+          formValidation={{
+            errorMessage: 'Sakshandsamar kan ikkje væra tom',
+            validation: { required: true, minLength: 1 },
+          }}
         />
+        <TestlabFormInput<SakFormState>
+          label="Saksnummer (valfritt)"
+          name="sakNumber"
+        />
+        <Button
+          title="Avansert"
+          icon={<CogIcon />}
+          variant={'quiet'}
+          iconPlacement={'right'}
+          onClick={toggleAdvancedDisplay}
+        >
+          Avansert
+        </Button>
+        {displayAdvanced && <SakCrawlParameters />}
       </div>
-    </SakFormContainer>
+    </SakStepFormWrapper>
   );
 };
 

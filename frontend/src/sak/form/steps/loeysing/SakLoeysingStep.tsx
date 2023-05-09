@@ -1,5 +1,12 @@
+import {
+  Button,
+  ButtonColor,
+  ErrorMessage,
+  Select,
+  SingleSelectOption,
+} from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useValidate from '../../../../common/form/hooks/useValidate';
@@ -8,79 +15,143 @@ import {
   HeaderCheckbox,
   RowCheckbox,
 } from '../../../../common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '../../../../common/table/TestlabTable';
 import { Loeysing } from '../../../../loeysingar/api/types';
-import { SakFormBaseProps, SakFormState } from '../../../types';
-import SakFormContainer from '../../SakFormContainer';
-import SakCrawlParameters from './SakCrawlParameters';
-import SakLoeysingTable from './SakLoeysingTable';
+import {
+  LoeysingVerksemd,
+  SakFormBaseProps,
+  SakFormState,
+} from '../../../types';
+import SakStepFormWrapper from '../../SakStepFormWrapper';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
-  onSubmit: (maalingFormState: SakFormState) => void;
   loeysingList: Loeysing[];
-  onClickBack: () => void;
 }
 
 const SakLoeysingStep = ({
-  heading,
-  subHeading,
-  onClickBack,
+  formStepState,
+  maalingFormState,
   error,
   loading,
   onSubmit,
-  maalingFormState,
   loeysingList,
 }: Props) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
 
-  const { control, setValue, setError, clearErrors, formState } = formMethods;
+  const { control, setValue, getValues, setError, clearErrors, formState } =
+    formMethods;
+  const { onClickBack } = formStepState;
+  const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
+  const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
+  const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
 
-  const onChangeRows = (rowSelection: Loeysing[]) => {
-    setValue('loeysingList', rowSelection);
-    useValidate<Loeysing, SakFormState>({
-      selection: rowSelection,
-      name: 'loeysingList',
-      setError: setError,
-      clearErrors: clearErrors,
-      message: 'Løysingar må veljast',
-    });
+  const handleSelectRow = useCallback((selection: LoeysingVerksemd[]) => {
+    setRowSelection(selection);
+  }, []);
+
+  const loeysingOptions: SingleSelectOption[] = useMemo(
+    () =>
+      loeysingList.map((l) => ({
+        label: l.namn,
+        formattedLabel: (
+          <>
+            <b>{l.namn}</b>
+            <div>{l.url}</div>
+          </>
+        ),
+        value: String(l.id),
+      })),
+    []
+  );
+
+  const verksemdOptions: SingleSelectOption[] = loeysingList.map((l) => ({
+    label: l.namn,
+    value: String(l.id),
+  }));
+
+  const onClickAdd = () => {
+    if (loeysingId && verksemdId) {
+      const loeysing = loeysingList.find((l) => l.id === Number(loeysingId));
+      const verksemd = loeysingList.find((l) => l.id === Number(verksemdId));
+      if (loeysing && verksemd) {
+        const oldValues = getValues('loeysingList');
+        const newLoeysingList = [
+          ...oldValues,
+          { loeysing: loeysing, verksemd: verksemd },
+        ];
+        const filteredValues = newLoeysingList.filter(
+          (value, idx, self) =>
+            self.findIndex((v) => v.loeysing.id === value.loeysing.id) === idx
+        );
+        if (filteredValues.length !== newLoeysingList.length) {
+          setError('loeysingList', {
+            type: 'manual',
+            message: 'Løysingar må vera unike',
+          });
+        } else {
+          setValue('loeysingList', filteredValues);
+
+          useValidate<LoeysingVerksemd, SakFormState>({
+            selection: newLoeysingList,
+            name: 'loeysingList',
+            setError: setError,
+            clearErrors: clearErrors,
+            message: 'Løysing og verksemd må veljast',
+          });
+        }
+
+        setLoeysingId(undefined);
+        setVerksemdId(undefined);
+      } else {
+        setError('loeysingList', {
+          type: 'manual',
+          message: 'Løysing og verksemd må veljast',
+        });
+      }
+    }
   };
 
-  const selection = useWatch({
+  const onClickRemove = useCallback(() => {
+    const oldValues = getValues('loeysingList');
+    const newLoeysingList = oldValues.filter(
+      (ov) =>
+        !rowSelection
+          .map((rs) => `${rs.loeysing.id}_${rs.verksemd.id}`)
+          .includes(`${ov.loeysing.id}_${ov.verksemd.id}`)
+    );
+    setValue('loeysingList', newLoeysingList);
+  }, [rowSelection, setValue]);
+
+  const selection = useWatch<SakFormState>({
     control,
     name: 'loeysingList',
-  });
+  }) as LoeysingVerksemd[];
 
-  const selectedRows = useMemo(() => {
-    const rowArray: boolean[] = [];
-    maalingFormState?.loeysingList.forEach(
-      (tr) => (rowArray[tr.id - 1] = true)
-    );
-    return rowArray;
-  }, [maalingFormState]);
-
-  const loeysingColumns = useMemo<ColumnDef<Loeysing>[]>(
+  const loeysingColumns = useMemo<ColumnDef<LoeysingVerksemd>[]>(
     () => [
       {
         id: 'Handling',
-        header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => <RowCheckbox row={row} />,
+        header: ({ table }) => (
+          <HeaderCheckbox<LoeysingVerksemd> table={table} />
+        ),
+        cell: ({ row }) => <RowCheckbox<LoeysingVerksemd> row={row} />,
         size: 1,
       },
       {
-        accessorFn: (row) => row.namn,
-        id: 'Navn',
-        cell: (info) => info.getValue(),
-        header: () => <span>Navn</span>,
-      },
-      {
-        accessorFn: (row) => row.url,
+        accessorFn: (row) => row.loeysing.url,
         id: 'url',
         cell: (info) => info.getValue(),
-        header: () => <span>URL</span>,
+        header: () => <>Namn på løysing</>,
+      },
+      {
+        accessorFn: (row) => row.verksemd.namn,
+        id: 'namn',
+        cell: (info) => info.getValue(),
+        header: () => <span>Ansvarleg verksemd</span>,
       },
     ],
     []
@@ -91,26 +162,69 @@ const SakLoeysingStep = ({
     onClickBack: onClickBack,
   };
 
+  const listErrors = formState.errors['loeysingList'];
+
+  const onSubmitLoeysing = (data: SakFormState) => {
+    if (data.loeysingList.length === 0) {
+      setError('loeysingList', {
+        type: 'manual',
+        message: 'Løysing og verksemd må veljast',
+      });
+    } else {
+      onSubmit(data);
+    }
+  };
+
   return (
-    <SakFormContainer
-      heading={heading}
-      subHeading={subHeading}
+    <SakStepFormWrapper
+      formStepState={formStepState}
+      onSubmit={onSubmitLoeysing}
       formMethods={formMethods}
-      onSubmit={onSubmit}
       buttonStep={buttonStep}
     >
-      <SakLoeysingTable
-        loeysingList={loeysingList}
-        loeysingColumns={loeysingColumns}
-        error={error}
-        loading={loading}
-        formState={formState}
-        selectedRows={selectedRows}
-        onChangeRows={onChangeRows}
-        selection={selection}
-      />
-      <SakCrawlParameters />
-    </SakFormContainer>
+      <div className="sak-loeysing">
+        <div className="sak-loeysing__input-wrapper">
+          <div className="sak-loeysing__input-select">
+            <Select
+              options={loeysingOptions}
+              label="Løysing"
+              onChange={setLoeysingId}
+              value={loeysingId}
+            />
+          </div>
+          <div className="sak-loeysing__input-select">
+            <Select
+              options={verksemdOptions}
+              label="Ansvarlig verksemd (i saka)"
+              onChange={setVerksemdId}
+              value={verksemdId}
+            />
+          </div>
+          <Button
+            title="Legg til"
+            color={ButtonColor.Success}
+            onClick={onClickAdd}
+          >
+            Legg til
+          </Button>
+        </div>
+        <div className="sak-loeysing__table">
+          <TestlabTable<LoeysingVerksemd>
+            data={selection}
+            defaultColumns={loeysingColumns}
+            displayError={{ error }}
+            inputError={listErrors?.message}
+            loading={loading}
+            onSelectRows={handleSelectRow}
+            customStyle={{ small: true }}
+            rowActions={[
+              { action: 'delete', label: 'Slett rad', onClick: onClickRemove },
+            ]}
+          />
+          {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+        </div>
+      </div>
+    </SakStepFormWrapper>
   );
 };
 
