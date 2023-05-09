@@ -109,3 +109,12 @@ export type Saktype =
   | 'Statusmåling'
   | 'Tilsyn'
   | 'Anna';
+
+export const saktypeOptions = [
+  { label: 'Dispensasjonssøknad', value: 'Dispensasjonssøknad' },
+  { label: 'IKT-fagleg uttale', value: 'IKT-fagleg uttale' },
+  { label: 'Forenklet kontroll', value: 'Forenklet kontroll' },
+  { label: 'Statusmåling', value: 'Statusmåling' },
+  { label: 'Tilsyn', value: 'Tilsyn' },
+  { label: 'Anna', value: 'Anna' },
+];

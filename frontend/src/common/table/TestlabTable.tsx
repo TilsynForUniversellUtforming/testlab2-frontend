@@ -19,7 +19,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  Row,
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -186,7 +185,6 @@ const TestlabTable = <T extends object>({
   }
 
   const headerGroup = table.getHeaderGroups()[0];
-  const headerRow = table.getPreFilteredRowModel().flatRows[0] as Row<T>;
   const showFilters =
     filterPreference !== 'none' && filterPreference !== 'searchbar';
 
@@ -217,11 +215,7 @@ const TestlabTable = <T extends object>({
           {showFilters && (
             <TableRow>
               {headerGroup.headers.map((header) => (
-                <TableFilter<T>
-                  headerRow={headerRow}
-                  column={header.column}
-                  key={header.column.id}
-                />
+                <TableFilter<T> column={header.column} key={header.column.id} />
               ))}
             </TableRow>
           )}

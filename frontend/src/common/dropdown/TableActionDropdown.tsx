@@ -11,14 +11,14 @@ interface Props {
 export const TableActionDropdown = ({ actions }: Props) => {
   const [show, setShow] = useState(false);
 
-  const handleShowRoutes = () => {
+  const handleShowDropdown = () => {
     setShow(!show);
   };
 
   return (
     <div className="testlab-table dropdown">
       <Button
-        onClick={handleShowRoutes}
+        onClick={handleShowDropdown}
         className="dropdown__button"
         icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
         iconPlacement="right"
@@ -33,7 +33,7 @@ export const TableActionDropdown = ({ actions }: Props) => {
               <button
                 onClick={() => {
                   tra.onClick();
-                  handleShowRoutes();
+                  handleShowDropdown();
                 }}
                 className="dropdown-content__button"
               >

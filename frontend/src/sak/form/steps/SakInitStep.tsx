@@ -8,7 +8,7 @@ import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
 import TestlabFormInput from '../../../common/form/TestlabFormInput';
 import TestlabFormSelect from '../../../common/form/TestlabFormSelect';
 import { User } from '../../../user/api/types';
-import { SakFormBaseProps, SakFormState } from '../../types';
+import { SakFormBaseProps, SakFormState, saktypeOptions } from '../../types';
 import SakStepFormWrapper from '../SakStepFormWrapper';
 import SakCrawlParameters from './loeysing/SakCrawlParameters';
 
@@ -45,14 +45,7 @@ const SakInitStep = ({
         <TestlabFormSelect<SakFormState>
           label="Type sak"
           name="sakType"
-          options={[
-            { label: 'Dispensasjonssøknad', value: 'Dispensasjonssøknad' },
-            { label: 'IKT-fagleg uttale', value: 'IKT-fagleg uttale' },
-            { label: 'Forenklet kontroll', value: 'Forenklet kontroll' },
-            { label: 'Statusmåling', value: 'Statusmåling' },
-            { label: 'Tilsyn', value: 'Tilsyn' },
-            { label: 'Anna', value: 'Anna' },
-          ]}
+          options={saktypeOptions}
           formValidation={{
             errorMessage: 'Type sak må vejast',
             validation: { required: true },

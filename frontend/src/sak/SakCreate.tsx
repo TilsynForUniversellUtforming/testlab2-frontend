@@ -102,7 +102,7 @@ const SakCreate = () => {
         doSubmitMaaling(maalingFormState);
       }
     },
-    [isLastStep]
+    [isLastStep, setNextStep]
   );
 
   return (

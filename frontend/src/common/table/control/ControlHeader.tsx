@@ -48,8 +48,6 @@ const ControlHeader = ({
             label="Søk"
             value={filterValue}
             onChange={onChangeFilter}
-            placeholder=""
-            disabled={loading}
           />
         )}
       </div>

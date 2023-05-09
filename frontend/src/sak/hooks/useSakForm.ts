@@ -40,7 +40,7 @@ const useSakForm = (steps: SakStep[]): FormStepState => {
 
   const setNextStep = () => {
     setNextStepIdx((currentNext) => {
-      if (isLastStep) {
+      if (isLastStep || currentNext - currentStepIdx !== 1) {
         return currentNext;
       } else {
         return currentNext + 1;

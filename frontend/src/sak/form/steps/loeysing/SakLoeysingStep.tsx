@@ -187,7 +187,7 @@ const SakLoeysingStep = ({
           <div className="sak-loeysing__input-select">
             <Select
               options={loeysingOptions}
-              label="Loeysing"
+              label="Løysing"
               onChange={setLoeysingId}
               value={loeysingId}
             />
