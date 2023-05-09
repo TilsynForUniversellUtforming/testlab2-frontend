@@ -1,3 +1,6 @@
+import './sak-stepper.scss';
+
+import { semanticSurfaceActionDefault } from '@digdir/design-system-tokens';
 import {
   EarthIcon,
   FileTextIcon,
@@ -7,77 +10,61 @@ import {
 import classNames from 'classnames';
 import React from 'react';
 
-import { SakStep, SakStepType } from '../types';
+import { FormStepState } from '../hooks/useSakForm';
+import { SakStepType } from '../types';
 
 interface Props {
-  currentStep: SakStep;
-  steps: SakStep[];
-  goToStep: (stepIdx: number) => void;
+  formStepState: FormStepState;
 }
 
-const StepperIcon = ({
-  sakStepType,
-  active,
-}: {
-  sakStepType: SakStepType;
-  active: boolean;
-}) => {
-  const color = active ? 'white' : '#68707c';
-
+const StepperIcon = ({ sakStepType }: { sakStepType: SakStepType }) => {
   switch (sakStepType) {
     case 'Init':
-      return <FileTextIcon color={color} fontSize="2rem" />;
+      return (
+        <FileTextIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+      );
     case 'Loeysing':
-      return <EarthIcon color={color} fontSize="2rem" />;
+      return <EarthIcon color={semanticSurfaceActionDefault} fontSize="2rem" />;
     case 'Testregel':
-      return <WrenchIcon color={color} fontSize="2rem" />;
+      return (
+        <WrenchIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+      );
     case 'Confirm':
-      return <TasklistIcon color={color} fontSize="2rem" />;
+      return (
+        <TasklistIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+      );
   }
 };
 
-const Stepper = ({ steps, currentStep, goToStep }: Props) => {
-  const currentIdx = currentStep.index;
+const Stepper = ({ formStepState }: Props) => {
+  const { steps, nextStepIdx, goToStep } = formStepState;
 
   return (
     <div className="sak-stepper" aria-hidden="true">
       {steps.map((step) => {
-        const active = step.index <= currentIdx;
+        const active = step.index < nextStepIdx;
 
         return (
-          <div
-            className="sak-stepper__container"
+          <button
+            onClick={() => goToStep(step.index)}
+            type="button"
+            className={classNames('sak-stepper__button', { active: active })}
             key={step.index}
-            style={{ gridRow: `${step.index + 1}` }}
+            disabled={!active}
           >
-            <div className="sak-stepper__text">
-              <div>
-                <div className={classNames('title', { active: active })}>
-                  {step.stepperTitle}
-                </div>
-                <div className={classNames({ active: active })}>
-                  {step.stepperSubTitle}
-                </div>
+            <div className="wrapper">
+              <div className={classNames('text', { active: active })}>
+                <div className="title">{step.stepperTitle}</div>
+                {step.stepperSubTitle}
+              </div>
+              <div className={classNames('icon', { active: active })}>
+                <StepperIcon sakStepType={step.sakStepType} />
+                {steps.length - 1 > step.index && (
+                  <div className="icon__line"></div>
+                )}
               </div>
             </div>
-            <div className="sak-stepper__icon">
-              <div className="icon-wrapper">
-                <button
-                  onClick={() => goToStep(step.index)}
-                  className={classNames('icon-button', {
-                    active: active,
-                  })}
-                  style={{
-                    width: '5rem',
-                    height: '5rem',
-                    borderRadius: '50%',
-                  }}
-                >
-                  <StepperIcon active={active} sakStepType={step.sakStepType} />
-                </button>
-              </div>
-            </div>
-          </div>
+          </button>
         );
       })}
     </div>

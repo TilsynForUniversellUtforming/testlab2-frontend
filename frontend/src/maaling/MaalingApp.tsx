@@ -11,6 +11,8 @@ import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
 import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
 import { TestRegelsett } from '../testreglar/api/types';
+import { User } from '../user/api/types';
+import { getAdvisors_dummy } from '../user/api/user-api';
 import { fetchMaaling, updateMaalingStatus } from './api/maaling-api';
 import { Maaling } from './api/types';
 import { MaalingContext } from './types';
@@ -24,6 +26,7 @@ const MaalingApp = () => {
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
+  const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(false);
 
   const handleSetMaaling = useCallback((maaling: Maaling) => {
@@ -118,6 +121,9 @@ const MaalingApp = () => {
 
       const regelsett = await getRegelsett_dummy();
       setRegelsettList(regelsett);
+
+      const advisors = await getAdvisors_dummy();
+      setAdvisorList(advisors);
       setLoading(false);
       setError(undefined);
     };
@@ -147,6 +153,7 @@ const MaalingApp = () => {
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,
+    advisors: advisorList,
   };
 
   if (!loading && !showMaalinger) {

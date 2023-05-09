@@ -10,6 +10,11 @@
     }
   }
 
+  &__input,
+  &__select {
+    padding-bottom: 1.5rem;
+  }
+
   &__navigation-buttons {
     display: flex;
     justify-content: start;

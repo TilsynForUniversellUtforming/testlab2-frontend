@@ -1,9 +1,15 @@
-import { Button } from '@digdir/design-system-react';
+import './dropdown.scss';
+
+import {
+  Button,
+  ButtonColor,
+  ButtonVariant,
+} from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { AppRoute } from '../../appRoutes';
+import { AppRoute } from '../appRoutes';
 
 interface Props {
   navn: string;
@@ -22,23 +28,22 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
       <Button
         onClick={handleShowRoutes}
         className="dropdown__button"
-        icon={
-          show ? (
-            <ChevronUpIcon color="white" />
-          ) : (
-            <ChevronDownIcon color="white" />
-          )
-        }
+        icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
         iconPlacement="right"
+        variant={ButtonVariant.Quiet}
+        color={ButtonColor.Inverted}
       >
         {navn}
       </Button>
       {show && (
-        <ul className="dropdown-content">
+        <ul className="dropdown-content links">
           {routes.map((route) => (
             <li className="dropdown-content__item" key={route.navn}>
               <Link to={route.path} className="link">
-                <button onClick={handleShowRoutes} className="link-button">
+                <button
+                  onClick={handleShowRoutes}
+                  className="dropdown-content__button"
+                >
                   {route.navn}
                 </button>
               </Link>

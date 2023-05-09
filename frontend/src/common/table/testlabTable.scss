@@ -1,4 +1,12 @@
 .testlab-table {
+  .dropdown {
+    padding-bottom: 1rem;
+  }
+
+  a {
+    color: var(--fds-semantic-text-action-default);
+  }
+
   &__table {
     margin-bottom: 1rem;
     table-layout: fixed;

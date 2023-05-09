@@ -8,7 +8,7 @@ import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import toError from '../common/error/util';
 import { createMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
-import SakStepFormContainer from './form/SakStepFormContainer';
+import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
 import { defaultSakSteps, SakContext, SakFormState } from './types';
 
@@ -21,6 +21,7 @@ const SakCreate = () => {
     setMaaling,
     contextLoading,
     contextError,
+    advisors,
   }: SakContext = useOutletContext();
 
   const [error, setError] = useState(contextError);
@@ -30,8 +31,12 @@ const SakCreate = () => {
     navn: '',
     loeysingList: [],
     regelsettId: undefined,
+    testregelList: [],
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
+    sakType: undefined,
+    advisor: undefined,
+    sakNumber: '',
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -54,7 +59,9 @@ const SakCreate = () => {
       ) {
         const maalingInit: MaalingInit = {
           navn: maalingFormState.navn,
-          loeysingIdList: maalingFormState.loeysingList.map((l) => l.id),
+          loeysingIdList: maalingFormState.loeysingList.map(
+            (l) => l.loeysing.id
+          ),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
@@ -83,38 +90,33 @@ const SakCreate = () => {
     });
   }, []);
 
-  const {
-    steps,
-    currentStep,
-    isLastStep,
-    setPreviousStep,
-    setNextStep,
-    goToStep,
-  } = useSakForm(defaultSakSteps);
+  const formStepState = useSakForm(defaultSakSteps);
+  const { isLastStep, setNextStep } = formStepState;
 
-  const handleSubmit = (maalingFormState: SakFormState) => {
-    setMaalingFormState(maalingFormState);
-    if (!isLastStep) {
-      return setNextStep();
-    } else {
-      doSubmitMaaling(maalingFormState);
-    }
-  };
+  const handleSubmit = useCallback(
+    (maalingFormState: SakFormState) => {
+      setMaalingFormState(maalingFormState);
+      if (!isLastStep) {
+        return setNextStep();
+      } else {
+        doSubmitMaaling(maalingFormState);
+      }
+    },
+    [isLastStep, setNextStep]
+  );
 
   return (
     <>
       <AppTitle heading="Ny sak" subHeading="Opprett en ny sak" />
-      <SakStepFormContainer
-        currentStep={currentStep}
-        steps={steps}
-        goToStep={goToStep}
-        setPreviousStep={setPreviousStep}
+      <SakStepForm
+        formStepState={formStepState}
         maalingFormState={maalingFormState}
+        onSubmit={handleSubmit}
         loading={loading}
         error={error}
-        onSubmit={handleSubmit}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        advisors={advisors}
       />
     </>
   );

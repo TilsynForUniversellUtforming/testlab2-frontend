@@ -1,18 +1,23 @@
 import './navigation.scss';
 
+import { ButtonColor, ButtonVariant } from '@digdir/design-system-react';
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { appRoutes, verktoey } from '../appRoutes';
-import LinksDropdown from './dropdown/LinksDropdown';
+import TestlabLinkButton from '../button/TestlabLinkButton';
+import LinksDropdown from '../dropdown/LinksDropdown';
 
 const Navigation = () => {
   return (
     <div className="navigation">
       <div className="navigation__item">
-        <Link to={appRoutes.ROOT.path} className="link">
-          {appRoutes.ROOT.navn}
-        </Link>
+        <TestlabLinkButton
+          route={appRoutes.ROOT}
+          className="link"
+          title={appRoutes.ROOT.navn}
+          variant={ButtonVariant.Quiet}
+          color={ButtonColor.Inverted}
+        />
       </div>
       <div className="navigation__item">
         <LinksDropdown navn="Verktøy" routes={verktoey} />

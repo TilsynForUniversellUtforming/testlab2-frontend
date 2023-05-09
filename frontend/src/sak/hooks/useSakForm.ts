@@ -15,8 +15,9 @@ import { SakStep } from '../types';
  * @property {() => void} setNextStep - A function to navigate to the next step.
  * @property {() => void} setPreviousStep - A function to navigate to the previous step.
  */
-export type CurrentStep = {
+export type FormStepState = {
   currentStepIdx: number;
+  nextStepIdx: number;
   steps: SakStep[];
   currentStep: SakStep;
   isFirstStep: boolean;
@@ -24,20 +25,27 @@ export type CurrentStep = {
   onClickBack: () => void;
   goToStep: (idx: number) => void;
   setNextStep: () => void;
-  setPreviousStep: () => void;
 };
 
 /**
  * A custom hook to manage the state and logic of a Sak form component.
  * @param {SakStep[]} steps - The array of Sak steps.
- * @returns {CurrentStep} - The current step and state of the form.
+ * @returns {FormStepState} - The current step and state of the form.
  */
-const useSakForm = (steps: SakStep[]): CurrentStep => {
+const useSakForm = (steps: SakStep[]): FormStepState => {
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
+  const [nextStepIdx, setNextStepIdx] = useState<number>(1);
   const isFirstStep = currentStepIdx <= 0;
   const isLastStep = currentStepIdx >= steps.length - 1;
 
   const setNextStep = () => {
+    setNextStepIdx((currentNext) => {
+      if (isLastStep || currentNext - currentStepIdx !== 1) {
+        return currentNext;
+      } else {
+        return currentNext + 1;
+      }
+    });
     setCurrentStepIdx((currentStepIdx) => {
       if (isLastStep) {
         return currentStepIdx;
@@ -48,7 +56,9 @@ const useSakForm = (steps: SakStep[]): CurrentStep => {
   };
 
   const goToStep = (stepIdx: number) => {
-    setCurrentStepIdx(stepIdx);
+    if (stepIdx < currentStepIdx || stepIdx < nextStepIdx) {
+      setCurrentStepIdx(stepIdx);
+    }
   };
 
   const setPreviousStep = () => {
@@ -70,7 +80,7 @@ const useSakForm = (steps: SakStep[]): CurrentStep => {
     onClickBack: setPreviousStep,
     goToStep: goToStep,
     setNextStep: setNextStep,
-    setPreviousStep: setPreviousStep,
+    nextStepIdx: nextStepIdx,
   };
 };
 

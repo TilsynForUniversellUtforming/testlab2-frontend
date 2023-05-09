@@ -2,77 +2,74 @@ import React, { ReactElement } from 'react';
 
 import { Loeysing } from '../../loeysingar/api/types';
 import { TestRegelsett } from '../../testreglar/api/types';
-import { SakFormBaseProps, SakFormState, SakStep } from '../types';
+import { User } from '../../user/api/types';
+import { SakFormBaseProps } from '../types';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
 import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
 import SakInitStep from './steps/SakInitStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
-export interface Props<T extends SakFormBaseProps> {
+export interface Props<T> extends SakFormBaseProps {
   error: Error | undefined;
-  step: SakStep;
   loading: boolean;
-  maalingFormState: SakFormState;
   loeysingList: Loeysing[];
   regelsettList: TestRegelsett[];
-  onClickBack: () => void;
-  onSubmit: (maalingFormState: SakFormState) => void;
+  advisors: User[];
 }
 
-const SakStepForm = <T extends SakFormBaseProps>({
-  step,
-  maalingFormState,
-  loading,
+const SakStepForm = <T extends object>({
   error,
-  regelsettList,
+  loading,
   loeysingList,
-  onClickBack,
+  regelsettList,
+  advisors,
+  maalingFormState,
   onSubmit,
+  formStepState,
 }: Props<T>): ReactElement<T> => {
-  switch (step.sakStepType) {
+  const { currentStep } = formStepState;
+
+  switch (currentStep.sakStepType) {
     case 'Init':
       return (
         <SakInitStep
+          formStepState={formStepState}
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
-          heading={step.heading}
-          subHeading={step.subHeading}
+          advisors={advisors}
         />
       );
     case 'Loeysing':
       return (
         <SakLoeysingStep
+          formStepState={formStepState}
+          maalingFormState={maalingFormState}
+          onSubmit={onSubmit}
           error={error}
           loading={loading}
           loeysingList={loeysingList}
-          maalingFormState={maalingFormState}
-          heading={step.heading}
-          subHeading={step.subHeading}
-          onSubmit={onSubmit}
-          onClickBack={onClickBack}
         />
       );
     case 'Testregel':
       return (
         <SakTestreglarStep
-          regelsettList={regelsettList}
-          onClickBack={onClickBack}
-          heading={step.heading}
-          subHeading={step.subHeading}
-          onSubmit={onSubmit}
+          formStepState={formStepState}
           maalingFormState={maalingFormState}
+          onSubmit={onSubmit}
+          error={error}
+          loading={loading}
+          regelsettList={regelsettList}
         />
       );
     case 'Confirm':
       return (
         <SakConfirmStep
+          formStepState={formStepState}
           maalingFormState={maalingFormState}
-          regelsettList={regelsettList}
           onSubmit={onSubmit}
-          onClickBack={onClickBack}
-          heading={step.heading}
           error={error}
           loading={loading}
+          regelsettList={regelsettList}
         />
       );
     default:
