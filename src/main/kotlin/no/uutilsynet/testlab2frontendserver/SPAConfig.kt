@@ -46,7 +46,8 @@ class SinglePageAppConfig : WebMvcConfigurer {
         .addResourceLocations("classpath:/public/")
         .setCacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS).mustRevalidate())
         .setCacheControl(CacheControl.noCache())
-        .resourceChain(true)
+        .setCacheControl(CacheControl.noStore())
+        .resourceChain(false)
         .addResolver(resolver)
   }
 }
