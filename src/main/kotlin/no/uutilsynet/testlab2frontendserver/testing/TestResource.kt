@@ -31,7 +31,7 @@ class TestResource(val restTemplate: RestTemplate, val testingApiProperties: Tes
           }
           .getOrElse {
             logger.info(
-                "Kunne ikkje hente testresultat for måling med id $id og løsying med id $loeysingId")
+                "Kunne ikkje hente testresultat for måling med id $id og løysing med id $loeysingId")
             throw RuntimeException("Klarte ikkje å hente testresultat")
           }
 }

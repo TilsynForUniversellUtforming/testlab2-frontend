@@ -116,7 +116,7 @@ const MaalingApp = () => {
         const loeysingList = await fetchLoeysingList();
         setLoeysingList(loeysingList);
       } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente løsyngar'));
+        setError(toError(e, 'Kunne ikkje hente løysingar'));
       }
 
       const regelsett = await getRegelsett_dummy();

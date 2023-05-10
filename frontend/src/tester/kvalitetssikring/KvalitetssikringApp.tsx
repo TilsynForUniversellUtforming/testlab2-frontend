@@ -42,12 +42,12 @@ const KvalitetssikringApp = () => {
     );
   } else if (typeof loeysingId === 'undefined') {
     return (
-      <ErrorCard error={new Error('Løsysing eksisterar ikkje på måling')} />
+      <ErrorCard error={new Error('Løysing eksisterar ikkje på måling')} />
     );
   } else if (typeof loeysingCrawResultat === 'undefined') {
     return (
       <ErrorCard
-        error={new Error('Sideutval på løsysing eksisterar ikkje på måling')}
+        error={new Error('Sideutval på løysing eksisterar ikkje på måling')}
       />
     );
   }
@@ -85,7 +85,7 @@ const KvalitetssikringApp = () => {
   }, []);
 
   const onClickDeleteLoeysing = useCallback(() => {
-    console.log('Sletter løsning');
+    console.log('Sletter løysing');
   }, []);
 
   const onClickRemoveUrl = useCallback(() => {

@@ -59,14 +59,14 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
       {
         accessorFn: (row) => row.loeysing.url,
         id: 'url',
-        cell: ({ row }) => <span>{row.original.loeysing.url}</span>,
-        header: () => <span>Løsying</span>,
+        cell: ({ row }) => <>{row.original.loeysing.url}</>,
+        header: () => <>Løysing</>,
       },
       {
         accessorFn: (row) => row.loeysing.namn,
         id: 'namn',
         cell: (info) => info.getValue(),
-        header: () => <span>Verksemd</span>,
+        header: () => <>Verksemd</>,
       },
       {
         accessorFn: (row) => row.tilstand,
