@@ -76,13 +76,13 @@ const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
         accessorFn: (row) => row.loeysing.url,
         id: 'url',
         cell: (info) => info.getValue(),
-        header: () => <span>Løsying</span>,
+        header: () => <>Løysing</>,
       },
       {
         accessorFn: (row) => row.loeysing.namn,
         id: 'namn',
         cell: (info) => info.getValue(),
-        header: () => <span>Verksemd</span>,
+        header: () => <>Verksemd</>,
       },
       {
         accessorFn: (row) => row.type,
