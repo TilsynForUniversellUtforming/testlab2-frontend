@@ -11,7 +11,6 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.StatusDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import org.slf4j.LoggerFactory
@@ -139,7 +138,10 @@ class MaalingResource(
       runCatching {
             restTemplate.put(
                 "${maalingUrl}/${id}/status",
-                StatusDTO(MaalingStatus.crawling.status, listOf(loeysingId)))
+                HttpEntity(
+                    mapOf(
+                        "status" to MaalingStatus.crawling.status,
+                        "loeysingIdList" to listOf(loeysingId))))
             getMaaling(id)
           }
           .getOrElse {
