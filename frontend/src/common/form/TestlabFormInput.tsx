@@ -6,6 +6,7 @@ import { FormValidation } from './types';
 
 export interface EditProps<T extends object> {
   label: string;
+  sublabel?: string;
   formValidation?: FormValidation;
   hidden?: boolean;
   name: Path<T>;
@@ -14,6 +15,7 @@ export interface EditProps<T extends object> {
 
 const TestlabFormInput = <T extends object>({
   label,
+  sublabel,
   name,
   formValidation,
   numeric = false,
@@ -32,10 +34,16 @@ const TestlabFormInput = <T extends object>({
       rules={formValidation?.validation}
       render={({ field: { onChange, onBlur, value } }) => (
         <div className="testlab-form__input">
+          <label htmlFor={name} className="testlab-form__input-label">
+            {label}
+            {sublabel && (
+              <div className="testlab-form__input-sub-label">{sublabel}</div>
+            )}
+          </label>
           <TextField
             type="text"
             value={value}
-            label={label}
+            id={name}
             isValid={!hasError}
             onChange={onChange}
             onBlur={onBlur}
