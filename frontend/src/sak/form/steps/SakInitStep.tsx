@@ -44,6 +44,7 @@ const SakInitStep = ({
       <div className="sak-init">
         <TestlabFormSelect<SakFormState>
           label="Type sak"
+          sublabel="Angi type sak du skal opprette."
           name="sakType"
           options={saktypeOptions}
           formValidation={{
@@ -53,6 +54,8 @@ const SakInitStep = ({
         />
         <TestlabFormInput<SakFormState>
           label="Tittel"
+          sublabel="Angi sakstype og årstall. Ta med namn på verksemd
+når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
           name="navn"
           formValidation={{
             errorMessage: 'Tittel kan ikkje væra tom',
@@ -61,6 +64,7 @@ const SakInitStep = ({
         />
         <TestlabFormSelect<SakFormState>
           label="Sakshandsamar"
+          sublabel="Angi kven som skal følgje opp saka."
           name="advisor"
           options={advisors.map((a) => ({
             label: a.name,
@@ -73,6 +77,7 @@ const SakInitStep = ({
         />
         <TestlabFormInput<SakFormState>
           label="Saksnummer (valfritt)"
+          sublabel="Angi saksnummer frå Websak. Eksempel: 23/297."
           name="sakNumber"
         />
         <Button

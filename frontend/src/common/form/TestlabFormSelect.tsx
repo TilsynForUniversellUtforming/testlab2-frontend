@@ -11,6 +11,7 @@ export interface EditSelectProps<T extends object> extends EditProps<T> {
 
 const TestlabFormSelect = <T extends object>({
   label,
+  sublabel,
   options,
   name,
   formValidation,
@@ -29,8 +30,14 @@ const TestlabFormSelect = <T extends object>({
       rules={formValidation?.validation}
       render={({ field: { onChange, value } }) => (
         <div className="testlab-form__select">
+          <label htmlFor={name} className="testlab-form__input-label">
+            {label}
+            {sublabel && (
+              <div className="testlab-form__input-sub-label">{sublabel}</div>
+            )}
+          </label>
           <Select
-            label={label}
+            inputId={name}
             value={value}
             onChange={onChange}
             options={options}

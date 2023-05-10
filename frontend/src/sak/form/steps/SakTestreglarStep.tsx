@@ -183,8 +183,15 @@ const SakTestreglarStep = ({
       <div className="sak-testreglar">
         <div className="sak-testreglar__input-wrapper">
           <div className="sak-testreglar__input-select">
+            <label htmlFor="testregelId" className="testlab-form__input-label">
+              Testregel eller testregelsett
+              <div className="testlab-form__input-sub-label">
+                Vel enkelt testregel eller samling av testreglar (testregelsett)
+                du vil legge til.
+              </div>
+            </label>
             <Select
-              label="Testregel eller testregelsett"
+              inputId="testregelId"
               onChange={setTestregelId}
               options={testRegelOptions}
               value={testregelId}
