@@ -84,7 +84,7 @@ const MaalingApp = () => {
           setError(new Error('Noko gjekk gale ved oppdatering av måling'));
         } else {
           navigate(
-            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+            getFullPath(appRoutes.TEST_TESTING_LIST, {
               pathParam: idPath,
               id: String(maaling.id),
             })

@@ -67,6 +67,15 @@ const TestResultListApp = () => {
         header: () => <span>Status</span>,
       },
       {
+        accessorFn: (row) => row.side,
+        id: 'side',
+        cell: (info) => (
+          <a href={String(info.getValue())}>{String(info.getValue())}</a>
+        ),
+        header: () => <span>HTML element</span>,
+      },
+
+      {
         accessorFn: (row) => row.elementOmtale.htmlCode,
         id: 'htmlCode',
         cell: (info) => <span>{decodeBase64(String(info.getValue()))}</span>,

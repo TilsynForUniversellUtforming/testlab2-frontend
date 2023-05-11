@@ -9,6 +9,7 @@
     position: absolute;
     background-color: var(--fds-semantic-background-default);
     border-radius: 3px;
+    z-index: 9999;
     &.links {
       margin: 8px 0 auto;
     }
