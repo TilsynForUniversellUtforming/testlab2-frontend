@@ -41,15 +41,13 @@ const TestResultListApp = () => {
         accessorFn: (row) => row.testregelId,
         id: '_idTestregel',
         cell: (info) => info.getValue(),
-        header: () => <span>Testregel</span>,
+        header: () => <>Testregel</>,
       },
       {
         accessorFn: (row) => row.suksesskriterium,
         id: '_idSuksesskriterium',
-        cell: ({ row }) => (
-          <span>{row.original.suksesskriterium.join(', ')}</span>
-        ),
-        header: () => <span>Suksesskriterium</span>,
+        cell: ({ row }) => <>{row.original.suksesskriterium.join(', ')}</>,
+        header: () => <>Suksesskriterium</>,
       },
       {
         accessorFn: (row) => row.elementResultat,
@@ -64,7 +62,7 @@ const TestResultListApp = () => {
             }}
           />
         ),
-        header: () => <span>Status</span>,
+        header: () => <>Status</>,
       },
       {
         accessorFn: (row) => row.side,
@@ -72,20 +70,20 @@ const TestResultListApp = () => {
         cell: (info) => (
           <a href={String(info.getValue())}>{String(info.getValue())}</a>
         ),
-        header: () => <span>HTML element</span>,
+        header: () => <>Nettside</>,
       },
 
       {
         accessorFn: (row) => row.elementOmtale.htmlCode,
         id: 'htmlCode',
-        cell: (info) => <span>{decodeBase64(String(info.getValue()))}</span>,
-        header: () => <span>HTML element</span>,
+        cell: (info) => <>{decodeBase64(String(info.getValue()))}</>,
+        header: () => <>HTML element</>,
       },
       {
         accessorFn: (row) => row.elementOmtale.pointer,
         id: 'pointer',
         cell: (info) => info.getValue(),
-        header: () => <span>Peker</span>,
+        header: () => <>Peker</>,
       },
     ],
     []
