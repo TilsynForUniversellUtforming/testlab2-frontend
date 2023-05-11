@@ -8,16 +8,23 @@ import appRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import TestlabTable from '../../common/table/TestlabTable';
 import UserAction from '../../common/table/user-actions/UserAction';
-import { CrawlResultat } from '../../maaling/api/types';
+import { CrawlResultat, MaalingStatus } from '../../maaling/api/types';
 
 export interface Props {
+  maalingStatus: MaalingStatus;
   crawlList: CrawlResultat[];
   loading: boolean;
   error: Error | undefined;
   onClickRestart: (row: Row<CrawlResultat>) => void;
 }
 
-const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
+const CrawlingList = ({
+  crawlList,
+  maalingStatus,
+  loading,
+  error,
+  onClickRestart,
+}: Props) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -55,14 +62,16 @@ const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
                   title={`Gå til løysing ${row.original.loeysing.url}`}
                   message="Se crawlresultat"
                 />
-                <UserAction<CrawlResultat>
-                  action={onClickRestart}
-                  columnUserAction={'redo'}
-                  row={row}
-                  message={`Start sideutval for ${row.original.loeysing.url} på nytt`}
-                  title={`Nytt sideutval for ${row.original.loeysing.namn}`}
-                  confirm
-                />
+                {maalingStatus === 'kvalitetssikring' && (
+                  <UserAction<CrawlResultat>
+                    action={onClickRestart}
+                    columnUserAction={'redo'}
+                    row={row}
+                    message={`Start sideutval for ${row.original.loeysing.url} på nytt`}
+                    title={`Nytt sideutval for ${row.original.loeysing.namn}`}
+                    confirm
+                  />
+                )}
               </div>
             );
           } else {
@@ -70,7 +79,7 @@ const CrawlingList = ({ crawlList, loading, error, onClickRestart }: Props) => {
           }
         },
         enableSorting: false,
-        size: 2,
+        size: maalingStatus === 'kvalitetssikring' ? 2 : 1,
       },
       {
         accessorFn: (row) => row.loeysing.url,

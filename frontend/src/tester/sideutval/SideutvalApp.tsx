@@ -83,6 +83,7 @@ const SideutvalApp = () => {
       <AppTitle heading="Sideutval" subHeading={maaling.navn} />
       <CrawlingList
         crawlList={crawlResultat}
+        maalingStatus={maaling.status}
         error={error}
         onClickRestart={onClickRestart}
         loading={loading}

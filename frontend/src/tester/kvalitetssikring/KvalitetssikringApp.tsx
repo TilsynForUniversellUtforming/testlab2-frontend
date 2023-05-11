@@ -131,12 +131,14 @@ const KvalitetssikringApp = () => {
           disabled={loading}
           title="Ta nettsted ut av måling"
         />
-        <ConfirmModalButton
-          message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
-          onConfirm={onClickRestart}
-          disabled={loading}
-          title="Nytt sideutval for nettstad"
-        />
+        {maaling.status === 'kvalitetssikring' && (
+          <ConfirmModalButton
+            message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
+            onConfirm={onClickRestart}
+            disabled={loading}
+            title="Nytt sideutval for nettstad"
+          />
+        )}
       </div>
       <TestlabTable<CrawlUrl>
         data={crawlUrls}
