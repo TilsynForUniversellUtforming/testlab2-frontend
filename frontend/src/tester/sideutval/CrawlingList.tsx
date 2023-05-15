@@ -120,10 +120,9 @@ const CrawlingList = ({
             <StatusBadge
               label={label}
               levels={{
-                primary: 'ikke_ferdig',
-                danger: 'feilet',
-                success: 'ferdig',
-                isSuccess: crawlSuccess,
+                primary: ['ikke_ferdig'],
+                danger: ['feilet'],
+                success: ['ferdig'],
               }}
             />
           );

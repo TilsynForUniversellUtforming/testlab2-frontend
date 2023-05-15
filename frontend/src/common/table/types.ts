@@ -1,5 +1,7 @@
 import { Table } from '@tanstack/react-table';
 
+import { ConfirmModalProps } from '../confirm/ConfirmModalButton';
+
 export interface TableProps {
   table: Table<any>;
 }
@@ -16,10 +18,9 @@ export type TableStyle = {
 
 export type TableFilterPreference = 'all' | 'none' | 'searchbar' | 'rowsearch';
 
-export type RowActionType = 'delete';
+export type RowActionType = 'delete' | 'restart';
 
 export type TableRowAction = {
-  onClick: () => void;
-  label: string;
   action: RowActionType;
+  modalProps: ConfirmModalProps;
 };

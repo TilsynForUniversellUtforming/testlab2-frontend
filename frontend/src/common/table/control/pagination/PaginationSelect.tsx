@@ -48,6 +48,7 @@ const PaginationMiddleSection = ({ table }: TableProps) => {
           onClick={() => table.setPageIndex(index)}
           variant={buttonVariant}
           color={ButtonColor.Secondary}
+          aria-label={`Gå til side ${pageNumber}`}
         >
           {pageNumber}
         </Button>
@@ -82,12 +83,14 @@ const PaginationSelect = ({ table }: TableProps) => {
         onClick={() => table.setPageIndex(0)}
         icon={<ChevronLeftDoubleIcon color="black" />}
         variant={ButtonVariant.Quiet}
+        aria-label="Gå til første side"
       />
       <Button
         disabled={!table.getCanPreviousPage()}
         onClick={() => table.previousPage()}
         icon={<ChevronLeftIcon color="black" />}
         variant={ButtonVariant.Quiet}
+        aria-label="Gå til forrige side"
       />
       <PaginationMiddleSection table={table} />
       <Button
@@ -95,12 +98,14 @@ const PaginationSelect = ({ table }: TableProps) => {
         onClick={() => table.nextPage()}
         icon={<ChevronRightIcon color="black" />}
         variant={ButtonVariant.Quiet}
+        aria-label="Gå til neste side"
       />
       <Button
         disabled={!table.getCanNextPage()}
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
         icon={<ChevronRightDoubleIcon color="black" />}
         variant={ButtonVariant.Quiet}
+        aria-label="Gå til siste side"
       />
     </div>
   );

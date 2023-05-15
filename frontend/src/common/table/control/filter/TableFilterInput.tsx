@@ -15,10 +15,13 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
   const columnFilterValue = column.getFilterValue();
 
   return (
-    <DebouncedInput
-      value={(columnFilterValue ?? '') as string}
-      onChange={(value) => column.setFilterValue(value)}
-    />
+    <div className="testlab-table__column-filter">
+      <DebouncedInput
+        value={(columnFilterValue ?? '') as string}
+        onChange={(value) => column.setFilterValue(value)}
+        ariaLabel={column.columnDef?.id ?? ''}
+      />
+    </div>
   );
 };
 

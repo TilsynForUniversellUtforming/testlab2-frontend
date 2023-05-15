@@ -6,6 +6,7 @@ export type Props = {
   onChange: (value: string | number) => void;
   debounce?: number;
   label?: string;
+  ariaLabel?: string;
 };
 
 const DebouncedInput = ({
@@ -13,6 +14,7 @@ const DebouncedInput = ({
   onChange,
   debounce = 500,
   label,
+  ariaLabel,
 }: Props) => {
   const [value, setValue] = useState(initialValue);
 
@@ -36,6 +38,7 @@ const DebouncedInput = ({
       onChange={(e) => setValue(e.target.value)}
       name="debounced-input"
       autoComplete="new-password"
+      aria-label={ariaLabel}
     />
   );
 };

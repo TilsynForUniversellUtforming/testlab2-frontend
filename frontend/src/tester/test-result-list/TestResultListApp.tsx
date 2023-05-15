@@ -56,9 +56,9 @@ const TestResultListApp = () => {
           <StatusBadge
             label={info.getValue()}
             levels={{
-              primary: 'ikkje forekomst',
-              danger: 'brot',
-              success: 'samsvar',
+              primary: ['ikkje forekomst'],
+              danger: ['brot'],
+              success: ['samsvar'],
             }}
           />
         ),

@@ -83,9 +83,9 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
           <StatusBadge
             label={info.getValue()}
             levels={{
-              primary: 'Publisert',
-              danger: 'Utgår',
-              success: 'Klar for testing',
+              primary: ['Publisert'],
+              danger: ['Utgår'],
+              success: ['Klar for testing'],
             }}
           />
         ),

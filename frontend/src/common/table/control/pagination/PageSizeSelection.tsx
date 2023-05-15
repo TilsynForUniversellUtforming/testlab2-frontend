@@ -11,15 +11,20 @@ const PageSizeSelection = ({ table, loading }: LoadingTableProps) => {
   }));
 
   return (
-    <Select
-      label="Elementer per side"
-      value={String(table.getState().pagination.pageSize)}
-      onChange={(size) => {
-        table.setPageSize(Number(size));
-      }}
-      options={options}
-      disabled={loading}
-    />
+    <div className="pagination-container__pagination-select-wrapper">
+      <label htmlFor="pagination-select">Rader per side</label>
+      <div className="pagination-select">
+        <Select
+          inputId={'pagination-select'}
+          value={String(table.getState().pagination.pageSize)}
+          onChange={(size) => {
+            table.setPageSize(Number(size));
+          }}
+          options={options}
+          disabled={loading}
+        />
+      </div>
+    </div>
   );
 };
 

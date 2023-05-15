@@ -111,26 +111,29 @@ const LoeysingList = () => {
   );
 
   return (
-    <>
-      <UserActionTable<Loeysing>
-        heading="Løysingar"
-        createRoute={appRoutes.LOEYSING_CREATE}
-        deleteConfirmationModalProps={{
-          title: 'Slett løysingar',
-          disabled: loeysingRowSelection.length === 0,
-          message: deleteMessage,
-          onConfirm: onClickDelete,
-        }}
-        tableProps={{
-          data: loeysingList,
-          defaultColumns: loeysingColumns,
-          displayError: { error: error },
-          loading: loading,
-          onSelectRows: onSelectRows,
-          onClickRetry: onClickRefresh,
-        }}
-      />
-    </>
+    <UserActionTable<Loeysing>
+      heading="Løysingar"
+      createRoute={appRoutes.LOEYSING_CREATE}
+      tableProps={{
+        data: loeysingList,
+        defaultColumns: loeysingColumns,
+        displayError: { error: error },
+        loading: loading,
+        onSelectRows: onSelectRows,
+        onClickRetry: onClickRefresh,
+        rowActions: [
+          {
+            action: 'delete',
+            modalProps: {
+              title: 'Slett løysingar',
+              disabled: loeysingRowSelection.length === 0,
+              message: deleteMessage,
+              onConfirm: onClickDelete,
+            },
+          },
+        ],
+      }}
+    />
   );
 };
 

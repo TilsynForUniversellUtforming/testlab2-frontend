@@ -4,7 +4,7 @@ import React from 'react';
 import { appRoutes, getFullPath, idPath } from '../../../common/appRoutes';
 import StatusBadge from '../../../common/status-badge/StatusBadge';
 import { Maaling } from '../../api/types';
-import useMaalingStatus from '../../hooks/useMaalingStatus';
+import useMaalingOverviewStatus from '../../hooks/useMaalingOverviewStatus';
 import MaalingStatusRow from './MaalingStatusRow';
 
 export interface Props {
@@ -18,15 +18,22 @@ const MaalingStatusContainer = ({
   handleStartCrawling,
   handleStartTest,
 }: Props) => {
-  const maalingStatus = useMaalingStatus(maaling);
-  const { crawlingStatus, testingStatus } = maalingStatus;
+  const maalingOverviewStatus = useMaalingOverviewStatus(maaling);
+  const { crawlingStatus, testingStatus } = maalingOverviewStatus;
 
   return (
     <List>
       <ListItem>
         <div className="status__list-item">
           <div className="bold-text">Status</div>
-          <StatusBadge label={maaling.status} />
+          <StatusBadge
+            label={maaling.status}
+            levels={{
+              primary: [],
+              success: ['testing_ferdig'],
+              danger: [],
+            }}
+          />
         </div>
       </ListItem>
       <ListItem>

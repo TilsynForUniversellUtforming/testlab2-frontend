@@ -81,10 +81,9 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
             <StatusBadge
               label={label}
               levels={{
-                primary: 'starta',
-                danger: 'feila',
-                success: 'ferdig',
-                isSuccess: testSuccess,
+                primary: ['starta', 'ikkje_starta'],
+                danger: ['feila'],
+                success: ['ferdig'],
               }}
             />
           );
