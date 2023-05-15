@@ -9,6 +9,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingIdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
@@ -93,10 +94,13 @@ class MaalingResource(
                 .body("noe gikk galt da jeg forsøkte å endre en måling: ${it.message}")
           }
 
-  @DeleteMapping("{id}")
-  fun deleteMaalingList(@PathVariable id: Int): ResponseEntity<out Any> =
+  @DeleteMapping
+  fun deleteMaalingList(@RequestBody maalingIdList: MaalingIdList): ResponseEntity<out Any> =
       runCatching {
-            restTemplate.delete("$maalingUrl/$id")
+            for (id in maalingIdList.idList) {
+              logger.info("Slettar måling med id $id")
+              restTemplate.delete("$maalingUrl/$id")
+            }
             ResponseEntity.ok().body(listMaaling())
           }
           .getOrElse {

@@ -124,6 +124,7 @@ const SakLoeysingStep = ({
           .includes(`${ov.loeysing.id}_${ov.verksemd.id}`)
     );
     setValue('loeysingList', newLoeysingList);
+    setRowSelection([]);
   }, [rowSelection, setValue]);
 
   const selection = useWatch<SakFormState>({
@@ -218,7 +219,16 @@ const SakLoeysingStep = ({
             onSelectRows={handleSelectRow}
             customStyle={{ small: true }}
             rowActions={[
-              { action: 'delete', label: 'Slett rad', onClick: onClickRemove },
+              {
+                action: 'delete',
+                modalProps: {
+                  title: 'Fjern rad',
+                  disabled: rowSelection.length === 0,
+                  message: 'Fjern valg?',
+                  onConfirm: onClickRemove,
+                  dropdownVariant: true,
+                },
+              },
             ]}
           />
           {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}

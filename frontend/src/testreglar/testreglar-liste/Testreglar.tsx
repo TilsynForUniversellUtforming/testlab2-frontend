@@ -88,9 +88,9 @@ const Testreglar = () => {
         <StatusBadge
           label={info.getValue()}
           levels={{
-            primary: 'Publisert',
-            danger: 'Utgår',
-            success: 'Klar for testing',
+            primary: ['Publisert'],
+            danger: ['Utgår'],
+            success: ['Klar for testing'],
           }}
         />
       ),

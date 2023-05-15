@@ -11,8 +11,9 @@ import useFetch from '../../common/hooks/useFetch';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import UserActionTable from '../../common/table/UserActionTable';
-import { deleteMaaling, fetchMaalingList } from '../api/maaling-api';
-import { Maaling } from '../api/types';
+import { joinStringsToList } from '../../common/util/stringutils';
+import { deleteMaalingList, fetchMaalingList } from '../api/maaling-api';
+import { Maaling, MaalingIdList } from '../api/types';
 
 const MaalingList = () => {
   const [error, setError] = useState<Error | undefined>(undefined);
@@ -42,7 +43,10 @@ const MaalingList = () => {
 
     const deleteAndFetchMaaling = async () => {
       try {
-        const data = await deleteMaaling(maalingRowSelection[0]);
+        const maalingIdList: MaalingIdList = {
+          idList: maalingRowSelection.map((m) => m.id),
+        };
+        const data = await deleteMaalingList(maalingIdList);
         setMaalingList(data);
       } catch (e) {
         setError(toError(e, 'Kunne ikkje slette måling'));
@@ -54,14 +58,11 @@ const MaalingList = () => {
 
   const onSelectRows = useCallback((rowSelection: Maaling[]) => {
     setMaalingRowSelection(rowSelection);
-
-    if (rowSelection.length === 0) {
-      setDeleteMessage('');
-    } else if (rowSelection.length === 1) {
-      setDeleteMessage(rowSelection[0].navn);
-    } else {
-      setError(new Error('Flere målinger valgt'));
-    }
+    setDeleteMessage(
+      `Vil du slette ${joinStringsToList(
+        rowSelection.map((m) => `"${m.navn}"`)
+      )}? Dette kan ikkje angrast`
+    );
   }, []);
 
   const handleInitMaalinger = () => {
@@ -76,7 +77,9 @@ const MaalingList = () => {
   const maalingColumns: ColumnDef<Maaling>[] = [
     {
       id: 'Handling',
-      cell: ({ row }) => <RowCheckbox row={row} />,
+      cell: ({ row, getValue }) => (
+        <RowCheckbox row={row} ariaLabel={`Velg ${row.original.navn}`} />
+      ),
       size: 1,
     },
     {
@@ -101,9 +104,9 @@ const MaalingList = () => {
         <StatusBadge
           label={info.getValue()}
           levels={{
-            primary: 'crawling',
-            danger: 'feilet',
-            success: 'ferdig',
+            primary: ['testing', 'crawling'],
+            success: ['testing_ferdig'],
+            danger: [],
           }}
         />
       ),
@@ -125,12 +128,6 @@ const MaalingList = () => {
     <UserActionTable<Maaling>
       heading="Måling"
       createRoute={appRoutes.SAK_CREATE}
-      deleteConfirmationModalProps={{
-        title: 'Slett måling',
-        disabled: maalingRowSelection.length === 0,
-        message: deleteMessage,
-        onConfirm: onClickDelete,
-      }}
       tableProps={{
         data: maalingList,
         defaultColumns: maalingColumns,
@@ -142,7 +139,18 @@ const MaalingList = () => {
         loading: loading,
         onClickRetry: doFetchMaalingList,
         onSelectRows: onSelectRows,
-        disableMultiRowSelection: true,
+        rowActions: [
+          {
+            action: 'delete',
+            modalProps: {
+              title: 'Slett måling',
+              disabled: maalingRowSelection.length === 0,
+              message: deleteMessage,
+              onConfirm: onClickDelete,
+              dropdownVariant: true,
+            },
+          },
+        ],
       }}
     />
   );

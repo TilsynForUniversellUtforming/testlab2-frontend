@@ -25,9 +25,7 @@ const PaginationCount = ({ table }: TableProps) => {
   const numRowsText =
     filteredRows != numRows ? `${filteredRows} filtrerte` : numRows;
 
-  return (
-    <div className="">{`Viser ${middleText} av totalt ${numRowsText} element`}</div>
-  );
+  return <>{`${middleText} av totalt ${numRowsText}`}</>;
 };
 
 export default PaginationCount;

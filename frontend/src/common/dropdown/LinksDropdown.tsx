@@ -6,10 +6,11 @@ import {
   ButtonVariant,
 } from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { AppRoute } from '../appRoutes';
+import { useEffectOnce } from '../hooks/useEffectOnce';
 
 interface Props {
   navn: string;
@@ -22,6 +23,24 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
   const handleShowRoutes = () => {
     setShow(!show);
   };
+
+  const linksDropdownRef = useRef<HTMLUListElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      linksDropdownRef.current &&
+      !linksDropdownRef.current.contains(event.target as Node)
+    ) {
+      setShow(false);
+    }
+  };
+
+  useEffectOnce(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
 
   return (
     <div className="dropdown">
@@ -36,7 +55,7 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
         {navn}
       </Button>
       {show && (
-        <ul className="dropdown-content links">
+        <ul className="dropdown-content links" ref={linksDropdownRef}>
           {routes.map((route) => (
             <li className="dropdown-content__item" key={route.navn}>
               <Link to={route.path} className="link">

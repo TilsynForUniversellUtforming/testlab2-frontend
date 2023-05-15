@@ -2,20 +2,23 @@
   border-radius: 0.375rem;
   padding: 0.35em 0.65em;
   width: fit-content;
-  color: white;
+  color: var(--fds-semantic-text-neutral-default);
   font-size: 0.75em;
   font-weight: 700;
   line-height: 1;
   display: inline-block;
-  background-color: gray;
+  background-color: var(--fds-semantic-surface-neutral-subtle);
 
   &.primary {
-    background-color: var(--colors-blue-700);
+    color: var(--fds-semantic-text-neutral-on_inverted);
+    background-color: var(--fds-semantic-surface-action-default);
   }
   &.danger {
-    background-color: var(--colors-red-700);
+    color: var(--fds-semantic-text-neutral-on_inverted);
+    background-color: var(--fds-semantic-surface-danger-default);
   }
   &.success {
-    background-color: var(--colors-green-700);
+    color: var(--fds-semantic-text-neutral-on_inverted);
+    background-color: var(--fds-semantic-surface-success-default);
   }
 }

@@ -3,17 +3,14 @@ import './status-badge.scss';
 import classNames from 'classnames';
 
 export type Levels = {
-  primary: string;
-  danger: string;
-  success: string;
-  isPrimary?: boolean;
-  isDanger?: boolean;
-  isSuccess?: boolean;
+  primary: string[];
+  danger: string[];
+  success: string[];
 };
 
 interface Props {
   label?: any;
-  levels?: Levels;
+  levels: Levels;
 }
 
 const StatusBadge = ({ label, levels }: Props) => {
@@ -32,9 +29,9 @@ const StatusBadge = ({ label, levels }: Props) => {
     <div
       className={classNames(
         'status-badge',
-        { primary: label === levels?.primary || levels?.isPrimary },
-        { danger: label === levels?.danger || levels?.isDanger },
-        { success: label === levels?.success || levels?.isSuccess }
+        { primary: levels.primary.includes(label) },
+        { danger: levels.danger.includes(label) },
+        { success: levels.success.includes(label) }
       )}
     >
       {sanitizedLabel}

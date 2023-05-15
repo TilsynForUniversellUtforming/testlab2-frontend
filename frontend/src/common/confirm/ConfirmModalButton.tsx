@@ -11,6 +11,7 @@ export interface ConfirmModalProps {
   disabled?: boolean;
   icon?: JSX.Element;
   color?: ButtonColor;
+  dropdownVariant?: boolean;
 }
 
 const ConfirmButton = ({
@@ -21,6 +22,7 @@ const ConfirmButton = ({
   disabled,
   color,
   icon,
+  dropdownVariant,
 }: ConfirmModalProps) => {
   const confirmModal = useConfirmModal();
 
@@ -34,25 +36,25 @@ const ConfirmButton = ({
     }
   };
 
-  if (icon) {
+  if (dropdownVariant) {
     return (
-      <Button
+      <button
         onClick={handleClickConfirmation}
-        disabled={disabled}
-        className={className}
-        color={color}
-        icon={icon}
-        title={title}
-      />
+        className="dropdown-content__button"
+        type="button"
+      >
+        {title}
+      </button>
     );
   }
+
   return (
     <Button
       onClick={handleClickConfirmation}
       disabled={disabled}
       className={className}
       color={color}
-      title={title}
+      icon={icon}
     >
       {title}
     </Button>
@@ -67,6 +69,7 @@ const ConfirmModalButton = ({
   disabled = false,
   color = ButtonColor.Primary,
   icon,
+  dropdownVariant,
 }: ConfirmModalProps) => (
   <ConfirmModalProvider>
     <ConfirmButton
@@ -77,6 +80,7 @@ const ConfirmModalButton = ({
       disabled={disabled}
       color={color}
       icon={icon}
+      dropdownVariant={dropdownVariant}
     />
   </ConfirmModalProvider>
 );

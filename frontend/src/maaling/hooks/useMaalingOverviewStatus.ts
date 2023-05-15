@@ -10,12 +10,12 @@ export type ProcessStatus = {
   showResult: boolean;
 };
 
-export type MaalingStatus = {
+export type MaalingOverviewStatus = {
   crawlingStatus: ProcessStatus;
   testingStatus: ProcessStatus;
 };
 
-const useMaalingStatus = (maaling: Maaling): MaalingStatus => {
+const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
   const loeysingLength = maaling.loeysingList.length;
 
   const toLabel = (label: string, numProcessed: number) =>
@@ -75,4 +75,4 @@ const useMaalingStatus = (maaling: Maaling): MaalingStatus => {
   };
 };
 
-export default useMaalingStatus;
+export default useMaalingOverviewStatus;

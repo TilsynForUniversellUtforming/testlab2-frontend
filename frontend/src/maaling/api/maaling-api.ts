@@ -1,5 +1,11 @@
 import { responseToJson } from '../../common/util/api/util';
-import { Maaling, MaalingEdit, MaalingInit, MaalingStatus } from './types';
+import {
+  Maaling,
+  MaalingEdit,
+  MaalingIdList,
+  MaalingInit,
+  MaalingStatus,
+} from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
@@ -21,9 +27,15 @@ export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
     responseToJson(response, 'Kunne ikke oppdatere måling')
   );
 
-export const deleteMaaling = async (maaling: Maaling): Promise<Maaling[]> =>
-  fetch(`/api/v1/maalinger/${maaling.id}`, {
+export const deleteMaalingList = async (
+  maalingIdList: MaalingIdList
+): Promise<Maaling[]> =>
+  fetch(`/api/v1/maalinger`, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(maalingIdList),
   }).then((response) => responseToJson(response, 'Kunne ikke hente målinger'));
 
 export const updateMaalingStatus = async (

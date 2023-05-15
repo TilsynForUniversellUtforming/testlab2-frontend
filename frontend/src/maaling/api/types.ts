@@ -62,3 +62,7 @@ export type Maaling = {
   testStatistics: JobStatistics;
   testResult: TestResult[];
 };
+
+export type MaalingIdList = {
+  idList: number[];
+};

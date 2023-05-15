@@ -2,8 +2,8 @@ import { Table } from '@tanstack/react-table';
 import React from 'react';
 
 import DebouncedInput from '../../DebouncedInput';
-import { TableFilterPreference } from '../types';
-import PageSizeSelection from './pagination/PageSizeSelection';
+import TableActionDropdown from '../../dropdown/TableActionDropdown';
+import { TableFilterPreference, TableRowAction } from '../types';
 
 export interface Props {
   loading: boolean;
@@ -11,36 +11,36 @@ export interface Props {
   filterPreference: TableFilterPreference;
   filterValue: string;
   onChangeFilter: (value: string | number) => void;
+  rowActions?: TableRowAction[];
+  rowActionEnabled: boolean;
   small?: boolean;
 }
 
 const ControlHeader = ({
-  loading,
   table,
   filterPreference,
   filterValue,
   onChangeFilter,
+  rowActions,
+  rowActionEnabled,
   small = false,
 }: Props) => {
-  if (small) {
-    return null;
-  }
-
   const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
   const hasElements = tableElementSize > 0;
-  const displayPageSizeSelection = tableElementSize > 10;
 
   const showFilters =
+    !small &&
     filterPreference !== 'none' &&
     filterPreference !== 'rowsearch' &&
     hasElements;
 
   return (
     <div className="control-header">
-      {displayPageSizeSelection && (
-        <div className="control-header__size-selection">
-          <PageSizeSelection table={table} loading={loading} />
-        </div>
+      {rowActions && (
+        <TableActionDropdown
+          actions={rowActions}
+          disabled={!rowActionEnabled}
+        />
       )}
       <div className="control-header__input">
         {showFilters && (

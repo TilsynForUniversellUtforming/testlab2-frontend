@@ -25,8 +25,8 @@ import {
 import { TableOptions } from '@tanstack/table-core';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import TableActionDropdown from '../dropdown/TableActionDropdown';
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
+import { isDefined } from '../util/util';
 import ControlHeader from './control/ControlHeader';
 import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
@@ -197,10 +197,9 @@ const TestlabTable = <T extends object>({
         filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
         small={customStyle?.small}
+        rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
+        rowActions={rowActions}
       />
-      {rowSelectionEnabled && rowActions && (
-        <TableActionDropdown actions={rowActions} />
-      )}
       <Table className="testlab-table__table">
         <TableHeader>
           <TableRow>

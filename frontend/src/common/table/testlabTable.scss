@@ -1,8 +1,4 @@
 .testlab-table {
-  .dropdown {
-    padding-bottom: 1rem;
-  }
-
   a {
     color: var(--fds-semantic-text-action-default);
   }
@@ -32,25 +28,21 @@
   }
 
   .control-header {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 1fr;
-    padding-bottom: 1rem;
-
-    &__size-selection {
-      grid-column: 1 / 2;
-    }
-
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
     &__input {
-      grid-column: 10 / 13;
+      min-width: 16rem;
+      margin-bottom: 0.75rem;
     }
   }
 
   .pagination-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
+    justify-content: flex-end;
+    gap: 2rem;
     &__button-list {
       display: inline-flex;
       .number-button {
@@ -58,6 +50,23 @@
         width: 0.5rem;
       }
     }
+    &__pagination-select-wrapper {
+      display: flex;
+      align-items: center;
+      label {
+        margin-right: 0.75rem;
+      }
+      .pagination-select {
+        width: 4rem;
+        > span {
+          display: flex;
+        }
+      }
+    }
+  }
+
+  &__column-filter {
+    max-width: 50%;
   }
 
   .table-skeleton {
