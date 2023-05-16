@@ -36,6 +36,19 @@ const ConfirmButton = ({
     }
   };
 
+  if (icon) {
+    return (
+      <Button
+        onClick={handleClickConfirmation}
+        disabled={disabled}
+        className={className}
+        color={color}
+        icon={icon}
+        title={title}
+      />
+    );
+  }
+
   if (dropdownVariant) {
     return (
       <button
