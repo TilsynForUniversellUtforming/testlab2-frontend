@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
+import AppTitle from '../../common/app-title/AppTitle';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { fetchMaaling } from '../../maaling/api/maaling-api';
@@ -41,11 +42,14 @@ const TestingListApp = () => {
   useInterval(() => doFetchData(), refreshing ? 15000 : null);
 
   return (
-    <TestingList
-      maalingId={Number(id)}
-      testResultList={testResult}
-      error={{ error: error, onClick: doFetchData, buttonText: 'Prøv igjen' }}
-    />
+    <>
+      <AppTitle heading="Testing" subHeading={maaling?.navn} />
+      <TestingList
+        maalingId={Number(id)}
+        testResultList={testResult}
+        error={{ error: error, onClick: doFetchData, buttonText: 'Prøv igjen' }}
+      />
+    </>
   );
 };
 
