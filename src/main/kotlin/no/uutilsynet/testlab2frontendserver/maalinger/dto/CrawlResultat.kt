@@ -15,8 +15,6 @@ data class CrawlResultat(
     val framgang: Framgang?
 )
 
-data class Framgang(val lenkerCrawla: Int, val maxLenker: Int)
-
 fun CrawlResultatDTO.toCrawlResultat() =
     CrawlResultat(
         this.loeysing,

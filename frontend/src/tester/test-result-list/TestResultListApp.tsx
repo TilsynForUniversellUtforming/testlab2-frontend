@@ -54,7 +54,7 @@ const TestResultListApp = () => {
         id: '_elementUtfall',
         cell: (info) => (
           <StatusBadge
-            label={info.getValue()}
+            status={info.getValue()}
             levels={{
               primary: ['ikkje forekomst'],
               danger: ['brot'],

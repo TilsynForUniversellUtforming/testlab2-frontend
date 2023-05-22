@@ -86,7 +86,7 @@ const Testreglar = () => {
       id: 'Status',
       cell: (info) => (
         <StatusBadge
-          label={info.getValue()}
+          status={info.getValue()}
           levels={{
             primary: ['Publisert'],
             danger: ['Utgår'],

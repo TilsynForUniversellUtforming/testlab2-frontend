@@ -102,7 +102,7 @@ const MaalingList = () => {
       id: 'Status',
       cell: (info) => (
         <StatusBadge
-          label={info.getValue()}
+          status={info.getValue()}
           levels={{
             primary: ['testing', 'crawling'],
             success: ['testing_ferdig'],
