@@ -30,7 +30,7 @@ export type CrawlJobStatus = 'ikke_ferdig' | 'feilet' | 'ferdig';
 export type TestJobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
 
 export type Framgang = {
-  lenkerCrawla: number;
+  prosessert: number;
   maxLenker: number;
 };
 
@@ -50,6 +50,7 @@ export type TestResult = {
   tilstand: TestJobStatus;
   loeysing: Loeysing;
   sistOppdatert: string;
+  framgang?: Framgang;
 };
 
 export type Maaling = {

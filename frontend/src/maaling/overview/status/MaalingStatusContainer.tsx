@@ -27,7 +27,7 @@ const MaalingStatusContainer = ({
         <div className="status__list-item">
           <div className="bold-text">Status</div>
           <StatusBadge
-            label={maaling.status}
+            status={maaling.status}
             levels={{
               primary: [],
               success: ['testing_ferdig'],

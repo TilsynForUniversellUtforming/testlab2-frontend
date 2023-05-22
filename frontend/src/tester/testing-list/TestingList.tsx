@@ -57,9 +57,9 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
         size: 1,
       },
       {
-        accessorFn: (row) => row.loeysing.url,
+        accessorFn: (row) => row.loeysing.namn,
         id: 'url',
-        cell: ({ row }) => <>{row.original.loeysing.url}</>,
+        cell: ({ row }) => <>{row.original.loeysing.namn}</>,
         header: () => <>Løysing</>,
       },
       {
@@ -72,14 +72,17 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
         accessorFn: (row) => row.tilstand,
         id: 'status',
         cell: ({ row }) => {
-          const status = row.original.tilstand;
-          const testSuccess = status === 'ferdig';
-
-          const label = testSuccess ? 'Ferdig' : status;
+          const status = String(row.original.tilstand);
+          const fremgang = row.original.framgang;
+          let label: string | undefined = undefined;
+          if (status === 'starta' && typeof fremgang !== 'undefined') {
+            label = `Tester ${fremgang.prosessert} av ${fremgang.maxLenker}`;
+          }
 
           return (
             <StatusBadge
-              label={label}
+              status={status}
+              customLabel={label}
               levels={{
                 primary: ['starta', 'ikkje_starta'],
                 danger: ['feila'],
@@ -88,7 +91,7 @@ const TestingList = ({ maalingId, testResultList, error }: Props) => {
             />
           );
         },
-        header: () => <span>Status</span>,
+        header: () => <>Status</>,
       },
     ],
     []

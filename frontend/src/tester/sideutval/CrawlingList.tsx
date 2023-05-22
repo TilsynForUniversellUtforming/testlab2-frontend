@@ -104,11 +104,11 @@ const CrawlingList = ({
 
           let label: string;
           if (crawlSuccess) {
-            label = `Ferdig - Fant ${urlLength} sider`;
+            label = `Ferdig, fant ${urlLength} sider`;
           } else if (status === 'ikke_ferdig') {
             const framgang = row.original.framgang;
             if (framgang != null) {
-              label = `Crawler ${framgang.lenkerCrawla} av ${framgang.maxLenker}`;
+              label = `Crawler ${framgang.prosessert} av ${framgang.maxLenker}`;
             } else {
               label = 'Crawler';
             }
@@ -118,7 +118,8 @@ const CrawlingList = ({
 
           return (
             <StatusBadge
-              label={label}
+              customLabel={label}
+              status={status}
               levels={{
                 primary: ['ikke_ferdig'],
                 danger: ['feilet'],
