@@ -143,7 +143,7 @@ const SakLoeysingStep = ({
         size: 1,
       },
       {
-        accessorFn: (row) => row.loeysing.url,
+        accessorFn: (row) => row.loeysing.namn,
         id: 'url',
         cell: (info) => info.getValue(),
         header: () => <>Namn på løysing</>,
