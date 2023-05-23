@@ -55,9 +55,14 @@
 
     .sak-confirm {
       min-width: 50vw;
-      &__header {
-        margin: 0;
+
+      span,
+      div,
+      ol,
+      li {
+        font-family: 'Inter', sans-serif;
       }
+
       &__list {
         list-style: none;
         width: 100%;
@@ -68,6 +73,12 @@
       .accordion-list {
         max-height: 32rem;
         overflow-y: auto;
+        margin: 0;
+
+        &.unnumbered {
+          list-style: none;
+        }
+
         &__item {
           border-bottom: 1px solid var(--colors-grey-500);
           &:last-child {

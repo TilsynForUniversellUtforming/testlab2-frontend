@@ -1,6 +1,6 @@
 import './sak-stepper.scss';
 
-import { semanticSurfaceActionDefault } from '@digdir/design-system-tokens';
+import { semantic_surface_action_default } from '@digdir/design-system-tokens';
 import {
   EarthIcon,
   FileTextIcon,
@@ -21,17 +21,19 @@ const StepperIcon = ({ sakStepType }: { sakStepType: SakStepType }) => {
   switch (sakStepType) {
     case 'Init':
       return (
-        <FileTextIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+        <FileTextIcon color={semantic_surface_action_default} fontSize="2rem" />
       );
     case 'Loeysing':
-      return <EarthIcon color={semanticSurfaceActionDefault} fontSize="2rem" />;
+      return (
+        <EarthIcon color={semantic_surface_action_default} fontSize="2rem" />
+      );
     case 'Testregel':
       return (
-        <WrenchIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+        <WrenchIcon color={semantic_surface_action_default} fontSize="2rem" />
       );
     case 'Confirm':
       return (
-        <TasklistIcon color={semanticSurfaceActionDefault} fontSize="2rem" />
+        <TasklistIcon color={semantic_surface_action_default} fontSize="2rem" />
       );
   }
 };
