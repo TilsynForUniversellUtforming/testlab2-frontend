@@ -1,13 +1,14 @@
-import { Spinner } from '@digdir/design-system-react';
-import React, { useState } from 'react';
+import { Accordion, Spinner } from '@digdir/design-system-react';
+import React from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
 
 import ErrorCard from '../../../../common/error/ErrorCard';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import { useEffectOnce } from '../../../../common/hooks/useEffectOnce';
 import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
-import { SakFormBaseProps, SakFormState } from '../../../types';
+import { SakContext, SakFormBaseProps, SakFormState } from '../../../types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
@@ -31,23 +32,9 @@ const SakConfirmContent = ({
   maalingFormState,
   formErrors,
 }: SakConfirmContentProps) => {
+  const { advisors }: SakContext = useOutletContext();
   const { navn, sakType, advisor, loeysingList, testregelList } =
     maalingFormState;
-  const [displaySak, setDisplaySak] = useState(true);
-  const [displayLoeysingList, setDisplayLoeysingList] = useState(false);
-  const [displayRegelsett, setDisplayRegelsett] = useState(false);
-
-  const toggleDisplaySak = () => {
-    setDisplaySak(!displaySak);
-  };
-
-  const toggleLoeysingList = () => {
-    setDisplayLoeysingList(!displayLoeysingList);
-  };
-
-  const toggleRegelsettDisplay = () => {
-    setDisplayRegelsett(!displayRegelsett);
-  };
 
   if (loading) {
     return <Spinner title="Hentar sak" variant="default" />;
@@ -67,6 +54,8 @@ const SakConfirmContent = ({
     .join(', ');
   const loeysingError = formErrors?.loeysingList;
   const testregelError = formErrors?.testregelList;
+  const advisorName =
+    advisors.find((a) => a.id === Number(advisor))?.name ?? '';
 
   const sakItems = [
     {
@@ -82,7 +71,7 @@ const SakConfirmContent = ({
     {
       id: 3,
       header: 'Sakshandsamar',
-      text: advisor?.name ?? '',
+      text: advisorName,
     },
   ];
 
@@ -101,35 +90,27 @@ const SakConfirmContent = ({
 
   return (
     <div className="sak-confirm">
-      <ul className="sak-confirm__list">
-        <li>
-          <ConfirmationAccordionList
-            onToggle={toggleDisplaySak}
-            open={displaySak}
-            accordionHeader="Om saka"
-            listItems={sakItems}
-            errorMessage={sakError.length > 0 ? sakError : undefined}
-          />
-        </li>
-        <li>
-          <ConfirmationAccordionList
-            onToggle={toggleLoeysingList}
-            open={displayLoeysingList}
-            accordionHeader="Løysingar"
-            listItems={loeysingListItems}
-            errorMessage={loeysingError?.message}
-          />
-        </li>
-        <li>
-          <ConfirmationAccordionList
-            onToggle={toggleRegelsettDisplay}
-            open={displayRegelsett}
-            accordionHeader="Testreglar"
-            listItems={testregelItems}
-            errorMessage={testregelError?.message}
-          />
-        </li>
-      </ul>
+      <Accordion color="neutral">
+        <ConfirmationAccordionList
+          open
+          hideNumbering
+          accordionHeader="Om saka"
+          listItems={sakItems}
+          errorMessage={sakError.length > 0 ? sakError : undefined}
+        />
+
+        <ConfirmationAccordionList
+          accordionHeader="Løysingar"
+          listItems={loeysingListItems}
+          errorMessage={loeysingError?.message}
+        />
+
+        <ConfirmationAccordionList
+          accordionHeader="Testreglar"
+          listItems={testregelItems}
+          errorMessage={testregelError?.message}
+        />
+      </Accordion>
     </div>
   );
 };

@@ -36,6 +36,15 @@ const SakApp = () => {
     setLoading(loading);
   }, []);
 
+  const handleFetchLoeysingList = useCallback(async () => {
+    try {
+      const loeysingList = await fetchLoeysingList();
+      setLoeysingList(loeysingList);
+    } catch (e) {
+      setError(toError(e, 'Kunne ikkje hente løysingar'));
+    }
+  }, []);
+
   const doFetchData = useCallback(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -50,12 +59,7 @@ const SakApp = () => {
         }
       }
 
-      try {
-        const loeysingList = await fetchLoeysingList();
-        setLoeysingList(loeysingList);
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente løysingar'));
-      }
+      await handleFetchLoeysingList();
 
       try {
         const regelsett = await getRegelsett_dummy();
@@ -88,6 +92,7 @@ const SakApp = () => {
     setMaaling: handleSetMaaling,
     refresh: doFetchData,
     loeysingList: loeysingList,
+    refreshLoeysing: handleFetchLoeysingList,
     regelsettList: regelsettList,
     advisors: advisorList,
   };

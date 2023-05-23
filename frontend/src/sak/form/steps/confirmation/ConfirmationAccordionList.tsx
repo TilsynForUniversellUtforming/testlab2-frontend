@@ -1,10 +1,5 @@
-import {
-  ErrorMessage,
-  LegacyAccordion,
-  LegacyAccordionContent,
-  LegacyAccordionHeader,
-  ListItem,
-} from '@digdir/design-system-react';
+import { Accordion, ErrorMessage, ListItem } from '@digdir/design-system-react';
+import classNames from 'classnames';
 import React from 'react';
 
 export type ListItem = {
@@ -14,20 +9,20 @@ export type ListItem = {
 };
 
 export interface Props {
-  onToggle: () => void;
-  open: boolean;
   accordionHeader: string;
   subtitle?: string;
   listItems: ListItem[];
   errorMessage?: string;
+  open?: boolean;
+  hideNumbering?: boolean;
 }
 
 const ConfirmationAccordionList = ({
-  onToggle,
-  open,
   accordionHeader,
   listItems,
   errorMessage,
+  open = false,
+  hideNumbering = false,
 }: Props) => {
   if (errorMessage) {
     return (
@@ -39,10 +34,14 @@ const ConfirmationAccordionList = ({
   }
 
   return (
-    <LegacyAccordion onClick={onToggle} open={open}>
-      <LegacyAccordionHeader>{accordionHeader}</LegacyAccordionHeader>
-      <LegacyAccordionContent>
-        <ol className="accordion-list">
+    <Accordion.Item defaultOpen={open}>
+      <Accordion.Header>{accordionHeader}</Accordion.Header>
+      <Accordion.Content>
+        <ol
+          className={classNames('accordion-list', {
+            unnumbered: hideNumbering,
+          })}
+        >
           {listItems.map((li) => (
             <li className="accordion-list__item" key={li.id}>
               <div>{li.header}</div>
@@ -50,8 +49,8 @@ const ConfirmationAccordionList = ({
             </li>
           ))}
         </ol>
-      </LegacyAccordionContent>
-    </LegacyAccordion>
+      </Accordion.Content>
+    </Accordion.Item>
   );
 };
 

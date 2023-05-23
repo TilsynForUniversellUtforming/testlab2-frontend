@@ -8,7 +8,9 @@ import {
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { Link, useOutletContext } from 'react-router-dom';
 
+import appRoutes, { getFullPath, idPath } from '../../../../common/appRoutes';
 import useValidate from '../../../../common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import {
@@ -19,6 +21,7 @@ import TestlabTable from '../../../../common/table/TestlabTable';
 import { Loeysing } from '../../../../loeysingar/api/types';
 import {
   LoeysingVerksemd,
+  SakContext,
   SakFormBaseProps,
   SakFormState,
 } from '../../../types';
@@ -38,6 +41,8 @@ const SakLoeysingStep = ({
   onSubmit,
   loeysingList,
 }: Props) => {
+  const { refreshLoeysing }: SakContext = useOutletContext();
+
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
@@ -145,7 +150,17 @@ const SakLoeysingStep = ({
       {
         accessorFn: (row) => row.loeysing.namn,
         id: 'url',
-        cell: (info) => info.getValue(),
+        cell: ({ row, getValue }) => (
+          <Link
+            to={getFullPath(appRoutes.LOEYSING_EDIT, {
+              pathParam: idPath,
+              id: String(row.original.loeysing.id),
+            })}
+            target="_blank"
+          >
+            {String(getValue())}
+          </Link>
+        ),
         header: () => <>Namn på løysing</>,
       },
       {
@@ -215,6 +230,7 @@ const SakLoeysingStep = ({
             defaultColumns={loeysingColumns}
             displayError={{ error }}
             inputError={listErrors?.message}
+            onClickRetry={refreshLoeysing}
             loading={loading}
             onSelectRows={handleSelectRow}
             customStyle={{ small: true }}
