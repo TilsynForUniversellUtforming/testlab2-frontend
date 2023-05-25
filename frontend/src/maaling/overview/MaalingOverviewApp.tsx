@@ -2,6 +2,7 @@ import { Spinner, Tabs } from '@digdir/design-system-react';
 import React from 'react';
 import {
   Outlet,
+  useLocation,
   useNavigate,
   useOutletContext,
   useParams,
@@ -21,6 +22,8 @@ const MaalingOverviewApp = () => {
   const context: MaalingContext = useOutletContext();
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
+  const lastSegment = location.pathname.split('/').pop();
 
   if (context.contextLoading) {
     return <Spinner title="Hentar målingar" variant={'default'} />;
@@ -46,6 +49,7 @@ const MaalingOverviewApp = () => {
     <>
       <AppTitle heading={navn} />
       <Tabs
+        activeTab={lastSegment === editPath ? 'Rediger måling' : 'Oversikt'}
         items={[
           {
             name: 'Oversikt',

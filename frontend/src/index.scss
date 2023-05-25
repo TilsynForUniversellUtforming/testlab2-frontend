@@ -1,4 +1,4 @@
-@import '@digdir/design-system-tokens/brand/digdir/tokens.css';
+@import '@digdir/design-system-tokens/brand/tilsynet/tokens.css';
 @import '@altinn/figma-design-tokens/dist/tokens.css';
 
 $blaasvart: #1e2b3c;
@@ -6,6 +6,9 @@ $blaasvart: #1e2b3c;
 body {
   font-family: 'Inter', sans-serif;
   color: $blaasvart;
+  p[class^='ErrorMessage-'] {
+    font-family: 'Inter', sans-serif !important;
+  }
 }
 
 .app-container {

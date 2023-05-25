@@ -51,7 +51,9 @@ const TestlabFormInput = <T extends object>({
             inputMode={numeric ? 'numeric' : 'text'}
           />
           {hasError && formValidation?.errorMessage && (
-            <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>
+            <ErrorMessage size="small">
+              {formValidation?.errorMessage}
+            </ErrorMessage>
           )}
         </div>
       )}

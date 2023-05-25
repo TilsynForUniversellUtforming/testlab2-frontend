@@ -44,7 +44,9 @@ const TestlabFormSelect = <T extends object>({
             error={hasError}
           />
           {hasError && formValidation?.errorMessage && (
-            <ErrorMessage>{formValidation?.errorMessage}</ErrorMessage>
+            <ErrorMessage size="small">
+              {formValidation?.errorMessage}
+            </ErrorMessage>
           )}
         </div>
       )}

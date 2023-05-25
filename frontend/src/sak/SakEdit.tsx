@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
-import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
+import Alert, { AlertProps } from '../common/alert/Alert';
 import toError from '../common/error/util';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
@@ -29,6 +28,7 @@ const SakEdit = () => {
   }: SakContext = useOutletContext();
 
   const [error, setError] = useState(contextError);
+  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
   const [loading, setLoading] = useState(contextLoading);
 
   const defaultState: SakFormState = {
@@ -36,12 +36,12 @@ const SakEdit = () => {
     loeysingList: maaling?.loeysingList
       ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
       : [],
-    regelsettId: '1',
-    testregelList: [],
+    testregelList: regelsettList[0].testregelList,
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
     sakType: undefined,
     advisor: undefined,
+    sakNumber: undefined,
   };
 
   const [maalingFormState, setMaalingFormState] =
@@ -68,12 +68,10 @@ const SakEdit = () => {
         try {
           const maaling = await updateMaaling(maalingEdit);
           setMaaling(maaling);
-          navigate(
-            getFullPath(appRoutes.MAALING, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })
-          );
+          setAlert({
+            type: 'success',
+            message: 'Flott! vi har lagret dine endringer',
+          });
         } catch (e) {
           setError(toError(e, 'Kunne ikkje lage sak'));
         }
@@ -104,7 +102,6 @@ const SakEdit = () => {
 
   return (
     <>
-      <AppTitle heading="Endre sak" subHeading="Endre ein sak" />
       <SakStepForm
         formStepState={formStepState}
         maalingFormState={maalingFormState}
@@ -115,6 +112,7 @@ const SakEdit = () => {
         loeysingList={loeysingList}
         advisors={advisors}
       />
+      {alert && <Alert type={alert.type} message={alert.message} />}
     </>
   );
 };

@@ -3,8 +3,9 @@
   .testlab-form {
     display: flex;
     justify-content: left;
-    &__header {
-      margin-bottom: 0;
+
+    &__navigation-buttons {
+      margin-top: auto;
     }
   }
 
@@ -12,7 +13,6 @@
     justify-self: end;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
   }
 
   &__container {
