@@ -30,7 +30,6 @@ const SakCreate = () => {
   const defaultState: SakFormState = {
     navn: '',
     loeysingList: [],
-    regelsettId: undefined,
     testregelList: [],
     maxLinksPerPage: 100,
     numLinksToSelect: 30,

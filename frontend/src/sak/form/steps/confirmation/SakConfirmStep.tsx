@@ -33,7 +33,7 @@ const SakConfirmContent = ({
   formErrors,
 }: SakConfirmContentProps) => {
   const { advisors }: SakContext = useOutletContext();
-  const { navn, sakType, advisor, loeysingList, testregelList } =
+  const { navn, sakType, sakNumber, advisor, loeysingList, testregelList } =
     maalingFormState;
 
   if (loading) {
@@ -74,6 +74,14 @@ const SakConfirmContent = ({
       text: advisorName,
     },
   ];
+
+  if (sakNumber) {
+    sakItems.push({
+      id: 4,
+      header: 'Saksnummer',
+      text: sakNumber,
+    });
+  }
 
   const loeysingListItems = loeysingList.map((lo) => ({
     id: lo.loeysing.id,
@@ -124,7 +132,7 @@ const SakConfirmStep = ({
   regelsettList,
 }: Props) => {
   const { navn, loeysingList, testregelList } = maalingFormState;
-  const { onClickBack, nextStepIdx } = formStepState;
+  const { onClickBack } = formStepState;
 
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
@@ -156,7 +164,7 @@ const SakConfirmStep = ({
     if (!isDefined(testregelList)) {
       setError('testregelList', {
         type: 'manual',
-        message: 'Regelsett må veljast',
+        message: 'Testreglar må veljast',
       });
     }
   };
