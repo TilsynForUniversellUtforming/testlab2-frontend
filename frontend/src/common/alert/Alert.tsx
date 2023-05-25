@@ -1,4 +1,4 @@
-import './Alert.scss';
+import './alert.scss';
 
 import React from 'react';
 
