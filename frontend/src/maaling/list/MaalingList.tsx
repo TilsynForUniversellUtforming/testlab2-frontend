@@ -127,7 +127,7 @@ const MaalingList = () => {
   return (
     <UserActionTable<Maaling>
       heading="Måling"
-      createRoute={appRoutes.SAK_CREATE}
+      actionButtons={[{ route: appRoutes.SAK_CREATE, action: 'add' }]}
       tableProps={{
         data: maalingList,
         defaultColumns: maalingColumns,
@@ -147,7 +147,6 @@ const MaalingList = () => {
               disabled: maalingRowSelection.length === 0,
               message: deleteMessage,
               onConfirm: onClickDelete,
-              dropdownVariant: true,
             },
           },
         ],

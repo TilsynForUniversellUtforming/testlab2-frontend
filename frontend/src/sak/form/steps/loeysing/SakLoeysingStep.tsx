@@ -242,7 +242,6 @@ const SakLoeysingStep = ({
                   disabled: rowSelection.length === 0,
                   message: 'Fjern valg?',
                   onConfirm: onClickRemove,
-                  dropdownVariant: true,
                 },
               },
             ]}

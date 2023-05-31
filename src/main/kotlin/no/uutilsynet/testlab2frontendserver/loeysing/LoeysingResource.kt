@@ -4,7 +4,6 @@ import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForObject
 
@@ -86,27 +86,18 @@ class LoeysingResource(
           }
 
   @DeleteMapping
-  fun deleteLoeysingList(@RequestBody dto: DeleteLoeysingDTO): ResponseEntity<out Any> =
-      runCatching {
-            val maalingList =
-                restTemplate.getList<MaalingDTO>(maalingUrl).filterNot {
-                  it.loeysingList != null &&
-                      it.loeysingList.any { l -> dto.loeysingIdList.contains(l.id) }
-                }
-
-            if (maalingList.isEmpty()) {
-              for (id in dto.loeysingIdList) {
-                restTemplate.delete("$loeysingUrl/$id")
-              }
-              ResponseEntity.ok().body(getLoeysingList())
-            } else {
-              ResponseEntity.badRequest()
-                  .body(
-                      "Løysing blir brukt i følgjande målingar: ${maalingList.joinToString(",") { it.navn }}")
+  fun deleteLoeysingList(@RequestBody dto: DeleteLoeysingDTO): ResponseEntity<out Any> {
+    for (id in dto.loeysingIdList) {
+      runCatching { restTemplate.delete("$loeysingUrl/$id") }
+          .getOrElse {
+            logger.error("Kunne ikkje slette løysing med id $id", it)
+            return when (it) {
+              is HttpClientErrorException ->
+                  ResponseEntity.status(it.statusCode).body(it.responseBodyAsString)
+              else -> ResponseEntity.internalServerError().body(it.message)
             }
           }
-          .getOrElse {
-            ResponseEntity.internalServerError()
-                .body("noe gikk galt da jeg forsøkte å slette ei løysing: ${it.message}")
-          }
+    }
+    return ResponseEntity.ok().body(getLoeysingList())
+  }
 }

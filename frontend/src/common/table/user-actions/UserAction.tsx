@@ -79,6 +79,7 @@ const UserAction = <T extends object>({
         icon={<ActionIcon columnUserAction={columnUserAction} />}
         title={title}
         message={message}
+        buttonVariant="button"
       />
     )}
     {!confirm && (
