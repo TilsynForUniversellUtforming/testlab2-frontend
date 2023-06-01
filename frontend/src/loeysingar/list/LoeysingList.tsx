@@ -113,11 +113,15 @@ const LoeysingList = () => {
   return (
     <UserActionTable<Loeysing>
       heading="Løysingar"
-      createRoute={appRoutes.LOEYSING_CREATE}
+      actionButtons={[{ route: appRoutes.LOEYSING_CREATE, action: 'add' }]}
       tableProps={{
         data: loeysingList,
         defaultColumns: loeysingColumns,
-        displayError: { error: error },
+        displayError: {
+          errorHeader: 'Noko gjekk gale med sletting av løysing',
+          error: error,
+          buttonText: 'Avbryt',
+        },
         loading: loading,
         onSelectRows: onSelectRows,
         onClickRetry: onClickRefresh,

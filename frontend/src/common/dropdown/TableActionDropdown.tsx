@@ -51,7 +51,10 @@ export const TableActionDropdown = ({ actions, disabled = false }: Props) => {
         <ul className="dropdown-content" ref={dropdownRef}>
           {actions.map((tra) => (
             <li className="dropdown-content__item" key={tra.action}>
-              <ConfirmModalButton {...tra.modalProps} />
+              <ConfirmModalButton
+                buttonVariant="dropdown"
+                {...tra.modalProps}
+              />
             </li>
           ))}
         </ul>
