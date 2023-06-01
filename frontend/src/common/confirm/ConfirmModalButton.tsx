@@ -3,6 +3,8 @@ import React from 'react';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
 
+export type ButtonVariant = 'button' | 'dropdown';
+
 export interface ConfirmModalProps {
   className?: string;
   title: string;
@@ -11,7 +13,7 @@ export interface ConfirmModalProps {
   disabled?: boolean;
   icon?: JSX.Element;
   color?: ButtonColor;
-  dropdownVariant?: boolean;
+  buttonVariant?: ButtonVariant;
 }
 
 const ConfirmButton = ({
@@ -22,7 +24,7 @@ const ConfirmButton = ({
   disabled,
   color,
   icon,
-  dropdownVariant,
+  buttonVariant = 'button',
 }: ConfirmModalProps) => {
   const confirmModal = useConfirmModal();
 
@@ -49,7 +51,7 @@ const ConfirmButton = ({
     );
   }
 
-  if (dropdownVariant) {
+  if (buttonVariant === 'dropdown') {
     return (
       <button
         onClick={handleClickConfirmation}
@@ -82,7 +84,7 @@ const ConfirmModalButton = ({
   disabled = false,
   color = ButtonColor.Primary,
   icon,
-  dropdownVariant,
+  buttonVariant,
 }: ConfirmModalProps) => (
   <ConfirmModalProvider>
     <ConfirmButton
@@ -93,7 +95,7 @@ const ConfirmModalButton = ({
       disabled={disabled}
       color={color}
       icon={icon}
-      dropdownVariant={dropdownVariant}
+      buttonVariant={buttonVariant}
     />
   </ConfirmModalProvider>
 );

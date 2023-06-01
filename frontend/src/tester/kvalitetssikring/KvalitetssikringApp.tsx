@@ -124,12 +124,14 @@ const KvalitetssikringApp = () => {
           message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
           title="Fjern valgte nettsider frå måling"
           disabled={urlRowSelection.length === 0 || loading}
+          buttonVariant="button"
         />
         <ConfirmModalButton
           message={`Vil du slette ${loeysingCrawResultat.loeysing.url} frå måling?`}
           onConfirm={onClickDeleteLoeysing}
           disabled={loading}
           title="Ta nettsted ut av måling"
+          buttonVariant="button"
         />
         {maaling.status === 'kvalitetssikring' && (
           <ConfirmModalButton
@@ -137,6 +139,7 @@ const KvalitetssikringApp = () => {
             onConfirm={onClickRestart}
             disabled={loading}
             title="Nytt sideutval for nettstad"
+            buttonVariant="button"
           />
         )}
       </div>

@@ -1,4 +1,4 @@
-import { ButtonColor, ButtonProps } from '@digdir/design-system-react';
+import { ButtonColor } from '@digdir/design-system-react';
 import React from 'react';
 
 import { AppRoute } from '../appRoutes';
@@ -6,12 +6,17 @@ import TestlabLinkButton from './TestlabLinkButton';
 
 export type TableActionType = 'add' | 'submit';
 
-export interface Props extends ButtonProps {
+export interface TableActionButtonProps {
   action: TableActionType;
   route: AppRoute;
+  disabled?: boolean;
 }
 
-const TableActionButton = ({ action, route, disabled = false }: Props) => {
+const TableActionButton = ({
+  action,
+  route,
+  disabled = false,
+}: TableActionButtonProps) => {
   if (action === 'add') {
     return (
       <TestlabLinkButton
