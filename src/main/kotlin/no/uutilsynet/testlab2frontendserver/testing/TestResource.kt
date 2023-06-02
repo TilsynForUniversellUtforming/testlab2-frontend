@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.testing
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.testing.dto.TestResultat
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -13,8 +14,8 @@ import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("api/v1/testing")
-class TestResource(val restTemplate: RestTemplate, val testingApiProperties: TestingApiProperties) {
-  val logger = LoggerFactory.getLogger(TestResource::class.java)
+class TestResource(val restTemplate: RestTemplate, testingApiProperties: TestingApiProperties) {
+  val logger: Logger = LoggerFactory.getLogger(TestResource::class.java)
 
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
@@ -32,6 +33,6 @@ class TestResource(val restTemplate: RestTemplate, val testingApiProperties: Tes
           .getOrElse {
             logger.info(
                 "Kunne ikkje hente testresultat for måling med id $id og løysing med id $loeysingId")
-            throw RuntimeException("Klarte ikkje å hente testresultat")
+            throw RuntimeException("Klarte ikkje å hente testresultat", it)
           }
 }
