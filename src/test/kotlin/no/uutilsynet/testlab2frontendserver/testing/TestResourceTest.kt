@@ -1,0 +1,53 @@
+package no.uutilsynet.testlab2frontendserver.testing
+
+import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.http.MediaType
+import org.springframework.test.web.client.ExpectedCount
+import org.springframework.test.web.client.MockRestServiceServer
+import org.springframework.test.web.client.match.MockRestRequestMatchers
+import org.springframework.test.web.client.response.MockRestResponseCreators
+import org.springframework.web.client.RestTemplate
+
+@RestClientTest
+class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
+  @Autowired private lateinit var server: MockRestServiceServer
+
+  @Test
+  @DisplayName(
+      "når vi får en respons som mangler elementOmtale, så skal det parses som et TestResultat")
+  fun getTestResultatListTest() {
+    val jsonSuccess =
+        """
+      [{
+        "elementResultat": "samsvar",
+        "elementUtfall": "The test target has a unique `id` attribute.",
+        "side": "https://www.sokndal.kommune.no/aktuelt/se-programmet-for-sokndalsdagene.8048.aspx",
+        "sideNivaa": 2,
+        "suksesskriterium": [
+            "4.1.1"
+        ],
+        "testVartUtfoert": "2023-06-02T08:50:48",
+        "testregelId": "QW-ACT-R18"
+    }]
+    """
+            .trimIndent()
+    server
+        .expect(
+            ExpectedCount.once(),
+            MockRestRequestMatchers.requestTo(
+                CoreMatchers.containsString("v1/maalinger/1/testresultat")))
+        .andRespond(MockRestResponseCreators.withSuccess(jsonSuccess, MediaType.APPLICATION_JSON))
+
+    val testResource = TestResource(restTemplate, TestingApiProperties("https://testing.api"))
+    val result = testResource.getTestResultatList(1, null)
+    assertThat(result.size, equalTo(1))
+  }
+}
