@@ -1,3 +1,3 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
-data class MaalingIdList(val idList: List<Int>)
+data class IdList(val idList: List<Int>)

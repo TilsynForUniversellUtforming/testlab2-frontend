@@ -1,41 +1,62 @@
-import { Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import AppTitle from '../../common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
+import { isNotDefined } from '../../common/util/util';
 import { fetchMaaling, restartCrawling } from '../../maaling/api/maaling-api';
-import { CrawlResultat } from '../../maaling/api/types';
+import { CrawlResultat, Maaling } from '../../maaling/api/types';
 import { TesterContext } from '../types';
 import CrawlingList from './CrawlingList';
+
+const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
+  if (maaling?.crawlResultat && maaling.crawlResultat.length > 0) {
+    return maaling.crawlResultat;
+  } else if (maaling?.status === 'planlegging' && maaling?.loeysingList) {
+    return maaling.loeysingList.map((l) => ({
+      type: 'ikkje_starta',
+      loeysing: l,
+    }));
+  } else {
+    return [];
+  }
+};
 
 const SideutvalApp = () => {
   const { maaling, contextError, contextLoading }: TesterContext =
     useOutletContext();
   const { id } = useParams();
-  const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(
-    maaling?.crawlResultat ?? []
+  const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
+    maalingToCrawlResultat(maaling)
   );
+
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'crawling');
   const navigate = useNavigate();
 
   const doFetchData = useCallback(async () => {
+    setLoading(false);
+    setError(undefined);
+
     if (id) {
-      const refreshedMaaling = await fetchMaaling(Number(id));
-      if (!refreshedMaaling) {
-        setError(new Error('Fann ikkje måling'));
-      }
+      try {
+        const refreshedMaaling = await fetchMaaling(Number(id));
 
-      if (refreshedMaaling.status !== 'crawling') {
-        setRefreshing(false);
-      }
+        if (!refreshedMaaling) {
+          setError(new Error('Fann ikkje måling'));
+        }
 
-      setCrawlResult(refreshedMaaling.crawlResultat);
+        if (refreshedMaaling.status !== 'crawling') {
+          setRefreshing(false);
+        }
+
+        setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
+      } catch (e) {
+        setError(toError(e, 'Noko gikk gale ved henting av måling'));
+      }
     } else {
       setError(new Error('Måling finnes ikkje'));
     }
@@ -43,27 +64,37 @@ const SideutvalApp = () => {
 
   useInterval(() => doFetchData(), refreshing ? 15000 : null);
 
-  const onClickRestart = useCallback((row: Row<CrawlResultat>) => {
+  const onClickRestart = useCallback((crawlRowSelection: CrawlResultat[]) => {
     setLoading(true);
     setError(undefined);
-    const loeysingId = row.original.loeysing.id;
+    const loeysingIdList = crawlRowSelection.map((cr) => cr.loeysing.id);
 
     if (typeof maaling === 'undefined') {
-      throw new Error('Måling finnes ikkje');
-    } else if (isNaN(loeysingId)) {
-      throw new Error('Løysing finnes ikkje på måling');
+      setError(new Error('Måling finnes ikkje'));
+      return;
+    } else if (isNotDefined(loeysingIdList)) {
+      setError(new Error('Løysing finnes ikkje på måling'));
+      return;
+    } else if (crawlRowSelection.length === 0) {
+      setError(
+        new Error('Kunne ikkje starte crawling på nytt, ingen løysing valgt')
+      );
+      return;
     }
 
-    const fetchData = async () => {
+    const doRestart = async () => {
       try {
-        const restartedMaaling = await restartCrawling(maaling.id, loeysingId);
-        setCrawlResult(restartedMaaling.crawlResultat);
+        const restartedMaaling = await restartCrawling(
+          maaling.id,
+          loeysingIdList
+        );
+        setCrawlResult(maalingToCrawlResultat(restartedMaaling));
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
       }
     };
 
-    fetchData().finally(() => {
+    doRestart().finally(() => {
       setLoading(false);
       navigate(
         getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
@@ -79,16 +110,14 @@ const SideutvalApp = () => {
   }
 
   return (
-    <div className="sideutval">
-      <AppTitle heading="Sideutval" subHeading={maaling.navn} />
-      <CrawlingList
-        crawlList={crawlResultat}
-        maalingStatus={maaling.status}
-        error={error}
-        onClickRestart={onClickRestart}
-        loading={loading}
-      />
-    </div>
+    <CrawlingList
+      maaling={maaling}
+      crawlList={crawlResultat}
+      onClickRestart={onClickRestart}
+      refresh={doFetchData}
+      loading={loading}
+      error={error}
+    />
   );
 };
 

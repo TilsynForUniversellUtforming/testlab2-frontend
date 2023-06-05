@@ -63,10 +63,9 @@ const KvalitetssikringApp = () => {
 
     const fetchData = async () => {
       try {
-        const restartedMaaling = await restartCrawling(
-          maaling.id,
-          loeysingCrawResultat.loeysing.id
-        );
+        const restartedMaaling = await restartCrawling(maaling.id, {
+          idList: [loeysingCrawResultat.loeysing.id],
+        });
         setMaaling(restartedMaaling);
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved omstart av sideutval'));

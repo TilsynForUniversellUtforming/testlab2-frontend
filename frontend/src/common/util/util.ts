@@ -28,6 +28,9 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
   return value != null;
 };
 
+export const isNotDefined = <T>(value: T | undefined | null): value is T =>
+  !isDefined(value);
+
 export const isUrl = (url: string) => {
   try {
     new URL(url);

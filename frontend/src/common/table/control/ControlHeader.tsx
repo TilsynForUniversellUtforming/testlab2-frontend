@@ -36,10 +36,11 @@ const ControlHeader = ({
 
   return (
     <div className="control-header">
-      {rowActions && (
+      {rowActions && rowActions.length > 0 && (
         <TableActionDropdown
           actions={rowActions}
           disabled={!rowActionEnabled}
+          table={table}
         />
       )}
       <div className="control-header__input">

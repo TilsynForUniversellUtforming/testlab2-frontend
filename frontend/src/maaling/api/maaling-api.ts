@@ -1,8 +1,8 @@
 import { responseToJson } from '../../common/util/api/util';
 import {
+  IdList,
   Maaling,
   MaalingEdit,
-  MaalingIdList,
   MaalingInit,
   MaalingStatus,
 } from './types';
@@ -28,7 +28,7 @@ export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
   );
 
 export const deleteMaalingList = async (
-  maalingIdList: MaalingIdList
+  maalingIdList: IdList
 ): Promise<Maaling[]> =>
   fetch(`/api/v1/maalinger`, {
     method: 'DELETE',
@@ -64,10 +64,14 @@ export const fetchMaaling = async (id: number): Promise<Maaling> =>
 
 export const restartCrawling = async (
   maalingId: number,
-  loeysingId: number
+  loeysingIdList: IdList
 ): Promise<Maaling> =>
-  fetch(`/api/v1/maalinger/${maalingId}/${loeysingId}`, {
+  fetch(`/api/v1/maalinger/${maalingId}/restart`, {
     method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(loeysingIdList),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje restarte måling')
   );
