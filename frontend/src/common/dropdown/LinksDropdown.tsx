@@ -7,9 +7,9 @@ import {
 } from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
 import React, { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { AppRoute } from '../appRoutes';
+import { AppRoute, getFullPath } from '../appRoutes';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 
 interface Props {
@@ -19,6 +19,7 @@ interface Props {
 
 export const LinksDropdown = ({ navn, routes }: Props) => {
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   const handleShowRoutes = () => {
     setShow(!show);
@@ -33,6 +34,11 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
     ) {
       setShow(false);
     }
+  };
+
+  const handleButtonClick = (route: AppRoute) => {
+    handleShowRoutes();
+    navigate(getFullPath(route));
   };
 
   useEffectOnce(() => {
@@ -58,14 +64,14 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
         <ul className="dropdown-content links" ref={linksDropdownRef}>
           {routes.map((route) => (
             <li className="dropdown-content__item" key={route.navn}>
-              <Link to={route.path} className="link">
+              <div className="link">
                 <button
-                  onClick={handleShowRoutes}
+                  onClick={() => handleButtonClick(route)}
                   className="dropdown-content__button"
                 >
                   {route.navn}
                 </button>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>

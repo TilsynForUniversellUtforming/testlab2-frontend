@@ -20,10 +20,10 @@ const Navigation = () => {
         />
       </div>
       <div className="navigation__item">
-        <LinksDropdown navn="Saksbehandling" routes={saksbehandling} />
+        <LinksDropdown navn="Utval" routes={utval} />
       </div>
       <div className="navigation__item">
-        <LinksDropdown navn="Utval" routes={utval} />
+        <LinksDropdown navn="Saksbehandling" routes={saksbehandling} />
       </div>
     </div>
   );

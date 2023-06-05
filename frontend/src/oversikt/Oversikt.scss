@@ -12,11 +12,16 @@
       background: #fffbfe !important;
       border: 0;
       box-shadow: 0 0 0 2px #ccc6d1;
+      width: 15rem;
       &:hover {
         box-shadow: 0 0 0 2px #6c55a7 !important;
       }
       &:active {
         color: var(--colors-blue-900);
+      }
+      &:focus-within {
+        box-shadow: 0 0 0 var(--fds-focus-border-width)
+          var(--fds-inner-focus-border-color);
       }
     }
   }
@@ -57,6 +62,10 @@
             }
             &:active {
               color: var(--colors-blue-900);
+            }
+            &:focus-within {
+              box-shadow: 0 0 0 var(--fds-focus-border-width)
+                var(--fds-inner-focus-border-color);
             }
           }
         }
