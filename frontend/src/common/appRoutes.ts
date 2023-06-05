@@ -273,8 +273,8 @@ export const appRoutes: IRoutes = {
 };
 
 export const utval = [
-  appRoutes.VERKSEMD_LIST,
   appRoutes.LOEYSING_ROOT,
+  appRoutes.VERKSEMD_LIST,
   appRoutes.TESTREGEL_LIST,
   appRoutes.KRAV_LIST,
 ];
