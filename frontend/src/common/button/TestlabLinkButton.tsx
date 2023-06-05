@@ -18,6 +18,9 @@ const TestlabLinkButton = ({
   color,
   route,
   disabled = false,
+  icon,
+  size,
+  fullWidth,
 }: Props) => {
   if (disabled) {
     return <Button variant={variant} color={color} title={title} disabled />;
@@ -26,7 +29,14 @@ const TestlabLinkButton = ({
   return (
     <div className="link-button-wrapper">
       <Link to={getFullPath(route)}>
-        <Button variant={variant} color={color} title={title}>
+        <Button
+          variant={variant}
+          color={color}
+          title={title}
+          icon={icon}
+          size={size}
+          fullWidth={fullWidth}
+        >
           {title}
         </Button>
       </Link>

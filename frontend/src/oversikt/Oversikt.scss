@@ -1,19 +1,57 @@
-.lenker {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 9rem);
-  grid-auto-rows: 7rem;
-  gap: 2rem 2rem;
-  margin-bottom: 2rem;
-
-  &__item {
+.oversikt {
+  max-width: 50%;
+  margin: auto;
+  &__sak {
     text-align: center;
-    a {
-      text-decoration: none;
-      color: black;
+    padding-bottom: 3rem;
+    button {
+      font-size: var(--font_size-300-breakpoint_md) !important;
+      justify-content: start;
+      padding: 0 4rem 0 1rem;
+      border-radius: 12px;
+      background: #fffbfe !important;
+      border: 0;
+      box-shadow: 0 0 0 2px #ccc6d1;
+      &:hover {
+        box-shadow: 0 0 0 2px #ccc6d1;
+      }
     }
   }
-  &__img {
-    object-fit: contain;
-    height: 7rem;
+
+  &__links {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 10rem;
+    }
+
+    .lenker {
+      display: flex;
+      flex-direction: column;
+
+      &__wrapper {
+        margin-bottom: 1rem;
+
+        .link-button-wrapper {
+          width: 100%;
+
+          button {
+            font-size: var(--font_size-300-breakpoint_md);
+            justify-content: start;
+            padding: 0 4rem 0 1rem;
+            border-radius: 12px;
+            background: #fffbfe !important;
+            &:hover {
+              background: #fffbfe !important;
+            }
+          }
+        }
+      }
+    }
   }
 }
