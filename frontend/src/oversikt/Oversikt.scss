@@ -13,7 +13,7 @@
       border: 0;
       box-shadow: 0 0 0 2px #ccc6d1;
       &:hover {
-        box-shadow: 0 0 0 2px #ccc6d1;
+        box-shadow: 0 0 0 2px #6c55a7 !important;
       }
     }
   }
@@ -41,13 +41,15 @@
           width: 100%;
 
           button {
-            font-size: var(--font_size-300-breakpoint_md);
+            font-size: var(--font_size-300-breakpoint_md) !important;
             justify-content: start;
             padding: 0 4rem 0 1rem;
             border-radius: 12px;
             background: #fffbfe !important;
+            border: 0;
+            box-shadow: 0 0 0 2px #ccc6d1;
             &:hover {
-              background: #fffbfe !important;
+              box-shadow: 0 0 0 2px #6c55a7 !important;
             }
           }
         }
