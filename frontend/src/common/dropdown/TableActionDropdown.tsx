@@ -1,5 +1,6 @@
 import { Button } from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import { Table } from '@tanstack/react-table';
 import React, { useRef, useState } from 'react';
 
 import ConfirmModalButton from '../confirm/ConfirmModalButton';
@@ -9,9 +10,14 @@ import { TableRowAction } from '../table/types';
 interface Props {
   actions: TableRowAction[];
   disabled?: boolean;
+  table: Table<any>;
 }
 
-export const TableActionDropdown = ({ actions, disabled = false }: Props) => {
+export const TableActionDropdown = ({
+  actions,
+  disabled = false,
+  table,
+}: Props) => {
   const [show, setShow] = useState(false);
   const dropdownRef = useRef<HTMLUListElement>(null);
 
@@ -54,6 +60,10 @@ export const TableActionDropdown = ({ actions, disabled = false }: Props) => {
               <ConfirmModalButton
                 buttonVariant="dropdown"
                 {...tra.modalProps}
+                onConfirm={() => {
+                  tra.modalProps.onConfirm();
+                  table.resetRowSelection();
+                }}
               />
             </li>
           ))}

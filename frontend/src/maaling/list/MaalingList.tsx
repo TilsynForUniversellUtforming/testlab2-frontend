@@ -13,7 +13,7 @@ import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateChec
 import UserActionTable from '../../common/table/UserActionTable';
 import { joinStringsToList } from '../../common/util/stringutils';
 import { deleteMaalingList, fetchMaalingList } from '../api/maaling-api';
-import { Maaling, MaalingIdList } from '../api/types';
+import { IdList, Maaling } from '../api/types';
 
 const MaalingList = () => {
   const [error, setError] = useState<Error | undefined>(undefined);
@@ -43,7 +43,7 @@ const MaalingList = () => {
 
     const deleteAndFetchMaaling = async () => {
       try {
-        const maalingIdList: MaalingIdList = {
+        const maalingIdList: IdList = {
           idList: maalingRowSelection.map((m) => m.id),
         };
         const data = await deleteMaalingList(maalingIdList);
@@ -95,7 +95,7 @@ const MaalingList = () => {
           {String(getValue())}
         </Link>
       ),
-      header: () => <span>Navn</span>,
+      header: () => <>Navn</>,
     },
     {
       accessorFn: (row) => row.status,
@@ -110,6 +110,9 @@ const MaalingList = () => {
           }}
         />
       ),
+      meta: {
+        select: true,
+      },
     },
   ];
 

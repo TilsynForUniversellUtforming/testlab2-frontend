@@ -10,7 +10,8 @@ import TestlabTable, { TestlabTableProps } from './TestlabTable';
 
 export interface Props<T extends object> {
   heading: string;
-  actionButtons: TableActionButtonProps[];
+  subHeading?: string;
+  actionButtons?: TableActionButtonProps[];
   tableProps: TestlabTableProps<T>;
 }
 
@@ -19,20 +20,22 @@ export interface Props<T extends object> {
  * @template T The type of data to be displayed in the table.
  * @param {object} props - The props for the component.
  * @param {string} props.heading - The title to be displayed at the top of the table.
+ * @param {string} props.subHeading - Optional title to be displayed under the heading.
  * @param {TableActionButtonProps[]} props.actionButtons - List of buttons which routes the user to a new page to preform actions, ie. create new elements.
  * @param {TestlabTableProps<T>} props.tableProps - The props for the TestlabTable component.
  * @returns {JSX.Element} - A JSX.Element representing the StandardTable component.
  */
 const UserActionTable = <T extends object>({
   heading,
+  subHeading,
   actionButtons,
   tableProps,
 }: Props<T>) => {
   return (
     <div className="standard-table">
-      <AppTitle heading={heading} />
+      <AppTitle heading={heading} subHeading={subHeading} />
 
-      {actionButtons.length > 0 && (
+      {actionButtons && actionButtons.length > 0 && (
         <div className="standard-table__user-actions">
           {actionButtons.map((button, i) => (
             <div

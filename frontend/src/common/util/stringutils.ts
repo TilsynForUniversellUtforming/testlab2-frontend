@@ -4,3 +4,9 @@ export const joinStringsToList = (list: string[]): string => {
   const last = list[list.length - 1];
   return firsts.join(', ') + ' og ' + last;
 };
+
+export const capitalize = (str: string): string =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+
+export const sanitizeLabel = (label: string) =>
+  capitalize(label.replace('_', ' ').toLowerCase());

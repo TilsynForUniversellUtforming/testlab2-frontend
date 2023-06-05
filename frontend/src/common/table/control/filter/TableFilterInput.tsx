@@ -1,7 +1,9 @@
+import { Select } from '@digdir/design-system-react';
 import { Column } from '@tanstack/react-table';
 import React from 'react';
 
 import DebouncedInput from '../../../DebouncedInput';
+import { sanitizeLabel } from '../../../util/stringutils';
 
 export interface Props<T extends object> {
   column: Column<T>;
@@ -13,6 +15,25 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
   }
 
   const columnFilterValue = column.getFilterValue();
+
+  if (column.columnDef?.meta?.select) {
+    const options = Array.from(column.getFacetedUniqueValues().keys()).map(
+      (value) => ({
+        label: sanitizeLabel(value),
+        value: value,
+      })
+    );
+
+    return (
+      <div className="testlab-table__column-filter">
+        <Select
+          value={(columnFilterValue ?? '') as string}
+          onChange={(value) => column.setFilterValue(value)}
+          options={options}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="testlab-table__column-filter">

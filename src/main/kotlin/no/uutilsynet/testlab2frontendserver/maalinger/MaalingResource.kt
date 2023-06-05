@@ -6,10 +6,10 @@ import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters.Companion.validateParameters
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultatDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingIdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
@@ -95,7 +95,7 @@ class MaalingResource(
           }
 
   @DeleteMapping
-  fun deleteMaalingList(@RequestBody maalingIdList: MaalingIdList): ResponseEntity<out Any> =
+  fun deleteMaalingList(@RequestBody maalingIdList: IdList): ResponseEntity<out Any> =
       runCatching {
             for (id in maalingIdList.idList) {
               logger.info("Slettar måling med id $id")
@@ -134,21 +134,21 @@ class MaalingResource(
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
 
-  @PutMapping("{id}/{loeysingId}")
+  @PutMapping("{maalingId}/restart")
   fun restartCrawlForMaalingLoeysing(
-      @PathVariable id: Int,
-      @PathVariable loeysingId: Int,
+      @PathVariable maalingId: Int,
+      @RequestBody loeysingIdList: IdList,
   ): ResponseEntity<out Any> =
       runCatching {
             restTemplate.put(
-                "${maalingUrl}/${id}/status",
+                "${maalingUrl}/${maalingId}/status",
                 HttpEntity(
                     mapOf(
                         "status" to MaalingStatus.crawling.status,
-                        "loeysingIdList" to listOf(loeysingId))))
-            getMaaling(id)
+                        "loeysingIdList" to loeysingIdList.idList)))
+            getMaaling(maalingId)
           }
           .getOrElse {
-            ResponseEntity.internalServerError().body("Kunne ikke restarte måling ${it.message}")
+            ResponseEntity.internalServerError().body("Kunne ikkje starte crawling(er) på nytt")
           }
 }

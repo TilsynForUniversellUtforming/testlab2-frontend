@@ -1,4 +1,5 @@
 import './testlabTable.scss';
+import '@tanstack/react-table';
 
 import {
   Table,
@@ -40,6 +41,16 @@ declare module '@tanstack/table-core' {
   }
   interface FilterMeta {
     itemRank: RankingInfo;
+  }
+}
+
+/*
+ColumnMeta is extended to include the select property,
+which is used to indicate whether a column should use a select component instead of input
+*/
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData, TValue> {
+    select?: boolean;
   }
 }
 

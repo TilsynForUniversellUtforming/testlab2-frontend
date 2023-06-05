@@ -34,7 +34,7 @@ const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
     label: toLabel('Testing', 0),
     finished: false,
     failed: false,
-    showResult: false,
+    showResult: true,
   });
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
       label: toLabel('Sideutvalg', maaling.crawlStatistics.numFinished),
       finished: crawlingJobFinished,
       failed: crawlingFailed,
-      showResult: !isPlanning,
+      showResult: true,
     });
 
     const testingJobFinished = maaling.status === 'testing_ferdig';

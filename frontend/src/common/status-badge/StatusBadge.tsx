@@ -2,6 +2,8 @@ import './status-badge.scss';
 
 import classNames from 'classnames';
 
+import { sanitizeLabel } from '../util/stringutils';
+
 /**
  * Defines the levels for the status badge.
  * @typedef {Object} Levels
@@ -35,12 +37,7 @@ const StatusBadge = ({ customLabel, status, levels }: Props) => {
 
   const sanitizedLabel = customLabel
     ? customLabel
-    : String(status)
-        .replace('_', ' ')
-        .toLowerCase()
-        .split(' ')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+    : sanitizeLabel(String(status));
 
   return (
     <div
