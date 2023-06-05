@@ -2,7 +2,7 @@ import './link-button.scss';
 
 import { Button, ButtonProps } from '@digdir/design-system-react';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { AppRoute, getFullPath } from '../appRoutes';
 
@@ -22,24 +22,25 @@ const TestlabLinkButton = ({
   size,
   fullWidth,
 }: Props) => {
+  const navigate = useNavigate();
+
   if (disabled) {
     return <Button variant={variant} color={color} title={title} disabled />;
   }
 
   return (
     <div className="link-button-wrapper">
-      <Link to={getFullPath(route)}>
-        <Button
-          variant={variant}
-          color={color}
-          title={title}
-          icon={icon}
-          size={size}
-          fullWidth={fullWidth}
-        >
-          {title}
-        </Button>
-      </Link>
+      <Button
+        variant={variant}
+        color={color}
+        title={title}
+        icon={icon}
+        size={size}
+        fullWidth={fullWidth}
+        onClick={() => navigate(getFullPath(route))}
+      >
+        {title}
+      </Button>
     </div>
   );
 };
