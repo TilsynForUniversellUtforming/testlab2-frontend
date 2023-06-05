@@ -3,7 +3,7 @@ import './navigation.scss';
 import { ButtonColor, ButtonVariant } from '@digdir/design-system-react';
 import React from 'react';
 
-import { appRoutes, verktoey } from '../appRoutes';
+import { appRoutes, saksbehandling, utval } from '../appRoutes';
 import TestlabLinkButton from '../button/TestlabLinkButton';
 import LinksDropdown from '../dropdown/LinksDropdown';
 
@@ -20,7 +20,10 @@ const Navigation = () => {
         />
       </div>
       <div className="navigation__item">
-        <LinksDropdown navn="Verktøy" routes={verktoey} />
+        <LinksDropdown navn="Saksbehandling" routes={saksbehandling} />
+      </div>
+      <div className="navigation__item">
+        <LinksDropdown navn="Utval" routes={utval} />
       </div>
     </div>
   );

@@ -1,27 +1,72 @@
 import './Oversikt.scss';
 
+import { Heading } from '@digdir/design-system-react';
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import AppTitle from '../common/app-title/AppTitle';
-import { getFullPath, verktoey } from '../common/appRoutes';
+import {
+  AppRoute,
+  appRoutes,
+  saksbehandling,
+  utval,
+} from '../common/appRoutes';
+import TestlabLinkButton from '../common/button/TestlabLinkButton';
+
+interface OversiktLinkListProps {
+  heading: string;
+  routes: AppRoute[];
+}
+
+const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
+  <div className="oversikt__links-item">
+    <AppTitle heading={heading} />
+    <div className="lenker">
+      {routes.map((route) => (
+        <div className="lenker__wrapper" key={route.navn}>
+          <TestlabLinkButton
+            route={route}
+            title={route.navn}
+            variant="outline"
+            icon={<img src={route.imgSrc} alt={route.navn} />}
+            size="large"
+            color="secondary"
+            fullWidth={true}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 const Oversikt = () => {
   return (
-    <div>
-      <AppTitle heading="Verktøy" />
-      <div className="lenker">
-        {verktoey.map((route) => (
-          <div className="lenker__item" key={route.navn}>
-            <Link to={getFullPath(route)}>
-              <img
-                className="lenker__img"
-                src={route.imgSrc}
-                alt={route.navn}
-              />
-              <div className="lenker__text">{route.navn}</div>
-            </Link>
-          </div>
+    <div className="oversikt">
+      <div className="oversikt__sak">
+        <Heading size="xlarge" title="Meny" spacing={true}>
+          Meny
+        </Heading>
+        <TestlabLinkButton
+          route={appRoutes.SAK_CREATE}
+          title={appRoutes.SAK_CREATE.navn}
+          variant="outline"
+          icon={
+            <img
+              className="lenker__img"
+              src={appRoutes.SAK_CREATE.imgSrc}
+              alt={appRoutes.SAK_CREATE.navn}
+            />
+          }
+          size="large"
+          color="secondary"
+          fullWidth={true}
+        />
+      </div>
+      <div className="oversikt__links">
+        {[
+          { heading: 'Utval', routes: utval },
+          { heading: 'Saksbehandling', routes: saksbehandling },
+        ].map(({ heading, routes }) => (
+          <OversiktLinkList heading={heading} routes={routes} key={heading} />
         ))}
       </div>
     </div>

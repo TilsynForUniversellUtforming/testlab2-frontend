@@ -1,7 +1,8 @@
-import kravImg from '../assets/krav.png';
+import kravImg from '../assets/krav.svg';
 import loeysingImg from '../assets/loeysingar.svg';
-import maalingImg from '../assets/maaling.svg';
-import sakerImg from '../assets/saker.png';
+import maalingImg from '../assets/maalingar.svg';
+import nySakImg from '../assets/ny_sak.svg';
+import sakerImg from '../assets/saker.svg';
 import testingImg from '../assets/testreglar.svg';
 import verksemderImg from '../assets/verksemder.svg';
 
@@ -79,6 +80,7 @@ const SAK_CREATE = {
   navn: 'Ny sak',
   path: createPath,
   parentRoute: SAK_ROOT,
+  imgSrc: nySakImg,
 };
 const SAK_EDIT = {
   navn: 'Endre sak',
@@ -270,14 +272,14 @@ export const appRoutes: IRoutes = {
   TEST_RESULT_LIST: TEST_RESULT_LIST,
 };
 
-export const verktoey = [
-  appRoutes.SAK_LIST,
-  appRoutes.MAALING_LIST,
-  appRoutes.TESTREGEL_LIST,
+export const utval = [
   appRoutes.VERKSEMD_LIST,
   appRoutes.LOEYSING_ROOT,
+  appRoutes.TESTREGEL_LIST,
   appRoutes.KRAV_LIST,
 ];
+
+export const saksbehandling = [appRoutes.SAK_LIST, appRoutes.MAALING_LIST];
 
 export type IdReplacement = {
   id: string;
