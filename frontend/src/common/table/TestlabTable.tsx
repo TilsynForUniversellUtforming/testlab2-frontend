@@ -160,6 +160,7 @@ const TestlabTable = <T extends object>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    autoResetPageIndex: false,
   };
 
   const table = useReactTable(tableOptions);
