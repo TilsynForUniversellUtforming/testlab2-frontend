@@ -23,7 +23,7 @@ const TestregelCreate = () => {
   const onSubmit = useCallback((testregel: Testregel) => {
     const request: TestregelCreateRequest = {
       krav: testregel.krav,
-      referanseAct: testregel.referanseAct,
+      testregelNoekkel: testregel.testregelNoekkel,
       kravTilSamsvar: testregel.kravTilSamsvar,
     };
 

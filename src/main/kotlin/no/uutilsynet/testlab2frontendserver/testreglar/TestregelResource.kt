@@ -27,7 +27,7 @@ class TestregelResource(
 ) {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
-  val testregelUrl = "${testingApiProperties.url}/v1/testregel"
+  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
 
   @GetMapping
   fun listTestreglar(): List<Testregel> =
@@ -53,7 +53,7 @@ class TestregelResource(
   @PostMapping
   fun createTestregel(@RequestBody testregel: CreateTestregelDTO): List<Testregel> =
       try {
-        logger.info("Lagrer nytt testregel navn: ${testregel.referanseAct} fra $testregelUrl")
+        logger.info("Lagrer nytt testregel navn: ${testregel.testregelNoekkel} fra $testregelUrl")
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()
       } catch (e: Error) {

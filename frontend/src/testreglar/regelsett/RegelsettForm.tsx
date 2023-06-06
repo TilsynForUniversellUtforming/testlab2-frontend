@@ -53,7 +53,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
 
   const listErrors = formState.errors['testregelList'];
 
-  const selectableTestreglar = testreglar.filter((tr) => tr.referanseAct);
+  const selectableTestreglar = testreglar.filter((tr) => tr.testregelNoekkel);
 
   const selectedRows = useMemo(() => {
     const rowArray: boolean[] = [];
@@ -76,7 +76,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
         header: () => <span>Navn</span>,
       },
       {
-        accessorFn: (row) => row.referanseAct,
+        accessorFn: (row) => row.testregelNoekkel,
         id: 'TestregelId',
         cell: (info) => info.getValue(),
         header: () => <span>Testregel</span>,

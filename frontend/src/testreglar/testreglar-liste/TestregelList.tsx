@@ -65,7 +65,7 @@ const TestregelList = () => {
     } else {
       setDeleteMessage(
         `Vil du slette ${rowSelection
-          .map((tr) => `${tr.referanseAct} - ${tr.kravTilSamsvar}`)
+          .map((tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`)
           .join(',')}`
       );
     }

@@ -6,6 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude
 data class Testregel(
     val id: Int,
     val krav: String,
-    val referanseAct: String,
+    val testregelNoekkel: String,
     val kravTilSamsvar: String,
 )

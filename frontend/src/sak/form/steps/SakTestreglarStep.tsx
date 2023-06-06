@@ -58,7 +58,7 @@ const SakTestreglarStep = ({
       .filter((tr) => !selection.find((s) => s.id === tr.id));
 
     const options: SingleSelectOption[] = filteredRegelsettList.map((tr) => ({
-      label: tr.referanseAct,
+      label: tr.testregelNoekkel,
       value: String(tr.id),
     }));
 
@@ -90,10 +90,10 @@ const SakTestreglarStep = ({
         size: 1,
       },
       {
-        accessorFn: (row) => row.referanseAct,
+        accessorFn: (row) => row.testregelNoekkel,
         id: 'TestregelId',
         cell: ({ row }) =>
-          `${row.original.referanseAct} - ${row.original.kravTilSamsvar}`,
+          `${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`,
         header: () => <>Testregel</>,
       },
       {
@@ -101,6 +101,9 @@ const SakTestreglarStep = ({
         id: 'Krav',
         cell: (info) => info.getValue(),
         header: () => <>Krav</>,
+        meta: {
+          select: true,
+        },
       },
     ],
     []

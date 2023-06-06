@@ -19,13 +19,13 @@ export enum TestStatus {
 export type Testregel = {
   id: number;
   krav: string;
-  referanseAct: string;
+  testregelNoekkel: string;
   kravTilSamsvar: string;
 };
 
 export type TestregelCreateRequest = {
   krav: string;
-  referanseAct: string;
+  testregelNoekkel: string;
   kravTilSamsvar: string;
 };
 

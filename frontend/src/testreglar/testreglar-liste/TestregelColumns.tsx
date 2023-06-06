@@ -26,7 +26,7 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
           pathParam: idPath,
           id: String(row.original.id),
         })}
-        title={`Gå til testregel ${row.original.referanseAct}`}
+        title={`Gå til testregel ${row.original.testregelNoekkel}`}
       >
         {String(getValue())}
       </Link>
@@ -34,7 +34,7 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
     header: () => <>Navn</>,
   },
   {
-    accessorFn: (row) => row.referanseAct,
+    accessorFn: (row) => row.testregelNoekkel,
     id: 'TestregelId',
     cell: (info) => info.getValue(),
     header: () => <>Testregel</>,

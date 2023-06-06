@@ -28,7 +28,7 @@ const RegelsettList = () => {
     {
       accessorFn: (row) =>
         row.testregelList
-          .map((tr) => `${tr.referanseAct} - ${tr.kravTilSamsvar}`)
+          .map((tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`)
           .join(','),
       id: 'TestregelId',
       cell: ({ row }) => (
@@ -37,7 +37,7 @@ const RegelsettList = () => {
             <ListItem
               key={tr.id}
               className="testreglar-regelsett__list-item"
-            >{`${tr.referanseAct} - ${tr.kravTilSamsvar}`}</ListItem>
+            >{`${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`}</ListItem>
           ))}
         </List>
       ),

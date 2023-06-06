@@ -28,7 +28,7 @@ const TestreglarForm = ({
   const formMethods = useForm<Testregel>({
     defaultValues: {
       id: testregel?.id,
-      referanseAct: testregel?.referanseAct ?? '',
+      testregelNoekkel: testregel?.testregelNoekkel ?? '',
       kravTilSamsvar: testregel?.kravTilSamsvar ?? '',
       krav: testregel?.krav,
     },
@@ -51,7 +51,7 @@ const TestreglarForm = ({
         />
         <TestlabForm.FormInput
           label="Testregel"
-          name="referanseAct"
+          name="testregelNoekkel"
           formValidation={{
             errorMessage: 'Format på testregel er QW-ACT-RXX',
             validation: { required: true, pattern: /^(QW-ACT-R)[0-9]{1,2}$/i },
