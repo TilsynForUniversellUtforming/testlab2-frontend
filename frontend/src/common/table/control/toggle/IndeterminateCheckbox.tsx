@@ -12,6 +12,7 @@ const IndeterminateCheckbox = ({
   disabled,
   onChange,
   ariaLabel,
+  id,
 }: Props & HTMLProps<HTMLInputElement>) => {
   const ref = React.useRef<HTMLInputElement>(null!);
 
@@ -34,6 +35,7 @@ const IndeterminateCheckbox = ({
         cursor: 'pointer',
       }}
       aria-label={ariaLabel}
+      id={id}
     />
   );
 };
@@ -66,5 +68,6 @@ export const RowCheckbox = <T extends object>({
     indeterminate={row.getIsSomeSelected()}
     onChange={row.getToggleSelectedHandler()}
     ariaLabel={ariaLabel}
+    id={row.id}
   />
 );
