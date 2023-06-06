@@ -15,6 +15,7 @@ const TestlabFormSelect = <T extends object>({
   options,
   name,
   formValidation,
+  disabled,
 }: EditSelectProps<T>) => {
   const {
     control,
@@ -42,6 +43,7 @@ const TestlabFormSelect = <T extends object>({
             onChange={onChange}
             options={options}
             error={hasError}
+            disabled={disabled}
           />
           {hasError && formValidation?.errorMessage && (
             <ErrorMessage size="small">

@@ -20,12 +20,6 @@ export type AppRoute = {
 
 interface IRoutes {
   ROOT: AppRoute;
-  TESTREGEL_LIST: AppRoute;
-  TESTREGEL_CREATE: AppRoute;
-  TESTREGEL_EDIT: AppRoute;
-  REGELSETT_LIST: AppRoute;
-  REGELSETT_CREATE: AppRoute;
-  REGELSETT_EDIT: AppRoute;
   VERKSEMD_LIST: AppRoute;
   VERKSEMD_CREATE: AppRoute;
   VERKSEMD_EDIT: AppRoute;
@@ -49,6 +43,16 @@ interface IRoutes {
   LOEYSING_LIST: AppRoute;
   LOEYSING_CREATE: AppRoute;
   LOEYSING_EDIT: AppRoute;
+
+  TESTREGEL_ROOT: AppRoute;
+  TESTREGEL_LIST: AppRoute;
+  TESTREGEL_CREATE: AppRoute;
+  TESTREGEL_EDIT: AppRoute;
+
+  REGELSETT_ROOT: AppRoute;
+  REGELSETT_LIST: AppRoute;
+  REGELSETT_CREATE: AppRoute;
+  REGELSETT_EDIT: AppRoute;
 
   TEST: AppRoute;
   TEST_CONFIRM: AppRoute;
@@ -111,36 +115,50 @@ const MAALING_EDIT = {
   path: editPath,
   parentRoute: MAALING_ROOT,
 };
-const TESTREGEL_LIST = {
+
+const TESTREGEL_ROOT = {
   navn: 'Testreglar',
   path: 'testreglar',
   imgSrc: testingImg,
 };
+
+const TESTREGEL_LIST = {
+  navn: 'Testreglar',
+  path: listPath,
+  parentRoute: TESTREGEL_ROOT,
+};
+
 const TESTREGEL_CREATE = {
   navn: 'Ny testregel',
   path: createPath,
-  parentRoute: TESTREGEL_LIST,
+  parentRoute: TESTREGEL_ROOT,
 };
 const TESTREGEL_EDIT = {
   navn: 'Endre testregel',
   path: idPath,
-  parentRoute: TESTREGEL_LIST,
+  parentRoute: TESTREGEL_ROOT,
+};
+
+const REGELSETT_ROOT = {
+  navn: 'Regelsett',
+  path: 'regelsett',
+  parentRoute: TESTREGEL_ROOT,
 };
 
 const REGELSETT_LIST = {
   navn: 'Regelsett',
-  path: 'regelsett',
-  parentRoute: TESTREGEL_LIST,
+  path: listPath,
+  parentRoute: REGELSETT_ROOT,
 };
 const REGELSETT_CREATE = {
   navn: 'Nytt regelsett',
   path: createPath,
-  parentRoute: REGELSETT_LIST,
+  parentRoute: REGELSETT_ROOT,
 };
 const REGELSETT_EDIT = {
   navn: 'Endre regelsett',
   path: idPath,
-  parentRoute: REGELSETT_LIST,
+  parentRoute: REGELSETT_ROOT,
 };
 
 const VERKSEMD_LIST = {
@@ -234,9 +252,11 @@ const TEST_RESULT_LIST = {
 
 export const appRoutes: IRoutes = {
   ROOT: ROOT,
+  TESTREGEL_ROOT: TESTREGEL_ROOT,
   TESTREGEL_LIST: TESTREGEL_LIST,
   TESTREGEL_CREATE: TESTREGEL_CREATE,
   TESTREGEL_EDIT: TESTREGEL_EDIT,
+  REGELSETT_ROOT: REGELSETT_ROOT,
   REGELSETT_LIST: REGELSETT_LIST,
   REGELSETT_CREATE: REGELSETT_CREATE,
   REGELSETT_EDIT: REGELSETT_EDIT,
@@ -275,7 +295,7 @@ export const appRoutes: IRoutes = {
 export const utval = [
   appRoutes.LOEYSING_ROOT,
   appRoutes.VERKSEMD_LIST,
-  appRoutes.TESTREGEL_LIST,
+  appRoutes.TESTREGEL_ROOT,
   appRoutes.KRAV_LIST,
 ];
 

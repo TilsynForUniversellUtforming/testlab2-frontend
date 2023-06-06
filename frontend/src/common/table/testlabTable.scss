@@ -31,10 +31,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
-    &__input {
-      min-width: 16rem;
-      margin-bottom: 0.75rem;
+    padding-bottom: 1rem;
+    &.search-only {
+      justify-content: end;
     }
   }
 

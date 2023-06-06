@@ -29,13 +29,13 @@ import SideutvalApp from './tester/sideutval/SideutvalApp';
 import TestResultListApp from './tester/test-result-list/TestResultListApp';
 import TesterApp from './tester/TesterApp';
 import TestingListApp from './tester/testing-list/TestingListApp';
-import CreateRegelsett from './testreglar/regelsett/CreateRegelsett';
-import EditRegelsett from './testreglar/regelsett/EditRegelsett';
-import Regelsett from './testreglar/regelsett/Regelsett';
 import RegelsettApp from './testreglar/regelsett/RegelsettApp';
-import CreateTestregel from './testreglar/testreglar-liste/CreateTestregel';
-import EditTestreglar from './testreglar/testreglar-liste/EditTestreglar';
-import Testreglar from './testreglar/testreglar-liste/Testreglar';
+import RegelsettCreate from './testreglar/regelsett/RegelsettCreate';
+import RegelsettEdit from './testreglar/regelsett/RegelsettEdit';
+import RegelsettList from './testreglar/regelsett/RegelsettList';
+import TestregelCreate from './testreglar/testreglar-liste/TestregelCreate';
+import TestregelEdit from './testreglar/testreglar-liste/TestregelEdit';
+import TestregelList from './testreglar/testreglar-liste/TestregelList';
 import TestreglarApp from './testreglar/TestreglarApp';
 import VerksemderApp from './verksemder/VerksemderApp';
 
@@ -115,36 +115,36 @@ const App = () => {
           ],
         },
         {
-          path: appRoutes.TESTREGEL_LIST.path,
+          path: appRoutes.TESTREGEL_ROOT.path,
           element: <TestreglarApp />,
           children: [
             {
               index: true,
-              element: <Testreglar />,
+              element: <TestregelList />,
             },
             {
-              path: appRoutes.TESTREGEL_CREATE.path,
-              element: <CreateTestregel />,
+              path: createPath,
+              element: <TestregelCreate />,
             },
             {
-              path: appRoutes.TESTREGEL_EDIT.path,
-              element: <EditTestreglar />,
+              path: idPath,
+              element: <TestregelEdit />,
             },
             {
-              path: appRoutes.REGELSETT_LIST.path,
+              path: appRoutes.REGELSETT_ROOT.path,
               element: <RegelsettApp />,
               children: [
                 {
                   index: true,
-                  element: <Regelsett />,
+                  element: <RegelsettList />,
                 },
                 {
                   path: appRoutes.REGELSETT_CREATE.path,
-                  element: <CreateRegelsett />,
+                  element: <RegelsettCreate />,
                 },
                 {
                   path: appRoutes.REGELSETT_EDIT.path,
-                  element: <EditRegelsett />,
+                  element: <RegelsettEdit />,
                 },
               ],
             },

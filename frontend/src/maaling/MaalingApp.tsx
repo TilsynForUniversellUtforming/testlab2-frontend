@@ -9,7 +9,7 @@ import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
-import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
+import { listRegelsett } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
@@ -119,7 +119,7 @@ const MaalingApp = () => {
         setError(toError(e, 'Kunne ikkje hente løysingar'));
       }
 
-      const regelsett = await getRegelsett_dummy();
+      const regelsett = await listRegelsett();
       setRegelsettList(regelsett);
 
       const advisors = await getAdvisors_dummy();
