@@ -74,13 +74,13 @@ const TestResultListApp = () => {
       },
 
       {
-        accessorFn: (row) => row.elementOmtale.htmlCode,
+        accessorFn: (row) => row.elementOmtale?.htmlCode,
         id: 'htmlCode',
         cell: (info) => <>{decodeBase64(String(info.getValue()))}</>,
         header: () => <>HTML element</>,
       },
       {
-        accessorFn: (row) => row.elementOmtale.pointer,
+        accessorFn: (row) => row.elementOmtale?.pointer,
         id: 'pointer',
         cell: (info) => info.getValue(),
         header: () => <>Peker</>,
