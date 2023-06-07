@@ -32,7 +32,7 @@ class TestregelResource(
   @GetMapping
   fun listTestreglar(): List<Testregel> =
       try {
-        logger.info("Henter testreglar fra $testregelUrl")
+        logger.debug("Henter testreglar fra $testregelUrl")
         restTemplate.getList<Testregel>(testregelUrl)
       } catch (e: Error) {
         logger.error("klarte ikke å hente testreglar", e)
@@ -53,7 +53,7 @@ class TestregelResource(
   @PostMapping
   fun createTestregel(@RequestBody testregel: CreateTestregelDTO): List<Testregel> =
       try {
-        logger.info("Lagrer nytt testregel navn: ${testregel.testregelNoekkel} fra $testregelUrl")
+        logger.debug("Lagrer ny testregel med navn: ${testregel.kravTilSamsvar} fra $testregelUrl")
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()
       } catch (e: Error) {
@@ -64,7 +64,7 @@ class TestregelResource(
   @PutMapping
   fun updateTestregel(@RequestBody testregel: Testregel): List<Testregel> =
       try {
-        logger.info("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
+        logger.debug("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
         restTemplate.put(testregelUrl, testregel, Testregel::class.java)
         listTestreglar()
       } catch (e: Error) {
