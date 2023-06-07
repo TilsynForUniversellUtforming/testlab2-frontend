@@ -87,7 +87,7 @@ const LoeysingList = () => {
       },
       {
         accessorFn: (row) => row.namn,
-        id: 'Navn',
+        id: 'Namn',
         cell: ({ row, getValue }) => (
           <Link
             to={getFullPath(appRoutes.LOEYSING_EDIT, {

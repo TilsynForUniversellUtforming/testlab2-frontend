@@ -71,9 +71,9 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
       },
       {
         accessorFn: (row) => row.kravTilSamsvar,
-        id: 'Navn',
+        id: 'Namn',
         cell: (info) => info.getValue(),
-        header: () => <span>Navn</span>,
+        header: () => <span>Namn</span>,
       },
       {
         accessorFn: (row) => row.testregelNoekkel,
@@ -96,10 +96,10 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
           <div>
             <div className="mb-3">
               <TestlabForm.FormInput
-                label="Navn"
+                label="Namn"
                 name="namn"
                 formValidation={{
-                  errorMessage: 'Navn kan ikke være tomt',
+                  errorMessage: 'Namn kan ikkje vera tomt',
                   validation: { required: true, minLength: 1 },
                 }}
               />
