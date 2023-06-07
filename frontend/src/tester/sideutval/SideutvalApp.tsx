@@ -7,7 +7,11 @@ import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { isNotDefined } from '../../common/util/util';
 import { fetchMaaling, restartCrawling } from '../../maaling/api/maaling-api';
-import { CrawlResultat, Maaling } from '../../maaling/api/types';
+import {
+  CrawlResultat,
+  Maaling,
+  RestartCrawlRequest,
+} from '../../maaling/api/types';
 import { TesterContext } from '../types';
 import CrawlingList from './CrawlingList';
 
@@ -84,10 +88,12 @@ const SideutvalApp = () => {
 
     const doRestart = async () => {
       try {
-        const restartedMaaling = await restartCrawling(
-          maaling.id,
-          loeysingIdList
-        );
+        const restartCrawlingRequest: RestartCrawlRequest = {
+          maalingId: maaling.id,
+          loeysingIdList: { idList: loeysingIdList },
+        };
+
+        const restartedMaaling = await restartCrawling(restartCrawlingRequest);
         setCrawlResult(maalingToCrawlResultat(restartedMaaling));
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved restart av sideutval'));

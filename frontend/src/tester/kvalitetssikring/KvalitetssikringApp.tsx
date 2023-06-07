@@ -13,6 +13,7 @@ import toError from '../../common/error/util';
 import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { restartCrawling } from '../../maaling/api/maaling-api';
+import { RestartCrawlRequest } from '../../maaling/api/types';
 import { CrawlUrl } from '../../maaling/types';
 import { TesterContext } from '../types';
 
@@ -63,9 +64,12 @@ const KvalitetssikringApp = () => {
 
     const fetchData = async () => {
       try {
-        const restartedMaaling = await restartCrawling(maaling.id, {
-          idList: [loeysingCrawResultat.loeysing.id],
-        });
+        const restartCrawlingRequest: RestartCrawlRequest = {
+          maalingId: maaling.id,
+          loeysingIdList: { idList: [loeysingCrawResultat.loeysing.id] },
+        };
+
+        const restartedMaaling = await restartCrawling(restartCrawlingRequest);
         setMaaling(restartedMaaling);
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved omstart av sideutval'));

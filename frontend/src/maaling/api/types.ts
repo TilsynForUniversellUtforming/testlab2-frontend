@@ -71,3 +71,8 @@ export type Maaling = {
 export type IdList = {
   idList: number[];
 };
+
+export type RestartCrawlRequest = {
+  maalingId: number;
+  loeysingIdList: IdList;
+};
