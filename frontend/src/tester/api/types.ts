@@ -11,5 +11,5 @@ export type TestResultat = {
   testVartUtfoert: Date;
   elementUtfall: string;
   elementResultat: string;
-  elementOmtale: ACTElement;
+  elementOmtale?: ACTElement;
 };

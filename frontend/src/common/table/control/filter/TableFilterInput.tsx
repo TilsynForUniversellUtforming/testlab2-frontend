@@ -3,6 +3,7 @@ import { Column } from '@tanstack/react-table';
 import React from 'react';
 
 import DebouncedInput from '../../../debounced-input/DebouncedInput';
+import { Option } from '../../../types';
 import { sanitizeLabel } from '../../../util/stringutils';
 
 export interface Props<T extends object> {
@@ -17,12 +18,17 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
   const columnFilterValue = column.getFilterValue();
 
   if (column.columnDef?.meta?.select) {
-    const options = Array.from(column.getFacetedUniqueValues().keys()).map(
-      (value) => ({
-        label: sanitizeLabel(value),
-        value: value,
-      })
-    );
+    const defaultOption: Option = {
+      label: 'Alle',
+      value: '',
+    };
+    const options: Option[] = Array.from(
+      column.getFacetedUniqueValues().keys()
+    ).map((value) => ({
+      label: sanitizeLabel(value),
+      value: value,
+    }));
+    options.unshift(defaultOption);
 
     return (
       <div className="testlab-table__column-filter">

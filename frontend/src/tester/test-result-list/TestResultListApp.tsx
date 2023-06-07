@@ -1,28 +1,14 @@
-import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
-import AppTitle from '../../common/app-title/AppTitle';
 import ErrorCard from '../../common/error/ErrorCard';
 import toError from '../../common/error/util';
 import { useEffectOnce } from '../../common/hooks/useEffectOnce';
-import StatusBadge from '../../common/status-badge/StatusBadge';
-import TestlabTable from '../../common/table/TestlabTable';
+import UserActionTable from '../../common/table/UserActionTable';
 import fetchTestResultatLoeysing from '../api/tester-api';
 import { TestResultat } from '../api/types';
 import { TesterContext } from '../types';
-
-const decodeBase64 = (base64String?: string) => {
-  if (typeof base64String === 'undefined') {
-    return '';
-  }
-
-  try {
-    return atob(base64String);
-  } catch (e) {
-    console.log('Feilet decoding av ', base64String);
-  }
-};
+import { getTestresultatColumns } from './TestResultatColumns';
 
 const TestResultListApp = () => {
   const { loeysingId } = useParams();
@@ -31,63 +17,10 @@ const TestResultListApp = () => {
     useOutletContext();
 
   const [testResult, setTestresult] = useState<TestResultat[]>([]);
-
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
 
-  const testResultatColumns = React.useMemo<ColumnDef<TestResultat>[]>(
-    () => [
-      {
-        accessorFn: (row) => row.testregelId,
-        id: '_idTestregel',
-        cell: (info) => info.getValue(),
-        header: () => <>Testregel</>,
-      },
-      {
-        accessorFn: (row) => row.suksesskriterium,
-        id: '_idSuksesskriterium',
-        cell: ({ row }) => <>{row.original.suksesskriterium.join(', ')}</>,
-        header: () => <>Suksesskriterium</>,
-      },
-      {
-        accessorFn: (row) => row.elementResultat,
-        id: '_elementUtfall',
-        cell: (info) => (
-          <StatusBadge
-            status={info.getValue()}
-            levels={{
-              primary: ['ikkje forekomst'],
-              danger: ['brot'],
-              success: ['samsvar'],
-            }}
-          />
-        ),
-        header: () => <>Status</>,
-      },
-      {
-        accessorFn: (row) => row.side,
-        id: 'side',
-        cell: (info) => (
-          <a href={String(info.getValue())}>{String(info.getValue())}</a>
-        ),
-        header: () => <>Nettside</>,
-      },
-
-      {
-        accessorFn: (row) => row.elementOmtale.htmlCode,
-        id: 'htmlCode',
-        cell: (info) => <>{decodeBase64(String(info.getValue()))}</>,
-        header: () => <>HTML element</>,
-      },
-      {
-        accessorFn: (row) => row.elementOmtale.pointer,
-        id: 'pointer',
-        cell: (info) => info.getValue(),
-        header: () => <>Peker</>,
-      },
-    ],
-    []
-  );
+  const testResultatColumns = useMemo(() => getTestresultatColumns(), []);
 
   const selectedLoeysing = maaling?.testResult.find(
     (tr) => tr.loeysing.id === Number(loeysingId)
@@ -135,19 +68,16 @@ const TestResultListApp = () => {
   }
 
   return (
-    <>
-      <AppTitle
-        heading="Testresultat"
-        subHeading={selectedLoeysing?.loeysing?.namn}
-      />
-      <TestlabTable<TestResultat>
-        data={testResult}
-        defaultColumns={testResultatColumns}
-        displayError={{ error }}
-        loading={loading}
-        onClickRetry={fetchTestresultat}
-      />
-    </>
+    <UserActionTable<TestResultat>
+      heading="Sideutval"
+      subHeading={selectedLoeysing?.loeysing?.namn}
+      tableProps={{
+        data: testResult,
+        defaultColumns: testResultatColumns,
+        loading: loading,
+        onClickRetry: fetchTestresultat,
+      }}
+    />
   );
 };
 
