@@ -58,7 +58,7 @@ const SakTestreglarStep = ({
       .filter((tr) => !selection.find((s) => s.id === tr.id));
 
     const options: SingleSelectOption[] = filteredRegelsettList.map((tr) => ({
-      label: tr.testregelNoekkel,
+      label: `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`,
       value: String(tr.id),
     }));
 
