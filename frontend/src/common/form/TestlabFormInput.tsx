@@ -11,6 +11,7 @@ export interface EditProps<T extends object> {
   hidden?: boolean;
   name: Path<T>;
   numeric?: boolean;
+  disabled?: boolean;
 }
 
 const TestlabFormInput = <T extends object>({

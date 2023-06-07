@@ -1,7 +1,8 @@
 import { Table } from '@tanstack/react-table';
+import classNames from 'classnames';
 import React from 'react';
 
-import DebouncedInput from '../../DebouncedInput';
+import DebouncedInput from '../../debounced-input/DebouncedInput';
 import TableActionDropdown from '../../dropdown/TableActionDropdown';
 import { TableFilterPreference, TableRowAction } from '../types';
 
@@ -34,9 +35,15 @@ const ControlHeader = ({
     filterPreference !== 'rowsearch' &&
     hasElements;
 
+  const showRowActions = rowActions && rowActions.length > 0;
+
   return (
-    <div className="control-header">
-      {rowActions && rowActions.length > 0 && (
+    <div
+      className={classNames('control-header', {
+        'search-only': showFilters && !showRowActions,
+      })}
+    >
+      {showRowActions && (
         <TableActionDropdown
           actions={rowActions}
           disabled={!rowActionEnabled}
@@ -49,6 +56,9 @@ const ControlHeader = ({
             label="Søk"
             value={filterValue}
             onChange={onChangeFilter}
+            labelPlacement="left"
+            ariaLabel={'Søk i tabell'}
+            id={'search-input'}
           />
         )}
       </div>

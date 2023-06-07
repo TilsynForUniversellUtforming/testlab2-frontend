@@ -8,7 +8,6 @@ import useValidate, {
   testreglarMessage,
 } from '../../common/form/hooks/useValidate';
 import TestlabForm from '../../common/form/TestlabForm';
-import StatusBadge from '../../common/status-badge/StatusBadge';
 import {
   HeaderCheckbox,
   RowCheckbox,
@@ -54,7 +53,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
 
   const listErrors = formState.errors['testregelList'];
 
-  const selectableTestreglar = testreglar.filter((tr) => tr.referanseAct);
+  const selectableTestreglar = testreglar.filter((tr) => tr.testregelNoekkel);
 
   const selectedRows = useMemo(() => {
     const rowArray: boolean[] = [];
@@ -77,37 +76,10 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
         header: () => <span>Navn</span>,
       },
       {
-        accessorFn: (row) => row.status,
-        id: 'Status',
-        cell: (info) => (
-          <StatusBadge
-            status={info.getValue()}
-            levels={{
-              primary: ['Publisert'],
-              danger: ['Utgår'],
-              success: ['Klar for testing'],
-            }}
-          />
-        ),
-        header: () => <span>Status</span>,
-      },
-      {
-        accessorFn: (row) => row.type,
-        id: 'Type',
-        cell: (info) => info.getValue(),
-        header: () => <span>Type</span>,
-      },
-      {
-        accessorFn: (row) => row.referanseAct,
+        accessorFn: (row) => row.testregelNoekkel,
         id: 'TestregelId',
         cell: (info) => info.getValue(),
         header: () => <span>Testregel</span>,
-      },
-      {
-        accessorFn: (row) => row.kravTittel,
-        id: 'Krav',
-        cell: (info) => info.getValue(),
-        header: () => <span>Krav</span>,
       },
     ],
     []

@@ -93,7 +93,7 @@ const SakConfirmContent = ({
     testregelList.map((tr) => ({
       id: tr.id,
       header: tr.kravTilSamsvar,
-      text: tr?.referanseAct ?? '',
+      text: tr?.testregelNoekkel ?? '',
     })) ?? [];
 
   return (

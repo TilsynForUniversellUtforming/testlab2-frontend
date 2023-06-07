@@ -1,11 +1,9 @@
 import { AppContext } from '../common/types';
-import { Krav } from '../krav/types';
 import { Testregel, TestRegelsett } from './api/types';
 
 export interface TestregelContext extends AppContext {
   testreglar: Testregel[];
   regelsett: TestRegelsett[];
-  krav: Krav[];
   setTestregelList: (testRegelList: Testregel[]) => void;
   setRegelsettList: (regelsettList: TestRegelsett[]) => void;
 }

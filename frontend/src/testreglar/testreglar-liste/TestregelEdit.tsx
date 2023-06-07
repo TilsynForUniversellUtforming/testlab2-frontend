@@ -5,16 +5,15 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import ErrorCard from '../../common/error/ErrorCard';
 import toError from '../../common/error/util';
 import { updateTestregel } from '../api/testreglar-api';
-import { Testregel, TestregelEditRequest } from '../api/types';
+import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';
 import TestreglarForm from './TestreglarForm';
 
-const EditTestreglar = () => {
+const TestregelEdit = () => {
   const {
     contextError,
     contextLoading,
     testreglar,
-    krav,
     setTestregelList,
     setContextLoading,
     setContextError,
@@ -27,24 +26,18 @@ const EditTestreglar = () => {
     (tr) => tr.id === numberId
   );
 
+  const krav = testreglar
+    .map((tr) => tr.krav)
+    .sort()
+    .filter((value, index, current) => current.indexOf(value) === index);
+
   const onSubmit = useCallback((testregel: Testregel) => {
-    const kravId = Number(testregel.kravId);
-
-    const request: TestregelEditRequest = {
-      id: testregel.id,
-      kravId: kravId === 0 ? undefined : testregel.kravId,
-      referanseAct: testregel.referanseAct,
-      kravTilSamsvar: testregel.kravTilSamsvar,
-      type: testregel.type,
-      status: testregel.status,
-    };
-
     setContextLoading(true);
     setContextError(undefined);
 
     const update = async () => {
       try {
-        const data = await updateTestregel(request);
+        const data = await updateTestregel(testregel);
         setTestregelList(data);
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje endre testregel'));
@@ -71,8 +64,9 @@ const EditTestreglar = () => {
       onSubmit={onSubmit}
       testregel={testregel}
       krav={krav}
+      kravDisabled
     />
   );
 };
 
-export default EditTestreglar;
+export default TestregelEdit;

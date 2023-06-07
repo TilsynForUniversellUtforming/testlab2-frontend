@@ -18,39 +18,19 @@ export enum TestStatus {
 
 export type Testregel = {
   id: number;
-  kravId?: number;
-  referanseAct?: string;
+  krav: string;
+  testregelNoekkel: string;
   kravTilSamsvar: string;
-  type: TestType;
-  status: TestStatus;
-  kravTittel: string;
-  Krav: string;
 };
 
 export type TestregelCreateRequest = {
-  kravId?: number;
-  referanseAct?: string;
+  krav: string;
+  testregelNoekkel: string;
   kravTilSamsvar: string;
-  type: TestType;
-  status?: TestStatus;
-};
-
-export type TestregelEditRequest = {
-  id: number;
-  kravId?: number;
-  referanseAct?: string;
-  kravTilSamsvar: string;
-  type: TestType;
-  status?: TestStatus;
 };
 
 export type TestRegelsett = {
   id: number;
   namn: string;
   testregelList: Testregel[];
-};
-
-export type RegelsettRequest = {
-  namn: string;
-  ids: number[];
 };
