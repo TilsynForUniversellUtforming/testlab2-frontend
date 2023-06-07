@@ -84,7 +84,7 @@ const MaalingList = () => {
     },
     {
       accessorFn: (row) => row.navn,
-      id: 'Navn',
+      id: 'Namn',
       cell: ({ row, getValue }) => (
         <Link
           to={getFullPath(appRoutes.MAALING, {
@@ -95,7 +95,7 @@ const MaalingList = () => {
           {String(getValue())}
         </Link>
       ),
-      header: () => <>Navn</>,
+      header: () => <>Namn</>,
     },
     {
       accessorFn: (row) => row.status,

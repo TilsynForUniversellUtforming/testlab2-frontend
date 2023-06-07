@@ -19,19 +19,19 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
   },
   {
     accessorFn: (row) => row.kravTilSamsvar,
-    id: 'Navn',
+    id: 'Namn',
     cell: ({ row, getValue }) => (
       <Link
         to={getFullPath(appRoutes.TESTREGEL_EDIT, {
           pathParam: idPath,
           id: String(row.original.id),
         })}
-        title={`Gå til testregel ${row.original.testregelNoekkel}`}
+        title={`Gå til testregel ${row.original.kravTilSamsvar}`}
       >
         {String(getValue())}
       </Link>
     ),
-    header: () => <>Navn</>,
+    header: () => <>Namn</>,
   },
   {
     accessorFn: (row) => row.testregelNoekkel,

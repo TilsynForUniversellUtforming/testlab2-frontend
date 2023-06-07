@@ -21,9 +21,9 @@ const RegelsettList = () => {
   const regelsettColumns: ColumnDef<TestRegelsett>[] = [
     {
       accessorFn: (row) => row.namn,
-      id: 'Navn',
+      id: 'Namn',
       cell: (info) => info.getValue(),
-      header: () => <>Navn</>,
+      header: () => <>Namn</>,
     },
     {
       accessorFn: (row) =>

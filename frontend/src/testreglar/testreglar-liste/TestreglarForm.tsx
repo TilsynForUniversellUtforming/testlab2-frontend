@@ -42,10 +42,10 @@ const TestreglarForm = ({
         formMethods={formMethods}
       >
         <TestlabForm.FormInput
-          label="Navn"
+          label="Namn"
           name="kravTilSamsvar"
           formValidation={{
-            errorMessage: 'Navn kan ikke være tomt',
+            errorMessage: 'Namn kan ikkje vera tomt',
             validation: { required: true, minLength: 1 },
           }}
         />
