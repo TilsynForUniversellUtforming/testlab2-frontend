@@ -64,7 +64,7 @@ const LoeysingList = () => {
       setDeleteMessage('');
     } else {
       setDeleteMessage(
-        `Vil du slette ${rowSelection.map((r) => r.namn).join(',')}`
+        `Vil du slette ${rowSelection.map((r) => r.namn).join(',')}?`
       );
     }
   }, []);
