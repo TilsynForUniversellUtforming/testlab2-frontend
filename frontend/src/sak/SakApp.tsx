@@ -7,7 +7,7 @@ import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
 import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
-import { getRegelsett_dummy } from '../testreglar/api/testreglar-api_dummy';
+import { listRegelsett } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
@@ -45,6 +45,15 @@ const SakApp = () => {
     }
   }, []);
 
+  const handleFetchRegelsettList = useCallback(async () => {
+    try {
+      const regelsett = await listRegelsett();
+      setRegelsettList(regelsett);
+    } catch (e) {
+      setError(toError(e, 'Kunne ikkje hente regelsett'));
+    }
+  }, []);
+
   const doFetchData = useCallback(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -61,12 +70,7 @@ const SakApp = () => {
 
       await handleFetchLoeysingList();
 
-      try {
-        const regelsett = await getRegelsett_dummy();
-        setRegelsettList(regelsett);
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente regelsett'));
-      }
+      await handleFetchRegelsettList();
 
       try {
         const advisorList = await getAdvisors_dummy();

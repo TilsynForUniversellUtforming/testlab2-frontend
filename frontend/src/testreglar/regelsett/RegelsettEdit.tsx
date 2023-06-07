@@ -1,27 +1,29 @@
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import useValidate, {
   testreglarMessage,
 } from '../../common/form/hooks/useValidate';
-import { createRegelsett } from '../api/testreglar-api';
-import { RegelsettRequest, Testregel, TestRegelsett } from '../api/types';
+import { Testregel, TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
-const CreateRegelsett = () => {
-  const {
-    setRegelsettList,
-    setContextError,
-    setContextLoading,
-  }: TestregelContext = useOutletContext();
+const RegelsettEdit = () => {
+  const { regelsett, setContextError, setContextLoading }: TestregelContext =
+    useOutletContext();
+  const { id } = useParams();
+  const numberId = Number(id);
 
-  const navigate = useNavigate();
+  const selectedRegelsett: TestRegelsett | undefined = regelsett.find(
+    (tr) => tr.id === numberId
+  );
+
   const formMethods = useForm<TestRegelsett>({
     defaultValues: {
-      namn: '',
-      testregelList: [],
+      id: selectedRegelsett?.id,
+      namn: selectedRegelsett?.namn,
+      testregelList: selectedRegelsett?.testregelList,
     },
   });
 
@@ -39,32 +41,18 @@ const CreateRegelsett = () => {
       return;
     }
 
-    const request: RegelsettRequest = {
-      namn: regelsett.namn,
-      ids: regelsett.testregelList.map((tr) => tr.id),
-    };
-
-    const addRegelsett = async () => {
-      const data = await createRegelsett(request);
-      setRegelsettList(data);
-    };
-
     setContextLoading(true);
     setContextError(undefined);
-
-    addRegelsett().finally(() => {
-      setContextLoading(false);
-      navigate('..');
-    });
   }, []);
 
   return (
     <RegelsettForm
-      label="Nytt regelsett"
+      label="Endre regelset"
       formMethods={formMethods}
+      regelsett={selectedRegelsett}
       onSubmit={onSubmit}
     />
   );
 };
 
-export default CreateRegelsett;
+export default RegelsettEdit;

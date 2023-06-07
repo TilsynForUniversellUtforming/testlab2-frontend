@@ -2,7 +2,7 @@ import { Select } from '@digdir/design-system-react';
 import { Column } from '@tanstack/react-table';
 import React from 'react';
 
-import DebouncedInput from '../../../DebouncedInput';
+import DebouncedInput from '../../../debounced-input/DebouncedInput';
 import { Option } from '../../../types';
 import { sanitizeLabel } from '../../../util/stringutils';
 
@@ -47,6 +47,7 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
         value={(columnFilterValue ?? '') as string}
         onChange={(value) => column.setFilterValue(value)}
         ariaLabel={column.columnDef?.id ?? ''}
+        id={column.columnDef?.id ?? ''}
       />
     </div>
   );

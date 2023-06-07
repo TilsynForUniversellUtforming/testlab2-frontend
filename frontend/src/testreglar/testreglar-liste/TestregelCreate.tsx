@@ -9,11 +9,11 @@ import { Testregel, TestregelCreateRequest } from '../api/types';
 import { TestregelContext } from '../types';
 import TestreglarForm from './TestreglarForm';
 
-const CreateTestregel = () => {
+const TestregelCreate = () => {
   const {
     contextError,
     contextLoading,
-    krav,
+    testreglar,
     setTestregelList,
     setContextLoading,
     setContextError,
@@ -21,14 +21,10 @@ const CreateTestregel = () => {
   const navigate = useNavigate();
 
   const onSubmit = useCallback((testregel: Testregel) => {
-    const kravId = Number(testregel.kravId);
-
     const request: TestregelCreateRequest = {
-      kravId: kravId === 0 ? undefined : testregel.kravId,
-      referanseAct: testregel.referanseAct,
+      krav: testregel.krav,
+      testregelNoekkel: testregel.testregelNoekkel,
       kravTilSamsvar: testregel.kravTilSamsvar,
-      type: testregel.type,
-      status: testregel.status,
     };
 
     const create = async () => {
@@ -49,17 +45,29 @@ const CreateTestregel = () => {
     });
   }, []);
 
+  const krav = testreglar
+    .map((tr) => tr.krav)
+    .sort()
+    .filter(
+      (value, index, current_value) => current_value.indexOf(value) === index
+    );
+
   if (contextLoading) {
     return <Spinner title="Hentar testreglar" variant={'default'} />;
   }
 
   if (contextError) {
-    return <ErrorCard error={contextError} />;
+    return <ErrorCard error={contextError} buttonText="Tilbake" />;
   }
 
   return (
-    <TestreglarForm label="Lag ny testregel" onSubmit={onSubmit} krav={krav} />
+    <TestreglarForm
+      label="Lag ny testregel"
+      onSubmit={onSubmit}
+      krav={krav}
+      kravDisabled={false}
+    />
   );
 };
 
-export default CreateTestregel;
+export default TestregelCreate;

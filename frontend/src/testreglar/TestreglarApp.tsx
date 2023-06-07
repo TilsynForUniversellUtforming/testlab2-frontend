@@ -1,18 +1,15 @@
 import './testreglar.scss';
 
+import { Tabs } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
-import appRoutes from '../common/appRoutes';
+import { appRoutes } from '../common/appRoutes';
 import ErrorCard from '../common/error/ErrorCard';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import { listKrav } from '../krav/api/krav-api';
-import { Krav } from '../krav/types';
 import { listRegelsett, listTestreglar } from './api/testreglar-api';
 import { Testregel, TestRegelsett } from './api/types';
-import Navbar from './Navbar';
 import { TestregelContext } from './types';
 
 const TestreglarApp = () => {
@@ -20,7 +17,6 @@ const TestreglarApp = () => {
   const [regelsett, setRegelsett] = useState<TestRegelsett[]>([]);
   const [error, setError] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [krav, setKrav] = useState<Krav[]>([]);
   const [showTestreglar, setShowTestreglar] = useState(false);
   const navigate = useNavigate();
 
@@ -41,14 +37,15 @@ const TestreglarApp = () => {
   }, []);
 
   const doFetchData = useCallback(() => {
+    setError(undefined);
+    setLoading(true);
+
     const fetchData = async () => {
       try {
         const testreglar = await listTestreglar();
         const regelsett = await listRegelsett();
-        const krav = await listKrav();
         setTestreglar(testreglar);
         setRegelsett(regelsett);
-        setKrav(krav);
         setLoading(false);
         setError(undefined);
       } catch (e) {
@@ -73,12 +70,22 @@ const TestreglarApp = () => {
     contextLoading: loading,
     testreglar: testreglar,
     regelsett: regelsett,
-    krav: krav,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
     setContextError: handleError,
     setContextLoading: handleLoading,
     refresh: doFetchData,
+  };
+
+  const location = useLocation();
+  const lastSegment = location.pathname.split('/').pop();
+
+  const handleChange = (name: string) => {
+    if (name === 'Regelsett') {
+      navigate(appRoutes.REGELSETT_ROOT.path);
+    } else {
+      navigate('.');
+    }
   };
 
   if (!loading && !showTestreglar) {
@@ -94,8 +101,24 @@ const TestreglarApp = () => {
 
   return (
     <>
-      <AppTitle heading={appRoutes.TESTREGEL_LIST.navn} />
-      <Navbar />
+      <Tabs
+        activeTab={
+          lastSegment === appRoutes.REGELSETT_ROOT.path
+            ? 'Regelsett'
+            : 'Testreglar'
+        }
+        items={[
+          {
+            name: 'Testreglar',
+            content: <></>,
+          },
+          {
+            name: 'Regelsett',
+            content: <></>,
+          },
+        ]}
+        onChange={handleChange}
+      />
       <div className="testreglar__content">
         <Outlet context={testRegelContext} />
       </div>
