@@ -119,8 +119,12 @@ const MaalingApp = () => {
         setError(toError(e, 'Kunne ikkje hente løysingar'));
       }
 
-      const regelsett = await listRegelsett();
-      setRegelsettList(regelsett);
+      try {
+        const regelsett = await listRegelsett();
+        setRegelsettList(regelsett);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente testreglar'));
+      }
 
       const advisors = await getAdvisors_dummy();
       setAdvisorList(advisors);

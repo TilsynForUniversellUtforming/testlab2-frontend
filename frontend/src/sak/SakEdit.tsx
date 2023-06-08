@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
 import Alert, { AlertProps } from '../common/alert/Alert';
 import toError from '../common/error/util';
@@ -15,8 +15,6 @@ import {
 } from './types';
 
 const SakEdit = () => {
-  const navigate = useNavigate();
-
   const {
     maaling,
     regelsettList,
@@ -37,8 +35,8 @@ const SakEdit = () => {
       ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
       : [],
     testregelList: regelsettList[0].testregelList,
-    maxLinksPerPage: 100,
-    numLinksToSelect: 30,
+    maxLinksPerPage: maaling?.crawlParameters?.maxLinksPerPage ?? 100,
+    numLinksToSelect: maaling?.crawlParameters?.numLinksToSelect ?? 10,
     sakType: undefined,
     advisor: undefined,
     sakNumber: undefined,

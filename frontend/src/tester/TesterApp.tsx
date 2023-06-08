@@ -7,7 +7,7 @@ import { Outlet, useParams } from 'react-router-dom';
 import ErrorCard from '../common/error/ErrorCard';
 import toError from '../common/error/util';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import { fetchMaaling } from '../maaling/api/maaling-api';
+import { fetchMaalingWithAggeration } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
 import { TesterContext } from './types';
 
@@ -37,7 +37,7 @@ const TesterApp = () => {
     const fetchData = async () => {
       if (id) {
         try {
-          const maaling = await fetchMaaling(Number(id));
+          const maaling = await fetchMaalingWithAggeration(Number(id));
           setMaaling(maaling);
         } catch (e) {
           setError(toError(e, 'Fann ikkje måling'));

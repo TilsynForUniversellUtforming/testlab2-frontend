@@ -57,6 +57,20 @@ export type TestResult = {
   framgang?: Framgang;
 };
 
+export type AggregatedTestresult = {
+  maalingId: number;
+  loeysing: Loeysing;
+  testregelId: string;
+  suksesskriterium: string;
+  fleireSuksesskriterium: string[];
+  talElementSamsvar: number;
+  talElementBrot: number;
+  talElementVarsel: number;
+  talSiderSamsvar: number;
+  talSiderBrot: number;
+  talSiderIkkjeForekomst: number;
+};
+
 export type Maaling = {
   id: number;
   navn: string;
@@ -66,6 +80,8 @@ export type Maaling = {
   crawlStatistics: JobStatistics;
   testStatistics: JobStatistics;
   testResult: TestResult[];
+  crawlParameters: CrawlParameters;
+  aggregatedTestresult: AggregatedTestresult[];
 };
 
 export type IdList = {

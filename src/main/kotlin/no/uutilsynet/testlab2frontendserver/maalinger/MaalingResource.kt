@@ -14,6 +14,9 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
+import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregatedTestresult
+import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
+import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.toAggregatedTestresultList
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
@@ -34,7 +37,7 @@ class MaalingResource(
   @GetMapping
   fun listMaaling(): List<Maaling> {
     return try {
-      logger.info("henter målinger fra ${maalingUrl}")
+      logger.debug("henter målinger fra $maalingUrl")
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
       logger.error("klarte ikke å hente målinger", e)
@@ -42,17 +45,42 @@ class MaalingResource(
     }
   }
 
-  @GetMapping("{id}")
-  fun getMaaling(@PathVariable id: Int): ResponseEntity<Maaling> {
+  @GetMapping("{maalingId}")
+  fun getMaaling(
+      @PathVariable maalingId: Int,
+      @RequestParam(required = false) aggregated: Boolean? = false
+  ): ResponseEntity<Maaling> {
+    logger.debug("henter måling med id: $maalingId fra $maalingUrl")
 
-    val maalingDTO =
-        restTemplate.getForObject("${maalingUrl}/${id}", MaalingDTO::class.java)
-            ?: throw RuntimeException("Klarte ikke å hente den måling fra server")
+    val maalingDTO = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+
+    if (maalingDTO == null) {
+      logger.error("Kunne ikkje hente måling med id $maalingId frå server")
+      throw RuntimeException("Klarte ikke å hente den måling fra server")
+    }
 
     val maaling =
         when (maalingDTO.status) {
           MaalingStatus.planlegging -> maalingDTO.toMaaling()
-          else -> maalingDTO.toMaaling(getCrawlResultatList(maalingDTO.id))
+          else -> {
+            val crawlResultat = getCrawlResultatList(maalingDTO.id)
+
+            val aggregatedTestresult =
+                if (aggregated != null) {
+
+                  when (maalingDTO.status) {
+                    MaalingStatus.testing,
+                    MaalingStatus.testing_ferdig -> {
+                      getAggregering(maalingDTO.id)
+                    }
+                    else -> emptyList()
+                  }
+                } else {
+                  emptyList()
+                }
+
+            maalingDTO.toMaaling(crawlResultat, aggregatedTestresult)
+          }
         }
 
     return ResponseEntity.ok(maaling)
@@ -108,19 +136,22 @@ class MaalingResource(
                 .body("noe gikk galt da jeg forsøkte å slette en måling: ${it.message}")
           }
 
-  @PutMapping("{id}")
-  fun updateStatus(@PathVariable id: Int, @RequestBody status: String): ResponseEntity<out Any> =
+  @PutMapping("{maalingId}")
+  fun updateStatus(
+      @PathVariable maalingId: Int,
+      @RequestBody status: String
+  ): ResponseEntity<out Any> =
       runCatching {
             restTemplate.put(
-                "${maalingUrl}/${id}/status",
+                "${maalingUrl}/${maalingId}/status",
                 HttpEntity(mapOf("status" to MaalingStatus.valueOf(status))))
-            getMaaling(id)
+            getMaaling(maalingId)
           }
           .getOrElse {
             ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
           }
 
-  @GetMapping("{id}/crawlresultat")
+  @GetMapping("{maalingId}/crawlresultat")
   fun getCrawlResultatList(
       @PathVariable id: Int,
   ): List<CrawlResultat> =
@@ -133,6 +164,21 @@ class MaalingResource(
             logger.info("Kunne ikkje hente crawl resultat for måling med id $id")
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
+
+  @GetMapping("{maalingId}/testresultat/aggregering")
+  fun getAggregering(
+      @PathVariable maalingId: Int,
+  ): List<AggregatedTestresult> {
+    logger.debug("Henter aggregering for måling med id $maalingId")
+    val url = "$maalingUrl/$maalingId/testresultat/aggregering"
+    return runCatching {
+          restTemplate.getList<AggregertResultatDTO>(url).toAggregatedTestresultList()
+        }
+        .getOrElse {
+          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
+          throw RuntimeException("Klarte ikkje å hente aggregering", it)
+        }
+  }
 
   @PutMapping("{maalingId}/restart")
   fun restartCrawlForMaalingLoeysing(

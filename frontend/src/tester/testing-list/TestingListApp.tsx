@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import UserActionTable from '../../common/table/UserActionTable';
-import { fetchMaaling } from '../../maaling/api/maaling-api';
+import { fetchMaalingWithAggeration } from '../../maaling/api/maaling-api';
 import { TestResult } from '../../maaling/api/types';
 import { TesterContext } from '../types';
 import { getTestingListColumns } from './TestingListColumns';
@@ -12,18 +12,32 @@ import { getTestingListColumns } from './TestingListColumns';
 const TestingListApp = () => {
   const { maaling, contextError, contextLoading }: TesterContext =
     useOutletContext();
+  const { id } = useParams();
+
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
   const [error, setError] = useState<Error | undefined>(contextError);
-  const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
-  const id = maaling?.id ? String(maaling.id) : undefined;
-  const testResultatColumns = useMemo(() => getTestingListColumns(id), []);
+  const [refreshing, setRefreshing] = useState(
+    !contextLoading && maaling?.status === 'testing'
+  );
 
-  const doFetchData = useCallback(async () => {
+  const maalingId = id;
+
+  const testResultatColumns = useMemo(
+    () => getTestingListColumns(maalingId),
+    []
+  );
+
+  const fetchData = useCallback(async () => {
     try {
-      if (id) {
-        const refreshedMaaling = await fetchMaaling(Number(id));
+      if (
+        maalingId &&
+        contextLoading &&
+        maaling &&
+        maaling.status === 'testing'
+      ) {
+        const refreshedMaaling = await fetchMaalingWithAggeration(maaling.id);
         if (!refreshedMaaling) {
           setError(new Error('Fann ikkje måling'));
         }
@@ -33,7 +47,7 @@ const TestingListApp = () => {
         }
 
         setTestResult(refreshedMaaling.testResult);
-      } else {
+      } else if (!maalingId || (!maaling && !contextLoading)) {
         setError(new Error('Måling finnes ikkje'));
       }
     } catch (e) {
@@ -41,8 +55,7 @@ const TestingListApp = () => {
     }
   }, []);
 
-  useInterval(() => doFetchData(), refreshing ? 15000 : null);
-
+  useInterval(() => fetchData(), refreshing ? 15000 : null);
   return (
     <UserActionTable<TestResult>
       heading="Testing"
@@ -51,7 +64,7 @@ const TestingListApp = () => {
         data: testResult,
         defaultColumns: testResultatColumns,
         loading: contextLoading,
-        onClickRetry: doFetchData,
+        onClickRetry: fetchData,
         displayError: { error },
       }}
     />
