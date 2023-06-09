@@ -17,6 +17,12 @@
       width: 100%;
       text-decoration: none;
       color: var(--fds-semantic-surface-on_inverted-default);
+      &.disabled {
+        opacity: var(--fds-opacity-disabled);
+        button {
+          cursor: default;
+        }
+      }
     }
   }
 }

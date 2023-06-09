@@ -3,9 +3,9 @@
   font-weight: 500;
   justify-content: start;
   border-radius: 12px;
-  line-height: 24px;
   border: 0;
-  width: 15rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   &:hover {
     box-shadow: 0 0 0 2px #95227d !important;
     background: white !important;
@@ -36,12 +36,23 @@
       flex-direction: column;
     }
 
-    button {
-      @extend %common-button;
-      padding: 2rem 2rem 2rem 1.5rem;
-      box-shadow: 0 0 0 2px #ccc6d1;
-      &:hover {
-        box-shadow: 0 0 0 2px #118849 !important;
+    &-links {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      @media (max-width: 724px) {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      button {
+        @extend %common-button;
+        padding: 2rem 2rem 2rem 1.5rem;
+        box-shadow: 0 0 0 2px #ccc6d1;
+        &:hover {
+          box-shadow: 0 0 0 2px #118849 !important;
+        }
       }
     }
   }
