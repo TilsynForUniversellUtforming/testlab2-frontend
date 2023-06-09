@@ -50,16 +50,7 @@ export type JobStatistics = {
   numError: number;
 };
 
-export type TestResult = {
-  tilstand: TestJobStatus;
-  loeysing: Loeysing;
-  sistOppdatert: string;
-  framgang?: Framgang;
-};
-
 export type AggregatedTestresult = {
-  maalingId: number;
-  loeysing: Loeysing;
   testregelId: string;
   suksesskriterium: string;
   fleireSuksesskriterium: string[];
@@ -69,6 +60,15 @@ export type AggregatedTestresult = {
   talSiderSamsvar: number;
   talSiderBrot: number;
   talSiderIkkjeForekomst: number;
+};
+
+export type TestResult = {
+  loeysing: Loeysing;
+  tilstand: TestJobStatus;
+  sistOppdatert: string;
+  framgang?: Framgang;
+  aggregatedResultList: AggregatedTestresult[];
+  compliancePercent?: number;
 };
 
 export type Maaling = {
@@ -81,7 +81,6 @@ export type Maaling = {
   testStatistics: JobStatistics;
   testResult: TestResult[];
   crawlParameters: CrawlParameters;
-  aggregatedTestresult: AggregatedTestresult[];
 };
 
 export type IdList = {

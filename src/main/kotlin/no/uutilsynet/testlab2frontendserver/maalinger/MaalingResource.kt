@@ -14,9 +14,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregatedTestresult
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.toAggregatedTestresultList
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
@@ -168,12 +166,10 @@ class MaalingResource(
   @GetMapping("{maalingId}/testresultat/aggregering")
   fun getAggregering(
       @PathVariable maalingId: Int,
-  ): List<AggregatedTestresult> {
+  ): List<AggregertResultatDTO> {
     logger.debug("Henter aggregering for måling med id $maalingId")
     val url = "$maalingUrl/$maalingId/testresultat/aggregering"
-    return runCatching {
-          restTemplate.getList<AggregertResultatDTO>(url).toAggregatedTestresultList()
-        }
+    return runCatching { restTemplate.getList<AggregertResultatDTO>(url) }
         .getOrElse {
           logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
           throw RuntimeException("Klarte ikkje å hente aggregering", it)

@@ -9,6 +9,6 @@ data class MaalingDTO(
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>?,
     val crawlResultat: List<CrawlResultatDTO>?,
-    val testKoeyringar: List<TestKoeyring>?,
+    val testKoeyringar: List<TestKoeyringDTO>?,
     val crawlParameters: CrawlParameters?,
 )
