@@ -24,10 +24,6 @@ const TestlabLinkButton = ({
 }: Props) => {
   const navigate = useNavigate();
 
-  if (disabled) {
-    return <Button variant={variant} color={color} title={title} disabled />;
-  }
-
   return (
     <div className="link-button-wrapper">
       <Button
@@ -38,6 +34,7 @@ const TestlabLinkButton = ({
         size={size}
         fullWidth={fullWidth}
         onClick={() => navigate(getFullPath(route))}
+        disabled={disabled}
       >
         {title}
       </Button>

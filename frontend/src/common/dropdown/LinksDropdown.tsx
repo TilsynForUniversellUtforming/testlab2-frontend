@@ -6,6 +6,7 @@ import {
   ButtonVariant,
 } from '@digdir/design-system-react';
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -64,10 +65,11 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
         <ul className="dropdown-content links" ref={linksDropdownRef}>
           {routes.map((route) => (
             <li className="dropdown-content__item" key={route.navn}>
-              <div className="link">
+              <div className={classNames('link', { disabled: route.disabled })}>
                 <button
                   onClick={() => handleButtonClick(route)}
                   className="dropdown-content__button"
+                  disabled={route.disabled}
                 >
                   {route.navn}
                 </button>

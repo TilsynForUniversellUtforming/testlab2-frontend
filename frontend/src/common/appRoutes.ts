@@ -1,8 +1,15 @@
+import diskusjonImg from '../assets/diskusjon.svg';
 import kravImg from '../assets/krav.svg';
 import loeysingImg from '../assets/loeysingar.svg';
 import maalingImg from '../assets/maalingar.svg';
+import mineSakerImg from '../assets/mine-saker.svg';
+import mineTestarImg from '../assets/mine-testar.svg';
 import nySakImg from '../assets/ny_sak.svg';
+import nyTestImg from '../assets/ny_test.svg';
+import resultatImg from '../assets/resultat.svg';
 import sakerImg from '../assets/saker.svg';
+import teknikkImg from '../assets/teknikk.svg';
+import konkurranseImg from '../assets/teknikk.svg';
 import testingImg from '../assets/testreglar.svg';
 import verksemderImg from '../assets/verksemder.svg';
 
@@ -16,6 +23,7 @@ export type AppRoute = {
   path: string;
   imgSrc?: string;
   parentRoute?: AppRoute;
+  disabled?: boolean;
 };
 
 interface IRoutes {
@@ -60,6 +68,14 @@ interface IRoutes {
   TEST_CRAWLING_RESULT_LIST: AppRoute;
   TEST_TESTING_LIST: AppRoute;
   TEST_RESULT_LIST: AppRoute;
+
+  DISKUSJON_ROOT: AppRoute;
+  MINE_SAKER_ROOT: AppRoute;
+  MINE_TESTAR_ROOT: AppRoute;
+  NY_TEST_ROOT: AppRoute;
+  RESULTAT_ROOT: AppRoute;
+  TEKNIKK_ROOT: AppRoute;
+  KONKURRANSE_ROOT: AppRoute;
 }
 
 const ROOT = {
@@ -165,6 +181,7 @@ const VERKSEMD_LIST = {
   navn: 'Verksemder',
   path: 'verksemder',
   imgSrc: verksemderImg,
+  disabled: true,
 };
 const VERKSEMD_CREATE = {
   navn: 'Ny verksemd',
@@ -203,6 +220,7 @@ const KRAV_LIST = {
   navn: 'Krav',
   path: 'krav',
   imgSrc: kravImg,
+  disabled: true,
 };
 const KRAV_CREATE = {
   navn: 'Krav',
@@ -250,6 +268,57 @@ const TEST_RESULT_LIST = {
   parentRoute: TEST,
 };
 
+const DISKUSJON_ROOT = {
+  navn: 'Diskusjon',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: diskusjonImg,
+  disabled: true,
+};
+const MINE_SAKER_ROOT = {
+  navn: 'Mine saker',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: mineSakerImg,
+  disabled: true,
+};
+const MINE_TESTAR_ROOT = {
+  navn: 'Mine testar',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: mineTestarImg,
+  disabled: true,
+};
+const NY_TEST_ROOT = {
+  navn: 'Ny test',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: nyTestImg,
+  disabled: true,
+};
+const RESULTAT_ROOT = {
+  navn: 'Resultat',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: resultatImg,
+  disabled: true,
+};
+const TEKNIKK_ROOT = {
+  navn: 'Teknikk',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: teknikkImg,
+  disabled: true,
+};
+
+const KONKURRANSE_ROOT = {
+  navn: 'Konkurranse',
+  path: '/',
+  parentRoute: ROOT,
+  imgSrc: konkurranseImg,
+  disabled: true,
+};
+
 export const appRoutes: IRoutes = {
   ROOT: ROOT,
   TESTREGEL_ROOT: TESTREGEL_ROOT,
@@ -290,6 +359,14 @@ export const appRoutes: IRoutes = {
   TEST_CRAWLING_RESULT_LIST: TEST_CRAWLING_RESULT_LIST,
   TEST_TESTING_LIST: TEST_TESTING_LIST,
   TEST_RESULT_LIST: TEST_RESULT_LIST,
+
+  DISKUSJON_ROOT: DISKUSJON_ROOT,
+  MINE_SAKER_ROOT: MINE_SAKER_ROOT,
+  MINE_TESTAR_ROOT: MINE_TESTAR_ROOT,
+  NY_TEST_ROOT: NY_TEST_ROOT,
+  RESULTAT_ROOT: RESULTAT_ROOT,
+  TEKNIKK_ROOT: TEKNIKK_ROOT,
+  KONKURRANSE_ROOT: KONKURRANSE_ROOT,
 };
 
 export const utval = [
@@ -297,9 +374,18 @@ export const utval = [
   appRoutes.VERKSEMD_LIST,
   appRoutes.TESTREGEL_ROOT,
   appRoutes.KRAV_LIST,
+  appRoutes.TEKNIKK_ROOT,
 ];
 
-export const saksbehandling = [appRoutes.SAK_LIST, appRoutes.MAALING_LIST];
+export const saksbehandling = [
+  appRoutes.MINE_SAKER_ROOT,
+  appRoutes.SAK_LIST,
+  appRoutes.MAALING_LIST,
+];
+
+export const testing = [appRoutes.MINE_TESTAR_ROOT, appRoutes.RESULTAT_ROOT];
+
+export const anna = [appRoutes.DISKUSJON_ROOT, appRoutes.KONKURRANSE_ROOT];
 
 export type IdReplacement = {
   id: string;
