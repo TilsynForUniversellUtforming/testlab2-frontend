@@ -1,27 +1,47 @@
+%common-button {
+  font-size: var(--font_size-300-breakpoint_md) !important;
+  font-weight: 500;
+  justify-content: start;
+  border-radius: 12px;
+  line-height: 24px;
+  border: 0;
+  width: 15rem;
+  &:hover {
+    box-shadow: 0 0 0 2px #95227d !important;
+    background: white !important;
+  }
+  &:active {
+    color: var(--colors-blue-900);
+  }
+  &:focus-within {
+    box-shadow: 0 0 0 var(--fds-focus-border-width)
+      var(--fds-inner-focus-border-color);
+  }
+  img {
+    padding-right: 0.5rem;
+  }
+}
+
 .oversikt {
-  max-width: 50%;
-  margin: auto;
+  max-width: 90rem;
+  margin: 0 auto;
+
   &__sak {
     text-align: center;
     padding-bottom: 3rem;
+
+    @media (max-width: 724px) {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+
     button {
-      font-size: var(--font_size-300-breakpoint_md) !important;
-      justify-content: start;
+      @extend %common-button;
       padding: 2rem 2rem 2rem 1.5rem;
-      border-radius: 12px;
-      background: #fffbfe !important;
-      border: 0;
       box-shadow: 0 0 0 2px #ccc6d1;
-      width: 15rem;
       &:hover {
-        box-shadow: 0 0 0 2px #6c55a7 !important;
-      }
-      &:active {
-        color: var(--colors-blue-900);
-      }
-      &:focus-within {
-        box-shadow: 0 0 0 var(--fds-focus-border-width)
-          var(--fds-inner-focus-border-color);
+        box-shadow: 0 0 0 2px #118849 !important;
       }
     }
   }
@@ -30,12 +50,23 @@
     display: flex;
     flex-direction: row;
     margin: auto;
+    gap: 12rem;
+
+    @media (max-width: 724px) {
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+    }
 
     &-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-right: 10rem;
+
+      @media (max-width: 724px) {
+        margin: 0;
+        padding-top: 2rem;
+      }
     }
 
     .lenker {
@@ -49,24 +80,9 @@
           width: 100%;
 
           button {
-            font-size: var(--font_size-300-breakpoint_md) !important;
-            justify-content: start;
+            @extend %common-button;
             padding: 2.5rem 5rem 2.5rem 1.5rem;
-            border-radius: 12px;
-            background: #fffbfe !important;
-            border: 0;
             box-shadow: 0 0 0 2px #ccc6d1;
-            width: 15rem;
-            &:hover {
-              box-shadow: 0 0 0 2px #6c55a7 !important;
-            }
-            &:active {
-              color: var(--colors-blue-900);
-            }
-            &:focus-within {
-              box-shadow: 0 0 0 var(--fds-focus-border-width)
-                var(--fds-inner-focus-border-color);
-            }
           }
         }
       }

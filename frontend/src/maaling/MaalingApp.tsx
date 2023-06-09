@@ -160,7 +160,7 @@ const MaalingApp = () => {
     return (
       <ErrorCard
         errorHeader="Måling"
-        error={new Error('Målinger låst')}
+        error={new Error('Målingar låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
       />
@@ -168,7 +168,7 @@ const MaalingApp = () => {
   }
 
   if (loading) {
-    return <Spinner title="Venter på målinger" />;
+    return <Spinner title="Venter på målingar" />;
   }
 
   return <Outlet context={maalingContext} />;

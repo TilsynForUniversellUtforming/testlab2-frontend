@@ -96,7 +96,7 @@ const MAALING_ROOT = {
   path: 'maaling',
 };
 const MAALING_LIST = {
-  navn: 'Målinger',
+  navn: 'Målingar',
   path: 'maalinger',
   imgSrc: maalingImg,
 };

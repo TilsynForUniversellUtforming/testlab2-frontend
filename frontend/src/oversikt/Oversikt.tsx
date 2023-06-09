@@ -59,6 +59,7 @@ const Oversikt = () => {
           size="large"
           color="secondary"
           fullWidth={true}
+          className="oversikt__sak-ny"
         />
       </div>
       <div className="oversikt__links">
