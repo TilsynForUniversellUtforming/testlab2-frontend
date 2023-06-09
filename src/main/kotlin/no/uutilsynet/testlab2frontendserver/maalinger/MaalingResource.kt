@@ -34,11 +34,11 @@ class MaalingResource(
   @GetMapping
   fun listMaaling(): List<Maaling> {
     return try {
-      logger.info("henter målinger fra ${maalingUrl}")
+      logger.debug("henter målingar fra ${maalingUrl}")
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
-      logger.error("klarte ikke å hente målinger", e)
-      throw RuntimeException("Klarte ikke å hente målinger")
+      logger.error("klarte ikke å hente målingar", e)
+      throw RuntimeException("Klarte ikkje å hente målingar")
     }
   }
 
@@ -130,7 +130,7 @@ class MaalingResource(
             }
           }
           .getOrElse {
-            logger.info("Kunne ikkje hente crawl resultat for måling med id $id")
+            logger.error("Kunne ikkje hente crawl resultat for måling med id $id")
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
 

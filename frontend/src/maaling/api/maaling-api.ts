@@ -15,7 +15,7 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maaling),
-  }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
+  }).then((response) => responseToJson(response, 'Kunne ikke lage målingar'));
 
 export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
@@ -37,7 +37,7 @@ export const deleteMaalingList = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maalingIdList),
-  }).then((response) => responseToJson(response, 'Kunne ikke hente målinger'));
+  }).then((response) => responseToJson(response, 'Kunne ikke hente målingar'));
 
 export const updateMaalingStatus = async (
   id: number,
@@ -56,7 +56,7 @@ export const updateMaalingStatus = async (
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
   fetch('/api/v1/maalinger', {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikke hente målinger'));
+  }).then((response) => responseToJson(response, 'Kunne ikke hente målingar'));
 
 export const fetchMaaling = async (id: number): Promise<Maaling> =>
   fetch(`/api/v1/maalinger/${id}`, {

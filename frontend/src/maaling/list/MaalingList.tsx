@@ -38,7 +38,7 @@ const MaalingList = () => {
     setError(undefined);
 
     if (maalingRowSelection.length === 0) {
-      setError(new Error('Kunne ikkje slette måling, ingen målinger valgt'));
+      setError(new Error('Kunne ikkje slette måling, ingen målingar valgt'));
     }
 
     const deleteAndFetchMaaling = async () => {
@@ -120,7 +120,7 @@ const MaalingList = () => {
     return (
       <ErrorCard
         errorHeader="Måling"
-        error={new Error('Målinger låst')}
+        error={new Error('Målingar låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
       />
