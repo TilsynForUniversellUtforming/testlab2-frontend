@@ -12,6 +12,7 @@ export interface Props {
   refresh: () => void;
   loading: boolean;
   error: Error | undefined;
+  refreshing: boolean;
 }
 
 const CrawlingList = ({
@@ -21,6 +22,7 @@ const CrawlingList = ({
   refresh,
   loading,
   error,
+  refreshing,
 }: Props) => {
   const maalingStatus = maaling.status;
 
@@ -72,6 +74,7 @@ const CrawlingList = ({
         onSelectRows: setCrawlRowSelection,
         onClickRetry: onClickRefresh,
         rowActions: rowActions,
+        loadingStateStatus: refreshing ? 'Utfører sideutvalg...' : undefined,
       }}
     />
   );

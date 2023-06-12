@@ -53,6 +53,7 @@ const TestingListApp = () => {
         loading: contextLoading,
         onClickRetry: doFetchData,
         displayError: { error },
+        loadingStateStatus: refreshing ? 'Utfører testing...' : undefined,
       }}
     />
   );

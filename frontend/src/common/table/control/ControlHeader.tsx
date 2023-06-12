@@ -1,3 +1,4 @@
+import { Spinner } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React from 'react';
@@ -7,7 +8,6 @@ import TableActionDropdown from '../../dropdown/TableActionDropdown';
 import { TableFilterPreference, TableRowAction } from '../types';
 
 export interface Props {
-  loading: boolean;
   table: Table<any>;
   filterPreference: TableFilterPreference;
   filterValue: string;
@@ -15,6 +15,7 @@ export interface Props {
   rowActions?: TableRowAction[];
   rowActionEnabled: boolean;
   small?: boolean;
+  loadingStateStatus?: string;
 }
 
 const ControlHeader = ({
@@ -25,6 +26,7 @@ const ControlHeader = ({
   rowActions,
   rowActionEnabled,
   small = false,
+  loadingStateStatus,
 }: Props) => {
   const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
   const hasElements = tableElementSize > 0;
@@ -49,6 +51,13 @@ const ControlHeader = ({
           disabled={!rowActionEnabled}
           table={table}
         />
+      )}
+      {loadingStateStatus && (
+        <div>
+          <b>Status: </b>
+          {`${loadingStateStatus}... `}
+          <Spinner title={loadingStateStatus} size="small" />
+        </div>
       )}
       <div className="control-header__input">
         {showFilters && (
