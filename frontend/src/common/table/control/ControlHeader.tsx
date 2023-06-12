@@ -1,6 +1,5 @@
 import { Spinner } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
-import classNames from 'classnames';
 import React from 'react';
 
 import DebouncedInput from '../../debounced-input/DebouncedInput';
@@ -40,25 +39,25 @@ const ControlHeader = ({
   const showRowActions = rowActions && rowActions.length > 0;
 
   return (
-    <div
-      className={classNames('control-header', {
-        'search-only': showFilters && !showRowActions,
-      })}
-    >
-      {showRowActions && (
-        <TableActionDropdown
-          actions={rowActions}
-          disabled={!rowActionEnabled}
-          table={table}
-        />
-      )}
-      {loadingStateStatus && (
-        <div>
-          <b>Status: </b>
-          {`${loadingStateStatus}... `}
-          <Spinner title={loadingStateStatus} size="small" />
-        </div>
-      )}
+    <div className="control-header">
+      <div className="testlab-table dropdown">
+        {showRowActions && (
+          <TableActionDropdown
+            actions={rowActions}
+            disabled={!rowActionEnabled}
+            table={table}
+          />
+        )}
+      </div>
+      <div className="control-header__search">
+        {loadingStateStatus && (
+          <>
+            <b>Status: </b>
+            {`${loadingStateStatus} `}
+            <Spinner title={loadingStateStatus} size="small" />
+          </>
+        )}
+      </div>
       <div className="control-header__input">
         {showFilters && (
           <DebouncedInput

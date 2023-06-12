@@ -42,7 +42,7 @@ export const TableActionDropdown = ({
   };
 
   return (
-    <div className="testlab-table dropdown">
+    <>
       <Button
         onClick={handleShowDropdown}
         className="dropdown__button"
@@ -69,7 +69,7 @@ export const TableActionDropdown = ({
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 };
 
