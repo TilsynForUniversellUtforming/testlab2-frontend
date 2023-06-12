@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class MaalingDTO(
@@ -8,6 +9,7 @@ data class MaalingDTO(
     val navn: String,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>?,
+    val testregelList: List<Testregel>?,
     val crawlResultat: List<CrawlResultatDTO>?,
     val testKoeyringar: List<TestKoeyring>?,
     val crawlParameters: CrawlParameters?,
