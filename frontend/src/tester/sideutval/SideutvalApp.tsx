@@ -123,6 +123,7 @@ const SideutvalApp = () => {
       refresh={doFetchData}
       loading={loading}
       error={error}
+      refreshing={refreshing}
     />
   );
 };

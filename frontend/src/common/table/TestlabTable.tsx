@@ -80,6 +80,7 @@ export interface TestlabTableProps<T extends object> {
   onClickRetry?: () => void;
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
+  loadingStateStatus?: string;
 }
 
 /**
@@ -99,6 +100,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
  * @param {Style} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
+ * @param {string} [props.loadingStateStatus] - The status to display when the table is loading.
  * @returns {JSX.Element} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
@@ -115,6 +117,7 @@ const TestlabTable = <T extends object>({
     small: false,
   },
   rowActions,
+  loadingStateStatus,
 }: TestlabTableProps<T>) => {
   const isLoading = loading ?? false;
   const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
@@ -203,7 +206,6 @@ const TestlabTable = <T extends object>({
   return (
     <div className="testlab-table">
       <ControlHeader
-        loading={isLoading}
         filterPreference={filterPreference ?? 'all'}
         table={table}
         filterValue={globalFilter}
@@ -211,6 +213,7 @@ const TestlabTable = <T extends object>({
         small={customStyle?.small}
         rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
         rowActions={rowActions}
+        loadingStateStatus={loadingStateStatus}
       />
       <Table className="testlab-table__table">
         <TableHeader>
