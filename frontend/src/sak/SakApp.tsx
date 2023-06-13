@@ -11,6 +11,8 @@ import { listRegelsett } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
+import { Verksemd } from '../verksemder/api/types';
+import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
 import { SakContext } from './types';
 
 const SakApp = () => {
@@ -20,6 +22,7 @@ const SakApp = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
+  const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
 
@@ -78,6 +81,13 @@ const SakApp = () => {
       } catch (e) {
         setError(toError(e, 'Kunne ikkje hente brukere'));
       }
+
+      try {
+        const verksemdList = await getVerksemdList_dummy();
+        setVerksemdList(verksemdList);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente brukere'));
+      }
     };
 
     fetchData().finally(() => setLoading(false));
@@ -96,6 +106,7 @@ const SakApp = () => {
     setMaaling: handleSetMaaling,
     refresh: doFetchData,
     loeysingList: loeysingList,
+    verksemdList: verksemdList,
     refreshLoeysing: handleFetchLoeysingList,
     regelsettList: regelsettList,
     advisors: advisorList,

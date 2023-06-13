@@ -13,6 +13,8 @@ import { listRegelsett } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
+import { Verksemd } from '../verksemder/api/types';
+import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
 import { fetchMaaling, updateMaalingStatus } from './api/maaling-api';
 import { Maaling } from './api/types';
 import { MaalingContext } from './types';
@@ -25,6 +27,7 @@ const MaalingApp = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
+  const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(false);
@@ -119,13 +122,18 @@ const MaalingApp = () => {
         setError(toError(e, 'Kunne ikkje hente løysingar'));
       }
 
-      const regelsett = await listRegelsett();
-      setRegelsettList(regelsett);
+      try {
+        const regelsett = await listRegelsett();
+        setRegelsettList(regelsett);
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje hente regelsett'));
+      }
 
       const advisors = await getAdvisors_dummy();
       setAdvisorList(advisors);
-      setLoading(false);
-      setError(undefined);
+
+      const verksemdList = await getVerksemdList_dummy();
+      setVerksemdList(verksemdList);
     };
 
     fetchData().finally(() => setLoading(false));
@@ -149,6 +157,7 @@ const MaalingApp = () => {
     setMaaling: handleSetMaaling,
     refresh: fetchMaalinger,
     loeysingList: loeysingList,
+    verksemdList: verksemdList,
     regelsettList: regelsettList,
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,

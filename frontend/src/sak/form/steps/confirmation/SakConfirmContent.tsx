@@ -25,7 +25,7 @@ const SakConfirmContent = ({
   formErrors,
   advisors,
 }: SakConfirmContentProps) => {
-  const { navn, sakType, sakNumber, advisor, loeysingList, testregelList } =
+  const { navn, sakType, sakNumber, advisorId, loeysingList, testregelList } =
     maalingFormState;
 
   if (loading) {
@@ -40,14 +40,19 @@ const SakConfirmContent = ({
     );
   }
 
-  const sakError = [formErrors?.navn, formErrors?.sakType, formErrors?.advisor]
+  const sakError = [
+    formErrors?.navn,
+    formErrors?.sakType,
+    formErrors?.advisorId,
+  ]
     .map((e) => e?.message)
     .filter(isDefined)
     .join(', ');
   const loeysingError = formErrors?.loeysingList;
   const testregelError = formErrors?.testregelList;
+
   const advisorName =
-    advisors.find((a) => a.id === Number(advisor))?.name ?? '';
+    advisors.find((a) => a.id === Number(advisorId))?.name ?? '';
 
   const sakItems = [
     {
@@ -100,13 +105,13 @@ const SakConfirmContent = ({
         />
 
         <ConfirmationAccordionList
-          accordionHeader="Løysingar"
+          accordionHeader={`Løysingar (${loeysingListItems.length})`}
           listItems={loeysingListItems}
           errorMessage={loeysingError?.message}
         />
 
         <ConfirmationAccordionList
-          accordionHeader="Testreglar"
+          accordionHeader={`Testreglar (${testregelItems.length})`}
           listItems={testregelItems}
           errorMessage={testregelError?.message}
         />
