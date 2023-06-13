@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
+import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
 import { CrawlResultat, Maaling } from '../../maaling/api/types';
@@ -60,7 +61,15 @@ const CrawlingList = ({
   return (
     <UserActionTable<CrawlResultat>
       heading="Sideutval"
-      subHeading={maaling.navn}
+      subHeading={`Måling: ${maaling?.navn}`}
+      linkPath={
+        maaling
+          ? getFullPath(AppRoutes.MAALING, {
+              id: String(maaling.id),
+              pathParam: idPath,
+            })
+          : undefined
+      }
       tableProps={{
         data: crawlList,
         defaultColumns: crawlColumns,
@@ -74,7 +83,7 @@ const CrawlingList = ({
         onSelectRows: setCrawlRowSelection,
         onClickRetry: onClickRefresh,
         rowActions: rowActions,
-        loadingStateStatus: refreshing ? 'Utfører sideutvalg...' : undefined,
+        loadingStateStatus: refreshing ? 'Utfører sideutval...' : undefined,
       }}
     />
   );

@@ -79,7 +79,7 @@ const MaalingStatusContainer = ({
             <div className="status__list-item centered">
               {crawlingStatus.canStartProcess && (
                 <Button onClick={() => handleStartCrawling(maaling)}>
-                  Start sideutvalg
+                  Start sideutval
                 </Button>
               )}
               {testingStatus.canStartProcess && (

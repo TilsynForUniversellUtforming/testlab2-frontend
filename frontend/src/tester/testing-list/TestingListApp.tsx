@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
+import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import UserActionTable from '../../common/table/UserActionTable';
@@ -45,8 +46,16 @@ const TestingListApp = () => {
 
   return (
     <UserActionTable<TestResult>
-      heading="Testing"
-      subHeading={maaling?.navn}
+      heading="Testgjennomføring"
+      subHeading={`Måling: ${maaling?.navn}`}
+      linkPath={
+        maaling
+          ? getFullPath(AppRoutes.MAALING, {
+              id: String(maaling.id),
+              pathParam: idPath,
+            })
+          : undefined
+      }
       tableProps={{
         data: testResult,
         defaultColumns: testResultatColumns,
