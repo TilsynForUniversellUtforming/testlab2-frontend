@@ -4,16 +4,18 @@ import { Loeysing } from '../loeysingar/api/types';
 import { Maaling } from '../maaling/api/types';
 import { Testregel, TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
+import { Verksemd } from '../verksemder/api/types';
 import { FormStepState } from './hooks/useSakForm';
 
 export type LoeysingVerksemd = {
   loeysing: Loeysing;
-  verksemd: Loeysing;
+  verksemd: Verksemd;
 };
 
 export interface SakContext extends AppContext {
   regelsettList: TestRegelsett[];
   loeysingList: Loeysing[];
+  verksemdList: Verksemd[];
   advisors: User[];
   maaling?: Maaling;
   setMaaling: (maaling: Maaling) => void;
@@ -28,7 +30,7 @@ export type SakFormState = {
   maxLinksPerPage: number;
   numLinksToSelect: number;
   sakType?: Saktype;
-  advisor?: User;
+  advisorId?: string;
   sakNumber?: string;
   currentStep?: AppRoute;
 };

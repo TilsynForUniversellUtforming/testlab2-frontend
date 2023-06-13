@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
 import Alert, { AlertProps } from '../common/alert/Alert';
 import toError from '../common/error/util';
@@ -15,12 +15,11 @@ import {
 } from './types';
 
 const SakEdit = () => {
-  const navigate = useNavigate();
-
   const {
     maaling,
     regelsettList,
     loeysingList,
+    verksemdList,
     setMaaling,
     contextLoading,
     contextError,
@@ -34,13 +33,16 @@ const SakEdit = () => {
   const defaultState: SakFormState = {
     navn: maaling?.navn ?? '',
     loeysingList: maaling?.loeysingList
-      ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
+      ? maaling.loeysingList.map((l) => ({
+          loeysing: l,
+          verksemd: verksemdList[0],
+        }))
       : [],
     testregelList: regelsettList[0].testregelList,
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
-    sakType: undefined,
-    advisor: undefined,
+    sakType: 'Tilsyn',
+    advisorId: String(advisors[0].id),
     sakNumber: undefined,
   };
 
@@ -88,7 +90,7 @@ const SakEdit = () => {
   const sakSteps =
     maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
 
-  const formStepState = useSakForm(sakSteps);
+  const formStepState = useSakForm({ steps: sakSteps, isEdit: true });
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
@@ -110,6 +112,7 @@ const SakEdit = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        verksemdList={verksemdList}
         advisors={advisors}
       />
       {alert && <Alert type={alert.type} message={alert.message} />}
