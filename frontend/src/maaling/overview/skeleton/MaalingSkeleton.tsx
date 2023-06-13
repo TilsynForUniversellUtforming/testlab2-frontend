@@ -53,9 +53,8 @@ const MaalingSkeleton = () => {
               <ul>
                 <li>
                   <div>
-                    {/*md={8}*/}
                     <div>
-                      <div>Sideutvalg</div>
+                      <div>Sideutval</div>
                       <div>
                         <Skeleton />
                       </div>

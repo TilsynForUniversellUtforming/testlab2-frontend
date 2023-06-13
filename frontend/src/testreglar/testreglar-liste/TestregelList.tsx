@@ -64,7 +64,7 @@ const TestregelList = () => {
       setDeleteMessage('');
     } else {
       setDeleteMessage(
-        `Vil du slette ${rowSelection
+        `Vil du sletta ${rowSelection
           .map((tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`)
           .join(',')}?`
       );

@@ -59,7 +59,7 @@ const MaalingList = () => {
   const onSelectRows = useCallback((rowSelection: Maaling[]) => {
     setMaalingRowSelection(rowSelection);
     setDeleteMessage(
-      `Vil du slette ${joinStringsToList(
+      `Vil du sletta ${joinStringsToList(
         rowSelection.map((m) => `"${m.navn}"`)
       )}? Dette kan ikkje angrast`
     );

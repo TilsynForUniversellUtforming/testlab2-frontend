@@ -23,7 +23,7 @@ const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
 
   const [crawlingStatus, setCrawlingStatus] = useState<ProcessStatus>({
     canStartProcess: false,
-    label: toLabel('Sideutvalg', 0),
+    label: toLabel('Sideutval', 0),
     finished: false,
     failed: false,
     showResult: false,
@@ -50,7 +50,7 @@ const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
 
     setCrawlingStatus({
       canStartProcess: isPlanning,
-      label: toLabel('Sideutvalg', maaling.crawlStatistics.numFinished),
+      label: toLabel('Sideutval', maaling.crawlStatistics.numFinished),
       finished: crawlingJobFinished,
       failed: crawlingFailed,
       showResult: true,
