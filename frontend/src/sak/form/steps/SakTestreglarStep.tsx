@@ -86,8 +86,13 @@ const SakTestreglarStep = ({
     () => [
       {
         id: 'Handling',
-        header: ({ table }) => <HeaderCheckbox<Testregel> table={table} />,
-        cell: ({ row }) => <RowCheckbox<Testregel> row={row} />,
+        header: ({ table }) => <HeaderCheckbox table={table} />,
+        cell: ({ row }) => (
+          <RowCheckbox
+            row={row}
+            ariaLabel={`Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`}
+          />
+        ),
         size: 1,
       },
       {

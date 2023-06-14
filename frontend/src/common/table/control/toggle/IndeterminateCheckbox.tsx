@@ -23,35 +23,39 @@ const IndeterminateCheckbox = ({
   }, [ref, indeterminate]);
 
   return (
-    <input
-      type="checkbox"
-      ref={ref}
-      checked={checked}
-      disabled={disabled}
-      onChange={onChange}
-      style={{
-        width: '1rem',
-        height: '1rem',
-        cursor: 'pointer',
-      }}
-      aria-label={ariaLabel}
-      id={id}
-    />
+    <>
+      <label className="sr-only" htmlFor={id}>
+        {ariaLabel}
+      </label>
+      <input
+        type="checkbox"
+        ref={ref}
+        checked={checked}
+        disabled={disabled}
+        onChange={onChange}
+        style={{
+          width: '1rem',
+          height: '1rem',
+          cursor: 'pointer',
+        }}
+        aria-label={ariaLabel}
+        id={id}
+        title={ariaLabel}
+      />
+    </>
   );
 };
 
 export const HeaderCheckbox = <T extends object>({
   table,
-  ariaLabel,
 }: {
   table: Table<T>;
-  ariaLabel?: string;
 }) => (
   <IndeterminateCheckbox
     checked={table.getIsAllRowsSelected()}
     indeterminate={table.getIsSomeRowsSelected()}
     onChange={table.getToggleAllRowsSelectedHandler()}
-    ariaLabel={ariaLabel}
+    ariaLabel="Velg alle rader"
   />
 );
 
@@ -60,7 +64,7 @@ export const RowCheckbox = <T extends object>({
   ariaLabel,
 }: {
   row: Row<T>;
-  ariaLabel?: string;
+  ariaLabel: string;
 }) => (
   <IndeterminateCheckbox
     checked={row.getIsSelected()}
