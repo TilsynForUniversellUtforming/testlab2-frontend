@@ -62,6 +62,7 @@ const SakCreate = () => {
           loeysingIdList: maalingFormState.loeysingList.map(
             (l) => l.loeysing.id
           ),
+          testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,

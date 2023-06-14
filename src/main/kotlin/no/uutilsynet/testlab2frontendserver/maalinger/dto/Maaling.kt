@@ -2,12 +2,14 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 
 data class Maaling(
     val id: Int,
     val navn: String,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>,
+    val testregelList: List<Testregel>,
     val crawlResultat: List<CrawlResultat>,
     val crawlStatistics: JobStatistics,
     val testResult: List<TestKoeyring>,
@@ -38,6 +40,7 @@ fun MaalingDTO.toMaaling(
               this.loeysingList
             }
           },
+      testregelList = this.testregelList ?: emptyList(),
       crawlResultat = crawlResultat.ifEmpty { emptyList() },
       crawlStatistics =
           crawlResultat

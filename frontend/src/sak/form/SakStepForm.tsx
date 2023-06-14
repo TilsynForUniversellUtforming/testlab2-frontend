@@ -1,3 +1,4 @@
+import { Spinner } from '@digdir/design-system-react';
 import React, { ReactElement } from 'react';
 
 import { Loeysing } from '../../loeysingar/api/types';
@@ -31,6 +32,10 @@ const SakStepForm = <T extends object>({
   formStepState,
 }: Props<T>): ReactElement<T> => {
   const { currentStep } = formStepState;
+
+  if (loading) {
+    return <Spinner title="Laster skjema" />;
+  }
 
   switch (currentStep.sakStepType) {
     case 'Init':

@@ -25,7 +25,7 @@ export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
     },
     body: JSON.stringify(maaling),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke oppdatere måling')
+    responseToJson(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const deleteMaalingList = async (
@@ -50,7 +50,7 @@ export const updateMaalingStatus = async (
     },
     body: status,
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke oppdatere måling')
+    responseToJson(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
