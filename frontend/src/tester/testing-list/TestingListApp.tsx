@@ -11,7 +11,7 @@ import { TesterContext } from '../types';
 import { getTestingListColumns } from './TestingListColumns';
 
 const TestingListApp = () => {
-  const { maaling, contextError, contextLoading }: TesterContext =
+  const { maaling, contextError, contextLoading, setMaaling }: TesterContext =
     useOutletContext();
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
@@ -33,6 +33,7 @@ const TestingListApp = () => {
           setRefreshing(false);
         }
 
+        setMaaling(refreshedMaaling);
         setTestResult(refreshedMaaling.testResult);
       } else {
         setError(new Error('Måling finnes ikkje'));

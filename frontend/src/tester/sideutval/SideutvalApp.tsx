@@ -29,7 +29,7 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
 };
 
 const SideutvalApp = () => {
-  const { maaling, contextError, contextLoading }: TesterContext =
+  const { maaling, contextError, contextLoading, setMaaling }: TesterContext =
     useOutletContext();
   const { id } = useParams();
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
@@ -56,7 +56,7 @@ const SideutvalApp = () => {
         if (refreshedMaaling.status !== 'crawling') {
           setRefreshing(false);
         }
-
+        setMaaling(refreshedMaaling);
         setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved henting av måling'));
@@ -94,6 +94,7 @@ const SideutvalApp = () => {
         };
 
         const restartedMaaling = await restartCrawling(restartCrawlingRequest);
+        setMaaling(restartedMaaling);
         setCrawlResult(maalingToCrawlResultat(restartedMaaling));
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
