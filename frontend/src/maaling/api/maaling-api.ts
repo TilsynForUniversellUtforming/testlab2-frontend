@@ -1,5 +1,4 @@
 import { responseToJson } from '../../common/util/api/util';
-import { Testregel } from '../../testreglar/api/types';
 import {
   IdList,
   Maaling,
@@ -75,13 +74,4 @@ export const restartCrawling = async (
     body: JSON.stringify(restartCrawlRequest.loeysingIdList),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje restarte måling')
-  );
-
-export const fetchMaalingTestreglar = async (
-  id: number
-): Promise<Testregel[]> =>
-  fetch(`/api/v1/maalinger/${id}/testreglar`, {
-    method: 'GET',
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikke hente testreglar')
   );

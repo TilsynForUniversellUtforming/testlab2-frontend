@@ -14,7 +14,6 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
@@ -133,16 +132,6 @@ class MaalingResource(
           .getOrElse {
             logger.error("Kunne ikkje hente crawl resultat for måling med id $id")
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
-          }
-
-  @GetMapping("{id}/testreglar")
-  fun getMaalingTestreglar(
-      @PathVariable id: Int,
-  ): List<Testregel> =
-      runCatching { restTemplate.getList<Testregel>("$maalingUrl/$id/testreglar") }
-          .getOrElse {
-            logger.error("Kunne ikkje hente testreglar for måling med id $id")
-            throw RuntimeException("Klarte ikkje å hente testreglar")
           }
 
   @PutMapping("{maalingId}/restart")

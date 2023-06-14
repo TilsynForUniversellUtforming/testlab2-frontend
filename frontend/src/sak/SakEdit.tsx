@@ -4,11 +4,9 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import Alert, { AlertProps } from '../common/alert/Alert';
 import toError from '../common/error/util';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import {
-  fetchMaalingTestreglar,
-  updateMaaling,
-} from '../maaling/api/maaling-api';
+import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
+import { fetchMaalingTestreglar } from '../testreglar/api/testreglar-api';
 import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
 import {
