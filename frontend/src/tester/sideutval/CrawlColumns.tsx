@@ -24,7 +24,10 @@ export const getCrawlColumns = (
       ['planlegging', 'testing', 'testing_ferdig'].includes(
         maaling.status
       ) ? null : (
-        <RowCheckbox row={row} />
+        <RowCheckbox
+          row={row}
+          ariaLabel={`Velg ${row.original.loeysing.namn}`}
+        />
       ),
     size: 1,
   },

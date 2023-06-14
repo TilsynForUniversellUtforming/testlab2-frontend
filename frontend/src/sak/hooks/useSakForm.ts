@@ -27,14 +27,23 @@ export type FormStepState = {
   setNextStep: () => void;
 };
 
+export interface SakStepProps {
+  steps: SakStep[];
+  isEdit?: boolean;
+}
+
 /**
  * A custom hook to manage the state and logic of a Sak form component.
- * @param {SakStep[]} steps - The array of Sak steps.
+ * @param {SakStepProps} props - The props for the hook.
+ * @param {SakStep[]} props.steps - The array of Sak steps.
+ * @param {boolean} [props.isEdit=false] - Whether the form is in edit mode.
  * @returns {FormStepState} - The current step and state of the form.
  */
-const useSakForm = (steps: SakStep[]): FormStepState => {
+const useSakForm = ({ steps, isEdit = false }: SakStepProps): FormStepState => {
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
-  const [nextStepIdx, setNextStepIdx] = useState<number>(1);
+  const [nextStepIdx, setNextStepIdx] = useState<number>(
+    isEdit ? steps.length : 1
+  );
   const isFirstStep = currentStepIdx <= 0;
   const isLastStep = currentStepIdx >= steps.length - 1;
 

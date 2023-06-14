@@ -23,6 +23,7 @@ const SakEdit = () => {
     maaling,
     regelsettList,
     loeysingList,
+    verksemdList,
     setMaaling,
     contextLoading,
     contextError,
@@ -37,7 +38,10 @@ const SakEdit = () => {
   const [maalingFormState, setMaalingFormState] = useState<SakFormState>({
     navn: maaling?.navn ?? '',
     loeysingList: maaling?.loeysingList
-      ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
+      ? maaling.loeysingList.map((l) => ({
+          loeysing: l,
+          verksemd: verksemdList[0],
+        }))
       : [],
     testregelList: maaling?.testregelList
       ? maaling.testregelList
@@ -48,8 +52,8 @@ const SakEdit = () => {
     numLinksToSelect: maaling?.crawlParameters?.numLinksToSelect
       ? maaling.crawlParameters.numLinksToSelect
       : 30,
-    sakType: undefined,
-    advisor: undefined,
+    sakType: 'Tilsyn',
+    advisorId: String(advisors[0].id),
     sakNumber: undefined,
   });
 
@@ -120,7 +124,7 @@ const SakEdit = () => {
   const sakSteps =
     maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
 
-  const formStepState = useSakForm(sakSteps);
+  const formStepState = useSakForm({ steps: sakSteps, isEdit: true });
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
@@ -142,6 +146,7 @@ const SakEdit = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        verksemdList={verksemdList}
         advisors={advisors}
       />
       {alert && <Alert type={alert.type} message={alert.message} />}

@@ -64,7 +64,7 @@ const LoeysingList = () => {
       setDeleteMessage('');
     } else {
       setDeleteMessage(
-        `Vil du slette ${rowSelection.map((r) => r.namn).join(',')}?`
+        `Vil du sletta ${rowSelection.map((r) => r.namn).join(',')}?`
       );
     }
   }, []);
@@ -82,7 +82,9 @@ const LoeysingList = () => {
       {
         id: 'Handling',
         header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => <RowCheckbox row={row} />,
+        cell: ({ row }) => (
+          <RowCheckbox row={row} ariaLabel={`Velg ${row.original.namn}`} />
+        ),
         size: 1,
       },
       {

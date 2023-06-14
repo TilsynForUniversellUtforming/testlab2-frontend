@@ -16,6 +16,7 @@ import {
   RowCheckbox,
 } from '../../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../../common/table/TestlabTable';
+import { joinStringsToList } from '../../../common/util/stringutils';
 import { Testregel, TestRegelsett } from '../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../types';
 import SakStepFormWrapper from '../SakStepFormWrapper';
@@ -85,8 +86,13 @@ const SakTestreglarStep = ({
     () => [
       {
         id: 'Handling',
-        header: ({ table }) => <HeaderCheckbox<Testregel> table={table} />,
-        cell: ({ row }) => <RowCheckbox<Testregel> row={row} />,
+        header: ({ table }) => <HeaderCheckbox table={table} />,
+        cell: ({ row }) => (
+          <RowCheckbox
+            row={row}
+            ariaLabel={`Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`}
+          />
+        ),
         size: 1,
       },
       {
@@ -224,7 +230,9 @@ const SakTestreglarStep = ({
                 modalProps: {
                   title: 'Fjern rad',
                   disabled: rowSelection.length === 0,
-                  message: 'Fjern valg?',
+                  message: `Fjern ${joinStringsToList(
+                    rowSelection.map((rs) => rs.testregelNoekkel)
+                  )}?`,
                   onConfirm: onClickRemove,
                 },
               },

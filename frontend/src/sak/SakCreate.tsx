@@ -18,6 +18,7 @@ const SakCreate = () => {
   const {
     regelsettList,
     loeysingList,
+    verksemdList,
     setMaaling,
     contextLoading,
     contextError,
@@ -34,7 +35,7 @@ const SakCreate = () => {
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
     sakType: undefined,
-    advisor: undefined,
+    advisorId: undefined,
     sakNumber: '',
   };
 
@@ -90,7 +91,7 @@ const SakCreate = () => {
     });
   }, []);
 
-  const formStepState = useSakForm(defaultSakSteps);
+  const formStepState = useSakForm({ steps: defaultSakSteps });
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = useCallback(
@@ -116,6 +117,7 @@ const SakCreate = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        verksemdList={verksemdList}
         advisors={advisors}
       />
     </>

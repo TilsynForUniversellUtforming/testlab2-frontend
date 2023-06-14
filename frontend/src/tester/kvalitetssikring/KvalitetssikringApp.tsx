@@ -103,7 +103,9 @@ const KvalitetssikringApp = () => {
     () => [
       {
         id: 'Handling',
-        cell: ({ row }) => <RowCheckbox row={row} />,
+        cell: ({ row }) => (
+          <RowCheckbox row={row} ariaLabel={`Velg ${row.original.url}`} />
+        ),
         size: 1,
       },
       {
@@ -118,19 +120,19 @@ const KvalitetssikringApp = () => {
   return (
     <>
       <AppTitle
-        heading="Sideutvalg"
+        heading="Sideutval"
         subHeading={loeysingCrawResultat.loeysing.url}
       />
       <div className="kvalitetssikring__user-actions">
         <ConfirmModalButton
           onConfirm={onClickRemoveUrl}
-          message={`Vil du slette ${urlRowSelection.length} løysingar frå måling?`}
+          message={`Vil du sletta ${urlRowSelection.length} løysingar frå måling?`}
           title="Fjern valgte nettsider frå måling"
           disabled={urlRowSelection.length === 0 || loading}
           buttonVariant="button"
         />
         <ConfirmModalButton
-          message={`Vil du slette ${loeysingCrawResultat.loeysing.url} frå måling?`}
+          message={`Vil du sletta ${loeysingCrawResultat.loeysing.url} frå måling?`}
           onConfirm={onClickDeleteLoeysing}
           disabled={loading}
           title="Ta nettsted ut av måling"
@@ -138,7 +140,7 @@ const KvalitetssikringApp = () => {
         />
         {maaling.status === 'kvalitetssikring' && (
           <ConfirmModalButton
-            message={`Vil du starte crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
+            message={`Vil du starta crawling av ${loeysingCrawResultat.loeysing.url} på nytt?`}
             onConfirm={onClickRestart}
             disabled={loading}
             title="Nytt sideutval for nettstad"
