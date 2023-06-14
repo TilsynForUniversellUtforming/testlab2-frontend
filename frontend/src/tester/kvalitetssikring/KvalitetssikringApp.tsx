@@ -103,7 +103,9 @@ const KvalitetssikringApp = () => {
     () => [
       {
         id: 'Handling',
-        cell: ({ row }) => <RowCheckbox row={row} />,
+        cell: ({ row }) => (
+          <RowCheckbox row={row} ariaLabel={`Velg ${row.original.url}`} />
+        ),
         size: 1,
       },
       {

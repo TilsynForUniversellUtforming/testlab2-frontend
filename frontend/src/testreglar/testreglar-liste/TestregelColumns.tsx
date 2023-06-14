@@ -14,7 +14,12 @@ import { Testregel } from '../api/types';
 export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
   {
     id: 'Handling',
-    cell: ({ row }) => <RowCheckbox row={row} />,
+    cell: ({ row }) => (
+      <RowCheckbox
+        row={row}
+        ariaLabel={`Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`}
+      />
+    ),
     size: 1,
   },
   {

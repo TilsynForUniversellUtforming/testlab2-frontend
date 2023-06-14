@@ -82,7 +82,9 @@ const LoeysingList = () => {
       {
         id: 'Handling',
         header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => <RowCheckbox row={row} />,
+        cell: ({ row }) => (
+          <RowCheckbox row={row} ariaLabel={`Velg ${row.original.namn}`} />
+        ),
         size: 1,
       },
       {

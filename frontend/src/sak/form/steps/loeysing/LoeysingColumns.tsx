@@ -20,7 +20,12 @@ export const getLoeysingVerksemdColumns = (): Array<
   {
     id: 'Handling',
     header: ({ table }) => <HeaderCheckbox<LoeysingVerksemd> table={table} />,
-    cell: ({ row }) => <RowCheckbox<LoeysingVerksemd> row={row} />,
+    cell: ({ row }) => (
+      <RowCheckbox<LoeysingVerksemd>
+        row={row}
+        ariaLabel={`Velg ${row.original.loeysing.namn} - ${row.original.verksemd.namn}`}
+      />
+    ),
     size: 1,
   },
   {
