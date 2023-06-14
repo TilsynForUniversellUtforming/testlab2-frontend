@@ -1,4 +1,5 @@
 import { Loeysing } from '../../loeysingar/api/types';
+import { Testregel } from '../../testreglar/api/types';
 
 export type CrawlParameters = {
   maxLinksPerPage: number;
@@ -8,6 +9,7 @@ export type CrawlParameters = {
 export type MaalingInit = {
   navn: string;
   loeysingIdList: number[];
+  testregelIdList: number[];
   crawlParameters: CrawlParameters;
 };
 
@@ -15,6 +17,7 @@ export type MaalingEdit = {
   id: number;
   navn: string;
   loeysingIdList?: number[];
+  testregelIdList?: number[];
   crawlParameters?: CrawlParameters;
 };
 
@@ -61,11 +64,13 @@ export type Maaling = {
   id: number;
   navn: string;
   loeysingList: Loeysing[];
+  testregelList: Testregel[];
   status: MaalingStatus;
   crawlResultat: CrawlResultat[];
   crawlStatistics: JobStatistics;
   testStatistics: JobStatistics;
   testResult: TestResult[];
+  crawlParameters?: CrawlParameters;
 };
 
 export type IdList = {

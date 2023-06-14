@@ -117,7 +117,7 @@ class MaalingResource(
             getMaaling(id)
           }
           .getOrElse {
-            ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
+            ResponseEntity.internalServerError().body("Kunne ikkje oppdatere måling ${it.message}")
           }
 
   @GetMapping("{id}/crawlresultat")
