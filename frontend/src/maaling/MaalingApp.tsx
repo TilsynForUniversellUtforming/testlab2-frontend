@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import ErrorCard from '../common/error/ErrorCard';
 import toError from '../common/error/util';
 import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
@@ -16,7 +15,7 @@ import { Verksemd } from '../verksemder/api/types';
 import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
 import { fetchMaaling, updateMaalingStatus } from './api/maaling-api';
 import { Maaling } from './api/types';
-import { MaalingContext } from './types';
+import { MaalingContext, MaalingTestStatus } from './types';
 
 const MaalingApp = () => {
   const { id } = useParams();
@@ -24,6 +23,9 @@ const MaalingApp = () => {
 
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
+    loading: false,
+  });
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
@@ -44,61 +46,79 @@ const MaalingApp = () => {
     setLoading(loading);
   }, []);
 
+  const handleResetTestStatus = useCallback(() => {
+    setTestStatus({ loading: false, message: undefined });
+  }, []);
+
   const doStartCrawling = useCallback((maaling: Maaling) => {
-    setLoading(true);
+    setTestStatus({ loading: true, message: undefined });
     setError(undefined);
 
     const startCrawling = async () => {
-      try {
-        const updated = await updateMaalingStatus(maaling.id, 'crawling');
-        if (!updated.id) {
-          setError(new Error('Kunne ikkje starte crawling'));
-        } else {
-          navigate(
-            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })
-          );
-        }
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje starte crawling'));
+      const updated = await updateMaalingStatus(maaling.id, 'crawling');
+      if (!updated.id) {
+        setTestStatus({
+          loading: false,
+          message: 'Kunne ikkje starte crawling, prøv igjen',
+          severity: 'danger',
+        });
+      } else {
+        setMaaling(updated);
+        setTestStatus({
+          loading: false,
+          message: 'Crawling startet',
+          severity: 'success',
+        });
       }
     };
 
-    startCrawling().finally(() => setLoading(false));
+    startCrawling().catch((e) =>
+      setError(toError(e, 'Noko gjekk gale med start av crawling'))
+    );
   }, []);
 
   const doStartTest = useCallback((maaling: Maaling) => {
-    setLoading(true);
+    setTestStatus({ loading: true, message: undefined });
     setError(undefined);
 
     if (maaling.crawlResultat.find((cr) => cr.type === 'feilet')) {
-      setError(
-        new Error('Kunne ikkje starte test, måling har feil i sideutval')
-      );
+      setTestStatus({
+        loading: false,
+        message: 'Kunne ikkje starte test, måling har feil i sideutval',
+        severity: 'danger',
+      });
     }
 
     const startTesting = async () => {
-      try {
-        const updated = await updateMaalingStatus(maaling.id, 'testing');
-        if (!updated.id) {
-          setError(new Error('Noko gjekk gale ved oppdatering av måling'));
-        } else {
-          navigate(
-            getFullPath(appRoutes.TEST_TESTING_LIST, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })
-          );
-        }
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje starte test'));
+      const updated = await updateMaalingStatus(maaling.id, 'testing');
+      if (!updated.id) {
+        setTestStatus({
+          loading: false,
+          message: 'Kunne ikkje starte test, prøv igjen',
+          severity: 'danger',
+        });
+      } else {
+        setMaaling(updated);
+        setTestStatus({
+          loading: false,
+          message: 'Testing startet',
+          severity: 'success',
+        });
       }
     };
 
-    startTesting().finally(() => setLoading(false));
+    startTesting().catch((e) =>
+      setError(toError(e, 'Noko gjekk gale med start av test'))
+    );
   }, []);
+
+  const doStartPublish = (maaling: Maaling) => {
+    setTestStatus({
+      loading: false,
+      message: `Publisering er ikkje tilgjengelig ennå for måling ${maaling.navn}`,
+      severity: 'info',
+    });
+  };
 
   const doFetchData = useCallback(() => {
     setLoading(true);
@@ -161,7 +181,10 @@ const MaalingApp = () => {
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,
+    handleStartPublish: doStartPublish,
     advisors: advisorList,
+    testStatus: testStatus,
+    resetTestStatus: handleResetTestStatus,
   };
 
   if (!loading && !showMaalinger) {

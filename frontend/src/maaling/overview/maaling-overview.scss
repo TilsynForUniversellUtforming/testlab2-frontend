@@ -24,6 +24,7 @@
   }
 
   .status {
+    position: relative;
     min-width: 20%;
 
     &__item {
@@ -52,6 +53,11 @@
         display: flex;
         justify-content: center;
       }
+    }
+
+    &__alert {
+      position: absolute;
+      width: 100%;
     }
   }
 }

@@ -13,6 +13,7 @@ export type ProcessStatus = {
 export type MaalingOverviewStatus = {
   crawlingStatus: ProcessStatus;
   testingStatus: ProcessStatus;
+  publishStatus: ProcessStatus;
 };
 
 const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
@@ -32,6 +33,14 @@ const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
   const [testingStatus, setTestingStatus] = useState<ProcessStatus>({
     canStartProcess: false,
     label: toLabel('Testing', 0),
+    finished: false,
+    failed: false,
+    showResult: true,
+  });
+
+  const [publishStatus, setPublishStatus] = useState<ProcessStatus>({
+    canStartProcess: false,
+    label: 'Publisert',
     finished: false,
     failed: false,
     showResult: true,
@@ -67,11 +76,20 @@ const useMaalingOverviewStatus = (maaling: Maaling): MaalingOverviewStatus => {
       failed: testingFailed,
       showResult: showTestLink,
     });
+
+    setPublishStatus({
+      canStartProcess: testingJobFinished && !testingFailed,
+      label: 'Publisert',
+      finished: false,
+      failed: false,
+      showResult: false,
+    });
   }, [maaling]);
 
   return {
     crawlingStatus: crawlingStatus,
     testingStatus: testingStatus,
+    publishStatus: publishStatus,
   };
 };
 
