@@ -8,7 +8,7 @@ interface SubHeadingProps {
 }
 
 export interface AppTitleProps extends SubHeadingProps {
-  heading: string;
+  heading?: string;
 }
 
 const SubHeading = ({ subHeading, linkPath }: SubHeadingProps) => {
@@ -29,7 +29,7 @@ const SubHeading = ({ subHeading, linkPath }: SubHeadingProps) => {
 
 const AppTitle = ({ heading, subHeading, linkPath }: AppTitleProps) => (
   <div className="app-title">
-    <h2 className="app-title__heading">{heading}</h2>
+    <h2 className="app-title__heading">{heading ?? 'Laster...'}</h2>
     <SubHeading subHeading={subHeading} linkPath={linkPath} />
   </div>
 );

@@ -1,4 +1,3 @@
-import { Spinner } from '@digdir/design-system-react';
 import React, { ReactElement } from 'react';
 
 import { Loeysing } from '../../loeysingar/api/types';
@@ -6,6 +5,7 @@ import { TestRegelsett } from '../../testreglar/api/types';
 import { User } from '../../user/api/types';
 import { Verksemd } from '../../verksemder/api/types';
 import { SakFormBaseProps } from '../types';
+import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
 import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
 import SakInitStep from './steps/SakInitStep';
@@ -34,7 +34,7 @@ const SakStepForm = <T extends object>({
   const { currentStep } = formStepState;
 
   if (loading) {
-    return <Spinner title="Laster skjema" />;
+    return <SakStepFormSkeleton steps={formStepState.steps} />;
   }
 
   switch (currentStep.sakStepType) {

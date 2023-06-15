@@ -1,97 +1,44 @@
+import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
+import MaalingStatusContainerSkeleton from './MaalingStatusContainerSkeleton';
+
 const MaalingSkeleton = () => {
   return (
-    <>
-      <div>
-        <div>
-          <ol className="w-75">
-            <li>
-              <div>
-                <div className="fw-bold">Type:</div>
-                <div>
-                  <Skeleton />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="fw-bold">Sak:</div>
-                <div>
-                  <Skeleton />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="fw-bold">Dato start:</div>
-                <div>
-                  <Skeleton />
-                </div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div className="fw-bold">Dato avslutta:</div>
-                <div>
-                  <Skeleton />
-                </div>
-              </div>
-            </li>
-          </ol>
-        </div>
-        <div>
-          <ol className="w-50">
-            <li>
-              <div>
-                <div className="fw-bold">Status:</div>
-                <Skeleton width={70} />
-              </div>
-            </li>
-            <li>
-              <ul>
-                <li>
-                  <div>
-                    <div>
-                      <div>Sideutval</div>
-                      <div>
-                        <Skeleton />
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    {/*md={8}*/}
-                    <div>
-                      <div>Testing</div>
-                      <div>
-                        <Skeleton />
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    {/*md={8}*/}
-                    <div>
-                      <div>Publisert</div>
-                      <div>
-                        <Skeleton />
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Skeleton height={50} />
-            </li>
-          </ol>
-        </div>
+    <div className="maaling-overview">
+      <div className="parameter">
+        <List>
+          <ListItem>
+            <div className="parameter__item">
+              <div className="bold-text">Type</div>
+              <Skeleton width={125} />
+            </div>
+          </ListItem>
+          <ListItem>
+            <div className="parameter__item">
+              <div className="bold-text">Sak</div>
+              <Skeleton width={125} />
+            </div>
+          </ListItem>
+          <ListItem>
+            <div className="parameter__item">
+              <div className="bold-text">Dato start</div>
+              <Skeleton width={125} />
+            </div>
+          </ListItem>
+          <ListItem>
+            <div className="parameter__item">
+              <div className="bold-text">Dato avslutta</div>
+              <Skeleton width={125} />
+            </div>
+          </ListItem>
+        </List>
       </div>
-    </>
+      <div className="status">
+        <MaalingStatusContainerSkeleton />
+      </div>
+    </div>
   );
 };
 

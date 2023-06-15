@@ -1,42 +1,14 @@
 import './sak-stepper.scss';
 
-import { semantic_surface_action_default } from '@digdir/design-system-tokens';
-import {
-  EarthIcon,
-  FileTextIcon,
-  TasklistIcon,
-  WrenchIcon,
-} from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React from 'react';
 
 import { FormStepState } from '../hooks/useSakForm';
-import { SakStepType } from '../types';
+import StepperIcon from './StepperIcon';
 
 interface Props {
   formStepState: FormStepState;
 }
-
-const StepperIcon = ({ sakStepType }: { sakStepType: SakStepType }) => {
-  switch (sakStepType) {
-    case 'Init':
-      return (
-        <FileTextIcon color={semantic_surface_action_default} fontSize="2rem" />
-      );
-    case 'Loeysing':
-      return (
-        <EarthIcon color={semantic_surface_action_default} fontSize="2rem" />
-      );
-    case 'Testregel':
-      return (
-        <WrenchIcon color={semantic_surface_action_default} fontSize="2rem" />
-      );
-    case 'Confirm':
-      return (
-        <TasklistIcon color={semantic_surface_action_default} fontSize="2rem" />
-      );
-  }
-};
 
 const Stepper = ({ formStepState }: Props) => {
   const { steps, nextStepIdx, goToStep } = formStepState;

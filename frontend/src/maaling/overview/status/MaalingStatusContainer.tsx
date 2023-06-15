@@ -50,7 +50,7 @@ const MaalingStatusContainer = ({
               })}
             />
           </div>
-          <div className="status__item centered">
+          <div className="status__item">
             <MaalingStatusRow
               label={testingStatus.label}
               showLink={testingStatus.showResult}
@@ -62,7 +62,7 @@ const MaalingStatusContainer = ({
               })}
             />
           </div>
-          <div className="status__item centered">
+          <div className="status__item">
             <MaalingStatusRow
               label="Publisert"
               showLink={false}

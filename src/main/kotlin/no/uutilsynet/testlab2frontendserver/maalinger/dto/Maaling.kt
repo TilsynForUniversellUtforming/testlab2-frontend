@@ -17,10 +17,11 @@ data class Maaling(
     val crawlParameters: CrawlParameters?,
 )
 
-fun MaalingDTO.toMaaling() = this.toMaaling(emptyList())
+fun MaalingDTO.toMaaling() = this.toMaaling(emptyList(), emptyList())
 
 fun MaalingDTO.toMaaling(
     crawlResultat: List<CrawlResultat>,
+    testregelList: List<Testregel>
 ): Maaling {
   val maalingTestKoeyringList: List<TestKoeyring> = this.testKoeyringar ?: emptyList()
 
@@ -40,8 +41,8 @@ fun MaalingDTO.toMaaling(
               this.loeysingList
             }
           },
-      testregelList = this.testregelList ?: emptyList(),
-      crawlResultat = crawlResultat.ifEmpty { emptyList() },
+      testregelList = this.testregelList ?: testregelList,
+      crawlResultat = crawlResultat,
       crawlStatistics =
           crawlResultat
               .map {
@@ -49,7 +50,7 @@ fun MaalingDTO.toMaaling(
                 else it.type
               }
               .toJobStatistics(),
-      testResult = maalingTestKoeyringList.ifEmpty { emptyList() },
+      testResult = maalingTestKoeyringList,
       testStatistics = maalingTestKoeyringList.map { it.tilstand }.toJobStatistics(),
       crawlParameters = this.crawlParameters)
 }
