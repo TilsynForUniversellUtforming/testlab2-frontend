@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import Alert, { AlertProps } from '../common/alert/Alert';
+import AlertTimed, { AlertProps } from '../common/alert/AlertTimed';
 import toError from '../common/error/util';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
@@ -63,7 +63,7 @@ const SakEdit = () => {
           const maaling = await updateMaaling(maalingEdit);
           setMaaling(maaling);
           setAlert({
-            type: 'success',
+            severity: 'success',
             message: 'Flott! vi har lagret dine endringer',
           });
         } catch (e) {
@@ -80,7 +80,9 @@ const SakEdit = () => {
   }, []);
 
   const sakSteps =
-    maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
+    contextLoading || maaling?.status === 'planlegging'
+      ? defaultSakSteps
+      : startedSakSteps;
 
   const formStepState = useSakForm({ steps: sakSteps, isEdit: true });
   const { isLastStep, setNextStep } = formStepState;
@@ -107,7 +109,9 @@ const SakEdit = () => {
         verksemdList={verksemdList}
         advisors={advisors}
       />
-      {alert && <Alert type={alert.type} message={alert.message} />}
+      {alert && (
+        <AlertTimed severity={alert.severity} message={alert.message} />
+      )}
     </>
   );
 };

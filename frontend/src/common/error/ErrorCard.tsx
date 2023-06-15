@@ -1,6 +1,12 @@
 import './error-card.scss';
 
-import { Button, ErrorMessage } from '@digdir/design-system-react';
+import {
+  Alert,
+  Button,
+  ButtonColor,
+  ButtonVariant,
+  Heading,
+} from '@digdir/design-system-react';
 import React from 'react';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 
@@ -25,19 +31,23 @@ const ErrorContent = ({
   buttonText,
 }: ErrorContentProps) => (
   <div className="error-card">
-    <div className="error-card__content">
-      <div className="error-card__header">
-        <h2>{errorHeader}</h2>
+    <Alert severity="danger">
+      <Heading size="large" spacing title={errorHeader}>
+        {errorHeader}
+      </Heading>
+      <div className="error-card__body">{errorText}</div>
+      <div className="error-card__button">
+        {onClick && (
+          <Button
+            onClick={onClick}
+            color={ButtonColor.Danger}
+            variant={ButtonVariant.Outline}
+          >
+            {buttonText}
+          </Button>
+        )}
       </div>
-      <div className="error-card__body">
-        <p>Melding fra systemet:</p>
-        <ErrorMessage>{errorText}</ErrorMessage>
-        <br />
-        <div className="error-card__button">
-          {onClick && <Button onClick={onClick}>{buttonText}</Button>}
-        </div>
-      </div>
-    </div>
+    </Alert>
   </div>
 );
 
