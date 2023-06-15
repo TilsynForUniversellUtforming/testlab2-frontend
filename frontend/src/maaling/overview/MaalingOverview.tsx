@@ -11,8 +11,8 @@ import MaalingStatusContainer from './status/MaalingStatusContainer';
 
 const MaalingOverview = () => {
   const {
-    contextLoading,
     contextError,
+    contextLoading,
     maaling,
     handleStartCrawling,
     handleStartTest,

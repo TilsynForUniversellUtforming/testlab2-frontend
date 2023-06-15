@@ -15,7 +15,6 @@ import LoeysingEdit from './loeysingar/LoeysingEdit';
 import MaalingList from './maaling/list/MaalingList';
 import MaalingApp from './maaling/MaalingApp';
 import MaalingCreate from './maaling/MaalingCreate';
-import MaalingOverview from './maaling/overview/MaalingOverview';
 import MaalingOverviewApp from './maaling/overview/MaalingOverviewApp';
 import Oversikt from './oversikt/Oversikt';
 import SakList from './sak/list/SakList';
@@ -101,16 +100,6 @@ const App = () => {
             {
               path: idPath,
               element: <MaalingOverviewApp />,
-              children: [
-                {
-                  index: true,
-                  element: <MaalingOverview />,
-                },
-                {
-                  path: editPath,
-                  element: <SakEdit />,
-                },
-              ],
             },
           ],
         },

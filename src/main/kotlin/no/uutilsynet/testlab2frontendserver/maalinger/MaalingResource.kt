@@ -14,6 +14,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
@@ -30,6 +31,7 @@ class MaalingResource(
   val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
+  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
 
   @GetMapping
   fun listMaaling(): List<Maaling> {
@@ -52,7 +54,9 @@ class MaalingResource(
     val maaling =
         when (maalingDTO.status) {
           MaalingStatus.planlegging -> maalingDTO.toMaaling()
-          else -> maalingDTO.toMaaling(getCrawlResultatList(maalingDTO.id))
+          else ->
+              maalingDTO.toMaaling(
+                  getCrawlResultatList(maalingDTO.id), getTestregelListForMaaling(maalingDTO.id))
         }
 
     return ResponseEntity.ok(maaling)
@@ -150,5 +154,15 @@ class MaalingResource(
           }
           .getOrElse {
             ResponseEntity.internalServerError().body("Kunne ikkje starte crawling(er) på nytt")
+          }
+
+  private fun getTestregelListForMaaling(maalingId: Int): List<Testregel> =
+      runCatching {
+            logger.debug("Henter testreglar for måling $maalingId")
+            restTemplate.getList<Testregel>("$testregelUrl?maalingId=$maalingId")
+          }
+          .getOrElse {
+            logger.error("Feila ved henting av testreglar for måling $maalingId", it)
+            throw RuntimeException("Klarte ikkje å hente testreglar")
           }
 }

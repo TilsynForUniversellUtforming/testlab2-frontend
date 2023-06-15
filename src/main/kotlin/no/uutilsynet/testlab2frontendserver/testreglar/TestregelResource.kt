@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -31,22 +30,14 @@ class TestregelResource(
   val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
 
   @GetMapping
-  fun listTestreglar(@RequestParam(required = false) maalingId: Int? = null): List<Testregel> =
-      runCatching {
-            if (maalingId != null) {
-              logger.debug("Henter testreglar for måling $maalingId")
-              restTemplate.getList<Testregel>("$testregelUrl?maalingId=$maalingId")
-            } else {
-              restTemplate.getList<Testregel>(testregelUrl)
-            }
-          }
-          .getOrElse {
-            val errorMessage =
-                if (maalingId != null) "Feila ved henting av testreglar for måling $maalingId"
-                else "Feila ved henting av testreglar"
-            logger.error(errorMessage, it)
-            throw RuntimeException("Klarte ikkje å hente testreglar")
-          }
+  fun listTestreglar(): List<Testregel> =
+      try {
+        logger.debug("Henter testreglar fra $testregelUrl")
+        restTemplate.getList<Testregel>(testregelUrl)
+      } catch (e: Error) {
+        logger.error("klarte ikke å hente testreglar", e)
+        throw Error("Klarte ikke å hente testreglar")
+      }
 
   @GetMapping("regelsett")
   fun listRegelsett(): List<Regelsett> =

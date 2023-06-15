@@ -1,4 +1,3 @@
-import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
@@ -174,10 +173,6 @@ const MaalingApp = () => {
         onClick={() => navigate('..')}
       />
     );
-  }
-
-  if (loading) {
-    return <Spinner title="Venter på målingar" />;
   }
 
   return <Outlet context={maalingContext} />;

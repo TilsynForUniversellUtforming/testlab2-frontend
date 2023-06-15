@@ -1,80 +1,68 @@
-import { Spinner, Tabs } from '@digdir/design-system-react';
-import React from 'react';
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from 'react-router-dom';
+import { Tabs } from '@digdir/design-system-react';
+import React, { useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
 import AppTitle from '../../common/app-title/AppTitle';
-import {
-  appRoutes,
-  editPath,
-  getFullPath,
-  idPath,
-} from '../../common/appRoutes';
-import ErrorCard from '../../common/error/ErrorCard';
+import TestlabTable from '../../common/table/TestlabTable';
+import { Loeysing } from '../../loeysingar/api/types';
+import { getLoeysingColumnsReadOnly } from '../../loeysingar/list/LoeysingColumns';
+import SakEdit from '../../sak/SakEdit';
+import { Testregel } from '../../testreglar/api/types';
+import { getTestregelColumnsReadOnly } from '../../testreglar/testreglar-liste/TestregelColumns';
 import { MaalingContext } from '../types';
+import MaalingOverview from './MaalingOverview';
 
 const MaalingOverviewApp = () => {
   const context: MaalingContext = useOutletContext();
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const location = useLocation();
-  const lastSegment = location.pathname.split('/').pop();
+  const { maaling, contextLoading, contextError, refresh } = context;
 
-  if (context.contextLoading) {
-    return <Spinner title="Hentar målingar" variant={'default'} />;
-  }
-
-  if (!context.maaling || context.contextError) {
-    return <ErrorCard />;
-  }
-
-  const { navn } = context.maaling;
-
-  const handleChange = (name: string) => {
-    if (name === 'Rediger måling') {
-      navigate(editPath);
-    } else {
-      navigate(
-        getFullPath(appRoutes.MAALING, { id: String(id), pathParam: idPath })
-      );
-    }
+  const loeysingColumns = useMemo(() => getLoeysingColumnsReadOnly(), []);
+  const testregelColumns = useMemo(() => getTestregelColumnsReadOnly(), []);
+  const displayError = {
+    onClick: refresh,
+    buttonText: 'Prøv igjen',
+    error: contextError,
   };
 
   return (
     <>
-      <AppTitle heading={navn} />
+      <AppTitle heading={maaling?.navn} />
       <Tabs
-        activeTab={lastSegment === editPath ? 'Rediger måling' : 'Oversikt'}
         items={[
           {
             name: 'Oversikt',
-            content: <></>,
+            content: <MaalingOverview />,
           },
           {
             name: 'Rediger måling',
-            content: <></>,
+            content: <SakEdit />,
           },
           {
             name: 'Nettløysingar',
-            content: <></>,
+            content: (
+              <TestlabTable<Loeysing>
+                defaultColumns={loeysingColumns}
+                data={maaling?.loeysingList ?? []}
+                filterPreference="rowsearch"
+                loading={contextLoading}
+                displayError={displayError}
+              />
+            ),
           },
           {
             name: 'Testreglar',
-            content: <></>,
-          },
-          {
-            name: 'Testresultat',
-            content: <></>,
+            content: (
+              <TestlabTable<Testregel>
+                defaultColumns={testregelColumns}
+                data={maaling?.testregelList ?? []}
+                filterPreference="rowsearch"
+                loading={contextLoading}
+                displayError={displayError}
+              />
+            ),
           },
         ]}
-        onChange={handleChange}
       />
-      <Outlet context={context} />
     </>
   );
 };

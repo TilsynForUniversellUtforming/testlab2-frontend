@@ -24,7 +24,46 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
   },
   {
     accessorFn: (row) => row.kravTilSamsvar,
-    id: 'Namn',
+    id: 'testregel-namn',
+    cell: ({ row, getValue }) => (
+      <Link
+        to={getFullPath(appRoutes.TESTREGEL_EDIT, {
+          pathParam: idPath,
+          id: String(row.original.id),
+        })}
+        title={`Gå til testregel ${row.original.kravTilSamsvar}`}
+      >
+        {String(getValue())}
+      </Link>
+    ),
+    header: () => <>Namn</>,
+  },
+  {
+    accessorFn: (row) => row.testregelNoekkel,
+    id: 'TestregelId',
+    cell: (info) => info.getValue(),
+    header: () => <>Testregel</>,
+  },
+  {
+    accessorFn: (row) => row.krav,
+    id: 'Krav',
+    cell: (info) => info.getValue(),
+    header: () => <>Krav</>,
+    meta: {
+      select: true,
+    },
+  },
+];
+
+/**
+ * getTestregelColumnsReadOnly function returns an array of column definitions for Testregel, without user action.
+ *
+ * @returns {Array<ColumnDef<Testregel>>} An array of column definitions.
+ */
+export const getTestregelColumnsReadOnly = (): Array<ColumnDef<Testregel>> => [
+  {
+    accessorFn: (row) => row.kravTilSamsvar,
+    id: 'testregel-namn',
     cell: ({ row, getValue }) => (
       <Link
         to={getFullPath(appRoutes.TESTREGEL_EDIT, {
