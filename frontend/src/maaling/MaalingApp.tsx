@@ -131,6 +131,7 @@ const MaalingApp = () => {
           setMaaling(maaling);
         } catch (e) {
           setError(toError(e, 'Måling finnes ikkje'));
+          return;
         }
       }
 
@@ -139,6 +140,7 @@ const MaalingApp = () => {
         setLoeysingList(loeysingList);
       } catch (e) {
         setError(toError(e, 'Kunne ikkje hente løysingar'));
+        return;
       }
 
       try {
@@ -146,6 +148,7 @@ const MaalingApp = () => {
         setRegelsettList(regelsett);
       } catch (e) {
         setError(toError(e, 'Kunne ikkje hente regelsett'));
+        return;
       }
 
       const advisors = await getAdvisors_dummy();

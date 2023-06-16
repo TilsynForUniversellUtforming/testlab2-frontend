@@ -14,28 +14,25 @@ import { TestResult } from '../../maaling/api/types';
  * @returns {Array<ColumnDef<TestResult>>} An array of column definitions.
  */
 export const getTestingListColumns = (
-  maalingId?: string
+  maalingId: string
 ): Array<ColumnDef<TestResult>> => [
   {
     accessorFn: (row) => row.loeysing.namn,
     id: 'url',
-    cell: ({ row }) =>
-      maalingId ? (
-        <Link
-          to={getFullPath(
-            appRoutes.TEST_RESULT_LIST,
-            { pathParam: idPath, id: maalingId },
-            {
-              pathParam: ':loeysingId',
-              id: String(row.original.loeysing.id),
-            }
-          )}
-        >
-          {row.original.loeysing.namn}
-        </Link>
-      ) : (
-        String(row.original.loeysing.id)
-      ),
+    cell: ({ row }) => (
+      <Link
+        to={getFullPath(
+          appRoutes.TEST_RESULT_LIST,
+          { pathParam: idPath, id: maalingId },
+          {
+            pathParam: ':loeysingId',
+            id: String(row.original.loeysing.id),
+          }
+        )}
+      >
+        {row.original.loeysing.namn}
+      </Link>
+    ),
     header: () => <>Løysing</>,
   },
   {

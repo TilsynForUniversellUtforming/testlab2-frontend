@@ -4,10 +4,11 @@ import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
 import { CrawlResultat, Maaling } from '../../maaling/api/types';
-import { getCrawlColumns } from './CrawlColumns';
+import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
 
 export interface Props {
-  maaling: Maaling;
+  id: string;
+  maaling?: Maaling;
   crawlList: CrawlResultat[];
   onClickRestart: (crawlRowSelection: CrawlResultat[]) => void;
   refresh: () => void;
@@ -17,6 +18,7 @@ export interface Props {
 }
 
 const CrawlingList = ({
+  id,
   maaling,
   crawlList,
   onClickRestart,
@@ -25,7 +27,7 @@ const CrawlingList = ({
   error,
   refreshing,
 }: Props) => {
-  const maalingStatus = maaling.status;
+  const maalingStatus = maaling?.status;
 
   const [crawlRowSelection, setCrawlRowSelection] = useState<CrawlResultat[]>(
     []
@@ -51,7 +53,13 @@ const CrawlingList = ({
     }
   }, [maalingStatus, crawlList, crawlRowSelection]);
 
-  const crawlColumns = useMemo(() => getCrawlColumns(maaling), [maaling]);
+  const crawlColumns = useMemo(() => {
+    if (typeof maaling !== 'undefined') {
+      return getCrawlColumns(maaling);
+    } else {
+      return getCrawlColumnsLoading();
+    }
+  }, [maaling]);
 
   const onClickRefresh = useCallback(() => {
     setCrawlRowSelection([]);
@@ -65,7 +73,7 @@ const CrawlingList = ({
       linkPath={
         maaling
           ? getFullPath(AppRoutes.MAALING, {
-              id: String(maaling.id),
+              id: id,
               pathParam: idPath,
             })
           : undefined

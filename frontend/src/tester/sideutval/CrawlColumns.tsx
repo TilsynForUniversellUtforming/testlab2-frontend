@@ -101,3 +101,35 @@ export const getCrawlColumns = (
     },
   },
 ];
+
+/**
+ * getCrawlColumnsLoading function returns an array of column definitions for CrawlResultat, special case because
+ * the cells are dependent on maaling.
+ *
+ * @returns {Array<ColumnDef<CrawlResultat>>} An array of column definitions.
+ */
+export const getCrawlColumnsLoading = (): Array<ColumnDef<CrawlResultat>> => [
+  {
+    id: 'Handling',
+    cell: () => <></>,
+    size: 1,
+  },
+  {
+    accessorFn: (row) => row.loeysing.url,
+    id: 'url',
+    header: () => <>Løysing</>,
+  },
+  {
+    accessorFn: (row) => row.loeysing.namn,
+    id: 'namn',
+    header: () => <>Verksemd</>,
+  },
+  {
+    accessorFn: (row) => row.type,
+    id: 'status',
+    header: () => <>Status</>,
+    meta: {
+      select: true,
+    },
+  },
+];

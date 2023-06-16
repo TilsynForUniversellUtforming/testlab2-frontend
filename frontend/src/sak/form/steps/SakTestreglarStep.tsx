@@ -220,7 +220,6 @@ const SakTestreglarStep = ({
             data={selection}
             defaultColumns={testregelColumns}
             displayError={{ error }}
-            inputError={listErrors?.message}
             loading={loading}
             onSelectRows={handleSelectRow}
             customStyle={{ small: true }}

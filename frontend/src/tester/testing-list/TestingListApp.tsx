@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import toError from '../../common/error/util';
@@ -7,19 +7,26 @@ import useInterval from '../../common/hooks/useInterval';
 import UserActionTable from '../../common/table/UserActionTable';
 import { fetchMaaling } from '../../maaling/api/maaling-api';
 import { TestResult } from '../../maaling/api/types';
-import { TesterContext } from '../types';
+import { MaalingContext } from '../../maaling/types';
 import { getTestingListColumns } from './TestingListColumns';
 
 const TestingListApp = () => {
-  const { maaling, contextError, contextLoading, setMaaling }: TesterContext =
+  const { maaling, contextError, contextLoading, setMaaling }: MaalingContext =
     useOutletContext();
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
   const [error, setError] = useState<Error | undefined>(contextError);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
-  const id = maaling?.id ? String(maaling.id) : undefined;
-  const testResultatColumns = useMemo(() => getTestingListColumns(id), []);
+  const { id } = useParams();
+  const testResultatColumns = useMemo(
+    () => getTestingListColumns(id ?? ''),
+    []
+  );
+
+  useEffect(() => {
+    setTestResult(maaling?.testResult ?? []);
+  }, [maaling]);
 
   const doFetchData = useCallback(async () => {
     try {

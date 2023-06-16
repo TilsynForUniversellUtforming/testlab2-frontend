@@ -10,3 +10,14 @@ export const capitalize = (str: string): string =>
 
 export const sanitizeLabel = (label: string) =>
   capitalize(label.replace('_', ' ').toLowerCase());
+
+export const extractDomain = (url?: string): string => {
+  if (!url) return '';
+
+  try {
+    const urlObj = new URL(url);
+    return urlObj.host;
+  } catch (e) {
+    return url;
+  }
+};

@@ -203,7 +203,6 @@ const SakLoeysingStep = ({
             data={selection}
             defaultColumns={loeysingColumns}
             displayError={{ error }}
-            inputError={listErrors?.message}
             onClickRetry={refreshLoeysing}
             loading={loading}
             onSelectRows={handleSelectRow}
