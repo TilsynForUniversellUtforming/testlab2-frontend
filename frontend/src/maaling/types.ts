@@ -17,7 +17,7 @@ export interface MaalingContext extends AppContext {
   handleStartTest: (maaling: Maaling) => void;
   handleStartPublish: (maaling: Maaling) => void;
   testStatus: MaalingTestStatus;
-  resetTestStatus: () => void;
+  clearTestStatus: () => void;
 }
 
 export type CrawlUrl = {

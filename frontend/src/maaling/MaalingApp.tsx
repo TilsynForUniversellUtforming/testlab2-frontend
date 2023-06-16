@@ -46,7 +46,7 @@ const MaalingApp = () => {
     setLoading(loading);
   }, []);
 
-  const handleResetTestStatus = useCallback(() => {
+  const clearTestStatus = useCallback(() => {
     setTestStatus({ loading: false, message: undefined });
   }, []);
 
@@ -187,7 +187,7 @@ const MaalingApp = () => {
     handleStartPublish: doStartPublish,
     advisors: advisorList,
     testStatus: testStatus,
-    resetTestStatus: handleResetTestStatus,
+    clearTestStatus: clearTestStatus,
   };
 
   if (!loading && !showMaalinger) {
