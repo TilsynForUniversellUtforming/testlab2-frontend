@@ -1,6 +1,4 @@
-import './status-badge.scss';
-
-import classNames from 'classnames';
+import { Tag } from '@digdir/design-system-react';
 
 import { sanitizeLabel } from '../util/stringutils';
 
@@ -30,6 +28,18 @@ interface Props {
   levels: Levels;
 }
 
+const getBadgeColor = (status: string, levels: Levels) => {
+  if (levels.primary.includes(status)) {
+    return 'tertiary';
+  } else if (levels.danger.includes(status)) {
+    return 'danger';
+  } else if (levels.success.includes(status)) {
+    return 'success';
+  } else {
+    return 'neutral';
+  }
+};
+
 const StatusBadge = ({ customLabel, status, levels }: Props) => {
   if (status == null || typeof status === 'undefined') {
     return null;
@@ -39,17 +49,12 @@ const StatusBadge = ({ customLabel, status, levels }: Props) => {
     ? customLabel
     : sanitizeLabel(String(status));
 
+  const color = getBadgeColor(status, levels);
+
   return (
-    <div
-      className={classNames(
-        'status-badge',
-        { primary: levels.primary.includes(status) },
-        { danger: levels.danger.includes(status) },
-        { success: levels.success.includes(status) }
-      )}
-    >
+    <Tag color={color} size="xsmall">
       {sanitizedLabel}
-    </div>
+    </Tag>
   );
 };
 
