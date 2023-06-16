@@ -63,7 +63,6 @@ interface IRoutes {
   REGELSETT_EDIT: AppRoute;
 
   TEST: AppRoute;
-  TEST_CONFIRM: AppRoute;
   TEST_SIDEUTVAL_LIST: AppRoute;
   TEST_CRAWLING_RESULT_LIST: AppRoute;
   TEST_TESTING_LIST: AppRoute;
@@ -238,34 +237,28 @@ const TEST = {
   path: 'test',
 };
 
-const TEST_CONFIRM = {
-  navn: 'Endre test',
-  path: idPath,
-  parentRoute: TEST,
-};
-
 const TEST_SIDEUTVAL_LIST = {
   navn: 'Sideutval',
   path: ':id/sideutval',
-  parentRoute: TEST,
+  parentRoute: MAALING_ROOT,
 };
 
 const TEST_CRAWLING_RESULT_LIST = {
   navn: 'Kvalitetssikring',
   path: ':id/sideutval/:loeysingId',
-  parentRoute: TEST,
+  parentRoute: MAALING_ROOT,
 };
 
 const TEST_TESTING_LIST = {
   navn: 'Tester',
   path: ':id/testing',
-  parentRoute: TEST,
+  parentRoute: MAALING_ROOT,
 };
 
 const TEST_RESULT_LIST = {
   navn: 'Resultat',
   path: ':id/resultat/:loeysingId',
-  parentRoute: TEST,
+  parentRoute: MAALING_ROOT,
 };
 
 const DISKUSJON_ROOT = {
@@ -354,7 +347,6 @@ export const appRoutes: IRoutes = {
   MAALING_CREATE: MAALING_CREATE,
 
   TEST: TEST,
-  TEST_CONFIRM: TEST_CONFIRM,
   TEST_SIDEUTVAL_LIST: TEST_SIDEUTVAL_LIST,
   TEST_CRAWLING_RESULT_LIST: TEST_CRAWLING_RESULT_LIST,
   TEST_TESTING_LIST: TEST_TESTING_LIST,

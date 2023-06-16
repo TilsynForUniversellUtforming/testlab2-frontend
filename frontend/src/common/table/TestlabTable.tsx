@@ -71,7 +71,6 @@ export interface TestlabTableProps<T extends object> {
   data: T[];
   defaultColumns: ColumnDef<T>[];
   displayError?: TestlabError;
-  inputError?: string;
   loading?: boolean;
   filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
@@ -91,14 +90,13 @@ export interface TestlabTableProps<T extends object> {
  * @param {T[]} props.data - The data to be displayed in the table.
  * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
  * @param {TestlabError} props.displayError - The error to show in the error card.
- * @param {string} [props.inputError] - Any error that occurred during user input.
  * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
- * @param {FilterPreference} [props.filterPreference='all'] - The default filter preference.
+ * @param {TableFilterPreference} [props.filterPreference='all'] - The default filter preference.
  * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
  * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected. If defined the row selection is implicitly active
  * @param {boolean} [props.disableMultiRowSelection=false] - Whether the user can select multiple rows
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
- * @param {Style} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
+ * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @param {string} [props.loadingStateStatus] - The status to display when the table is loading.
  * @returns {JSX.Element} - The React component for the TestlabTable.
@@ -120,7 +118,9 @@ const TestlabTable = <T extends object>({
   loadingStateStatus,
 }: TestlabTableProps<T>) => {
   const isLoading = loading ?? false;
-  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
+  const [columns, setColumns] = useState<typeof defaultColumns>(() => [
+    ...defaultColumns,
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
@@ -132,6 +132,10 @@ const TestlabTable = <T extends object>({
   const handleRowSelection = (rss: RowSelectionState) => {
     setRowSelection(rss);
   };
+
+  useEffect(() => {
+    setColumns([...defaultColumns]);
+  }, [defaultColumns]);
 
   const tableOptions: TableOptions<T> = {
     data: data,

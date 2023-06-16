@@ -26,7 +26,6 @@ import SakEdit from './sak/SakEdit';
 import KvalitetssikringApp from './tester/kvalitetssikring/KvalitetssikringApp';
 import SideutvalApp from './tester/sideutval/SideutvalApp';
 import TestResultListApp from './tester/test-result-list/TestResultListApp';
-import TesterApp from './tester/TesterApp';
 import TestingListApp from './tester/testing-list/TestingListApp';
 import RegelsettApp from './testreglar/regelsett/RegelsettApp';
 import RegelsettCreate from './testreglar/regelsett/RegelsettCreate';
@@ -101,6 +100,22 @@ const App = () => {
               path: idPath,
               element: <MaalingOverviewApp />,
             },
+            {
+              path: appRoutes.TEST_SIDEUTVAL_LIST.path,
+              element: <SideutvalApp />,
+            },
+            {
+              path: appRoutes.TEST_CRAWLING_RESULT_LIST.path,
+              element: <KvalitetssikringApp />,
+            },
+            {
+              path: appRoutes.TEST_TESTING_LIST.path,
+              element: <TestingListApp />,
+            },
+            {
+              path: appRoutes.TEST_RESULT_LIST.path,
+              element: <TestResultListApp />,
+            },
           ],
         },
         {
@@ -165,29 +180,6 @@ const App = () => {
           path: appRoutes.KRAV_LIST.path,
           element: <KravApp />,
         },
-        {
-          path: appRoutes.TEST.path,
-          element: <TesterApp />,
-          children: [
-            {
-              path: appRoutes.TEST_SIDEUTVAL_LIST.path,
-              element: <SideutvalApp />,
-            },
-            {
-              path: appRoutes.TEST_CRAWLING_RESULT_LIST.path,
-              element: <KvalitetssikringApp />,
-            },
-            {
-              path: appRoutes.TEST_TESTING_LIST.path,
-              element: <TestingListApp />,
-            },
-            {
-              path: appRoutes.TEST_RESULT_LIST.path,
-              element: <TestResultListApp />,
-            },
-          ],
-        },
-
         {
           path: '*',
           element: <Page404 />,

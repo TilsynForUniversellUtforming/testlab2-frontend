@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
@@ -12,7 +12,7 @@ import {
   Maaling,
   RestartCrawlRequest,
 } from '../../maaling/api/types';
-import { TesterContext } from '../types';
+import { MaalingContext } from '../../maaling/types';
 import CrawlingList from './CrawlingList';
 
 const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
@@ -29,7 +29,9 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
 };
 
 const SideutvalApp = () => {
-  const { maaling, contextError, contextLoading, setMaaling }: TesterContext =
+  const navigate = useNavigate();
+
+  const { maaling, contextError, contextLoading, setMaaling }: MaalingContext =
     useOutletContext();
   const { id } = useParams();
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
@@ -39,7 +41,11 @@ const SideutvalApp = () => {
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'crawling');
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    setLoading(contextLoading);
+    setCrawlResult(maalingToCrawlResultat(maaling));
+  }, [contextLoading, maaling]);
 
   const doFetchData = useCallback(async () => {
     setLoading(false);
@@ -112,12 +118,16 @@ const SideutvalApp = () => {
     });
   }, []);
 
-  if (typeof maaling === 'undefined' || typeof id === 'undefined') {
+  if (
+    (typeof maaling === 'undefined' && !loading) ||
+    typeof id === 'undefined'
+  ) {
     return <ErrorCard error={new Error('Ingen måling funnet')} />;
   }
 
   return (
     <CrawlingList
+      id={id}
       maaling={maaling}
       crawlList={crawlResultat}
       onClickRestart={onClickRestart}
