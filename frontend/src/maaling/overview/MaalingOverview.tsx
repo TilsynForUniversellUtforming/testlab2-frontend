@@ -18,6 +18,7 @@ const MaalingOverview = () => {
     handleStartTest,
     handleStartPublish,
     testStatus,
+    clearTestStatus,
   }: MaalingContext = useOutletContext();
   const { id } = useParams();
 
@@ -43,6 +44,7 @@ const MaalingOverview = () => {
           handleStartTest={handleStartTest}
           handleStartPublish={handleStartPublish}
           testStatus={testStatus}
+          clearTestStatus={clearTestStatus}
         />
       </div>
     </>

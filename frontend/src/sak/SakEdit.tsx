@@ -65,6 +65,7 @@ const SakEdit = () => {
           setAlert({
             severity: 'success',
             message: 'Flott! vi har lagret dine endringer',
+            clearMessage: () => setAlert(undefined),
           });
         } catch (e) {
           setError(toError(e, 'Kunne ikkje lage sak'));
@@ -110,7 +111,11 @@ const SakEdit = () => {
         advisors={advisors}
       />
       {alert && (
-        <AlertTimed severity={alert.severity} message={alert.message} />
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
       )}
     </>
   );

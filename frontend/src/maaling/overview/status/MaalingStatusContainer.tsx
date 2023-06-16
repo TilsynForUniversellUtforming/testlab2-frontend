@@ -16,6 +16,7 @@ export interface Props {
   handleStartTest: (maaling: Maaling) => void;
   handleStartPublish: (maaling: Maaling) => void;
   testStatus: MaalingTestStatus;
+  clearTestStatus: () => void;
 }
 
 const MaalingStatusContainer = ({
@@ -24,6 +25,7 @@ const MaalingStatusContainer = ({
   handleStartTest,
   handleStartPublish,
   testStatus,
+  clearTestStatus,
 }: Props) => {
   const maalingOverviewStatus = useMaalingOverviewStatus(maaling);
   const { crawlingStatus, testingStatus, publishStatus } =
@@ -124,6 +126,7 @@ const MaalingStatusContainer = ({
           <AlertTimed
             severity={testStatus?.severity}
             message={testStatus.message}
+            clearMessage={clearTestStatus}
           />
         </div>
       )}

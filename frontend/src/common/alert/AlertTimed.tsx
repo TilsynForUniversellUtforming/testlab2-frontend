@@ -7,18 +7,21 @@ export interface AlertProps {
   message: string;
   severity?: Severity;
   timeout?: number;
+  clearMessage: () => void;
 }
 
 const AlertTimed = ({
   severity = 'info',
   message,
   timeout = 5000,
+  clearMessage,
 }: AlertProps) => {
   const [showAlert, setShowAlert] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAlert(false);
+      clearMessage();
     }, timeout);
 
     return () => {
