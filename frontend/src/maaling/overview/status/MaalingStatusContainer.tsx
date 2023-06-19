@@ -40,7 +40,7 @@ const MaalingStatusContainer = ({
             <StatusBadge
               status={maaling.status}
               levels={{
-                primary: [],
+                primary: ['crawling', 'testing'],
                 success: ['testing_ferdig'],
                 danger: [],
               }}
