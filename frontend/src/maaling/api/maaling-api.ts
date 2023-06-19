@@ -5,7 +5,7 @@ import {
   MaalingEdit,
   MaalingInit,
   MaalingStatus,
-  RestartCrawlRequest,
+  RestartRequest,
 } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
@@ -63,15 +63,18 @@ export const fetchMaaling = async (id: number): Promise<Maaling> =>
     method: 'GET',
   }).then((response) => responseToJson(response, 'Kunne ikkje hente måling'));
 
-export const restartCrawling = async (
-  restartCrawlRequest: RestartCrawlRequest
+export const restart = async (
+  restartRequest: RestartRequest
 ): Promise<Maaling> =>
-  fetch(`/api/v1/maalinger/${restartCrawlRequest.maalingId}/restart`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(restartCrawlRequest.loeysingIdList),
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikkje restarte måling')
+  fetch(
+    `/api/v1/maalinger/${restartRequest.maalingId}/restart?process=${restartRequest.process}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(restartRequest.loeysingIdList),
+    }
+  ).then((response) =>
+    responseToJson(response, `Kunne ikkje restarte ${restartRequest.process}`)
   );

@@ -1,16 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
+import AppRoutes, {
+  appRoutes,
+  getFullPath,
+  idPath,
+} from '../../common/appRoutes';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
+import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
-import { fetchMaaling } from '../../maaling/api/maaling-api';
-import { TestResult } from '../../maaling/api/types';
+import { joinStringsToList } from '../../common/util/stringutils';
+import { isNotDefined } from '../../common/util/util';
+import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
+import { RestartRequest, TestResult } from '../../maaling/api/types';
 import { MaalingContext } from '../../maaling/types';
 import { getTestingListColumns } from './TestingListColumns';
 
 const TestingListApp = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const { maaling, contextError, contextLoading, setMaaling }: MaalingContext =
     useOutletContext();
   const [testResult, setTestResult] = useState<TestResult[]>(
@@ -18,15 +28,78 @@ const TestingListApp = () => {
   );
   const [error, setError] = useState<Error | undefined>(contextError);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
-  const { id } = useParams();
+  const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
+
   const testResultatColumns = useMemo(
     () => getTestingListColumns(id ?? ''),
     []
   );
+  const rowActions = useMemo<TableRowAction[]>(() => {
+    if (maaling?.status === 'testing_ferdig') {
+      return [
+        {
+          action: 'restart',
+          modalProps: {
+            title: 'Test på nytt',
+            disabled: testResult.length === 0,
+            message: `Vil du teste ${joinStringsToList(
+              testResult.map((r) => r.loeysing.namn)
+            )} på nytt?`,
+            onConfirm: () => onClickRestart(testRowSelection),
+          },
+        },
+      ];
+    } else {
+      return [];
+    }
+  }, [maaling?.status, testResult, testRowSelection]);
 
   useEffect(() => {
     setTestResult(maaling?.testResult ?? []);
   }, [maaling]);
+
+  const onClickRestart = useCallback((testRowSelection: TestResult[]) => {
+    setError(undefined);
+    const loeysingIdList = testRowSelection.map((cr) => cr.loeysing.id);
+
+    if (typeof maaling === 'undefined') {
+      setError(new Error('Måling finnes ikkje'));
+      return;
+    } else if (isNotDefined(loeysingIdList)) {
+      setError(new Error('Løysing finnes ikkje på måling'));
+      return;
+    } else if (testRowSelection.length === 0) {
+      setError(
+        new Error('Kunne ikkje starte testing på nytt, ingen løysing valgt')
+      );
+      return;
+    }
+
+    const doRestart = async () => {
+      try {
+        const restartCrawlingRequest: RestartRequest = {
+          maalingId: maaling.id,
+          loeysingIdList: { idList: loeysingIdList },
+          process: 'test',
+        };
+
+        const restartedMaaling = await restart(restartCrawlingRequest);
+        setMaaling(restartedMaaling);
+        setTestResult(restartedMaaling.testResult);
+      } catch (e) {
+        setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
+      }
+    };
+
+    doRestart().finally(() => {
+      navigate(
+        getFullPath(appRoutes.MAALING, {
+          id: String(maaling.id),
+          pathParam: idPath,
+        })
+      );
+    });
+  }, []);
 
   const doFetchData = useCallback(async () => {
     try {
@@ -68,9 +141,11 @@ const TestingListApp = () => {
         data: testResult,
         defaultColumns: testResultatColumns,
         loading: contextLoading,
+        onSelectRows: setTestRowSelection,
         onClickRetry: doFetchData,
         displayError: { error },
         loadingStateStatus: refreshing ? 'Utfører testing...' : undefined,
+        rowActions: rowActions,
       }}
     />
   );

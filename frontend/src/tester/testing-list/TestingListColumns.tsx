@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import StatusBadge from '../../common/status-badge/StatusBadge';
+import {
+  HeaderCheckbox,
+  RowCheckbox,
+} from '../../common/table/control/toggle/IndeterminateCheckbox';
 import { TestResult } from '../../maaling/api/types';
 
 /**
@@ -16,6 +20,14 @@ import { TestResult } from '../../maaling/api/types';
 export const getTestingListColumns = (
   maalingId: string
 ): Array<ColumnDef<TestResult>> => [
+  {
+    id: 'testinglist_handling',
+    header: ({ table }) => <HeaderCheckbox table={table} />,
+    cell: ({ row }) => (
+      <RowCheckbox row={row} ariaLabel={`Velg ${row.original.loeysing.namn}`} />
+    ),
+    size: 1,
+  },
   {
     accessorFn: (row) => row.loeysing.namn,
     id: 'url',
