@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import AppRoutes, {
-  appRoutes,
-  getFullPath,
-  idPath,
-} from '../../common/appRoutes';
+import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { TableRowAction } from '../../common/table/types';
@@ -15,7 +11,10 @@ import { isNotDefined } from '../../common/util/util';
 import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
 import { RestartRequest, TestResult } from '../../maaling/api/types';
 import { MaalingContext } from '../../maaling/types';
-import { getTestingListColumns } from './TestingListColumns';
+import {
+  getTestingListColumns,
+  getTestingListColumnsLoading,
+} from './TestingListColumns';
 
 const TestingListApp = () => {
   const { id } = useParams();
@@ -30,10 +29,14 @@ const TestingListApp = () => {
   const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
-  const testResultatColumns = useMemo(
-    () => getTestingListColumns(id ?? ''),
-    []
-  );
+  const testResultatColumns = useMemo(() => {
+    if (maaling?.status === 'testing_ferdig') {
+      return getTestingListColumns(id ?? '');
+    } else {
+      return getTestingListColumnsLoading(id ?? '');
+    }
+  }, [maaling?.status]);
+
   const rowActions = useMemo<TableRowAction[]>(() => {
     if (maaling?.status === 'testing_ferdig') {
       return [
@@ -43,7 +46,7 @@ const TestingListApp = () => {
             title: 'Test på nytt',
             disabled: testResult.length === 0,
             message: `Vil du teste ${joinStringsToList(
-              testResult.map((r) => r.loeysing.namn)
+              testRowSelection.map((r) => r.loeysing.namn)
             )} på nytt?`,
             onConfirm: () => onClickRestart(testRowSelection),
           },
@@ -55,6 +58,7 @@ const TestingListApp = () => {
   }, [maaling?.status, testResult, testRowSelection]);
 
   useEffect(() => {
+    setRefreshing(maaling?.status === 'testing');
     setTestResult(maaling?.testResult ?? []);
   }, [maaling]);
 
@@ -92,12 +96,7 @@ const TestingListApp = () => {
     };
 
     doRestart().finally(() => {
-      navigate(
-        getFullPath(appRoutes.MAALING, {
-          id: String(maaling.id),
-          pathParam: idPath,
-        })
-      );
+      setRefreshing(true);
     });
   }, []);
 
