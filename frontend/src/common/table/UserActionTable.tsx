@@ -6,10 +6,12 @@ import AppTitle, { AppTitleProps } from '../app-title/AppTitle';
 import TableActionButton, {
   TableActionButtonProps,
 } from '../button/TableActionButton';
+import MenuDropdown, { MenuDropdownProps } from '../dropdown/MenuDropdown';
 import TestlabTable, { TestlabTableProps } from './TestlabTable';
 
 export interface Props<T extends object> extends AppTitleProps {
   actionButtons?: TableActionButtonProps[];
+  menuButtons?: MenuDropdownProps;
   tableProps: TestlabTableProps<T>;
 }
 
@@ -19,9 +21,10 @@ export interface Props<T extends object> extends AppTitleProps {
  * @param {object} props - The props for the component.
  * @param {string} props.heading - The heading of the table.
  * @param {string} props.subHeading - The subheading of the table.
- * @param {AppRoute} props.link - Optional link used in the subheading.
+ * @param {AppRoute} props.linkPath - Optional link used in the subheading.
  * @param {TableActionButtonProps[]} props.actionButtons - List of buttons which routes the user to a new page to preform actions, ie. create new elements.
  * @param {TestlabTableProps<T>} props.tableProps - The props for the TestlabTable component.
+ * @param {MenuDropdownProps} props.menuButtons - The props for the menu dropdown component.
  * @returns {JSX.Element} - A JSX.Element representing the StandardTable component.
  */
 const UserActionTable = <T extends object>({
@@ -30,6 +33,7 @@ const UserActionTable = <T extends object>({
   linkPath,
   actionButtons,
   tableProps,
+  menuButtons,
 }: Props<T>) => {
   return (
     <div className="standard-table">
@@ -46,6 +50,9 @@ const UserActionTable = <T extends object>({
             </div>
           ))}
         </div>
+      )}
+      {menuButtons && (
+        <MenuDropdown title={menuButtons.title} actions={menuButtons.actions} />
       )}
       <TestlabTable<T> {...tableProps} />
     </div>

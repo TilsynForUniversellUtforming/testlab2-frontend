@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
+import { joinStringsToList } from '../../common/util/stringutils';
 import { CrawlResultat, Maaling } from '../../maaling/api/types';
 import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
 
@@ -41,9 +42,9 @@ const CrawlingList = ({
           modalProps: {
             title: 'Crawl på nytt',
             disabled: crawlList.length === 0,
-            message: `Vil du crawle på nytt ${crawlRowSelection
-              .map((r) => r.loeysing.namn)
-              .join(',')}?`,
+            message: `Vil du crawle ${joinStringsToList(
+              crawlRowSelection.map((r) => r.loeysing.namn)
+            )} på nytt?`,
             onConfirm: () => onClickRestart(crawlRowSelection),
           },
         },

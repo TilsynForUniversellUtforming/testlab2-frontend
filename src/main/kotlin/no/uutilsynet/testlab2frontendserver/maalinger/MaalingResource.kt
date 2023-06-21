@@ -12,6 +12,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
@@ -141,19 +142,21 @@ class MaalingResource(
   @PutMapping("{maalingId}/restart")
   fun restartCrawlForMaalingLoeysing(
       @PathVariable maalingId: Int,
+      @RequestParam process: RestartProcess,
       @RequestBody loeysingIdList: IdList,
   ): ResponseEntity<out Any> =
       runCatching {
+            val status =
+                if (process == RestartProcess.crawling) MaalingStatus.crawling.status
+                else MaalingStatus.testing.status
+
             restTemplate.put(
                 "${maalingUrl}/${maalingId}/status",
-                HttpEntity(
-                    mapOf(
-                        "status" to MaalingStatus.crawling.status,
-                        "loeysingIdList" to loeysingIdList.idList)))
+                HttpEntity(mapOf("status" to status, "loeysingIdList" to loeysingIdList.idList)))
             getMaaling(maalingId)
           }
           .getOrElse {
-            ResponseEntity.internalServerError().body("Kunne ikkje starte crawling(er) på nytt")
+            ResponseEntity.internalServerError().body("Kunne ikkje starte $process(er) på nytt")
           }
 
   private fun getTestregelListForMaaling(maalingId: Int): List<Testregel> =

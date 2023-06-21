@@ -6,11 +6,11 @@ import ErrorCard from '../../common/error/ErrorCard';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { isNotDefined } from '../../common/util/util';
-import { fetchMaaling, restartCrawling } from '../../maaling/api/maaling-api';
+import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
 import {
   CrawlResultat,
   Maaling,
-  RestartCrawlRequest,
+  RestartRequest,
 } from '../../maaling/api/types';
 import { MaalingContext } from '../../maaling/types';
 import CrawlingList from './CrawlingList';
@@ -94,12 +94,13 @@ const SideutvalApp = () => {
 
     const doRestart = async () => {
       try {
-        const restartCrawlingRequest: RestartCrawlRequest = {
+        const restartCrawlingRequest: RestartRequest = {
           maalingId: maaling.id,
           loeysingIdList: { idList: loeysingIdList },
+          process: 'crawling',
         };
 
-        const restartedMaaling = await restartCrawling(restartCrawlingRequest);
+        const restartedMaaling = await restart(restartCrawlingRequest);
         setMaaling(restartedMaaling);
         setCrawlResult(maalingToCrawlResultat(restartedMaaling));
       } catch (e) {
@@ -110,7 +111,7 @@ const SideutvalApp = () => {
     doRestart().finally(() => {
       setLoading(false);
       navigate(
-        getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+        getFullPath(appRoutes.MAALING, {
           id: String(maaling.id),
           pathParam: idPath,
         })

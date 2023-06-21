@@ -77,7 +77,10 @@ export type IdList = {
   idList: number[];
 };
 
-export type RestartCrawlRequest = {
+export type RestartProcess = 'crawling' | 'test';
+
+export type RestartRequest = {
   maalingId: number;
   loeysingIdList: IdList;
+  process: RestartProcess;
 };
