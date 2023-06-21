@@ -1,6 +1,9 @@
 .link-button-wrapper {
-  width: -moz-fit-content;
   width: fit-content;
+  > button:hover {
+    color: var(--fds-semantic-surface-neutral-subtle-hover);
+    background: none !important;
+  }
   > a {
     text-decoration: none;
   }

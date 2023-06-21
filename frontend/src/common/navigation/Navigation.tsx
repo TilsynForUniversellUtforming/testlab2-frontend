@@ -1,23 +1,34 @@
 import './navigation.scss';
 
-import {
-  Button,
-  ButtonColor,
-  ButtonVariant,
-} from '@digdir/design-system-react';
-import { MenuHamburgerIcon } from '@navikt/aksel-icons';
+import { ButtonColor, ButtonVariant } from '@digdir/design-system-react';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { anna, appRoutes, saksbehandling, testing, utval } from '../appRoutes';
 import TestlabLinkButton from '../button/TestlabLinkButton';
-import LinksDropdown from '../dropdown/LinksDropdown';
+import NavigationLinksDropdown from '../dropdown/NavigationLinksDropdown';
+import { useEffectOnce } from '../hooks/useEffectOnce';
+import HamburgerMenu from './hamburger-menu/HamburgerMenu';
 
 const Navigation = () => {
   const [open, setOpen] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (navRef.current && !navRef.current.contains(event.target as Node)) {
+      setOpen(false);
+    }
+  };
+
+  useEffectOnce(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
 
   return (
-    <div className="navigation">
+    <div className="navigation" ref={navRef}>
       <div className="home">
         <TestlabLinkButton
           route={appRoutes.ROOT}
@@ -26,29 +37,23 @@ const Navigation = () => {
           variant={ButtonVariant.Quiet}
           color={ButtonColor.Inverted}
         />
+        <HamburgerMenu open={open} onClick={() => setOpen((open) => !open)} />
       </div>
       <div className={classNames('navigation__list', { open: open })}>
-        <Button
-          className="hamburger"
-          variant={ButtonVariant.Quiet}
-          color={ButtonColor.Inverted}
-          icon={<MenuHamburgerIcon />}
-          onClick={() => setOpen((open) => !open)}
-          aria-expanded={open}
-          title="Meny for verktøy"
-          aria-label="Meny for verktøy"
-        />
         <div className="navigation__item">
-          <LinksDropdown navn="Utval" routes={utval} />
+          <NavigationLinksDropdown navn="Utval" routes={utval} />
         </div>
         <div className="navigation__item">
-          <LinksDropdown navn="Saksbehandling" routes={saksbehandling} />
+          <NavigationLinksDropdown
+            navn="Saksbehandling"
+            routes={saksbehandling}
+          />
         </div>
         <div className="navigation__item">
-          <LinksDropdown navn="Testing" routes={testing} />
+          <NavigationLinksDropdown navn="Testing" routes={testing} />
         </div>
         <div className="navigation__item">
-          <LinksDropdown navn="Anna" routes={anna} />
+          <NavigationLinksDropdown navn="Anna" routes={anna} />
         </div>
       </div>
     </div>

@@ -127,7 +127,7 @@ const TestingListApp = () => {
   return (
     <UserActionTable<TestResult>
       heading="Testgjennomføring"
-      subHeading={`Måling: ${maaling?.navn}`}
+      subHeading={`Måling: ${maaling?.navn ?? ''}`}
       linkPath={
         maaling
           ? getFullPath(AppRoutes.MAALING, {

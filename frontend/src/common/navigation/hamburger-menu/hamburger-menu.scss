@@ -1,0 +1,42 @@
+.hamburger {
+  .icon-container {
+    position: relative;
+    width: 24px;
+    height: 24px;
+
+    .menu-icon,
+    .x-icon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      transition: opacity 0.2s ease, transform 0.4s ease;
+      width: 24px;
+      height: 24px;
+    }
+
+    .menu-icon {
+      opacity: 1;
+    }
+
+    .x-icon {
+      opacity: 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &.open {
+    .icon-container {
+      .menu-icon {
+        opacity: 0;
+      }
+
+      .x-icon {
+        opacity: 1;
+        transform: rotate(0deg);
+      }
+    }
+  }
+}
