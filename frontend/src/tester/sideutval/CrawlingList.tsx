@@ -70,7 +70,7 @@ const CrawlingList = ({
   return (
     <UserActionTable<CrawlResultat>
       heading="Sideutval"
-      subHeading={`Måling: ${maaling?.navn}`}
+      subHeading={`Måling: ${maaling?.navn ?? ''}`}
       linkPath={
         maaling
           ? getFullPath(AppRoutes.MAALING, {

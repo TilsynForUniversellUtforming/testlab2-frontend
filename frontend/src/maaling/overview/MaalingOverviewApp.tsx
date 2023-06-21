@@ -26,7 +26,7 @@ const MaalingOverviewApp = () => {
 
   return (
     <>
-      <AppTitle heading={maaling?.navn} />
+      <AppTitle heading={maaling?.navn ?? ''} />
       <Tabs
         items={[
           {

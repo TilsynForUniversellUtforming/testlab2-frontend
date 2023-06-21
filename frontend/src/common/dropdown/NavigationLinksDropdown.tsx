@@ -18,27 +18,29 @@ interface Props {
   routes: AppRoute[];
 }
 
-export const LinksDropdown = ({ navn, routes }: Props) => {
+export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
-  const handleShowRoutes = () => {
-    setShow(!show);
-  };
-
   const linksDropdownRef = useRef<HTMLUListElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
       linksDropdownRef.current &&
-      !linksDropdownRef.current.contains(event.target as Node)
+      !linksDropdownRef.current.contains(event.target as Node) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(event.target as Node)
     ) {
       setShow(false);
     }
   };
 
   const handleButtonClick = (route: AppRoute) => {
-    handleShowRoutes();
+    setShow(false);
+    if (route.disabled) {
+      return;
+    }
     navigate(getFullPath(route));
   };
 
@@ -52,34 +54,41 @@ export const LinksDropdown = ({ navn, routes }: Props) => {
   return (
     <div className="dropdown">
       <Button
-        onClick={handleShowRoutes}
+        onClick={() => {
+          setShow((show) => !show);
+        }}
         className="dropdown__button"
         icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
         iconPlacement="right"
         variant={ButtonVariant.Quiet}
         color={ButtonColor.Inverted}
+        ref={buttonRef}
+        aria-haspopup="true"
+        aria-expanded={show}
+        id={navn}
       >
         {navn}
       </Button>
-      {show && (
-        <ul className="dropdown-content links" ref={linksDropdownRef}>
-          {routes.map((route) => (
-            <li className="dropdown-content__item" key={route.navn}>
-              <div className={classNames('link', { disabled: route.disabled })}>
-                <button
-                  onClick={() => handleButtonClick(route)}
-                  className="dropdown-content__button"
-                  disabled={route.disabled}
-                >
-                  {route.navn}
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul
+        className={classNames('dropdown-content links', { show: show })}
+        ref={linksDropdownRef}
+      >
+        {routes.map((route) => (
+          <li className="dropdown-content__item" key={route.navn}>
+            <div className={classNames('link', { disabled: route.disabled })}>
+              <button
+                onClick={() => handleButtonClick(route)}
+                className="dropdown-content__button"
+                aria-disabled={route.disabled}
+              >
+                {route.navn}
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default LinksDropdown;
+export default NavigationLinksDropdown;

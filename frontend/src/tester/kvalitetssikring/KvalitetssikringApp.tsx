@@ -125,7 +125,7 @@ const KvalitetssikringApp = () => {
         heading={`Sideutval ${extractDomain(
           loeysingCrawResultat?.loeysing.url
         )}`}
-        subHeading={`Måling: ${maaling?.navn}`}
+        subHeading={`Måling: ${maaling?.navn ?? ''}`}
         linkPath={
           maaling
             ? getFullPath(AppRoutes.MAALING, {
