@@ -5,7 +5,7 @@ import {
   ButtonColor,
   ButtonVariant,
 } from '@digdir/design-system-react';
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons';
+import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -57,8 +57,12 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
         onClick={() => {
           setShow((show) => !show);
         }}
-        className="dropdown__button"
-        icon={show ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        className={classNames('dropdown__button', { show: show })}
+        icon={
+          <>
+            <ChevronDownIcon className="chevron-icon" />
+          </>
+        }
         iconPlacement="right"
         variant={ButtonVariant.Quiet}
         color={ButtonColor.Inverted}
