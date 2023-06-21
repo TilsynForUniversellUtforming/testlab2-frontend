@@ -15,11 +15,11 @@ import toError from '../../common/error/util';
 import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import TestlabTable from '../../common/table/TestlabTable';
 import { extractDomain } from '../../common/util/stringutils';
-import { restartCrawling } from '../../maaling/api/maaling-api';
+import { restart } from '../../maaling/api/maaling-api';
 import {
   CrawlResultat,
   Maaling,
-  RestartCrawlRequest,
+  RestartRequest,
 } from '../../maaling/api/types';
 import { CrawlUrl, MaalingContext } from '../../maaling/types';
 
@@ -61,14 +61,13 @@ const KvalitetssikringApp = () => {
     const fetchData = async () => {
       try {
         if (maalingId && loeysingId) {
-          const restartCrawlingRequest: RestartCrawlRequest = {
+          const restartCrawlingRequest: RestartRequest = {
             maalingId: Number(maalingId),
             loeysingIdList: { idList: [Number(loeysingId)] },
+            process: 'crawling',
           };
 
-          const restartedMaaling = await restartCrawling(
-            restartCrawlingRequest
-          );
+          const restartedMaaling = await restart(restartCrawlingRequest);
           setMaaling(restartedMaaling);
 
           navigate(

@@ -5,6 +5,11 @@
     padding-bottom: 1rem;
   }
 
+  a {
+    display: block;
+    width: fit-content;
+  }
+
   &__sub-heading {
     color: var(--fds-semantic-text-neutral-subtle);
   }
