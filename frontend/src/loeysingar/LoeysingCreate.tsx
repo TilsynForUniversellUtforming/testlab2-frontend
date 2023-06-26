@@ -23,9 +23,14 @@ const LoeysingCreate = () => {
       setContextError(undefined);
 
       if (loeysingInit) {
+        const orgnummerWithoutWhitespace = loeysingInit.orgnummer.replace(
+          /\s/g,
+          ''
+        );
         const loeysing: LoeysingInit = {
           namn: loeysingInit.namn,
           url: loeysingInit.url,
+          orgnummer: orgnummerWithoutWhitespace,
         };
 
         try {

@@ -30,10 +30,7 @@ class LoeysingResource(
   val loeysingUrl = "${testingApiProperties.url}/v1/loeysing"
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
-  data class CreateLoeysingDTO(
-      val namn: String,
-      val url: String,
-  )
+  data class CreateLoeysingDTO(val namn: String, val url: String, val orgnummer: String)
 
   data class DeleteLoeysingDTO(val loeysingIdList: List<Int>)
 
@@ -60,7 +57,8 @@ class LoeysingResource(
   fun createLoeysing(@RequestBody dto: CreateLoeysingDTO): ResponseEntity<out Any> =
       runCatching {
             val location =
-                restTemplate.postForLocation(loeysingUrl, dto, Int::class.java)
+                restTemplate.postForLocation(
+                    "${testingApiProperties.url}/v2/loeysing", dto, Int::class.java)
                     ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
             val createdLoeysing =
                 restTemplate.getForObject(
