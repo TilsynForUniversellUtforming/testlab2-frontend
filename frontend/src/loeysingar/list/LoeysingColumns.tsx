@@ -44,6 +44,12 @@ export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
     cell: (info) => info.getValue(),
     header: () => <span>URL</span>,
   },
+  {
+    accessorFn: (row) => row.orgnummer,
+    id: 'orgnummer',
+    cell: (info) => info.getValue(),
+    header: () => <span>Organisasjonsnummer</span>,
+  },
 ];
 
 /**
@@ -72,5 +78,11 @@ export const getLoeysingColumnsReadOnly = (): Array<ColumnDef<Loeysing>> => [
     id: 'url',
     cell: (info) => info.getValue(),
     header: () => <span>URL</span>,
+  },
+  {
+    accessorFn: (row) => row.orgnummer,
+    id: 'orgnummer',
+    cell: (info) => info.getValue(),
+    header: () => <span>Organisasjonsnummer</span>,
   },
 ];
