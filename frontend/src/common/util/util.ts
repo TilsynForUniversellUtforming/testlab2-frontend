@@ -41,21 +41,21 @@ export const isUrl = (url: string) => {
 };
 
 export function isOrgnummer(s: string): boolean {
-  const noWhitespace = s.replace(/\s/g, '');
-  if (noWhitespace.length !== 9) {
+  const utenMellomrom = s.replace(/\s/g, '');
+  if (utenMellomrom.length !== 9) {
     return false;
   }
 
-  const siffer = noWhitespace.split('').map((c) => parseInt(c));
-  if (siffer.some((n) => isNaN(n))) {
+  const sifferListe = utenMellomrom.split('').map((c) => parseInt(c));
+  if (sifferListe.some((n) => isNaN(n))) {
     return false;
   }
 
   const vekter = [3, 2, 7, 6, 5, 4, 3, 2];
-  const sum = siffer
+  const sum = sifferListe
     .slice(0, 8)
     .reduce((acc, curr, i) => acc + curr * vekter[i], 0);
   const rest = sum % 11;
   const kontrollsiffer = rest === 0 ? 0 : 11 - rest;
-  return kontrollsiffer === siffer[8];
+  return kontrollsiffer === sifferListe[8];
 }
