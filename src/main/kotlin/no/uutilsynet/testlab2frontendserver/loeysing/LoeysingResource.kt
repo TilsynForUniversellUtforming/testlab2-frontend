@@ -27,7 +27,8 @@ class LoeysingResource(
 
   val logger = LoggerFactory.getLogger(LoeysingResource::class.java)
 
-  val loeysingUrl = "${testingApiProperties.url}/v1/loeysing"
+  val loeysingV1Url = "${testingApiProperties.url}/v1/loeysing"
+  val loeysingV2Url = "${testingApiProperties.url}/v2/loeysing"
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
 
   data class CreateLoeysingDTO(val namn: String, val url: String, val orgnummer: String)
@@ -37,7 +38,7 @@ class LoeysingResource(
   @GetMapping("{id}")
   fun getLoeysing(@PathVariable id: Int): ResponseEntity<Loeysing> =
       try {
-        val url = "$loeysingUrl/$id"
+        val url = "$loeysingV1Url/$id"
         restTemplate.getForObject(url)
       } catch (e: Error) {
         logger.error("Klarte ikkje å hente løysing med id $id", e)
@@ -47,7 +48,7 @@ class LoeysingResource(
   @GetMapping
   fun getLoeysingList(): List<Loeysing> =
       try {
-        restTemplate.getList(loeysingUrl)
+        restTemplate.getList(loeysingV1Url)
       } catch (e: Error) {
         logger.error("Klarte ikkje å hente løysingar", e)
         throw RuntimeException("Klarte ikkje å hente løysingar")
@@ -57,8 +58,7 @@ class LoeysingResource(
   fun createLoeysing(@RequestBody dto: CreateLoeysingDTO): ResponseEntity<out Any> =
       runCatching {
             val location =
-                restTemplate.postForLocation(
-                    "${testingApiProperties.url}/v2/loeysing", dto, Int::class.java)
+                restTemplate.postForLocation(loeysingV2Url, dto, Int::class.java)
                     ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
             val createdLoeysing =
                 restTemplate.getForObject(
@@ -74,7 +74,7 @@ class LoeysingResource(
   @PutMapping
   fun updateLoeysing(@RequestBody loeysing: Loeysing): ResponseEntity<out Any> =
       runCatching {
-            restTemplate.put(loeysingUrl, loeysing, Int::class.java)
+            restTemplate.put(loeysingV2Url, loeysing, Int::class.java)
             ResponseEntity.ok(getLoeysingList())
           }
           .getOrElse {
@@ -86,7 +86,7 @@ class LoeysingResource(
   @DeleteMapping
   fun deleteLoeysingList(@RequestBody dto: DeleteLoeysingDTO): ResponseEntity<out Any> {
     for (id in dto.loeysingIdList) {
-      runCatching { restTemplate.delete("$loeysingUrl/$id") }
+      runCatching { restTemplate.delete("$loeysingV1Url/$id") }
           .getOrElse {
             logger.error("Kunne ikkje slette løysing med id $id", it)
             return when (it) {
