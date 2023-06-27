@@ -17,6 +17,7 @@ const LoeysingForm = ({ loeysing, heading, subHeading, onSubmit }: Props) => {
     defaultValues: {
       namn: loeysing?.namn ?? '',
       url: loeysing?.url ?? '',
+      orgnummer: loeysing?.orgnummer ?? '',
     },
   });
 
