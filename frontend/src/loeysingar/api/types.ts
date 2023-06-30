@@ -10,3 +10,9 @@ export type LoeysingInit = {
   url: string;
   orgnummer: string;
 };
+
+export type Utval = {
+  id: number;
+  namn: string;
+  loeysingar: Loeysing[];
+};

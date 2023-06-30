@@ -4,7 +4,8 @@ import { Outlet, useParams } from 'react-router-dom';
 import toError from '../common/error/util';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
-import { Loeysing } from '../loeysingar/api/types';
+import { Loeysing, Utval } from '../loeysingar/api/types';
+import { fetchUtvalList } from '../loeysingar/api/utval-api';
 import { fetchMaaling } from '../maaling/api/maaling-api';
 import { Maaling } from '../maaling/api/types';
 import { listRegelsett } from '../testreglar/api/testreglar-api';
@@ -22,6 +23,7 @@ const SakApp = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
+  const [utvalList, setUtvalList] = useState<Utval[]>([]);
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
@@ -45,6 +47,15 @@ const SakApp = () => {
       setLoeysingList(loeysingList);
     } catch (e) {
       setError(toError(e, 'Kunne ikkje hente løysingar'));
+    }
+  }, []);
+
+  const handleFetchUtvalList = useCallback(async () => {
+    try {
+      const utvalList = await fetchUtvalList();
+      setUtvalList(utvalList);
+    } catch (e) {
+      setError(toError(e, 'Kunne ikkje hente lista med utval'));
     }
   }, []);
 
@@ -72,6 +83,8 @@ const SakApp = () => {
       }
 
       await handleFetchLoeysingList();
+
+      await handleFetchUtvalList();
 
       await handleFetchRegelsettList();
 
@@ -106,6 +119,7 @@ const SakApp = () => {
     setMaaling: handleSetMaaling,
     refresh: doFetchData,
     loeysingList: loeysingList,
+    utvalList: utvalList,
     verksemdList: verksemdList,
     refreshLoeysing: handleFetchLoeysingList,
     regelsettList: regelsettList,

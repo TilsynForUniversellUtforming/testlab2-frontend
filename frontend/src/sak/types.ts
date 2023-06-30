@@ -1,6 +1,6 @@
 import { AppRoute } from '../common/appRoutes';
 import { AppContext } from '../common/types';
-import { Loeysing } from '../loeysingar/api/types';
+import { Loeysing, Utval } from '../loeysingar/api/types';
 import { Maaling } from '../maaling/api/types';
 import { Testregel, TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
@@ -15,6 +15,7 @@ export type LoeysingVerksemd = {
 export interface SakContext extends AppContext {
   regelsettList: TestRegelsett[];
   loeysingList: Loeysing[];
+  utvalList: Utval[];
   verksemdList: Verksemd[];
   advisors: User[];
   maaling?: Maaling;
