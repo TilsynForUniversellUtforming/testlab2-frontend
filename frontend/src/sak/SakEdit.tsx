@@ -20,6 +20,7 @@ const SakEdit = () => {
     maaling,
     regelsettList,
     loeysingList,
+    utvalList,
     verksemdList,
     setMaaling,
     contextLoading,
@@ -107,6 +108,7 @@ const SakEdit = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        utvalList={utvalList}
         verksemdList={verksemdList}
         advisors={advisors}
       />
