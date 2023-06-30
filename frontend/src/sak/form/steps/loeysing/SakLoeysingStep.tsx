@@ -2,18 +2,21 @@ import {
   Button,
   ButtonColor,
   ErrorMessage,
+  FieldSet,
+  RadioGroup,
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
+import useFeatureToggles from '../../../../common/features/hooks/useFeatureToggles';
 import useValidate from '../../../../common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import TestlabTable from '../../../../common/table/TestlabTable';
 import { joinStringsToList } from '../../../../common/util/stringutils';
-import { Loeysing } from '../../../../loeysingar/api/types';
+import { Loeysing, Utval } from '../../../../loeysingar/api/types';
 import { Verksemd } from '../../../../verksemder/api/types';
 import {
   LoeysingVerksemd,
@@ -28,6 +31,7 @@ interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
   loeysingList: Loeysing[];
+  utvalList: Utval[];
   verksemdList: Verksemd[];
 }
 
@@ -38,6 +42,7 @@ const SakLoeysingStep = ({
   loading,
   onSubmit,
   loeysingList,
+  utvalList,
   verksemdList,
 }: Props) => {
   const { refreshLoeysing }: SakContext = useOutletContext();
@@ -46,10 +51,18 @@ const SakLoeysingStep = ({
     defaultValues: maalingFormState,
   });
 
+  const [featureUtval, setFeatureUtval] = useState<boolean>(false);
+  useFeatureToggles(
+    'utval',
+    () => setFeatureUtval(true),
+    (loading) => loading
+  );
+
   const { onClickBack } = formStepState;
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
+  const [useUtval, setUseUtval] = useState<boolean>(false);
 
   const { control, setValue, getValues, setError, clearErrors, formState } =
     formMethods;
@@ -172,58 +185,90 @@ const SakLoeysingStep = ({
       formMethods={formMethods}
       buttonStep={buttonStep}
     >
-      <div className="sak-loeysing">
-        <div className="sak-loeysing__input-wrapper">
-          <div className="sak-loeysing__input-select">
-            <Select
-              options={loeysingOptions}
-              label="Løysing"
-              onChange={setLoeysingId}
-              value={loeysingId}
-            />
-          </div>
-          <div className="sak-loeysing__input-select">
-            <Select
-              options={verksemdOptions}
-              label="Ansvarlig verksemd (i saka)"
-              onChange={setVerksemdId}
-              value={verksemdId}
-            />
-          </div>
-          <Button
-            title="Legg til"
-            color={ButtonColor.Success}
-            onClick={onClickAdd}
-          >
-            Legg til
-          </Button>
-        </div>
-        <div className="sak-loeysing__table">
-          <TestlabTable<LoeysingVerksemd>
-            data={selection}
-            defaultColumns={loeysingColumns}
-            displayError={{ error }}
-            onClickRetry={refreshLoeysing}
-            loading={loading}
-            onSelectRows={handleSelectRow}
-            customStyle={{ small: true }}
-            rowActions={[
-              {
-                action: 'delete',
-                modalProps: {
-                  title: 'Fjern rad',
-                  disabled: rowSelection.length === 0,
-                  message: `Fjern ${joinStringsToList(
-                    rowSelection.map((rs) => rs.loeysing.namn)
-                  )}?`,
-                  onConfirm: onClickRemove,
-                },
-              },
+      {featureUtval && (
+        <FieldSet
+          legend="Vil du bruke eit ferdig utval?"
+          description="Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."
+          className="sak-loeysing__utval"
+        >
+          <RadioGroup
+            name="useUtval"
+            items={[
+              { label: 'Bruk eit utval', value: 'utval' },
+              { label: 'Velg løysingar sjølv', value: 'manuell' },
             ]}
+            variant="horizontal"
+            value={useUtval ? 'utval' : 'manuell'}
+            onChange={(value) => setUseUtval(value === 'utval')}
           />
-          {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+        </FieldSet>
+      )}
+
+      {useUtval && (
+        <FieldSet legend="Velg eit utval">
+          <RadioGroup
+            name="chooseUtval"
+            items={utvalList.map((u) => ({
+              label: u.namn,
+              value: String(u.id),
+            }))}
+          />
+        </FieldSet>
+      )}
+      {!useUtval && (
+        <div className="sak-loeysing">
+          <div className="sak-loeysing__input-wrapper">
+            <div className="sak-loeysing__input-select">
+              <Select
+                options={loeysingOptions}
+                label="Løysing"
+                onChange={setLoeysingId}
+                value={loeysingId}
+              />
+            </div>
+            <div className="sak-loeysing__input-select">
+              <Select
+                options={verksemdOptions}
+                label="Ansvarlig verksemd (i saka)"
+                onChange={setVerksemdId}
+                value={verksemdId}
+              />
+            </div>
+            <Button
+              title="Legg til"
+              color={ButtonColor.Success}
+              onClick={onClickAdd}
+            >
+              Legg til
+            </Button>
+          </div>
+          <div className="sak-loeysing__table">
+            <TestlabTable<LoeysingVerksemd>
+              data={selection}
+              defaultColumns={loeysingColumns}
+              displayError={{ error }}
+              onClickRetry={refreshLoeysing}
+              loading={loading}
+              onSelectRows={handleSelectRow}
+              customStyle={{ small: true }}
+              rowActions={[
+                {
+                  action: 'delete',
+                  modalProps: {
+                    title: 'Fjern rad',
+                    disabled: rowSelection.length === 0,
+                    message: `Fjern ${joinStringsToList(
+                      rowSelection.map((rs) => rs.loeysing.namn)
+                    )}?`,
+                    onConfirm: onClickRemove,
+                  },
+                },
+              ]}
+            />
+            {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+          </div>
         </div>
-      </div>
+      )}
     </SakStepFormWrapper>
   );
 };
