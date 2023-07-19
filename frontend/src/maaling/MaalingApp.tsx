@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import ErrorCard from '../common/error/ErrorCard';
 import toError from '../common/error/util';
-import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
+import fetchFeatureToggles from '../common/features/hooks/fetchFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
@@ -13,7 +13,11 @@ import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
 import { Verksemd } from '../verksemder/api/types';
 import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
-import { fetchMaaling, updateMaalingStatus } from './api/maaling-api';
+import {
+  fetchMaaling,
+  fetchMaalingList,
+  updateMaalingStatus,
+} from './api/maaling-api';
 import { Maaling } from './api/types';
 import { MaalingContext, MaalingTestStatus } from './types';
 
@@ -31,7 +35,12 @@ const MaalingApp = () => {
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
-  const [showMaalinger, setShowMaalinger] = useState(false);
+  const [showMaalinger, setShowMaalinger] = useState(true);
+  const [maalingList, setMaalingList] = useState<Maaling[]>([]);
+
+  const handleSetMaalingList = useCallback((maalingList: Maaling[]) => {
+    setMaalingList(maalingList);
+  }, []);
 
   const handleSetMaaling = useCallback((maaling: Maaling) => {
     setMaaling(maaling);
@@ -120,55 +129,107 @@ const MaalingApp = () => {
     });
   };
 
-  const doFetchData = useCallback(() => {
+  const doFetchMaaling = useCallback(async () => {
     setLoading(true);
     setError(undefined);
 
-    const fetchData = async () => {
-      if (id) {
-        try {
-          const maaling = await fetchMaaling(Number(id));
-          setMaaling(maaling);
-        } catch (e) {
-          setError(toError(e, 'Måling finnes ikkje'));
-          return;
-        }
-      }
-
+    if (id) {
       try {
-        const loeysingList = await fetchLoeysingList();
-        setLoeysingList(loeysingList);
+        return await fetchMaaling(Number(id));
       } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente løysingar'));
+        setError(toError(e, 'Kunne ikkje hente måling'));
         return;
       }
+    } else {
+      setError(new Error('Måling ikkje funnet'));
+    }
+  }, [id]);
 
-      try {
-        const regelsett = await listRegelsett();
-        setRegelsettList(regelsett);
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente regelsett'));
-        return;
-      }
+  const doFetchData = useCallback(async () => {
+    setLoading(true);
+    setError(undefined);
 
+    try {
+      const maalingList = await fetchMaalingList();
+      const loeysingList = await fetchLoeysingList();
+      const regelsett = await listRegelsett();
       const advisors = await getAdvisors_dummy();
-      setAdvisorList(advisors);
-
       const verksemdList = await getVerksemdList_dummy();
-      setVerksemdList(verksemdList);
-    };
-
-    fetchData().finally(() => setLoading(false));
-  }, []);
-
-  const fetchMaalinger = useCallback(() => {
-    doFetchData();
-    setShowMaalinger(true);
+      return { maalingList, loeysingList, regelsett, advisors, verksemdList };
+    } catch (e) {
+      setError(toError(e, 'Kan ikkje hente data'));
+      return;
+    }
   }, []);
 
   useEffectOnce(() => {
-    useFeatureToggles('maalinger', fetchMaalinger, handleLoading);
+    fetchFeatureToggles('maalinger', handleLoading).then(() => {
+      doFetchData()
+        .then((data) => {
+          if (data) {
+            if (data?.maalingList) {
+              setMaalingList(data.maalingList);
+            } else {
+              setError(new Error('Kunne ikkje hente liste med målingar'));
+            }
+
+            if (data?.loeysingList) {
+              setLoeysingList(data.loeysingList);
+            } else {
+              setError(new Error('Kunne ikkje hente loeysingar'));
+            }
+
+            if (data?.regelsett) {
+              setRegelsettList(data.regelsett);
+            } else {
+              setError(new Error('Kunne ikkje hente regelsett'));
+            }
+
+            if (data?.advisors) {
+              setAdvisorList(data.advisors);
+            } else {
+              setError(new Error('Kunne ikkje hente rådgivere'));
+            }
+
+            if (data?.verksemdList) {
+              setVerksemdList(data.verksemdList);
+            } else {
+              setError(new Error('Kunne ikkje hente verksemder'));
+            }
+
+            setShowMaalinger(true);
+            setLoading(false);
+          } else {
+            setError(new Error('Kunne ikkje hente målingar'));
+            setLoading(false);
+          }
+        })
+        .catch((e) => {
+          setError(toError(e, 'Kunne ikkje hente målingar'));
+          setLoading(false);
+        });
+    });
   });
+
+  useEffect(() => {
+    if (!loading && !error && id && showMaalinger) {
+      doFetchMaaling()
+        .then((data) => {
+          if (data) {
+            setMaaling(data);
+          } else {
+            setError(new Error('Kunne ikkje hente måling'));
+          }
+
+          setLoading(false);
+          setShowMaalinger(true);
+        })
+        .catch((e) => {
+          setError(toError(e, 'Kunne ikkje hente data'));
+          setLoading(false);
+        });
+    }
+  }, [id, error, maalingList]);
 
   const maalingContext: MaalingContext = {
     contextError: error,
@@ -177,7 +238,10 @@ const MaalingApp = () => {
     setContextLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
-    refresh: fetchMaalinger,
+    refreshMaaling: doFetchMaaling,
+    refresh: doFetchData,
+    maalingList: maalingList,
+    setMaalingList: handleSetMaalingList,
     loeysingList: loeysingList,
     verksemdList: verksemdList,
     regelsettList: regelsettList,

@@ -35,13 +35,11 @@ interface IRoutes {
   KRAV_CREATE: AppRoute;
   KRAV_EDIT: AppRoute;
 
-  SAK_LIST: AppRoute;
   SAK_ROOT: AppRoute;
   SAK: AppRoute;
   SAK_CREATE: AppRoute;
   SAK_EDIT: AppRoute;
 
-  MAALING_LIST: AppRoute;
   MAALING_ROOT: AppRoute;
   MAALING: AppRoute;
   MAALING_CREATE: AppRoute;
@@ -82,12 +80,8 @@ const ROOT = {
   path: '/',
 };
 const SAK_ROOT = {
-  navn: 'Sak',
-  path: 'sak',
-};
-const SAK_LIST = {
   navn: 'Saker',
-  path: 'saker',
+  path: 'sak',
   imgSrc: sakerImg,
 };
 const SAK = {
@@ -107,12 +101,8 @@ const SAK_EDIT = {
   parentRoute: SAK_ROOT,
 };
 const MAALING_ROOT = {
-  navn: 'Måling',
+  navn: 'Målinger',
   path: 'maaling',
-};
-const MAALING_LIST = {
-  navn: 'Målingar',
-  path: 'maalinger',
   imgSrc: maalingImg,
 };
 const MAALING = {
@@ -239,26 +229,26 @@ const TEST = {
 
 const TEST_SIDEUTVAL_LIST = {
   navn: 'Sideutval',
-  path: ':id/sideutval',
-  parentRoute: MAALING_ROOT,
+  path: 'sideutval',
+  parentRoute: MAALING,
 };
 
 const TEST_CRAWLING_RESULT_LIST = {
   navn: 'Kvalitetssikring',
-  path: ':id/sideutval/:loeysingId',
-  parentRoute: MAALING_ROOT,
+  path: 'sideutval/:loeysingId',
+  parentRoute: MAALING,
 };
 
 const TEST_TESTING_LIST = {
   navn: 'Tester',
-  path: ':id/testing',
-  parentRoute: MAALING_ROOT,
+  path: 'testing',
+  parentRoute: MAALING,
 };
 
 const TEST_RESULT_LIST = {
   navn: 'Resultat',
-  path: ':id/resultat/:loeysingId',
-  parentRoute: MAALING_ROOT,
+  path: 'testing/:loeysingId',
+  parentRoute: MAALING,
 };
 
 const DISKUSJON_ROOT = {
@@ -334,13 +324,11 @@ export const appRoutes: IRoutes = {
   LOEYSING_CREATE: LOEYSING_CREATE,
   LOEYSING_EDIT: LOEYSING_EDIT,
 
-  SAK_LIST: SAK_LIST,
   SAK_ROOT: SAK_ROOT,
   SAK: SAK,
   SAK_EDIT: SAK_EDIT,
   SAK_CREATE: SAK_CREATE,
 
-  MAALING_LIST: MAALING_LIST,
   MAALING_ROOT: MAALING_ROOT,
   MAALING: MAALING,
   MAALING_EDIT: MAALING_EDIT,
@@ -371,8 +359,8 @@ export const utval = [
 
 export const saksbehandling = [
   appRoutes.MINE_SAKER_ROOT,
-  appRoutes.SAK_LIST,
-  appRoutes.MAALING_LIST,
+  appRoutes.SAK_ROOT,
+  appRoutes.MAALING_ROOT,
 ];
 
 export const testing = [appRoutes.MINE_TESTAR_ROOT, appRoutes.RESULTAT_ROOT];
@@ -392,9 +380,7 @@ export const getFullPath = (
     return '..';
   }
 
-  let path = route.parentRoute?.path
-    ? [route.parentRoute.path, route.path].join('/')
-    : route.path;
+  let path = getPathFromRoot(route);
 
   if (ids) {
     for (const { id, pathParam } of ids) {
@@ -403,6 +389,14 @@ export const getFullPath = (
   }
 
   return `/${path}`;
+};
+
+const getPathFromRoot = (route: AppRoute): string => {
+  if (route.parentRoute) {
+    return [getPathFromRoot(route.parentRoute), route.path].join('/');
+  } else {
+    return route.path;
+  }
 };
 
 export default appRoutes;

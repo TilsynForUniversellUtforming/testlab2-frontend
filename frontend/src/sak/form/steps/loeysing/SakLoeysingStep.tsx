@@ -11,7 +11,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import useFeatureToggles from '../../../../common/features/hooks/useFeatureToggles';
+import fetchFeatureToggles from '../../../../common/features/hooks/fetchFeatureToggles';
 import useValidate from '../../../../common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
 import TestlabTable from '../../../../common/table/TestlabTable';
@@ -52,10 +52,8 @@ const SakLoeysingStep = ({
   });
 
   const [featureUtval, setFeatureUtval] = useState<boolean>(false);
-  useFeatureToggles(
-    'utval',
-    () => setFeatureUtval(true),
-    (loading) => loading
+  fetchFeatureToggles('utval', (loading) => loading).then(() =>
+    setFeatureUtval(true)
   );
 
   const { onClickBack } = formStepState;
