@@ -6,6 +6,9 @@ import { Verksemd } from '../verksemder/api/types';
 import { Maaling } from './api/types';
 
 export interface MaalingContext extends AppContext {
+  refreshMaaling: () => void;
+  maalingList: Maaling[];
+  setMaalingList: (maalingList: Maaling[]) => void;
   maaling?: Maaling;
   setMaaling: (maaling: Maaling) => void;
   loeysingList: Loeysing[];

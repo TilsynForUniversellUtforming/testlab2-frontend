@@ -64,7 +64,7 @@ const SakTestreglarStep = ({
     }));
 
     regelsettList.forEach((rs) =>
-      options.push({
+      options.unshift({
         label: `Regelsett '${rs.namn}'`,
         value: `${regelsettPrefix}${String(rs.id)}`,
       })
