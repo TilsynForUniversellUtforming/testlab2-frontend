@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
@@ -31,9 +36,10 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
 const SideutvalApp = () => {
   const navigate = useNavigate();
 
-  const { maaling, contextError, contextLoading, setMaaling }: MaalingContext =
-    useOutletContext();
-  const { id } = useParams();
+  const maalingContext: MaalingContext = useOutletContext();
+
+  const { maaling, contextError, contextLoading, setMaaling } = maalingContext;
+  const { id, loeysingId } = useParams();
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
     maalingToCrawlResultat(maaling)
   );
@@ -124,6 +130,10 @@ const SideutvalApp = () => {
     typeof id === 'undefined'
   ) {
     return <ErrorCard error={new Error('Ingen måling funnet')} />;
+  }
+
+  if (loeysingId) {
+    return <Outlet context={maalingContext} />;
   }
 
   return (

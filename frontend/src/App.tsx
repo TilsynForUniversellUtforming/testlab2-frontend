@@ -120,21 +120,27 @@ const App = () => {
                   path: appRoutes.TEST_SIDEUTVAL_LIST.path,
                   element: <SideutvalApp />,
                   handle: { name: appRoutes.TEST_SIDEUTVAL_LIST.navn },
-                },
-                {
-                  path: appRoutes.TEST_CRAWLING_RESULT_LIST.path,
-                  element: <KvalitetssikringApp />,
-                  handle: { name: appRoutes.TEST_CRAWLING_RESULT_LIST.navn },
+                  children: [
+                    {
+                      path: appRoutes.TEST_CRAWLING_RESULT_LIST.path,
+                      element: <KvalitetssikringApp />,
+                      handle: {
+                        name: appRoutes.TEST_CRAWLING_RESULT_LIST.navn,
+                      },
+                    },
+                  ],
                 },
                 {
                   path: appRoutes.TEST_TESTING_LIST.path,
                   element: <TestingListApp />,
                   handle: { name: appRoutes.TEST_TESTING_LIST.navn },
-                },
-                {
-                  path: appRoutes.TEST_RESULT_LIST.path,
-                  element: <TestResultListApp />,
-                  handle: { name: appRoutes.TEST_RESULT_LIST.navn },
+                  children: [
+                    {
+                      path: appRoutes.TEST_RESULT_LIST.path,
+                      element: <TestResultListApp />,
+                      handle: { name: appRoutes.TEST_RESULT_LIST.navn },
+                    },
+                  ],
                 },
               ],
             },

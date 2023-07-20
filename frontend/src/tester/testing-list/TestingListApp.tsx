@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { Outlet, useOutletContext, useParams } from 'react-router-dom';
 
 import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import toError from '../../common/error/util';
@@ -17,11 +17,12 @@ import {
 } from './TestingListColumns';
 
 const TestingListApp = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id, loeysingId } = useParams();
+
+  const maalingContext: MaalingContext = useOutletContext();
 
   const { maaling, contextError, contextLoading, setMaaling }: MaalingContext =
-    useOutletContext();
+    maalingContext;
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
@@ -123,6 +124,10 @@ const TestingListApp = () => {
   }, []);
 
   useInterval(() => doFetchData(), refreshing ? 15000 : null);
+
+  if (loeysingId) {
+    return <Outlet context={maalingContext} />;
+  }
 
   return (
     <UserActionTable<TestResult>
