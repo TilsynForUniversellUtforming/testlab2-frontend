@@ -8,15 +8,21 @@ import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
 import { joinStringsToList } from '../../common/util/stringutils';
 import { isNotDefined } from '../../common/util/util';
-import { fetchMaalingWithAggeration } from '../../maaling/api/maaling-api';
-import { restart } from '../../maaling/api/maaling-api';
+import {
+  fetchMaalingWithAggeration,
+  restart,
+} from '../../maaling/api/maaling-api';
 import { RestartRequest, TestResult } from '../../maaling/api/types';
-import { TesterContext } from '../types';
-import { getTestingListColumns } from './TestingListColumns';
+import { MaalingContext } from '../../maaling/types';
+import {
+  getTestingListColumns,
+  getTestingListColumnsLoading,
+} from './TestingListColumns';
 
 const TestingListApp = () => {
-  const { maaling, contextError, contextLoading }: TesterContext =
-    useOutletContext();
+  const maalingContext: MaalingContext = useOutletContext();
+
+  const { maaling, setMaaling, contextError, contextLoading } = maalingContext;
   const { id: maalingId, loeysingId } = useParams();
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
@@ -27,9 +33,9 @@ const TestingListApp = () => {
 
   const testResultatColumns = useMemo(() => {
     if (maaling?.status === 'testing_ferdig') {
-      return getTestingListColumns(id ?? '');
+      return getTestingListColumns(maalingId ?? '');
     } else {
-      return getTestingListColumnsLoading(id ?? '');
+      return getTestingListColumnsLoading(maalingId ?? '');
     }
   }, [maaling?.status]);
 

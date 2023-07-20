@@ -15,8 +15,8 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
@@ -80,7 +80,8 @@ class MaalingResource(
                   emptyList()
                 }
 
-            maalingDTO.toMaaling(crawlResultat, aggregatedTestresult)
+            maalingDTO.toMaaling(
+                crawlResultat, getTestregelListForMaaling(maalingDTO.id), aggregatedTestresult)
           }
         }
 
