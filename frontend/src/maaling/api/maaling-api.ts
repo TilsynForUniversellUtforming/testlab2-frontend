@@ -63,13 +63,6 @@ export const fetchMaaling = async (id: number): Promise<Maaling> =>
     method: 'GET',
   }).then((response) => responseToJson(response, 'Kunne ikkje hente måling'));
 
-export const fetchMaalingWithAggeration = async (
-  id: number
-): Promise<Maaling> =>
-  fetch(`/api/v1/maalinger/${id}?aggregated=true`, {
-    method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikke hente måling'));
-
 export const restart = async (
   restartRequest: RestartRequest
 ): Promise<Maaling> =>

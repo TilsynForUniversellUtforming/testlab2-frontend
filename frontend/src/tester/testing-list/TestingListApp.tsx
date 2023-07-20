@@ -8,10 +8,7 @@ import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
 import { joinStringsToList } from '../../common/util/stringutils';
 import { isNotDefined } from '../../common/util/util';
-import {
-  fetchMaalingWithAggeration,
-  restart,
-} from '../../maaling/api/maaling-api';
+import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
 import { RestartRequest, TestResult } from '../../maaling/api/types';
 import { MaalingContext } from '../../maaling/types';
 import {
@@ -110,7 +107,7 @@ const TestingListApp = () => {
         maaling &&
         maaling.status === 'testing'
       ) {
-        const refreshedMaaling = await fetchMaalingWithAggeration(maaling.id);
+        const refreshedMaaling = await fetchMaaling(maaling.id);
         if (!refreshedMaaling) {
           setError(new Error('Fann ikkje måling'));
         }

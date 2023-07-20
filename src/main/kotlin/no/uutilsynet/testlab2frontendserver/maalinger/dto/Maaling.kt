@@ -2,10 +2,10 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.Testresult
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 
 data class Maaling(
     val id: Int,
@@ -75,7 +75,6 @@ fun mergeLists(
               fleireSuksesskriterium = result.fleireSuksesskriterium,
               talElementSamsvar = result.talElementSamsvar,
               talElementBrot = result.talElementBrot,
-              talElementVarsel = result.talElementVarsel,
               talSiderSamsvar = result.talSiderSamsvar,
               talSiderBrot = result.talSiderBrot,
               talSiderIkkjeForekomst = result.talSiderIkkjeForekomst)
@@ -83,10 +82,9 @@ fun mergeLists(
 
     val compliancePercent =
         aggregatedResultList?.let { resultList ->
-          val totalElements =
-              resultList.sumOf { it.talElementSamsvar + it.talElementBrot + it.talElementVarsel }
-          if (totalElements > 0) {
-            (resultList.sumOf { it.talElementSamsvar } * 100) / totalElements
+          val totalPages = resultList.sumOf { it.talSiderSamsvar + it.talSiderBrot }
+          if (totalPages > 0) {
+            (resultList.sumOf { it.talSiderSamsvar } * 100) / totalPages
           } else {
             0
           }

@@ -15,6 +15,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
+import no.uutilsynet.testlab2frontendserver.maalinger.dummy.AggregertResultatDTODummy.generateAggregertResultatDTODummyList
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
@@ -47,10 +48,7 @@ class MaalingResource(
   }
 
   @GetMapping("{maalingId}")
-  fun getMaaling(
-      @PathVariable maalingId: Int,
-      @RequestParam(required = false) aggregated: Boolean? = false
-  ): ResponseEntity<Maaling> {
+  fun getMaaling(@PathVariable maalingId: Int): ResponseEntity<Maaling> {
     logger.debug("henter måling med id: $maalingId fra $maalingUrl")
 
     val maalingDTO = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
@@ -67,17 +65,22 @@ class MaalingResource(
             val crawlResultat = getCrawlResultatList(maalingDTO.id)
 
             val aggregatedTestresult =
-                if (aggregated != null) {
+                when (maalingDTO.status) {
+                  MaalingStatus.testing,
+                  MaalingStatus.testing_ferdig -> {
+                    // getAggregering(maalingDTO.id)
 
-                  when (maalingDTO.status) {
-                    MaalingStatus.testing,
-                    MaalingStatus.testing_ferdig -> {
-                      getAggregering(maalingDTO.id)
-                    }
-                    else -> emptyList()
+                    // TODO - Fjern
+                    crawlResultat
+                        .map { Pair(it.loeysing, it.urlList?.size ?: 0) }
+                        .map {
+                          generateAggregertResultatDTODummyList(maalingId, it.first, it.second)
+                        }
+                        .flatten()
+                    // TODO - Fjern
+
                   }
-                } else {
-                  emptyList()
+                  else -> emptyList()
                 }
 
             maalingDTO.toMaaling(
@@ -171,13 +174,14 @@ class MaalingResource(
   fun getAggregering(
       @PathVariable maalingId: Int,
   ): List<AggregertResultatDTO> {
-    logger.debug("Henter aggregering for måling med id $maalingId")
-    val url = "$maalingUrl/$maalingId/testresultat/aggregering"
-    return runCatching { restTemplate.getList<AggregertResultatDTO>(url) }
-        .getOrElse {
-          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
-          throw RuntimeException("Klarte ikkje å hente aggregering", it)
-        }
+    //    logger.debug("Henter aggregering for måling med id $maalingId")
+    //    val url = "$maalingUrl/$maalingId/testresultat/aggregering"
+    //    return runCatching { restTemplate.getList<AggregertResultatDTO>(url) }
+    //        .getOrElse {
+    //          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
+    //          throw RuntimeException("Klarte ikkje å hente aggregering", it)
+    //        }
+    return emptyList()
   }
 
   @PutMapping("{maalingId}/restart")
