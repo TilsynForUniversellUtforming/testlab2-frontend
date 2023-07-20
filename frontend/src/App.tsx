@@ -55,7 +55,7 @@ const App = () => {
     {
       element: <AppContainer />,
       errorElement: <AppErrorBoundary />,
-      handle: { name: 'Hjem' },
+      handle: { name: 'Heim' },
       children: [
         {
           path: appRoutes.ROOT.path,
