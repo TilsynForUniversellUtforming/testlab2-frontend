@@ -235,8 +235,8 @@ const TEST_SIDEUTVAL_LIST = {
 
 const TEST_CRAWLING_RESULT_LIST = {
   navn: 'Kvalitetssikring',
-  path: 'sideutval/:loeysingId',
-  parentRoute: MAALING,
+  path: ':loeysingId',
+  parentRoute: TEST_SIDEUTVAL_LIST,
 };
 
 const TEST_TESTING_LIST = {
@@ -247,8 +247,8 @@ const TEST_TESTING_LIST = {
 
 const TEST_RESULT_LIST = {
   navn: 'Resultat',
-  path: 'testing/:loeysingId',
-  parentRoute: MAALING,
+  path: ':loeysingId',
+  parentRoute: TEST_TESTING_LIST,
 };
 
 const DISKUSJON_ROOT = {
