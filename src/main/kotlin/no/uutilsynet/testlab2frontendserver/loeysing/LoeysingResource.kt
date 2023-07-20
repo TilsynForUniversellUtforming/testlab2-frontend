@@ -4,6 +4,7 @@ import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -22,18 +23,13 @@ import org.springframework.web.client.getForObject
 @RequestMapping("api/v1/loeysing")
 class LoeysingResource(
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties
+    private val testingApiProperties: TestingApiProperties
 ) {
+  val logger: Logger = LoggerFactory.getLogger(LoeysingResource::class.java)
 
-  val logger = LoggerFactory.getLogger(LoeysingResource::class.java)
+  val loeysingUrl = "${testingApiProperties.url}/v2/loeysing"
 
-  val loeysingUrl = "${testingApiProperties.url}/v1/loeysing"
-  val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
-
-  data class CreateLoeysingDTO(
-      val namn: String,
-      val url: String,
-  )
+  data class CreateLoeysingDTO(val namn: String, val url: String, val orgnummer: String)
 
   data class DeleteLoeysingDTO(val loeysingIdList: List<Int>)
 

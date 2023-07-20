@@ -10,3 +10,5 @@ export type Option = {
   label: string;
   value: string;
 };
+
+export type Severity = 'info' | 'warning' | 'success' | 'danger';

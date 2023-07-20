@@ -18,6 +18,8 @@ const SakCreate = () => {
   const {
     regelsettList,
     loeysingList,
+    utvalList,
+    verksemdList,
     setMaaling,
     contextLoading,
     contextError,
@@ -34,7 +36,7 @@ const SakCreate = () => {
     maxLinksPerPage: 100,
     numLinksToSelect: 30,
     sakType: undefined,
-    advisor: undefined,
+    advisorId: undefined,
     sakNumber: '',
   };
 
@@ -61,6 +63,7 @@ const SakCreate = () => {
           loeysingIdList: maalingFormState.loeysingList.map(
             (l) => l.loeysing.id
           ),
+          testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
@@ -89,7 +92,7 @@ const SakCreate = () => {
     });
   }, []);
 
-  const formStepState = useSakForm(defaultSakSteps);
+  const formStepState = useSakForm({ steps: defaultSakSteps });
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = useCallback(
@@ -115,6 +118,8 @@ const SakCreate = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        utvalList={utvalList}
+        verksemdList={verksemdList}
         advisors={advisors}
       />
     </>

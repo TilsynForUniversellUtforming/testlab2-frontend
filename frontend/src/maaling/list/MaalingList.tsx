@@ -1,36 +1,35 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
 import toError from '../../common/error/util';
-import useFeatureToggles from '../../common/features/hooks/useFeatureToggles';
-import { useEffectOnce } from '../../common/hooks/useEffectOnce';
-import useFetch from '../../common/hooks/useFetch';
+import useLoading from '../../common/hooks/useLoading';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import UserActionTable from '../../common/table/UserActionTable';
 import { joinStringsToList } from '../../common/util/stringutils';
-import { deleteMaalingList, fetchMaalingList } from '../api/maaling-api';
+import { deleteMaalingList } from '../api/maaling-api';
 import { IdList, Maaling } from '../api/types';
+import { MaalingContext } from '../types';
 
 const MaalingList = () => {
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-  const [maalingList, setMaalingList] = useState<Maaling[]>([]);
-  const [showMaalinger, setShowMaalinger] = useState(false);
+  const {
+    maalingList,
+    showMaalinger,
+    setMaalingList,
+    refresh,
+    contextError,
+    contextLoading,
+  }: MaalingContext = useOutletContext();
+
+  const [error, setError] = useState<Error | undefined>(contextError);
+  const [loading, setLoading] = useLoading(contextLoading);
   const [maalingRowSelection, setMaalingRowSelection] = useState<Maaling[]>([]);
   const [deleteMessage, setDeleteMessage] = useState<string>('');
 
   const navigate = useNavigate();
-
-  const doFetchMaalingList = useFetch<Maaling[]>({
-    fetchData: fetchMaalingList,
-    setData: setMaalingList,
-    setError: setError,
-    setLoading: setLoading,
-  });
 
   const onClickDelete = useCallback(() => {
     setMaalingRowSelection([]);
@@ -38,7 +37,7 @@ const MaalingList = () => {
     setError(undefined);
 
     if (maalingRowSelection.length === 0) {
-      setError(new Error('Kunne ikkje slette måling, ingen målinger valgt'));
+      setError(new Error('Kunne ikkje slette måling, ingen målingar valgt'));
     }
 
     const deleteAndFetchMaaling = async () => {
@@ -59,20 +58,11 @@ const MaalingList = () => {
   const onSelectRows = useCallback((rowSelection: Maaling[]) => {
     setMaalingRowSelection(rowSelection);
     setDeleteMessage(
-      `Vil du slette ${joinStringsToList(
+      `Vil du sletta ${joinStringsToList(
         rowSelection.map((m) => `"${m.navn}"`)
       )}? Dette kan ikkje angrast`
     );
   }, []);
-
-  const handleInitMaalinger = () => {
-    doFetchMaalingList();
-    setShowMaalinger(true);
-  };
-
-  useEffectOnce(() => {
-    useFeatureToggles('maalinger', handleInitMaalinger, setLoading);
-  });
 
   const maalingColumns: ColumnDef<Maaling>[] = [
     {
@@ -120,7 +110,7 @@ const MaalingList = () => {
     return (
       <ErrorCard
         errorHeader="Måling"
-        error={new Error('Målinger låst')}
+        error={new Error('Målingar låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
       />
@@ -135,12 +125,12 @@ const MaalingList = () => {
         data: maalingList,
         defaultColumns: maalingColumns,
         displayError: {
-          onClick: doFetchMaalingList,
+          onClick: refresh,
           buttonText: 'Prøv igjen',
           error: error,
         },
         loading: loading,
-        onClickRetry: doFetchMaalingList,
+        onClickRetry: refresh,
         onSelectRows: onSelectRows,
         rowActions: [
           {

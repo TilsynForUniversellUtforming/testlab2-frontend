@@ -1,5 +1,5 @@
 .sak {
-  padding-top: 1rem;
+  padding: 1rem 0;
   .testlab-form {
     display: flex;
     justify-content: left;
@@ -17,7 +17,6 @@
 
   &__container {
     padding-bottom: 1.5rem;
-    display: flex;
 
     .sak-init {
       width: 75%;
@@ -35,6 +34,10 @@
 
       &__input-select {
         width: 35%;
+      }
+
+      &__utval {
+        margin-bottom: 2.5rem;
       }
     }
 

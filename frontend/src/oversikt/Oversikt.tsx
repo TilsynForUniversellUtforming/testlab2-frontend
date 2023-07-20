@@ -5,9 +5,11 @@ import React from 'react';
 
 import AppTitle from '../common/app-title/AppTitle';
 import {
+  anna,
   AppRoute,
   appRoutes,
   saksbehandling,
+  testing,
   utval,
 } from '../common/appRoutes';
 import TestlabLinkButton from '../common/button/TestlabLinkButton';
@@ -31,6 +33,7 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             size="large"
             color="secondary"
             fullWidth={true}
+            disabled={route.disabled}
           />
         </div>
       ))}
@@ -45,26 +48,48 @@ const Oversikt = () => {
         <Heading size="xlarge" title="Meny" spacing={true}>
           Meny
         </Heading>
-        <TestlabLinkButton
-          route={appRoutes.SAK_CREATE}
-          title={appRoutes.SAK_CREATE.navn}
-          variant="outline"
-          icon={
-            <img
-              className="lenker__img"
-              src={appRoutes.SAK_CREATE.imgSrc}
-              alt={appRoutes.SAK_CREATE.navn}
-            />
-          }
-          size="large"
-          color="secondary"
-          fullWidth={true}
-        />
+        <div className="oversikt__sak-links">
+          <TestlabLinkButton
+            route={appRoutes.SAK_CREATE}
+            title={appRoutes.SAK_CREATE.navn}
+            variant="outline"
+            icon={
+              <img
+                className="lenker__img"
+                src={appRoutes.SAK_CREATE.imgSrc}
+                alt={appRoutes.SAK_CREATE.navn}
+              />
+            }
+            size="large"
+            color="secondary"
+            fullWidth={true}
+            className="oversikt__sak-ny"
+          />
+          <TestlabLinkButton
+            route={appRoutes.NY_TEST_ROOT}
+            title={appRoutes.NY_TEST_ROOT.navn}
+            variant="outline"
+            icon={
+              <img
+                className="lenker__img"
+                src={appRoutes.NY_TEST_ROOT.imgSrc}
+                alt={appRoutes.NY_TEST_ROOT.navn}
+              />
+            }
+            size="large"
+            color="secondary"
+            fullWidth={true}
+            className="oversikt__sak-ny"
+            disabled={appRoutes.NY_TEST_ROOT.disabled}
+          />
+        </div>
       </div>
       <div className="oversikt__links">
         {[
           { heading: 'Utval', routes: utval },
           { heading: 'Saksbehandling', routes: saksbehandling },
+          { heading: 'Testing', routes: testing },
+          { heading: 'Anna', routes: anna },
         ].map(({ heading, routes }) => (
           <OversiktLinkList heading={heading} routes={routes} key={heading} />
         ))}

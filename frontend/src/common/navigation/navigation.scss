@@ -2,21 +2,125 @@
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   background-color: var(--fds-semantic-surface-neutral-inverted);
   color: var(--fds-semantic-surface-on_inverted-default);
+
+  .link-button-wrapper {
+    > button:hover {
+      color: var(--fds-semantic-surface-neutral-subtle-hover);
+      background: none !important;
+    }
+  }
+
+  .dropdown__button {
+    &:hover {
+      color: var(--fds-semantic-surface-neutral-subtle-hover);
+      background: none !important;
+    }
+    .chevron-icon {
+      display: inline-block;
+      transition: transform 0.15s ease;
+    }
+
+    &.show {
+      .chevron-icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
   &:hover {
     color: var(--fds-semantic-surface-on_inverted-hover);
   }
 
+  &__list {
+    @media (min-width: 829px) {
+      display: flex;
+      justify-content: space-evenly;
+    }
+  }
+
   &__item {
     padding: 0 1rem;
+
     .link {
       display: flex;
       align-items: stretch;
       width: 100%;
       text-decoration: none;
-      color: var(--fds-semantic-surface-on_inverted-default);
+      color: inherit;
+
+      &.disabled {
+        opacity: var(--fds-opacity-disabled);
+
+        button {
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .hamburger {
+    @media (min-width: 829px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 828px) {
+    flex-direction: column;
+    align-items: flex-end;
+
+    .home {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__list {
+      width: 100%;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-in;
+      display: flex;
+
+      &.open {
+        padding-top: 1rem;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 1rem;
+        opacity: 1;
+        max-height: 100vh;
+
+        .navigation__item {
+          display: block;
+          padding: 0;
+          width: 100%;
+
+          .dropdown {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+
+            .dropdown-content {
+              &.links {
+                margin-top: 0.5rem;
+                position: initial;
+                width: 100%;
+              }
+            }
+
+            .link button {
+              text-align: center;
+              font-size: 1rem;
+            }
+          }
+        }
+      }
+      .navigation__item {
+        display: none;
+      }
     }
   }
 }

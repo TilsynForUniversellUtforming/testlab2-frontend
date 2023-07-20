@@ -5,7 +5,7 @@ import {
   MaalingEdit,
   MaalingInit,
   MaalingStatus,
-  RestartCrawlRequest,
+  RestartRequest,
 } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
@@ -15,7 +15,7 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maaling),
-  }).then((response) => responseToJson(response, 'Kunne ikke lage målinger'));
+  }).then((response) => responseToJson(response, 'Kunne ikke lage målingar'));
 
 export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
@@ -25,7 +25,7 @@ export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
     },
     body: JSON.stringify(maaling),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke oppdatere måling')
+    responseToJson(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const deleteMaalingList = async (
@@ -37,7 +37,7 @@ export const deleteMaalingList = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maalingIdList),
-  }).then((response) => responseToJson(response, 'Kunne ikke hente målinger'));
+  }).then((response) => responseToJson(response, 'Kunne ikkje hente målingar'));
 
 export const updateMaalingStatus = async (
   id: number,
@@ -50,18 +50,18 @@ export const updateMaalingStatus = async (
     },
     body: status,
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke oppdatere måling')
+    responseToJson(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
   fetch('/api/v1/maalinger', {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikke hente målinger'));
+  }).then((response) => responseToJson(response, 'Kunne ikkje hente målingar'));
 
 export const fetchMaaling = async (id: number): Promise<Maaling> =>
   fetch(`/api/v1/maalinger/${id}`, {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikke hente måling'));
+  }).then((response) => responseToJson(response, 'Kunne ikkje hente måling'));
 
 export const fetchMaalingWithAggeration = async (
   id: number
@@ -70,15 +70,18 @@ export const fetchMaalingWithAggeration = async (
     method: 'GET',
   }).then((response) => responseToJson(response, 'Kunne ikke hente måling'));
 
-export const restartCrawling = async (
-  restartCrawlRequest: RestartCrawlRequest
+export const restart = async (
+  restartRequest: RestartRequest
 ): Promise<Maaling> =>
-  fetch(`/api/v1/maalinger/${restartCrawlRequest.maalingId}/restart`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(restartCrawlRequest.loeysingIdList),
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikkje restarte måling')
+  fetch(
+    `/api/v1/maalinger/${restartRequest.maalingId}/restart?process=${restartRequest.process}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(restartRequest.loeysingIdList),
+    }
+  ).then((response) =>
+    responseToJson(response, `Kunne ikkje restarte ${restartRequest.process}`)
   );

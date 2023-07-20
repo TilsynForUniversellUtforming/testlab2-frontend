@@ -1,17 +1,14 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
-import appRoutes, { getFullPath, idPath } from '../../common/appRoutes';
+import appRoutes from '../../common/appRoutes';
 import toError from '../../common/error/util';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '../../common/table/control/toggle/IndeterminateCheckbox';
 import UserActionTable from '../../common/table/UserActionTable';
 import { deleteLoeysingList } from '../api/loeysing-api';
 import { Loeysing } from '../api/types';
 import { LoeysingContext } from '../types';
+import { getLoeysingColumns } from './LoeysingColumns';
 
 const LoeysingList = () => {
   const {
@@ -64,7 +61,7 @@ const LoeysingList = () => {
       setDeleteMessage('');
     } else {
       setDeleteMessage(
-        `Vil du slette ${rowSelection.map((r) => r.namn).join(',')}?`
+        `Vil du sletta ${rowSelection.map((r) => r.namn).join(',')}?`
       );
     }
   }, []);
@@ -78,35 +75,7 @@ const LoeysingList = () => {
   }, []);
 
   const loeysingColumns = useMemo<ColumnDef<Loeysing>[]>(
-    () => [
-      {
-        id: 'Handling',
-        header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => <RowCheckbox row={row} />,
-        size: 1,
-      },
-      {
-        accessorFn: (row) => row.namn,
-        id: 'Namn',
-        cell: ({ row, getValue }) => (
-          <Link
-            to={getFullPath(appRoutes.LOEYSING_EDIT, {
-              pathParam: idPath,
-              id: String(row.original.id),
-            })}
-          >
-            {String(getValue())}
-          </Link>
-        ),
-        header: () => <span>Namn</span>,
-      },
-      {
-        accessorFn: (row) => row.url,
-        id: 'url',
-        cell: (info) => info.getValue(),
-        header: () => <span>URL</span>,
-      },
-    ],
+    () => getLoeysingColumns(),
     []
   );
 

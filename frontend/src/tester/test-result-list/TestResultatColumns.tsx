@@ -18,7 +18,7 @@ const decodeBase64 = (base64String?: string) => {
         .join('')
     );
   } catch (e) {
-    return 'Feil ved dekoding';
+    return '';
   }
 };
 

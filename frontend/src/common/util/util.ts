@@ -39,3 +39,23 @@ export const isUrl = (url: string) => {
     return false;
   }
 };
+
+export function isOrgnummer(s: string): boolean {
+  const utenMellomrom = s.replace(/\s/g, '');
+  if (utenMellomrom.length !== 9) {
+    return false;
+  }
+
+  const sifferListe = utenMellomrom.split('').map((c) => parseInt(c));
+  if (sifferListe.some((n) => isNaN(n))) {
+    return false;
+  }
+
+  const vekter = [3, 2, 7, 6, 5, 4, 3, 2];
+  const sum = sifferListe
+    .slice(0, 8)
+    .reduce((acc, curr, i) => acc + curr * vekter[i], 0);
+  const rest = sum % 11;
+  const kontrollsiffer = rest === 0 ? 0 : 11 - rest;
+  return kontrollsiffer === sifferListe[8];
+}

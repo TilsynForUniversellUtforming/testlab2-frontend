@@ -6,7 +6,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { appRoutes } from '../common/appRoutes';
 import ErrorCard from '../common/error/ErrorCard';
-import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { listRegelsett, listTestreglar } from './api/testreglar-api';
 import { Testregel, TestRegelsett } from './api/types';
@@ -62,7 +61,7 @@ const TestreglarApp = () => {
   }, []);
 
   useEffectOnce(() => {
-    useFeatureToggles('testreglar', fetchTestreglar, handleLoading);
+    fetchTestreglar();
   });
 
   const testRegelContext: TestregelContext = {

@@ -1,6 +1,17 @@
 .testlab-table {
   a {
-    color: var(--fds-semantic-text-action-default);
+    color: var(--fds-semantic-text-action-primary-default);
+  }
+
+  .sr-only {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
   }
 
   &__table {
@@ -32,9 +43,6 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 1rem;
-    &.search-only {
-      justify-content: end;
-    }
   }
 
   .pagination-container {

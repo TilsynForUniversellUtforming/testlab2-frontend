@@ -50,7 +50,7 @@ const TestreglarForm = ({
           }}
         />
         <TestlabForm.FormInput
-          label="Testregel"
+          label="Testregel tekst-id"
           name="testregelNoekkel"
           formValidation={{
             errorMessage: 'Format på testregel er QW-ACT-RXX',

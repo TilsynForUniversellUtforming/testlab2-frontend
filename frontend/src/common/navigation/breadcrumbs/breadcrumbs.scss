@@ -1,0 +1,17 @@
+.breadcrumbs {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  &__crumb {
+    display: flex;
+    justify-items: center;
+    &-text {
+      display: inline-flex;
+      align-items: center;
+    }
+    &-icon {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+}

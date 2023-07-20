@@ -1,28 +1,34 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
+import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
 import { TableRowAction } from '../../common/table/types';
 import UserActionTable from '../../common/table/UserActionTable';
+import { joinStringsToList } from '../../common/util/stringutils';
 import { CrawlResultat, Maaling } from '../../maaling/api/types';
-import { getCrawlColumns } from './CrawlColumns';
+import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
 
 export interface Props {
-  maaling: Maaling;
+  id: string;
+  maaling?: Maaling;
   crawlList: CrawlResultat[];
   onClickRestart: (crawlRowSelection: CrawlResultat[]) => void;
   refresh: () => void;
   loading: boolean;
   error: Error | undefined;
+  refreshing: boolean;
 }
 
 const CrawlingList = ({
+  id,
   maaling,
   crawlList,
   onClickRestart,
   refresh,
   loading,
   error,
+  refreshing,
 }: Props) => {
-  const maalingStatus = maaling.status;
+  const maalingStatus = maaling?.status;
 
   const [crawlRowSelection, setCrawlRowSelection] = useState<CrawlResultat[]>(
     []
@@ -36,9 +42,9 @@ const CrawlingList = ({
           modalProps: {
             title: 'Crawl på nytt',
             disabled: crawlList.length === 0,
-            message: `Vil du crawle på nytt ${crawlRowSelection
-              .map((r) => r.loeysing.namn)
-              .join(',')}?`,
+            message: `Vil du crawle ${joinStringsToList(
+              crawlRowSelection.map((r) => r.loeysing.namn)
+            )} på nytt?`,
             onConfirm: () => onClickRestart(crawlRowSelection),
           },
         },
@@ -48,7 +54,13 @@ const CrawlingList = ({
     }
   }, [maalingStatus, crawlList, crawlRowSelection]);
 
-  const crawlColumns = useMemo(() => getCrawlColumns(maaling), [maaling]);
+  const crawlColumns = useMemo(() => {
+    if (typeof maaling !== 'undefined') {
+      return getCrawlColumns(maaling);
+    } else {
+      return getCrawlColumnsLoading();
+    }
+  }, [maaling]);
 
   const onClickRefresh = useCallback(() => {
     setCrawlRowSelection([]);
@@ -58,7 +70,15 @@ const CrawlingList = ({
   return (
     <UserActionTable<CrawlResultat>
       heading="Sideutval"
-      subHeading={maaling.navn}
+      subHeading={`Måling: ${maaling?.navn ?? ''}`}
+      linkPath={
+        maaling
+          ? getFullPath(AppRoutes.MAALING, {
+              id: id,
+              pathParam: idPath,
+            })
+          : undefined
+      }
       tableProps={{
         data: crawlList,
         defaultColumns: crawlColumns,
@@ -72,6 +92,7 @@ const CrawlingList = ({
         onSelectRows: setCrawlRowSelection,
         onClickRetry: onClickRefresh,
         rowActions: rowActions,
+        loadingStateStatus: refreshing ? 'Utfører sideutval...' : undefined,
       }}
     />
   );

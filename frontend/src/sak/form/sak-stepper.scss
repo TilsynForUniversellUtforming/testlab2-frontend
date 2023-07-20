@@ -7,7 +7,7 @@
   &__button {
     padding: 0;
     background: none;
-    color: var(--fds-semantic-border-action-default);
+    color: var(--fds-semantic-surface-action-primary-default);
     border: none;
     margin-bottom: 4rem;
     font: inherit;
@@ -18,12 +18,15 @@
     &.active {
       cursor: pointer;
       .icon {
-        background-color: var(--fds-semantic-surface-action-no_fill-active);
+        background-color: var(
+          --fds-semantic-surface-action-primary-no_fill-active
+        );
       }
       &:hover {
         color: var(--colors-blue-800);
         .icon {
-          box-shadow: 0 0 0 1px var(--fds-semantic-border-action-default);
+          box-shadow: 0 0 0 1px
+            var(--fds-semantic-surface-action-primary-default);
           background-color: var(--fds-semantic-surface-action-no_fill-hover);
         }
       }
@@ -55,13 +58,14 @@
         width: 5rem;
         height: 5rem;
         border-radius: 50%;
-        border: 1px solid var(--fds-semantic-border-action-default);
+        border: 1px solid var(--fds-semantic-surface-action-primary-default);
         min-width: 5rem;
-        color: var(--fds-semantic-border-action-default);
+        color: var(--fds-semantic-surface-action-primary-default);
         &__line {
           position: absolute;
           z-index: -1;
-          border-left: 2px solid var(--fds-semantic-border-action-default);
+          border-left: 2px solid
+            var(--fds-semantic-surface-action-primary-default);
           height: 4rem;
           margin-top: 146px;
         }

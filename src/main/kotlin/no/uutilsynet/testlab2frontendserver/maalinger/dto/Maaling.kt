@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.Testresult
@@ -11,6 +12,7 @@ data class Maaling(
     val navn: String,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>,
+    val testregelList: List<Testregel>,
     val crawlResultat: List<CrawlResultat>,
     val crawlStatistics: JobStatistics,
     val testResult: List<Testresult>,
@@ -18,10 +20,11 @@ data class Maaling(
     val crawlParameters: CrawlParameters?,
 )
 
-fun MaalingDTO.toMaaling() = this.toMaaling(emptyList(), emptyList())
+fun MaalingDTO.toMaaling() = this.toMaaling(emptyList(), emptyList(), emptyList())
 
 fun MaalingDTO.toMaaling(
     crawlResultat: List<CrawlResultat>,
+    testregelList: List<Testregel>,
     aggregatedResult: List<AggregertResultatDTO>
 ): Maaling {
   val maalingTestKoeyringDTOList: List<TestKoeyringDTO> = this.testKoeyringar ?: emptyList()
@@ -42,7 +45,8 @@ fun MaalingDTO.toMaaling(
               this.loeysingList
             }
           },
-      crawlResultat = crawlResultat.ifEmpty { emptyList() },
+      testregelList = this.testregelList ?: testregelList,
+      crawlResultat = crawlResultat,
       crawlStatistics =
           crawlResultat
               .map {

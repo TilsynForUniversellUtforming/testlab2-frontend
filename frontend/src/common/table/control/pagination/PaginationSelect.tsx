@@ -62,6 +62,8 @@ const PaginationMiddleSection = ({ table }: TableProps) => {
           variant={ButtonVariant.Quiet}
           key={pageNumber}
           icon={<MenuElipsisHorizontalIcon color="black" />}
+          aria-disabled={true}
+          aria-label="..."
           disabled
         />
       );

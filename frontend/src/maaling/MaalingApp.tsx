@@ -1,11 +1,9 @@
-import { Spinner } from '@digdir/design-system-react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
 import ErrorCard from '../common/error/ErrorCard';
 import toError from '../common/error/util';
-import useFeatureToggles from '../common/features/hooks/useFeatureToggles';
+import fetchFeatureToggles from '../common/features/hooks/fetchFeatureToggles';
 import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
@@ -13,9 +11,15 @@ import { listRegelsett } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
-import { fetchMaaling, updateMaalingStatus } from './api/maaling-api';
+import { Verksemd } from '../verksemder/api/types';
+import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
+import {
+  fetchMaaling,
+  fetchMaalingList,
+  updateMaalingStatus,
+} from './api/maaling-api';
 import { Maaling } from './api/types';
-import { MaalingContext } from './types';
+import { MaalingContext, MaalingTestStatus } from './types';
 
 const MaalingApp = () => {
   const { id } = useParams();
@@ -23,11 +27,20 @@ const MaalingApp = () => {
 
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
+    loading: false,
+  });
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
+  const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
-  const [showMaalinger, setShowMaalinger] = useState(false);
+  const [showMaalinger, setShowMaalinger] = useState(true);
+  const [maalingList, setMaalingList] = useState<Maaling[]>([]);
+
+  const handleSetMaalingList = useCallback((maalingList: Maaling[]) => {
+    setMaalingList(maalingList);
+  }, []);
 
   const handleSetMaaling = useCallback((maaling: Maaling) => {
     setMaaling(maaling);
@@ -42,107 +55,181 @@ const MaalingApp = () => {
     setLoading(loading);
   }, []);
 
+  const clearTestStatus = useCallback(() => {
+    setTestStatus({ loading: false, message: undefined });
+  }, []);
+
   const doStartCrawling = useCallback((maaling: Maaling) => {
-    setLoading(true);
+    setTestStatus({ loading: true, message: undefined });
     setError(undefined);
 
     const startCrawling = async () => {
-      try {
-        const updated = await updateMaalingStatus(maaling.id, 'crawling');
-        if (!updated.id) {
-          setError(new Error('Kunne ikkje starte crawling'));
-        } else {
-          navigate(
-            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })
-          );
-        }
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje starte crawling'));
+      const updated = await updateMaalingStatus(maaling.id, 'crawling');
+      if (!updated.id) {
+        setTestStatus({
+          loading: false,
+          message: 'Kunne ikkje starte crawling, prøv igjen',
+          severity: 'danger',
+        });
+      } else {
+        setMaaling(updated);
+        setTestStatus({
+          loading: false,
+          message: 'Crawling startet',
+          severity: 'success',
+        });
       }
     };
 
-    startCrawling().finally(() => setLoading(false));
+    startCrawling().catch((e) =>
+      setError(toError(e, 'Noko gjekk gale med start av crawling'))
+    );
   }, []);
 
   const doStartTest = useCallback((maaling: Maaling) => {
-    setLoading(true);
+    setTestStatus({ loading: true, message: undefined });
     setError(undefined);
 
     if (maaling.crawlResultat.find((cr) => cr.type === 'feilet')) {
-      setError(
-        new Error('Kunne ikkje starte test, måling har feil i sideutval')
-      );
+      setTestStatus({
+        loading: false,
+        message: 'Kunne ikkje starte test, måling har feil i sideutval',
+        severity: 'danger',
+      });
     }
 
     const startTesting = async () => {
-      try {
-        const updated = await updateMaalingStatus(maaling.id, 'testing');
-        if (!updated.id) {
-          setError(new Error('Noko gjekk gale ved oppdatering av måling'));
-        } else {
-          navigate(
-            getFullPath(appRoutes.TEST_TESTING_LIST, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })
-          );
-        }
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje starte test'));
+      const updated = await updateMaalingStatus(maaling.id, 'testing');
+      if (!updated.id) {
+        setTestStatus({
+          loading: false,
+          message: 'Kunne ikkje starte test, prøv igjen',
+          severity: 'danger',
+        });
+      } else {
+        setMaaling(updated);
+        setTestStatus({
+          loading: false,
+          message: 'Testing startet',
+          severity: 'success',
+        });
       }
     };
 
-    startTesting().finally(() => setLoading(false));
+    startTesting().catch((e) =>
+      setError(toError(e, 'Noko gjekk gale med start av test'))
+    );
   }, []);
 
-  const doFetchData = useCallback(() => {
+  const doStartPublish = (maaling: Maaling) => {
+    setTestStatus({
+      loading: false,
+      message: `Publisering er ikkje tilgjengelig ennå for måling ${maaling.navn}`,
+      severity: 'info',
+    });
+  };
+
+  const doFetchMaaling = useCallback(async () => {
     setLoading(true);
     setError(undefined);
 
-    const fetchData = async () => {
-      if (id) {
-        try {
-          const maaling = await fetchMaaling(Number(id));
-          setMaaling(maaling);
-        } catch (e) {
-          setError(toError(e, 'Måling finnes ikkje'));
-        }
-      }
-
+    if (id) {
       try {
-        const loeysingList = await fetchLoeysingList();
-        setLoeysingList(loeysingList);
+        return await fetchMaaling(Number(id));
       } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente løysingar'));
+        setError(toError(e, 'Kunne ikkje hente måling'));
+        return;
       }
+    } else {
+      setError(new Error('Måling ikkje funnet'));
+    }
+  }, [id]);
 
-      try {
-        const regelsett = await listRegelsett();
-        setRegelsettList(regelsett);
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente testreglar'));
-      }
+  const doFetchData = useCallback(async () => {
+    setLoading(true);
+    setError(undefined);
 
+    try {
+      const maalingList = await fetchMaalingList();
+      const loeysingList = await fetchLoeysingList();
+      const regelsett = await listRegelsett();
       const advisors = await getAdvisors_dummy();
-      setAdvisorList(advisors);
-      setLoading(false);
-      setError(undefined);
-    };
-
-    fetchData().finally(() => setLoading(false));
-  }, []);
-
-  const fetchMaalinger = useCallback(() => {
-    doFetchData();
-    setShowMaalinger(true);
+      const verksemdList = await getVerksemdList_dummy();
+      return { maalingList, loeysingList, regelsett, advisors, verksemdList };
+    } catch (e) {
+      setError(toError(e, 'Kan ikkje hente data'));
+      return;
+    }
   }, []);
 
   useEffectOnce(() => {
-    useFeatureToggles('maalinger', fetchMaalinger, handleLoading);
+    fetchFeatureToggles('maalinger', handleLoading).then(() => {
+      doFetchData()
+        .then((data) => {
+          if (data) {
+            if (data?.maalingList) {
+              setMaalingList(data.maalingList);
+            } else {
+              setError(new Error('Kunne ikkje hente liste med målingar'));
+            }
+
+            if (data?.loeysingList) {
+              setLoeysingList(data.loeysingList);
+            } else {
+              setError(new Error('Kunne ikkje hente loeysingar'));
+            }
+
+            if (data?.regelsett) {
+              setRegelsettList(data.regelsett);
+            } else {
+              setError(new Error('Kunne ikkje hente regelsett'));
+            }
+
+            if (data?.advisors) {
+              setAdvisorList(data.advisors);
+            } else {
+              setError(new Error('Kunne ikkje hente rådgivere'));
+            }
+
+            if (data?.verksemdList) {
+              setVerksemdList(data.verksemdList);
+            } else {
+              setError(new Error('Kunne ikkje hente verksemder'));
+            }
+
+            setShowMaalinger(true);
+            setLoading(false);
+          } else {
+            setError(new Error('Kunne ikkje hente målingar'));
+            setLoading(false);
+          }
+        })
+        .catch((e) => {
+          setError(toError(e, 'Kunne ikkje hente målingar'));
+          setLoading(false);
+        });
+    });
   });
+
+  useEffect(() => {
+    if (!loading && !error && id && showMaalinger) {
+      doFetchMaaling()
+        .then((data) => {
+          if (data) {
+            setMaaling(data);
+          } else {
+            setError(new Error('Kunne ikkje hente måling'));
+          }
+
+          setLoading(false);
+          setShowMaalinger(true);
+        })
+        .catch((e) => {
+          setError(toError(e, 'Kunne ikkje hente data'));
+          setLoading(false);
+        });
+    }
+  }, [id, error, maalingList]);
 
   const maalingContext: MaalingContext = {
     contextError: error,
@@ -151,28 +238,31 @@ const MaalingApp = () => {
     setContextLoading: handleLoading,
     maaling: maaling,
     setMaaling: handleSetMaaling,
-    refresh: fetchMaalinger,
+    refreshMaaling: doFetchMaaling,
+    refresh: doFetchData,
+    maalingList: maalingList,
+    setMaalingList: handleSetMaalingList,
     loeysingList: loeysingList,
+    verksemdList: verksemdList,
     regelsettList: regelsettList,
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,
+    handleStartPublish: doStartPublish,
     advisors: advisorList,
+    testStatus: testStatus,
+    clearTestStatus: clearTestStatus,
   };
 
   if (!loading && !showMaalinger) {
     return (
       <ErrorCard
         errorHeader="Måling"
-        error={new Error('Målinger låst')}
+        error={new Error('Målingar låst')}
         buttonText="Tilbake"
         onClick={() => navigate('..')}
       />
     );
-  }
-
-  if (loading) {
-    return <Spinner title="Venter på målinger" />;
   }
 
   return <Outlet context={maalingContext} />;

@@ -4,7 +4,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import TestlabForm, { TestlabFormProps } from '../../common/form/TestlabForm';
-import { isUrl } from '../../common/util/util';
+import { isOrgnummer, isUrl } from '../../common/util/util';
 import { Loeysing, LoeysingInit } from '../api/types';
 
 export interface Props
@@ -17,6 +17,7 @@ const LoeysingForm = ({ loeysing, heading, subHeading, onSubmit }: Props) => {
     defaultValues: {
       namn: loeysing?.namn ?? '',
       url: loeysing?.url ?? '',
+      orgnummer: loeysing?.orgnummer ?? '',
     },
   });
 
@@ -49,6 +50,19 @@ const LoeysingForm = ({ loeysing, heading, subHeading, onSubmit }: Props) => {
                 validate: isUrl,
                 required: true,
               },
+            }}
+          />
+        </div>
+        <div className="loeysing-form__input">
+          <TestlabForm.FormInput<LoeysingInit>
+            label="Organisasjonsnummer"
+            name="orgnummer"
+            formValidation={{
+              validation: {
+                validate: isOrgnummer,
+                required: true,
+              },
+              errorMessage: 'Dette er ikkje eit gyldig organisasjonsnummer',
             }}
           />
         </div>

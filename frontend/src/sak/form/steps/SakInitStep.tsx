@@ -65,7 +65,7 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
         <TestlabFormSelect<SakFormState>
           label="Sakshandsamar"
           sublabel="Angi kven som skal følgje opp saka."
-          name="advisor"
+          name="advisorId"
           options={advisors.map((a) => ({
             label: a.name,
             value: String(a.id),

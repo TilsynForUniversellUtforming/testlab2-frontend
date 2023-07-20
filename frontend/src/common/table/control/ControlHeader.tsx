@@ -1,5 +1,5 @@
+import { Spinner } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
-import classNames from 'classnames';
 import React from 'react';
 
 import DebouncedInput from '../../debounced-input/DebouncedInput';
@@ -7,7 +7,6 @@ import TableActionDropdown from '../../dropdown/TableActionDropdown';
 import { TableFilterPreference, TableRowAction } from '../types';
 
 export interface Props {
-  loading: boolean;
   table: Table<any>;
   filterPreference: TableFilterPreference;
   filterValue: string;
@@ -15,6 +14,7 @@ export interface Props {
   rowActions?: TableRowAction[];
   rowActionEnabled: boolean;
   small?: boolean;
+  loadingStateStatus?: string;
 }
 
 const ControlHeader = ({
@@ -25,6 +25,7 @@ const ControlHeader = ({
   rowActions,
   rowActionEnabled,
   small = false,
+  loadingStateStatus,
 }: Props) => {
   const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
   const hasElements = tableElementSize > 0;
@@ -38,18 +39,25 @@ const ControlHeader = ({
   const showRowActions = rowActions && rowActions.length > 0;
 
   return (
-    <div
-      className={classNames('control-header', {
-        'search-only': showFilters && !showRowActions,
-      })}
-    >
-      {showRowActions && (
-        <TableActionDropdown
-          actions={rowActions}
-          disabled={!rowActionEnabled}
-          table={table}
-        />
-      )}
+    <div className="control-header">
+      <div className="testlab-table dropdown">
+        {showRowActions && (
+          <TableActionDropdown
+            actions={rowActions}
+            disabled={!rowActionEnabled}
+            table={table}
+          />
+        )}
+      </div>
+      <div className="control-header__search">
+        {loadingStateStatus && (
+          <>
+            <b>Status: </b>
+            {`${loadingStateStatus} `}
+            <Spinner title={loadingStateStatus} size="small" />
+          </>
+        )}
+      </div>
       <div className="control-header__input">
         {showFilters && (
           <DebouncedInput

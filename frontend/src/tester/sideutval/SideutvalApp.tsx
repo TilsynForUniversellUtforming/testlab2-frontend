@@ -1,18 +1,23 @@
-import React, { useCallback, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
 import ErrorCard from '../../common/error/ErrorCard';
 import toError from '../../common/error/util';
 import useInterval from '../../common/hooks/useInterval';
 import { isNotDefined } from '../../common/util/util';
-import { fetchMaaling, restartCrawling } from '../../maaling/api/maaling-api';
+import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
 import {
   CrawlResultat,
   Maaling,
-  RestartCrawlRequest,
+  RestartRequest,
 } from '../../maaling/api/types';
-import { TesterContext } from '../types';
+import { MaalingContext } from '../../maaling/types';
 import CrawlingList from './CrawlingList';
 
 const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
@@ -29,9 +34,12 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
 };
 
 const SideutvalApp = () => {
-  const { maaling, contextError, contextLoading }: TesterContext =
-    useOutletContext();
-  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const maalingContext: MaalingContext = useOutletContext();
+
+  const { maaling, contextError, contextLoading, setMaaling } = maalingContext;
+  const { id, loeysingId } = useParams();
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
     maalingToCrawlResultat(maaling)
   );
@@ -39,7 +47,11 @@ const SideutvalApp = () => {
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'crawling');
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    setLoading(contextLoading);
+    setCrawlResult(maalingToCrawlResultat(maaling));
+  }, [contextLoading, maaling]);
 
   const doFetchData = useCallback(async () => {
     setLoading(false);
@@ -56,7 +68,7 @@ const SideutvalApp = () => {
         if (refreshedMaaling.status !== 'crawling') {
           setRefreshing(false);
         }
-
+        setMaaling(refreshedMaaling);
         setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved henting av måling'));
@@ -88,12 +100,14 @@ const SideutvalApp = () => {
 
     const doRestart = async () => {
       try {
-        const restartCrawlingRequest: RestartCrawlRequest = {
+        const restartCrawlingRequest: RestartRequest = {
           maalingId: maaling.id,
           loeysingIdList: { idList: loeysingIdList },
+          process: 'crawling',
         };
 
-        const restartedMaaling = await restartCrawling(restartCrawlingRequest);
+        const restartedMaaling = await restart(restartCrawlingRequest);
+        setMaaling(restartedMaaling);
         setCrawlResult(maalingToCrawlResultat(restartedMaaling));
       } catch (e) {
         setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
@@ -103,7 +117,7 @@ const SideutvalApp = () => {
     doRestart().finally(() => {
       setLoading(false);
       navigate(
-        getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+        getFullPath(appRoutes.MAALING, {
           id: String(maaling.id),
           pathParam: idPath,
         })
@@ -111,18 +125,27 @@ const SideutvalApp = () => {
     });
   }, []);
 
-  if (typeof maaling === 'undefined' || typeof id === 'undefined') {
+  if (
+    (typeof maaling === 'undefined' && !loading) ||
+    typeof id === 'undefined'
+  ) {
     return <ErrorCard error={new Error('Ingen måling funnet')} />;
+  }
+
+  if (loeysingId) {
+    return <Outlet context={maalingContext} />;
   }
 
   return (
     <CrawlingList
+      id={id}
       maaling={maaling}
       crawlList={crawlResultat}
       onClickRestart={onClickRestart}
       refresh={doFetchData}
       loading={loading}
       error={error}
+      refreshing={refreshing}
     />
   );
 };

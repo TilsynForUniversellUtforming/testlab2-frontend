@@ -1,9 +1,11 @@
 import React, { ReactElement } from 'react';
 
-import { Loeysing } from '../../loeysingar/api/types';
+import { Loeysing, Utval } from '../../loeysingar/api/types';
 import { TestRegelsett } from '../../testreglar/api/types';
 import { User } from '../../user/api/types';
+import { Verksemd } from '../../verksemder/api/types';
 import { SakFormBaseProps } from '../types';
+import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
 import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
 import SakInitStep from './steps/SakInitStep';
@@ -13,6 +15,8 @@ export interface Props<T> extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
   loeysingList: Loeysing[];
+  utvalList: Utval[];
+  verksemdList: Verksemd[];
   regelsettList: TestRegelsett[];
   advisors: User[];
 }
@@ -21,6 +25,8 @@ const SakStepForm = <T extends object>({
   error,
   loading,
   loeysingList,
+  utvalList,
+  verksemdList,
   regelsettList,
   advisors,
   maalingFormState,
@@ -28,6 +34,10 @@ const SakStepForm = <T extends object>({
   formStepState,
 }: Props<T>): ReactElement<T> => {
   const { currentStep } = formStepState;
+
+  if (loading) {
+    return <SakStepFormSkeleton steps={formStepState.steps} />;
+  }
 
   switch (currentStep.sakStepType) {
     case 'Init':
@@ -48,6 +58,8 @@ const SakStepForm = <T extends object>({
           error={error}
           loading={loading}
           loeysingList={loeysingList}
+          utvalList={utvalList}
+          verksemdList={verksemdList}
         />
       );
     case 'Testregel':

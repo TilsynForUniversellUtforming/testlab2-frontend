@@ -11,11 +11,14 @@ import MaalingStatusContainer from './status/MaalingStatusContainer';
 
 const MaalingOverview = () => {
   const {
-    contextLoading,
     contextError,
+    contextLoading,
     maaling,
     handleStartCrawling,
     handleStartTest,
+    handleStartPublish,
+    testStatus,
+    clearTestStatus,
   }: MaalingContext = useOutletContext();
   const { id } = useParams();
 
@@ -30,18 +33,21 @@ const MaalingOverview = () => {
   }
 
   return (
-    <div className="maaling-overview">
-      <div className="parameter">
-        <MaalingParametersContainer id={id} maaling={maaling} />
-      </div>
-      <div className="status">
+    <>
+      <div className="maaling-overview">
+        <div className="parameter">
+          <MaalingParametersContainer id={id} maaling={maaling} />
+        </div>
         <MaalingStatusContainer
           maaling={maaling}
           handleStartCrawling={handleStartCrawling}
           handleStartTest={handleStartTest}
+          handleStartPublish={handleStartPublish}
+          testStatus={testStatus}
+          clearTestStatus={clearTestStatus}
         />
       </div>
-    </div>
+    </>
   );
 };
 

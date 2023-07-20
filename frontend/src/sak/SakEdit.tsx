@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import Alert, { AlertProps } from '../common/alert/Alert';
+import AlertTimed, { AlertProps } from '../common/alert/AlertTimed';
 import toError from '../common/error/util';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
+import useMaalingFormState from './hooks/useMaalingFormState';
 import useSakForm from './hooks/useSakForm';
 import {
   defaultSakSteps,
@@ -19,6 +20,8 @@ const SakEdit = () => {
     maaling,
     regelsettList,
     loeysingList,
+    utvalList,
+    verksemdList,
     setMaaling,
     contextLoading,
     contextError,
@@ -28,22 +31,15 @@ const SakEdit = () => {
   const [error, setError] = useState(contextError);
   const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
   const [loading, setLoading] = useState(contextLoading);
+  const [maalingFormState, setMaalingFormState] = useMaalingFormState(
+    maaling,
+    verksemdList,
+    advisors
+  );
 
-  const defaultState: SakFormState = {
-    navn: maaling?.navn ?? '',
-    loeysingList: maaling?.loeysingList
-      ? maaling.loeysingList.map((l) => ({ loeysing: l, verksemd: l }))
-      : [],
-    testregelList: regelsettList[0].testregelList,
-    maxLinksPerPage: maaling?.crawlParameters?.maxLinksPerPage ?? 100,
-    numLinksToSelect: maaling?.crawlParameters?.numLinksToSelect ?? 10,
-    sakType: undefined,
-    advisor: undefined,
-    sakNumber: undefined,
-  };
-
-  const [maalingFormState, setMaalingFormState] =
-    useState<SakFormState>(defaultState);
+  useEffect(() => {
+    setLoading(contextLoading);
+  }, [contextLoading]);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
     const doEditMaaling = async () => {
@@ -57,6 +53,7 @@ const SakEdit = () => {
           loeysingIdList: maalingFormState.loeysingList.map(
             (l) => l.loeysing.id
           ),
+          testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
@@ -67,8 +64,9 @@ const SakEdit = () => {
           const maaling = await updateMaaling(maalingEdit);
           setMaaling(maaling);
           setAlert({
-            type: 'success',
+            severity: 'success',
             message: 'Flott! vi har lagret dine endringer',
+            clearMessage: () => setAlert(undefined),
           });
         } catch (e) {
           setError(toError(e, 'Kunne ikkje lage sak'));
@@ -84,9 +82,11 @@ const SakEdit = () => {
   }, []);
 
   const sakSteps =
-    maaling?.status === 'planlegging' ? defaultSakSteps : startedSakSteps;
+    contextLoading || maaling?.status === 'planlegging'
+      ? defaultSakSteps
+      : startedSakSteps;
 
-  const formStepState = useSakForm(sakSteps);
+  const formStepState = useSakForm({ steps: sakSteps, isEdit: true });
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
@@ -108,9 +108,17 @@ const SakEdit = () => {
         error={error}
         regelsettList={regelsettList}
         loeysingList={loeysingList}
+        utvalList={utvalList}
+        verksemdList={verksemdList}
         advisors={advisors}
       />
-      {alert && <Alert type={alert.type} message={alert.message} />}
+      {alert && (
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
     </>
   );
 };

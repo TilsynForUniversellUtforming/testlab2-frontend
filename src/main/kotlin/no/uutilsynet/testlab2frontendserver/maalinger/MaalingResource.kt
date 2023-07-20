@@ -12,8 +12,10 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
@@ -31,15 +33,16 @@ class MaalingResource(
   val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
+  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
 
   @GetMapping
   fun listMaaling(): List<Maaling> {
     return try {
-      logger.debug("henter målinger fra $maalingUrl")
+      logger.debug("henter målingar fra $maalingUrl")
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
-      logger.error("klarte ikke å hente målinger", e)
-      throw RuntimeException("Klarte ikke å hente målinger")
+      logger.error("klarte ikke å hente målingar", e)
+      throw RuntimeException("Klarte ikkje å hente målingar")
     }
   }
 
@@ -146,7 +149,7 @@ class MaalingResource(
             getMaaling(maalingId)
           }
           .getOrElse {
-            ResponseEntity.internalServerError().body("Kunne ikke oppdatere måling ${it.message}")
+            ResponseEntity.internalServerError().body("Kunne ikkje oppdatere måling ${it.message}")
           }
 
   @GetMapping("{maalingId}/crawlresultat")
@@ -159,7 +162,7 @@ class MaalingResource(
             }
           }
           .getOrElse {
-            logger.info("Kunne ikkje hente crawl resultat for måling med id $id")
+            logger.error("Kunne ikkje hente crawl resultat for måling med id $id")
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
 
@@ -179,18 +182,30 @@ class MaalingResource(
   @PutMapping("{maalingId}/restart")
   fun restartCrawlForMaalingLoeysing(
       @PathVariable maalingId: Int,
+      @RequestParam process: RestartProcess,
       @RequestBody loeysingIdList: IdList,
   ): ResponseEntity<out Any> =
       runCatching {
+            val status =
+                if (process == RestartProcess.crawling) MaalingStatus.crawling.status
+                else MaalingStatus.testing.status
+
             restTemplate.put(
                 "${maalingUrl}/${maalingId}/status",
-                HttpEntity(
-                    mapOf(
-                        "status" to MaalingStatus.crawling.status,
-                        "loeysingIdList" to loeysingIdList.idList)))
+                HttpEntity(mapOf("status" to status, "loeysingIdList" to loeysingIdList.idList)))
             getMaaling(maalingId)
           }
           .getOrElse {
-            ResponseEntity.internalServerError().body("Kunne ikkje starte crawling(er) på nytt")
+            ResponseEntity.internalServerError().body("Kunne ikkje starte $process(er) på nytt")
+          }
+
+  private fun getTestregelListForMaaling(maalingId: Int): List<Testregel> =
+      runCatching {
+            logger.debug("Henter testreglar for måling $maalingId")
+            restTemplate.getList<Testregel>("$testregelUrl?maalingId=$maalingId")
+          }
+          .getOrElse {
+            logger.error("Feila ved henting av testreglar for måling $maalingId", it)
+            throw RuntimeException("Klarte ikkje å hente testreglar")
           }
 }
