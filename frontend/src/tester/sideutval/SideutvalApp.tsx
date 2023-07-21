@@ -18,6 +18,7 @@ import {
   RestartRequest,
 } from '../../maaling/api/types';
 import { MaalingContext } from '../../maaling/types';
+import StatusChart from '../chart/StatusChart';
 import CrawlingList from './CrawlingList';
 
 const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
@@ -137,16 +138,23 @@ const SideutvalApp = () => {
   }
 
   return (
-    <CrawlingList
-      id={id}
-      maaling={maaling}
-      crawlList={crawlResultat}
-      onClickRestart={onClickRestart}
-      refresh={doFetchData}
-      loading={loading}
-      error={error}
-      refreshing={refreshing}
-    />
+    <>
+      <StatusChart
+        numFinished={maaling?.crawlStatistics?.numFinished ?? 0}
+        numPerforming={maaling?.crawlStatistics?.numPerforming ?? 0}
+        numError={maaling?.crawlStatistics?.numError ?? 0}
+      />
+      <CrawlingList
+        id={id}
+        maaling={maaling}
+        crawlList={crawlResultat}
+        onClickRestart={onClickRestart}
+        refresh={doFetchData}
+        loading={loading}
+        error={error}
+        refreshing={refreshing}
+      />
+    </>
   );
 };
 

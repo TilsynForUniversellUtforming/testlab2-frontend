@@ -1,20 +1,16 @@
-import './result-chart.scss';
+import './status-chart.scss';
 
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
 
 interface ChartProps {
-  talSiderSamsvar: number;
-  talSiderBrot: number;
-  talSiderIkkjeForekomst: number;
+  numPerforming: number;
+  numFinished: number;
+  numError: number;
 }
 
-const TestResultChart = ({
-  talSiderSamsvar,
-  talSiderBrot,
-  talSiderIkkjeForekomst,
-}: ChartProps) => {
+const StatusChart = ({ numPerforming, numFinished, numError }: ChartProps) => {
   const options: Highcharts.Options = {
     chart: {
       type: 'column',
@@ -35,6 +31,7 @@ const TestResultChart = ({
       title: {
         text: 'Sider ',
       },
+      tickInterval: 1,
     },
     tooltip: {
       valueSuffix: ' sider',
@@ -48,18 +45,21 @@ const TestResultChart = ({
     series: [
       {
         type: 'column',
-        name: 'Samsvar',
-        data: [{ y: talSiderSamsvar }],
+        name: 'Tester',
+        color: '#0062ba',
+        data: [{ y: numPerforming }],
       },
       {
         type: 'column',
-        name: 'Brot',
-        data: [{ y: talSiderBrot }],
+        name: 'Ferdig',
+        color: '#118849',
+        data: [{ y: numFinished }],
       },
       {
         type: 'column',
-        name: 'Ikkje forekomst',
-        data: [{ y: talSiderIkkjeForekomst }],
+        name: 'Feila',
+        color: '#e02e49',
+        data: [{ y: numError }],
       },
     ],
   };
@@ -71,4 +71,4 @@ const TestResultChart = ({
   );
 };
 
-export default TestResultChart;
+export default StatusChart;
