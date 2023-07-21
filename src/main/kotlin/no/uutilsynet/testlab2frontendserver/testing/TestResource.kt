@@ -2,7 +2,7 @@ package no.uutilsynet.testlab2frontendserver.testing
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.testing.dto.TestResultat
+import no.uutilsynet.testlab2frontendserver.testing.dto.testresultat.TestResultat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
