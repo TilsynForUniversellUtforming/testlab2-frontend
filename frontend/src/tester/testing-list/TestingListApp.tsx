@@ -11,7 +11,7 @@ import { isNotDefined } from '../../common/util/util';
 import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
 import { RestartRequest, TestResult } from '../../maaling/api/types';
 import { MaalingContext } from '../../maaling/types';
-import TestResultChart from './chart/TestResultChart';
+import StatusChart from '../chart/StatusChart';
 import {
   getTestingListColumns,
   getTestingListColumnsLoading,
@@ -152,10 +152,10 @@ const TestingListApp = () => {
 
   return (
     <>
-      <TestResultChart
-        talSiderSamsvar={talSiderSamsvar}
-        talSiderBrot={talSiderBrot}
-        talSiderIkkjeForekomst={talSiderIkkjeForekomst}
+      <StatusChart
+        numFinished={maaling?.testStatistics?.numFinished ?? 0}
+        numPerforming={maaling?.testStatistics?.numPerforming ?? 0}
+        numError={maaling?.testStatistics?.numError ?? 0}
       />
       <UserActionTable<TestResult>
         heading="Testgjennomføring"
