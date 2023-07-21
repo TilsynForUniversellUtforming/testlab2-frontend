@@ -1,3 +1,5 @@
+import './result-chart.scss';
+
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
@@ -62,7 +64,11 @@ const TestResultChart = ({
     ],
   };
 
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
+  return (
+    <div className="status-chart">
+      <HighchartsReact highcharts={Highcharts} options={options} />
+    </div>
+  );
 };
 
 export default TestResultChart;
