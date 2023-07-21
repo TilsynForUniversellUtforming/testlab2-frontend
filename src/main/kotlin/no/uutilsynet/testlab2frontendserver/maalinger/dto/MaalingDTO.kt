@@ -11,6 +11,6 @@ data class MaalingDTO(
     val loeysingList: List<Loeysing>?,
     val testregelList: List<Testregel>?,
     val crawlResultat: List<CrawlResultatDTO>?,
-    val testKoeyringar: List<TestKoeyring>?,
+    val testKoeyringar: List<TestKoeyringDTO>?,
     val crawlParameters: CrawlParameters?,
 )

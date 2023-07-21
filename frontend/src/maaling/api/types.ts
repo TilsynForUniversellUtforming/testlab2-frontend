@@ -53,11 +53,25 @@ export type JobStatistics = {
   numError: number;
 };
 
+export type AggregatedTestresult = {
+  testregelId: string;
+  suksesskriterium: string;
+  fleireSuksesskriterium: string[];
+  talElementSamsvar: number;
+  talElementBrot: number;
+  talElementVarsel: number;
+  talSiderSamsvar: number;
+  talSiderBrot: number;
+  talSiderIkkjeForekomst: number;
+};
+
 export type TestResult = {
-  tilstand: TestJobStatus;
   loeysing: Loeysing;
+  tilstand: TestJobStatus;
   sistOppdatert: string;
   framgang?: Framgang;
+  aggregatedResultList: AggregatedTestresult[];
+  compliancePercent?: number;
 };
 
 export type Maaling = {

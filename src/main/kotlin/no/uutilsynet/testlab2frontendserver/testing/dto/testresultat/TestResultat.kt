@@ -1,4 +1,4 @@
-package no.uutilsynet.testlab2frontendserver.testing.dto
+package no.uutilsynet.testlab2frontendserver.testing.dto.testresultat
 
 import java.net.URL
 import java.time.LocalDateTime

@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
+import LoadingBar from '../../common/loading-bar/LoadingBar';
 import StatusBadge from '../../common/status-badge/StatusBadge';
 import {
   HeaderCheckbox,
@@ -46,6 +47,18 @@ export const getTestingListColumns = (
       </Link>
     ),
     header: () => <>Løysing</>,
+  },
+  {
+    accessorFn: (row) => row.compliancePercent,
+    id: 'compliancePercent',
+    cell: ({ row }) => (
+      <LoadingBar
+        percentage={row.original.compliancePercent}
+        tooltip={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
+      />
+    ),
+    header: () => <>Resultat</>,
+    enableColumnFilter: false,
   },
   {
     accessorFn: (row) => row.loeysing.namn,
@@ -113,10 +126,25 @@ export const getTestingListColumnsLoading = (
     header: () => <>Løysing</>,
   },
   {
+    accessorFn: (row) => row.compliancePercent,
+    id: 'compliancePercent',
+    cell: ({ row }) => (
+      <LoadingBar
+        percentage={row.original.compliancePercent}
+        tooltip={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
+      />
+    ),
+    header: () => <>Resultat</>,
+    enableColumnFilter: false,
+  },
+  {
     accessorFn: (row) => row.loeysing.namn,
     id: 'namn',
     cell: (info) => info.getValue(),
     header: () => <>Verksemd</>,
+    meta: {
+      select: true,
+    },
   },
   {
     accessorFn: (row) => row.tilstand,
