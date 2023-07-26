@@ -49,6 +49,12 @@ export const getTestingListColumns = (
     header: () => <>Løysing</>,
   },
   {
+    accessorFn: (row) => row.loeysing.namn,
+    id: 'namn',
+    cell: (info) => info.getValue(),
+    header: () => <>Verksemd</>,
+  },
+  {
     accessorFn: (row) => row.compliancePercent,
     id: 'compliancePercent',
     cell: ({ row }) => (
@@ -59,12 +65,6 @@ export const getTestingListColumns = (
     ),
     header: () => <>Resultat</>,
     enableColumnFilter: false,
-  },
-  {
-    accessorFn: (row) => row.loeysing.namn,
-    id: 'namn',
-    cell: (info) => info.getValue(),
-    header: () => <>Verksemd</>,
   },
   {
     accessorFn: (row) => row.tilstand,

@@ -1,22 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import AlertTimed from '../../common/alert/AlertTimed';
+import AlertTimed from '../../../common/alert/AlertTimed';
 import AppRoutes, {
   appRoutes,
   getFullPath,
   idPath,
-} from '../../common/appRoutes';
-import toError from '../../common/error/util';
-import { useEffectOnce } from '../../common/hooks/useEffectOnce';
-import UserActionTable from '../../common/table/UserActionTable';
-import { extractDomain } from '../../common/util/stringutils';
-import { isNotDefined } from '../../common/util/util';
-import { restart } from '../../maaling/api/maaling-api';
-import { Maaling, RestartRequest, TestResult } from '../../maaling/api/types';
-import { MaalingContext, MaalingTestStatus } from '../../maaling/types';
-import fetchTestResultatLoeysing from '../api/tester-api';
-import { TestResultat } from '../api/types';
+} from '../../../common/appRoutes';
+import toError from '../../../common/error/util';
+import { useEffectOnce } from '../../../common/hooks/useEffectOnce';
+import UserActionTable from '../../../common/table/UserActionTable';
+import { extractDomain } from '../../../common/util/stringutils';
+import { isNotDefined } from '../../../common/util/util';
+import { restart } from '../../../maaling/api/maaling-api';
+import {
+  Maaling,
+  RestartRequest,
+  TestResult,
+} from '../../../maaling/api/types';
+import { MaalingContext, MaalingTestStatus } from '../../../maaling/types';
+import fetchTestResultatLoeysing from '../../api/tester-api';
+import { TestResultat } from '../../api/types';
 import { getTestresultatColumns } from './TestResultatColumns';
 
 const getSelectedLoeysing = (

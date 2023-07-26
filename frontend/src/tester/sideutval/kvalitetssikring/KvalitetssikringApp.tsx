@@ -4,24 +4,24 @@ import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import AppTitle from '../../common/app-title/AppTitle';
+import AppTitle from '../../../common/app-title/AppTitle';
 import AppRoutes, {
   appRoutes,
   getFullPath,
   idPath,
-} from '../../common/appRoutes';
-import ConfirmModalButton from '../../common/confirm/ConfirmModalButton';
-import toError from '../../common/error/util';
-import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
-import TestlabTable from '../../common/table/TestlabTable';
-import { extractDomain } from '../../common/util/stringutils';
-import { restart } from '../../maaling/api/maaling-api';
+} from '../../../common/appRoutes';
+import ConfirmModalButton from '../../../common/confirm/ConfirmModalButton';
+import toError from '../../../common/error/util';
+import { RowCheckbox } from '../../../common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '../../../common/table/TestlabTable';
+import { extractDomain } from '../../../common/util/stringutils';
+import { restart } from '../../../maaling/api/maaling-api';
 import {
   CrawlResultat,
   Maaling,
   RestartRequest,
-} from '../../maaling/api/types';
-import { CrawlUrl, MaalingContext } from '../../maaling/types';
+} from '../../../maaling/api/types';
+import { CrawlUrl, MaalingContext } from '../../../maaling/types';
 
 const getLoeysingCrawlResultat = (
   loeysingId?: string,

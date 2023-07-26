@@ -133,23 +133,6 @@ const TestingListApp = () => {
     return <Outlet context={maalingContext} />;
   }
 
-  const talSiderSamsvar = testResult
-    .map((tr) => tr.aggregatedResultList.map((arl) => arl.talSiderSamsvar))
-    .flat()
-    .reduce((a, b) => a + b, 0);
-
-  const talSiderBrot = testResult
-    .map((tr) => tr.aggregatedResultList.map((arl) => arl.talSiderBrot))
-    .flat()
-    .reduce((a, b) => a + b, 0);
-
-  const talSiderIkkjeForekomst = testResult
-    .map((tr) =>
-      tr.aggregatedResultList.map((arl) => arl.talSiderIkkjeForekomst)
-    )
-    .flat()
-    .reduce((a, b) => a + b, 0);
-
   return (
     <>
       <StatusChart
