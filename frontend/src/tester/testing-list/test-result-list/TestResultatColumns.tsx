@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { TestResultat } from '../api/types';
+import { TestResultat } from '../../api/types';
 
 const decodeBase64 = (base64String?: string) => {
   if (typeof base64String === 'undefined') {
