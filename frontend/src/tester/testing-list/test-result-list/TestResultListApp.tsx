@@ -1,29 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-
-import AlertTimed from '../../../common/alert/AlertTimed';
-import AppRoutes, {
-  appRoutes,
-  getFullPath,
-  idPath,
-} from '../../../common/appRoutes';
-import toError from '../../../common/error/util';
-import { useEffectOnce } from '../../../common/hooks/useEffectOnce';
-import UserActionTable from '../../../common/table/UserActionTable';
-import { extractDomain } from '../../../common/util/stringutils';
-import { isNotDefined } from '../../../common/util/util';
-import { restart } from '../../../maaling/api/maaling-api';
+import AlertTimed from '@common/alert/AlertTimed';
+import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import toError from '@common/error/util';
+import UserActionTable from '@common/table/UserActionTable';
+import { extractDomain } from '@common/util/stringutils';
+import { isNotDefined } from '@common/util/util';
+import { restart } from '@maaling/api/maaling-api';
 import {
+  AggregatedTestresult,
   Maaling,
   RestartRequest,
   TestResult,
-} from '../../../maaling/api/types';
-import { MaalingContext, MaalingTestStatus } from '../../../maaling/types';
-import fetchTestResultatLoeysing from '../../api/tester-api';
-import { TestResultat } from '../../api/types';
-import { getTestresultatColumns } from './TestResultatColumns';
+} from '@maaling/api/types';
+import { MaalingContext, MaalingTestStatus } from '@maaling/types';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-const getSelectedLoeysing = (
+import { getAggregatedResultColumns } from './TestResultColumns';
+
+const getSelectedTestResult = (
   loeysingId?: string,
   maaling?: Maaling
 ): TestResult | undefined =>
@@ -31,59 +25,37 @@ const getSelectedLoeysing = (
 
 const TestResultListApp = () => {
   const navigate = useNavigate();
-  const { id, loeysingId } = useParams();
+  const { loeysingId } = useParams();
 
-  const { contextError, contextLoading, maaling, setMaaling }: MaalingContext =
-    useOutletContext();
+  const {
+    contextError,
+    contextLoading,
+    maaling,
+    setMaaling,
+    refreshMaaling,
+  }: MaalingContext = useOutletContext();
 
-  const [testResult, setTestresult] = useState<TestResultat[]>([]);
+  const [testResult, setTestresult] = useState<AggregatedTestresult[]>([]);
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
-  const [selectedLoeysing, setSelectedLoeysing] = useState(
-    getSelectedLoeysing(loeysingId, maaling)
+  const [loeysingTestResult, setLoeysingTestResult] = useState(
+    getSelectedTestResult(loeysingId, maaling)
   );
   const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
     loading: false,
     message: undefined,
   });
 
-  const testResultatColumns = useMemo(() => getTestresultatColumns(), []);
+  const testResultatColumns = useMemo(() => getAggregatedResultColumns(), []);
 
   useEffect(() => {
     setLoading(contextLoading);
     if (!contextLoading) {
-      setSelectedLoeysing(getSelectedLoeysing(loeysingId, maaling));
+      const testResult = getSelectedTestResult(loeysingId, maaling);
+      setLoeysingTestResult(testResult);
+      setTestresult(testResult?.aggregatedResultList ?? []);
     }
   }, [contextLoading]);
-
-  const fetchTestresultat = useCallback(() => {
-    setLoading(true);
-    setError(undefined);
-
-    const doFetchTestresultat = async () => {
-      try {
-        if (id && loeysingId) {
-          const resultat = await fetchTestResultatLoeysing(
-            Number(id),
-            Number(loeysingId)
-          );
-          setTestresult(resultat);
-        } else {
-          setError(new Error('Testresultat finnes ikkje'));
-        }
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje finne testresultat'));
-      }
-    };
-
-    doFetchTestresultat().finally(() => {
-      setLoading(false);
-    });
-  }, []);
-
-  useEffectOnce(() => {
-    fetchTestresultat();
-  });
 
   const onClickRestart = useCallback(() => {
     setLoading(true);
@@ -92,8 +64,8 @@ const TestResultListApp = () => {
       setError(new Error('Måling finnes ikkje'));
       return;
     } else if (
-      isNotDefined(selectedLoeysing?.loeysing) ||
-      !selectedLoeysing?.loeysing
+      isNotDefined(loeysingTestResult?.loeysing) ||
+      !loeysingTestResult?.loeysing
     ) {
       setError(new Error('Løysing finnes ikkje på måling'));
       return;
@@ -103,7 +75,7 @@ const TestResultListApp = () => {
       try {
         const restartCrawlingRequest: RestartRequest = {
           maalingId: maaling.id,
-          loeysingIdList: { idList: [selectedLoeysing.loeysing.id] },
+          loeysingIdList: { idList: [loeysingTestResult.loeysing.id] },
           process: 'test',
         };
 
@@ -127,8 +99,8 @@ const TestResultListApp = () => {
 
   return (
     <>
-      <UserActionTable<TestResultat>
-        heading={`Resultat ${extractDomain(selectedLoeysing?.loeysing?.url)}`}
+      <UserActionTable<AggregatedTestresult>
+        heading={`Resultat ${extractDomain(loeysingTestResult?.loeysing?.url)}`}
         subHeading={`Måling: ${maaling?.navn ?? ''}`}
         linkPath={
           maaling
@@ -142,7 +114,7 @@ const TestResultListApp = () => {
           data: testResult,
           defaultColumns: testResultatColumns,
           loading: loading,
-          onClickRetry: fetchTestresultat,
+          onClickRetry: refreshMaaling,
           displayError: {
             error: error,
           },
@@ -156,7 +128,7 @@ const TestResultListApp = () => {
               modalProps: {
                 title: 'Køyr test på nytt',
                 message: `Vil du køyre test på nytt for ${extractDomain(
-                  selectedLoeysing?.loeysing?.url
+                  loeysingTestResult?.loeysing?.url
                 )}?`,
                 onConfirm: onClickRestart,
               },
@@ -166,7 +138,7 @@ const TestResultListApp = () => {
               modalProps: {
                 title: 'Ta løysing ut av måling',
                 message: `Vil du køyre test på nytt for ${extractDomain(
-                  selectedLoeysing?.loeysing?.url
+                  loeysingTestResult?.loeysing?.url
                 )}?`,
                 onConfirm: () =>
                   setTestStatus({

@@ -67,20 +67,22 @@ object AggregertResultatDTODummy {
             listOf("3.1.1"),
             listOf("2.1.1", "2.1.3"))
 
-    val pagesSuccess = Random.nextInt(0, pagesCrawled)
-
-    return testregelIds.mapIndexed { index, testregelId ->
-      AggregertResultatDTO(
-          maalingId = maalingId,
-          loeysing = loeysing,
-          testregelId = testregelId,
-          suksesskriterium = suksesskriteriums[index],
-          fleireSuksesskriterium = fleireSuksesskriteriums[index],
-          talElementSamsvar = Random.nextInt(0, 100),
-          talSiderSamsvar = pagesSuccess,
-          talSiderBrot = pagesCrawled - pagesSuccess,
-          talSiderIkkjeForekomst = 0,
-          talElementBrot = Random.nextInt(0, 100))
-    }
+    return testregelIds
+        .mapIndexed { index, testregelId ->
+          val pagesSuccess = Random.nextInt(0, pagesCrawled)
+          AggregertResultatDTO(
+              maalingId = maalingId,
+              loeysing = loeysing,
+              testregelId = testregelId,
+              suksesskriterium = suksesskriteriums[index],
+              fleireSuksesskriterium = fleireSuksesskriteriums[index],
+              talElementSamsvar = Random.nextInt(0, 100),
+              talSiderSamsvar = pagesSuccess,
+              talSiderBrot = pagesCrawled - pagesSuccess,
+              talSiderIkkjeForekomst = 0,
+              talElementBrot = Random.nextInt(0, 100))
+        }
+        .sortedWith(
+            compareBy({ it.loeysing.id }, { it.testregelId.replace("QW-ACT-R", "").toInt() }))
   }
 }

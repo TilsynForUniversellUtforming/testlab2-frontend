@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
+import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggegatedTestresultTestregel
@@ -69,6 +70,16 @@ fun mergeLists(
   return testKoeyringList.map { testKoeyring ->
     val aggregatedResultList =
         resultMap[testKoeyring.loeysing]?.map { result ->
+          val totalPages =
+              result.talSiderSamsvar + result.talSiderBrot + result.talSiderIkkjeForekomst
+          val compliancePercent =
+              if (totalPages > 0) {
+                val compliantPages = result.talSiderSamsvar + result.talSiderIkkjeForekomst
+                ((compliantPages.toDouble() / totalPages) * 100).roundToInt()
+              } else {
+                100
+              }
+
           AggegatedTestresultTestregel(
               testregelId = result.testregelId,
               suksesskriterium = result.suksesskriterium,
@@ -77,18 +88,14 @@ fun mergeLists(
               talElementBrot = result.talElementBrot,
               talSiderSamsvar = result.talSiderSamsvar,
               talSiderBrot = result.talSiderBrot,
-              talSiderIkkjeForekomst = result.talSiderIkkjeForekomst)
+              talSiderIkkjeForekomst = result.talSiderIkkjeForekomst,
+              compliancePercent = compliancePercent)
         }
+            ?: emptyList()
 
     val compliancePercent =
-        aggregatedResultList?.let { resultList ->
-          val totalPages = resultList.sumOf { it.talSiderSamsvar + it.talSiderBrot }
-          if (totalPages > 0) {
-            (resultList.sumOf { it.talSiderSamsvar } * 100) / totalPages
-          } else {
-            0
-          }
-        }
+        if (aggregatedResultList.isEmpty()) 100
+        else aggregatedResultList.map { it.compliancePercent.toDouble() }.average().roundToInt()
 
     Testresult(
         loeysing = testKoeyring.loeysing,

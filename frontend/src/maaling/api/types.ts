@@ -63,6 +63,7 @@ export type AggregatedTestresult = {
   talSiderSamsvar: number;
   talSiderBrot: number;
   talSiderIkkjeForekomst: number;
+  compliancePercent?: number;
 };
 
 export type TestResult = {

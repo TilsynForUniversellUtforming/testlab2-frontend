@@ -9,7 +9,7 @@ export const capitalize = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
 export const sanitizeLabel = (label: string) =>
-  capitalize(label.replace('_', ' ').toLowerCase());
+  capitalize(label.replace('_', ' '));
 
 export const extractDomain = (url?: string): string => {
   if (!url) return '';

@@ -22,12 +22,12 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
       label: 'Alle',
       value: '',
     };
-    const options: Option[] = Array.from(
-      column.getFacetedUniqueValues().keys()
-    ).map((value) => ({
-      label: sanitizeLabel(value),
-      value: value,
-    }));
+    const options: Option[] = Array.from(column.getFacetedUniqueValues().keys())
+      .map((value) => ({
+        label: sanitizeLabel(value),
+        value: value,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
     options.unshift(defaultOption);
 
     return (

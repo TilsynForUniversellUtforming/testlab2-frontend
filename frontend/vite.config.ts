@@ -14,4 +14,10 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
   },
+  resolve: {
+    alias: {
+      '@common': '/src/common',
+      '@maaling': '/src/maaling',
+    },
+  },
 });
