@@ -1,5 +1,6 @@
-import { AppRoute } from '../common/appRoutes';
-import { AppContext } from '../common/types';
+import { AppRoute } from '@common/appRoutes';
+import { AppContext } from '@common/types';
+
 import { Loeysing, Utval } from '../loeysingar/api/types';
 import { Maaling } from '../maaling/api/types';
 import { Testregel, TestRegelsett } from '../testreglar/api/types';

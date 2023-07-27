@@ -1,6 +1,5 @@
+import appRoutes from '@common/appRoutes';
 import { NavLink } from 'react-router-dom';
-
-import appRoutes from '../common/appRoutes';
 
 const Navbar = () => {
   return (

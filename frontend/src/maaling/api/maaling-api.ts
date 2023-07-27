@@ -1,4 +1,5 @@
-import { responseToJson } from '../../common/util/api/util';
+import { responseToJson } from '@common/util/api/util';
+
 import {
   IdList,
   Maaling,

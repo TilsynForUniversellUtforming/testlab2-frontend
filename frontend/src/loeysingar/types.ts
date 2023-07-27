@@ -1,4 +1,5 @@
-import { AppContext } from '../common/types';
+import { AppContext } from '@common/types';
+
 import { Loeysing } from './api/types';
 
 export interface LoeysingContext extends AppContext {

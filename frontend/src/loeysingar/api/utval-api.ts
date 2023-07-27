@@ -1,4 +1,5 @@
-import { responseToJson } from '../../common/util/api/util';
+import { responseToJson } from '@common/util/api/util';
+
 import { Utval } from './types';
 
 export const fetchUtvalList = async (): Promise<Utval[]> =>

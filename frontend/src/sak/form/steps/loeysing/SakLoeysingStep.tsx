@@ -1,3 +1,8 @@
+import fetchFeatureToggles from '@common/features/hooks/fetchFeatureToggles';
+import useValidate from '@common/form/hooks/useValidate';
+import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import TestlabTable from '@common/table/TestlabTable';
+import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
   ButtonColor,
@@ -11,11 +16,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import fetchFeatureToggles from '../../../../common/features/hooks/fetchFeatureToggles';
-import useValidate from '../../../../common/form/hooks/useValidate';
-import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
-import TestlabTable from '../../../../common/table/TestlabTable';
-import { joinStringsToList } from '../../../../common/util/stringutils';
 import { Loeysing, Utval } from '../../../../loeysingar/api/types';
 import { Verksemd } from '../../../../verksemder/api/types';
 import {

@@ -1,9 +1,10 @@
+import useError from '@common/hooks/useError';
+import UserActionTable from '@common/table/UserActionTable';
 import { List, ListItem } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import UserActionTable from '../../common/table/UserActionTable';
 import { TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 
@@ -11,7 +12,7 @@ const RegelsettList = () => {
   const { contextError, contextLoading, regelsett, refresh }: TestregelContext =
     useOutletContext();
 
-  const [error, setError] = useState<Error | undefined>(contextError);
+  const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState<boolean>(contextLoading);
 
   useEffect(() => {

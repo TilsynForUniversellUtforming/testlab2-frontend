@@ -1,3 +1,11 @@
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import ErrorCard from '@common/error/ErrorCard';
+import toError from '@common/error/util';
+import useInterval from '@common/hooks/useInterval';
+import { isNotDefined } from '@common/util/util';
+import { fetchMaaling, restart } from '@maaling/api/maaling-api';
+import { CrawlResultat, Maaling, RestartRequest } from '@maaling/api/types';
+import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Outlet,
@@ -6,18 +14,6 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
-import ErrorCard from '../../common/error/ErrorCard';
-import toError from '../../common/error/util';
-import useInterval from '../../common/hooks/useInterval';
-import { isNotDefined } from '../../common/util/util';
-import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
-import {
-  CrawlResultat,
-  Maaling,
-  RestartRequest,
-} from '../../maaling/api/types';
-import { MaalingContext } from '../../maaling/types';
 import StatusChart from '../chart/StatusChart';
 import CrawlingList from './CrawlingList';
 

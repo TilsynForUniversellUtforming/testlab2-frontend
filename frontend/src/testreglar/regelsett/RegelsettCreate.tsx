@@ -1,10 +1,8 @@
+import useValidate, { testreglarMessage } from '@common/form/hooks/useValidate';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import useValidate, {
-  testreglarMessage,
-} from '../../common/form/hooks/useValidate';
 import { Testregel, TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';

@@ -1,18 +1,17 @@
+import useValidate, { testreglarMessage } from '@common/form/hooks/useValidate';
+import TestlabForm from '@common/form/TestlabForm';
+import {
+  HeaderCheckbox,
+  RowCheckbox,
+} from '@common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '@common/table/TestlabTable';
+import { CellCheckboxId } from '@common/table/types';
 import { ColumnDef } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import useValidate, {
-  testreglarMessage,
-} from '../../common/form/hooks/useValidate';
-import TestlabForm from '../../common/form/TestlabForm';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '../../common/table/control/toggle/IndeterminateCheckbox';
-import TestlabTable from '../../common/table/TestlabTable';
 import { Testregel, TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 
@@ -64,7 +63,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
   const testRegelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
       {
-        id: 'Handling',
+        id: CellCheckboxId,
         header: ({ table }) => <HeaderCheckbox table={table} />,
         cell: ({ row }) => (
           <RowCheckbox

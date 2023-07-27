@@ -1,6 +1,6 @@
+import { Maaling } from '@maaling/api/types';
 import { useEffect, useState } from 'react';
 
-import { Maaling } from '../../maaling/api/types';
 import { User } from '../../user/api/types';
 import { Verksemd } from '../../verksemder/api/types';
 import { SakFormState } from '../types';

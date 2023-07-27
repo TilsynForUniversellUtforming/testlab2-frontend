@@ -1,6 +1,5 @@
+import { editPath } from '@common/appRoutes';
 import { NavLink } from 'react-router-dom';
-
-import { editPath } from '../../common/appRoutes';
 
 const SakNavbar = () => {
   return (

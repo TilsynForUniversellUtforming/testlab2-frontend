@@ -1,10 +1,10 @@
+import AlertTimed from '@common/alert/AlertTimed';
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import TestlabLoadingButton from '@common/button/TestlabLoadingButton';
+import StatusBadge from '@common/status-badge/StatusBadge';
 import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 
-import AlertTimed from '../../../common/alert/AlertTimed';
-import { appRoutes, getFullPath, idPath } from '../../../common/appRoutes';
-import TestlabLoadingButton from '../../../common/button/TestlabLoadingButton';
-import StatusBadge from '../../../common/status-badge/StatusBadge';
 import { Maaling } from '../../api/types';
 import useMaalingOverviewStatus from '../../hooks/useMaalingOverviewStatus';
 import { MaalingTestStatus } from '../../types';

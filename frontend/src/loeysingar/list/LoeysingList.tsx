@@ -1,10 +1,10 @@
+import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
+import toError from '@common/error/util';
+import UserActionTable from '@common/table/UserActionTable';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import appRoutes from '../../common/appRoutes';
-import toError from '../../common/error/util';
-import UserActionTable from '../../common/table/UserActionTable';
 import { deleteLoeysingList } from '../api/loeysing-api';
 import { Loeysing } from '../api/types';
 import { LoeysingContext } from '../types';
@@ -18,6 +18,7 @@ const LoeysingList = () => {
     contextError,
     refresh,
   }: LoeysingContext = useOutletContext();
+  const navigate = useNavigate();
 
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
@@ -105,6 +106,13 @@ const LoeysingList = () => {
             },
           },
         ],
+        onClickCallback: (row) =>
+          navigate(
+            getFullPath(appRoutes.LOEYSING_EDIT, {
+              pathParam: idPath,
+              id: String(row?.original.id),
+            })
+          ),
       }}
     />
   );

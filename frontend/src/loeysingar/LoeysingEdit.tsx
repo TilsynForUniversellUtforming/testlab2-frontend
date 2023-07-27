@@ -1,8 +1,8 @@
+import ErrorCard from '@common/error/ErrorCard';
 import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import ErrorCard from '../common/error/ErrorCard';
 import { updateLoeysing } from './api/loeysing-api';
 import { Loeysing, LoeysingInit } from './api/types';
 import LoeysingForm from './form/LoeysingForm';

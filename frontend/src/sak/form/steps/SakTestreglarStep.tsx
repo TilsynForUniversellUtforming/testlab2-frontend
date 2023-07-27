@@ -1,3 +1,12 @@
+import useValidate from '@common/form/hooks/useValidate';
+import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import {
+  HeaderCheckbox,
+  RowCheckbox,
+} from '@common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '@common/table/TestlabTable';
+import { CellCheckboxId } from '@common/table/types';
+import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
   ButtonColor,
@@ -9,14 +18,6 @@ import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import useValidate from '../../../common/form/hooks/useValidate';
-import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '../../../common/table/control/toggle/IndeterminateCheckbox';
-import TestlabTable from '../../../common/table/TestlabTable';
-import { joinStringsToList } from '../../../common/util/stringutils';
 import { Testregel, TestRegelsett } from '../../../testreglar/api/types';
 import { SakFormBaseProps, SakFormState } from '../../types';
 import SakStepFormWrapper from '../SakStepFormWrapper';
@@ -85,7 +86,7 @@ const SakTestreglarStep = ({
   const testregelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
       {
-        id: 'Handling',
+        id: CellCheckboxId,
         header: ({ table }) => <HeaderCheckbox table={table} />,
         cell: ({ row }) => (
           <RowCheckbox

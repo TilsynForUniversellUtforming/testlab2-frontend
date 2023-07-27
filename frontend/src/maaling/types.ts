@@ -1,4 +1,5 @@
-import { AppContext, Severity } from '../common/types';
+import { AppContext, Severity } from '@common/types';
+
 import { Loeysing } from '../loeysingar/api/types';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';

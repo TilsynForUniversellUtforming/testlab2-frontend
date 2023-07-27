@@ -17,6 +17,12 @@ body {
   h6 {
     font-family: 'Inter', sans-serif !important;
   }
+  a {
+    color: var(--fds-semantic-text-neutral-default);
+    &:hover {
+      color: var(--fds-semantic-text-neutral-subtle);
+    }
+  }
 }
 
 .app-container {

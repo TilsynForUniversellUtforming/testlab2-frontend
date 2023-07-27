@@ -1,11 +1,11 @@
 import './sak.scss';
 
+import AppTitle from '@common/app-title/AppTitle';
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import toError from '@common/error/util';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import AppTitle from '../common/app-title/AppTitle';
-import { appRoutes, getFullPath, idPath } from '../common/appRoutes';
-import toError from '../common/error/util';
 import { createMaaling } from '../maaling/api/maaling-api';
 import { MaalingInit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';

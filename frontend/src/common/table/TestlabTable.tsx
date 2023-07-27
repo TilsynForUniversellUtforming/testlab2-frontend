@@ -20,6 +20,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -80,6 +81,7 @@ export interface TestlabTableProps<T extends object> {
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
   loadingStateStatus?: string;
+  onClickCallback?: (row?: Row<T>) => void;
 }
 
 /**
@@ -99,6 +101,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @param {string} [props.loadingStateStatus] - The status to display when the table is loading.
+ * @param {(row?: Row<T>) => void} [props.onClickCallback] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
  * @returns {JSX.Element} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
@@ -116,6 +119,7 @@ const TestlabTable = <T extends object>({
   },
   rowActions,
   loadingStateStatus,
+  onClickCallback,
 }: TestlabTableProps<T>) => {
   const isLoading = loading ?? false;
   const [columns, setColumns] = useState<typeof defaultColumns>(() => [
@@ -219,7 +223,10 @@ const TestlabTable = <T extends object>({
         rowActions={rowActions}
         loadingStateStatus={loadingStateStatus}
       />
-      <Table className="testlab-table__table">
+      <Table
+        className="testlab-table__table"
+        selectRows={typeof onClickCallback !== 'undefined'}
+      >
         <TableHeader>
           <TableRow>
             {headerGroup.headers.map((header) => (
@@ -239,7 +246,11 @@ const TestlabTable = <T extends object>({
           )}
         </TableHeader>
         <TableBody>
-          <TestlabTableBody table={table} loading={isLoading} />
+          <TestlabTableBody<T>
+            table={table}
+            loading={isLoading}
+            onClickCallback={onClickCallback}
+          />
         </TableBody>
         <TableFooter>
           <TableRow>

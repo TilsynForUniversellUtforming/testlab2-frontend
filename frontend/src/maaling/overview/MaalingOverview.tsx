@@ -1,9 +1,9 @@
 import './maaling-overview.scss';
 
+import ErrorCard from '@common/error/ErrorCard';
 import React from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import ErrorCard from '../../common/error/ErrorCard';
 import { MaalingContext } from '../types';
 import MaalingParametersContainer from './parameters/MaalingParametersContainer';
 import MaalingSkeleton from './skeleton/MaalingSkeleton';
@@ -19,17 +19,31 @@ const MaalingOverview = () => {
     handleStartPublish,
     testStatus,
     clearTestStatus,
+    refreshMaaling,
   }: MaalingContext = useOutletContext();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   if (contextLoading) {
     return <MaalingSkeleton />;
   }
 
   if (contextError) {
-    return <ErrorCard error={contextError} />;
+    return (
+      <ErrorCard
+        error={contextError}
+        onClick={refreshMaaling}
+        buttonText="Prøv igjen"
+      />
+    );
   } else if (!maaling || !id) {
-    return <ErrorCard error={new Error('Finner ikkje måling')} />;
+    return (
+      <ErrorCard
+        error={new Error('Finner ikkje måling')}
+        onClick={() => navigate('..')}
+        buttonText="Tilbake"
+      />
+    );
   }
 
   return (

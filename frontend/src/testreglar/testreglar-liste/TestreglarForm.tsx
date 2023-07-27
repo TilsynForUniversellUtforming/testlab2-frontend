@@ -1,8 +1,8 @@
+import TestlabForm from '@common/form/TestlabForm';
+import { Option } from '@common/types';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import TestlabForm from '../../common/form/TestlabForm';
-import { Option } from '../../common/types';
 import { Testregel } from '../api/types';
 
 export interface Props {

@@ -1,20 +1,17 @@
 import './kvalitetssikring.scss';
 
+import AppTitle from '@common/app-title/AppTitle';
+import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import ConfirmModalButton from '@common/confirm/ConfirmModalButton';
+import toError from '@common/error/util';
+import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import TestlabTable from '@common/table/TestlabTable';
+import { CellCheckboxId } from '@common/table/types';
+import { extractDomain } from '@common/util/stringutils';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import AppTitle from '../../../common/app-title/AppTitle';
-import AppRoutes, {
-  appRoutes,
-  getFullPath,
-  idPath,
-} from '../../../common/appRoutes';
-import ConfirmModalButton from '../../../common/confirm/ConfirmModalButton';
-import toError from '../../../common/error/util';
-import { RowCheckbox } from '../../../common/table/control/toggle/IndeterminateCheckbox';
-import TestlabTable from '../../../common/table/TestlabTable';
-import { extractDomain } from '../../../common/util/stringutils';
 import { restart } from '../../../maaling/api/maaling-api';
 import {
   CrawlResultat,
@@ -104,7 +101,7 @@ const KvalitetssikringApp = () => {
   const urlColumns = useMemo<ColumnDef<CrawlUrl>[]>(
     () => [
       {
-        id: 'Handling',
+        id: CellCheckboxId,
         cell: ({ row }) => (
           <RowCheckbox row={row} ariaLabel={`Velg ${row.original.url}`} />
         ),

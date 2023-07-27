@@ -1,12 +1,10 @@
+import StatusBadge from '@common/status-badge/StatusBadge';
+import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import { CellCheckboxId } from '@common/table/types';
+import { sanitizeLabel } from '@common/util/stringutils';
+import { CrawlResultat, Maaling } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
-import { Link } from 'react-router-dom';
-
-import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
-import StatusBadge from '../../common/status-badge/StatusBadge';
-import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
-import { sanitizeLabel } from '../../common/util/stringutils';
-import { CrawlResultat, Maaling } from '../../maaling/api/types';
 
 /**
  * getCrawlColumns function returns an array of column definitions for CrawlResultat.
@@ -19,7 +17,7 @@ export const getCrawlColumns = (
   maaling: Maaling
 ): Array<ColumnDef<CrawlResultat>> => [
   {
-    id: 'Handling',
+    id: CellCheckboxId,
     cell: ({ row }) =>
       ['planlegging', 'testing', 'testing_ferdig'].includes(
         maaling.status
@@ -34,24 +32,7 @@ export const getCrawlColumns = (
   {
     accessorFn: (row) => row.loeysing.url,
     id: 'url',
-    cell: ({ row, getValue }) =>
-      row.original.type === 'ikkje_starta' ? (
-        String(getValue())
-      ) : (
-        <Link
-          to={getFullPath(
-            appRoutes.TEST_CRAWLING_RESULT_LIST,
-            { pathParam: idPath, id: String(maaling.id) },
-            {
-              pathParam: ':loeysingId',
-              id: String(row.original.loeysing.id),
-            }
-          )}
-          title={`Gå til løysing ${row.original.loeysing.url}`}
-        >
-          {String(getValue())}
-        </Link>
-      ),
+    cell: ({ getValue }) => getValue(),
     header: () => <>Løysing</>,
   },
   {
@@ -110,7 +91,7 @@ export const getCrawlColumns = (
  */
 export const getCrawlColumnsLoading = (): Array<ColumnDef<CrawlResultat>> => [
   {
-    id: 'Handling',
+    id: CellCheckboxId,
     cell: () => <></>,
     size: 1,
   },

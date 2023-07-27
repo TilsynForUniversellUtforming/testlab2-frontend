@@ -1,6 +1,6 @@
+import TestlabForm from '@common/form/TestlabForm';
 import React from 'react';
 
-import TestlabForm from '../../../../common/form/TestlabForm';
 import { SakFormState } from '../../../types';
 
 const SakCrawlParameters = () => {

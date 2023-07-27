@@ -1,4 +1,5 @@
-import { responseToJson } from '../../common/util/api/util';
+import { responseToJson } from '@common/util/api/util';
+
 import { Loeysing, LoeysingInit } from './types';
 
 export const fetchLoeysing = async (id: number): Promise<Loeysing> =>

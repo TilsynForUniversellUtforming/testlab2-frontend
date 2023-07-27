@@ -1,15 +1,17 @@
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import ErrorCard from '@common/error/ErrorCard';
+import toError from '@common/error/util';
+import useError from '@common/hooks/useError';
+import useLoading from '@common/hooks/useLoading';
+import StatusBadge from '@common/status-badge/StatusBadge';
+import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import { CellCheckboxId } from '@common/table/types';
+import UserActionTable from '@common/table/UserActionTable';
+import { joinStringsToList } from '@common/util/stringutils';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
-import ErrorCard from '../../common/error/ErrorCard';
-import toError from '../../common/error/util';
-import useLoading from '../../common/hooks/useLoading';
-import StatusBadge from '../../common/status-badge/StatusBadge';
-import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
-import UserActionTable from '../../common/table/UserActionTable';
-import { joinStringsToList } from '../../common/util/stringutils';
 import { deleteMaalingList } from '../api/maaling-api';
 import { IdList, Maaling } from '../api/types';
 import { MaalingContext } from '../types';
@@ -24,7 +26,7 @@ const MaalingList = () => {
     contextLoading,
   }: MaalingContext = useOutletContext();
 
-  const [error, setError] = useState<Error | undefined>(contextError);
+  const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
   const [maalingRowSelection, setMaalingRowSelection] = useState<Maaling[]>([]);
   const [deleteMessage, setDeleteMessage] = useState<string>('');
@@ -66,7 +68,7 @@ const MaalingList = () => {
 
   const maalingColumns: ColumnDef<Maaling>[] = [
     {
-      id: 'Handling',
+      id: CellCheckboxId,
       cell: ({ row, getValue }) => (
         <RowCheckbox row={row} ariaLabel={`Velg ${row.original.navn}`} />
       ),
@@ -75,16 +77,7 @@ const MaalingList = () => {
     {
       accessorFn: (row) => row.navn,
       id: 'Namn',
-      cell: ({ row, getValue }) => (
-        <Link
-          to={getFullPath(appRoutes.MAALING, {
-            pathParam: idPath,
-            id: String(row.original.id),
-          })}
-        >
-          {String(getValue())}
-        </Link>
-      ),
+      cell: ({ getValue }) => getValue(),
       header: () => <>Namn</>,
     },
     {
@@ -143,6 +136,13 @@ const MaalingList = () => {
             },
           },
         ],
+        onClickCallback: (row) =>
+          navigate(
+            getFullPath(appRoutes.MAALING, {
+              pathParam: idPath,
+              id: String(row?.original.id),
+            })
+          ),
       }}
     />
   );

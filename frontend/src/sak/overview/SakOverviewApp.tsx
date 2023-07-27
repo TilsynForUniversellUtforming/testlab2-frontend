@@ -1,9 +1,9 @@
+import AppTitle from '@common/app-title/AppTitle';
+import ErrorCard from '@common/error/ErrorCard';
 import { Spinner } from '@digdir/design-system-react';
 import React from 'react';
 import { Outlet, useOutletContext } from 'react-router-dom';
 
-import AppTitle from '../../common/app-title/AppTitle';
-import ErrorCard from '../../common/error/ErrorCard';
 import { SakContext } from '../types';
 import SakNavbar from './SakNavbar';
 
