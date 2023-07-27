@@ -1,9 +1,9 @@
+import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
+import toError from '@common/error/util';
+import UserActionTable from '@common/table/UserActionTable';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import appRoutes from '../../common/appRoutes';
-import toError from '../../common/error/util';
-import UserActionTable from '../../common/table/UserActionTable';
 import { deleteTestregelList } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';
@@ -17,6 +17,8 @@ const TestregelList = () => {
     setTestregelList,
     refresh,
   }: TestregelContext = useOutletContext();
+  const navigate = useNavigate();
+
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [testregelRowSelection, setTestregelRowSelection] = useState<
     Testregel[]
@@ -105,6 +107,13 @@ const TestregelList = () => {
             },
           },
         ],
+        onClickCallback: (row) =>
+          navigate(
+            getFullPath(appRoutes.TESTREGEL_EDIT, {
+              pathParam: idPath,
+              id: String(row?.original.id),
+            })
+          ),
       }}
     />
   );

@@ -24,3 +24,5 @@ export type TableRowAction = {
   action: RowActionType;
   modalProps: ConfirmModalProps;
 };
+
+export const CellCheckboxId = 'handling';

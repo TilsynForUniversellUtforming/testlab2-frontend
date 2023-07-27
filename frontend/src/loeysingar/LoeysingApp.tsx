@@ -1,9 +1,9 @@
+import ErrorCard from '@common/error/ErrorCard';
+import { useEffectOnce } from '@common/hooks/useEffectOnce';
+import useFetch from '@common/hooks/useFetch';
 import React, { useCallback, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import ErrorCard from '../common/error/ErrorCard';
-import { useEffectOnce } from '../common/hooks/useEffectOnce';
-import useFetch from '../common/hooks/useFetch';
 import { fetchLoeysingList } from './api/loeysing-api';
 import { Loeysing } from './api/types';
 import { LoeysingContext } from './types';

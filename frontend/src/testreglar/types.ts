@@ -1,4 +1,5 @@
-import { AppContext } from '../common/types';
+import { AppContext } from '@common/types';
+
 import { Testregel, TestRegelsett } from './api/types';
 
 export interface TestregelContext extends AppContext {

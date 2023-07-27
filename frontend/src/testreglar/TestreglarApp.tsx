@@ -1,12 +1,12 @@
 import './testreglar.scss';
 
+import { appRoutes } from '@common/appRoutes';
+import ErrorCard from '@common/error/ErrorCard';
+import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { Tabs } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { appRoutes } from '../common/appRoutes';
-import ErrorCard from '../common/error/ErrorCard';
-import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { listRegelsett, listTestreglar } from './api/testreglar-api';
 import { Testregel, TestRegelsett } from './api/types';
 import { TestregelContext } from './types';

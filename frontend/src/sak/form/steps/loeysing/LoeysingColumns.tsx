@@ -1,12 +1,13 @@
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import {
+  HeaderCheckbox,
+  RowCheckbox,
+} from '@common/table/control/toggle/IndeterminateCheckbox';
+import { CellCheckboxId } from '@common/table/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../../../../common/appRoutes';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '../../../../common/table/control/toggle/IndeterminateCheckbox';
 import { LoeysingVerksemd } from '../../../types';
 
 /**
@@ -18,7 +19,7 @@ export const getLoeysingVerksemdColumns = (): Array<
   ColumnDef<LoeysingVerksemd>
 > => [
   {
-    id: 'Handling',
+    id: CellCheckboxId,
     header: ({ table }) => <HeaderCheckbox<LoeysingVerksemd> table={table} />,
     cell: ({ row }) => (
       <RowCheckbox<LoeysingVerksemd>

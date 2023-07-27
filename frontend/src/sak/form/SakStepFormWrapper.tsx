@@ -1,9 +1,9 @@
+import TestlabForm from '@common/form/TestlabForm';
+import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import TestlabFormHeader from '@common/form/TestlabFormHeader';
 import React, { ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import TestlabForm from '../../common/form/TestlabForm';
-import { TestlabFormButtonStep } from '../../common/form/TestlabFormButtons';
-import TestlabFormHeader from '../../common/form/TestlabFormHeader';
 import { SakFormBaseProps, SakFormState } from '../types';
 import Stepper from './Stepper';
 

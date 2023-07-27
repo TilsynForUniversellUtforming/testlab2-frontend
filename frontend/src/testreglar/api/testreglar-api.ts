@@ -1,4 +1,5 @@
-import { responseToJson } from '../../common/util/api/util';
+import { responseToJson } from '@common/util/api/util';
+
 import { Testregel, TestregelCreateRequest, TestRegelsett } from './types';
 
 export const listTestreglar = async (): Promise<Testregel[]> =>

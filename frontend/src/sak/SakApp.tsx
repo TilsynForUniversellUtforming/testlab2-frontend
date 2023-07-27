@@ -1,8 +1,8 @@
+import toError from '@common/error/util';
+import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import toError from '../common/error/util';
-import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '../loeysingar/api/types';
 import { fetchUtvalList } from '../loeysingar/api/utval-api';

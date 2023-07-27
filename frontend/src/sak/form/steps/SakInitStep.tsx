@@ -1,12 +1,12 @@
+import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import TestlabFormInput from '@common/form/TestlabFormInput';
+import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { Button } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { TestlabFormButtonStep } from '../../../common/form/TestlabFormButtons';
-import TestlabFormInput from '../../../common/form/TestlabFormInput';
-import TestlabFormSelect from '../../../common/form/TestlabFormSelect';
 import { User } from '../../../user/api/types';
 import { SakFormBaseProps, SakFormState, saktypeOptions } from '../../types';
 import SakStepFormWrapper from '../SakStepFormWrapper';

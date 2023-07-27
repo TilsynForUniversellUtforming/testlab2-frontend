@@ -1,8 +1,8 @@
+import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
+import toError from '@common/error/util';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import AlertTimed, { AlertProps } from '../common/alert/AlertTimed';
-import toError from '../common/error/util';
 import { updateMaaling } from '../maaling/api/maaling-api';
 import { MaalingEdit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';

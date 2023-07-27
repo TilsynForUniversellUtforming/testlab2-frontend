@@ -1,9 +1,10 @@
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import { CellCheckboxId } from '@common/table/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../../common/appRoutes';
-import { RowCheckbox } from '../../common/table/control/toggle/IndeterminateCheckbox';
 import { Testregel } from '../api/types';
 
 /**
@@ -13,7 +14,7 @@ import { Testregel } from '../api/types';
  */
 export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
   {
-    id: 'Handling',
+    id: CellCheckboxId,
     cell: ({ row }) => (
       <RowCheckbox
         row={row}
@@ -25,17 +26,7 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
   {
     accessorFn: (row) => row.kravTilSamsvar,
     id: 'testregel-namn',
-    cell: ({ row, getValue }) => (
-      <Link
-        to={getFullPath(appRoutes.TESTREGEL_EDIT, {
-          pathParam: idPath,
-          id: String(row.original.id),
-        })}
-        title={`Gå til testregel ${row.original.kravTilSamsvar}`}
-      >
-        {String(getValue())}
-      </Link>
-    ),
+    cell: (info) => info.getValue(),
     header: () => <>Namn</>,
   },
   {
@@ -71,6 +62,7 @@ export const getTestregelColumnsReadOnly = (): Array<ColumnDef<Testregel>> => [
           id: String(row.original.id),
         })}
         title={`Gå til testregel ${row.original.kravTilSamsvar}`}
+        target="_blank"
       >
         {String(getValue())}
       </Link>

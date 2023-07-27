@@ -1,10 +1,11 @@
+import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import { TableRowAction } from '@common/table/types';
+import UserActionTable from '@common/table/UserActionTable';
+import { joinStringsToList } from '@common/util/stringutils';
+import { CrawlResultat, Maaling } from '@maaling/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
-import { TableRowAction } from '../../common/table/types';
-import UserActionTable from '../../common/table/UserActionTable';
-import { joinStringsToList } from '../../common/util/stringutils';
-import { CrawlResultat, Maaling } from '../../maaling/api/types';
 import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
 
 export interface Props {
@@ -28,8 +29,8 @@ const CrawlingList = ({
   error,
   refreshing,
 }: Props) => {
+  const navigate = useNavigate();
   const maalingStatus = maaling?.status;
-
   const [crawlRowSelection, setCrawlRowSelection] = useState<CrawlResultat[]>(
     []
   );
@@ -93,6 +94,19 @@ const CrawlingList = ({
         onClickRetry: onClickRefresh,
         rowActions: rowActions,
         loadingStateStatus: refreshing ? 'Utfører sideutval...' : undefined,
+        onClickCallback: (row) =>
+          row?.original.type !== 'ikkje_starta'
+            ? navigate(
+                getFullPath(
+                  appRoutes.TEST_CRAWLING_RESULT_LIST,
+                  { pathParam: idPath, id: String(maaling?.id) },
+                  {
+                    pathParam: ':loeysingId',
+                    id: String(row?.original.loeysing.id),
+                  }
+                )
+              )
+            : undefined,
       }}
     />
   );

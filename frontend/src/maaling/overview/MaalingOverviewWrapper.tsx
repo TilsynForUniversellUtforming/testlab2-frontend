@@ -1,9 +1,9 @@
+import AppTitle from '@common/app-title/AppTitle';
+import TestlabTable from '@common/table/TestlabTable';
 import { Tabs } from '@digdir/design-system-react';
 import React, { useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import AppTitle from '../../common/app-title/AppTitle';
-import TestlabTable from '../../common/table/TestlabTable';
 import { Loeysing } from '../../loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '../../loeysingar/list/LoeysingColumns';
 import SakEdit from '../../sak/SakEdit';

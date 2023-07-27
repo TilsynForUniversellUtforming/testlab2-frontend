@@ -1,8 +1,7 @@
+import appRoutes from '@common/appRoutes';
+import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import { ButtonColor } from '@digdir/design-system-react';
 import React from 'react';
-
-import appRoutes from '../../common/appRoutes';
-import TestlabLinkButton from '../../common/button/TestlabLinkButton';
 
 const SakList = () => (
   <TestlabLinkButton

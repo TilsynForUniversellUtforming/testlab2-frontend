@@ -1,10 +1,10 @@
 import './loeysing-form.scss';
 
+import TestlabForm, { TestlabFormProps } from '@common/form/TestlabForm';
+import { isOrgnummer, isUrl } from '@common/util/util';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import TestlabForm, { TestlabFormProps } from '../../common/form/TestlabForm';
-import { isOrgnummer, isUrl } from '../../common/util/util';
 import { Loeysing, LoeysingInit } from '../api/types';
 
 export interface Props

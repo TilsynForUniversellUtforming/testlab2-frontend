@@ -1,23 +1,27 @@
+import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import toError from '@common/error/util';
+import useError from '@common/hooks/useError';
+import useInterval from '@common/hooks/useInterval';
+import { TableRowAction } from '@common/table/types';
+import UserActionTable from '@common/table/UserActionTable';
+import { joinStringsToList } from '@common/util/stringutils';
+import { isNotDefined } from '@common/util/util';
+import { fetchMaaling, restart } from '@maaling/api/maaling-api';
+import { RestartRequest, TestResult } from '@maaling/api/types';
+import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Outlet, useOutletContext, useParams } from 'react-router-dom';
-
-import AppRoutes, { getFullPath, idPath } from '../../common/appRoutes';
-import toError from '../../common/error/util';
-import useInterval from '../../common/hooks/useInterval';
-import { TableRowAction } from '../../common/table/types';
-import UserActionTable from '../../common/table/UserActionTable';
-import { joinStringsToList } from '../../common/util/stringutils';
-import { isNotDefined } from '../../common/util/util';
-import { fetchMaaling, restart } from '../../maaling/api/maaling-api';
-import { RestartRequest, TestResult } from '../../maaling/api/types';
-import { MaalingContext } from '../../maaling/types';
-import StatusChart from '../chart/StatusChart';
 import {
-  getTestingListColumns,
-  getTestingListColumnsLoading,
-} from './TestingListColumns';
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
+
+import StatusChart from '../chart/StatusChart';
+import { getTestingListColumns } from './TestingListColumns';
 
 const TestingListApp = () => {
+  const navigate = useNavigate();
   const maalingContext: MaalingContext = useOutletContext();
 
   const { maaling, setMaaling, contextError, contextLoading } = maalingContext;
@@ -25,17 +29,11 @@ const TestingListApp = () => {
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
-  const [error, setError] = useState<Error | undefined>(contextError);
+  const [error, setError] = useError(contextError);
   const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
-  const testResultatColumns = useMemo(() => {
-    if (maaling?.status === 'testing_ferdig') {
-      return getTestingListColumns(maalingId ?? '');
-    } else {
-      return getTestingListColumnsLoading(maalingId ?? '');
-    }
-  }, [maaling?.status]);
+  const testResultatColumns = useMemo(() => getTestingListColumns(), []);
 
   const rowActions = useMemo<TableRowAction[]>(() => {
     if (maaling?.status === 'testing_ferdig') {
@@ -160,6 +158,17 @@ const TestingListApp = () => {
           displayError: { error },
           loadingStateStatus: refreshing ? 'Utfører testing...' : undefined,
           rowActions: rowActions,
+          onClickCallback: (row) =>
+            navigate(
+              getFullPath(
+                appRoutes.TEST_RESULT_LIST,
+                { pathParam: idPath, id: maalingId ?? '' },
+                {
+                  pathParam: ':loeysingId',
+                  id: String(row?.original.loeysing.id),
+                }
+              )
+            ),
         }}
       />
     </>

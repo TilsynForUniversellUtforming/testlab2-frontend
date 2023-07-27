@@ -1,10 +1,10 @@
+import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import { useEffectOnce } from '@common/hooks/useEffectOnce';
+import { isDefined } from '@common/util/util';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { TestlabFormButtonStep } from '../../../../common/form/TestlabFormButtons';
-import { useEffectOnce } from '../../../../common/hooks/useEffectOnce';
-import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
 import { SakContext, SakFormBaseProps, SakFormState } from '../../../types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';

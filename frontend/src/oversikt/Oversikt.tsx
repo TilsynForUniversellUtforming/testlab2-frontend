@@ -1,9 +1,6 @@
 import './Oversikt.scss';
 
-import { Heading } from '@digdir/design-system-react';
-import React from 'react';
-
-import AppTitle from '../common/app-title/AppTitle';
+import AppTitle from '@common/app-title/AppTitle';
 import {
   anna,
   AppRoute,
@@ -11,8 +8,10 @@ import {
   saksbehandling,
   testing,
   utval,
-} from '../common/appRoutes';
-import TestlabLinkButton from '../common/button/TestlabLinkButton';
+} from '@common/appRoutes';
+import TestlabLinkButton from '@common/button/TestlabLinkButton';
+import { Heading } from '@digdir/design-system-react';
+import React from 'react';
 
 interface OversiktLinkListProps {
   heading: string;

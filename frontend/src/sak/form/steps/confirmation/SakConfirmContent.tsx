@@ -1,9 +1,9 @@
+import ErrorCard from '@common/error/ErrorCard';
+import { isDefined } from '@common/util/util';
 import { Accordion, Spinner } from '@digdir/design-system-react';
 import React from 'react';
 import { FieldErrors } from 'react-hook-form';
 
-import ErrorCard from '../../../../common/error/ErrorCard';
-import { isDefined } from '../../../../common/util/util';
 import { TestRegelsett } from '../../../../testreglar/api/types';
 import { User } from '../../../../user/api/types';
 import { SakFormState } from '../../../types';

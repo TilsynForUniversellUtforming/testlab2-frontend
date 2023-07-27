@@ -1,8 +1,8 @@
+import ErrorCard from '@common/error/ErrorCard';
 import { Spinner } from '@digdir/design-system-react';
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import ErrorCard from '../../common/error/ErrorCard';
 import { SakContext } from '../types';
 
 const SakOverview = () => {

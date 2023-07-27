@@ -1,10 +1,11 @@
+import ErrorCard from '@common/error/ErrorCard';
+import toError from '@common/error/util';
+import fetchFeatureToggles from '@common/features/hooks/fetchFeatureToggles';
+import { useEffectOnce } from '@common/hooks/useEffectOnce';
+import { withLoadingAndErrorHandling } from '@common/util/api/util';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
-import ErrorCard from '../common/error/ErrorCard';
-import toError from '../common/error/util';
-import fetchFeatureToggles from '../common/features/hooks/fetchFeatureToggles';
-import { useEffectOnce } from '../common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
 import { Loeysing } from '../loeysingar/api/types';
 import { listRegelsett } from '../testreglar/api/testreglar-api';
@@ -129,38 +130,42 @@ const MaalingApp = () => {
     });
   };
 
-  const doFetchMaaling = useCallback(async () => {
-    setLoading(true);
-    setError(undefined);
+  const doFetchMaaling = useCallback(
+    withLoadingAndErrorHandling(
+      async () => {
+        if (id) {
+          return await fetchMaaling(Number(id));
+        } else {
+          throw new Error('Måling ikkje funnet');
+        }
+      },
+      'Kunne ikkje hente måling',
+      setLoading,
+      setError
+    ),
+    [id]
+  );
 
-    if (id) {
-      try {
-        return await fetchMaaling(Number(id));
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente måling'));
-        return;
-      }
-    } else {
-      setError(new Error('Måling ikkje funnet'));
-    }
-  }, [id]);
+  const doFetchData = useCallback(
+    withLoadingAndErrorHandling(
+      async () => {
+        const [maalingList, loeysingList, regelsett, advisors, verksemdList] =
+          await Promise.all([
+            fetchMaalingList(),
+            fetchLoeysingList(),
+            listRegelsett(),
+            getAdvisors_dummy(),
+            getVerksemdList_dummy(),
+          ]);
 
-  const doFetchData = useCallback(async () => {
-    setLoading(true);
-    setError(undefined);
-
-    try {
-      const maalingList = await fetchMaalingList();
-      const loeysingList = await fetchLoeysingList();
-      const regelsett = await listRegelsett();
-      const advisors = await getAdvisors_dummy();
-      const verksemdList = await getVerksemdList_dummy();
-      return { maalingList, loeysingList, regelsett, advisors, verksemdList };
-    } catch (e) {
-      setError(toError(e, 'Kan ikkje hente data'));
-      return;
-    }
-  }, []);
+        return { maalingList, loeysingList, regelsett, advisors, verksemdList };
+      },
+      'Kan ikkje hente data',
+      setLoading,
+      setError
+    ),
+    []
+  );
 
   useEffectOnce(() => {
     fetchFeatureToggles('maalinger', handleLoading).then(() => {

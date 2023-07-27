@@ -1,9 +1,9 @@
+import ErrorCard from '@common/error/ErrorCard';
+import toError from '@common/error/util';
 import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import ErrorCard from '../../common/error/ErrorCard';
-import toError from '../../common/error/util';
 import { updateTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';

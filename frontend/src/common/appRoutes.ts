@@ -101,7 +101,7 @@ const SAK_EDIT = {
   parentRoute: SAK_ROOT,
 };
 const MAALING_ROOT = {
-  navn: 'Målinger',
+  navn: 'Målingar',
   path: 'maaling',
   imgSrc: maalingImg,
 };

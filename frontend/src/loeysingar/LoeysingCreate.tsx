@@ -1,8 +1,8 @@
+import toError from '@common/error/util';
 import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import toError from '../common/error/util';
 import { createLoeysing } from './api/loeysing-api';
 import { LoeysingInit } from './api/types';
 import LoeysingForm from './form/LoeysingForm';

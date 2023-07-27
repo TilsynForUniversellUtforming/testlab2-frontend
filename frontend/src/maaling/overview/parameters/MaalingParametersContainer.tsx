@@ -1,8 +1,8 @@
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { appRoutes, getFullPath, idPath } from '../../../common/appRoutes';
 import { Maaling } from '../../api/types';
 
 export interface Props {
