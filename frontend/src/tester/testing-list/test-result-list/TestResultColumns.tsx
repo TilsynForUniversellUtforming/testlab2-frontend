@@ -19,6 +19,7 @@ export const getAggregatedResultColumns = (): Array<
     meta: {
       select: true,
     },
+    filterFn: 'exact',
   },
   {
     accessorFn: (row) => row.suksesskriterium,

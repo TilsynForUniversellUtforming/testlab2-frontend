@@ -96,6 +96,7 @@ const MaalingList = () => {
       meta: {
         select: true,
       },
+      filterFn: 'exact',
     },
   ];
 

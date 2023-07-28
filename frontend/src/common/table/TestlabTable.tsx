@@ -39,6 +39,7 @@ import { TableFilterPreference, TableRowAction, TableStyle } from './types';
 declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
+    exact: FilterFn<unknown>;
   }
   interface FilterMeta {
     itemRank: RankingInfo;
@@ -66,6 +67,11 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
   // Return if the item should be filtered in/out
   return itemRank.passed;
+};
+
+const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
+  const rowValue = row.getValue(columnId);
+  return rowValue === value;
 };
 
 export interface TestlabTableProps<T extends object> {
@@ -146,6 +152,7 @@ const TestlabTable = <T extends object>({
     columns: columns,
     filterFns: {
       fuzzy: fuzzyFilter,
+      exact: exactTextFilterFn,
     },
     state: {
       columnFilters,

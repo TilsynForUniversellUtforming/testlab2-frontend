@@ -65,6 +65,7 @@ interface IRoutes {
   TEST_CRAWLING_RESULT_LIST: AppRoute;
   TEST_TESTING_LIST: AppRoute;
   TEST_RESULT_LIST: AppRoute;
+  TEST_VIOLATION_LIST: AppRoute;
 
   DISKUSJON_ROOT: AppRoute;
   MINE_SAKER_ROOT: AppRoute;
@@ -251,6 +252,12 @@ const TEST_RESULT_LIST = {
   parentRoute: TEST_TESTING_LIST,
 };
 
+const TEST_VIOLATION_LIST = {
+  navn: 'Brot',
+  path: ':testregelId',
+  parentRoute: TEST_TESTING_LIST,
+};
+
 const DISKUSJON_ROOT = {
   navn: 'Diskusjon',
   path: '/',
@@ -339,6 +346,7 @@ export const appRoutes: IRoutes = {
   TEST_CRAWLING_RESULT_LIST: TEST_CRAWLING_RESULT_LIST,
   TEST_TESTING_LIST: TEST_TESTING_LIST,
   TEST_RESULT_LIST: TEST_RESULT_LIST,
+  TEST_VIOLATION_LIST: TEST_VIOLATION_LIST,
 
   DISKUSJON_ROOT: DISKUSJON_ROOT,
   MINE_SAKER_ROOT: MINE_SAKER_ROOT,
