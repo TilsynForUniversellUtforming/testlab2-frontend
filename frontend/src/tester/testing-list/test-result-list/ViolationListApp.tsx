@@ -4,7 +4,7 @@ import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
 import UserActionTable from '@common/table/UserActionTable';
-import { extractDomain } from '@common/util/stringutils';
+import { extractDomain, joinStringsToList } from '@common/util/stringutils';
 import { Maaling, TestResult } from '@maaling/api/types';
 import { MaalingTestStatus } from '@maaling/types';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -24,19 +24,27 @@ const getSelectedLoeysing = (
 const ViolationListApp = () => {
   const { id, loeysingId, testregelId } = useParams();
 
-  const { contextError, maaling }: TestResultContext = useOutletContext();
+  const { contextError, contextLoading, maaling }: TestResultContext =
+    useOutletContext();
 
   const [testResult, setTestresult] = useState<TestResultat[]>([]);
   const [error, setError] = useError(contextError);
-  const [loading, setLoading] = useLoading(true);
+  const [loading, setLoading] = useLoading(contextLoading);
   const [selectedLoeysing, setSelectedLoeysing] = useState(
     getSelectedLoeysing(loeysingId, maaling)
   );
+  const [testResultatRowSelection, setTestResultatRowSelection] = useState<
+    TestResultat[]
+  >([]);
 
   const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
     loading: false,
     message: undefined,
   });
+
+  const onClickDelete = (testResultatRowSelection: TestResultat[]) => {
+    console.log(testResultatRowSelection);
+  };
 
   const testResultatColumns = useMemo(() => getTestresultatColumns(), []);
 
@@ -86,6 +94,20 @@ const ViolationListApp = () => {
           displayError: {
             error: error,
           },
+          onSelectRows: setTestResultatRowSelection,
+          rowActions: [
+            {
+              action: 'delete',
+              modalProps: {
+                title: 'Fjern nettsider',
+                disabled: testResult.length === 0,
+                message: `Vil du fjerne ${joinStringsToList(
+                  testResultatRowSelection.map((r) => r.side)
+                )} frå utval?`,
+                onConfirm: () => onClickDelete(testResultatRowSelection),
+              },
+            },
+          ],
         }}
       />
       {testStatus.message && (
