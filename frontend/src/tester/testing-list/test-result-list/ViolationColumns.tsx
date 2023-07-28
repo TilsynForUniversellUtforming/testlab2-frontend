@@ -1,3 +1,5 @@
+import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import { CellCheckboxId } from '@common/table/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
@@ -28,6 +30,13 @@ const decodeBase64 = (base64String?: string) => {
  * @returns {Array<ColumnDef<TestResultat>>} An array of column definitions.
  */
 export const getTestresultatColumns = (): Array<ColumnDef<TestResultat>> => [
+  {
+    id: CellCheckboxId,
+    cell: ({ row }) => (
+      <RowCheckbox row={row} ariaLabel={`Velg ${row.original.side}`} />
+    ),
+    size: 1,
+  },
   {
     accessorFn: (row) => row.side,
     id: 'side',
