@@ -28,7 +28,9 @@ import SakCreate from './sak/SakCreate';
 import SakEdit from './sak/SakEdit';
 import KvalitetssikringApp from './tester/sideutval/kvalitetssikring/KvalitetssikringApp';
 import SideutvalApp from './tester/sideutval/SideutvalApp';
+import TestResultList from './tester/testing-list/test-result-list/TestResultList';
 import TestResultListApp from './tester/testing-list/test-result-list/TestResultListApp';
+import ViolationListApp from './tester/testing-list/test-result-list/ViolationListApp';
 import TestingListApp from './tester/testing-list/TestingListApp';
 import RegelsettApp from './testreglar/regelsett/RegelsettApp';
 import RegelsettCreate from './testreglar/regelsett/RegelsettCreate';
@@ -139,6 +141,17 @@ const App = () => {
                       path: appRoutes.TEST_RESULT_LIST.path,
                       element: <TestResultListApp />,
                       handle: { name: appRoutes.TEST_RESULT_LIST.navn },
+                      children: [
+                        {
+                          index: true,
+                          element: <TestResultList />,
+                        },
+                        {
+                          path: appRoutes.TEST_VIOLATION_LIST.path,
+                          element: <ViolationListApp />,
+                          handle: { name: appRoutes.TEST_VIOLATION_LIST.navn },
+                        },
+                      ],
                     },
                   ],
                 },

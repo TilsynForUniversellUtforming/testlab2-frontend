@@ -1,10 +1,9 @@
+import DebouncedInput from '@common/debounced-input/DebouncedInput';
+import { Option } from '@common/types';
+import { sanitizeLabel } from '@common/util/stringutils';
 import { Select } from '@digdir/design-system-react';
 import { Column } from '@tanstack/react-table';
 import React from 'react';
-
-import DebouncedInput from '../../../debounced-input/DebouncedInput';
-import { Option } from '../../../types';
-import { sanitizeLabel } from '../../../util/stringutils';
 
 export interface Props<T extends object> {
   column: Column<T>;

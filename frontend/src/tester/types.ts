@@ -1,8 +1,9 @@
 import { AppContext } from '@common/types';
+import { Maaling, TestResult } from '@maaling/api/types';
 
-import { Maaling } from '../maaling/api/types';
-
-export interface TesterContext extends AppContext {
+export interface TestResultContext extends AppContext {
   maaling?: Maaling;
-  setMaaling: (maaling: Maaling) => void;
+  refreshMaaling: () => void;
+  onClickRestart: () => void;
+  loeysingTestResult?: TestResult;
 }

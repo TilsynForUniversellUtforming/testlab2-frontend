@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { TestResultat } from '../../../api/types';
+import { TestResultat } from '../../api/types';
 
 const decodeBase64 = (base64String?: string) => {
   if (typeof base64String === 'undefined') {
@@ -29,18 +29,6 @@ const decodeBase64 = (base64String?: string) => {
  */
 export const getTestresultatColumns = (): Array<ColumnDef<TestResultat>> => [
   {
-    accessorFn: (row) => row.testregelId,
-    id: '_idTestregel',
-    cell: (info) => info.getValue(),
-    header: () => <>Testregel</>,
-  },
-  {
-    accessorFn: (row) => row.suksesskriterium.join(', '),
-    id: '_idSuksesskriterium',
-    cell: ({ row }) => <>{row.original.suksesskriterium.join(', ')}</>,
-    header: () => <>Suksesskriterium</>,
-  },
-  {
     accessorFn: (row) => row.side,
     id: 'side',
     cell: (info) => (
@@ -48,7 +36,12 @@ export const getTestresultatColumns = (): Array<ColumnDef<TestResultat>> => [
     ),
     header: () => <>Nettside</>,
   },
-
+  {
+    accessorFn: (row) => row.suksesskriterium.join(', '),
+    id: '_idSuksesskriterium',
+    cell: ({ row }) => <>{row.original.suksesskriterium.join(', ')}</>,
+    header: () => <>Suksesskriterium</>,
+  },
   {
     accessorFn: (row) => row.elementOmtale?.htmlCode,
     id: 'htmlCode',

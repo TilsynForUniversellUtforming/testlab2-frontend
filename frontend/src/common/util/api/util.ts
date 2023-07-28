@@ -33,8 +33,7 @@ export const withLoadingAndErrorHandling =
     setLoading(true);
     setError(undefined);
     try {
-      const result = await asyncFunc(...args);
-      return result;
+      return await asyncFunc(...args);
     } catch (e: any) {
       setError(toError(e, errorMessage));
     } finally {
