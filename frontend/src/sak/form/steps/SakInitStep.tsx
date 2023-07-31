@@ -1,9 +1,10 @@
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
+import { isNotDefined } from '@common/util/util';
 import { Button } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,10 +35,18 @@ const SakInitStep = ({
     setDisplayAdvanced(!displayAdvanced);
   };
 
+  const doSubmit = useCallback((maalingFormState: SakFormState) => {
+    if (isNotDefined(formMethods.formState.errors)) {
+      onSubmit(maalingFormState);
+    } else {
+      return;
+    }
+  }, []);
+
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
-      onSubmit={onSubmit}
+      onSubmit={doSubmit}
       formMethods={formMethods}
       buttonStep={buttonStep}
     >
@@ -89,7 +98,14 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
         >
           Avansert
         </Button>
-        {displayAdvanced && <SakCrawlParameters />}
+        {displayAdvanced && (
+          <SakCrawlParameters
+            watch={formMethods.watch}
+            setError={formMethods.setError}
+            clearErrors={formMethods.clearErrors}
+            errors={formMethods.formState.errors}
+          />
+        )}
       </div>
     </SakStepFormWrapper>
   );
