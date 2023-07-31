@@ -22,21 +22,17 @@ export const getHeader = (
 
 export type AsyncFunc<T = any> = (...args: any[]) => Promise<T>;
 
-export const withLoadingAndErrorHandling =
+export const withErrorHandling =
   (
     asyncFunc: AsyncFunc,
     errorMessage: string,
-    setLoading: (l: boolean) => void,
     setError: (e: Error | undefined) => void
   ) =>
   async (...args: any[]) => {
-    setLoading(true);
     setError(undefined);
     try {
       return await asyncFunc(...args);
     } catch (e: any) {
       setError(toError(e, errorMessage));
-    } finally {
-      setLoading(false);
     }
   };

@@ -2,7 +2,8 @@ import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import fetchFeatureToggles from '@common/features/hooks/fetchFeatureToggles';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
-import { withLoadingAndErrorHandling } from '@common/util/api/util';
+import { withErrorHandling } from '@common/util/api/util';
+import { isDefined, isNotDefined } from '@common/util/util';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
@@ -38,6 +39,9 @@ const MaalingApp = () => {
   const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(true);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
+  const [pollMaaling, setPollMaaling] = useState(
+    maaling?.status === 'crawling' || maaling?.status === 'testing'
+  );
 
   const handleSetMaalingList = useCallback((maalingList: Maaling[]) => {
     setMaalingList(maalingList);
@@ -48,7 +52,9 @@ const MaalingApp = () => {
   }, []);
 
   const handleError = useCallback((error: Error | undefined) => {
-    setMaaling(undefined);
+    if (isDefined(error)) {
+      setMaaling(undefined);
+    }
     setError(error);
   }, []);
 
@@ -58,6 +64,10 @@ const MaalingApp = () => {
 
   const clearTestStatus = useCallback(() => {
     setTestStatus({ loading: false, message: undefined });
+  }, []);
+
+  const handleRefreshing = useCallback((pollMaaling: boolean) => {
+    setPollMaaling(pollMaaling);
   }, []);
 
   const doStartCrawling = useCallback((maaling: Maaling) => {
@@ -131,23 +141,26 @@ const MaalingApp = () => {
   };
 
   const doFetchMaaling = useCallback(
-    withLoadingAndErrorHandling(
+    withErrorHandling(
       async () => {
         if (id) {
-          return await fetchMaaling(Number(id));
+          const maaling = await fetchMaaling(Number(id));
+          setPollMaaling(
+            maaling?.status === 'crawling' || maaling?.status === 'testing'
+          );
+          return maaling;
         } else {
           throw new Error('Måling ikkje funnet');
         }
       },
       'Kunne ikkje hente måling',
-      setLoading,
       setError
     ),
     [id]
   );
 
   const doFetchData = useCallback(
-    withLoadingAndErrorHandling(
+    withErrorHandling(
       async () => {
         const [maalingList, loeysingList, regelsett, advisors, verksemdList] =
           await Promise.all([
@@ -161,13 +174,13 @@ const MaalingApp = () => {
         return { maalingList, loeysingList, regelsett, advisors, verksemdList };
       },
       'Kan ikkje hente data',
-      setLoading,
       setError
     ),
     []
   );
 
   useEffectOnce(() => {
+    setLoading(true);
     fetchFeatureToggles('maalinger', handleLoading).then(() => {
       doFetchData()
         .then((data) => {
@@ -203,7 +216,21 @@ const MaalingApp = () => {
             }
 
             setShowMaalinger(true);
-            setLoading(false);
+
+            if (id) {
+              doFetchMaaling()
+                .then((data) => {
+                  if (data) {
+                    setMaaling(data);
+                  } else {
+                    setError(new Error('Kunne ikkje hente måling'));
+                  }
+                  setShowMaalinger(true);
+                })
+                .catch((e) => {
+                  setError(toError(e, 'Kunne ikkje hente data'));
+                });
+            }
           } else {
             setError(new Error('Kunne ikkje hente målingar'));
             setLoading(false);
@@ -212,12 +239,20 @@ const MaalingApp = () => {
         .catch((e) => {
           setError(toError(e, 'Kunne ikkje hente målingar'));
           setLoading(false);
-        });
+        })
+        .finally(() => setLoading(false));
     });
   });
 
   useEffect(() => {
-    if (!loading && !error && id && showMaalinger) {
+    if (
+      !loading &&
+      !error &&
+      showMaalinger &&
+      id &&
+      (maaling?.id !== Number(id) || isNotDefined(maaling))
+    ) {
+      setLoading(true);
       doFetchMaaling()
         .then((data) => {
           if (data) {
@@ -225,16 +260,14 @@ const MaalingApp = () => {
           } else {
             setError(new Error('Kunne ikkje hente måling'));
           }
-
-          setLoading(false);
           setShowMaalinger(true);
         })
         .catch((e) => {
           setError(toError(e, 'Kunne ikkje hente data'));
-          setLoading(false);
-        });
+        })
+        .finally(() => setLoading(false));
     }
-  }, [id, error, maalingList]);
+  }, [id, error]);
 
   const maalingContext: MaalingContext = {
     contextError: error,
@@ -257,6 +290,8 @@ const MaalingApp = () => {
     advisors: advisorList,
     testStatus: testStatus,
     clearTestStatus: clearTestStatus,
+    pollMaaling: pollMaaling,
+    setPollMaaling: handleRefreshing,
   };
 
   if (!loading && !showMaalinger) {

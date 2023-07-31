@@ -53,6 +53,12 @@
         display: flex;
         justify-content: center;
       }
+
+      &-icon {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+      }
     }
 
     &__alert {
