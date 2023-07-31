@@ -63,7 +63,7 @@ const SakLoeysingStep = ({
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
   const [source, setSource] = useState<'utval' | 'manuell' | undefined>(
-    undefined
+    'manuell'
   );
 
   const { control, setValue, getValues, setError, clearErrors, formState } =
