@@ -3,11 +3,13 @@ import './sak.scss';
 import AppTitle from '@common/app-title/AppTitle';
 import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
-import React, { useCallback, useEffect, useState } from 'react';
+import useError from '@common/hooks/useError';
+import useLoading from '@common/hooks/useLoading';
+import { createMaaling } from '@maaling/api/maaling-api';
+import { MaalingInit } from '@maaling/api/types';
+import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import { createMaaling } from '../maaling/api/maaling-api';
-import { MaalingInit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
 import { defaultSakSteps, SakContext, SakFormState } from './types';
@@ -15,19 +17,11 @@ import { defaultSakSteps, SakContext, SakFormState } from './types';
 const SakCreate = () => {
   const navigate = useNavigate();
 
-  const {
-    regelsettList,
-    loeysingList,
-    utvalList,
-    verksemdList,
-    setMaaling,
-    contextLoading,
-    contextError,
-    advisors,
-  }: SakContext = useOutletContext();
+  const { setMaaling, contextLoading, contextError }: SakContext =
+    useOutletContext();
 
-  const [error, setError] = useState(contextError);
-  const [loading, setLoading] = useState(contextLoading);
+  const [error, setError] = useError(contextError);
+  const [loading, setLoading] = useLoading(contextLoading);
 
   const defaultState: SakFormState = {
     navn: '',
@@ -42,11 +36,6 @@ const SakCreate = () => {
 
   const [maalingFormState, setMaalingFormState] =
     useState<SakFormState>(defaultState);
-
-  useEffect(() => {
-    setLoading(contextLoading);
-    setError(contextError);
-  }, [contextLoading, contextError]);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
     const doCreateMaaling = async () => {
@@ -121,11 +110,6 @@ const SakCreate = () => {
         onSubmit={handleSubmit}
         loading={loading}
         error={error}
-        regelsettList={regelsettList}
-        loeysingList={loeysingList}
-        utvalList={utvalList}
-        verksemdList={verksemdList}
-        advisors={advisors}
       />
     </>
   );

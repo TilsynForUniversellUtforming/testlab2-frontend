@@ -18,7 +18,10 @@
     "baseUrl": "./src",
     "paths": {
       "@common/*": ["./common/*"],
-      "@maaling/*": ["./maaling/*"]
+      "@maaling/*": ["./maaling/*"],
+      "@loeysingar/*": ["./loeysingar/*"],
+      "@verksemder/*": ["./verksemder/*"],
+      "@sak/*": ["./sak/*"]
     }
   },
   "include": ["src"],

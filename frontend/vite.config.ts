@@ -18,6 +18,9 @@ export default defineConfig({
     alias: {
       '@common': '/src/common',
       '@maaling': '/src/maaling',
+      '@loeysingar': '/src/loeysingar',
+      '@verksemder': '/src/verksemder',
+      '@sak': '/src/sak',
     },
   },
 });
