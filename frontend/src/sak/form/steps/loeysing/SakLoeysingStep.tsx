@@ -1,4 +1,4 @@
-import fetchFeatureToggles from '@common/features/hooks/fetchFeatureToggles';
+import fetchFeatures from '@common/features/api/features-api';
 import useValidate from '@common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabTable from '@common/table/TestlabTable';
@@ -52,15 +52,19 @@ const SakLoeysingStep = ({
   });
 
   const [featureUtval, setFeatureUtval] = useState<boolean>(false);
-  fetchFeatureToggles('utval', (loading) => loading).then(() =>
-    setFeatureUtval(true)
-  );
+  fetchFeatures().then((featureList) => {
+    setFeatureUtval(
+      featureList.find((f) => f.key === 'utval')?.active ?? false
+    );
+  });
 
   const { onClickBack } = formStepState;
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
-  const [useUtval, setUseUtval] = useState<boolean>(false);
+  const [source, setSource] = useState<'utval' | 'manuell' | undefined>(
+    undefined
+  );
 
   const { control, setValue, getValues, setError, clearErrors, formState } =
     formMethods;
@@ -166,7 +170,7 @@ const SakLoeysingStep = ({
   const listErrors = formState.errors['loeysingList'];
 
   const onSubmitLoeysing = (data: SakFormState) => {
-    if (data.loeysingList.length === 0) {
+    if (source === 'manuell' && data.loeysingList.length === 0) {
       setError('loeysingList', {
         type: 'manual',
         message: 'Løysing og verksemd må veljast',
@@ -195,25 +199,36 @@ const SakLoeysingStep = ({
               { label: 'Bruk eit utval', value: 'utval' },
               { label: 'Velg løysingar sjølv', value: 'manuell' },
             ]}
-            variant="horizontal"
-            value={useUtval ? 'utval' : 'manuell'}
-            onChange={(value) => setUseUtval(value === 'utval')}
+            onChange={(value) => {
+              return value === 'utval'
+                ? setSource('utval')
+                : setSource('manuell');
+            }}
           />
         </FieldSet>
       )}
 
-      {useUtval && (
+      {source === 'utval' && (
         <FieldSet legend="Velg eit utval">
           <RadioGroup
             name="chooseUtval"
+            value={String(getValues('utval')?.id)}
             items={utvalList.map((u) => ({
               label: u.namn,
               value: String(u.id),
             }))}
+            onChange={(value) =>
+              setValue(
+                'utval',
+                utvalList.find((u) => u.id === Number(value))
+              )
+            }
+            error={listErrors?.message}
           />
         </FieldSet>
       )}
-      {!useUtval && (
+
+      {source === 'manuell' && (
         <div className="sak-loeysing">
           <div className="sak-loeysing__input-wrapper">
             <div className="sak-loeysing__input-select">

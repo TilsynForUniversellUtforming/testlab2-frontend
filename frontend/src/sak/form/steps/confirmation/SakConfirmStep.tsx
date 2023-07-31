@@ -1,3 +1,4 @@
+import { utval } from '@common/appRoutes';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { isDefined } from '@common/util/util';
@@ -48,7 +49,7 @@ const SakConfirmStep = ({
       });
     }
 
-    if (!isDefined(loeysingList)) {
+    if (!isDefined(loeysingList) && !isDefined(utval)) {
       setError('loeysingList', {
         type: 'manual',
         message: 'Løysingar må veljast',
