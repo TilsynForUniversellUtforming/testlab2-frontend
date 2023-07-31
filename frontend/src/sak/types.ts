@@ -28,6 +28,7 @@ export interface SakContext extends AppContext {
 export type SakFormState = {
   navn?: string;
   loeysingList: LoeysingVerksemd[];
+  utval?: Utval;
   testregelList: Testregel[];
   maxLinksPerPage: number;
   numLinksToSelect: number;

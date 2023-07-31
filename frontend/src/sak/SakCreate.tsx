@@ -58,17 +58,22 @@ const SakCreate = () => {
         maalingFormState.maxLinksPerPage &&
         maalingFormState.numLinksToSelect
       ) {
-        const maalingInit: MaalingInit = {
+        const base = {
           navn: maalingFormState.navn,
-          loeysingIdList: maalingFormState.loeysingList.map(
-            (l) => l.loeysing.id
-          ),
           testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
           crawlParameters: {
             maxLinksPerPage: maalingFormState.maxLinksPerPage,
             numLinksToSelect: maalingFormState.numLinksToSelect,
           },
         };
+        const maalingInit: MaalingInit = maalingFormState.utval
+          ? { ...base, utvalId: maalingFormState.utval.id }
+          : {
+              ...base,
+              loeysingIdList: maalingFormState.loeysingList.map(
+                (l) => l.loeysing.id
+              ),
+            };
 
         try {
           const maaling = await createMaaling(maalingInit);

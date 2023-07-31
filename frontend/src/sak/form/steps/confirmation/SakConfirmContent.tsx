@@ -25,8 +25,15 @@ const SakConfirmContent = ({
   formErrors,
   advisors,
 }: SakConfirmContentProps) => {
-  const { navn, sakType, sakNumber, advisorId, loeysingList, testregelList } =
-    maalingFormState;
+  const {
+    navn,
+    sakType,
+    sakNumber,
+    advisorId,
+    loeysingList,
+    utval,
+    testregelList,
+  } = maalingFormState;
 
   if (loading) {
     return <Spinner title="Hentar sak" variant="default" />;
@@ -86,6 +93,10 @@ const SakConfirmContent = ({
     text: lo.loeysing.url,
   }));
 
+  const utvalListItems = utval
+    ? [{ id: utval.id, header: utval.namn, text: '' }]
+    : [];
+
   const testregelItems =
     testregelList.map((tr) => ({
       id: tr.id,
@@ -104,11 +115,21 @@ const SakConfirmContent = ({
           errorMessage={sakError.length > 0 ? sakError : undefined}
         />
 
-        <ConfirmationAccordionList
-          accordionHeader={`Løysingar (${loeysingListItems.length})`}
-          listItems={loeysingListItems}
-          errorMessage={loeysingError?.message}
-        />
+        {loeysingListItems.length > 0 && (
+          <ConfirmationAccordionList
+            accordionHeader={`Løysingar (${loeysingListItems.length})`}
+            listItems={loeysingListItems}
+            errorMessage={loeysingError?.message}
+          />
+        )}
+
+        {utvalListItems.length > 0 && (
+          <ConfirmationAccordionList
+            accordionHeader="Utval"
+            listItems={utvalListItems}
+            errorMessage={loeysingError?.message}
+          />
+        )}
 
         <ConfirmationAccordionList
           accordionHeader={`Testreglar (${testregelItems.length})`}

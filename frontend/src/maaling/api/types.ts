@@ -6,9 +6,18 @@ export type CrawlParameters = {
   numLinksToSelect: number;
 };
 
-export type MaalingInit = {
+export type MaalingInit = MaalingInitMedLoeysingList | MaalingInitMedUtval;
+
+export type MaalingInitMedLoeysingList = {
   navn: string;
   loeysingIdList: number[];
+  testregelIdList: number[];
+  crawlParameters: CrawlParameters;
+};
+
+export type MaalingInitMedUtval = {
+  navn: string;
+  utvalId: number;
   testregelIdList: number[];
   crawlParameters: CrawlParameters;
 };
