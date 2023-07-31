@@ -1,23 +1,20 @@
 import toError from '@common/error/util';
 
-export const responseToJson = (response: Response, errorMessage: string) => {
-  if (response.ok) {
-    return response.json();
-  } else {
-    throw new Error(errorMessage);
-  }
-};
-
-export const getHeader = (
+export const responseToJson = async (
   response: Response,
-  header: string,
   errorMessage: string
-): string | undefined => {
-  if (response.ok) {
-    return response.headers.get(header)?.toString();
-  } else {
-    throw new Error(errorMessage);
+) => {
+  if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || errorMessage);
+    } else {
+      const errorResponse = await response.text();
+      throw new Error(errorResponse || errorMessage);
+    }
   }
+  return response.json();
 };
 
 export type AsyncFunc<T = any> = (...args: any[]) => Promise<T>;
