@@ -2,19 +2,25 @@ import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import { Option } from '@common/types';
 import { sanitizeLabel } from '@common/util/stringutils';
 import { Select } from '@digdir/design-system-react';
-import { Column } from '@tanstack/react-table';
+import { Column, Table } from '@tanstack/react-table';
 import React from 'react';
 
 export interface Props<T extends object> {
+  table: Table<T>;
   column: Column<T>;
 }
 
-const TableFilterInput = <T extends object>({ column }: Props<T>) => {
+const TableFilterInput = <T extends object>({ table, column }: Props<T>) => {
   if (!column.getCanFilter()) {
     return null;
   }
 
   const columnFilterValue = column.getFilterValue();
+
+  const search = (value: string) => {
+    table.setPageIndex(0);
+    column.setFilterValue(value);
+  };
 
   if (column.columnDef?.meta?.select) {
     const defaultOption: Option = {
@@ -33,7 +39,7 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
       <div className="testlab-table__column-filter">
         <Select
           value={(columnFilterValue ?? '') as string}
-          onChange={(value) => column.setFilterValue(value)}
+          onChange={(value) => search(value)}
           options={options}
         />
       </div>
@@ -44,7 +50,7 @@ const TableFilterInput = <T extends object>({ column }: Props<T>) => {
     <div className="testlab-table__column-filter">
       <DebouncedInput
         value={(columnFilterValue ?? '') as string}
-        onChange={(value) => column.setFilterValue(value)}
+        onChange={(value) => search(String(value))}
         ariaLabel={column.columnDef?.id ?? ''}
         id={column.columnDef?.id ?? ''}
       />

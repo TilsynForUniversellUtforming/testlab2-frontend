@@ -247,7 +247,11 @@ const TestlabTable = <T extends object>({
           {showFilters && (
             <TableRow>
               {headerGroup.headers.map((header) => (
-                <TableFilter<T> column={header.column} key={header.column.id} />
+                <TableFilter<T>
+                  table={table}
+                  column={header.column}
+                  key={header.column.id}
+                />
               ))}
             </TableRow>
           )}
