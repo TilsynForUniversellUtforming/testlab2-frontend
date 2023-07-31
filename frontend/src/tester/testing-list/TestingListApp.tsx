@@ -1,12 +1,11 @@
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
-import useInterval from '@common/hooks/useInterval';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { joinStringsToList } from '@common/util/stringutils';
 import { isNotDefined } from '@common/util/util';
-import { fetchMaaling, restart } from '@maaling/api/maaling-api';
+import { restart } from '@maaling/api/maaling-api';
 import { RestartRequest, TestResult } from '@maaling/api/types';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -24,13 +23,20 @@ const TestingListApp = () => {
   const navigate = useNavigate();
   const maalingContext: MaalingContext = useOutletContext();
 
-  const { maaling, setMaaling, contextError, contextLoading } = maalingContext;
+  const {
+    maaling,
+    setMaaling,
+    contextError,
+    contextLoading,
+    refreshMaaling,
+    pollMaaling,
+    setPollMaaling,
+  } = maalingContext;
   const { id: maalingId, loeysingId } = useParams();
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
   const [error, setError] = useError(contextError);
-  const [refreshing, setRefreshing] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
   const testResultatColumns = useMemo(() => getTestingListColumns(), []);
@@ -56,7 +62,6 @@ const TestingListApp = () => {
   }, [maaling?.status, testResult, testRowSelection]);
 
   useEffect(() => {
-    setRefreshing(maaling?.status === 'testing');
     setTestResult(maaling?.testResult ?? []);
   }, [maaling]);
 
@@ -89,43 +94,14 @@ const TestingListApp = () => {
         setMaaling(restartedMaaling);
         setTestResult(restartedMaaling.testResult);
       } catch (e) {
-        setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
+        setError(toError(e, 'Noko gikk gale ved restart av testing'));
       }
     };
 
     doRestart().finally(() => {
-      setRefreshing(true);
+      setPollMaaling(true);
     });
   }, []);
-
-  const doFetchData = useCallback(async () => {
-    try {
-      if (
-        maalingId &&
-        contextLoading &&
-        maaling &&
-        maaling.status === 'testing'
-      ) {
-        const refreshedMaaling = await fetchMaaling(maaling.id);
-        if (!refreshedMaaling) {
-          setError(new Error('Fann ikkje måling'));
-        }
-
-        if (refreshedMaaling.status !== 'testing') {
-          setRefreshing(false);
-        }
-
-        setMaaling(refreshedMaaling);
-        setTestResult(refreshedMaaling.testResult);
-      } else if (!maalingId || (!maaling && !contextLoading)) {
-        setError(new Error('Måling finnes ikkje'));
-      }
-    } catch (e) {
-      setError(toError(e, 'Kunne ikkje hente måling'));
-    }
-  }, []);
-
-  useInterval(() => doFetchData(), refreshing ? 15000 : null);
 
   if (loeysingId) {
     return <Outlet context={maalingContext} />;
@@ -154,9 +130,9 @@ const TestingListApp = () => {
           defaultColumns: testResultatColumns,
           loading: contextLoading,
           onSelectRows: setTestRowSelection,
-          onClickRetry: doFetchData,
+          onClickRetry: refreshMaaling,
           displayError: { error },
-          loadingStateStatus: refreshing ? 'Utfører testing...' : undefined,
+          loadingStateStatus: pollMaaling ? 'Utfører testing...' : undefined,
           rowActions: rowActions,
           onClickCallback: (row) =>
             navigate(
