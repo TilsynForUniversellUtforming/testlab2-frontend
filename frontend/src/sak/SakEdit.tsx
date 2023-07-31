@@ -1,10 +1,12 @@
 import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import toError from '@common/error/util';
-import React, { useCallback, useEffect, useState } from 'react';
+import useError from '@common/hooks/useError';
+import useLoading from '@common/hooks/useLoading';
+import { updateMaaling } from '@maaling/api/maaling-api';
+import { MaalingEdit } from '@maaling/api/types';
+import React, { useCallback, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import { updateMaaling } from '../maaling/api/maaling-api';
-import { MaalingEdit } from '../maaling/api/types';
 import SakStepForm from './form/SakStepForm';
 import useMaalingFormState from './hooks/useMaalingFormState';
 import useSakForm from './hooks/useSakForm';
@@ -18,9 +20,6 @@ import {
 const SakEdit = () => {
   const {
     maaling,
-    regelsettList,
-    loeysingList,
-    utvalList,
     verksemdList,
     setMaaling,
     contextLoading,
@@ -28,18 +27,14 @@ const SakEdit = () => {
     advisors,
   }: SakContext = useOutletContext();
 
-  const [error, setError] = useState(contextError);
+  const [error, setError] = useError(contextError);
   const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
-  const [loading, setLoading] = useState(contextLoading);
+  const [loading, setLoading] = useLoading(contextLoading);
   const [maalingFormState, setMaalingFormState] = useMaalingFormState(
     maaling,
     verksemdList,
     advisors
   );
-
-  useEffect(() => {
-    setLoading(contextLoading);
-  }, [contextLoading]);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
     const doEditMaaling = async () => {
@@ -106,11 +101,6 @@ const SakEdit = () => {
         onSubmit={handleSubmit}
         loading={loading}
         error={error}
-        regelsettList={regelsettList}
-        loeysingList={loeysingList}
-        utvalList={utvalList}
-        verksemdList={verksemdList}
-        advisors={advisors}
       />
       {alert && (
         <AlertTimed

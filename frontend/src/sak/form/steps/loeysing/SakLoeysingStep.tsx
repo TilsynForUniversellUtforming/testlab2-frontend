@@ -1,4 +1,3 @@
-import fetchFeatures from '@common/features/api/features-api';
 import useValidate from '@common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabTable from '@common/table/TestlabTable';
@@ -12,27 +11,22 @@ import {
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
-import { useCallback, useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
-
-import { Loeysing, Utval } from '../../../../loeysingar/api/types';
-import { Verksemd } from '../../../../verksemder/api/types';
 import {
   LoeysingVerksemd,
   SakContext,
   SakFormBaseProps,
   SakFormState,
-} from '../../../types';
+} from '@sak/types';
+import { useCallback, useMemo, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
+
 import SakStepFormWrapper from '../../SakStepFormWrapper';
 import { getLoeysingVerksemdColumns } from './LoeysingColumns';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
-  loeysingList: Loeysing[];
-  utvalList: Utval[];
-  verksemdList: Verksemd[];
 }
 
 const SakLoeysingStep = ({
@@ -41,21 +35,17 @@ const SakLoeysingStep = ({
   error,
   loading,
   onSubmit,
-  loeysingList,
-  utvalList,
-  verksemdList,
 }: Props) => {
-  const { refreshLoeysing }: SakContext = useOutletContext();
+  const {
+    refreshLoeysing,
+    featureUtval,
+    loeysingList,
+    utvalList,
+    verksemdList,
+  }: SakContext = useOutletContext();
 
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
-  });
-
-  const [featureUtval, setFeatureUtval] = useState<boolean>(false);
-  fetchFeatures().then((featureList) => {
-    setFeatureUtval(
-      featureList.find((f) => f.key === 'utval')?.active ?? false
-    );
   });
 
   const { onClickBack } = formStepState;

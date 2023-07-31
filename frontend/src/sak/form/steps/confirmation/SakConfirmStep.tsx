@@ -2,17 +2,15 @@ import { utval } from '@common/appRoutes';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { isDefined } from '@common/util/util';
+import { SakContext, SakFormBaseProps, SakFormState } from '@sak/types';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { TestRegelsett } from '../../../../testreglar/api/types';
-import { SakContext, SakFormBaseProps, SakFormState } from '../../../types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';
 import SakConfirmContent from './SakConfirmContent';
 
 interface Props extends SakFormBaseProps {
-  regelsettList: TestRegelsett[];
   error: Error | undefined;
   loading: boolean;
 }
@@ -23,9 +21,8 @@ const SakConfirmStep = ({
   onSubmit,
   error,
   loading,
-  regelsettList,
 }: Props) => {
-  const { advisors }: SakContext = useOutletContext();
+  const { advisors, regelsettList }: SakContext = useOutletContext();
   const { navn, loeysingList, testregelList } = maalingFormState;
   const { onClickBack } = formStepState;
 

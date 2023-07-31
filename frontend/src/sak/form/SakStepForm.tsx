@@ -1,9 +1,5 @@
 import React, { ReactElement } from 'react';
 
-import { Loeysing, Utval } from '../../loeysingar/api/types';
-import { TestRegelsett } from '../../testreglar/api/types';
-import { User } from '../../user/api/types';
-import { Verksemd } from '../../verksemder/api/types';
 import { SakFormBaseProps } from '../types';
 import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
@@ -14,21 +10,11 @@ import SakTestreglarStep from './steps/SakTestreglarStep';
 export interface Props<T> extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
-  loeysingList: Loeysing[];
-  utvalList: Utval[];
-  verksemdList: Verksemd[];
-  regelsettList: TestRegelsett[];
-  advisors: User[];
 }
 
 const SakStepForm = <T extends object>({
   error,
   loading,
-  loeysingList,
-  utvalList,
-  verksemdList,
-  regelsettList,
-  advisors,
   maalingFormState,
   onSubmit,
   formStepState,
@@ -46,7 +32,6 @@ const SakStepForm = <T extends object>({
           formStepState={formStepState}
           maalingFormState={maalingFormState}
           onSubmit={onSubmit}
-          advisors={advisors}
         />
       );
     case 'Loeysing':
@@ -57,9 +42,6 @@ const SakStepForm = <T extends object>({
           onSubmit={onSubmit}
           error={error}
           loading={loading}
-          loeysingList={loeysingList}
-          utvalList={utvalList}
-          verksemdList={verksemdList}
         />
       );
     case 'Testregel':
@@ -70,7 +52,6 @@ const SakStepForm = <T extends object>({
           onSubmit={onSubmit}
           error={error}
           loading={loading}
-          regelsettList={regelsettList}
         />
       );
     case 'Confirm':
@@ -81,7 +62,6 @@ const SakStepForm = <T extends object>({
           onSubmit={onSubmit}
           error={error}
           loading={loading}
-          regelsettList={regelsettList}
         />
       );
     default:
