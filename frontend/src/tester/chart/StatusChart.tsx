@@ -29,12 +29,12 @@ const StatusChart = ({ numPerforming, numFinished, numError }: ChartProps) => {
     yAxis: {
       min: 0,
       title: {
-        text: 'Sider ',
+        text: 'Løysingar ',
       },
       tickInterval: 1,
     },
     tooltip: {
-      valueSuffix: ' sider',
+      valueSuffix: ' løysingar',
     },
     plotOptions: {
       column: {

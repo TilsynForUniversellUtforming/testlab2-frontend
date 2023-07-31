@@ -21,7 +21,15 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
 
@@ -55,7 +63,7 @@ class MaalingResource(
 
     if (maalingDTO == null) {
       logger.error("Kunne ikkje hente måling med id $maalingId frå server")
-      throw RuntimeException("Klarte ikke å hente den måling fra server")
+      throw RuntimeException("Klarte ikkje å hente måling")
     }
 
     val maaling =
