@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import TestlabLoadingButton from '@common/button/TestlabLoadingButton';
 import StatusBadge from '@common/status-badge/StatusBadge';
-import { List, ListItem } from '@digdir/design-system-react';
+import { List, ListItem, Spinner } from '@digdir/design-system-react';
 import React from 'react';
 
 import { Maaling } from '../../api/types';
@@ -31,20 +31,27 @@ const MaalingStatusContainer = ({
   const { crawlingStatus, testingStatus, publishStatus } =
     maalingOverviewStatus;
 
+  const pollingStatuses = ['crawling', 'testing'];
+
   return (
     <div className="status">
       <List>
         <ListItem>
           <div className="status__list-item">
             <div className="bold-text">Status</div>
-            <StatusBadge
-              status={maaling.status}
-              levels={{
-                primary: ['crawling', 'testing'],
-                success: ['testing_ferdig'],
-                danger: [],
-              }}
-            />
+            <div className="status__list-item-icon">
+              <StatusBadge
+                status={maaling.status}
+                levels={{
+                  primary: pollingStatuses,
+                  success: ['testing_ferdig'],
+                  danger: [],
+                }}
+              />
+              {pollingStatuses.includes(maaling.status) && (
+                <Spinner title="Oppdaterer måling" variant="inverted" />
+              )}
+            </div>
           </div>
         </ListItem>
         <ListItem>
