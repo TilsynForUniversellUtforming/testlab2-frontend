@@ -13,7 +13,12 @@ import { Maaling, RestartRequest } from '@maaling/api/types';
 import { CrawlUrl, MaalingContext } from '@maaling/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import {
+  Link,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 const getLoeysingCrawlResultat = (
   loeysingId?: string,
@@ -117,7 +122,11 @@ const KvalitetssikringApp = () => {
         {
           accessorFn: (row) => row.url,
           id: 'url',
-          cell: ({ row }) => <a href={row.original.url}>{row.original.url}</a>,
+          cell: ({ row }) => (
+            <Link to={row.original.url} target="_blank">
+              {row.original.url}
+            </Link>
+          ),
           header: () => <>URL</>,
         },
       ];
@@ -126,7 +135,11 @@ const KvalitetssikringApp = () => {
         {
           accessorFn: (row) => row.url,
           id: 'url',
-          cell: ({ row }) => <a href={row.original.url}>{row.original.url}</a>,
+          cell: ({ row }) => (
+            <Link to={row.original.url} target="_blank">
+              {row.original.url}
+            </Link>
+          ),
           header: () => <>URL</>,
         },
       ];

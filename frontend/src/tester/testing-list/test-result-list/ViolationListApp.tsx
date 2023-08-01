@@ -7,7 +7,7 @@ import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
 import { Maaling, TestResult } from '@maaling/api/types';
 import { MaalingTestStatus } from '@maaling/types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import fetchTestResultatLoeysing from '../../api/tester-api';
@@ -46,6 +46,12 @@ const ViolationListApp = () => {
     console.log(testResultatRowSelection);
   };
 
+  useEffect(() => {
+    if (!contextLoading) {
+      setSelectedLoeysing(getSelectedLoeysing(loeysingId, maaling));
+    }
+  }, [contextLoading, maaling]);
+
   const testResultatColumns = useMemo(() => getTestresultatColumns(), []);
 
   const fetchTestresultat = useCallback(() => {
@@ -83,9 +89,8 @@ const ViolationListApp = () => {
   return (
     <>
       <UserActionTable<TestResultat>
-        heading={`Brot ${extractDomain(
-          selectedLoeysing?.loeysing?.url
-        )} - ${testregelId}`}
+        heading={`Brot ${extractDomain(selectedLoeysing?.loeysing?.url)}`}
+        subHeading={`Testregel ${testregelId}`}
         tableProps={{
           data: testResult,
           defaultColumns: testResultatColumns,
