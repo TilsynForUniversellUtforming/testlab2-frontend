@@ -17,7 +17,7 @@ const LoeysingForm = ({ loeysing, heading, subHeading, onSubmit }: Props) => {
     defaultValues: {
       namn: loeysing?.namn ?? '',
       url: loeysing?.url ?? '',
-      orgnummer: loeysing?.orgnummer ?? '',
+      organisasjonsnummer: loeysing?.orgnummer ?? '',
     },
   });
 
@@ -28,6 +28,7 @@ const LoeysingForm = ({ loeysing, heading, subHeading, onSubmit }: Props) => {
         subHeading={subHeading}
         onSubmit={onSubmit}
         formMethods={formMethods}
+        hasRequiredFields
       >
         <div className="loeysing-form__input">
           <TestlabForm.FormInput<LoeysingInit>
@@ -56,7 +57,7 @@ const LoeysingForm = ({ loeysing, heading, subHeading, onSubmit }: Props) => {
         <div className="loeysing-form__input">
           <TestlabForm.FormInput<LoeysingInit>
             label="Organisasjonsnummer"
-            name="orgnummer"
+            name="organisasjonsnummer"
             formValidation={{
               validation: {
                 validate: isOrgnummer,

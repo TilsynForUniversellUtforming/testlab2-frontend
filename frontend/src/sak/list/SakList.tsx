@@ -5,7 +5,7 @@ import React from 'react';
 
 const SakList = () => (
   <TestlabLinkButton
-    title={'+ Legg til sak'}
+    title="Legg til sak"
     route={appRoutes.SAK_CREATE}
     color={ButtonColor.Success}
   />

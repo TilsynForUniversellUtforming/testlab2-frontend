@@ -113,7 +113,8 @@ const MaalingList = () => {
 
   return (
     <UserActionTable<Maaling>
-      heading="Måling"
+      heading="Målingar"
+      subHeading="Liste over alle målingar"
       actionButtons={[{ route: appRoutes.SAK_CREATE, action: 'add' }]}
       tableProps={{
         data: maalingList,

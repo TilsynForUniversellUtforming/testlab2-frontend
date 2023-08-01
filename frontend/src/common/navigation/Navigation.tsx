@@ -33,9 +33,16 @@ const Navigation = () => {
         <TestlabLinkButton
           route={appRoutes.ROOT}
           className="link"
-          title={appRoutes.ROOT.navn}
+          title={''}
           variant={ButtonVariant.Quiet}
           color={ButtonColor.Inverted}
+          icon={
+            <img
+              src={appRoutes.ROOT.imgSrc}
+              alt={'Heim'}
+              style={{ width: '100%' }}
+            />
+          }
         />
         <HamburgerMenu open={open} onClick={() => setOpen((open) => !open)} />
       </div>

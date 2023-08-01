@@ -63,6 +63,7 @@ export const TableActionDropdown = ({
                 onConfirm={() => {
                   tra.modalProps.onConfirm();
                   table.resetRowSelection();
+                  table.setPageIndex(0);
                 }}
               />
             </li>

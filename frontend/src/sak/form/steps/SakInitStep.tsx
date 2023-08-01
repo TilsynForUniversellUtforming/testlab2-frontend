@@ -58,7 +58,7 @@ const SakInitStep = ({
       <div className="sak-init">
         <TestlabFormSelect<SakFormState>
           label="Type sak"
-          sublabel="Angi type sak du skal opprette."
+          sublabel="Angi type sak du skal opprette"
           name="sakType"
           options={saktypeOptions}
           formValidation={{
@@ -90,12 +90,12 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
           }}
         />
         <TestlabFormInput<SakFormState>
-          label="Saksnummer (valfritt)"
+          label="Saksnummer"
           sublabel="Angi saksnummer frå Websak. Eksempel: 23/297."
           name="sakNumber"
         />
         <Button
-          title="Avansert"
+          title="Avanserte instillinger"
           icon={<CogIcon />}
           variant={'quiet'}
           iconPlacement={'right'}

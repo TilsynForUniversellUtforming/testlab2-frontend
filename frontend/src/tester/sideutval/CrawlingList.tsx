@@ -41,9 +41,9 @@ const CrawlingList = ({
         {
           action: 'restart',
           modalProps: {
-            title: 'Crawl på nytt',
+            title: 'Køyr utval på nytt',
             disabled: crawlList.length === 0,
-            message: `Vil du crawle ${joinStringsToList(
+            message: `Vil du køyre nytt utval for ${joinStringsToList(
               crawlRowSelection.map((r) => r.loeysing.namn)
             )} på nytt?`,
             onConfirm: () => onClickRestart(crawlRowSelection),

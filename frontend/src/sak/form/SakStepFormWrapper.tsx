@@ -10,6 +10,7 @@ import Stepper from './Stepper';
 export interface Props extends Omit<SakFormBaseProps, 'maalingFormState'> {
   formMethods: UseFormReturn<SakFormState>;
   buttonStep: TestlabFormButtonStep;
+  hasRequiredFields?: boolean;
   children: ReactNode;
 }
 
@@ -18,6 +19,7 @@ const SakStepFormWrapper = ({
   onSubmit,
   formMethods,
   buttonStep,
+  hasRequiredFields = false,
   children,
 }: Props) => {
   const { heading, subHeading } = formStepState.currentStep;
@@ -27,7 +29,11 @@ const SakStepFormWrapper = ({
       <TestlabForm<SakFormState> onSubmit={onSubmit} formMethods={formMethods}>
         <Stepper formStepState={formStepState} />
         <div className="sak__form">
-          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+          <TestlabFormHeader
+            heading={heading}
+            subHeading={subHeading}
+            hasRequiredFields={hasRequiredFields}
+          />
           <div className="sak__container">{children}</div>
           <TestlabForm.FormButtons step={buttonStep} />
         </div>

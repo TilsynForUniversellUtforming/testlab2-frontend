@@ -20,7 +20,7 @@ const TableActionButton = ({
   if (action === 'add') {
     return (
       <TestlabLinkButton
-        title={'+ Legg til'}
+        title="Legg til"
         route={route}
         color={ButtonColor.Success}
         disabled={disabled}
