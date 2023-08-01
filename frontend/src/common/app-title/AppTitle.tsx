@@ -50,7 +50,11 @@ const AppTitle = ({
 
   return (
     <div className="app-title">
-      <Heading className="app-title__heading" size={size ?? 'xlarge'}>
+      <Heading
+        className="app-title__heading"
+        size={size ?? 'xlarge'}
+        spacing={!subHeading}
+      >
         {appHeading}
       </Heading>
       <SubHeading subHeading={subHeading} linkPath={linkPath} />
