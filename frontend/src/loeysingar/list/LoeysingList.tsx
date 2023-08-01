@@ -83,6 +83,7 @@ const LoeysingList = () => {
   return (
     <UserActionTable<Loeysing>
       heading="Løysingar"
+      subHeading="Liste over alle løysingar"
       actionButtons={[{ route: appRoutes.LOEYSING_CREATE, action: 'add' }]}
       tableProps={{
         data: loeysingList,

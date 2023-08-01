@@ -37,6 +37,7 @@ const TestlabFormInput = <T extends object>({
         <div className="testlab-form__input">
           <label htmlFor={name} className="testlab-form__input-label">
             {label}
+            {formValidation?.validation?.required && <>*</>}
             {sublabel && (
               <div className="testlab-form__input-sub-label">{sublabel}</div>
             )}

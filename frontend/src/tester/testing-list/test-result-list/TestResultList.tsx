@@ -70,13 +70,13 @@ const TestResultList = () => {
               action: 'delete',
               modalProps: {
                 title: 'Ta løysing ut av måling',
-                message: `Vil du køyre test på nytt for ${extractDomain(
+                message: `Vil du ta ut test fra ${extractDomain(
                   loeysingTestResult?.loeysing?.url
                 )}?`,
                 onConfirm: () =>
                   setTestStatus({
                     loading: false,
-                    message: 'Kan ikkje slette løysingar frå måling ennå',
+                    message: 'Kan ikkje ta løysingar frå måling ennå',
                     severity: 'warning',
                   }),
               },

@@ -1,4 +1,3 @@
-import useError from '@common/hooks/useError';
 import UserActionTable from '@common/table/UserActionTable';
 import { List, ListItem } from '@digdir/design-system-react';
 import { ColumnDef } from '@tanstack/react-table';
@@ -12,7 +11,6 @@ const RegelsettList = () => {
   const { contextError, contextLoading, regelsett, refresh }: TestregelContext =
     useOutletContext();
 
-  const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState<boolean>(contextLoading);
 
   useEffect(() => {
@@ -31,7 +29,7 @@ const RegelsettList = () => {
         row.testregelList
           .map((tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`)
           .join(','),
-      id: 'TestregelId',
+      id: 'Testregel',
       cell: ({ row }) => (
         <List className="testreglar-regelsett__list">
           {row.original.testregelList.map((tr) => (
@@ -49,13 +47,14 @@ const RegelsettList = () => {
   return (
     <UserActionTable<TestRegelsett>
       heading="Regelsett"
+      subHeading="Liste over alle regelsett"
       tableProps={{
         data: regelsett,
         defaultColumns: regelsettColumns,
         displayError: {
           onClick: refresh,
           buttonText: 'Prøv igjen',
-          error: error,
+          error: contextError,
         },
         loading: loading,
         onClickRetry: refresh,

@@ -50,7 +50,9 @@ const SideutvalApp = () => {
   );
 
   useEffect(() => {
-    setCrawlResult(maalingToCrawlResultat(maaling));
+    if (!contextLoading) {
+      setCrawlResult(maalingToCrawlResultat(maaling));
+    }
   }, [contextLoading, maaling]);
 
   const doFetchData = useCallback(async () => {
@@ -122,10 +124,7 @@ const SideutvalApp = () => {
     });
   }, []);
 
-  if (
-    (typeof maaling === 'undefined' && !loading) ||
-    typeof id === 'undefined'
-  ) {
+  if (typeof id === 'undefined') {
     return <ErrorCard error={new Error('Ingen måling funnet')} />;
   }
 

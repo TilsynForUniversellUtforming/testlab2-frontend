@@ -1,6 +1,6 @@
 import './TestlabForm.scss';
 
-import React, { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
 import TestlabFormButtons from './TestlabFormButtons';
@@ -13,6 +13,7 @@ export interface TestlabFormProps<T extends object> {
   subHeading?: string;
   onSubmit: SubmitHandler<T>;
   formMethods: UseFormReturn<T>;
+  hasRequiredFields?: boolean;
   children: ReactNode;
 }
 
@@ -25,7 +26,8 @@ export interface TestlabFormProps<T extends object> {
  * @param {SubmitHandler<T>} props.onSubmit - Submit handler function for the form.
  * @param {UseFormReturn<T>} props.formMethods - React hook form methods for the form.
  * @param {ReactNode} props.children - React children to render within the form.
- * @return {JSX.Element} The React component for the TestlabForm.
+ * @param {booelan} props.hasRequiredFields - For displaying info about fields being required. Default to true.
+ * @return {ReactElement} The React component for the TestlabForm.
  */
 const TestlabForm = <T extends object>({
   heading,
@@ -33,7 +35,8 @@ const TestlabForm = <T extends object>({
   children,
   formMethods,
   onSubmit,
-}: TestlabFormProps<T>) => {
+  hasRequiredFields = true,
+}: TestlabFormProps<T>): ReactElement => {
   const { handleSubmit } = formMethods;
 
   return (
@@ -56,7 +59,11 @@ const TestlabForm = <T extends object>({
     >
       <form className="testlab-form" onSubmit={handleSubmit(onSubmit)}>
         {heading && (
-          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+          <TestlabFormHeader
+            heading={heading}
+            subHeading={subHeading}
+            hasRequiredFields={hasRequiredFields}
+          />
         )}
         {children}
       </form>

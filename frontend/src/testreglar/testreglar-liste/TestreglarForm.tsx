@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { Testregel } from '../api/types';
 
 export interface Props {
-  label: string;
+  heading: string;
+  subHeading: string;
   onSubmit: (testregel: Testregel) => void;
   testregel?: Testregel;
   krav: string[];
@@ -14,7 +15,8 @@ export interface Props {
 }
 
 const TestreglarForm = ({
-  label,
+  heading,
+  subHeading,
   onSubmit,
   testregel,
   krav,
@@ -37,7 +39,8 @@ const TestreglarForm = ({
   return (
     <div className="testregel-form">
       <TestlabForm<Testregel>
-        heading={label}
+        heading={heading}
+        subHeading={subHeading}
         onSubmit={onSubmit}
         formMethods={formMethods}
       >

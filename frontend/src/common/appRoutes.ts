@@ -11,6 +11,7 @@ import sakerImg from '../assets/saker.svg';
 import teknikkImg from '../assets/teknikk.svg';
 import konkurranseImg from '../assets/teknikk.svg';
 import testingImg from '../assets/testreglar.svg';
+import tilsynImg from '../assets/tilsyn.svg';
 import verksemderImg from '../assets/verksemder.svg';
 
 export const createPath = 'ny';
@@ -79,6 +80,7 @@ interface IRoutes {
 const ROOT = {
   navn: 'uu',
   path: '/',
+  imgSrc: tilsynImg,
 };
 const SAK_ROOT = {
   navn: 'Saker',

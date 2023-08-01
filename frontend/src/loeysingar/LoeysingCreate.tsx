@@ -23,14 +23,12 @@ const LoeysingCreate = () => {
       setContextError(undefined);
 
       if (loeysingInit) {
-        const orgnummerWithoutWhitespace = loeysingInit.orgnummer.replace(
-          /\s/g,
-          ''
-        );
+        const orgnummerWithoutWhitespace =
+          loeysingInit.organisasjonsnummer.replace(/\s/g, '');
         const loeysing: LoeysingInit = {
           namn: loeysingInit.namn,
           url: loeysingInit.url,
-          orgnummer: orgnummerWithoutWhitespace,
+          organisasjonsnummer: orgnummerWithoutWhitespace,
         };
 
         try {
@@ -54,7 +52,13 @@ const LoeysingCreate = () => {
     return <Spinner title="Henter løysingar" />;
   }
 
-  return <LoeysingForm heading="Ny løysing" onSubmit={onSubmit} />;
+  return (
+    <LoeysingForm
+      heading="Ny løysing"
+      onSubmit={onSubmit}
+      subHeading="Her kan du opprette ei ny løsying."
+    />
+  );
 };
 
 export default LoeysingCreate;
