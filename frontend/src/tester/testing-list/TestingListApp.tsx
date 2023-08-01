@@ -30,9 +30,7 @@ const TestingListApp = () => {
     maaling?.testResult ?? []
   );
   const [error, setError] = useError(contextError);
-  const [pollingMaaling, setPollingMaaling] = useState(
-    maaling?.status === 'testing'
-  );
+  const [pollMaaling, setPollMaaling] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
   const testResultatColumns = useMemo(() => getTestingListColumns(), []);
@@ -58,7 +56,7 @@ const TestingListApp = () => {
   }, [maaling?.status, testResult, testRowSelection]);
 
   useEffect(() => {
-    setPollingMaaling(maaling?.status === 'testing');
+    setPollMaaling(maaling?.status === 'testing');
     setTestResult(maaling?.testResult ?? []);
   }, [maaling]);
 
@@ -96,7 +94,7 @@ const TestingListApp = () => {
     };
 
     doRestart().finally(() => {
-      setPollingMaaling(true);
+      setPollMaaling(true);
     });
   }, []);
 
@@ -115,7 +113,7 @@ const TestingListApp = () => {
         }
 
         if (refreshedMaaling.status !== 'testing') {
-          setPollingMaaling(false);
+          setPollMaaling(false);
         }
 
         setMaaling(refreshedMaaling);
@@ -128,7 +126,7 @@ const TestingListApp = () => {
     }
   }, []);
 
-  useInterval(() => doFetchData(), pollingMaaling ? 15000 : null);
+  useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 
   if (loeysingId) {
     return <Outlet context={maalingContext} />;
@@ -159,7 +157,7 @@ const TestingListApp = () => {
           onSelectRows: setTestRowSelection,
           onClickRetry: doFetchData,
           displayError: { error },
-          loadingStateStatus: pollingMaaling ? 'Utfører testing...' : undefined,
+          loadingStateStatus: pollMaaling ? 'Utfører testing...' : undefined,
           rowActions: rowActions,
           onClickCallback: (row) =>
             navigate(
