@@ -1,13 +1,20 @@
+import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
+import useInterval from '@common/hooks/useInterval';
 import useLoading from '@common/hooks/useLoading';
 import { isNotDefined } from '@common/util/util';
-import { restart } from '@maaling/api/maaling-api';
+import { fetchMaaling, restart } from '@maaling/api/maaling-api';
 import { CrawlResultat, Maaling, RestartRequest } from '@maaling/api/types';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Outlet, useOutletContext, useParams } from 'react-router-dom';
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 import StatusChart from '../chart/StatusChart';
 import CrawlingList from './CrawlingList';
@@ -26,17 +33,11 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
 };
 
 const SideutvalApp = () => {
+  const navigate = useNavigate();
+
   const maalingContext: MaalingContext = useOutletContext();
 
-  const {
-    maaling,
-    contextError,
-    contextLoading,
-    setMaaling,
-    refreshMaaling,
-    pollMaaling,
-    setPollMaaling,
-  } = maalingContext;
+  const { maaling, contextError, contextLoading, setMaaling } = maalingContext;
   const { id, loeysingId } = useParams();
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
     maalingToCrawlResultat(maaling)
@@ -44,10 +45,37 @@ const SideutvalApp = () => {
 
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
+  const [pollingMaaling, setPollingMaaling] = useState(
+    maaling?.status === 'crawling'
+  );
 
   useEffect(() => {
     setCrawlResult(maalingToCrawlResultat(maaling));
-  }, [maaling]);
+  }, [contextLoading, maaling]);
+
+  const doFetchData = useCallback(async () => {
+    try {
+      if (id && !contextLoading && maaling && maaling.status === 'crawling') {
+        const refreshedMaaling = await fetchMaaling(Number(id));
+
+        if (!refreshedMaaling) {
+          setError(new Error('Fann ikkje måling'));
+        }
+
+        if (refreshedMaaling.status !== 'crawling') {
+          setPollingMaaling(false);
+        }
+        setMaaling(refreshedMaaling);
+        setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
+      } else if (!id || (!maaling && !contextLoading)) {
+        setError(new Error('Måling finnes ikkje'));
+      }
+    } catch (e) {
+      setError(toError(e, 'Kunne ikkje hente måling'));
+    }
+  }, []);
+
+  useInterval(() => doFetchData(), pollingMaaling ? 15000 : null);
 
   const onClickRestart = useCallback((crawlRowSelection: CrawlResultat[]) => {
     setLoading(true);
@@ -62,7 +90,7 @@ const SideutvalApp = () => {
       return;
     } else if (crawlRowSelection.length === 0) {
       setError(
-        new Error('Kunne ikkje starte sideutval på nytt, ingen løysing valgt')
+        new Error('Kunne ikkje starte crawling på nytt, ingen løysing valgt')
       );
       return;
     }
@@ -84,7 +112,13 @@ const SideutvalApp = () => {
     };
 
     doRestart().finally(() => {
-      setPollMaaling(true);
+      setLoading(false);
+      navigate(
+        getFullPath(appRoutes.MAALING, {
+          id: String(maaling.id),
+          pathParam: idPath,
+        })
+      );
     });
   }, []);
 
@@ -111,10 +145,10 @@ const SideutvalApp = () => {
         maaling={maaling}
         crawlList={crawlResultat}
         onClickRestart={onClickRestart}
-        refresh={refreshMaaling}
+        refresh={doFetchData}
         loading={loading}
         error={error}
-        refreshing={pollMaaling}
+        refreshing={pollingMaaling}
       />
     </>
   );
