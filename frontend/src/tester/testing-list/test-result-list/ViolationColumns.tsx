@@ -2,6 +2,7 @@ import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox'
 import { CellCheckboxId } from '@common/table/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { TestResultat } from '../../api/types';
 
@@ -41,7 +42,9 @@ export const getTestresultatColumns = (): Array<ColumnDef<TestResultat>> => [
     accessorFn: (row) => row.side,
     id: 'side',
     cell: (info) => (
-      <a href={String(info.getValue())}>{String(info.getValue())}</a>
+      <Link to={String(info.getValue())} target="_blank">
+        {String(info.getValue())}
+      </Link>
     ),
     header: () => <>Nettside</>,
   },
