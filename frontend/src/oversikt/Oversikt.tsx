@@ -20,7 +20,7 @@ interface OversiktLinkListProps {
 
 const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
   <div className="oversikt__links-item">
-    <AppTitle heading={heading} />
+    <AppTitle heading={heading} size="large" />
     <div className="lenker">
       {routes.map((route) => (
         <div className="lenker__wrapper" key={route.navn}>
@@ -28,7 +28,7 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             route={route}
             title={route.navn}
             variant="outline"
-            icon={<img src={route.imgSrc} alt={route.navn} />}
+            icon={<img src={route.imgSrc} alt={''} />}
             size="large"
             color="secondary"
             fullWidth={true}

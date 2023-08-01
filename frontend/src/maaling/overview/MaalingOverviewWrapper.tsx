@@ -26,7 +26,7 @@ const MaalingOverviewWrapper = () => {
 
   return (
     <>
-      <AppTitle heading={maaling?.navn ?? ''} />
+      <AppTitle heading={maaling?.navn} loading={contextLoading} />
       <Tabs
         items={[
           {

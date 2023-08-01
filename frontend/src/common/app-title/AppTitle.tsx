@@ -1,6 +1,16 @@
 import './app-title.scss';
 
+import { isNotDefined } from '@common/util/util';
+import { Heading } from '@digdir/design-system-react';
 import { Link } from 'react-router-dom';
+
+export type size =
+  | 'xxsmall'
+  | 'xsmall'
+  | 'small'
+  | 'medium'
+  | 'large'
+  | 'xlarge';
 
 interface SubHeadingProps {
   subHeading?: string;
@@ -9,6 +19,8 @@ interface SubHeadingProps {
 
 export interface AppTitleProps extends SubHeadingProps {
   heading?: string;
+  size?: size;
+  loading?: boolean;
 }
 
 const SubHeading = ({ subHeading, linkPath }: SubHeadingProps) => {
@@ -27,11 +39,23 @@ const SubHeading = ({ subHeading, linkPath }: SubHeadingProps) => {
   }
 };
 
-const AppTitle = ({ heading, subHeading, linkPath }: AppTitleProps) => (
-  <div className="app-title">
-    <h2 className="app-title__heading">{heading ?? 'Laster...'}</h2>
-    <SubHeading subHeading={subHeading} linkPath={linkPath} />
-  </div>
-);
+const AppTitle = ({
+  heading,
+  size,
+  subHeading,
+  linkPath,
+  loading,
+}: AppTitleProps) => {
+  const appHeading = loading || isNotDefined(heading) ? 'Laster...' : heading;
+
+  return (
+    <div className="app-title">
+      <Heading className="app-title__heading" size={size ?? 'xlarge'}>
+        {appHeading}
+      </Heading>
+      <SubHeading subHeading={subHeading} linkPath={linkPath} />
+    </div>
+  );
+};
 
 export default AppTitle;

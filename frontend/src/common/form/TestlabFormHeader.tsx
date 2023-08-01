@@ -1,3 +1,4 @@
+import { Heading, Paragraph } from '@digdir/design-system-react';
 import React from 'react';
 
 const TestlabFormHeader = ({
@@ -9,11 +10,13 @@ const TestlabFormHeader = ({
 }) => {
   return (
     <header className="testlab-form__header">
-      <h2 className="heading">{heading}</h2>
+      <Heading size="large" className="heading">
+        {heading}
+      </Heading>
       {subHeading && (
-        <p role="doc-subtitle" className="sub-heading">
+        <Paragraph spacing role="doc-subtitle">
           {subHeading}
-        </p>
+        </Paragraph>
       )}
     </header>
   );
