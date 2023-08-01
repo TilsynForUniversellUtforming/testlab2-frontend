@@ -60,7 +60,8 @@ const TestregelEdit = () => {
 
   return (
     <TestreglarForm
-      label="Endre testregel"
+      heading="Endre testregel"
+      subHeading={testregel.testregelNoekkel}
       onSubmit={onSubmit}
       testregel={testregel}
       krav={krav}

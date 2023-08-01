@@ -26,10 +26,8 @@ const LoeysingEdit = () => {
       setContextLoading(true);
       setContextError(undefined);
 
-      const orgnummerWithoutWhitespace = loeysingInit.orgnummer.replace(
-        /\s/g,
-        ''
-      );
+      const orgnummerWithoutWhitespace =
+        loeysingInit.organisasjonsnummer.replace(/\s/g, '');
       if (loeysingInit && id) {
         const loeysing: Loeysing = {
           id: Number(id),

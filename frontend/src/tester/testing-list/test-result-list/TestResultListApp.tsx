@@ -1,5 +1,6 @@
 import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
+import useError from '@common/hooks/useError';
 import { isNotDefined } from '@common/util/util';
 import { restart } from '@maaling/api/maaling-api';
 import { Maaling, RestartRequest, TestResult } from '@maaling/api/types';
@@ -32,8 +33,8 @@ const TestResultListApp = () => {
     refreshMaaling,
   }: MaalingContext = useOutletContext();
 
-  const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
+  const [error, setError] = useError(contextError);
   const [loeysingTestResult, setLoeysingTestResult] = useState(
     getSelectedTestResult(loeysingId, maaling)
   );

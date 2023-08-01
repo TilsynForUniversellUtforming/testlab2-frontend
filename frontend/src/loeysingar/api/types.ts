@@ -8,7 +8,7 @@ export type Loeysing = {
 export type LoeysingInit = {
   namn: string;
   url: string;
-  orgnummer: string;
+  organisasjonsnummer: string;
 };
 
 export type Utval = {

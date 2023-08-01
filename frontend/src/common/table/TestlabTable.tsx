@@ -25,7 +25,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { TableOptions } from '@tanstack/table-core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import { isDefined } from '../util/util';
@@ -108,7 +108,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @param {string} [props.loadingStateStatus] - The status to display when the table is loading.
  * @param {(row?: Row<T>) => void} [props.onClickCallback] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
- * @returns {JSX.Element} - The React component for the TestlabTable.
+ * @returns {ReactElement} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
   data,
@@ -126,7 +126,7 @@ const TestlabTable = <T extends object>({
   rowActions,
   loadingStateStatus,
   onClickCallback,
-}: TestlabTableProps<T>) => {
+}: TestlabTableProps<T>): ReactElement => {
   const isLoading = loading ?? false;
   const [columns, setColumns] = useState<typeof defaultColumns>(() => [
     ...defaultColumns,

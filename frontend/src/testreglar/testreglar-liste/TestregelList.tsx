@@ -84,6 +84,7 @@ const TestregelList = () => {
   return (
     <UserActionTable<Testregel>
       heading="Testreglar"
+      subHeading="Liste over alle testreglar"
       actionButtons={[{ route: appRoutes.TESTREGEL_CREATE, action: 'add' }]}
       tableProps={{
         data: testreglar,

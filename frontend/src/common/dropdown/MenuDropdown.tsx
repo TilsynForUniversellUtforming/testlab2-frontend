@@ -37,7 +37,7 @@ const MenuDropdown = ({
   });
 
   return (
-    <div className="dropdown" ref={menuDropdownRef}>
+    <div className="dropdown table" ref={menuDropdownRef}>
       <Button
         title={title}
         onClick={() => setShow((show) => !show)}

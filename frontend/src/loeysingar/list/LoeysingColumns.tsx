@@ -1,4 +1,3 @@
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import {
   HeaderCheckbox,
   RowCheckbox,
@@ -6,7 +5,6 @@ import {
 import { CellCheckboxId } from '@common/table/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { Loeysing } from '../api/types';
 
@@ -26,7 +24,7 @@ export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
   },
   {
     accessorFn: (row) => row.namn,
-    id: 'loeysing-namn',
+    id: 'løsying namn',
     cell: ({ getValue }) => getValue(),
     header: () => <>Namn</>,
   },
@@ -38,7 +36,7 @@ export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
   },
   {
     accessorFn: (row) => row.orgnummer,
-    id: 'orgnummer',
+    id: 'organisasjonsnummer',
     cell: (info) => info.getValue(),
     header: () => <>Organisasjonsnummer</>,
   },
@@ -52,18 +50,8 @@ export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
 export const getLoeysingColumnsReadOnly = (): Array<ColumnDef<Loeysing>> => [
   {
     accessorFn: (row) => row.namn,
-    id: 'loeysing-namn',
-    cell: ({ row, getValue }) => (
-      <Link
-        to={getFullPath(appRoutes.LOEYSING_EDIT, {
-          pathParam: idPath,
-          id: String(row.original.id),
-        })}
-        target="_blank"
-      >
-        {String(getValue())}
-      </Link>
-    ),
+    id: 'løysing namn',
+    cell: ({ getValue }) => getValue(),
     header: () => <>Namn</>,
   },
   {
@@ -74,7 +62,7 @@ export const getLoeysingColumnsReadOnly = (): Array<ColumnDef<Loeysing>> => [
   },
   {
     accessorFn: (row) => row.orgnummer,
-    id: 'orgnummer',
+    id: 'organisasjonsnummer',
     cell: (info) => info.getValue(),
     header: () => <>Organisasjonsnummer</>,
   },

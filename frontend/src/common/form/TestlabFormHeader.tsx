@@ -4,9 +4,11 @@ import React from 'react';
 const TestlabFormHeader = ({
   heading,
   subHeading,
+  hasRequiredFields,
 }: {
   heading: string;
   subHeading?: string;
+  hasRequiredFields?: boolean;
 }) => {
   return (
     <header className="testlab-form__header">
@@ -14,8 +16,13 @@ const TestlabFormHeader = ({
         {heading}
       </Heading>
       {subHeading && (
-        <Paragraph spacing role="doc-subtitle">
+        <Paragraph spacing={!hasRequiredFields} role="doc-subtitle">
           {subHeading}
+        </Paragraph>
+      )}
+      {hasRequiredFields && (
+        <Paragraph spacing size="xsmall">
+          Felter markert med * er obligatoriske
         </Paragraph>
       )}
     </header>

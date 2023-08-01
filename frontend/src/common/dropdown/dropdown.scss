@@ -1,6 +1,11 @@
 .dropdown {
   position: relative;
   width: fit-content;
+
+  &.table {
+    padding-bottom: 1rem;
+  }
+
   .dropdown-content {
     padding: 0;
     margin: 0;

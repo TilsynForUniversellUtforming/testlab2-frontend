@@ -1,6 +1,6 @@
 import './standard-table.scss';
 
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 import AppTitle, { AppTitleProps } from '../app-title/AppTitle';
 import TableActionButton, {
@@ -25,7 +25,7 @@ export interface Props<T extends object> extends AppTitleProps {
  * @param {TableActionButtonProps[]} props.actionButtons - List of buttons which routes the user to a new page to preform actions, ie. create new elements.
  * @param {TestlabTableProps<T>} props.tableProps - The props for the TestlabTable component.
  * @param {MenuDropdownProps} props.menuButtons - The props for the menu dropdown component.
- * @returns {JSX.Element} - A JSX.Element representing the StandardTable component.
+ * @returns {ReactElement} - A JSX.Element representing the StandardTable component.
  */
 const UserActionTable = <T extends object>({
   heading,
@@ -34,29 +34,24 @@ const UserActionTable = <T extends object>({
   actionButtons,
   tableProps,
   menuButtons,
-}: Props<T>) => {
-  return (
-    <div className="standard-table">
-      <AppTitle heading={heading} subHeading={subHeading} linkPath={linkPath} />
+}: Props<T>): ReactElement => (
+  <div className="standard-table">
+    <AppTitle heading={heading} subHeading={subHeading} linkPath={linkPath} />
 
-      {actionButtons && actionButtons.length > 0 && (
-        <div className="standard-table__user-actions">
-          {actionButtons.map((button, i) => (
-            <div
-              className="standard-table__action"
-              key={`${button.action}_${i}`}
-            >
-              <TableActionButton {...button} />
-            </div>
-          ))}
-        </div>
-      )}
-      {menuButtons && (
-        <MenuDropdown title={menuButtons.title} actions={menuButtons.actions} />
-      )}
-      <TestlabTable<T> {...tableProps} />
-    </div>
-  );
-};
+    {actionButtons && actionButtons.length > 0 && (
+      <div className="standard-table__user-actions">
+        {actionButtons.map((button, i) => (
+          <div className="standard-table__action" key={`${button.action}_${i}`}>
+            <TableActionButton {...button} />
+          </div>
+        ))}
+      </div>
+    )}
+    {menuButtons && (
+      <MenuDropdown title={menuButtons.title} actions={menuButtons.actions} />
+    )}
+    <TestlabTable<T> {...tableProps} />
+  </div>
+);
 
 export default UserActionTable;

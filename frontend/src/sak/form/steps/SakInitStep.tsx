@@ -2,7 +2,7 @@ import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { isNotDefined } from '@common/util/util';
-import { Button, Paragraph } from '@digdir/design-system-react';
+import { Button } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import {
   SakContext,
@@ -56,11 +56,8 @@ const SakInitStep = ({
       buttonStep={buttonStep}
     >
       <div className="sak-init">
-        <Paragraph spacing size="xsmall">
-          Felter markert med * er obligatoriske
-        </Paragraph>
         <TestlabFormSelect<SakFormState>
-          label="Type sak*"
+          label="Type sak"
           sublabel="Angi type sak du skal opprette"
           name="sakType"
           options={saktypeOptions}
@@ -70,7 +67,7 @@ const SakInitStep = ({
           }}
         />
         <TestlabFormInput<SakFormState>
-          label="Tittel*"
+          label="Tittel"
           sublabel="Angi sakstype og årstall. Ta med namn på verksemd
 når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
           name="navn"
@@ -80,7 +77,7 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
           }}
         />
         <TestlabFormSelect<SakFormState>
-          label="Sakshandsamar*"
+          label="Sakshandsamar"
           sublabel="Angi kven som skal følgje opp saka."
           name="advisorId"
           options={advisors.map((a) => ({

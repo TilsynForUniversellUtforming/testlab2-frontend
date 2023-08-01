@@ -1,7 +1,7 @@
 import './app-title.scss';
 
 import { isNotDefined } from '@common/util/util';
-import { Heading } from '@digdir/design-system-react';
+import { Heading, Paragraph } from '@digdir/design-system-react';
 import { Link } from 'react-router-dom';
 
 export type size =
@@ -31,11 +31,11 @@ const SubHeading = ({ subHeading, linkPath }: SubHeadingProps) => {
   if (linkPath) {
     return (
       <Link to={linkPath}>
-        <div className="app-title__sub-heading">{subHeading}</div>
+        <Paragraph spacing>{subHeading}</Paragraph>
       </Link>
     );
   } else {
-    return <div className="app-title__sub-heading">{subHeading}</div>;
+    return <Paragraph spacing>{subHeading}</Paragraph>;
   }
 };
 
