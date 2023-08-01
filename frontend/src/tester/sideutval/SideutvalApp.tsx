@@ -45,7 +45,7 @@ const SideutvalApp = () => {
 
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
-  const [pollingMaaling, setPollingMaaling] = useState(
+  const [pollMaaling, setPollMaaling] = useState(
     maaling?.status === 'crawling'
   );
 
@@ -63,7 +63,7 @@ const SideutvalApp = () => {
         }
 
         if (refreshedMaaling.status !== 'crawling') {
-          setPollingMaaling(false);
+          setPollMaaling(false);
         }
         setMaaling(refreshedMaaling);
         setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
@@ -75,7 +75,7 @@ const SideutvalApp = () => {
     }
   }, []);
 
-  useInterval(() => doFetchData(), pollingMaaling ? 15000 : null);
+  useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 
   const onClickRestart = useCallback((crawlRowSelection: CrawlResultat[]) => {
     setLoading(true);
@@ -148,7 +148,7 @@ const SideutvalApp = () => {
         refresh={doFetchData}
         loading={loading}
         error={error}
-        refreshing={pollingMaaling}
+        refreshing={pollMaaling}
       />
     </>
   );
