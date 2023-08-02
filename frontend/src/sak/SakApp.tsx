@@ -1,5 +1,4 @@
 import toError from '@common/error/util';
-import fetchFeatures from '@common/features/api/features-api';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
@@ -28,7 +27,6 @@ const SakApp = () => {
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
-  const [featureUtval, setFeatureUtval] = useState<boolean>(false);
 
   const handleSetMaaling = useCallback((maaling: Maaling) => {
     setMaaling(maaling);
@@ -86,15 +84,7 @@ const SakApp = () => {
 
       await handleFetchLoeysingList();
 
-      await fetchFeatures().then((featureList) => {
-        const utvalActive =
-          featureList.find((f) => f.key === 'utval')?.active ?? false;
-
-        if (utvalActive) {
-          setFeatureUtval(true);
-          handleFetchUtvalList();
-        }
-      });
+      await handleFetchUtvalList();
 
       await handleFetchRegelsettList();
 
@@ -134,7 +124,6 @@ const SakApp = () => {
     refreshLoeysing: handleFetchLoeysingList,
     regelsettList: regelsettList,
     advisors: advisorList,
-    featureUtval: featureUtval,
   };
 
   return <Outlet context={sakContext} />;
