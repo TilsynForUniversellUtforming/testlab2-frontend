@@ -1,11 +1,15 @@
 %common-button {
+  display: inline-flex;
   font-size: var(--font_size-300-breakpoint_md) !important;
   font-weight: 500;
   justify-content: start;
+  align-items: center;
   border-radius: 12px;
   border: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 2.5rem 3rem 2.5rem 1.5rem;
+
   &:hover {
     box-shadow: 0 0 0 2px #95227d !important;
     background: white !important;
@@ -47,7 +51,8 @@
 
       button {
         @extend %common-button;
-        padding: 1rem 1.5rem 1rem 1rem;
+        padding-left: 1rem;
+        padding-right: 1.5rem;
         box-shadow: 0 0 0 2px #ccc6d1;
         &:hover {
           box-shadow: 0 0 0 2px #118849 !important;
@@ -96,7 +101,6 @@
 
           button {
             @extend %common-button;
-            padding: 1.5rem 4rem 1.5rem 1.5rem;
             box-shadow: 0 0 0 2px #ccc6d1;
           }
         }
