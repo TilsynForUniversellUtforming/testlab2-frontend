@@ -9,7 +9,6 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingInit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
@@ -19,6 +18,8 @@ import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertRes
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -99,10 +100,13 @@ class MaalingResource(
   }
 
   @PostMapping
-  fun createNew(@RequestBody maaling: MaalingInit): ResponseEntity<out Any> =
+  fun createNew(@RequestBody requestBody: ByteArray): ResponseEntity<out Any> =
       runCatching {
+            val headers = HttpHeaders()
+            headers.contentType = MediaType.APPLICATION_JSON
+            val entity = HttpEntity(requestBody, headers)
             val location =
-                restTemplate.postForLocation(maalingUrl, maaling, Int::class.java)
+                restTemplate.postForLocation(maalingUrl, entity, Int::class.java)
                     ?: throw RuntimeException(
                         "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
             val newMaaling =
