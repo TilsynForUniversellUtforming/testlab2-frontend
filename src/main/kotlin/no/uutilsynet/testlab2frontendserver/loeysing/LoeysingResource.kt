@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.loeysing
 
 import java.net.URI
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getDetailedErrorMessage
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
@@ -65,8 +66,12 @@ class LoeysingResource(
             ResponseEntity.created(URI("/loeysing/${createdLoeysing.id}")).body(getLoeysingList())
           }
           .getOrElse {
-            ResponseEntity.internalServerError()
-                .body("noko gikk gjekk da eg forsøkte å lage ei ny løysing")
+            val message =
+                when (it) {
+                  is HttpClientErrorException -> getDetailedErrorMessage(it)
+                  else -> "Noko gikk gjekk da eg forsøkte å lage ei ny løysing"
+                }
+            ResponseEntity.internalServerError().body(message)
           }
 
   @PutMapping
