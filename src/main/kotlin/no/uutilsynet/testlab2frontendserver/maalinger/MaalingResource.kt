@@ -3,7 +3,6 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters.Companion.validateParameters
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
@@ -103,10 +102,7 @@ class MaalingResource(
   fun createNew(@RequestBody maaling: MaalingInit): ResponseEntity<out Any> =
       runCatching {
             val location =
-                restTemplate.postForLocation(
-                    maalingUrl,
-                    maaling.copy(crawlParameters = maaling.crawlParameters.validateParameters()),
-                    Int::class.java)
+                restTemplate.postForLocation(maalingUrl, maaling, Int::class.java)
                     ?: throw RuntimeException(
                         "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
             val newMaaling =
@@ -124,10 +120,7 @@ class MaalingResource(
   @PutMapping
   fun updateMaaling(@RequestBody maaling: MaalingEdit): ResponseEntity<out Any> =
       runCatching {
-            restTemplate.put(
-                maalingUrl,
-                maaling.copy(crawlParameters = maaling.crawlParameters?.validateParameters()),
-                Int::class.java)
+            restTemplate.put(maalingUrl, maaling, Int::class.java)
             getMaaling(maaling.id)
           }
           .getOrElse {
