@@ -53,7 +53,7 @@ const SakLoeysingStep = ({
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
   const [source, setSource] = useState<'utval' | 'manuell' | undefined>(
-    'manuell'
+    undefined
   );
 
   const { control, setValue, getValues, setError, clearErrors, formState } =
@@ -189,6 +189,7 @@ const SakLoeysingStep = ({
               { label: 'Bruk eit utval', value: 'utval' },
               { label: 'Velg løysingar sjølv', value: 'manuell' },
             ]}
+            value={source}
             onChange={(value) => {
               return value === 'utval'
                 ? setSource('utval')
