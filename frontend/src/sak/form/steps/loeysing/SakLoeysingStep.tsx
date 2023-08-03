@@ -43,16 +43,20 @@ const SakLoeysingStep = ({
     defaultValues: maalingFormState,
   });
 
+  const { control, setValue, getValues, setError, clearErrors, formState } =
+    formMethods;
+
   const { onClickBack } = formStepState;
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
   const [source, setSource] = useState<'utval' | 'manuell' | undefined>(
-    undefined
+    getValues('utval')
+      ? 'utval'
+      : getValues('loeysingList')?.length > 0
+      ? 'manuell'
+      : undefined
   );
-
-  const { control, setValue, getValues, setError, clearErrors, formState } =
-    formMethods;
 
   const selection = useWatch<SakFormState>({
     control,
@@ -119,6 +123,7 @@ const SakLoeysingStep = ({
           });
         } else {
           setValue('loeysingList', filteredValues);
+          setValue('utval', undefined);
 
           useValidate<LoeysingVerksemd, SakFormState>({
             selection: newLoeysingList,
@@ -209,12 +214,13 @@ const SakLoeysingStep = ({
               label: u.namn,
               value: String(u.id),
             }))}
-            onChange={(value) =>
+            onChange={(value) => {
               setValue(
                 'utval',
                 utvalList.find((u) => u.id === Number(value))
-              )
-            }
+              );
+              setValue('loeysingList', []);
+            }}
             error={listErrors?.message}
           />
         </FieldSet>
