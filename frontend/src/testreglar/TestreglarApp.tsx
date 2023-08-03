@@ -8,7 +8,7 @@ import { Tabs } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { listRegelsett, listTestreglar } from './api/testreglar-api';
+import { fetchRegelsettList, fetchTestreglarList } from './api/testreglar-api';
 import { Testregel, TestRegelsett } from './api/types';
 import { TestregelContext } from './types';
 
@@ -42,8 +42,8 @@ const TestreglarApp = () => {
 
     const fetchData = async () => {
       try {
-        const testreglar = await listTestreglar();
-        const regelsett = await listRegelsett();
+        const testreglar = await fetchTestreglarList();
+        const regelsett = await fetchRegelsettList();
         setTestreglar(testreglar);
         setRegelsett(regelsett);
         setLoading(false);

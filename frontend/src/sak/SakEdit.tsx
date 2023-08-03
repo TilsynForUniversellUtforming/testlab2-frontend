@@ -20,11 +20,14 @@ import {
 const SakEdit = () => {
   const {
     maaling,
+    loeysingList,
+    utvalList,
     verksemdList,
+    regelsettList,
+    advisors,
     setMaaling,
     contextLoading,
     contextError,
-    advisors,
   }: SakContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
@@ -98,6 +101,11 @@ const SakEdit = () => {
       <SakStepForm
         formStepState={formStepState}
         maalingFormState={maalingFormState}
+        loeysingList={loeysingList}
+        utvalList={utvalList}
+        verksemdList={verksemdList}
+        regelsettList={regelsettList}
+        advisors={advisors}
         onSubmit={handleSubmit}
         loading={loading}
         error={error}

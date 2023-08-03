@@ -14,29 +14,28 @@ import {
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
-import { SakContext, SakFormBaseProps, SakFormState } from '@sak/types';
+import { SakFormBaseProps, SakFormState } from '@sak/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
 
-import { Testregel } from '../../../testreglar/api/types';
+import { Testregel, TestRegelsett } from '../../../testreglar/api/types';
 import SakStepFormWrapper from '../SakStepFormWrapper';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
+  regelsettList: TestRegelsett[];
 }
 
 const SakTestreglarStep = ({
   onSubmit,
   maalingFormState,
+  regelsettList,
   formStepState,
   error,
   loading,
 }: Props) => {
-  const { regelsettList }: SakContext = useOutletContext();
-
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
