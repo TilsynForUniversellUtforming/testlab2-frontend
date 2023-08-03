@@ -24,7 +24,7 @@ export type Levels = {
  */
 interface Props {
   customLabel?: string;
-  status?: any;
+  status?: string;
   levels: Levels;
 }
 

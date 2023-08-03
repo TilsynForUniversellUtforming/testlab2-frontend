@@ -6,8 +6,8 @@ import DebouncedInput from '../../debounced-input/DebouncedInput';
 import TableActionDropdown from '../../dropdown/TableActionDropdown';
 import { TableFilterPreference, TableRowAction } from '../types';
 
-export interface Props {
-  table: Table<any>;
+export interface Props<T extends object> {
+  table: Table<T>;
   filterPreference: TableFilterPreference;
   filterValue: string;
   onChangeFilter: (value: string | number) => void;
@@ -17,7 +17,7 @@ export interface Props {
   loadingStateStatus?: string;
 }
 
-const ControlHeader = ({
+const ControlHeader = <T extends object>({
   table,
   filterPreference,
   filterValue,
@@ -26,7 +26,7 @@ const ControlHeader = ({
   rowActionEnabled,
   small = false,
   loadingStateStatus,
-}: Props) => {
+}: Props<T>) => {
   const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
   const hasElements = tableElementSize > 0;
 
@@ -42,7 +42,7 @@ const ControlHeader = ({
     <div className="control-header">
       <div className="testlab-table dropdown">
         {showRowActions && (
-          <TableActionDropdown
+          <TableActionDropdown<T>
             actions={rowActions}
             disabled={!rowActionEnabled}
             table={table}

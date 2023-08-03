@@ -2,6 +2,7 @@ import './testreglar.scss';
 
 import { appRoutes } from '@common/appRoutes';
 import ErrorCard from '@common/error/ErrorCard';
+import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { Tabs } from '@digdir/design-system-react';
 import React, { useCallback, useState } from 'react';
@@ -14,7 +15,7 @@ import { TestregelContext } from './types';
 const TestreglarApp = () => {
   const [testreglar, setTestreglar] = useState<Testregel[]>([]);
   const [regelsett, setRegelsett] = useState<TestRegelsett[]>([]);
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showTestreglar, setShowTestreglar] = useState(false);
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ const TestreglarApp = () => {
         setLoading(false);
         setError(undefined);
       } catch (e) {
-        setError(e);
+        setError(toError(e, 'Kunne ikkje hente testreglar'));
       }
     };
 

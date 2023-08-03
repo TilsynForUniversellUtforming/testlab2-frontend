@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * A custom React hook that runs an effect only once, when the component mounts, and cleans up the effect only when the component unmounts.
@@ -10,7 +10,6 @@ export const useEffectOnce = (effect: () => void | (() => void)) => {
   const destroyFunc = useRef<void | (() => void)>();
   const effectCalled = useRef(false);
   const renderAfterCalled = useRef(false);
-  const [val, setVal] = useState<number>(0);
 
   if (effectCalled.current) {
     renderAfterCalled.current = true;
@@ -21,8 +20,6 @@ export const useEffectOnce = (effect: () => void | (() => void)) => {
       destroyFunc.current = effect();
       effectCalled.current = true;
     }
-
-    setVal((val) => val + 1);
 
     return () => {
       if (!renderAfterCalled.current) {

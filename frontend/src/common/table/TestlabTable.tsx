@@ -51,11 +51,13 @@ ColumnMeta is extended to include the select property,
 which is used to indicate whether a column should use a select component instead of input
 */
 declare module '@tanstack/react-table' {
+  // eslint-disable-next-line
   interface ColumnMeta<TData, TValue> {
     select?: boolean;
   }
 }
 
+// eslint-disable-next-line
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -69,6 +71,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
+// eslint-disable-next-line
 const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
   const rowValue = row.getValue(columnId);
   return rowValue === value;

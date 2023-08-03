@@ -2,11 +2,11 @@ import { Table } from '@tanstack/react-table';
 
 import { ConfirmModalProps } from '../confirm/ConfirmModalButton';
 
-export interface TableProps {
-  table: Table<any>;
+export interface TableProps<T> {
+  table: Table<T>;
 }
 
-export interface LoadingTableProps extends TableProps {
+export interface LoadingTableProps<T> extends TableProps<T> {
   loading: boolean;
 }
 

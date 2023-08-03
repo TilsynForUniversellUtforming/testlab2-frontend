@@ -1,4 +1,4 @@
-const toError = (error: any, backupMessage: string): Error => {
+const toError = (error: unknown, backupMessage: string): Error => {
   if (error instanceof Error) {
     return error;
   } else {

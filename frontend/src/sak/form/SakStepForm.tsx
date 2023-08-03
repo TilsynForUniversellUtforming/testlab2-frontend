@@ -7,18 +7,18 @@ import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
 import SakInitStep from './steps/SakInitStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
-export interface Props<T> extends SakFormBaseProps {
+export interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
 }
 
-const SakStepForm = <T extends object>({
+const SakStepForm = ({
   error,
   loading,
   maalingFormState,
   onSubmit,
   formStepState,
-}: Props<T>): ReactElement<T> => {
+}: Props): ReactElement => {
   const { currentStep } = formStepState;
 
   if (loading) {

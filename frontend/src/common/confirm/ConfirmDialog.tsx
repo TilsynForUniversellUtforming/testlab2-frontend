@@ -8,7 +8,7 @@ export interface Props {
   message: string;
   show: boolean;
   closeModal: () => void;
-  onSubmit: (e: any) => void;
+  onSubmit: () => void;
 }
 
 const ConfirmDialog = ({

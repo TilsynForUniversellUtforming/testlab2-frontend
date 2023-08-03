@@ -15,7 +15,9 @@ import React from 'react';
 import { TableProps } from '../../types';
 import usePaginationKeyPress from './hooks/usePaginationKeyPress';
 
-const PaginationMiddleSection = ({ table }: TableProps) => {
+const PaginationMiddleSection = <T extends object>({
+  table,
+}: TableProps<T>) => {
   const pageOptions = table.getPageOptions();
   const pageCount = pageOptions.length;
 
@@ -75,7 +77,7 @@ const PaginationMiddleSection = ({ table }: TableProps) => {
   return <>{pageNumbers}</>;
 };
 
-const PaginationSelect = ({ table }: TableProps) => {
+const PaginationSelect = <T extends object>({ table }: TableProps<T>) => {
   usePaginationKeyPress({ table });
 
   return (
