@@ -134,11 +134,13 @@ const SideutvalApp = () => {
 
   return (
     <>
-      <StatusChart
-        numFinished={maaling?.crawlStatistics?.numFinished ?? 0}
-        numPerforming={maaling?.crawlStatistics?.numPerforming ?? 0}
-        numError={maaling?.crawlStatistics?.numError ?? 0}
-      />
+      {maaling?.status !== 'planlegging' && (
+        <StatusChart
+          numFinished={maaling?.crawlStatistics?.numFinished ?? 0}
+          numPerforming={maaling?.crawlStatistics?.numPerforming ?? 0}
+          numError={maaling?.crawlStatistics?.numError ?? 0}
+        />
+      )}
       <CrawlingList
         id={id}
         maaling={maaling}

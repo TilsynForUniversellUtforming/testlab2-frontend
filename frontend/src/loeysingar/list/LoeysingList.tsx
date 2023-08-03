@@ -107,7 +107,7 @@ const LoeysingList = () => {
             },
           },
         ],
-        onClickCallback: (row) =>
+        onClickRow: (row) =>
           navigate(
             getFullPath(appRoutes.LOEYSING_EDIT, {
               pathParam: idPath,

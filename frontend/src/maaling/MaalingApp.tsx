@@ -5,12 +5,12 @@ import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/api/util';
 import { isDefined, isNotDefined } from '@common/util/util';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
+import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { Verksemd } from '@verksemder/api/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
-import { Loeysing, Utval } from '../loeysingar/api/types';
 import { fetchRegelsettList } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';

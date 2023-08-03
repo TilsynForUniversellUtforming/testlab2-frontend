@@ -108,7 +108,7 @@ const TestregelList = () => {
             },
           },
         ],
-        onClickCallback: (row) =>
+        onClickRow: (row) =>
           navigate(
             getFullPath(appRoutes.TESTREGEL_EDIT, {
               pathParam: idPath,
