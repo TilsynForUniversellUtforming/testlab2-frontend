@@ -84,13 +84,12 @@ export interface TestlabTableProps<T extends object> {
   loading?: boolean;
   filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
-  onSelectRows?: (rows: T[]) => void; // Funksjon for row selection, implisitt selectable row
-  disableMultiRowSelection?: boolean;
+  onSelectRows?: (rows: T[]) => void;
+  onClickRow?: (row?: Row<T>) => void;
   onClickRetry?: () => void;
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
   loadingStateStatus?: string;
-  onClickCallback?: (row?: Row<T>) => void;
 }
 
 /**
@@ -105,12 +104,11 @@ export interface TestlabTableProps<T extends object> {
  * @param {TableFilterPreference} [props.filterPreference='all'] - The default filter preference.
  * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
  * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected. If defined the row selection is implicitly active
- * @param {boolean} [props.disableMultiRowSelection=false] - Whether the user can select multiple rows
+ * @param {(row?: Row<T>) => void} [props.onClickRow] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
  * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @param {string} [props.loadingStateStatus] - The status to display when the table is loading.
- * @param {(row?: Row<T>) => void} [props.onClickCallback] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
  * @returns {ReactElement} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
@@ -121,14 +119,13 @@ const TestlabTable = <T extends object>({
   filterPreference = 'all',
   selectedRows = [],
   onSelectRows,
-  disableMultiRowSelection = false,
+  onClickRow,
   onClickRetry,
   customStyle = {
     small: false,
   },
   rowActions,
   loadingStateStatus,
-  onClickCallback,
 }: TestlabTableProps<T>): ReactElement => {
   const isLoading = loading ?? false;
   const [columns, setColumns] = useState<typeof defaultColumns>(() => [
@@ -163,7 +160,7 @@ const TestlabTable = <T extends object>({
       rowSelection,
     },
     enableRowSelection: rowSelectionEnabled,
-    enableMultiRowSelection: rowSelectionEnabled && !disableMultiRowSelection,
+    enableMultiRowSelection: rowSelectionEnabled,
     onRowSelectionChange: (updaterOrValue) => {
       if (typeof updaterOrValue === 'function') {
         handleRowSelection(updaterOrValue(rowSelection));
@@ -235,7 +232,7 @@ const TestlabTable = <T extends object>({
       />
       <Table
         className="testlab-table__table"
-        selectRows={typeof onClickCallback !== 'undefined'}
+        selectRows={typeof onClickRow !== 'undefined'}
       >
         <TableHeader>
           <TableRow>
@@ -263,7 +260,7 @@ const TestlabTable = <T extends object>({
           <TestlabTableBody<T>
             table={table}
             loading={isLoading}
-            onClickCallback={onClickCallback}
+            onClickCallback={onClickRow}
           />
         </TableBody>
         <TableFooter>

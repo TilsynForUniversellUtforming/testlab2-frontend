@@ -159,7 +159,7 @@ const TestingListApp = () => {
           displayError: { error },
           loadingStateStatus: pollMaaling ? 'Utfører testing...' : undefined,
           rowActions: rowActions,
-          onClickCallback: (row) =>
+          onClickRow: (row) =>
             navigate(
               getFullPath(
                 appRoutes.TEST_RESULT_LIST,

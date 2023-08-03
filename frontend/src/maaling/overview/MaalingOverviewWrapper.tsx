@@ -55,7 +55,7 @@ const MaalingOverviewWrapper = () => {
                 filterPreference="rowsearch"
                 loading={contextLoading}
                 displayError={displayError}
-                onClickCallback={(row) =>
+                onClickRow={(row) =>
                   openInNewTab(
                     getFullPath(appRoutes.LOEYSING_EDIT, {
                       pathParam: idPath,
@@ -75,7 +75,7 @@ const MaalingOverviewWrapper = () => {
                 filterPreference="rowsearch"
                 loading={contextLoading}
                 displayError={displayError}
-                onClickCallback={(row) =>
+                onClickRow={(row) =>
                   openInNewTab(
                     getFullPath(appRoutes.TESTREGEL_EDIT, {
                       pathParam: idPath,

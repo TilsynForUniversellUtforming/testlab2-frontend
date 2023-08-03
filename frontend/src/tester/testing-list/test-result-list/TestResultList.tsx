@@ -49,7 +49,7 @@ const TestResultList = () => {
           displayError: {
             error: contextError,
           },
-          onClickCallback: (row) =>
+          onClickRow: (row) =>
             navigate(String(row?.original.testregelId ?? '')),
         }}
         menuButtons={{

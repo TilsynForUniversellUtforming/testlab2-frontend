@@ -145,7 +145,7 @@ const MaalingList = () => {
             },
           },
         ],
-        onClickCallback: (row) =>
+        onClickRow: (row) =>
           navigate(
             getFullPath(appRoutes.MAALING, {
               pathParam: idPath,
