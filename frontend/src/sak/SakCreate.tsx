@@ -12,7 +12,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
-import { defaultSakSteps, SakContext, SakFormState } from './types';
+import { SakContext, SakFormState } from './types';
 
 const SakCreate = () => {
   const navigate = useNavigate();
@@ -94,7 +94,7 @@ const SakCreate = () => {
     });
   }, []);
 
-  const formStepState = useSakForm({ steps: defaultSakSteps });
+  const formStepState = useSakForm('planlegging');
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = useCallback(

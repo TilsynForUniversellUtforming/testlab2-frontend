@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { MaalingStatus } from '@maaling/api/types';
+import { useEffect, useState } from 'react';
 
-import { SakStep } from '../types';
+import { defaultSakSteps, SakStep, startedSakSteps } from '../types';
 
 /**
  * The current step and state for a Sak form component.
@@ -27,25 +28,29 @@ export type FormStepState = {
   setNextStep: () => void;
 };
 
-export interface SakStepProps {
-  steps: SakStep[];
-  isEdit?: boolean;
-}
-
 /**
  * A custom hook to manage the state and logic of a Sak form component.
- * @param {SakStepProps} props - The props for the hook.
- * @param {SakStep[]} props.steps - The array of Sak steps.
- * @param {boolean} [props.isEdit=false] - Whether the form is in edit mode.
+ * @param {MaalingStatus} [maalingStatus] - The status of the current maaling
+ * @param {boolean} isEdit=false - Whether the form is in edit mode.
  * @returns {FormStepState} - The current step and state of the form.
  */
-const useSakForm = ({ steps, isEdit = false }: SakStepProps): FormStepState => {
+const useSakForm = (
+  maalingStatus?: MaalingStatus,
+  isEdit?: boolean
+): FormStepState => {
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
-  const [nextStepIdx, setNextStepIdx] = useState<number>(
-    isEdit ? steps.length : 1
-  );
+  const [nextStepIdx, setNextStepIdx] = useState<number>(1);
+  const [steps, setSteps] = useState<SakStep[]>(startedSakSteps);
   const isFirstStep = currentStepIdx <= 0;
   const isLastStep = currentStepIdx >= steps.length - 1;
+
+  useEffect(() => {
+    const isPlanlegging = maalingStatus === 'planlegging';
+    const steps = isPlanlegging ? defaultSakSteps : startedSakSteps;
+
+    setSteps(steps);
+    setNextStepIdx(isEdit ? steps.length : 1);
+  }, [maalingStatus]);
 
   const setNextStep = () => {
     setNextStepIdx((currentNext) => {

@@ -4,7 +4,7 @@ import 'react-router/dist';
 import React from 'react';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
-import appRoutes, { createPath, editPath, idPath } from './common/appRoutes';
+import appRoutes, { createPath, idPath } from './common/appRoutes';
 import AppErrorBoundary from './common/error-boundary/AppErrorBoundary';
 import Breadcrumbs from './common/navigation/breadcrumbs/Breadcrumbs';
 import Navigation from './common/navigation/Navigation';
@@ -16,16 +16,12 @@ import LoeysingCreate from './loeysingar/LoeysingCreate';
 import LoeysingEdit from './loeysingar/LoeysingEdit';
 import MaalingList from './maaling/list/MaalingList';
 import MaalingApp from './maaling/MaalingApp';
-import MaalingCreate from './maaling/MaalingCreate';
 import MaalingOverviewApp from './maaling/overview/MaalingOverviewApp';
 import MaalingOverviewWrapper from './maaling/overview/MaalingOverviewWrapper';
 import Oversikt from './oversikt/Oversikt';
 import SakList from './sak/list/SakList';
-import SakOverview from './sak/overview/SakOverview';
-import SakOverviewApp from './sak/overview/SakOverviewApp';
 import SakApp from './sak/SakApp';
 import SakCreate from './sak/SakCreate';
-import SakEdit from './sak/SakEdit';
 import KvalitetssikringApp from './tester/sideutval/kvalitetssikring/KvalitetssikringApp';
 import SideutvalApp from './tester/sideutval/SideutvalApp';
 import TestResultList from './tester/testing-list/test-result-list/TestResultList';
@@ -77,22 +73,6 @@ const App = () => {
               element: <SakCreate />,
               handle: { name: appRoutes.SAK_CREATE.navn },
             },
-            {
-              path: idPath,
-              element: <SakOverviewApp />,
-              handle: { name: appRoutes.SAK.navn },
-              children: [
-                {
-                  index: true,
-                  element: <SakOverview />,
-                },
-                {
-                  path: editPath,
-                  element: <SakEdit />,
-                  handle: { name: appRoutes.SAK_EDIT.navn },
-                },
-              ],
-            },
           ],
         },
         {
@@ -103,11 +83,6 @@ const App = () => {
             {
               index: true,
               element: <MaalingList />,
-            },
-            {
-              path: createPath,
-              element: <MaalingCreate />,
-              handle: { name: appRoutes.MAALING_CREATE.navn },
             },
             {
               path: idPath,

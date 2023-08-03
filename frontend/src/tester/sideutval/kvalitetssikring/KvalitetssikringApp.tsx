@@ -152,7 +152,7 @@ const KvalitetssikringApp = () => {
         {
           action: 'delete',
           modalProps: {
-            title: 'Ta nettstad ut av måling',
+            title: 'Ta url ut av måling',
             message: `Vil du ta ut ${joinStringsToList(
               urlRowSelection.map((selection) => selection.url)
             )} frå måling?`,

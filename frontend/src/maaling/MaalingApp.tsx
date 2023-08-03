@@ -232,7 +232,7 @@ const MaalingApp = () => {
             }
 
             if (data?.utvalList) {
-              setUtvalList(data.utval);
+              setUtvalList(data.utvalList);
             } else {
               setError(new Error('Kunne ikkje hente utval'));
             }

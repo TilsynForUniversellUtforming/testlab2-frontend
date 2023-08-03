@@ -1,12 +1,6 @@
 import React from 'react';
 import { Outlet, useOutletContext } from 'react-router-dom';
 
-import { MaalingContext } from '../types';
-
-const MaalingOverviewApp = () => {
-  const context: MaalingContext = useOutletContext();
-
-  return <Outlet context={context} />;
-};
+const MaalingOverviewApp = () => <Outlet context={useOutletContext()} />;
 
 export default MaalingOverviewApp;
