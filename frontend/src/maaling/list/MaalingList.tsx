@@ -8,6 +8,7 @@ import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox'
 import { CellCheckboxId } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { joinStringsToList } from '@common/util/stringutils';
+import { formatDateString } from '@common/util/util';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -79,6 +80,12 @@ const MaalingList = () => {
       id: 'Namn',
       cell: ({ getValue }) => getValue(),
       header: () => <>Namn</>,
+    },
+    {
+      accessorFn: (row) => row.datoStart,
+      id: 'Dato start',
+      cell: ({ getValue }) => formatDateString(String(getValue())),
+      header: () => <>Dato start</>,
     },
     {
       accessorFn: (row) => row.status,
