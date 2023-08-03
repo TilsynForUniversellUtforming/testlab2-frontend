@@ -87,6 +87,7 @@ export type TestResult = {
 export type Maaling = {
   id: number;
   navn: string;
+  datoStart: string;
   loeysingList: Loeysing[];
   testregelList: Testregel[];
   status: MaalingStatus;

@@ -4,7 +4,7 @@ const useError = (
   contextError: Error | undefined
 ): [
   Error | undefined,
-  React.Dispatch<React.SetStateAction<Error | undefined>>
+  React.Dispatch<React.SetStateAction<Error | undefined>>,
 ] => {
   const [error, setError] = useState(contextError);
 

@@ -1,4 +1,5 @@
 import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import { formatDateString } from '@common/util/util';
 import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -36,6 +37,7 @@ const MaalingParametersContainer = ({ id, maaling }: Props) => (
     <ListItem>
       <div className="parameter__item">
         <div className="bold-text">Dato start</div>
+        <div>{formatDateString(maaling.datoStart)}</div>
       </div>
     </ListItem>
     <ListItem>

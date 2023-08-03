@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
+import java.time.LocalDate
 import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
@@ -11,6 +12,7 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 data class Maaling(
     val id: Int,
     val navn: String,
+    val datoStart: LocalDate,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>,
     val testregelList: List<Testregel>,
@@ -33,6 +35,7 @@ fun MaalingDTO.toMaaling(
   return Maaling(
       id = this.id,
       navn = this.navn,
+      datoStart = this.datoStart,
       status = this.status,
       loeysingList =
           if (crawlResultat.isNotEmpty()) {
