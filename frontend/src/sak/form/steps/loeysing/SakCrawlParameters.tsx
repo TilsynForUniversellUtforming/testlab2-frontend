@@ -22,7 +22,7 @@ const SakCrawlParameters = ({
   clearErrors,
   errors,
 }: Props) => {
-  const watchFields = watch(['maxLinksPerPage', 'numLinksToSelect']);
+  watch(['maxLinksPerPage', 'numLinksToSelect']);
 
   useEffect(() => {
     const subscription = watch((value) => {

@@ -5,7 +5,7 @@ import React from 'react';
 import TableSkeleton from './skeleton/TableSkeleton';
 import { CellCheckboxId, LoadingTableProps } from './types';
 
-export interface TableBodyProps<T> extends LoadingTableProps {
+export interface TableBodyProps<T> extends LoadingTableProps<T> {
   onClickCallback?: (row?: Row<T>) => void;
 }
 

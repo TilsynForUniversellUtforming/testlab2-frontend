@@ -1,7 +1,7 @@
 import useValidate, { testreglarMessage } from '@common/form/hooks/useValidate';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
 import { Testregel, TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
@@ -11,7 +11,6 @@ const RegelsettCreate = () => {
   const { setContextError, setContextLoading }: TestregelContext =
     useOutletContext();
 
-  const navigate = useNavigate();
   const formMethods = useForm<TestRegelsett>({
     defaultValues: {
       namn: '',

@@ -7,10 +7,10 @@ import PageSizeSelection from './PageSizeSelection';
 import PaginationCount from './PaginationCount';
 import PaginationSelect from './PaginationSelect';
 
-const PaginationContainer = ({
+const PaginationContainer = <T extends object>({
   table,
   loading,
-}: TableProps & { loading: boolean }) => {
+}: TableProps<T> & { loading: boolean }) => {
   const pageOptions = table.getPageOptions();
   const pageCount = pageOptions.length;
   const displayPagination = pageCount > 1;

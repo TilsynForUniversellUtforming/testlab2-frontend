@@ -69,7 +69,7 @@ const MaalingList = () => {
   const maalingColumns: ColumnDef<Maaling>[] = [
     {
       id: CellCheckboxId,
-      cell: ({ row, getValue }) => (
+      cell: ({ row }) => (
         <RowCheckbox row={row} ariaLabel={`Velg ${row.original.navn}`} />
       ),
       size: 1,
@@ -85,7 +85,7 @@ const MaalingList = () => {
       id: 'Status',
       cell: (info) => (
         <StatusBadge
-          status={info.getValue()}
+          status={String(info.getValue())}
           levels={{
             primary: ['testing', 'crawling'],
             success: ['testing_ferdig'],

@@ -1,10 +1,12 @@
+import { LoadingTableProps } from '@common/table/types';
+import { Option } from '@common/types';
 import { Select } from '@digdir/design-system-react';
 import React from 'react';
 
-import { Option } from '../../../types';
-import { LoadingTableProps } from '../../types';
-
-const PageSizeSelection = ({ table, loading }: LoadingTableProps) => {
+const PageSizeSelection = <T extends object>({
+  table,
+  loading,
+}: LoadingTableProps<T>) => {
   const options: Option[] = ['10', '25', '50', '100'].map((pageSize) => ({
     label: pageSize,
     value: pageSize,

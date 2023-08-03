@@ -7,17 +7,17 @@ import ConfirmModalButton from '../confirm/ConfirmModalButton';
 import { useEffectOnce } from '../hooks/useEffectOnce';
 import { TableRowAction } from '../table/types';
 
-interface Props {
+interface Props<T extends object> {
   actions: TableRowAction[];
   disabled?: boolean;
-  table: Table<any>;
+  table: Table<T>;
 }
 
-export const TableActionDropdown = ({
+export const TableActionDropdown = <T extends object>({
   actions,
   disabled = false,
   table,
-}: Props) => {
+}: Props<T>) => {
   const [show, setShow] = useState(false);
   const dropdownRef = useRef<HTMLUListElement>(null);
 

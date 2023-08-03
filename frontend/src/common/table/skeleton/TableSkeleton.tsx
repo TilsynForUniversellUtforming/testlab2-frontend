@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton';
 
 import { TableProps } from '../types';
 
-const TableSkeleton = ({ table }: TableProps) => {
+const TableSkeleton = <T extends object>({ table }: TableProps<T>) => {
   const tableLength = table.getAllColumns().length;
 
   return (

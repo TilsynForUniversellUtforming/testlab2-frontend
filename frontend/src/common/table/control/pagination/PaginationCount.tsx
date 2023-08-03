@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TableProps } from '../../types';
 
-const PaginationCount = ({ table }: TableProps) => {
+const PaginationCount = <T extends object>({ table }: TableProps<T>) => {
   const numRows = table.getCoreRowModel().rows.length;
   const currentRows = table.getRowModel().rows.length;
   const filteredRows = table.getFilteredRowModel().rows.length;

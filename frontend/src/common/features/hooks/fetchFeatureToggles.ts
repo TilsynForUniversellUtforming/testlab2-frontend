@@ -11,7 +11,7 @@ import fetchFeatures from '../api/features-api';
 const fetchFeatureToggles = (
   key: string,
   loadingCallback: (loading: boolean) => void,
-  errorCallback?: (e: any) => void
+  errorCallback?: (e: unknown) => void
 ): Promise<void> => {
   return fetchFeatures()
     .then(async (features) => {

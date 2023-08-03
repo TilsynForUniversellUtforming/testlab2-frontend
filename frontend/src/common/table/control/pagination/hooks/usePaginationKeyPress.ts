@@ -7,7 +7,7 @@ import { TableProps } from '../../../types';
  * @returns {void}
  */
 
-const usePaginationKeyPress = ({ table }: TableProps) => {
+const usePaginationKeyPress = <T extends object>({ table }: TableProps<T>) => {
   /**
    * Handles the key down event and navigates the table.
    * @param {KeyboardEvent} e - The key down event.

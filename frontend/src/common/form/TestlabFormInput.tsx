@@ -1,3 +1,4 @@
+import { isFormError } from '@common/form/util';
 import { ErrorMessage, TextField } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
@@ -21,12 +22,8 @@ const TestlabFormInput = <T extends object>({
   formValidation,
   numeric = false,
 }: EditProps<T>) => {
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext<T>();
-  const error = errors as any;
-  const hasError = !!error[name];
+  const { control, formState } = useFormContext<T>();
+  const hasError = isFormError(formState, name);
 
   return (
     <Controller
