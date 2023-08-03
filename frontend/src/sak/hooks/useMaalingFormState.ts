@@ -1,8 +1,8 @@
 import { Maaling } from '@maaling/api/types';
-import { useEffect, useState } from 'react';
+import { Verksemd } from '@verksemder/api/types';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { User } from '../../user/api/types';
-import { Verksemd } from '../../verksemder/api/types';
 import { SakFormState } from '../types';
 
 const toSakFormState = (
@@ -33,7 +33,7 @@ const useMaalingFormState = (
   maaling: Maaling | undefined,
   verksemdList: Verksemd[],
   advisors: User[]
-): [SakFormState, React.Dispatch<React.SetStateAction<SakFormState>>] => {
+): [SakFormState, Dispatch<SetStateAction<SakFormState>>] => {
   const [maalingFormState, setMaalingFormState] = useState<SakFormState>(
     toSakFormState(verksemdList, advisors, maaling)
   );

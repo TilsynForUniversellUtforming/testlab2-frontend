@@ -11,12 +11,14 @@ import {
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
+import { Loeysing, Utval } from '@loeysingar/api/types';
 import {
   LoeysingVerksemd,
   SakContext,
   SakFormBaseProps,
   SakFormState,
 } from '@sak/types';
+import { Verksemd } from '@verksemder/api/types';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
@@ -27,6 +29,9 @@ import { getLoeysingVerksemdColumns } from './LoeysingColumns';
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
+  loeysingList: Loeysing[];
+  utvalList: Utval[];
+  verksemdList: Verksemd[];
 }
 
 const SakLoeysingStep = ({

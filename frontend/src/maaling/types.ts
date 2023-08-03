@@ -1,9 +1,9 @@
 import { AppContext, Severity } from '@common/types';
+import { Verksemd } from '@verksemder/api/types';
 
-import { Loeysing } from '../loeysingar/api/types';
+import { Loeysing, Utval } from '../loeysingar/api/types';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
-import { Verksemd } from '../verksemder/api/types';
 import { Maaling } from './api/types';
 
 export interface MaalingContext extends AppContext {
@@ -15,6 +15,7 @@ export interface MaalingContext extends AppContext {
   loeysingList: Loeysing[];
   verksemdList: Verksemd[];
   regelsettList: TestRegelsett[];
+  utvalList: Utval[];
   advisors: User[];
   showMaalinger: boolean;
   handleStartCrawling: (maaling: Maaling) => void;
