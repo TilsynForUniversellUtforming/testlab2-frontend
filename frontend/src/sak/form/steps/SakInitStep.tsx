@@ -54,6 +54,7 @@ const SakInitStep = ({
       onSubmit={doSubmit}
       formMethods={formMethods}
       buttonStep={buttonStep}
+      hasRequiredFields
     >
       <div className="sak-init">
         <TestlabFormSelect<SakFormState>
