@@ -2,20 +2,20 @@ import AppTitle from '@common/app-title/AppTitle';
 import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
 import TestlabTable from '@common/table/TestlabTable';
 import { Tabs } from '@digdir/design-system-react';
+import { Loeysing } from '@loeysingar/api/types';
+import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
+import MaalingEdit from '@sak/MaalingEdit';
 import React, { useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import { Loeysing } from '../../loeysingar/api/types';
-import { getLoeysingColumnsReadOnly } from '../../loeysingar/list/LoeysingColumns';
-import SakEdit from '../../sak/SakEdit';
 import { Testregel } from '../../testreglar/api/types';
 import { getTestregelColumnsReadOnly } from '../../testreglar/testreglar-liste/TestregelColumns';
 import { MaalingContext } from '../types';
 import MaalingOverview from './MaalingOverview';
 
 const MaalingOverviewWrapper = () => {
-  const context: MaalingContext = useOutletContext();
-  const { maaling, contextLoading, contextError, refresh } = context;
+  const { maaling, contextLoading, contextError, refresh }: MaalingContext =
+    useOutletContext();
 
   const loeysingColumns = useMemo(() => getLoeysingColumnsReadOnly(), []);
   const testregelColumns = useMemo(() => getTestregelColumnsReadOnly(), []);
@@ -44,7 +44,7 @@ const MaalingOverviewWrapper = () => {
           },
           {
             name: 'Rediger måling',
-            content: <SakEdit />,
+            content: <MaalingEdit />,
           },
           {
             name: 'Nettløysingar',
