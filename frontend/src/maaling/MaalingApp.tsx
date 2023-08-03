@@ -4,16 +4,17 @@ import fetchFeatureToggles from '@common/features/hooks/fetchFeatureToggles';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/api/util';
 import { isDefined, isNotDefined } from '@common/util/util';
+import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
+import { fetchUtvalList } from '@loeysingar/api/utval-api';
+import { Verksemd } from '@verksemder/api/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
-import { fetchLoeysingList } from '../loeysingar/api/loeysing-api';
-import { Loeysing } from '../loeysingar/api/types';
-import { listRegelsett } from '../testreglar/api/testreglar-api';
+import { Loeysing, Utval } from '../loeysingar/api/types';
+import { fetchRegelsettList } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
-import { Verksemd } from '../verksemder/api/types';
 import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
 import {
   fetchMaaling,
@@ -37,6 +38,7 @@ const MaalingApp = () => {
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
+  const [utvalList, setUtvalList] = useState<Utval[]>([]);
   const [showMaalinger, setShowMaalinger] = useState(true);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
   const [pollMaaling, setPollMaaling] = useState(
@@ -162,16 +164,30 @@ const MaalingApp = () => {
   const doFetchData = useCallback(
     withErrorHandling(
       async () => {
-        const [maalingList, loeysingList, regelsett, advisors, verksemdList] =
-          await Promise.all([
-            fetchMaalingList(),
-            fetchLoeysingList(),
-            listRegelsett(),
-            getAdvisors_dummy(),
-            getVerksemdList_dummy(),
-          ]);
+        const [
+          maalingList,
+          loeysingList,
+          utvalList,
+          regelsett,
+          advisors,
+          verksemdList,
+        ] = await Promise.all([
+          fetchMaalingList(),
+          fetchLoeysingList(),
+          fetchUtvalList(),
+          fetchRegelsettList(),
+          getAdvisors_dummy(),
+          getVerksemdList_dummy(),
+        ]);
 
-        return { maalingList, loeysingList, regelsett, advisors, verksemdList };
+        return {
+          maalingList,
+          loeysingList,
+          utvalList,
+          regelsett,
+          advisors,
+          verksemdList,
+        };
       },
       'Kan ikkje hente data',
       setError
@@ -213,6 +229,12 @@ const MaalingApp = () => {
               setVerksemdList(data.verksemdList);
             } else {
               setError(new Error('Kunne ikkje hente verksemder'));
+            }
+
+            if (data?.utvalList) {
+              setUtvalList(data.utvalList);
+            } else {
+              setError(new Error('Kunne ikkje hente utval'));
             }
 
             setShowMaalinger(true);
@@ -283,6 +305,7 @@ const MaalingApp = () => {
     loeysingList: loeysingList,
     verksemdList: verksemdList,
     regelsettList: regelsettList,
+    utvalList: utvalList,
     showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,

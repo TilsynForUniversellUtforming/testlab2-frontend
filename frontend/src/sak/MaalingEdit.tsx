@@ -3,29 +3,28 @@ import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
 import { updateMaaling } from '@maaling/api/maaling-api';
-import { MaalingEdit } from '@maaling/api/types';
+import { MaalingEditParams } from '@maaling/api/types';
+import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import SakStepForm from './form/SakStepForm';
 import useMaalingFormState from './hooks/useMaalingFormState';
 import useSakForm from './hooks/useSakForm';
-import {
-  defaultSakSteps,
-  SakContext,
-  SakFormState,
-  startedSakSteps,
-} from './types';
+import { SakFormState } from './types';
 
-const SakEdit = () => {
+const MaalingEdit = () => {
   const {
     maaling,
+    loeysingList,
+    utvalList,
     verksemdList,
+    regelsettList,
+    advisors,
     setMaaling,
     contextLoading,
     contextError,
-    advisors,
-  }: SakContext = useOutletContext();
+  }: MaalingContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
   const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
@@ -42,7 +41,7 @@ const SakEdit = () => {
       setError(undefined);
 
       if (maaling) {
-        const maalingEdit: MaalingEdit = {
+        const maalingEdit: MaalingEditParams = {
           id: maaling.id,
           navn: maalingFormState.navn!,
           loeysingIdList: maalingFormState.loeysingList.map(
@@ -76,12 +75,7 @@ const SakEdit = () => {
     });
   }, []);
 
-  const sakSteps =
-    contextLoading || maaling?.status === 'planlegging'
-      ? defaultSakSteps
-      : startedSakSteps;
-
-  const formStepState = useSakForm({ steps: sakSteps, isEdit: true });
+  const formStepState = useSakForm(maaling?.status, true);
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = (maalingFormState: SakFormState) => {
@@ -98,6 +92,11 @@ const SakEdit = () => {
       <SakStepForm
         formStepState={formStepState}
         maalingFormState={maalingFormState}
+        loeysingList={loeysingList}
+        utvalList={utvalList}
+        verksemdList={verksemdList}
+        regelsettList={regelsettList}
+        advisors={advisors}
         onSubmit={handleSubmit}
         loading={loading}
         error={error}
@@ -113,4 +112,4 @@ const SakEdit = () => {
   );
 };
 
-export default SakEdit;
+export default MaalingEdit;

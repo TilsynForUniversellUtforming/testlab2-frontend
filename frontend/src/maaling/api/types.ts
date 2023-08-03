@@ -22,7 +22,7 @@ export type MaalingInitMedUtval = {
   crawlParameters: CrawlParameters;
 };
 
-export type MaalingEdit = {
+export type MaalingEditParams = {
   id: number;
   navn: string;
   loeysingIdList?: number[];

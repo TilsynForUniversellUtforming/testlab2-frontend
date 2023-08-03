@@ -11,15 +11,11 @@ import {
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
-import {
-  LoeysingVerksemd,
-  SakContext,
-  SakFormBaseProps,
-  SakFormState,
-} from '@sak/types';
+import { Loeysing, Utval } from '@loeysingar/api/types';
+import { LoeysingVerksemd, SakFormBaseProps, SakFormState } from '@sak/types';
+import { Verksemd } from '@verksemder/api/types';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
 
 import SakStepFormWrapper from '../../SakStepFormWrapper';
 import { getLoeysingVerksemdColumns } from './LoeysingColumns';
@@ -27,18 +23,21 @@ import { getLoeysingVerksemdColumns } from './LoeysingColumns';
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
+  loeysingList: Loeysing[];
+  utvalList: Utval[];
+  verksemdList: Verksemd[];
 }
 
 const SakLoeysingStep = ({
   formStepState,
   maalingFormState,
+  loeysingList,
+  utvalList,
+  verksemdList,
   error,
   loading,
   onSubmit,
 }: Props) => {
-  const { refreshLoeysing, loeysingList, utvalList, verksemdList }: SakContext =
-    useOutletContext();
-
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
   });
@@ -257,7 +256,6 @@ const SakLoeysingStep = ({
               data={selection}
               defaultColumns={loeysingColumns}
               displayError={{ error }}
-              onClickRetry={refreshLoeysing}
               loading={loading}
               onSelectRows={handleSelectRow}
               customStyle={{ small: true }}

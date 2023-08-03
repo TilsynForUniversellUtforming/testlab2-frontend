@@ -4,26 +4,25 @@ import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { isNotDefined } from '@common/util/util';
 import { Button } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
-import {
-  SakContext,
-  SakFormBaseProps,
-  SakFormState,
-  saktypeOptions,
-} from '@sak/types';
+import { SakFormBaseProps, SakFormState, saktypeOptions } from '@sak/types';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+import { User } from '../../../user/api/types';
 import SakStepFormWrapper from '../SakStepFormWrapper';
 import SakCrawlParameters from './loeysing/SakCrawlParameters';
+
+interface Props extends SakFormBaseProps {
+  advisors: User[];
+}
 
 const SakInitStep = ({
   formStepState,
   maalingFormState,
+  advisors,
   onSubmit,
-}: SakFormBaseProps) => {
-  const { advisors }: SakContext = useOutletContext();
-
+}: Props) => {
   const navigate = useNavigate();
   const [displayAdvanced, setDisplayAdvanced] = useState(false);
 

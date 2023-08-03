@@ -3,7 +3,7 @@ import { responseToJson } from '@common/util/api/util';
 import {
   IdList,
   Maaling,
-  MaalingEdit,
+  MaalingEditParams,
   MaalingInit,
   MaalingStatus,
   RestartRequest,
@@ -18,7 +18,9 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
     body: JSON.stringify(maaling),
   }).then((response) => responseToJson(response, 'Kunne ikke lage målingar'));
 
-export const updateMaaling = async (maaling: MaalingEdit): Promise<Maaling> =>
+export const updateMaaling = async (
+  maaling: MaalingEditParams
+): Promise<Maaling> =>
   await fetch('/api/v1/maalinger', {
     method: 'PUT',
     headers: {

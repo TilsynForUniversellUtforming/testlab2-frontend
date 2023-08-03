@@ -10,7 +10,7 @@ import getVerksemdList_dummy from '@verksemder/api/verksemd-api';
 import { useCallback, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import { listRegelsett } from '../testreglar/api/testreglar-api';
+import { fetchRegelsettList } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
@@ -61,7 +61,7 @@ const SakApp = () => {
 
   const handleFetchRegelsettList = useCallback(async () => {
     try {
-      const regelsett = await listRegelsett();
+      const regelsett = await fetchRegelsettList();
       setRegelsettList(regelsett);
     } catch (e) {
       setError(toError(e, 'Kunne ikkje hente regelsett'));

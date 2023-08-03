@@ -12,13 +12,21 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
-import { defaultSakSteps, SakContext, SakFormState } from './types';
+import { SakContext, SakFormState } from './types';
 
 const SakCreate = () => {
   const navigate = useNavigate();
 
-  const { setMaaling, contextLoading, contextError }: SakContext =
-    useOutletContext();
+  const {
+    setMaaling,
+    contextLoading,
+    contextError,
+    loeysingList,
+    utvalList,
+    verksemdList,
+    regelsettList,
+    advisors,
+  }: SakContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
@@ -86,7 +94,7 @@ const SakCreate = () => {
     });
   }, []);
 
-  const formStepState = useSakForm({ steps: defaultSakSteps });
+  const formStepState = useSakForm('planlegging');
   const { isLastStep, setNextStep } = formStepState;
 
   const handleSubmit = useCallback(
@@ -107,6 +115,11 @@ const SakCreate = () => {
       <SakStepForm
         formStepState={formStepState}
         maalingFormState={maalingFormState}
+        loeysingList={loeysingList}
+        utvalList={utvalList}
+        verksemdList={verksemdList}
+        regelsettList={regelsettList}
+        advisors={advisors}
         onSubmit={handleSubmit}
         loading={loading}
         error={error}

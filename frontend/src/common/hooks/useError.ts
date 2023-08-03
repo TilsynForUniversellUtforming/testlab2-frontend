@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 const useError = (
   contextError: Error | undefined
-): [
-  Error | undefined,
-  React.Dispatch<React.SetStateAction<Error | undefined>>,
-] => {
+): [Error | undefined, Dispatch<SetStateAction<Error | undefined>>] => {
   const [error, setError] = useState(contextError);
 
   useEffect(() => {

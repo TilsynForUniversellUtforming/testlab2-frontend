@@ -2,14 +2,14 @@ import { responseToJson } from '@common/util/api/util';
 
 import { Testregel, TestregelCreateRequest, TestRegelsett } from './types';
 
-export const listTestreglar = async (): Promise<Testregel[]> =>
+export const fetchTestreglarList = async (): Promise<Testregel[]> =>
   await fetch(`/api/v1/testreglar`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke hente testreglar')
   );
 
-export const listRegelsett = async (): Promise<TestRegelsett[]> =>
+export const fetchRegelsettList = async (): Promise<TestRegelsett[]> =>
   await fetch(`/api/v1/testreglar/regelsett`, {
     method: 'GET',
   }).then((response) => responseToJson(response, 'Kunne ikke hente regelsett'));
