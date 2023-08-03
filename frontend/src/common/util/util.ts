@@ -1,12 +1,13 @@
-import { Option } from '../types';
+export const formatDateString = (dateString: string): string => {
+  const date = new Date(dateString);
+  const format = new Intl.DateTimeFormat('nb-NO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 
-export const enumToOptions = <T extends object>(
-  enumToDeconstruct: T
-): Option[] =>
-  Object.entries(enumToDeconstruct).map(([key, value]) => ({
-    value: value,
-    label: key,
-  }));
+  return format.format(date);
+};
 
 export const isDefined = <T>(value: T | undefined | null): value is T => {
   if (typeof value === 'string') {
