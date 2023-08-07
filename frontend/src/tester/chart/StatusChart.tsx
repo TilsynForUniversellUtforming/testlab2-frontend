@@ -1,16 +1,28 @@
 import './status-chart.scss';
 
 import Highcharts from 'highcharts';
+import AccessibilityModule from 'highcharts/modules/accessibility';
 import HighchartsReact from 'highcharts-react-official';
 import React from 'react';
 
+export type ChartStatus = {
+  statusCount: number;
+  statusText: string;
+};
+
 interface ChartProps {
-  numPerforming: number;
-  numFinished: number;
-  numError: number;
+  workingStatus: ChartStatus;
+  finishedStatus: ChartStatus;
+  errorStatus: ChartStatus;
 }
 
-const StatusChart = ({ numPerforming, numFinished, numError }: ChartProps) => {
+const StatusChart = ({
+  workingStatus,
+  finishedStatus,
+  errorStatus,
+}: ChartProps) => {
+  AccessibilityModule(Highcharts);
+
   const options: Highcharts.Options = {
     chart: {
       type: 'column',
@@ -45,23 +57,27 @@ const StatusChart = ({ numPerforming, numFinished, numError }: ChartProps) => {
     series: [
       {
         type: 'column',
-        name: 'Tester',
+        name: workingStatus.statusText,
         color: '#0062ba',
-        data: [{ y: numPerforming }],
+        data: [{ y: workingStatus.statusCount }],
       },
       {
         type: 'column',
-        name: 'Ferdig',
+        name: finishedStatus.statusText,
         color: '#118849',
-        data: [{ y: numFinished }],
+        data: [{ y: finishedStatus.statusCount }],
       },
       {
         type: 'column',
-        name: 'Feila',
+        name: errorStatus.statusText,
         color: '#e02e49',
-        data: [{ y: numError }],
+        data: [{ y: errorStatus.statusCount }],
       },
     ],
+    accessibility: {
+      enabled: true,
+      description: `Eit kolonnediagram som representerer statusen til målingar med kategoriar for ${workingStatus.statusText}, ${finishedStatus.statusText} og ${errorStatus.statusText}.`,
+    },
   };
 
   return (
