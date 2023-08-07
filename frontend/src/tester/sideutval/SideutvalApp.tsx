@@ -136,9 +136,18 @@ const SideutvalApp = () => {
     <>
       {maaling?.status !== 'planlegging' && (
         <StatusChart
-          numFinished={maaling?.crawlStatistics?.numFinished ?? 0}
-          numPerforming={maaling?.crawlStatistics?.numPerforming ?? 0}
-          numError={maaling?.crawlStatistics?.numError ?? 0}
+          workingStatus={{
+            statusText: 'Crawler',
+            statusCount: maaling?.crawlStatistics?.numPerforming ?? 0,
+          }}
+          finishedStatus={{
+            statusText: 'Ferdig',
+            statusCount: maaling?.crawlStatistics?.numFinished ?? 0,
+          }}
+          errorStatus={{
+            statusText: 'Feila',
+            statusCount: maaling?.crawlStatistics?.numError ?? 0,
+          }}
         />
       )}
       <CrawlingList

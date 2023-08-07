@@ -135,9 +135,18 @@ const TestingListApp = () => {
   return (
     <>
       <StatusChart
-        numFinished={maaling?.testStatistics?.numFinished ?? 0}
-        numPerforming={maaling?.testStatistics?.numPerforming ?? 0}
-        numError={maaling?.testStatistics?.numError ?? 0}
+        workingStatus={{
+          statusText: 'Testar',
+          statusCount: maaling?.testStatistics?.numPerforming ?? 0,
+        }}
+        finishedStatus={{
+          statusText: 'Ferdig',
+          statusCount: maaling?.testStatistics?.numFinished ?? 0,
+        }}
+        errorStatus={{
+          statusText: 'Feila',
+          statusCount: maaling?.testStatistics?.numError ?? 0,
+        }}
       />
       <UserActionTable<TestResult>
         heading="Testgjennomføring"
