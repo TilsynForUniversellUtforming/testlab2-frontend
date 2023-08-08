@@ -88,7 +88,7 @@ export const fetchLoeysingNettsider = async (
   loeysingId: number
 ): Promise<CrawlUrl[]> =>
   fetch(
-    `/api/v1/maalinger/${maalingId}/crawlresultat?loeysingId=${loeysingId}`,
+    `/api/v1/maalinger/${maalingId}/crawlresultat/nettsider?loeysingId=${loeysingId}`,
     {
       method: 'GET',
     }

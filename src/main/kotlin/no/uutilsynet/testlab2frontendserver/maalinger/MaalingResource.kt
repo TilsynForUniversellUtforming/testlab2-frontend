@@ -147,13 +147,14 @@ class MaalingResource(
             ResponseEntity.internalServerError().body("Kunne ikkje oppdatere måling ${it.message}")
           }
 
-  @GetMapping("{maalingId}/crawlresultat")
+  @GetMapping("{maalingId}/crawlresultat/nettsider")
   fun getCrawlResultatNettsider(
       @PathVariable maalingId: Int,
       @RequestParam(required = false) loeysingId: Int?
   ): List<CrawlUrl> =
       runCatching {
-            restTemplate.getList<URL>("$maalingUrl/$maalingId/crawlresultat?loeysingId=$loeysingId")
+            restTemplate.getList<URL>(
+                "$maalingUrl/$maalingId/crawlresultat/nettsider?loeysingId=$loeysingId")
           }
           .getOrElse {
             logger.error(
