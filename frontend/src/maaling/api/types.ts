@@ -54,7 +54,7 @@ export type CrawlResultat = {
   type: CrawlJobStatus;
   framgang?: Framgang;
   loeysing: Loeysing;
-  urlList?: string[];
+  antallNettsider: number;
 };
 export type JobStatistics = {
   numPerforming: number;

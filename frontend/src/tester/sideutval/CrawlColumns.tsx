@@ -45,7 +45,7 @@ export const getCrawlColumns = (
     accessorFn: (row) => row.type,
     id: 'status',
     cell: ({ row }) => {
-      const urlLength = row.original.urlList?.length;
+      const urlLength = row.original.antallNettsider;
       const status = row.original.type;
       const crawlSuccess =
         status === 'ferdig' && typeof urlLength !== 'undefined';
