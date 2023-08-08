@@ -11,6 +11,6 @@ data class CrawlResultatDTO(
     val type: JobStatus,
     val statusUrl: URL?,
     val feilmelding: String?,
-    val nettsider: List<URL>?,
+    val antallNettsider: Int?,
     val framgang: Framgang?
 )

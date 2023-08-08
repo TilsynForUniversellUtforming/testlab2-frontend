@@ -2,7 +2,6 @@ import AlertTimed from '@common/alert/AlertTimed';
 import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
-import useLoading from '@common/hooks/useLoading';
 import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
 import { Maaling, TestResult } from '@maaling/api/types';
@@ -29,7 +28,7 @@ const ViolationListApp = () => {
 
   const [testResult, setTestresult] = useState<TestResultat[]>([]);
   const [error, setError] = useError(contextError);
-  const [loading, setLoading] = useLoading(contextLoading);
+  const [loading, setLoading] = useState(contextLoading);
   const [selectedLoeysing, setSelectedLoeysing] = useState(
     getSelectedLoeysing(loeysingId, maaling)
   );
@@ -85,6 +84,8 @@ const ViolationListApp = () => {
   useEffectOnce(() => {
     fetchTestresultat();
   });
+
+  console.log(loading);
 
   return (
     <>

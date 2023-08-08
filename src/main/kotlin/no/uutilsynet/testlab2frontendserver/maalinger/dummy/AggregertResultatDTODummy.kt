@@ -2,10 +2,25 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dummy
 
 import kotlin.random.Random
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 
 object AggregertResultatDTODummy {
-  fun generateAggregertResultatDTODummyList(
+  fun generateAggregertResultatDTODummyList(maaling: MaalingDTO): List<AggregertResultatDTO> {
+
+    val maalingLoeysingResult =
+        maaling.crawlResultat?.map { Pair(it.loeysing, it.antallNettsider ?: 0) }
+            ?: maaling.testKoeyringar?.map {
+              Pair(it.loeysing, it.crawlResultat.antallNettsider ?: 0)
+            }
+                ?: emptyList()
+
+    return maalingLoeysingResult
+        .map { generateAggregertResultatDTODummyList(maaling.id, it.first, it.second) }
+        .flatten()
+  }
+
+  private fun generateAggregertResultatDTODummyList(
       maalingId: Int,
       loeysing: Loeysing,
       pagesCrawled: Int,

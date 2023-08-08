@@ -1,17 +1,16 @@
 package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
+import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultat
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlResultatDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlUrl
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.toCrawlResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dummy.AggregertResultatDTODummy.generateAggregertResultatDTODummyList
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
@@ -70,29 +69,16 @@ class MaalingResource(
         when (maalingDTO.status) {
           MaalingStatus.planlegging -> maalingDTO.toMaaling()
           else -> {
-            val crawlResultat = getCrawlResultatList(maalingDTO.id)
-
             val aggregatedTestresult =
                 when (maalingDTO.status) {
                   MaalingStatus.testing,
                   MaalingStatus.testing_ferdig -> {
-                    // getAggregering(maalingDTO.id)
-
-                    // TODO - Fjern
-                    crawlResultat
-                        .map { Pair(it.loeysing, it.urlList?.size ?: 0) }
-                        .map {
-                          generateAggregertResultatDTODummyList(maalingId, it.first, it.second)
-                        }
-                        .flatten()
-                    // TODO - Fjern
-
+                    generateAggregertResultatDTODummyList(maalingDTO)
                   }
                   else -> emptyList()
                 }
 
-            maalingDTO.toMaaling(
-                crawlResultat, getTestregelListForMaaling(maalingDTO.id), aggregatedTestresult)
+            maalingDTO.toMaaling(getTestregelListForMaaling(maalingDTO.id), aggregatedTestresult)
           }
         }
 
@@ -161,19 +147,21 @@ class MaalingResource(
             ResponseEntity.internalServerError().body("Kunne ikkje oppdatere måling ${it.message}")
           }
 
-  @GetMapping("{maalingId}/crawlresultat")
-  fun getCrawlResultatList(
-      @PathVariable id: Int,
-  ): List<CrawlResultat> =
+  @GetMapping("{maalingId}/crawlresultat/nettsider")
+  fun getCrawlResultatNettsider(
+      @PathVariable maalingId: Int,
+      @RequestParam(required = false) loeysingId: Int?
+  ): List<CrawlUrl> =
       runCatching {
-            restTemplate.getList<CrawlResultatDTO>("$maalingUrl/$id/crawlresultat").map {
-              it.toCrawlResultat()
-            }
+            restTemplate.getList<URL>(
+                "$maalingUrl/$maalingId/crawlresultat/nettsider?loeysingId=$loeysingId")
           }
           .getOrElse {
-            logger.error("Kunne ikkje hente crawl resultat for måling med id $id")
+            logger.error(
+                "Kunne ikkje hente nett resultat for løysing med id $loeysingId og måling med id $maalingId")
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
+          .map { CrawlUrl(it) }
 
   @GetMapping("{maalingId}/testresultat/aggregering")
   fun getAggregering(

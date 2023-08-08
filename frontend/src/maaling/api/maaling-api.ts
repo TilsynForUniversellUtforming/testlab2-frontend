@@ -1,4 +1,5 @@
 import { responseToJson } from '@common/util/api/util';
+import { CrawlUrl } from '@maaling/types';
 
 import {
   IdList,
@@ -80,4 +81,17 @@ export const restart = async (
     }
   ).then((response) =>
     responseToJson(response, `Kunne ikkje restarte ${restartRequest.process}`)
+  );
+
+export const fetchLoeysingNettsider = async (
+  maalingId: number,
+  loeysingId: number
+): Promise<CrawlUrl[]> =>
+  fetch(
+    `/api/v1/maalinger/${maalingId}/crawlresultat/nettsider?loeysingId=${loeysingId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente sideutval for måling')
   );
