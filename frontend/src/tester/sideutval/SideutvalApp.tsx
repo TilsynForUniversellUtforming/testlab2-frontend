@@ -26,6 +26,7 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
     return maaling.loeysingList.map((l) => ({
       type: 'ikkje_starta',
       loeysing: l,
+      antallNettsider: 1,
     }));
   } else {
     return [];
