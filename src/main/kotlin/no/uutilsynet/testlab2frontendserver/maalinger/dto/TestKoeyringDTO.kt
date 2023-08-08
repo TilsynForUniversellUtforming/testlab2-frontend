@@ -6,5 +6,6 @@ data class TestKoeyringDTO(
     val tilstand: JobStatus,
     val loeysing: Loeysing,
     val sistOppdatert: LocalDate,
-    val framgang: Framgang?
+    val framgang: Framgang?,
+    val crawlResultat: CrawlResultatDTO
 )

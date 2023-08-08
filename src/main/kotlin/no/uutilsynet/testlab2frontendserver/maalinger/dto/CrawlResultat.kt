@@ -1,7 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.net.URL
 import java.time.LocalDateTime
 import no.uutilsynet.testlab2frontendserver.common.TimeUtil.toLocalDateTime
 
@@ -11,7 +10,7 @@ data class CrawlResultat(
     val type: JobStatus,
     val sistOppdatert: LocalDateTime,
     val feilmelding: String?,
-    val urlList: List<URL>?,
+    val antallNettsider: Int,
     val framgang: Framgang?
 )
 
@@ -21,5 +20,5 @@ fun CrawlResultatDTO.toCrawlResultat() =
         this.type,
         this.sistOppdatert.toLocalDateTime(),
         this.feilmelding,
-        this.nettsider,
+        this.antallNettsider ?: 0,
         this.framgang)

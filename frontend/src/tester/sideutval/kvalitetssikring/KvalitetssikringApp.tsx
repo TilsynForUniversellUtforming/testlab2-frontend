@@ -3,57 +3,33 @@ import './kvalitetssikring.scss';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
+import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
-import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
-import { CellCheckboxId, TableRowAction } from '@common/table/types';
+import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
-import { restart } from '@maaling/api/maaling-api';
-import { Maaling, RestartRequest } from '@maaling/api/types';
+import { fetchLoeysingNettsider, restart } from '@maaling/api/maaling-api';
+import { RestartRequest } from '@maaling/api/types';
 import { CrawlUrl, MaalingContext } from '@maaling/types';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Link,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from 'react-router-dom';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-const getLoeysingCrawlResultat = (
-  loeysingId?: string,
-  maaling?: Maaling
-): CrawlUrl[] =>
-  maaling?.crawlResultat
-    ?.find((m) => String(m.loeysing.id) === loeysingId)
-    ?.urlList?.map((url) => ({
-      url,
-    })) ?? [];
+import { getUrlColumns, getUrlColumnsKvalitetssikring } from './GetUrlColumns';
 
 const KvalitetssikringApp = () => {
   const navigate = useNavigate();
   const { id: maalingId, loeysingId } = useParams();
 
-  const {
-    contextError,
-    contextLoading,
-    maaling,
-    setMaaling,
-    refreshMaaling,
-  }: MaalingContext = useOutletContext();
+  const { contextError, contextLoading, maaling, setMaaling }: MaalingContext =
+    useOutletContext();
 
   const [loading, setLoading] = useState(contextLoading);
   const [error, setError] = useError(contextError);
   const [urlRowSelection, setUrlRowSelection] = useState<CrawlUrl[]>([]);
   const [loeysingCrawlUrlList, setLoeysingCrawlUrlList] = useState<CrawlUrl[]>(
-    getLoeysingCrawlResultat(loeysingId, maaling)
+    []
   );
-
-  useEffect(() => {
-    if (!contextLoading) {
-      setLoeysingCrawlUrlList(getLoeysingCrawlResultat(loeysingId, maaling));
-    }
-  }, [contextLoading, maaling]);
 
   const crawlResultat = maaling?.crawlResultat;
   const maalingStatus = maaling?.status;
@@ -111,38 +87,9 @@ const KvalitetssikringApp = () => {
 
   const urlColumns = useMemo<ColumnDef<CrawlUrl>[]>(() => {
     if (maalingStatus === 'kvalitetssikring') {
-      return [
-        {
-          id: CellCheckboxId,
-          cell: ({ row }) => (
-            <RowCheckbox row={row} ariaLabel={`Velg ${row.original.url}`} />
-          ),
-          size: 1,
-        },
-        {
-          accessorFn: (row) => row.url,
-          id: 'url',
-          cell: ({ row }) => (
-            <Link to={row.original.url} target="_blank">
-              {row.original.url}
-            </Link>
-          ),
-          header: () => <>URL</>,
-        },
-      ];
+      return getUrlColumnsKvalitetssikring();
     } else {
-      return [
-        {
-          accessorFn: (row) => row.url,
-          id: 'url',
-          cell: ({ row }) => (
-            <Link to={row.original.url} target="_blank">
-              {row.original.url}
-            </Link>
-          ),
-          header: () => <>URL</>,
-        },
-      ];
+      return getUrlColumns();
     }
   }, [maalingStatus]);
 
@@ -164,6 +111,35 @@ const KvalitetssikringApp = () => {
       return [];
     }
   }, [maalingStatus, urlRowSelection]);
+
+  const fetchUrlList = useCallback(() => {
+    setLoading(true);
+    setError(undefined);
+
+    const doFetchUrlList = async () => {
+      try {
+        if (maalingId && loeysingId) {
+          const urlList = await fetchLoeysingNettsider(
+            Number(maalingId),
+            Number(loeysingId)
+          );
+          setLoeysingCrawlUrlList(urlList);
+        } else {
+          setError(new Error('Testresultat finnes ikkje'));
+        }
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje finne testresultat'));
+      }
+    };
+
+    doFetchUrlList().finally(() => {
+      setLoading(false);
+    });
+  }, []);
+
+  useEffectOnce(() => {
+    fetchUrlList();
+  });
 
   const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
     if (['crawling', 'kvalitetssikring'].includes(maalingStatus ?? '')) {
@@ -213,7 +189,7 @@ const KvalitetssikringApp = () => {
         data: loeysingCrawlUrlList,
         defaultColumns: urlColumns,
         loading: contextLoading,
-        onClickRetry: refreshMaaling,
+        onClickRetry: fetchUrlList,
         displayError: {
           error: error,
         },
