@@ -5,10 +5,11 @@ import React from 'react';
 export interface Props {
   percentage?: number;
   tooltip?: string;
+  hide?: boolean;
 }
 
-const LoadingBar = ({ percentage, tooltip }: Props) => {
-  if (typeof percentage === 'undefined') {
+const LoadingBar = ({ percentage, tooltip, hide = false }: Props) => {
+  if (typeof percentage === 'undefined' || hide) {
     return null;
   }
 

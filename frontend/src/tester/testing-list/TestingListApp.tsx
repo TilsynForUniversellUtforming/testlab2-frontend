@@ -1,4 +1,5 @@
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
@@ -132,6 +133,28 @@ const TestingListApp = () => {
     return <Outlet context={maalingContext} />;
   }
 
+  const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
+    const failedTests = testResult.filter((tr) => tr.tilstand === 'feila');
+
+    if (failedTests.length > 0) {
+      return {
+        title: 'Meny for testresultat',
+        disabled: contextLoading,
+        actions: [
+          {
+            action: 'restart',
+            modalProps: {
+              title: 'Test feila på nytt',
+              disabled: testResult.length === 0,
+              message: `Vil du køyra alle feila tester på nytt?`,
+              onConfirm: () => onClickRestart(failedTests),
+            },
+          },
+        ],
+      };
+    }
+  }, [testResult]);
+
   return (
     <>
       <StatusChart
@@ -159,6 +182,7 @@ const TestingListApp = () => {
               })
             : undefined
         }
+        menuButtons={menuButtons}
         tableProps={{
           data: testResult,
           defaultColumns: testResultatColumns,
