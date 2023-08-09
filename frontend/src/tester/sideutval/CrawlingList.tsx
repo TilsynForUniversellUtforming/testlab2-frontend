@@ -1,4 +1,5 @@
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { joinStringsToList } from '@common/util/stringutils';
@@ -68,6 +69,28 @@ const CrawlingList = ({
     refresh();
   }, []);
 
+  const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
+    const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
+
+    if (failedCrawlings.length > 0) {
+      return {
+        title: 'Meny for testresultat',
+        disabled: loading,
+        actions: [
+          {
+            action: 'restart',
+            modalProps: {
+              title: 'Kjør sideutval for feila',
+              disabled: crawlList.length === 0,
+              message: `Vil du køyra sideutval for alle feila på nytt?`,
+              onConfirm: () => onClickRestart(failedCrawlings),
+            },
+          },
+        ],
+      };
+    }
+  }, [crawlList]);
+
   return (
     <UserActionTable<CrawlResultat>
       heading="Sideutval"
@@ -80,6 +103,7 @@ const CrawlingList = ({
             })
           : undefined
       }
+      menuButtons={menuButtons}
       tableProps={{
         data: crawlList,
         defaultColumns: crawlColumns,

@@ -131,7 +131,7 @@ const MaalingList = () => {
           buttonText: 'Prøv igjen',
           error: error,
         },
-        loading: loading,
+        loading: contextLoading,
         onClickRetry: refresh,
         onSelectRows: onSelectRows,
         rowActions: [
