@@ -40,12 +40,12 @@ const TestResultListApp = () => {
   );
 
   useEffect(() => {
-    setLoading(contextLoading);
-    if (!contextLoading) {
+    if (maaling) {
+      setLoading(false);
       const testResult = getSelectedTestResult(loeysingId, maaling);
       setLoeysingTestResult(testResult);
     }
-  }, [contextLoading]);
+  }, [maaling]);
 
   const onClickRestart = useCallback(() => {
     setLoading(true);
