@@ -129,10 +129,6 @@ const TestingListApp = () => {
 
   useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 
-  if (loeysingId) {
-    return <Outlet context={maalingContext} />;
-  }
-
   const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
     const failedTests = testResult.filter((tr) => tr.tilstand === 'feila');
 
@@ -154,6 +150,10 @@ const TestingListApp = () => {
       };
     }
   }, [testResult]);
+
+  if (loeysingId) {
+    return <Outlet context={maalingContext} />;
+  }
 
   return (
     <>

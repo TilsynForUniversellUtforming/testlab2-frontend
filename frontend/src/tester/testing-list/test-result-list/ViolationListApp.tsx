@@ -85,8 +85,6 @@ const ViolationListApp = () => {
     fetchTestresultat();
   });
 
-  console.log(loading);
-
   return (
     <>
       <UserActionTable<TestResultat>
