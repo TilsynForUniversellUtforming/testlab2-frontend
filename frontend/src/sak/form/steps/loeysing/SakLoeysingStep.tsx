@@ -176,12 +176,10 @@ const SakLoeysingStep = ({
       formMethods={formMethods}
       buttonStep={buttonStep}
     >
-      <FieldSet
-        legend="Vil du bruke eit ferdig utval?"
-        description="Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."
-        className="sak-loeysing__utval"
-      >
+      <div className="sak-loeysing__utval">
         <RadioGroup
+          legend="Vil du bruke eit ferdig utval?"
+          description="Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."
           name="useUtval"
           items={[
             { label: 'Bruk eit utval', value: 'utval' },
@@ -194,36 +192,36 @@ const SakLoeysingStep = ({
               : setSource('manuell');
           }}
         />
-      </FieldSet>
 
-      {source === 'utval' && (
-        <FieldSet legend="Velg eit utval">
-          {utvalList.length === 0 && (
-            <p>
-              <em>
-                Det finnes inga lagra utval. Du må enten leggje til løysingar
-                sjølv, eller lage eit utval før du oppretter ei ny måling.
-              </em>
-            </p>
-          )}
-          <RadioGroup
-            name="chooseUtval"
-            value={String(getValues('utval')?.id)}
-            items={utvalList.map((u) => ({
-              label: u.namn,
-              value: String(u.id),
-            }))}
-            onChange={(value) => {
-              setValue(
-                'utval',
-                utvalList.find((u) => u.id === Number(value))
-              );
-              setValue('loeysingList', []);
-            }}
-            error={listErrors?.message}
-          />
-        </FieldSet>
-      )}
+        {source === 'utval' && (
+          <FieldSet legend="Velg eit utval">
+            {utvalList.length === 0 && (
+              <p>
+                <em>
+                  Det finnes inga lagra utval. Du må enten leggje til løysingar
+                  sjølv, eller lage eit utval før du oppretter ei ny måling.
+                </em>
+              </p>
+            )}
+            <RadioGroup
+              name="chooseUtval"
+              value={String(getValues('utval')?.id)}
+              items={utvalList.map((u) => ({
+                label: u.namn,
+                value: String(u.id),
+              }))}
+              onChange={(value) => {
+                setValue(
+                  'utval',
+                  utvalList.find((u) => u.id === Number(value))
+                );
+                setValue('loeysingList', []);
+              }}
+              error={listErrors?.message}
+            />
+          </FieldSet>
+        )}
+      </div>
       {source === 'manuell' && (
         <div className="sak-loeysing">
           <div className="sak-loeysing__input-wrapper">
