@@ -38,6 +38,12 @@
 
       &__utval {
         margin-bottom: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        [class^='FieldSet-module_content__'] {
+          display: flex;
+        }
       }
     }
 
