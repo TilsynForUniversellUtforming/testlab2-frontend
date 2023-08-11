@@ -1,5 +1,4 @@
 import toError from '@common/error/util';
-import { Spinner } from '@digdir/design-system-react';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -10,7 +9,6 @@ import { LoeysingContext } from './types';
 
 const LoeysingCreate = () => {
   const {
-    contextLoading,
     setContextLoading,
     setContextError,
     setLoeysingList,
@@ -47,10 +45,6 @@ const LoeysingCreate = () => {
       setContextLoading(false);
     });
   }, []);
-
-  if (contextLoading) {
-    return <Spinner title="Henter løysingar" />;
-  }
 
   return (
     <LoeysingForm

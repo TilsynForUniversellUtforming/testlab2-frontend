@@ -1,7 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.loeysing
 
 import java.net.URI
-import no.uutilsynet.testlab2frontendserver.common.RestHelper.getDetailedErrorMessage
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
@@ -30,7 +29,7 @@ class LoeysingResource(
 
   val loeysingUrl = "${testingApiProperties.url}/v2/loeysing"
 
-  data class CreateLoeysingDTO(val namn: String, val url: String, val orgnummer: String)
+  data class CreateLoeysingDTO(val namn: String, val url: String, val organisasjonsnummer: String)
 
   data class DeleteLoeysingDTO(val loeysingIdList: List<Int>)
 
@@ -57,7 +56,13 @@ class LoeysingResource(
   fun createLoeysing(@RequestBody dto: CreateLoeysingDTO): ResponseEntity<out Any> =
       runCatching {
             val location =
-                restTemplate.postForLocation(loeysingUrl, dto, Int::class.java)
+                restTemplate.postForLocation(
+                    loeysingUrl,
+                    mapOf(
+                        "namn" to dto.namn,
+                        "url" to dto.url,
+                        "orgnummer" to dto.organisasjonsnummer),
+                    Int::class.java)
                     ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
             val createdLoeysing =
                 restTemplate.getForObject(
@@ -66,12 +71,8 @@ class LoeysingResource(
             ResponseEntity.created(URI("/loeysing/${createdLoeysing.id}")).body(getLoeysingList())
           }
           .getOrElse {
-            val message =
-                when (it) {
-                  is HttpClientErrorException -> getDetailedErrorMessage(it)
-                  else -> "Noko gikk gjekk da eg forsøkte å lage ei ny løysing"
-                }
-            ResponseEntity.internalServerError().body(message)
+            ResponseEntity.internalServerError()
+                .body("noko gikk gjekk da eg forsøkte å lage ei ny løysing")
           }
 
   @PutMapping
