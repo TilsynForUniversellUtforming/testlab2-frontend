@@ -11,13 +11,15 @@ export type ChartStatus = {
 };
 
 interface ChartProps {
-  workingStatus: ChartStatus;
+  pendingStatus: ChartStatus;
+  runningStatus: ChartStatus;
   finishedStatus: ChartStatus;
   errorStatus: ChartStatus;
 }
 
 const StatusChart = ({
-  workingStatus,
+  pendingStatus,
+  runningStatus,
   finishedStatus,
   errorStatus,
 }: ChartProps) => {
@@ -57,9 +59,15 @@ const StatusChart = ({
     series: [
       {
         type: 'column',
-        name: workingStatus.statusText,
+        name: pendingStatus.statusText,
+        color: '#68707c',
+        data: [{ y: pendingStatus.statusCount }],
+      },
+      {
+        type: 'column',
+        name: runningStatus.statusText,
         color: '#0062ba',
-        data: [{ y: workingStatus.statusCount }],
+        data: [{ y: runningStatus.statusCount }],
       },
       {
         type: 'column',
@@ -76,7 +84,7 @@ const StatusChart = ({
     ],
     accessibility: {
       enabled: true,
-      description: `Eit kolonnediagram som representerer statusen til målingar med kategoriar for ${workingStatus.statusText}, ${finishedStatus.statusText} og ${errorStatus.statusText}.`,
+      description: `Eit kolonnediagram som representerer statusen til målingar med kategoriar for ${runningStatus.statusText}, ${finishedStatus.statusText} og ${errorStatus.statusText}.`,
     },
   };
 

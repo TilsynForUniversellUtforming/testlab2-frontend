@@ -1,3 +1,4 @@
+import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
@@ -30,7 +31,9 @@ const TestingListApp = () => {
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
+  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
   const [error, setError] = useError(contextError);
+  const [loading, setLoading] = useState(contextLoading);
   const [pollMaaling, setPollMaaling] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
@@ -57,56 +60,62 @@ const TestingListApp = () => {
   }, [maaling?.status, testResult, testRowSelection]);
 
   useEffect(() => {
-    setPollMaaling(maaling?.status === 'testing');
-    setTestResult(maaling?.testResult ?? []);
+    if (maaling) {
+      setLoading(false);
+      setPollMaaling(maaling?.status === 'testing');
+      setTestResult(maaling?.testResult ?? []);
+    }
   }, [maaling]);
 
-  const onClickRestart = useCallback((testRowSelection: TestResult[]) => {
-    setError(undefined);
-    const loeysingIdList = testRowSelection.map((cr) => cr.loeysing.id);
+  const onClickRestart = useCallback(
+    (testRowSelection: TestResult[]) => {
+      setError(undefined);
+      const loeysingIdList = testRowSelection.map((cr) => cr.loeysing.id);
 
-    if (typeof maaling === 'undefined') {
-      setError(new Error('Måling finnes ikkje'));
-      return;
-    } else if (isNotDefined(loeysingIdList)) {
-      setError(new Error('Løysing finnes ikkje på måling'));
-      return;
-    } else if (testRowSelection.length === 0) {
-      setError(
-        new Error('Kunne ikkje starte testing på nytt, ingen løysing valgt')
-      );
-      return;
-    }
-
-    const doRestart = async () => {
-      try {
-        const restartCrawlingRequest: RestartRequest = {
-          maalingId: maaling.id,
-          loeysingIdList: { idList: loeysingIdList },
-          process: 'test',
-        };
-
-        const restartedMaaling = await restart(restartCrawlingRequest);
-        setMaaling(restartedMaaling);
-        setTestResult(restartedMaaling.testResult);
-      } catch (e) {
-        setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
+      if (typeof maaling === 'undefined') {
+        setError(new Error('Måling finnes ikkje'));
+        return;
+      } else if (isNotDefined(loeysingIdList)) {
+        setError(new Error('Løysing finnes ikkje på måling'));
+        return;
+      } else if (testRowSelection.length === 0) {
+        setError(
+          new Error('Kunne ikkje starte testing på nytt, ingen løysing valgt')
+        );
+        return;
       }
-    };
 
-    doRestart().finally(() => {
-      setPollMaaling(true);
-    });
-  }, []);
+      const doRestart = async () => {
+        try {
+          const restartCrawlingRequest: RestartRequest = {
+            maalingId: maaling.id,
+            loeysingIdList: { idList: loeysingIdList },
+            process: 'test',
+          };
+
+          const restartedMaaling = await restart(restartCrawlingRequest);
+          setMaaling(restartedMaaling);
+          setTestResult(restartedMaaling.testResult);
+          setAlert({
+            severity: 'success',
+            message: 'Testing er starta på nytt',
+            clearMessage: () => setAlert(undefined),
+          });
+        } catch (e) {
+          setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
+        }
+      };
+
+      doRestart().finally(() => {
+        setPollMaaling(true);
+      });
+    },
+    [maaling]
+  );
 
   const doFetchData = useCallback(async () => {
     try {
-      if (
-        maalingId &&
-        !contextLoading &&
-        maaling &&
-        maaling.status === 'testing'
-      ) {
+      if (maalingId && !loading && maaling && maaling.status === 'testing') {
         const refreshedMaaling = await fetchMaaling(maaling.id);
 
         if (!refreshedMaaling) {
@@ -119,7 +128,7 @@ const TestingListApp = () => {
 
         setMaaling(refreshedMaaling);
         setTestResult(refreshedMaaling.testResult);
-      } else if (!maalingId || (!maaling && !contextLoading)) {
+      } else if (!maalingId || (!maaling && !loading)) {
         setError(new Error('Måling finnes ikkje'));
       }
     } catch (e) {
@@ -135,7 +144,7 @@ const TestingListApp = () => {
     if (failedTests.length > 0) {
       return {
         title: 'Meny for testresultat',
-        disabled: contextLoading,
+        disabled: loading,
         actions: [
           {
             action: 'restart',
@@ -157,10 +166,21 @@ const TestingListApp = () => {
 
   return (
     <>
+      {alert && (
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
       <StatusChart
-        workingStatus={{
+        pendingStatus={{
+          statusText: 'Ikkje starta',
+          statusCount: maaling?.testStatistics?.numPending ?? 0,
+        }}
+        runningStatus={{
           statusText: 'Testar',
-          statusCount: maaling?.testStatistics?.numPerforming ?? 0,
+          statusCount: maaling?.testStatistics?.numRunning ?? 0,
         }}
         finishedStatus={{
           statusText: 'Ferdig',

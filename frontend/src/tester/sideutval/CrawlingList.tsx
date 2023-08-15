@@ -4,7 +4,7 @@ import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { joinStringsToList } from '@common/util/stringutils';
 import { CrawlResultat, Maaling } from '@maaling/api/types';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
@@ -34,6 +34,9 @@ const CrawlingList = ({
   const maalingStatus = maaling?.status;
   const [crawlRowSelection, setCrawlRowSelection] = useState<CrawlResultat[]>(
     []
+  );
+  const [menuButtons, setMenuButtons] = useState<MenuDropdownProps | undefined>(
+    undefined
   );
 
   const rowActions = useMemo<TableRowAction[]>(() => {
@@ -69,11 +72,11 @@ const CrawlingList = ({
     refresh();
   }, []);
 
-  const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
+  useEffect(() => {
     const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
 
     if (failedCrawlings.length > 0) {
-      return {
+      setMenuButtons({
         title: 'Meny for testresultat',
         disabled: loading,
         actions: [
@@ -87,7 +90,9 @@ const CrawlingList = ({
             },
           },
         ],
-      };
+      });
+    } else {
+      setMenuButtons(undefined);
     }
   }, [crawlList]);
 

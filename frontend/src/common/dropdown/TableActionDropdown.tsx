@@ -41,6 +41,13 @@ export const TableActionDropdown = <T extends object>({
     setShow(!show);
   };
 
+  const onConfirm = (tableRowAction: TableRowAction) => {
+    handleShowDropdown();
+    tableRowAction.modalProps.onConfirm();
+    table.resetRowSelection();
+    table.setPageIndex(0);
+  };
+
   return (
     <>
       <Button
@@ -60,11 +67,7 @@ export const TableActionDropdown = <T extends object>({
               <ConfirmModalButton
                 buttonVariant="dropdown"
                 {...tra.modalProps}
-                onConfirm={() => {
-                  tra.modalProps.onConfirm();
-                  table.resetRowSelection();
-                  table.setPageIndex(0);
-                }}
+                onConfirm={() => onConfirm(tra)}
               />
             </li>
           ))}

@@ -12,8 +12,8 @@
     "prepare": "cd .. && husky install frontend/.husky"
   },
   "dependencies": {
-    "@digdir/design-system-react": "^0.21.0",
-    "@digdir/design-system-tokens": "^0.1.7",
+    "@digdir/design-system-react": "^0.22.0",
+    "@digdir/design-system-tokens": "^0.2.0",
     "@navikt/aksel-icons": "^4.9.0",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.9.3",
