@@ -37,7 +37,12 @@ const AlertTimed = ({
 
   return (
     <div className="alert">
-      <Alert severity={severity}>{message}</Alert>
+      <Alert
+        severity={severity}
+        role={severity === 'success' ? 'status' : undefined}
+      >
+        {message}
+      </Alert>
     </div>
   );
 };
