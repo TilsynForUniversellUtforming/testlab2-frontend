@@ -1,3 +1,5 @@
+import './alert.scss';
+
 import { Alert } from '@digdir/design-system-react';
 import { useEffect, useState } from 'react';
 
@@ -13,7 +15,7 @@ export interface AlertProps {
 const AlertTimed = ({
   severity = 'info',
   message,
-  timeout = 5000,
+  timeout = 15000,
   clearMessage,
 }: AlertProps) => {
   const [showAlert, setShowAlert] = useState(true);
@@ -29,7 +31,15 @@ const AlertTimed = ({
     };
   }, []);
 
-  return showAlert ? <Alert severity={severity}>{message}</Alert> : null;
+  if (!showAlert) {
+    return null;
+  }
+
+  return (
+    <div className="alert">
+      <Alert severity={severity}>{message}</Alert>
+    </div>
+  );
 };
 
 export default AlertTimed;

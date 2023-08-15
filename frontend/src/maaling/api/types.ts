@@ -57,7 +57,8 @@ export type CrawlResultat = {
   antallNettsider: number;
 };
 export type JobStatistics = {
-  numPerforming: number;
+  numPending: number;
+  numRunning: number;
   numFinished: number;
   numError: number;
 };
