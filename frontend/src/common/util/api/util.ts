@@ -1,20 +1,11 @@
 import toError from '@common/error/util';
 
-export const responseToJson = async (
-  response: Response,
-  errorMessage: string
-) => {
-  if (!response.ok) {
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse.message || errorMessage);
-    } else {
-      const errorResponse = await response.text();
-      throw new Error(errorResponse || errorMessage);
-    }
+export const responseToJson = (response: Response, errorMessage: string) => {
+  if (response.ok) {
+    return response.json();
+  } else {
+    throw new Error(errorMessage);
   }
-  return response.json();
 };
 
 // eslint-disable-next-line
