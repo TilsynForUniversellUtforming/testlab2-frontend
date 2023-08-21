@@ -1,4 +1,3 @@
-import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/api/util';
@@ -8,7 +7,7 @@ import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { Verksemd } from '@verksemder/api/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 
 import { fetchRegelsettList } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
@@ -25,7 +24,6 @@ import { MaalingContext, MaalingTestStatus } from './types';
 
 const MaalingApp = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,7 +36,6 @@ const MaalingApp = () => {
   const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [utvalList, setUtvalList] = useState<Utval[]>([]);
-  const [showMaalinger, setShowMaalinger] = useState(true);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
   const [pollMaaling, setPollMaaling] = useState(
     maaling?.status === 'crawling' || maaling?.status === 'testing'
@@ -235,8 +232,6 @@ const MaalingApp = () => {
             setError(new Error('Kunne ikkje hente utval'));
           }
 
-          setShowMaalinger(true);
-
           if (id) {
             doFetchMaaling()
               .then((data) => {
@@ -245,13 +240,13 @@ const MaalingApp = () => {
                 } else {
                   setError(new Error('Kunne ikkje hente måling'));
                 }
-                setShowMaalinger(true);
-                setLoading(false);
               })
               .catch((e) => {
                 setError(toError(e, 'Kunne ikkje hente data'));
               });
           }
+
+          setLoading(false);
         } else {
           setError(new Error('Kunne ikkje hente målingar'));
           setLoading(false);
@@ -267,7 +262,6 @@ const MaalingApp = () => {
     if (
       !loading &&
       !error &&
-      showMaalinger &&
       id &&
       (maaling?.id !== Number(id) || isNotDefined(maaling))
     ) {
@@ -279,7 +273,6 @@ const MaalingApp = () => {
           } else {
             setError(new Error('Kunne ikkje hente måling'));
           }
-          setShowMaalinger(true);
           setLoading(false);
         })
         .catch((e) => {
@@ -303,7 +296,6 @@ const MaalingApp = () => {
     verksemdList: verksemdList,
     regelsettList: regelsettList,
     utvalList: utvalList,
-    showMaalinger: showMaalinger,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,
     handleStartPublish: doStartPublish,
@@ -313,17 +305,6 @@ const MaalingApp = () => {
     pollMaaling: pollMaaling,
     setPollMaaling: handleRefreshing,
   };
-
-  if (!loading && !showMaalinger) {
-    return (
-      <ErrorCard
-        errorHeader="Måling"
-        error={new Error('Målingar låst')}
-        buttonText="Tilbake"
-        onClick={() => navigate('..')}
-      />
-    );
-  }
 
   return <Outlet context={maalingContext} />;
 };

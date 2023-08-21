@@ -1,5 +1,4 @@
 import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
-import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
@@ -20,7 +19,6 @@ import { MaalingContext } from '../types';
 const MaalingList = () => {
   const {
     maalingList,
-    showMaalinger,
     setMaalingList,
     refresh,
     contextError,
@@ -107,17 +105,6 @@ const MaalingList = () => {
     },
   ];
 
-  if (!loading && !showMaalinger) {
-    return (
-      <ErrorCard
-        errorHeader="Måling"
-        error={new Error('Målingar låst')}
-        buttonText="Tilbake"
-        onClick={() => navigate('..')}
-      />
-    );
-  }
-
   return (
     <UserActionTable<Maaling>
       heading="Målingar"
@@ -131,7 +118,7 @@ const MaalingList = () => {
           buttonText: 'Prøv igjen',
           error: error,
         },
-        loading: contextLoading,
+        loading: loading,
         onClickRetry: refresh,
         onSelectRows: onSelectRows,
         rowActions: [

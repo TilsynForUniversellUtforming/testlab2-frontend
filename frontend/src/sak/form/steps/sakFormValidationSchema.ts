@@ -47,7 +47,7 @@ const testregelSchema = z.object({
 
 export const sakInitValidationSchema = z
   .object({
-    navn: z.string().nonempty('Tittel kan ikkje vera tom'),
+    navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
     sakType: saktypeSchema
       .optional()
       .refine((value) => value !== undefined, 'Type sak må vejast'),
