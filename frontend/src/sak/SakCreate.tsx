@@ -12,7 +12,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import SakStepForm from './form/SakStepForm';
 import useSakForm from './hooks/useSakForm';
-import { SakContext, SakFormState } from './types';
+import { defaultSakFormState, SakContext, SakFormState } from './types';
 
 const SakCreate = () => {
   const navigate = useNavigate();
@@ -31,19 +31,8 @@ const SakCreate = () => {
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
 
-  const defaultState: SakFormState = {
-    navn: '',
-    loeysingList: [],
-    testregelList: [],
-    maxLinksPerPage: 100,
-    numLinksToSelect: 30,
-    sakType: undefined,
-    advisorId: undefined,
-    sakNumber: '',
-  };
-
   const [maalingFormState, setMaalingFormState] =
-    useState<SakFormState>(defaultState);
+    useState<SakFormState>(defaultSakFormState);
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
     const doCreateMaaling = async () => {

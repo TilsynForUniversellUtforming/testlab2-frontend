@@ -22,7 +22,7 @@ const TestlabFormHeader = ({
       )}
       {hasRequiredFields && (
         <Paragraph spacing size="xsmall">
-          Felter markert med * er obligatoriske
+          Felter markert med stjerne er obligatoriske
         </Paragraph>
       )}
     </header>

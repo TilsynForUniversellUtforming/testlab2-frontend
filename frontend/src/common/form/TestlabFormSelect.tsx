@@ -1,4 +1,5 @@
-import { isFormError } from '@common/form/util';
+import { getErrorMessage } from '@common/form/util';
+import { isDefined } from '@common/util/util';
 import { ErrorMessage, Select } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -15,22 +16,21 @@ const TestlabFormSelect = <T extends object>({
   sublabel,
   options,
   name,
-  formValidation,
+  required = false,
   disabled,
 }: EditSelectProps<T>) => {
   const { control, formState } = useFormContext<T>();
-  const hasError = isFormError(formState, name);
+  const errorMessage = getErrorMessage(formState, name);
 
   return (
     <Controller
       name={name}
       control={control}
-      rules={formValidation?.validation}
       render={({ field: { onChange, value } }) => (
         <div className="testlab-form__select">
           <label htmlFor={name} className="testlab-form__input-label">
             {label}
-            {formValidation?.validation?.required && <>*</>}
+            {required && <span className="asterisk-color">*</span>}
             {sublabel && (
               <div className="testlab-form__input-sub-label">{sublabel}</div>
             )}
@@ -40,13 +40,11 @@ const TestlabFormSelect = <T extends object>({
             value={value}
             onChange={onChange}
             options={options}
-            error={hasError}
+            error={isDefined(errorMessage)}
             disabled={disabled}
           />
-          {hasError && formValidation?.errorMessage && (
-            <ErrorMessage size="small">
-              {formValidation?.errorMessage}
-            </ErrorMessage>
+          {errorMessage && (
+            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
           )}
         </div>
       )}

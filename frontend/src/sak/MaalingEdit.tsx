@@ -1,11 +1,12 @@
-import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
+import AlertTimed from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
 import { updateMaaling } from '@maaling/api/maaling-api';
 import { MaalingEditParams } from '@maaling/api/types';
 import { MaalingContext } from '@maaling/types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import SakStepForm from './form/SakStepForm';
@@ -27,7 +28,7 @@ const MaalingEdit = () => {
   }: MaalingContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
   const [loading, setLoading] = useLoading(contextLoading);
   const [maalingFormState, setMaalingFormState] = useMaalingFormState(
     maaling,
@@ -36,10 +37,10 @@ const MaalingEdit = () => {
   );
 
   const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    const doEditMaaling = async () => {
-      setLoading(true);
-      setError(undefined);
+    setLoading(true);
+    setError(undefined);
 
+    const doEditMaaling = async () => {
       if (maaling) {
         const maalingEdit: MaalingEditParams = {
           id: maaling.id,
@@ -57,11 +58,7 @@ const MaalingEdit = () => {
         try {
           const maaling = await updateMaaling(maalingEdit);
           setMaaling(maaling);
-          setAlert({
-            severity: 'success',
-            message: 'Flott! vi har lagret dine endringer',
-            clearMessage: () => setAlert(undefined),
-          });
+          setAlert('success', `${maalingEdit.navn} er oppdatert`);
         } catch (e) {
           setError(toError(e, 'Kunne ikkje lage sak'));
         }

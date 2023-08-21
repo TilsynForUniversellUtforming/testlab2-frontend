@@ -1,17 +1,18 @@
-import { AppRoute } from '@common/appRoutes';
 import { AppContext } from '@common/types';
+import { Loeysing, Utval } from '@loeysingar/api/types';
+import { Maaling } from '@maaling/api/types';
+import { Verksemd } from '@verksemder/api/types';
 
-import { Loeysing, Utval } from '../loeysingar/api/types';
-import { Maaling } from '../maaling/api/types';
 import { Testregel, TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
-import { Verksemd } from '../verksemder/api/types';
 import { FormStepState } from './hooks/useSakForm';
 
 export type LoeysingVerksemd = {
   loeysing: Loeysing;
   verksemd: Verksemd;
 };
+
+export type LoeysingSource = 'utval' | 'manuell';
 
 export interface SakContext extends AppContext {
   regelsettList: TestRegelsett[];
@@ -26,16 +27,28 @@ export interface SakContext extends AppContext {
 }
 
 export type SakFormState = {
-  navn?: string;
+  navn: string;
+  sakType?: Saktype;
+  advisorId?: string;
+  sakNumber: string | undefined;
+  maxLinksPerPage: number;
+  numLinksToSelect: number;
+  loeysingSource: LoeysingSource;
   loeysingList: LoeysingVerksemd[];
   utval?: Utval;
   testregelList: Testregel[];
-  maxLinksPerPage: number;
-  numLinksToSelect: number;
-  sakType?: Saktype;
-  advisorId?: string;
-  sakNumber?: string;
-  currentStep?: AppRoute;
+};
+
+export const defaultSakFormState: SakFormState = {
+  navn: '',
+  loeysingList: [],
+  testregelList: [],
+  maxLinksPerPage: 100,
+  numLinksToSelect: 30,
+  sakType: undefined,
+  advisorId: undefined,
+  sakNumber: '',
+  loeysingSource: 'utval',
 };
 
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
