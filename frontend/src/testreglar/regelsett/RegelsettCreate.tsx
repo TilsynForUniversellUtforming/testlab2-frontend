@@ -1,9 +1,8 @@
-import useValidate, { testreglarMessage } from '@common/form/hooks/useValidate';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { Testregel, TestRegelsett } from '../api/types';
+import { TestRegelsett } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
@@ -18,20 +17,7 @@ const RegelsettCreate = () => {
     },
   });
 
-  const { setError, clearErrors } = formMethods;
-
-  const onSubmit = useCallback((regelsett: TestRegelsett) => {
-    const validation = useValidate<Testregel, TestRegelsett>({
-      selection: regelsett.testregelList,
-      name: 'testregelList',
-      setError: setError,
-      clearErrors: clearErrors,
-      message: testreglarMessage,
-    });
-    if (!validation) {
-      return;
-    }
-
+  const onSubmit = useCallback(() => {
     setContextLoading(true);
     setContextError(undefined);
   }, []);

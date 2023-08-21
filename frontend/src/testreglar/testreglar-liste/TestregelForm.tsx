@@ -1,26 +1,31 @@
+import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import TestlabForm from '@common/form/TestlabForm';
 import { Option } from '@common/types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Testregel } from '../api/types';
+import { testreglarValidationSchema } from './testreglarValidationSchema';
 
 export interface Props {
   heading: string;
-  subHeading: string;
+  subHeading?: string;
   onSubmit: (testregel: Testregel) => void;
   testregel?: Testregel;
   krav: string[];
   kravDisabled: boolean;
+  alert?: AlertProps;
 }
 
-const TestreglarForm = ({
+const TestregelForm = ({
   heading,
   subHeading,
   onSubmit,
   testregel,
   krav,
   kravDisabled,
+  alert,
 }: Props) => {
   const kravOptions: Option[] = krav.map((k) => ({
     label: k,
@@ -34,6 +39,7 @@ const TestreglarForm = ({
       kravTilSamsvar: testregel?.kravTilSamsvar ?? '',
       krav: testregel?.krav,
     },
+    resolver: zodResolver(testreglarValidationSchema),
   });
 
   return (
@@ -44,36 +50,30 @@ const TestreglarForm = ({
         onSubmit={onSubmit}
         formMethods={formMethods}
       >
+        <TestlabForm.FormInput label="Namn" name="kravTilSamsvar" required />
         <TestlabForm.FormInput
-          label="Namn"
-          name="kravTilSamsvar"
-          formValidation={{
-            errorMessage: 'Namn kan ikkje vera tomt',
-            validation: { required: true, minLength: 1 },
-          }}
-        />
-        <TestlabForm.FormInput
-          label="Testregel tekst-id"
+          label="Testregel test-id (unik)"
           name="testregelNoekkel"
-          formValidation={{
-            errorMessage: 'Format på testregel er QW-ACT-RXX',
-            validation: { required: true, pattern: /^(QW-ACT-R)[0-9]{1,2}$/i },
-          }}
+          required
         />
         <TestlabForm.FormSelect
           label="Krav"
           options={kravOptions}
           name="krav"
           disabled={kravDisabled}
-          formValidation={{
-            errorMessage: 'Krav sak må vejast',
-            validation: { required: true },
-          }}
+          required
         />
         <TestlabForm.FormButtons />
       </TestlabForm>
+      {alert && (
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
     </div>
   );
 };
 
-export default TestreglarForm;
+export default TestregelForm;

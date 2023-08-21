@@ -1,4 +1,5 @@
-import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
+import AlertTimed from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
@@ -36,7 +37,7 @@ const SideutvalApp = () => {
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
     maalingToCrawlResultat(maaling)
   );
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
   const [pollMaaling, setPollMaaling] = useState(
@@ -104,11 +105,7 @@ const SideutvalApp = () => {
           const restartedMaaling = await restart(restartCrawlingRequest);
           setMaaling(restartedMaaling);
           setCrawlResult(maalingToCrawlResultat(restartedMaaling));
-          setAlert({
-            severity: 'success',
-            message: 'Siteutval er starta på nytt',
-            clearMessage: () => setAlert(undefined),
-          });
+          setAlert('success', 'Siteutval er starta på nytt');
         } catch (e) {
           setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
         }

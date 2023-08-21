@@ -1,5 +1,5 @@
-import useValidate from '@common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import { getErrorMessage } from '@common/form/util';
 import {
   HeaderCheckbox,
   RowCheckbox,
@@ -9,11 +9,12 @@ import { CellCheckboxId } from '@common/table/types';
 import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
-  ButtonColor,
   ErrorMessage,
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { sakTestreglarValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
 import { SakFormBaseProps, SakFormState } from '@sak/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -38,6 +39,7 @@ const SakTestreglarStep = ({
 }: Props) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
+    resolver: zodResolver(sakTestreglarValidationSchema),
   });
 
   const regelsettPrefix = 'regelsett';
@@ -45,8 +47,7 @@ const SakTestreglarStep = ({
   const [rowSelection, setRowSelection] = useState<Testregel[]>([]);
   const [testregelId, setTestregelId] = useState<string | undefined>(undefined);
 
-  const { control, setValue, getValues, setError, clearErrors, formState } =
-    formMethods;
+  const { control, setValue, getValues, setError, formState } = formMethods;
 
   const selection = useWatch<SakFormState>({
     control,
@@ -144,15 +145,6 @@ const SakTestreglarStep = ({
           (value, idx, self) => self.findIndex((v) => v.id === value.id) === idx
         );
         setValue('testregelList', filteredValues);
-
-        useValidate<Testregel, SakFormState>({
-          selection: values,
-          name: 'testregelList',
-          setError: setError,
-          clearErrors: clearErrors,
-          message: 'Testreglar må veljast',
-        });
-
         setTestregelId(undefined);
       } else {
         setError('testregelList', {
@@ -171,7 +163,7 @@ const SakTestreglarStep = ({
     setValue('testregelList', newValues);
   }, [rowSelection, setValue]);
 
-  const listErrors = formState.errors['testregelList'];
+  const formError = getErrorMessage(formState, 'testregelList');
 
   const onSubmitTestreglar = (data: SakFormState) => {
     if (data.testregelList.length === 0) {
@@ -208,11 +200,7 @@ const SakTestreglarStep = ({
               value={testregelId}
             />
           </div>
-          <Button
-            title="Legg til"
-            color={ButtonColor.Success}
-            onClick={onClickAdd}
-          >
+          <Button title="Legg til" color="success" onClick={onClickAdd}>
             Legg til
           </Button>
         </div>
@@ -238,7 +226,7 @@ const SakTestreglarStep = ({
               },
             ]}
           />
-          {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+          {formError && <ErrorMessage>{formError}</ErrorMessage>}
         </div>
       </div>
     </SakStepFormWrapper>

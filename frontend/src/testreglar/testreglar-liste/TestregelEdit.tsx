@@ -1,30 +1,37 @@
-import ErrorCard from '@common/error/ErrorCard';
+import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
-import { Spinner } from '@digdir/design-system-react';
-import React, { useCallback } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import { updateTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
 import { TestregelContext } from '../types';
-import TestreglarForm from './TestreglarForm';
+import TestregelFormSkeleton from './skeleton/TestregelFormSkeleton';
+import TestregelForm from './TestregelForm';
+
+const getTestregel = (testregelList: Testregel[], id: string | undefined) =>
+  testregelList.find((tr) => tr.id === Number(id));
 
 const TestregelEdit = () => {
   const {
-    contextError,
     contextLoading,
     testreglar,
     setTestregelList,
     setContextLoading,
     setContextError,
   }: TestregelContext = useOutletContext();
-  const navigate = useNavigate();
   const { id } = useParams();
-  const numberId = Number(id);
+  const [testregel, setTestregel] = useState(getTestregel(testreglar, id));
+  const [loading, setLoading] = useState(contextLoading);
+  const [alert, setAlert] = useAlert();
 
-  const testregel: Testregel | undefined = testreglar.find(
-    (tr) => tr.id === numberId
-  );
+  useEffect(() => {
+    const foundLoeysing = getTestregel(testreglar, id);
+    if (foundLoeysing) {
+      setTestregel(foundLoeysing);
+      setLoading(false);
+    }
+  }, [testreglar]);
 
   const krav = testreglar
     .map((tr) => tr.krav)
@@ -32,13 +39,24 @@ const TestregelEdit = () => {
     .filter((value, index, current) => current.indexOf(value) === index);
 
   const onSubmit = useCallback((testregel: Testregel) => {
-    setContextLoading(true);
-    setContextError(undefined);
+    const existingTestregel = testreglar.find(
+      (tr) => tr.testregelNoekkel === testregel.testregelNoekkel
+    );
+    if (existingTestregel) {
+      setAlert(
+        'danger',
+        `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+      );
+      return;
+    }
 
     const update = async () => {
       try {
+        setContextLoading(true);
+        setContextError(undefined);
         const data = await updateTestregel(testregel);
         setTestregelList(data);
+        setAlert('success', `${testregel.kravTilSamsvar} er endra`);
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje endre testregel'));
       }
@@ -46,26 +64,24 @@ const TestregelEdit = () => {
 
     update().finally(() => {
       setContextLoading(false);
-      navigate('..');
     });
   }, []);
 
-  if (contextLoading) {
-    return <Spinner title="Hentar testreglar" variant={'default'} />;
-  }
-
-  if (contextError || typeof testregel === 'undefined') {
-    return <ErrorCard error={contextError} />;
+  if (loading) {
+    return (
+      <TestregelFormSkeleton heading="Endre testregel" subHeading="Laster..." />
+    );
   }
 
   return (
-    <TestreglarForm
+    <TestregelForm
       heading="Endre testregel"
-      subHeading={testregel.testregelNoekkel}
+      subHeading={testregel?.testregelNoekkel}
       onSubmit={onSubmit}
       testregel={testregel}
       krav={krav}
       kravDisabled
+      alert={alert}
     />
   );
 };

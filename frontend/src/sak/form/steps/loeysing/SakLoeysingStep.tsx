@@ -1,20 +1,26 @@
-import useValidate from '@common/form/hooks/useValidate';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
+import { getErrorMessage } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
 import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
-  ButtonColor,
   ErrorMessage,
   FieldSet,
   RadioGroup,
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import { LoeysingVerksemd, SakFormBaseProps, SakFormState } from '@sak/types';
+import { sakLoeysingValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
+import {
+  LoeysingSource,
+  LoeysingVerksemd,
+  SakFormBaseProps,
+  SakFormState,
+} from '@sak/types';
 import { Verksemd } from '@verksemder/api/types';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import SakStepFormWrapper from '../../SakStepFormWrapper';
@@ -40,6 +46,7 @@ const SakLoeysingStep = ({
 }: Props) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
+    resolver: zodResolver(sakLoeysingValidationSchema),
   });
 
   const { control, setValue, getValues, setError, clearErrors, formState } =
@@ -49,18 +56,10 @@ const SakLoeysingStep = ({
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
-  const [source, setSource] = useState<'utval' | 'manuell' | undefined>(
-    getValues('utval')
-      ? 'utval'
-      : getValues('loeysingList')?.length > 0
-      ? 'manuell'
-      : undefined
-  );
-
-  const selection = useWatch<SakFormState>({
+  const [source, selection] = useWatch<SakFormState>({
     control,
-    name: 'loeysingList',
-  }) as LoeysingVerksemd[];
+    name: ['loeysingSource', 'loeysingList'],
+  }) as [LoeysingSource, LoeysingVerksemd[]];
 
   const loeysingOptions: SingleSelectOption[] = useMemo(() => {
     const filteredLoeysingList = loeysingList.filter(
@@ -122,15 +121,7 @@ const SakLoeysingStep = ({
           });
         } else {
           setValue('loeysingList', filteredValues);
-          setValue('utval', undefined);
-
-          useValidate<LoeysingVerksemd, SakFormState>({
-            selection: newLoeysingList,
-            name: 'loeysingList',
-            setError: setError,
-            clearErrors: clearErrors,
-            message: 'Løysing og verksemd må veljast',
-          });
+          clearErrors();
         }
 
         setLoeysingId(undefined);
@@ -156,9 +147,28 @@ const SakLoeysingStep = ({
     setRowSelection([]);
   }, [rowSelection, setValue]);
 
-  const listErrors = formState.errors['loeysingList'];
+  const listErrors = getErrorMessage(formState, 'loeysingList');
 
-  const onSubmitLoeysing = (data: SakFormState) => {
+  const handleChangeSource = (source?: string) => {
+    if (typeof source === 'undefined') {
+      throw new Error('Ugyldig kilde');
+    }
+    const oldSource = getValues('loeysingSource');
+    if (oldSource !== source) {
+      clearErrors();
+      setValue('loeysingSource', source as LoeysingSource);
+      setValue('utval', undefined);
+      setValue('loeysingList', []);
+    }
+  };
+
+  const handleChangeUtval = (value?: string) => {
+    const utval = utvalList.find((u) => u.id === Number(value));
+    setValue('utval', utval);
+    clearErrors();
+  };
+
+  const onSubmitLoeysing = useCallback((data: SakFormState) => {
     if (source === 'manuell' && data.loeysingList.length === 0) {
       setError('loeysingList', {
         type: 'manual',
@@ -167,7 +177,7 @@ const SakLoeysingStep = ({
     } else {
       onSubmit(data);
     }
-  };
+  }, []);
 
   return (
     <SakStepFormWrapper
@@ -186,11 +196,7 @@ const SakLoeysingStep = ({
             { label: 'Velg løysingar sjølv', value: 'manuell' },
           ]}
           value={source}
-          onChange={(value) => {
-            return value === 'utval'
-              ? setSource('utval')
-              : setSource('manuell');
-          }}
+          onChange={handleChangeSource}
         />
 
         {source === 'utval' && (
@@ -210,14 +216,8 @@ const SakLoeysingStep = ({
                 label: u.namn,
                 value: String(u.id),
               }))}
-              onChange={(value) => {
-                setValue(
-                  'utval',
-                  utvalList.find((u) => u.id === Number(value))
-                );
-                setValue('loeysingList', []);
-              }}
-              error={listErrors?.message}
+              onChange={handleChangeUtval}
+              error={listErrors && <>{listErrors}</>}
             />
           </FieldSet>
         )}
@@ -241,11 +241,7 @@ const SakLoeysingStep = ({
                 value={verksemdId}
               />
             </div>
-            <Button
-              title="Legg til"
-              color={ButtonColor.Success}
-              onClick={onClickAdd}
-            >
+            <Button title="Legg til" color="success" onClick={onClickAdd}>
               Legg til
             </Button>
           </div>
@@ -271,7 +267,7 @@ const SakLoeysingStep = ({
                 },
               ]}
             />
-            {listErrors && <ErrorMessage>{listErrors?.message}</ErrorMessage>}
+            {listErrors && <ErrorMessage>{listErrors}</ErrorMessage>}
           </div>
         </div>
       )}

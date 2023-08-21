@@ -1,7 +1,10 @@
 .testlab-form {
   &__input,
   &__select {
-    padding-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-bottom: 2.5rem;
   }
   &__input-label {
     color: var(--fds-semantic-text-neutral-default);
@@ -18,5 +21,9 @@
     button + button {
       margin-left: 1rem;
     }
+  }
+
+  .asterisk-color {
+    color: var(--fds-semantic-text-danger-default);
   }
 }

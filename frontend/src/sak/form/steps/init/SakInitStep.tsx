@@ -3,15 +3,17 @@ import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { isNotDefined } from '@common/util/util';
 import { Button } from '@digdir/design-system-react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { CogIcon } from '@navikt/aksel-icons';
+import { sakInitValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
 import { SakFormBaseProps, SakFormState, saktypeOptions } from '@sak/types';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { User } from '../../../user/api/types';
-import SakStepFormWrapper from '../SakStepFormWrapper';
-import SakCrawlParameters from './loeysing/SakCrawlParameters';
+import { User } from '../../../../user/api/types';
+import SakStepFormWrapper from '../../SakStepFormWrapper';
+import SakCrawlParameters from './SakCrawlParameters';
 
 interface Props extends SakFormBaseProps {
   advisors: User[];
@@ -28,6 +30,7 @@ const SakInitStep = ({
 
   const formMethods = useForm<SakFormState>({
     defaultValues: maalingFormState,
+    resolver: zodResolver(sakInitValidationSchema),
   });
 
   const buttonStep: TestlabFormButtonStep = {
@@ -61,20 +64,14 @@ const SakInitStep = ({
           sublabel="Angi type sak du skal opprette"
           name="sakType"
           options={saktypeOptions}
-          formValidation={{
-            errorMessage: 'Type sak må vejast',
-            validation: { required: true },
-          }}
+          required
         />
         <TestlabFormInput<SakFormState>
           label="Tittel"
           sublabel="Angi sakstype og årstall. Ta med namn på verksemd
 når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
           name="navn"
-          formValidation={{
-            errorMessage: 'Tittel kan ikkje væra tom',
-            validation: { required: true, minLength: 1 },
-          }}
+          required
         />
         <TestlabFormSelect<SakFormState>
           label="Sakshandsamar"
@@ -84,10 +81,7 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
             label: a.name,
             value: String(a.id),
           }))}
-          formValidation={{
-            errorMessage: 'Sakshandsamar kan ikkje væra tom',
-            validation: { required: true, minLength: 1 },
-          }}
+          required
         />
         <TestlabFormInput<SakFormState>
           label="Saksnummer"
@@ -103,14 +97,7 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
         >
           Avansert
         </Button>
-        {displayAdvanced && (
-          <SakCrawlParameters
-            watch={formMethods.watch}
-            setError={formMethods.setError}
-            clearErrors={formMethods.clearErrors}
-            errors={formMethods.formState.errors}
-          />
-        )}
+        <SakCrawlParameters displayAdvanced={displayAdvanced} />
       </div>
     </SakStepFormWrapper>
   );

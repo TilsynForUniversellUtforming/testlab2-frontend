@@ -1,6 +1,6 @@
 .loeysing-form {
   width: 25%;
-  &__input {
-    padding-bottom: 2.5rem;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
