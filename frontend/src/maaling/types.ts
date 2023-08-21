@@ -17,7 +17,6 @@ export interface MaalingContext extends AppContext {
   regelsettList: TestRegelsett[];
   utvalList: Utval[];
   advisors: User[];
-  showMaalinger: boolean;
   handleStartCrawling: (maaling: Maaling) => void;
   handleStartTest: (maaling: Maaling) => void;
   handleStartPublish: (maaling: Maaling) => void;
