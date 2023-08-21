@@ -87,6 +87,7 @@ const TestingListApp = () => {
       }
 
       const doRestart = async () => {
+        setLoading(true);
         try {
           const restartCrawlingRequest: RestartRequest = {
             maalingId: maaling.id,
@@ -104,6 +105,7 @@ const TestingListApp = () => {
       };
 
       doRestart().finally(() => {
+        setLoading(false);
         setPollMaaling(true);
       });
     },
@@ -131,7 +133,7 @@ const TestingListApp = () => {
     } catch (e) {
       setError(toError(e, 'Kunne ikkje hente måling'));
     }
-  }, []);
+  }, [maaling]);
 
   useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 
@@ -203,7 +205,7 @@ const TestingListApp = () => {
         tableProps={{
           data: testResult,
           defaultColumns: testResultatColumns,
-          loading: contextLoading,
+          loading: loading,
           onSelectRows: setTestRowSelection,
           onClickRetry: doFetchData,
           displayError: { error },
