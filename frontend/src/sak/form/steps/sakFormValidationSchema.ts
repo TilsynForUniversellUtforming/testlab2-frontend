@@ -102,7 +102,6 @@ export const sakLoeysingValidationSchema = z
   })
   .refine(
     (data) => {
-      console.log(data);
       if (data.loeysingSource === 'utval' && !data.utval) {
         return false;
       }

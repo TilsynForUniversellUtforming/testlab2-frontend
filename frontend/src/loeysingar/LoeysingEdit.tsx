@@ -1,4 +1,4 @@
-import { AlertProps } from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import LoeysingFormSkeleton from '@loeysingar/form/skeleton/LoeysingFormSkeleton';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -21,7 +21,7 @@ const LoeysingEdit = () => {
   const { id } = useParams();
   const [loeysing, setLoeysing] = useState(getLoeysing(loeysingList, id));
   const [loading, setLoading] = useState(contextLoading);
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
 
   useEffect(() => {
     const foundLoeysing = getLoeysing(loeysingList, id);
@@ -48,22 +48,17 @@ const LoeysingEdit = () => {
             (l) => l.url === loeysing.url && l.orgnummer === loeysing.orgnummer
           );
           if (existingLoeysing) {
-            setAlert({
-              severity: 'danger',
-              message: `Løysing med orgnr. ${loeysing.orgnummer} og url ${loeysing.url} finst allereie`,
-              clearMessage: () => setAlert(undefined),
-            });
+            setAlert(
+              'danger',
+              `Løysing med orgnr. ${loeysing.orgnummer} og url ${loeysing.url} finst allereie`
+            );
             return;
           }
           try {
             setLoading(true);
             const updatedLoeysingList = await updateLoeysing(loeysing);
             setLoeysingList(updatedLoeysingList);
-            setAlert({
-              severity: 'success',
-              message: `${loeysing.namn} er endra`,
-              clearMessage: () => setAlert(undefined),
-            });
+            setAlert('success', `${loeysing.namn} er endra`);
           } catch (e) {
             setContextError(new Error('Kunne ikkje endre løysing'));
           }

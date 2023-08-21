@@ -1,6 +1,6 @@
-import { AlertProps } from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import { createTestregel } from '../api/testreglar-api';
@@ -17,7 +17,7 @@ const TestregelCreate = () => {
     setContextLoading,
     setContextError,
   }: TestregelContext = useOutletContext();
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
 
   const onSubmit = useCallback((testregelInit: Testregel) => {
     const testregel: TestregelCreateRequest = {
@@ -30,11 +30,10 @@ const TestregelCreate = () => {
       (tr) => tr.testregelNoekkel === testregel.testregelNoekkel
     );
     if (existingTestregel) {
-      setAlert({
-        severity: 'danger',
-        message: `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`,
-        clearMessage: () => setAlert(undefined),
-      });
+      setAlert(
+        'danger',
+        `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+      );
       return;
     }
 
@@ -43,11 +42,7 @@ const TestregelCreate = () => {
         setContextLoading(true);
         const data = await createTestregel(testregel);
         setTestregelList(data);
-        setAlert({
-          severity: 'success',
-          message: `${testregel.kravTilSamsvar} er oppretta`,
-          clearMessage: () => setAlert(undefined),
-        });
+        setAlert('success', `${testregel.kravTilSamsvar} er oppretta`);
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje lage testregel'));
       }

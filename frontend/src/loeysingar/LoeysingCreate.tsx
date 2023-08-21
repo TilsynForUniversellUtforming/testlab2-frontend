@@ -1,7 +1,7 @@
-import { AlertProps } from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
 import LoeysingFormSkeleton from '@loeysingar/form/skeleton/LoeysingFormSkeleton';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import { createLoeysing } from './api/loeysing-api';
@@ -17,7 +17,7 @@ const LoeysingCreate = () => {
     setLoeysingList,
     loeysingList,
   }: LoeysingContext = useOutletContext();
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
 
   const onSubmit = useCallback(
     (loeysingInit: LoeysingInit) => {
@@ -37,11 +37,10 @@ const LoeysingCreate = () => {
               l.orgnummer === loeysing.organisasjonsnummer
           );
           if (existingLoeysing) {
-            setAlert({
-              severity: 'danger',
-              message: `Løysing med orgnr. ${loeysing.organisasjonsnummer} og url ${loeysing.url} finst allereie`,
-              clearMessage: () => setAlert(undefined),
-            });
+            setAlert(
+              'danger',
+              `Løysing med orgnr. ${loeysing.organisasjonsnummer} og url ${loeysing.url} finst allereie`
+            );
             return;
           }
 
@@ -49,11 +48,7 @@ const LoeysingCreate = () => {
             setContextLoading(true);
             const updatedLoeysingList = await createLoeysing(loeysing);
             setLoeysingList(updatedLoeysingList);
-            setAlert({
-              severity: 'success',
-              message: `${loeysing.namn} er oppretta`,
-              clearMessage: () => setAlert(undefined),
-            });
+            setAlert('success', `${loeysing.namn} er oppretta`);
           } catch (e) {
             setContextError(toError(e, 'Kunne ikkje opprette løysing'));
           }

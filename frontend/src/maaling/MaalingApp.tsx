@@ -1,6 +1,5 @@
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
-import fetchFeatureToggles from '@common/features/hooks/fetchFeatureToggles';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/api/util';
 import { isDefined, isNotDefined } from '@common/util/util';
@@ -197,73 +196,71 @@ const MaalingApp = () => {
 
   useEffectOnce(() => {
     setLoading(true);
-    fetchFeatureToggles('maalinger', handleLoading).then(() => {
-      doFetchData()
-        .then((data) => {
-          if (data) {
-            if (data?.maalingList) {
-              setMaalingList(data.maalingList);
-            } else {
-              setError(new Error('Kunne ikkje hente liste med målingar'));
-            }
-
-            if (data?.loeysingList) {
-              setLoeysingList(data.loeysingList);
-            } else {
-              setError(new Error('Kunne ikkje hente loeysingar'));
-            }
-
-            if (data?.regelsett) {
-              setRegelsettList(data.regelsett);
-            } else {
-              setError(new Error('Kunne ikkje hente regelsett'));
-            }
-
-            if (data?.advisors) {
-              setAdvisorList(data.advisors);
-            } else {
-              setError(new Error('Kunne ikkje hente rådgivere'));
-            }
-
-            if (data?.verksemdList) {
-              setVerksemdList(data.verksemdList);
-            } else {
-              setError(new Error('Kunne ikkje hente verksemder'));
-            }
-
-            if (data?.utvalList) {
-              setUtvalList(data.utvalList);
-            } else {
-              setError(new Error('Kunne ikkje hente utval'));
-            }
-
-            setShowMaalinger(true);
-
-            if (id) {
-              doFetchMaaling()
-                .then((data) => {
-                  if (data) {
-                    setMaaling(data);
-                  } else {
-                    setError(new Error('Kunne ikkje hente måling'));
-                  }
-                  setShowMaalinger(true);
-                })
-                .catch((e) => {
-                  setError(toError(e, 'Kunne ikkje hente data'));
-                });
-            }
+    doFetchData()
+      .then((data) => {
+        if (data) {
+          if (data?.maalingList) {
+            setMaalingList(data.maalingList);
           } else {
-            setError(new Error('Kunne ikkje hente målingar'));
-            setLoading(false);
+            setError(new Error('Kunne ikkje hente liste med målingar'));
           }
-        })
-        .catch((e) => {
-          setError(toError(e, 'Kunne ikkje hente målingar'));
+
+          if (data?.loeysingList) {
+            setLoeysingList(data.loeysingList);
+          } else {
+            setError(new Error('Kunne ikkje hente loeysingar'));
+          }
+
+          if (data?.regelsett) {
+            setRegelsettList(data.regelsett);
+          } else {
+            setError(new Error('Kunne ikkje hente regelsett'));
+          }
+
+          if (data?.advisors) {
+            setAdvisorList(data.advisors);
+          } else {
+            setError(new Error('Kunne ikkje hente rådgivere'));
+          }
+
+          if (data?.verksemdList) {
+            setVerksemdList(data.verksemdList);
+          } else {
+            setError(new Error('Kunne ikkje hente verksemder'));
+          }
+
+          if (data?.utvalList) {
+            setUtvalList(data.utvalList);
+          } else {
+            setError(new Error('Kunne ikkje hente utval'));
+          }
+
+          setShowMaalinger(true);
+
+          if (id) {
+            doFetchMaaling()
+              .then((data) => {
+                if (data) {
+                  setMaaling(data);
+                } else {
+                  setError(new Error('Kunne ikkje hente måling'));
+                }
+                setShowMaalinger(true);
+                setLoading(false);
+              })
+              .catch((e) => {
+                setError(toError(e, 'Kunne ikkje hente data'));
+              });
+          }
+        } else {
+          setError(new Error('Kunne ikkje hente målingar'));
           setLoading(false);
-        })
-        .finally(() => setLoading(false));
-    });
+        }
+      })
+      .catch((e) => {
+        setError(toError(e, 'Kunne ikkje hente målingar'));
+        setLoading(false);
+      });
   });
 
   useEffect(() => {
@@ -283,11 +280,11 @@ const MaalingApp = () => {
             setError(new Error('Kunne ikkje hente måling'));
           }
           setShowMaalinger(true);
+          setLoading(false);
         })
         .catch((e) => {
           setError(toError(e, 'Kunne ikkje hente data'));
-        })
-        .finally(() => setLoading(false));
+        });
     }
   }, [id, error]);
 

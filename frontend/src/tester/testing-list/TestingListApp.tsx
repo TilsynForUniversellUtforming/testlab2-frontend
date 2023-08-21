@@ -1,4 +1,5 @@
-import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
+import AlertTimed from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
@@ -31,7 +32,7 @@ const TestingListApp = () => {
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState(contextLoading);
   const [pollMaaling, setPollMaaling] = useState(maaling?.status === 'testing');
@@ -96,11 +97,7 @@ const TestingListApp = () => {
           const restartedMaaling = await restart(restartCrawlingRequest);
           setMaaling(restartedMaaling);
           setTestResult(restartedMaaling.testResult);
-          setAlert({
-            severity: 'success',
-            message: 'Testing er starta på nytt',
-            clearMessage: () => setAlert(undefined),
-          });
+          setAlert('success', 'Testing er starta på nytt');
         } catch (e) {
           setError(toError(e, 'Noko gikk gale ved restart av sideutval'));
         }

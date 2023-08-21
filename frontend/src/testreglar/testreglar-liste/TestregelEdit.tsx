@@ -1,4 +1,4 @@
-import { AlertProps } from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -23,7 +23,7 @@ const TestregelEdit = () => {
   const { id } = useParams();
   const [testregel, setTestregel] = useState(getTestregel(testreglar, id));
   const [loading, setLoading] = useState(contextLoading);
-  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
+  const [alert, setAlert] = useAlert();
 
   useEffect(() => {
     const foundLoeysing = getTestregel(testreglar, id);
@@ -43,11 +43,10 @@ const TestregelEdit = () => {
       (tr) => tr.testregelNoekkel === testregel.testregelNoekkel
     );
     if (existingTestregel) {
-      setAlert({
-        severity: 'danger',
-        message: `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`,
-        clearMessage: () => setAlert(undefined),
-      });
+      setAlert(
+        'danger',
+        `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+      );
       return;
     }
 
@@ -57,11 +56,7 @@ const TestregelEdit = () => {
         setContextError(undefined);
         const data = await updateTestregel(testregel);
         setTestregelList(data);
-        setAlert({
-          severity: 'success',
-          message: `${testregel.kravTilSamsvar} er endra`,
-          clearMessage: () => setAlert(undefined),
-        });
+        setAlert('success', `${testregel.kravTilSamsvar} er endra`);
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje endre testregel'));
       }

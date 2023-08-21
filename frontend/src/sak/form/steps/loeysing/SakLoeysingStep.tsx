@@ -153,11 +153,13 @@ const SakLoeysingStep = ({
     if (typeof source === 'undefined') {
       throw new Error('Ugyldig kilde');
     }
-
-    clearErrors();
-    setValue('loeysingSource', source as LoeysingSource);
-    setValue('utval', undefined);
-    setValue('loeysingList', []);
+    const oldSource = getValues('loeysingSource');
+    if (oldSource !== source) {
+      clearErrors();
+      setValue('loeysingSource', source as LoeysingSource);
+      setValue('utval', undefined);
+      setValue('loeysingList', []);
+    }
   };
 
   const handleChangeUtval = (value?: string) => {
