@@ -7,8 +7,8 @@ import { User } from '../../user/api/types';
 import { SakFormBaseProps } from '../types';
 import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
+import SakInitStep from './steps/init/SakInitStep';
 import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
-import SakInitStep from './steps/SakInitStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
 export interface Props extends SakFormBaseProps {

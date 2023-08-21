@@ -1,14 +1,12 @@
-import { isFormError } from '@common/form/util';
+import { getErrorMessage } from '@common/form/util';
 import { ErrorMessage, TextField } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
-import { FormValidation } from './types';
-
 export interface EditProps<T extends object> {
   label: string;
   sublabel?: string;
-  formValidation?: FormValidation;
+  required?: boolean;
   hidden?: boolean;
   name: Path<T>;
   numeric?: boolean;
@@ -19,40 +17,37 @@ const TestlabFormInput = <T extends object>({
   label,
   sublabel,
   name,
-  formValidation,
+  required = false,
   numeric = false,
 }: EditProps<T>) => {
   const { control, formState } = useFormContext<T>();
-  const hasError = isFormError(formState, name);
+  const errorMessage = getErrorMessage(formState, name);
 
   return (
     <Controller
       name={name}
       control={control}
-      rules={formValidation?.validation}
       render={({ field: { onChange, onBlur, value } }) => (
         <div className="testlab-form__input">
           <label htmlFor={name} className="testlab-form__input-label">
             {label}
-            {formValidation?.validation?.required && <>*</>}
+            {required && <span className="asterisk-color">*</span>}
             {sublabel && (
               <div className="testlab-form__input-sub-label">{sublabel}</div>
             )}
           </label>
           <TextField
-            type="text"
+            type={numeric ? 'number' : 'text'}
             value={value}
             id={name}
-            isValid={!hasError}
+            isValid={!errorMessage}
             onChange={onChange}
             onBlur={onBlur}
             name={name}
             inputMode={numeric ? 'numeric' : 'text'}
           />
-          {hasError && formValidation?.errorMessage && (
-            <ErrorMessage size="small">
-              {formValidation?.errorMessage}
-            </ErrorMessage>
+          {errorMessage && (
+            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
           )}
         </div>
       )}

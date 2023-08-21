@@ -1,47 +1,60 @@
-import ErrorCard from '@common/error/ErrorCard';
+import { AlertProps } from '@common/alert/AlertTimed';
 import toError from '@common/error/util';
-import { Spinner } from '@digdir/design-system-react';
-import React, { useCallback } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
 import { createTestregel } from '../api/testreglar-api';
 import { Testregel, TestregelCreateRequest } from '../api/types';
 import { TestregelContext } from '../types';
-import TestreglarForm from './TestreglarForm';
+import TestregelFormSkeleton from './skeleton/TestregelFormSkeleton';
+import TestregelForm from './TestregelForm';
 
 const TestregelCreate = () => {
   const {
-    contextError,
     contextLoading,
     testreglar,
     setTestregelList,
     setContextLoading,
     setContextError,
   }: TestregelContext = useOutletContext();
-  const navigate = useNavigate();
+  const [alert, setAlert] = useState<AlertProps | undefined>(undefined);
 
-  const onSubmit = useCallback((testregel: Testregel) => {
-    const request: TestregelCreateRequest = {
-      krav: testregel.krav,
-      testregelNoekkel: testregel.testregelNoekkel,
-      kravTilSamsvar: testregel.kravTilSamsvar,
+  const onSubmit = useCallback((testregelInit: Testregel) => {
+    const testregel: TestregelCreateRequest = {
+      krav: testregelInit.krav,
+      testregelNoekkel: testregelInit.testregelNoekkel,
+      kravTilSamsvar: testregelInit.kravTilSamsvar,
     };
+
+    const existingTestregel = testreglar.find(
+      (tr) => tr.testregelNoekkel === testregel.testregelNoekkel
+    );
+    if (existingTestregel) {
+      setAlert({
+        severity: 'danger',
+        message: `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`,
+        clearMessage: () => setAlert(undefined),
+      });
+      return;
+    }
 
     const create = async () => {
       try {
-        const data = await createTestregel(request);
+        setContextLoading(true);
+        const data = await createTestregel(testregel);
         setTestregelList(data);
+        setAlert({
+          severity: 'success',
+          message: `${testregel.kravTilSamsvar} er oppretta`,
+          clearMessage: () => setAlert(undefined),
+        });
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje lage testregel'));
       }
     };
 
-    setContextLoading(true);
-    setContextError(undefined);
-
     create().finally(() => {
       setContextLoading(false);
-      navigate('..');
     });
   }, []);
 
@@ -53,20 +66,22 @@ const TestregelCreate = () => {
     );
 
   if (contextLoading) {
-    return <Spinner title="Hentar testreglar" variant={'default'} />;
-  }
-
-  if (contextError) {
-    return <ErrorCard error={contextError} buttonText="Tilbake" />;
+    return (
+      <TestregelFormSkeleton
+        heading="Lag ny testregel"
+        subHeading="Her kan du opprette ein ny testregel"
+      />
+    );
   }
 
   return (
-    <TestreglarForm
+    <TestregelForm
       heading="Lag ny testregel"
-      subHeading="Her kan du opprette ein ny testregel."
+      subHeading="Her kan du opprette ein ny testregel"
       onSubmit={onSubmit}
       krav={krav}
       kravDisabled={false}
+      alert={alert}
     />
   );
 };

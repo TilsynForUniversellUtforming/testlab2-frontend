@@ -1,4 +1,3 @@
-import useValidate, { testreglarMessage } from '@common/form/hooks/useValidate';
 import TestlabForm from '@common/form/TestlabForm';
 import {
   HeaderCheckbox,
@@ -31,17 +30,10 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
     refresh,
   }: TestregelContext = useOutletContext();
 
-  const { control, setValue, setError, clearErrors } = formMethods;
+  const { control, setValue } = formMethods;
 
   const onChangeRows = useCallback((rowSelection: Testregel[]) => {
     setValue('testregelList', rowSelection);
-    useValidate<Testregel, TestRegelsett>({
-      selection: rowSelection,
-      name: 'testregelList',
-      setError: setError,
-      clearErrors: clearErrors,
-      message: testreglarMessage,
-    });
   }, []);
 
   const selection = useWatch({
@@ -99,14 +91,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
         <div>
           <div>
             <div className="mb-3">
-              <TestlabForm.FormInput
-                label="Namn"
-                name="namn"
-                formValidation={{
-                  errorMessage: 'Namn kan ikkje vera tomt',
-                  validation: { required: true, minLength: 1 },
-                }}
-              />
+              <TestlabForm.FormInput label="Namn" name="namn" />
               <span>Valgte regelsett</span>
               <ol
                 className="testreglar-regelsett__list"

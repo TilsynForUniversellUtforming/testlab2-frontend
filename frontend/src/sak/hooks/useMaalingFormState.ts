@@ -17,6 +17,7 @@ const toSakFormState = (
         verksemd: verksemdList[0],
       }))
     : [],
+  loeysingSource: 'manuell',
   testregelList: maaling?.testregelList ? maaling.testregelList : [],
   maxLinksPerPage: maaling?.crawlParameters?.maxLinksPerPage
     ? maaling.crawlParameters.maxLinksPerPage
