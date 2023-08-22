@@ -23,10 +23,9 @@ export const extractDomain = (url?: string): string => {
 };
 
 export const parseNumberInput = (value: number | string): number => {
-  if (typeof value === 'string' && !isNaN(Number(value))) {
-    return Number(value);
-  } else if (typeof value === 'number') {
-    return value;
+  const numberValue = Number(value);
+  if (!isNaN(numberValue)) {
+    return numberValue;
   } else {
     throw Error('Ugyldig type');
   }

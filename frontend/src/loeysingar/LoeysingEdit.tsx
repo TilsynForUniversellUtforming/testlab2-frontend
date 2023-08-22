@@ -63,7 +63,7 @@ const LoeysingEdit = () => {
             setContextError(new Error('Kunne ikkje endre løysing'));
           }
         } else {
-          setContextError(new Error('Løysingparameter ikkje gylding'));
+          setContextError(new Error('Løysingparameter ikkje gyldig'));
         }
       };
 

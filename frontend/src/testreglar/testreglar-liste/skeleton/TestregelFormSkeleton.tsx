@@ -1,4 +1,5 @@
 import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkeleton';
+import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
 
 import { Testregel } from '../../api/types';
@@ -22,20 +23,16 @@ const TestregelFormSkeleton = ({ heading, subHeading }: Props) => (
         label="Namn"
         name="kravTilSamsvar"
         required
-        width={210}
       />
       <TestlabFormFieldSkeleton<Testregel>
         label="Testregel test-id (unik)"
         name="testregelNoekkel"
         required
-        width={210}
       />
-      <TestlabFormFieldSkeleton<Testregel>
-        label="Krav"
-        name="krav"
-        required
-        width={210}
-      />
+      <TestlabFormFieldSkeleton<Testregel> label="Krav" name="krav" required />
+      <div className="loeysing-form__submit">
+        <TestlabForm.FormButtons loading />
+      </div>
     </form>
   </div>
 );
