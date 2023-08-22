@@ -42,7 +42,7 @@ class TestregelResource(
   @GetMapping("regelsett")
   fun listRegelsett(): List<Regelsett> =
       runCatching {
-            val testreglar = listTestreglar()
+            val testreglar = listTestreglar().filter { it.id <= 35 }
             listOf(Regelsett(1, "Standard regelsett", testreglar))
           }
           .getOrElse {
