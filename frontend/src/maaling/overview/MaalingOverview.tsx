@@ -56,10 +56,6 @@ const MaalingOverview = () => {
 
   useInterval(() => doPollMaaling(), pollMaaling ? 15000 : null);
 
-  if (contextLoading || (!maaling && id)) {
-    return <MaalingSkeleton />;
-  }
-
   if (contextError) {
     return (
       <ErrorCard
@@ -68,7 +64,11 @@ const MaalingOverview = () => {
         buttonText="Prøv igjen"
       />
     );
-  } else if (!maaling || !id) {
+  }
+  if (contextLoading || (!maaling && id)) {
+    return <MaalingSkeleton />;
+  }
+  if (!maaling || !id) {
     return (
       <ErrorCard
         error={new Error('Finner ikkje måling')}
