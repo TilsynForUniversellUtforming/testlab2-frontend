@@ -1,3 +1,5 @@
+import './testlab-form-skeleton.scss';
+
 import { EditProps } from '@common/form/TestlabFormInput';
 import Skeleton from 'react-loading-skeleton';
 
@@ -11,7 +13,7 @@ const TestlabFormFieldSkeleton = <T extends object>({
   sublabel,
   name,
   required = false,
-  width = 145,
+  width,
   height = 35,
 }: Props<T>) => (
   <div className="testlab-form__input">
@@ -23,7 +25,11 @@ const TestlabFormFieldSkeleton = <T extends object>({
       )}
     </label>
     <div id={name}>
-      <Skeleton height={height} width={width} />
+      <Skeleton
+        height={height}
+        width={width}
+        className="skeleton-input-field"
+      />
     </div>
   </div>
 );

@@ -15,6 +15,15 @@ export type TestlabFormButtonStep = {
 export interface ButtonProps {
   step?: TestlabFormButtonStep;
   className?: string;
+  loading?: boolean;
+}
+
+export interface FormButtonProps {
+  textBack: string;
+  textNext: string;
+  onClickBack: () => void;
+  className?: string;
+  loading?: boolean;
 }
 
 const FormButton = ({
@@ -22,71 +31,49 @@ const FormButton = ({
   textNext,
   onClickBack,
   className,
-}: {
-  textBack: string;
-  textNext: string;
-  onClickBack: () => void;
-  className?: string;
-}) => (
+  loading,
+}: FormButtonProps) => (
   <div className={classNames('testlab-form__navigation-buttons', className)}>
     <Button type="button" variant={ButtonVariant.Outline} onClick={onClickBack}>
       {textBack}
     </Button>
-    <Button type="submit">{textNext}</Button>
+    <Button type={loading ? 'button' : 'submit'} aria-disabled={loading}>
+      {textNext}
+    </Button>
   </div>
 );
 
-const TestlabFormButtons = ({ step, className }: ButtonProps) => {
+const TestlabFormButtons = ({ step, className, loading }: ButtonProps) => {
   const navigate = useNavigate();
-
   const defaultStep: TestlabFormButtonStep = {
     stepType: 'Submit',
     onClickBack: () => navigate('..'),
   };
+  const buttonStep = step || defaultStep;
 
-  const buttonStep = step ? step : defaultStep;
-  const { stepType, onClickBack } = buttonStep;
+  const buttonTexts: Record<StepType, { back: string; next: string }> = {
+    Start: { back: 'Avbryt', next: 'Neste' },
+    Middle: { back: 'Tilbake', next: 'Neste' },
+    Submit: { back: 'Tilbake', next: 'Lagre' },
+    Custom: {
+      back: step?.customBackText || 'Tilbake',
+      next: step?.customNextText || 'Lagre',
+    },
+  };
 
-  switch (stepType) {
-    case 'Start':
-      return (
-        <FormButton
-          textBack="Avbryt"
-          textNext="Neste"
-          onClickBack={onClickBack}
-          className={className}
-        />
-      );
-    case 'Middle':
-      return (
-        <FormButton
-          textBack="Tilbake"
-          textNext="Neste"
-          onClickBack={onClickBack}
-          className={className}
-        />
-      );
-    case 'Submit':
-      return (
-        <FormButton
-          textBack="Tilbake"
-          textNext="Lagre"
-          onClickBack={onClickBack}
-          className={className}
-        />
-      );
-    case 'Custom':
-      return (
-        <FormButton
-          textBack={step?.customBackText ? step.customBackText : 'Tilbake'}
-          textNext={step?.customNextText ? step.customNextText : 'Lagre'}
-          onClickBack={onClickBack}
-          className={className}
-        />
-      );
-    default:
-      throw new Error('Ulovlig tilstand');
+  if (!buttonTexts[buttonStep.stepType]) {
+    throw new Error(`Ugylding type ${buttonStep.stepType}`);
   }
+
+  return (
+    <FormButton
+      textBack={buttonTexts[buttonStep.stepType].back}
+      textNext={buttonTexts[buttonStep.stepType].next}
+      onClickBack={buttonStep.onClickBack}
+      className={className}
+      loading={loading}
+    />
+  );
 };
 
 export default TestlabFormButtons;

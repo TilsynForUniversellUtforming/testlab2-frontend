@@ -1,4 +1,5 @@
 import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkeleton';
+import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
 import { LoeysingInit } from '@loeysingar/api/types';
 
@@ -22,7 +23,6 @@ const LoeysingFormSkeleton = ({ heading, subHeading }: Props) => (
           label="Namn"
           name="namn"
           required
-          width={210}
         />
       </div>
       <div className="loeysing-form__input">
@@ -30,7 +30,6 @@ const LoeysingFormSkeleton = ({ heading, subHeading }: Props) => (
           label="Url"
           name="url"
           required
-          width={210}
         />
       </div>
       <div className="loeysing-form__input">
@@ -38,8 +37,10 @@ const LoeysingFormSkeleton = ({ heading, subHeading }: Props) => (
           label="Organisasjonsnummer"
           name="organisasjonsnummer"
           required
-          width={210}
         />
+      </div>
+      <div className="loeysing-form__submit">
+        <TestlabForm.FormButtons loading />
       </div>
     </form>
   </div>
