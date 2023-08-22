@@ -52,6 +52,7 @@ const SideutvalApp = () => {
   }, [maaling]);
 
   const doFetchData = useCallback(async () => {
+    setError(undefined);
     try {
       if (id && !contextLoading && maaling && maaling.status === 'crawling') {
         const refreshedMaaling = await fetchMaaling(Number(id));
