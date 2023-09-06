@@ -80,6 +80,7 @@ export const getCrawlColumns = (
     meta: {
       select: true,
     },
+    filterFn: 'exact',
   },
 ];
 
