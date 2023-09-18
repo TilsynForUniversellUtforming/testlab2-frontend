@@ -45,7 +45,10 @@ const LoeysingEdit = () => {
           };
 
           const existingLoeysing = loeysingList.find(
-            (l) => l.url === loeysing.url && l.orgnummer === loeysing.orgnummer
+            (l) =>
+              l.id !== loeysing.id &&
+              l.url === loeysing.url &&
+              l.orgnummer === loeysing.orgnummer
           );
           if (existingLoeysing) {
             setAlert(
