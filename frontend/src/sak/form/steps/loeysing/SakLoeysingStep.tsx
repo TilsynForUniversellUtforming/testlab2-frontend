@@ -192,6 +192,7 @@ const SakLoeysingStep = ({
           description="Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."
           name="useUtval"
           onChange={handleChangeSource}
+          value={source}
         >
           <Radio value="utval">Bruk eit utval</Radio>
           <Radio value="manuell">Velg løysingar sjølv</Radio>
