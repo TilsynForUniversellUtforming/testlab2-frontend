@@ -1,4 +1,5 @@
-import { Button, ButtonVariant } from '@digdir/design-system-react';
+import { ButtonVariant } from '@common/types';
+import { Button } from '@digdir/design-system-react';
 import classNames from 'classnames';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

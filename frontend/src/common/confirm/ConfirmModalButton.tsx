@@ -1,4 +1,5 @@
-import { Button, ButtonColor } from '@digdir/design-system-react';
+import { ButtonColor, ButtonColorType } from '@common/types';
+import { Button } from '@digdir/design-system-react';
 import React from 'react';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
@@ -12,7 +13,7 @@ export interface ConfirmModalProps {
   onConfirm: () => void;
   disabled?: boolean;
   icon?: JSX.Element;
-  color?: ButtonColor;
+  color?: ButtonColorType;
   buttonVariant?: ButtonVariant;
 }
 

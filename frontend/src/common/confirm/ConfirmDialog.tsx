@@ -1,6 +1,7 @@
 import './confirm-dialog.scss';
 
-import { Button, ButtonVariant } from '@digdir/design-system-react';
+import { ButtonVariant } from '@common/types';
+import { Button } from '@digdir/design-system-react';
 import React from 'react';
 
 export interface Props {

@@ -1,6 +1,6 @@
 import './navigation.scss';
 
-import { ButtonColor, ButtonVariant } from '@digdir/design-system-react';
+import { ButtonColor, ButtonVariant } from '@common/types';
 import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 
