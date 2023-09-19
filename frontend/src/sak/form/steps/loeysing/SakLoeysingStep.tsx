@@ -5,8 +5,8 @@ import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
   ErrorMessage,
-  FieldSet,
-  RadioGroup,
+  Fieldset,
+  Radio,
   Select,
   SingleSelectOption,
 } from '@digdir/design-system-react';
@@ -187,20 +187,18 @@ const SakLoeysingStep = ({
       buttonStep={buttonStep}
     >
       <div className="sak-loeysing__utval">
-        <RadioGroup
+        <Radio.Group
           legend="Vil du bruke eit ferdig utval?"
           description="Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."
           name="useUtval"
-          items={[
-            { label: 'Bruk eit utval', value: 'utval' },
-            { label: 'Velg løysingar sjølv', value: 'manuell' },
-          ]}
-          value={source}
           onChange={handleChangeSource}
-        />
+        >
+          <Radio value="utval">Bruk eit utval</Radio>
+          <Radio value="manuell">Velg løysingar sjølv</Radio>
+        </Radio.Group>
 
         {source === 'utval' && (
-          <FieldSet legend="Velg eit utval">
+          <Fieldset legend="Velg eit utval">
             {utvalList.length === 0 && (
               <p>
                 <em>
@@ -209,17 +207,19 @@ const SakLoeysingStep = ({
                 </em>
               </p>
             )}
-            <RadioGroup
+            <Radio.Group
               name="chooseUtval"
               value={String(getValues('utval')?.id)}
-              items={utvalList.map((u) => ({
-                label: u.namn,
-                value: String(u.id),
-              }))}
               onChange={handleChangeUtval}
               error={listErrors && <>{listErrors}</>}
-            />
-          </FieldSet>
+            >
+              {utvalList.map((u) => (
+                <Radio value={String(u.id)} key={String(u.id)}>
+                  {u.namn}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </Fieldset>
         )}
       </div>
       {source === 'manuell' && (

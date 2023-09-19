@@ -1,4 +1,5 @@
-import { Button, ButtonColor } from '@digdir/design-system-react';
+import { ButtonColor } from '@common/types';
+import { Button } from '@digdir/design-system-react';
 import {
   ArrowCirclepathIcon,
   BarChartIcon,

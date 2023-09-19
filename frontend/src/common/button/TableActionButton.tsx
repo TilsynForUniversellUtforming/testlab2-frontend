@@ -1,4 +1,4 @@
-import { ButtonColor } from '@digdir/design-system-react';
+import { ButtonColor } from '@common/types';
 import React from 'react';
 
 import { AppRoute } from '../appRoutes';

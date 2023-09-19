@@ -12,3 +12,22 @@ export type Option = {
 };
 
 export type Severity = 'info' | 'warning' | 'success' | 'danger';
+
+export const ButtonColor = {
+  Primary: 'primary',
+  Secondary: 'secondary',
+  Success: 'success',
+  Danger: 'danger',
+  Inverted: 'inverted',
+} as const;
+
+export type ButtonColorType = (typeof ButtonColor)[keyof typeof ButtonColor];
+
+export const ButtonVariant = {
+  Filled: 'filled',
+  Outline: 'outline',
+  Quiet: 'quiet',
+} as const;
+
+export type ButtonVariantType =
+  (typeof ButtonVariant)[keyof typeof ButtonVariant];
