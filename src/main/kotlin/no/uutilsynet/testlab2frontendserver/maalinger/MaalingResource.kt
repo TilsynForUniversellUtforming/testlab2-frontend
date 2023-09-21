@@ -4,6 +4,7 @@ import java.net.URI
 import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.Aggregeringstype
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlUrl
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
@@ -12,12 +13,13 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.maalinger.dummy.AggregertResultatDTODummy.generateAggregertResultatDTODummyList
 import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -73,7 +75,7 @@ class MaalingResource(
                 when (maalingDTO.status) {
                   MaalingStatus.testing,
                   MaalingStatus.testing_ferdig -> {
-                    generateAggregertResultatDTODummyList(maalingDTO)
+                    getAggregering(maalingId, Aggregeringstype.testresultat)
                   }
                   else -> emptyList()
                 }
@@ -166,15 +168,20 @@ class MaalingResource(
   @GetMapping("{maalingId}/testresultat/aggregering")
   fun getAggregering(
       @PathVariable maalingId: Int,
+      @RequestParam aggregeringstype: Aggregeringstype
   ): List<AggregertResultatDTO> {
-    //    logger.debug("Henter aggregering for måling med id $maalingId")
-    //    val url = "$maalingUrl/$maalingId/testresultat/aggregering"
-    //    return runCatching { restTemplate.getList<AggregertResultatDTO>(url) }
-    //        .getOrElse {
-    //          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
-    //          throw RuntimeException("Klarte ikkje å hente aggregering", it)
-    //        }
-    return emptyList()
+    logger.debug("Henter aggregering for måling med id $maalingId")
+    val url = "$maalingUrl/$maalingId/testresultat/aggregering?aggregeringstype=$aggregeringstype"
+    val aggregatedType =
+        object : ParameterizedTypeReference<Map<String, List<AggregertResultatDTO>>>() {}
+    return runCatching {
+          val map = restTemplate.exchange(url, HttpMethod.GET, null, aggregatedType).body
+          map?.values?.flatten() ?: throw RuntimeException("Response body for aggregering er tom")
+        }
+        .getOrElse {
+          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
+          throw RuntimeException("Klarte ikkje å hente aggregering", it)
+        }
   }
 
   @PutMapping("{maalingId}/restart")
