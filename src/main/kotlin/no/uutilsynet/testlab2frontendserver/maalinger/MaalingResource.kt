@@ -72,12 +72,10 @@ class MaalingResource(
           MaalingStatus.planlegging -> maalingDTO.toMaaling()
           else -> {
             val aggregatedTestresult =
-                when (maalingDTO.status) {
-                  MaalingStatus.testing,
-                  MaalingStatus.testing_ferdig -> {
-                    getAggregering(maalingId, Aggregeringstype.testresultat)
-                  }
-                  else -> emptyList()
+                if (maalingDTO.status == MaalingStatus.testing_ferdig) {
+                  getAggregering(maalingId, Aggregeringstype.testresultat)
+                } else {
+                  emptyList()
                 }
 
             maalingDTO.toMaaling(getTestregelListForMaaling(maalingDTO.id), aggregatedTestresult)

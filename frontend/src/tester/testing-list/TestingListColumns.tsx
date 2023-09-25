@@ -41,7 +41,7 @@ export const getTestingListColumns = (): Array<ColumnDef<TestResult>> => [
       <LoadingBar
         percentage={row.original.compliancePercent}
         tooltip={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
-        hide={['feila', 'ikkje_starta'].includes(row.original.tilstand)}
+        show={row.original.tilstand === 'ferdig'}
       />
     ),
     header: () => <>Resultat</>,
