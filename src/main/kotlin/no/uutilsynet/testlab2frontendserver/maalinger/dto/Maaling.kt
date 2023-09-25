@@ -91,6 +91,7 @@ fun mergeLists(
               fleireSuksesskriterium = result.fleireSuksesskriterium,
               talElementSamsvar = result.talElementSamsvar,
               talElementBrot = result.talElementBrot,
+              talElementVarsel = result.talElementVarsel,
               talSiderSamsvar = result.talSiderSamsvar,
               talSiderBrot = result.talSiderBrot,
               talSiderIkkjeForekomst = result.talSiderIkkjeForekomst,
