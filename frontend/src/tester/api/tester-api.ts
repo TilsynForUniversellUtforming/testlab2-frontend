@@ -1,22 +1,15 @@
+import { responseToJson } from '@common/util/api/util';
+
 import { TestResultat } from './types';
 
 const fetchTestResultatLoeysing = async (
   id: number,
   loeysingId: number
-): Promise<TestResultat[]> => {
-  const response = await fetch(
-    `/api/v1/testing/${id}/resultat?loeysingId=${loeysingId}`,
-    {
-      method: 'GET',
-    }
+): Promise<TestResultat[]> =>
+  await fetch(`/api/v1/testing/${id}/resultat?loeysingId=${loeysingId}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente løysingar')
   );
-
-  if (response.ok) {
-    return response.json();
-  } else {
-    const message = await response.text();
-    throw Error(message);
-  }
-};
 
 export default fetchTestResultatLoeysing;
