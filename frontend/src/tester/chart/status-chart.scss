@@ -1,4 +1,32 @@
 .status-chart {
-  display: flex;
-  justify-content: center;
+  max-width: 50%;
+  margin-bottom: 2rem;
+
+  &__heading {
+    padding-bottom: 0.5rem;
+  }
+
+  &__progress-element {
+    margin-bottom: 0.5rem;
+  }
+
+  &__bar {
+    height: 1rem;
+
+    &--ikke-startet {
+      background-color: #68707c;
+    }
+
+    &--underveis {
+      background-color: #0062ba;
+    }
+
+    &--ferdig {
+      background-color: #118849;
+    }
+
+    &--feilet {
+      background-color: #e02e49;
+    }
+  }
 }
