@@ -13,6 +13,10 @@
   &__bar {
     height: 1rem;
 
+    &--ikke-startet {
+      background-color: #68707c;
+    }
+
     &--underveis {
       background-color: #0062ba;
     }
