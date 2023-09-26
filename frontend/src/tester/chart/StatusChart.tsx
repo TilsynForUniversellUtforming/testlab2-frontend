@@ -1,9 +1,6 @@
 import './status-chart.scss';
 
-import Highcharts from 'highcharts';
-import AccessibilityModule from 'highcharts/modules/accessibility';
-import HighchartsReact from 'highcharts-react-official';
-import React from 'react';
+import { Heading } from '@digdir/design-system-react';
 
 export type ChartStatus = {
   statusCount: number;
@@ -23,74 +20,43 @@ const StatusChart = ({
   finishedStatus,
   errorStatus,
 }: ChartProps) => {
-  AccessibilityModule(Highcharts);
+  const total =
+    pendingStatus.statusCount +
+    runningStatus.statusCount +
+    finishedStatus.statusCount +
+    errorStatus.statusCount;
 
-  const options: Highcharts.Options = {
-    chart: {
-      type: 'column',
-    },
-    title: {
-      text: 'Status',
-      align: 'left',
-    },
-    xAxis: {
-      categories: ['Status'],
-      crosshair: true,
-      accessibility: {
-        description: 'Status',
-      },
-    },
-    yAxis: {
-      min: 0,
-      title: {
-        text: 'Løysingar ',
-      },
-      tickInterval: 1,
-    },
-    tooltip: {
-      valueSuffix: ' løysingar',
-    },
-    plotOptions: {
-      column: {
-        pointPadding: 0.2,
-        borderWidth: 0,
-      },
-    },
-    series: [
-      {
-        type: 'column',
-        name: pendingStatus.statusText,
-        color: '#68707c',
-        data: [{ y: pendingStatus.statusCount }],
-      },
-      {
-        type: 'column',
-        name: runningStatus.statusText,
-        color: '#0062ba',
-        data: [{ y: runningStatus.statusCount }],
-      },
-      {
-        type: 'column',
-        name: finishedStatus.statusText,
-        color: '#118849',
-        data: [{ y: finishedStatus.statusCount }],
-      },
-      {
-        type: 'column',
-        name: errorStatus.statusText,
-        color: '#e02e49',
-        data: [{ y: errorStatus.statusCount }],
-      },
-    ],
-    accessibility: {
-      enabled: true,
-      description: `Eit kolonnediagram som representerer statusen til målingar med kategoriar for ${runningStatus.statusText}, ${finishedStatus.statusText} og ${errorStatus.statusText}.`,
-    },
-  };
+  const percentFinished = (x: number) => (x / total) * 100;
+
+  const ProgressElement = (props: {
+    chartStatus: ChartStatus;
+    variant: 'ikke-startet' | 'underveis' | 'ferdig' | 'feilet';
+  }) => (
+    <div className="status-chart__progress-element">
+      <Heading size="small">
+        {props.chartStatus.statusText} ({props.chartStatus.statusCount} av{' '}
+        {total})
+      </Heading>
+      <div
+        className={'status-chart__bar status-chart__bar--' + props.variant}
+        style={{ width: `${percentFinished(props.chartStatus.statusCount)}%` }}
+      ></div>
+    </div>
+  );
 
   return (
     <div className="status-chart">
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <Heading size="large" className="status-chart__heading">
+        Status
+      </Heading>
+      {pendingStatus.statusCount > 0 && (
+        <ProgressElement chartStatus={pendingStatus} variant="ikke-startet" />
+      )}
+      <ProgressElement chartStatus={runningStatus} variant="underveis" />
+      <ProgressElement chartStatus={finishedStatus} variant="ferdig" />
+      {errorStatus.statusCount > 0 && (
+        <ProgressElement chartStatus={errorStatus} variant="feilet" />
+      )}
     </div>
   );
 };
