@@ -30,7 +30,7 @@ const StatusChart = ({
 
   const ProgressElement = (props: {
     chartStatus: ChartStatus;
-    variant: 'crawler' | 'ferdig' | 'feilet';
+    variant: 'underveis' | 'ferdig' | 'feilet';
   }) => (
     <div className="status-chart__progress-element">
       <Heading size="small">
@@ -49,7 +49,7 @@ const StatusChart = ({
       <Heading size="large" className="status-chart__heading">
         Status
       </Heading>
-      <ProgressElement chartStatus={runningStatus} variant="crawler" />
+      <ProgressElement chartStatus={runningStatus} variant="underveis" />
       <ProgressElement chartStatus={finishedStatus} variant="ferdig" />
       {errorStatus.statusCount > 0 && (
         <ProgressElement chartStatus={errorStatus} variant="feilet" />
