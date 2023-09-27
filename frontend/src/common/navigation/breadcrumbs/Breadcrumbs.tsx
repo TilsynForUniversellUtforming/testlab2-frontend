@@ -1,34 +1,21 @@
 import './breadcrumbs.scss';
 
+import { PathName } from '@common/app-container/types';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
-import { Link, useMatches } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-type Handle = {
-  name: string;
-};
+export interface Props {
+  crumbs: PathName[];
+}
 
-type Breadcrumb = {
-  path: string;
-  breadcrumbName: string;
-};
-
-const Breadcrumbs = () => {
-  const matches = useMatches();
-
-  const crumbs: Breadcrumb[] = matches
-    .filter((match) => match.handle)
-    .map((match) => ({
-      path: match.pathname,
-      breadcrumbName: (match.handle as Handle).name,
-    }));
-
+const Breadcrumbs = ({ crumbs }: Props) => {
   if (crumbs.length < 2) {
     return null;
   }
 
   return (
     <div className="breadcrumbs">
-      {crumbs.map(({ path, breadcrumbName }, i) => (
+      {crumbs.map(({ path, name }, i) => (
         <div className="breadcrumbs__crumb" key={`${path}_${i}`}>
           {i !== 0 && (
             <ChevronRightIcon
@@ -37,11 +24,7 @@ const Breadcrumbs = () => {
             />
           )}
           <span className="breadcrumbs__crumb-text">
-            {i === crumbs.length - 1 ? (
-              breadcrumbName
-            ) : (
-              <Link to={path}>{breadcrumbName}</Link>
-            )}
+            {i === crumbs.length - 1 ? name : <Link to={path}>{name}</Link>}
           </span>
         </div>
       ))}

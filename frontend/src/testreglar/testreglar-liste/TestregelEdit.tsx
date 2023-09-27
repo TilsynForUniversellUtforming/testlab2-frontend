@@ -1,5 +1,7 @@
 import useAlert from '@common/alert/useAlert';
+import appRoutes from '@common/appRoutes';
 import toError from '@common/error/util';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
@@ -32,6 +34,12 @@ const TestregelEdit = () => {
       setLoading(false);
     }
   }, [testreglar]);
+
+  useContentDocumentTitle(
+    appRoutes.TESTREGEL_EDIT.navn,
+    contextLoading,
+    testregel?.kravTilSamsvar
+  );
 
   const krav = testreglar
     .map((tr) => tr.krav)

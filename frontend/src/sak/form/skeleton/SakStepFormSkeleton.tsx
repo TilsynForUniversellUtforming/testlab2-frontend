@@ -1,6 +1,6 @@
+import { SakStep } from '@sak/types';
 import Skeleton from 'react-loading-skeleton';
 
-import { SakStep } from '../../types';
 import StepperIcon from '../StepperIcon';
 
 export interface Props {
@@ -10,7 +10,7 @@ export interface Props {
 const SakStepFormSkeleton = ({ steps }: Props) => (
   <div className="sak">
     <div className="testlab-form">
-      <div className="sak-stepper" aria-hidden="true">
+      <div className="sak-stepper">
         {steps.map((step) => {
           return (
             <div className="sak-stepper__button" key={step.index}>

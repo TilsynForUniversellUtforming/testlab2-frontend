@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@common/form/util';
-import { ErrorMessage, TextField } from '@digdir/design-system-react';
+import { ErrorMessage, Textfield } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
@@ -36,19 +36,20 @@ const TestlabFormInput = <T extends object>({
               <div className="testlab-form__input-sub-label">{sublabel}</div>
             )}
           </label>
-          <TextField
+          <Textfield
             type={numeric ? 'number' : 'text'}
             value={value}
             id={name}
-            isValid={!errorMessage}
+            error={
+              errorMessage && (
+                <ErrorMessage size="small">{errorMessage}</ErrorMessage>
+              )
+            }
             onChange={onChange}
             onBlur={onBlur}
             name={name}
             inputMode={numeric ? 'numeric' : 'text'}
           />
-          {errorMessage && (
-            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-          )}
         </div>
       )}
     />

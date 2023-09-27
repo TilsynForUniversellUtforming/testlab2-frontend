@@ -14,7 +14,7 @@ const Stepper = ({ formStepState }: Props) => {
   const { steps, nextStepIdx, goToStep } = formStepState;
 
   return (
-    <div className="sak-stepper" aria-hidden="true">
+    <div className="sak-stepper">
       {steps.map((step) => {
         const active = step.index < nextStepIdx;
 

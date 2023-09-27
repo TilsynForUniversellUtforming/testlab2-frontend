@@ -47,17 +47,18 @@ const AppTitle = ({
   loading,
 }: AppTitleProps) => {
   const appHeading = loading || isNotDefined(heading) ? 'Laster...' : heading;
+  const appSubHeading = loading ? undefined : subHeading;
 
   return (
     <div className="app-title">
       <Heading
         className="app-title__heading"
         size={size ?? 'xlarge'}
-        spacing={!subHeading}
+        spacing={!appSubHeading}
       >
         {appHeading}
       </Heading>
-      <SubHeading subHeading={subHeading} linkPath={linkPath} />
+      <SubHeading subHeading={appSubHeading} linkPath={linkPath} />
     </div>
   );
 };
