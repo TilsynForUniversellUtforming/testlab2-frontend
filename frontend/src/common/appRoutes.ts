@@ -203,7 +203,7 @@ const LOEYSING_CREATE = {
   parentRoute: LOEYSING_ROOT,
 };
 const LOEYSING_EDIT = {
-  navn: 'Endre løysingar',
+  navn: 'Endre løysing',
   path: idPath,
   parentRoute: LOEYSING_ROOT,
 };

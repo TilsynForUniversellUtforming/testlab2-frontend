@@ -1,13 +1,12 @@
 import './index.scss';
 import 'react-router/dist';
 
+import AppContainer from '@common/app-container/AppContainer';
 import React from 'react';
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import appRoutes, { createPath, idPath } from './common/appRoutes';
 import AppErrorBoundary from './common/error-boundary/AppErrorBoundary';
-import Breadcrumbs from './common/navigation/breadcrumbs/Breadcrumbs';
-import Navigation from './common/navigation/Navigation';
 import Page404 from './common/Page404';
 import KravApp from './krav/KravApp';
 import LoeysingList from './loeysingar/list/LoeysingList';
@@ -37,16 +36,6 @@ import TestregelEdit from './testreglar/testreglar-liste/TestregelEdit';
 import TestregelList from './testreglar/testreglar-liste/TestregelList';
 import TestreglarApp from './testreglar/TestreglarApp';
 import VerksemderApp from './verksemder/VerksemderApp';
-
-const AppContainer = () => (
-  <>
-    <Navigation />
-    <Breadcrumbs />
-    <div className="app-container">
-      <Outlet />
-    </div>
-  </>
-);
 
 const App = () => {
   const router = createBrowserRouter([

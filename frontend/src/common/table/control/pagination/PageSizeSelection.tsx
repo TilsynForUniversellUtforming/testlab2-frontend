@@ -12,12 +12,17 @@ const PageSizeSelection = <T extends object>({
     value: pageSize,
   }));
 
+  const tableId = table
+    .getFlatHeaders()
+    .map((h) => h.id)
+    .join();
+
   return (
     <div className="pagination-container__pagination-select-wrapper">
-      <label htmlFor="pagination-select">Rader per side</label>
+      <label htmlFor={tableId}>Rader per side</label>
       <div className="pagination-select">
         <Select
-          inputId="pagination-select"
+          inputId={tableId}
           value={String(table.getState().pagination.pageSize)}
           onChange={(size) => {
             table.setPageSize(Number(size));

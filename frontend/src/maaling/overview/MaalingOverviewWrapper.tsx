@@ -1,5 +1,6 @@
 import AppTitle from '@common/app-title/AppTitle';
 import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import TestlabTable from '@common/table/TestlabTable';
 import { Tabs } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
@@ -28,6 +29,12 @@ const MaalingOverviewWrapper = () => {
   const openInNewTab = (url: string) => {
     window.open(url, '_blank', 'noreferrer');
   };
+
+  useContentDocumentTitle(
+    appRoutes.MAALING.navn,
+    contextLoading,
+    maaling?.navn
+  );
 
   return (
     <>

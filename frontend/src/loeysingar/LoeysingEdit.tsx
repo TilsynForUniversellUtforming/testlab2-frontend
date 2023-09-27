@@ -1,4 +1,6 @@
 import useAlert from '@common/alert/useAlert';
+import appRoutes from '@common/appRoutes';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import LoeysingFormSkeleton from '@loeysingar/form/skeleton/LoeysingFormSkeleton';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -30,6 +32,12 @@ const LoeysingEdit = () => {
       setLoading(false);
     }
   }, [loeysingList]);
+
+  useContentDocumentTitle(
+    appRoutes.LOEYSING_EDIT.navn,
+    contextLoading,
+    loeysing?.namn
+  );
 
   const onSubmit = useCallback(
     (loeysingInit: LoeysingInit) => {

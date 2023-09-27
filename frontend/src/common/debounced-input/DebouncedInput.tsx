@@ -1,6 +1,6 @@
 import './debounced-input.scss';
 
-import { TextField } from '@digdir/design-system-react';
+import { Textfield } from '@digdir/design-system-react';
 import React, { useEffect, useState } from 'react';
 
 export type Props = {
@@ -45,7 +45,7 @@ const DebouncedInput = ({
           {label}
         </label>
       )}
-      <TextField
+      <Textfield
         label={labelTopPlacement ? label : undefined}
         type="text"
         value={String(value)}
