@@ -1,5 +1,6 @@
 import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import { isNotDefined } from '@common/util/util';
 import { restart } from '@maaling/api/maaling-api';
@@ -27,13 +28,13 @@ const TestResultListApp = () => {
 
   const {
     contextError,
-    contextLoading,
+    loadingMaaling,
     maaling,
     setMaaling,
     refreshMaaling,
   }: MaalingContext = useOutletContext();
 
-  const [loading, setLoading] = useState(contextLoading);
+  const [loading, setLoading] = useState(loadingMaaling);
   const [error, setError] = useError(contextError);
   const [loeysingTestResult, setLoeysingTestResult] = useState(
     getSelectedTestResult(loeysingId, maaling)
@@ -46,6 +47,8 @@ const TestResultListApp = () => {
       setLoeysingTestResult(testResult);
     }
   }, [maaling]);
+
+  useContentDocumentTitle(appRoutes.TEST_RESULT_LIST.navn, maaling?.navn);
 
   const onClickRestart = useCallback(() => {
     setLoading(true);

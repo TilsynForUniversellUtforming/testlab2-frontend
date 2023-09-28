@@ -3,6 +3,7 @@ import useAlert from '@common/alert/useAlert';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
 import { TableRowAction } from '@common/table/types';
@@ -27,14 +28,14 @@ const TestingListApp = () => {
   const navigate = useNavigate();
   const maalingContext: MaalingContext = useOutletContext();
 
-  const { maaling, setMaaling, contextError, contextLoading } = maalingContext;
+  const { maaling, setMaaling, contextError, loadingMaaling } = maalingContext;
   const { id: maalingId, loeysingId } = useParams();
   const [testResult, setTestResult] = useState<TestResult[]>(
     maaling?.testResult ?? []
   );
   const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
-  const [loading, setLoading] = useState(contextLoading);
+  const [loading, setLoading] = useState(loadingMaaling);
   const [pollMaaling, setPollMaaling] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
@@ -67,6 +68,8 @@ const TestingListApp = () => {
       setTestResult(maaling?.testResult ?? []);
     }
   }, [maaling]);
+
+  useContentDocumentTitle(appRoutes.TEST_TESTING_LIST.navn, maaling?.navn);
 
   const onClickRestart = useCallback(
     (testRowSelection: TestResult[]) => {
@@ -189,6 +192,7 @@ const TestingListApp = () => {
           statusText: 'Feila',
           statusCount: maaling?.testStatistics?.numError ?? 0,
         }}
+        show={!loading}
       />
       <UserActionTable<TestResult>
         heading="Testgjennomføring"

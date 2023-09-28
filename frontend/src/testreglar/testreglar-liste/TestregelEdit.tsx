@@ -37,7 +37,6 @@ const TestregelEdit = () => {
 
   useContentDocumentTitle(
     appRoutes.TESTREGEL_EDIT.navn,
-    contextLoading,
     testregel?.kravTilSamsvar
   );
 

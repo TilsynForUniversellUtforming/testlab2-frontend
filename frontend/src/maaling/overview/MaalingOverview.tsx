@@ -3,6 +3,7 @@ import './maaling-overview.scss';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import useInterval from '@common/hooks/useInterval';
+import useLoading from '@common/hooks/useLoading';
 import { fetchMaaling } from '@maaling/api/maaling-api';
 import React, { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
@@ -16,7 +17,6 @@ const MaalingOverview = () => {
   const {
     contextError,
     setContextError,
-    contextLoading,
     maaling,
     handleStartCrawling,
     handleStartTest,
@@ -30,6 +30,7 @@ const MaalingOverview = () => {
   }: MaalingContext = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
+  const [loading] = useLoading(maaling?.id !== Number(id));
 
   const doPollMaaling = useCallback(async () => {
     setContextError(undefined);
@@ -65,7 +66,7 @@ const MaalingOverview = () => {
       />
     );
   }
-  if (contextLoading || (!maaling && id)) {
+  if (loading) {
     return <MaalingSkeleton />;
   }
   if (!maaling || !id) {

@@ -7,7 +7,7 @@ import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
 import MaalingEdit from '@sak/MaalingEdit';
 import React, { useMemo } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import { Testregel } from '../../testreglar/api/types';
 import { getTestregelColumnsReadOnly } from '../../testreglar/testreglar-liste/TestregelColumns';
@@ -15,8 +15,16 @@ import { MaalingContext } from '../types';
 import MaalingOverview from './MaalingOverview';
 
 const MaalingOverviewWrapper = () => {
-  const { maaling, contextLoading, contextError, refresh }: MaalingContext =
-    useOutletContext();
+  const {
+    maaling,
+    loadingMaaling,
+    contextError,
+    refresh,
+    maalingList,
+  }: MaalingContext = useOutletContext();
+  const { id } = useParams();
+  const maalingName =
+    maalingList.find((m) => m.id === Number(id))?.navn || maaling?.navn;
 
   const loeysingColumns = useMemo(() => getLoeysingColumnsReadOnly(), []);
   const testregelColumns = useMemo(() => getTestregelColumnsReadOnly(), []);
@@ -30,19 +38,11 @@ const MaalingOverviewWrapper = () => {
     window.open(url, '_blank', 'noreferrer');
   };
 
-  useContentDocumentTitle(
-    appRoutes.MAALING.navn,
-    contextLoading,
-    maaling?.navn
-  );
+  useContentDocumentTitle(appRoutes.MAALING.navn, maalingName);
 
   return (
     <>
-      <AppTitle
-        heading="Måling"
-        subHeading={maaling?.navn}
-        loading={contextLoading}
-      />
+      <AppTitle heading="Måling" subHeading={maalingName} />
       <Tabs
         items={[
           {
@@ -60,7 +60,7 @@ const MaalingOverviewWrapper = () => {
                 defaultColumns={loeysingColumns}
                 data={maaling?.loeysingList ?? []}
                 filterPreference="rowsearch"
-                loading={contextLoading}
+                loading={loadingMaaling}
                 displayError={displayError}
                 onClickRow={(row) =>
                   openInNewTab(
@@ -80,7 +80,7 @@ const MaalingOverviewWrapper = () => {
                 defaultColumns={testregelColumns}
                 data={maaling?.testregelList ?? []}
                 filterPreference="rowsearch"
-                loading={contextLoading}
+                loading={loadingMaaling}
                 displayError={displayError}
                 onClickRow={(row) =>
                   openInNewTab(

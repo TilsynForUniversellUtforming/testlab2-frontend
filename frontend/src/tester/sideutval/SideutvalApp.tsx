@@ -1,7 +1,9 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
+import appRoutes from '@common/appRoutes';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
 import useLoading from '@common/hooks/useLoading';
@@ -32,14 +34,14 @@ const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
 const SideutvalApp = () => {
   const maalingContext: MaalingContext = useOutletContext();
 
-  const { maaling, contextError, contextLoading, setMaaling } = maalingContext;
+  const { maaling, contextError, setMaaling, loadingMaaling } = maalingContext;
   const { id, loeysingId } = useParams();
   const [crawlResultat, setCrawlResult] = useState<CrawlResultat[]>(() =>
     maalingToCrawlResultat(maaling)
   );
   const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
-  const [loading, setLoading] = useLoading(contextLoading);
+  const [loading, setLoading] = useLoading(loadingMaaling);
   const [pollMaaling, setPollMaaling] = useState(
     maaling?.status === 'crawling'
   );
@@ -51,10 +53,12 @@ const SideutvalApp = () => {
     }
   }, [maaling]);
 
+  useContentDocumentTitle(appRoutes.TEST_SIDEUTVAL_LIST.navn, maaling?.navn);
+
   const doFetchData = useCallback(async () => {
     setError(undefined);
     try {
-      if (id && !contextLoading && maaling && maaling.status === 'crawling') {
+      if (id && !loading && maaling && maaling.status === 'crawling') {
         const refreshedMaaling = await fetchMaaling(Number(id));
 
         if (!refreshedMaaling) {
@@ -66,7 +70,7 @@ const SideutvalApp = () => {
         }
         setMaaling(refreshedMaaling);
         setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
-      } else if (!id || (!maaling && !contextLoading)) {
+      } else if (!id || (!maaling && !loading)) {
         setError(new Error('Måling finnes ikkje'));
       }
     } catch (e) {
@@ -136,26 +140,25 @@ const SideutvalApp = () => {
           clearMessage={alert.clearMessage}
         />
       )}
-      {maaling?.status !== 'planlegging' && (
-        <StatusChart
-          pendingStatus={{
-            statusText: 'Ikkje starta',
-            statusCount: maaling?.crawlStatistics?.numPending ?? 0,
-          }}
-          runningStatus={{
-            statusText: 'Crawler',
-            statusCount: maaling?.crawlStatistics?.numRunning ?? 0,
-          }}
-          finishedStatus={{
-            statusText: 'Ferdig',
-            statusCount: maaling?.crawlStatistics?.numFinished ?? 0,
-          }}
-          errorStatus={{
-            statusText: 'Feila',
-            statusCount: maaling?.crawlStatistics?.numError ?? 0,
-          }}
-        />
-      )}
+      <StatusChart
+        pendingStatus={{
+          statusText: 'Ikkje starta',
+          statusCount: maaling?.crawlStatistics?.numPending ?? 0,
+        }}
+        runningStatus={{
+          statusText: 'Crawler',
+          statusCount: maaling?.crawlStatistics?.numRunning ?? 0,
+        }}
+        finishedStatus={{
+          statusText: 'Ferdig',
+          statusCount: maaling?.crawlStatistics?.numFinished ?? 0,
+        }}
+        errorStatus={{
+          statusText: 'Feila',
+          statusCount: maaling?.crawlStatistics?.numError ?? 0,
+        }}
+        show={!loading && maaling?.status !== 'planlegging'}
+      />
       <CrawlingList
         id={id}
         maaling={maaling}
