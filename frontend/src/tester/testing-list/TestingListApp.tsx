@@ -136,7 +136,7 @@ const TestingListApp = () => {
     } catch (e) {
       setError(toError(e, 'Kunne ikkje hente måling'));
     }
-  }, [maaling]);
+  }, [loading]);
 
   useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 

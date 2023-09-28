@@ -6,7 +6,6 @@ import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
-import useLoading from '@common/hooks/useLoading';
 import { isNotDefined } from '@common/util/util';
 import { fetchMaaling, restart } from '@maaling/api/maaling-api';
 import { CrawlResultat, Maaling, RestartRequest } from '@maaling/api/types';
@@ -41,7 +40,7 @@ const SideutvalApp = () => {
   );
   const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
-  const [loading, setLoading] = useLoading(loadingMaaling);
+  const [loading, setLoading] = useState(loadingMaaling);
   const [pollMaaling, setPollMaaling] = useState(
     maaling?.status === 'crawling'
   );
@@ -49,6 +48,7 @@ const SideutvalApp = () => {
   useEffect(() => {
     if (maaling) {
       setLoading(false);
+      setPollMaaling(maaling.status === 'crawling');
       setCrawlResult(maalingToCrawlResultat(maaling));
     }
   }, [maaling]);
@@ -76,7 +76,7 @@ const SideutvalApp = () => {
     } catch (e) {
       setError(toError(e, 'Kunne ikkje hente måling'));
     }
-  }, []);
+  }, [loading]);
 
   useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 
