@@ -1,5 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
-import AppRoutes, { getFullPath, idPath } from '@common/appRoutes';
+import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain } from '@common/util/stringutils';
 import { AggregatedTestresult } from '@maaling/api/types';
@@ -27,6 +28,11 @@ const TestResultList = () => {
     loading: false,
     message: undefined,
   });
+
+  useContentDocumentTitle(
+    appRoutes.TEST_RESULT_LIST.navn,
+    loeysingTestResult?.loeysing?.namn
+  );
 
   return (
     <>

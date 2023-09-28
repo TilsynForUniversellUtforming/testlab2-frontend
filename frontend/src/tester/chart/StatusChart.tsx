@@ -12,6 +12,7 @@ interface ChartProps {
   runningStatus: ChartStatus;
   finishedStatus: ChartStatus;
   errorStatus: ChartStatus;
+  show: boolean;
 }
 
 const StatusChart = ({
@@ -19,7 +20,12 @@ const StatusChart = ({
   runningStatus,
   finishedStatus,
   errorStatus,
+  show,
 }: ChartProps) => {
+  if (!show) {
+    return null;
+  }
+
   const total =
     pendingStatus.statusCount +
     runningStatus.statusCount +

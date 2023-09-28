@@ -33,11 +33,7 @@ const LoeysingEdit = () => {
     }
   }, [loeysingList]);
 
-  useContentDocumentTitle(
-    appRoutes.LOEYSING_EDIT.navn,
-    contextLoading,
-    loeysing?.namn
-  );
+  useContentDocumentTitle(appRoutes.LOEYSING_EDIT.navn, loeysing?.namn);
 
   const onSubmit = useCallback(
     (loeysingInit: LoeysingInit) => {

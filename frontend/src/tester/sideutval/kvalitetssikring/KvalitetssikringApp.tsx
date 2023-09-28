@@ -3,6 +3,7 @@ import './kvalitetssikring.scss';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
+import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
 import { TableRowAction } from '@common/table/types';
@@ -21,10 +22,10 @@ const KvalitetssikringApp = () => {
   const navigate = useNavigate();
   const { id: maalingId, loeysingId } = useParams();
 
-  const { contextError, contextLoading, maaling, setMaaling }: MaalingContext =
+  const { contextError, loadingMaaling, maaling, setMaaling }: MaalingContext =
     useOutletContext();
 
-  const [loading, setLoading] = useState(contextLoading);
+  const [loading, setLoading] = useState(loadingMaaling);
   const [error, setError] = useError(contextError);
   const [urlRowSelection, setUrlRowSelection] = useState<CrawlUrl[]>([]);
   const [loeysingCrawlUrlList, setLoeysingCrawlUrlList] = useState<CrawlUrl[]>(
@@ -36,6 +37,11 @@ const KvalitetssikringApp = () => {
 
   const loeysingCrawResultat = crawlResultat?.find(
     (m) => String(m.loeysing.id) === loeysingId
+  );
+
+  useContentDocumentTitle(
+    appRoutes.TEST_CRAWLING_RESULT_LIST.navn,
+    loeysingCrawResultat?.loeysing?.namn
   );
 
   const onClickRestart = useCallback(() => {
@@ -145,7 +151,7 @@ const KvalitetssikringApp = () => {
     if (['crawling', 'kvalitetssikring'].includes(maalingStatus ?? '')) {
       return {
         title: 'Meny for testresultat',
-        disabled: contextLoading,
+        disabled: loadingMaaling,
         actions: [
           {
             action: 'restart',
@@ -188,7 +194,7 @@ const KvalitetssikringApp = () => {
       tableProps={{
         data: loeysingCrawlUrlList,
         defaultColumns: urlColumns,
-        loading: contextLoading,
+        loading: loading,
         onClickRetry: fetchUrlList,
         displayError: {
           error: error,

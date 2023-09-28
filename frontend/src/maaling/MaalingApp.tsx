@@ -27,6 +27,7 @@ const MaalingApp = () => {
 
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMaaling, setLoadingMaaling] = useState<boolean>(true);
   const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
     loading: false,
   });
@@ -233,6 +234,7 @@ const MaalingApp = () => {
           }
 
           if (id) {
+            setLoadingMaaling(true);
             doFetchMaaling()
               .then((data) => {
                 if (data) {
@@ -243,6 +245,7 @@ const MaalingApp = () => {
               })
               .catch((e) => {
                 setError(toError(e, 'Kunne ikkje hente data'));
+                setLoadingMaaling(false);
               });
           }
 
@@ -265,7 +268,7 @@ const MaalingApp = () => {
       id &&
       (maaling?.id !== Number(id) || isNotDefined(maaling))
     ) {
-      setLoading(true);
+      setLoadingMaaling(true);
       doFetchMaaling()
         .then((data) => {
           if (data) {
@@ -273,13 +276,13 @@ const MaalingApp = () => {
           } else {
             setError(new Error('Kunne ikkje hente måling'));
           }
-          setLoading(false);
+          setLoadingMaaling(false);
         })
         .catch((e) => {
           setError(toError(e, 'Kunne ikkje hente data'));
         });
     }
-  }, [id, error]);
+  }, [id, error, maaling]);
 
   const maalingContext: MaalingContext = {
     contextError: error,
@@ -304,6 +307,7 @@ const MaalingApp = () => {
     clearTestStatus: clearTestStatus,
     pollMaaling: pollMaaling,
     setPollMaaling: handleRefreshing,
+    loadingMaaling: loadingMaaling,
   };
 
   return <Outlet context={maalingContext} />;

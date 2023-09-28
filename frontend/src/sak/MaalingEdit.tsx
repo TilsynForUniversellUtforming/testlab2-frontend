@@ -23,13 +23,13 @@ const MaalingEdit = () => {
     regelsettList,
     advisors,
     setMaaling,
-    contextLoading,
+    loadingMaaling,
     contextError,
   }: MaalingContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
   const [alert, setAlert] = useAlert();
-  const [loading, setLoading] = useLoading(contextLoading);
+  const [loading, setLoading] = useLoading(loadingMaaling);
   const [maalingFormState, setMaalingFormState] = useMaalingFormState(
     maaling,
     verksemdList,
