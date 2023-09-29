@@ -6,5 +6,6 @@ enum class JobStatus {
   ferdig,
   ikkje_starta,
   starta,
-  feila
+  feila,
+  crawler
 }

@@ -42,7 +42,12 @@ export const getCrawlColumns = (
     header: () => <>Verksemd</>,
   },
   {
-    accessorFn: (row) => `${row.antallNettsider}${row.type}`,
+    accessorFn: (row) =>
+      `${
+        row.framgang?.prosessert ||
+        (row.type !== 'feilet' ? row.antallNettsider : '') ||
+        ''
+      }${row.type}`,
     sortingFn: 'alphanumeric',
     id: 'status',
     cell: ({ row }) => {
@@ -54,7 +59,7 @@ export const getCrawlColumns = (
       let label: string;
       if (crawlSuccess) {
         label = `Ferdig, fant ${urlLength} sider`;
-      } else if (status === 'ikke_ferdig') {
+      } else if (status === 'crawler') {
         const framgang = row.original.framgang;
         if (framgang != null) {
           label = `Crawler ${framgang.prosessert} av ${framgang.maxLenker}`;
@@ -70,7 +75,7 @@ export const getCrawlColumns = (
           customLabel={label}
           status={status}
           levels={{
-            primary: ['ikke_ferdig'],
+            primary: ['crawler'],
             danger: ['feilet'],
             success: ['ferdig'],
           }}

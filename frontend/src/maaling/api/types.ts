@@ -37,11 +37,7 @@ export type MaalingStatus =
   | 'testing'
   | 'testing_ferdig';
 
-export type CrawlJobStatus =
-  | 'ikkje_starta'
-  | 'ikke_ferdig'
-  | 'feilet'
-  | 'ferdig';
+export type CrawlJobStatus = 'ikkje_starta' | 'crawler' | 'feilet' | 'ferdig';
 
 export type TestJobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
 

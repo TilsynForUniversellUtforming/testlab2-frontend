@@ -12,7 +12,10 @@ data class JobStatistics(
     fun List<JobStatus>.toJobStatistics() =
         JobStatistics(
             numPending = this.count { it == JobStatus.ikkje_starta },
-            numRunning = this.count { it == JobStatus.ikke_ferdig || it == JobStatus.starta },
+            numRunning =
+                this.count {
+                  it == JobStatus.ikke_ferdig || it == JobStatus.starta || it == JobStatus.crawler
+                },
             numFinished = this.count { it == JobStatus.ferdig },
             numError = this.count { it == JobStatus.feilet || it == JobStatus.feila })
   }
