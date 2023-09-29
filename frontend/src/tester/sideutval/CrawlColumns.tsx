@@ -42,7 +42,8 @@ export const getCrawlColumns = (
     header: () => <>Verksemd</>,
   },
   {
-    accessorFn: (row) => row.type,
+    accessorFn: (row) => `${row.antallNettsider}${row.type}`,
+    sortingFn: 'alphanumeric',
     id: 'status',
     cell: ({ row }) => {
       const urlLength = row.original.antallNettsider;

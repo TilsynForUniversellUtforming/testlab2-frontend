@@ -81,6 +81,7 @@ export type TestResult = {
   tilstand: TestJobStatus;
   sistOppdatert: string;
   framgang?: Framgang;
+  antalSider: number;
   aggregatedResultList: AggregatedTestresult[];
   compliancePercent?: number;
 };
