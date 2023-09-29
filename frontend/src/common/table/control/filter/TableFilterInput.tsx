@@ -27,7 +27,14 @@ const TableFilterInput = <T extends object>({ table, column }: Props<T>) => {
       label: 'Alle',
       value: '',
     };
-    const options: Option[] = Array.from(column.getFacetedUniqueValues().keys())
+    const keysWithoutSortingNumbers = [
+      ...new Set(
+        Array.from(column.getFacetedUniqueValues().keys()).map((key) =>
+          String(key).replace(/^\d+/, '')
+        )
+      ),
+    ];
+    const options: Option[] = keysWithoutSortingNumbers
       .map((value) => ({
         label: sanitizeLabel(value),
         value: value,

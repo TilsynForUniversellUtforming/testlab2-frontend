@@ -68,12 +68,6 @@ export const getTestingListColumns = (): Array<ColumnDef<TestResult>> => [
         label = `Ferdig, testa ${row.original.antalSider}`;
       }
 
-      console.log(
-        `${
-          row?.original.framgang?.prosessert || row.original.antalSider || '0'
-        }${row.original.tilstand}`
-      );
-
       return (
         <StatusBadge
           status={status}
