@@ -4,6 +4,7 @@ import {
   HeaderCheckbox,
   RowCheckbox,
 } from '@common/table/control/toggle/IndeterminateCheckbox';
+import { isDefined } from '@common/util/util';
 import { TestResult } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
@@ -48,15 +49,30 @@ export const getTestingListColumns = (): Array<ColumnDef<TestResult>> => [
     enableColumnFilter: false,
   },
   {
-    accessorFn: (row) => row.tilstand,
+    accessorFn: (row) =>
+      `${
+        row.framgang?.prosessert ||
+        (row.tilstand !== 'feila' ? row.antalSider : '') ||
+        ''
+      }${row.tilstand}`,
+    sortingFn: 'alphanumeric',
     id: 'status',
     cell: ({ row }) => {
       const status = String(row.original.tilstand);
       const fremgang = row.original.framgang;
+      const antalSider = row.original.antalSider;
       let label: string | undefined = undefined;
       if (status === 'starta' && typeof fremgang !== 'undefined') {
         label = `Tester ${fremgang.prosessert} av ${fremgang.maxLenker}`;
+      } else if (status === 'ferdig' && isDefined(antalSider)) {
+        label = `Ferdig, testa ${row.original.antalSider}`;
       }
+
+      console.log(
+        `${
+          row?.original.framgang?.prosessert || row.original.antalSider || '0'
+        }${row.original.tilstand}`
+      );
 
       return (
         <StatusBadge

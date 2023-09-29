@@ -14,4 +14,5 @@ data class Testresult(
     val framgang: Framgang?,
     val aggregatedResultList: List<AggegatedTestresultTestregel>?,
     val compliancePercent: Int?,
+    val antalSider: Int?,
 )

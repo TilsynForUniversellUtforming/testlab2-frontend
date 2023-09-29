@@ -109,6 +109,7 @@ fun mergeLists(
         sistOppdatert = testKoeyring.sistOppdatert,
         framgang = testKoeyring.framgang,
         aggregatedResultList = aggregatedResultList,
+        antalSider = testKoeyring.crawlResultat.antallNettsider,
         compliancePercent = compliancePercent)
   }
 }
