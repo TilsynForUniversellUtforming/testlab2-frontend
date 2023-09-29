@@ -17,7 +17,7 @@ data class CrawlResultat(
 fun CrawlResultatDTO.toCrawlResultat() =
     CrawlResultat(
         this.loeysing,
-        this.type,
+        if (this.type == JobStatus.ikke_ferdig) JobStatus.crawler else this.type,
         this.sistOppdatert.toLocalDateTime(),
         this.feilmelding,
         this.antallNettsider ?: 0,
