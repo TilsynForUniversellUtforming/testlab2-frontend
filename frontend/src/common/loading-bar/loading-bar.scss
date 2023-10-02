@@ -1,21 +1,30 @@
-.loading-bar-container {
+.loading-bar {
   max-width: 12rem;
   height: 2rem;
-  box-shadow: 0 0 0 1px var(--fds-semantic-border-success-default);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.loading-bar {
-  position: relative;
-  height: 100%;
-  background-color: var(--fds-semantic-surface-success-default);
-}
-
-.percentage-label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 0.75rem;
-  color: white;
+  border-radius: 1px;
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  &__wrapper {
+    height: 100%;
+    background-color: var(--fds-semantic-background-subtle);
+  }
+  &__percentage {
+    height: 100%;
+    &.info {
+      background-color: var(--fds-semantic-border-info-default);
+    }
+    &.danger {
+      background-color: var(--fds-semantic-surface-danger-default);
+    }
+    &.warning {
+      background-color: var(--fds-semantic-surface-warning-default);
+    }
+    &.success {
+      background-color: var(--fds-semantic-surface-success-default);
+    }
+  }
+  &__label {
+    text-align: center;
+  }
 }
