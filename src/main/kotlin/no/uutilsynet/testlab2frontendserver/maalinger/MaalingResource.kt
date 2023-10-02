@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 import java.net.URI
 import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
+import no.uutilsynet.testlab2frontendserver.common.SecurityHelper
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Aggregeringstype
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlUrl
@@ -18,11 +19,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
 import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
