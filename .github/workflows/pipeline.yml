@@ -35,6 +35,15 @@ jobs:
       - name: build frontend app
         working-directory: frontend
         run: npm run build
+      - name: Setup github packages
+        uses: s4u/maven-settings-action@v2.3.0
+        with:
+          servers: |
+            [{
+                "id": "github",
+                "username": "${{ secrets.GH_USER }}",
+                "password": "${{ secrets.PAT }}"
+            }]
       - name: test frontend app
         working-directory: frontend
         run: npm run test:ci
