@@ -1,7 +1,6 @@
-import { ButtonVariant } from '@common/types';
+import { ButtonColor, ButtonColorType, ButtonVariant } from '@common/types';
 import { Button } from '@digdir/design-system-react';
 import classNames from 'classnames';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export type StepType = 'Start' | 'Middle' | 'Submit' | 'Custom';
@@ -10,70 +9,68 @@ export type TestlabFormButtonStep = {
   stepType: StepType;
   customBackText?: string;
   customNextText?: string;
+  customColor?: ButtonColorType;
   onClickBack: () => void;
 };
 
-export interface ButtonProps {
+export interface TestlabFormButtonProps {
   step?: TestlabFormButtonStep;
   className?: string;
   loading?: boolean;
+  textBack?: string;
+  textNext?: string;
+  onClickBack?: () => void;
 }
 
-export interface FormButtonProps {
-  textBack: string;
-  textNext: string;
-  onClickBack: () => void;
-  className?: string;
-  loading?: boolean;
-}
-
-const FormButton = ({
-  textBack,
-  textNext,
-  onClickBack,
+const TestlabFormButtons = ({
+  step,
   className,
   loading,
-}: FormButtonProps) => (
-  <div className={classNames('testlab-form__navigation-buttons', className)}>
-    <Button type="button" variant={ButtonVariant.Outline} onClick={onClickBack}>
-      {textBack}
-    </Button>
-    <Button type={loading ? 'button' : 'submit'} aria-disabled={loading}>
-      {textNext}
-    </Button>
-  </div>
-);
-
-const TestlabFormButtons = ({ step, className, loading }: ButtonProps) => {
+}: TestlabFormButtonProps) => {
   const navigate = useNavigate();
+
   const defaultStep: TestlabFormButtonStep = {
     stepType: 'Submit',
     onClickBack: () => navigate('..'),
   };
-  const buttonStep = step || defaultStep;
 
-  const buttonTexts: Record<StepType, { back: string; next: string }> = {
-    Start: { back: 'Avbryt', next: 'Neste' },
-    Middle: { back: 'Tilbake', next: 'Neste' },
-    Submit: { back: 'Tilbake', next: 'Lagre' },
+  const buttonStep = step || defaultStep;
+  const { stepType, onClickBack, customBackText, customNextText, customColor } =
+    buttonStep;
+
+  const buttonTexts: Record<
+    StepType,
+    { back: string; next: string; color: ButtonColorType }
+  > = {
+    Start: { back: 'Avbryt', next: 'Neste', color: ButtonColor.Primary },
+    Middle: { back: 'Tilbake', next: 'Neste', color: ButtonColor.Primary },
+    Submit: { back: 'Tilbake', next: 'Lagre', color: ButtonColor.Success },
     Custom: {
-      back: step?.customBackText || 'Tilbake',
-      next: step?.customNextText || 'Lagre',
+      back: customBackText || 'Tilbake',
+      next: customNextText || 'Lagre',
+      color: customColor || ButtonColor.Primary,
     },
   };
 
-  if (!buttonTexts[buttonStep.stepType]) {
-    throw new Error(`Ugylding type ${buttonStep.stepType}`);
-  }
+  const { back, next, color } = buttonTexts[stepType];
 
   return (
-    <FormButton
-      textBack={buttonTexts[buttonStep.stepType].back}
-      textNext={buttonTexts[buttonStep.stepType].next}
-      onClickBack={buttonStep.onClickBack}
-      className={className}
-      loading={loading}
-    />
+    <div className={classNames('testlab-form__navigation-buttons', className)}>
+      <Button
+        type="button"
+        variant={ButtonVariant.Outline}
+        onClick={onClickBack}
+      >
+        {back}
+      </Button>
+      <Button
+        type={loading ? 'button' : 'submit'}
+        aria-disabled={loading}
+        color={color}
+      >
+        {next}
+      </Button>
+    </div>
   );
 };
 
