@@ -68,7 +68,9 @@ const SakConfirmStep = ({
   useEffectOnce(() => handleFormErrors());
 
   const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Submit',
+    stepType: 'Custom',
+    customColor: 'success',
+    customNextText: 'Lagre og gå til måling',
     onClickBack: onClickBack,
   };
 
