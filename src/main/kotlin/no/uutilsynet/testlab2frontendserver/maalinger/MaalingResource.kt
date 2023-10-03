@@ -128,6 +128,8 @@ class MaalingResource(
             ResponseEntity.ok().body(listMaaling())
           }
           .getOrElse {
+            logger.error(
+                "Kunne ikkje slette målinger med id ${maalingIdList.idList.joinToString()}", it)
             ResponseEntity.internalServerError()
                 .body("noe gikk galt da jeg forsøkte å slette en måling: ${it.message}")
           }
@@ -144,6 +146,7 @@ class MaalingResource(
             getMaaling(maalingId)
           }
           .getOrElse {
+            logger.error("Kunne ikkje oppdatere status på måling $maalingId", it)
             ResponseEntity.internalServerError().body("Kunne ikkje oppdatere måling ${it.message}")
           }
 
@@ -158,7 +161,8 @@ class MaalingResource(
           }
           .getOrElse {
             logger.error(
-                "Kunne ikkje hente nett resultat for løysing med id $loeysingId og måling med id $maalingId")
+                "Kunne ikkje hente nett resultat for løysing med id $loeysingId og måling med id $maalingId",
+                it)
             throw RuntimeException("Klarte ikkje å hente crawl resultat")
           }
           .map { CrawlUrl(it) }
@@ -177,7 +181,7 @@ class MaalingResource(
           map?.values?.flatten() ?: throw RuntimeException("Response body for aggregering er tom")
         }
         .getOrElse {
-          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId")
+          logger.error("Kunne ikkje hente aggregering for måling med id $maalingId", it)
           throw RuntimeException("Klarte ikkje å hente aggregering", it)
         }
   }
@@ -199,6 +203,7 @@ class MaalingResource(
             getMaaling(maalingId)
           }
           .getOrElse {
+            logger.error("Kunne ikkje starte $process(er) på nytt for måling $maalingId", it)
             ResponseEntity.internalServerError().body("Kunne ikkje starte $process(er) på nytt")
           }
 
