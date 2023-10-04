@@ -53,13 +53,7 @@ fun MaalingDTO.toMaaling(
           },
       testregelList = this.testregelList ?: testregelList,
       crawlResultat = crawlResultat,
-      crawlStatistics =
-          crawlResultat
-              .map {
-                if (it.type == JobStatus.ferdig && it.antallNettsider == 0) JobStatus.feilet
-                else it.type
-              }
-              .toJobStatistics(),
+      crawlStatistics = crawlResultat.map { it.type }.toJobStatistics(),
       testResult = mergeLists(maalingTestKoeyringDTOList, aggregatedResult),
       testStatistics = maalingTestKoeyringDTOList.map { it.tilstand }.toJobStatistics(),
       crawlParameters = this.crawlParameters,
@@ -82,7 +76,7 @@ fun mergeLists(
                 val compliantPages = result.talSiderSamsvar + result.talSiderIkkjeForekomst
                 ((compliantPages.toDouble() / totalPages) * 100).roundToInt()
               } else {
-                100
+                0
               }
 
           AggegatedTestresultTestregel(
@@ -100,7 +94,7 @@ fun mergeLists(
             ?: emptyList()
 
     val compliancePercent =
-        if (aggregatedResultList.isEmpty()) 100
+        if (aggregatedResultList.isEmpty()) 0
         else aggregatedResultList.map { it.compliancePercent.toDouble() }.average().roundToInt()
 
     Testresult(
