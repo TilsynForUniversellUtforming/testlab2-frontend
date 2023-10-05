@@ -1,4 +1,3 @@
-import { Spinner } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
@@ -14,7 +13,6 @@ export interface Props<T extends object> {
   rowActions?: TableRowAction[];
   rowActionEnabled: boolean;
   small?: boolean;
-  loadingStateStatus?: string;
 }
 
 const ControlHeader = <T extends object>({
@@ -25,7 +23,6 @@ const ControlHeader = <T extends object>({
   rowActions,
   rowActionEnabled,
   small = false,
-  loadingStateStatus,
 }: Props<T>) => {
   const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
   const hasElements = tableElementSize > 0;
@@ -37,12 +34,6 @@ const ControlHeader = <T extends object>({
   return (
     <div className="control-header">
       <div className="control-header__search">
-        {loadingStateStatus && (
-          <div>
-            {`${loadingStateStatus} `}
-            <Spinner title={loadingStateStatus} size="small" />
-          </div>
-        )}
         {showFilters && (
           <DebouncedInput
             label="Søk i tabell"

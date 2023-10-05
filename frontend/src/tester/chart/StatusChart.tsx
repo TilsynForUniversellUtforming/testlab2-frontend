@@ -1,6 +1,6 @@
 import './status-chart.scss';
 
-import { Heading } from '@digdir/design-system-react';
+import { Heading, Spinner } from '@digdir/design-system-react';
 
 export type ChartStatus = {
   statusCount: number;
@@ -13,6 +13,7 @@ interface ChartProps {
   finishedStatus: ChartStatus;
   errorStatus: ChartStatus;
   show: boolean;
+  loadingStateStatus?: string;
 }
 
 const StatusChart = ({
@@ -21,6 +22,7 @@ const StatusChart = ({
   finishedStatus,
   errorStatus,
   show,
+  loadingStateStatus,
 }: ChartProps) => {
   if (!show) {
     return null;
@@ -62,6 +64,12 @@ const StatusChart = ({
       <ProgressElement chartStatus={finishedStatus} variant="ferdig" />
       {errorStatus.statusCount > 0 && (
         <ProgressElement chartStatus={errorStatus} variant="feilet" />
+      )}
+      {loadingStateStatus && (
+        <>
+          {`${loadingStateStatus} `}
+          <Spinner title={loadingStateStatus} size="small" />
+        </>
       )}
     </div>
   );

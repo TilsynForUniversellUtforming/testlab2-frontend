@@ -36,9 +36,6 @@
 
   .control-header {
     &__search {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
       padding-bottom: 1rem;
     }
     &__actions {
@@ -68,7 +65,7 @@
         margin-right: 0.75rem;
       }
       .pagination-select {
-        width: 4rem;
+        min-width: 5rem;
       }
     }
   }

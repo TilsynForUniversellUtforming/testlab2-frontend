@@ -184,7 +184,6 @@ const TestingListApp = () => {
           onSelectRows: setTestRowSelection,
           onClickRetry: doFetchData,
           displayError: { error },
-          loadingStateStatus: pollMaaling ? 'Utfører testing...' : undefined,
           rowActions: rowActions,
           onClickRow: (row) =>
             navigate(
@@ -217,6 +216,7 @@ const TestingListApp = () => {
             statusCount: maaling?.testStatistics?.numError ?? 0,
           }}
           show={!loading}
+          loadingStateStatus={pollMaaling ? 'Utfører testing...' : undefined}
         />
       </UserActionTable>
     </>

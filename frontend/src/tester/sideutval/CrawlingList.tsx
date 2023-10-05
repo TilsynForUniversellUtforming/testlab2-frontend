@@ -107,7 +107,6 @@ const CrawlingList = ({
         onSelectRows: setCrawlRowSelection,
         onClickRetry: onClickRefresh,
         rowActions: rowActions,
-        loadingStateStatus: refreshing ? 'Utfører sideutval...' : undefined,
         onClickRow:
           maalingStatus !== 'planlegging'
             ? (row) =>
@@ -142,6 +141,7 @@ const CrawlingList = ({
           statusCount: maaling?.crawlStatistics?.numError ?? 0,
         }}
         show={!loading && maaling?.status !== 'planlegging'}
+        loadingStateStatus={refreshing ? 'Utfører sideutval...' : undefined}
       />
     </UserActionTable>
   );
