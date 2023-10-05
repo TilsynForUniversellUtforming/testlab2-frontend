@@ -45,34 +45,40 @@ const TestregelEdit = () => {
     .sort()
     .filter((value, index, current) => current.indexOf(value) === index);
 
-  const onSubmit = useCallback((testregel: Testregel) => {
-    const existingTestregel = testreglar.find(
-      (tr) => tr.testregelNoekkel === testregel.testregelNoekkel
-    );
-    if (existingTestregel) {
-      setAlert(
-        'danger',
-        `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+  const onSubmit = useCallback(
+    (testregel: Testregel) => {
+      const numericId = Number(id);
+      const existingTestregel = testreglar.find(
+        (tr) =>
+          tr.testregelNoekkel === testregel.testregelNoekkel &&
+          tr.id !== numericId
       );
-      return;
-    }
-
-    const update = async () => {
-      try {
-        setContextLoading(true);
-        setContextError(undefined);
-        const data = await updateTestregel(testregel);
-        setTestregelList(data);
-        setAlert('success', `${testregel.kravTilSamsvar} er endra`);
-      } catch (e) {
-        setContextError(toError(e, 'Kunne ikkje endre testregel'));
+      if (existingTestregel) {
+        setAlert(
+          'danger',
+          `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+        );
+        return;
       }
-    };
 
-    update().finally(() => {
-      setContextLoading(false);
-    });
-  }, []);
+      const update = async () => {
+        try {
+          setContextLoading(true);
+          setContextError(undefined);
+          const data = await updateTestregel({ ...testregel, id: numericId });
+          setTestregelList(data);
+          setAlert('success', `${testregel.kravTilSamsvar} er endra`);
+        } catch (e) {
+          setContextError(toError(e, 'Kunne ikkje endre testregel'));
+        }
+      };
+
+      update().finally(() => {
+        setContextLoading(false);
+      });
+    },
+    [id]
+  );
 
   if (loading) {
     return (
