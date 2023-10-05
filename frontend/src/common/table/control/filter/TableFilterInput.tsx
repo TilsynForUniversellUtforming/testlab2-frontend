@@ -1,4 +1,3 @@
-import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import { Option } from '@common/types';
 import { sanitizeLabel } from '@common/util/stringutils';
 import { Select } from '@digdir/design-system-react';
@@ -53,16 +52,7 @@ const TableFilterInput = <T extends object>({ table, column }: Props<T>) => {
     );
   }
 
-  return (
-    <div className="testlab-table__column-filter">
-      <DebouncedInput
-        value={(columnFilterValue ?? '') as string}
-        onChange={(value) => search(String(value))}
-        ariaLabel={column.columnDef?.id ?? ''}
-        id={column.columnDef?.id ?? ''}
-      />
-    </div>
-  );
+  return null;
 };
 
 export default TableFilterInput;

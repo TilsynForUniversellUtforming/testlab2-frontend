@@ -84,7 +84,6 @@ const LoeysingList = () => {
     <UserActionTable<Loeysing>
       heading="Løysingar"
       subHeading="Liste over alle løysingar"
-      actionButtons={[{ route: appRoutes.LOEYSING_CREATE, action: 'add' }]}
       tableProps={{
         data: loeysingList,
         defaultColumns: loeysingColumns,
@@ -98,7 +97,12 @@ const LoeysingList = () => {
         onClickRetry: onClickRefresh,
         rowActions: [
           {
+            action: 'add',
+            route: appRoutes.LOEYSING_CREATE,
+          },
+          {
             action: 'delete',
+            rowSelectionRequired: true,
             modalProps: {
               title: 'Slett løysingar',
               disabled: loeysingRowSelection.length === 0,

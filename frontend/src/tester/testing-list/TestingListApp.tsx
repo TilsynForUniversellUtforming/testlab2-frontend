@@ -1,7 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
-import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
@@ -42,23 +41,37 @@ const TestingListApp = () => {
   const testResultatColumns = useMemo(() => getTestingListColumns(), []);
 
   const rowActions = useMemo<TableRowAction[]>(() => {
+    const actions: TableRowAction[] = [];
+    const failedTests = testResult.filter((tr) => tr.tilstand === 'feila');
+
     if (maaling?.status === 'testing_ferdig') {
-      return [
-        {
-          action: 'restart',
-          modalProps: {
-            title: 'Test på nytt',
-            disabled: testResult.length === 0,
-            message: `Vil du teste ${joinStringsToList(
-              testRowSelection.map((r) => r.loeysing.namn)
-            )} på nytt?`,
-            onConfirm: () => onClickRestart(testRowSelection),
-          },
+      actions.push({
+        action: 'restart',
+        rowSelectionRequired: true,
+        modalProps: {
+          title: 'Test på nytt',
+          disabled: testResult.length === 0,
+          message: `Vil du teste ${joinStringsToList(
+            testRowSelection.map((r) => r.loeysing.namn)
+          )} på nytt?`,
+          onConfirm: () => onClickRestart(testRowSelection),
         },
-      ];
-    } else {
-      return [];
+      });
     }
+
+    if (failedTests.length > 0) {
+      actions.push({
+        action: 'restart',
+        modalProps: {
+          title: 'Test feila på nytt',
+          disabled: testResult.length === 0,
+          message: `Vil du køyra alle feila tester på nytt?`,
+          onConfirm: () => onClickRestart(failedTests),
+        },
+      });
+    }
+
+    return actions;
   }, [maaling?.status, testResult, testRowSelection]);
 
   useEffect(() => {
@@ -140,28 +153,6 @@ const TestingListApp = () => {
 
   useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
 
-  const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
-    const failedTests = testResult.filter((tr) => tr.tilstand === 'feila');
-
-    if (failedTests.length > 0) {
-      return {
-        title: 'Meny for testresultat',
-        disabled: loading,
-        actions: [
-          {
-            action: 'restart',
-            modalProps: {
-              title: 'Test feila på nytt',
-              disabled: testResult.length === 0,
-              message: `Vil du køyra alle feila tester på nytt?`,
-              onConfirm: () => onClickRestart(failedTests),
-            },
-          },
-        ],
-      };
-    }
-  }, [testResult]);
-
   if (loeysingId) {
     return <Outlet context={maalingContext} />;
   }
@@ -175,25 +166,6 @@ const TestingListApp = () => {
           clearMessage={alert.clearMessage}
         />
       )}
-      <StatusChart
-        pendingStatus={{
-          statusText: 'Ikkje starta',
-          statusCount: maaling?.testStatistics?.numPending ?? 0,
-        }}
-        runningStatus={{
-          statusText: 'Testar',
-          statusCount: maaling?.testStatistics?.numRunning ?? 0,
-        }}
-        finishedStatus={{
-          statusText: 'Ferdig',
-          statusCount: maaling?.testStatistics?.numFinished ?? 0,
-        }}
-        errorStatus={{
-          statusText: 'Feila',
-          statusCount: maaling?.testStatistics?.numError ?? 0,
-        }}
-        show={!loading}
-      />
       <UserActionTable<TestResult>
         heading="Testgjennomføring"
         subHeading={`Måling: ${maaling?.navn ?? ''}`}
@@ -205,7 +177,6 @@ const TestingListApp = () => {
               })
             : undefined
         }
-        menuButtons={menuButtons}
         tableProps={{
           data: testResult,
           defaultColumns: testResultatColumns,
@@ -227,7 +198,27 @@ const TestingListApp = () => {
               )
             ),
         }}
-      />
+      >
+        <StatusChart
+          pendingStatus={{
+            statusText: 'Ikkje starta',
+            statusCount: maaling?.testStatistics?.numPending ?? 0,
+          }}
+          runningStatus={{
+            statusText: 'Testar',
+            statusCount: maaling?.testStatistics?.numRunning ?? 0,
+          }}
+          finishedStatus={{
+            statusText: 'Ferdig',
+            statusCount: maaling?.testStatistics?.numFinished ?? 0,
+          }}
+          errorStatus={{
+            statusText: 'Feila',
+            statusCount: maaling?.testStatistics?.numError ?? 0,
+          }}
+          show={!loading}
+        />
+      </UserActionTable>
     </>
   );
 };

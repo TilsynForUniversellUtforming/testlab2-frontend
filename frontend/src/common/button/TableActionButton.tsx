@@ -1,20 +1,23 @@
-import { ButtonColor } from '@common/types';
+import { Action } from '@common/table/types';
+import { ButtonColorType, ButtonSizeType } from '@common/types';
 import React from 'react';
 
 import { AppRoute } from '../appRoutes';
 import TestlabLinkButton from './TestlabLinkButton';
 
-export type TableActionType = 'add' | 'submit';
-
 export interface TableActionButtonProps {
-  action: TableActionType;
+  action: Action;
   route: AppRoute;
+  color?: ButtonColorType;
+  size?: ButtonSizeType;
   disabled?: boolean;
 }
 
 const TableActionButton = ({
   action,
   route,
+  color,
+  size,
   disabled = false,
 }: TableActionButtonProps) => {
   if (action === 'add') {
@@ -22,15 +25,21 @@ const TableActionButton = ({
       <TestlabLinkButton
         title="Legg til"
         route={route}
-        color={ButtonColor.Success}
+        color={color}
+        size={size}
         disabled={disabled}
       />
     );
   }
 
-  if (action === 'submit') {
+  if (action === 'save') {
     return (
-      <TestlabLinkButton title={'Lagre'} route={route} disabled={disabled} />
+      <TestlabLinkButton
+        title={'Lagre'}
+        route={route}
+        size={size}
+        disabled={disabled}
+      />
     );
   }
 

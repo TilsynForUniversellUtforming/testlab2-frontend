@@ -35,10 +35,18 @@
   }
 
   .control-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 1rem;
+    &__search {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding-bottom: 1rem;
+    }
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-bottom: 1rem;
+    }
   }
 
   .pagination-container {

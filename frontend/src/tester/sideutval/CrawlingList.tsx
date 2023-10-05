@@ -1,5 +1,4 @@
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
-import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { joinStringsToList } from '@common/util/stringutils';
@@ -7,6 +6,7 @@ import { CrawlResultat, Maaling } from '@maaling/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import StatusChart from '../chart/StatusChart';
 import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
 
 export interface Props {
@@ -37,23 +37,36 @@ const CrawlingList = ({
   );
 
   const rowActions = useMemo<TableRowAction[]>(() => {
+    const actions: TableRowAction[] = [];
     if (maalingStatus === 'crawling' || maalingStatus === 'kvalitetssikring') {
-      return [
-        {
+      actions.push({
+        action: 'restart',
+        rowSelectionRequired: true,
+        modalProps: {
+          title: 'Køyr utval på nytt',
+          disabled: crawlList.length === 0,
+          message: `Vil du køyre nytt utval for ${joinStringsToList(
+            crawlRowSelection.map((r) => r.loeysing.namn)
+          )} på nytt?`,
+          onConfirm: () => onClickRestart(crawlRowSelection),
+        },
+      });
+
+      const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
+      if (maalingStatus === 'kvalitetssikring' && failedCrawlings.length > 0) {
+        actions.push({
           action: 'restart',
           modalProps: {
-            title: 'Køyr utval på nytt',
+            title: 'Kjør sideutval for feila',
             disabled: crawlList.length === 0,
-            message: `Vil du køyre nytt utval for ${joinStringsToList(
-              crawlRowSelection.map((r) => r.loeysing.namn)
-            )} på nytt?`,
-            onConfirm: () => onClickRestart(crawlRowSelection),
+            message: `Vil du køyra sideutval for alle feila på nytt?`,
+            onConfirm: () => onClickRestart(failedCrawlings),
           },
-        },
-      ];
-    } else {
-      return [];
+        });
+      }
     }
+
+    return actions;
   }, [maalingStatus, crawlList, crawlRowSelection]);
 
   const crawlColumns = useMemo(() => {
@@ -69,28 +82,6 @@ const CrawlingList = ({
     refresh();
   }, []);
 
-  const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
-    const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
-
-    if (maalingStatus === 'kvalitetssikring' && failedCrawlings.length > 0) {
-      return {
-        title: 'Meny for testresultat',
-        disabled: loading,
-        actions: [
-          {
-            action: 'restart',
-            modalProps: {
-              title: 'Kjør sideutval for feila',
-              disabled: crawlList.length === 0,
-              message: `Vil du køyra sideutval for alle feila på nytt?`,
-              onConfirm: () => onClickRestart(failedCrawlings),
-            },
-          },
-        ],
-      };
-    }
-  }, [crawlList, maalingStatus, loading]);
-
   return (
     <UserActionTable<CrawlResultat>
       heading="Sideutval"
@@ -103,7 +94,6 @@ const CrawlingList = ({
             })
           : undefined
       }
-      menuButtons={menuButtons}
       tableProps={{
         data: crawlList,
         defaultColumns: crawlColumns,
@@ -133,7 +123,27 @@ const CrawlingList = ({
                 )
             : undefined,
       }}
-    />
+    >
+      <StatusChart
+        pendingStatus={{
+          statusText: 'Ikkje starta',
+          statusCount: maaling?.crawlStatistics?.numPending ?? 0,
+        }}
+        runningStatus={{
+          statusText: 'Crawler',
+          statusCount: maaling?.crawlStatistics?.numRunning ?? 0,
+        }}
+        finishedStatus={{
+          statusText: 'Ferdig',
+          statusCount: maaling?.crawlStatistics?.numFinished ?? 0,
+        }}
+        errorStatus={{
+          statusText: 'Feila',
+          statusCount: maaling?.crawlStatistics?.numError ?? 0,
+        }}
+        show={!loading && maaling?.status !== 'planlegging'}
+      />
+    </UserActionTable>
   );
 };
 

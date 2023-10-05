@@ -1,6 +1,7 @@
 import './testlabTable.scss';
 import '@tanstack/react-table';
 
+import TableFilter from '@common/table/control/filter/TableFilter';
 import {
   Table,
   TableBody,
@@ -30,7 +31,6 @@ import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import { isDefined } from '../util/util';
 import ControlHeader from './control/ControlHeader';
-import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableBody from './TestlabTableBody';
 import TestlabTableHeader from './TestlabTableHeader';

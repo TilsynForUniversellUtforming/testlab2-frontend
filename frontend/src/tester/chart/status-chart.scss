@@ -1,6 +1,6 @@
 .status-chart {
   max-width: 50%;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
   &__heading {
     padding-bottom: 0.5rem;
@@ -14,19 +14,19 @@
     height: 1rem;
 
     &--ikke-startet {
-      background-color: #68707c;
+      background-color: var(--fds-semantic-surface-neutral-dark);
     }
 
     &--underveis {
-      background-color: #0062ba;
+      background-color: var(--fds-semantic-border-action-default);
     }
 
     &--ferdig {
-      background-color: #118849;
+      background-color: var(--fds-semantic-surface-success-default);
     }
 
     &--feilet {
-      background-color: #e02e49;
+      background-color: var(--fds-semantic-surface-danger-default);
     }
   }
 }

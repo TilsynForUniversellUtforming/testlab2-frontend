@@ -31,3 +31,11 @@ export const ButtonVariant = {
 
 export type ButtonVariantType =
   (typeof ButtonVariant)[keyof typeof ButtonVariant];
+
+export const ButtonSize = {
+  Small: 'small',
+  Medium: 'medium',
+  Large: 'large',
+} as const;
+
+export type ButtonSizeType = (typeof ButtonSize)[keyof typeof ButtonSize];

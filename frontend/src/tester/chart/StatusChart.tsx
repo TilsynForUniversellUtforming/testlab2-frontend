@@ -39,20 +39,20 @@ const StatusChart = ({
     variant: 'ikke-startet' | 'underveis' | 'ferdig' | 'feilet';
   }) => (
     <div className="status-chart__progress-element">
-      <Heading size="small">
+      <Heading size="xsmall">
         {props.chartStatus.statusText} ({props.chartStatus.statusCount} av{' '}
         {total})
       </Heading>
       <div
         className={'status-chart__bar status-chart__bar--' + props.variant}
         style={{ width: `${percentFinished(props.chartStatus.statusCount)}%` }}
-      ></div>
+      />
     </div>
   );
 
   return (
     <div className="status-chart">
-      <Heading size="large" className="status-chart__heading">
+      <Heading size="medium" className="status-chart__heading">
         Status
       </Heading>
       {pendingStatus.statusCount > 0 && (
