@@ -46,7 +46,6 @@ export const getTestingListColumns = (): Array<ColumnDef<TestResult>> => [
       />
     ),
     header: () => <>Resultat</>,
-    enableColumnFilter: false,
   },
   {
     accessorFn: (row) =>

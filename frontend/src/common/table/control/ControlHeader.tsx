@@ -1,9 +1,8 @@
-import { Spinner } from '@digdir/design-system-react';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
 import DebouncedInput from '../../debounced-input/DebouncedInput';
-import TableActionDropdown from '../../dropdown/TableActionDropdown';
+import TableActionsContainer from '../../dropdown/TableActionsContainer';
 import { TableFilterPreference, TableRowAction } from '../types';
 
 export interface Props<T extends object> {
@@ -14,7 +13,6 @@ export interface Props<T extends object> {
   rowActions?: TableRowAction[];
   rowActionEnabled: boolean;
   small?: boolean;
-  loadingStateStatus?: string;
 }
 
 const ControlHeader = <T extends object>({
@@ -25,48 +23,32 @@ const ControlHeader = <T extends object>({
   rowActions,
   rowActionEnabled,
   small = false,
-  loadingStateStatus,
 }: Props<T>) => {
   const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
   const hasElements = tableElementSize > 0;
 
-  const showFilters =
-    !small &&
-    filterPreference !== 'none' &&
-    filterPreference !== 'rowsearch' &&
-    hasElements;
+  const showFilters = !small && filterPreference !== 'none' && hasElements;
 
   const showRowActions = rowActions && rowActions.length > 0;
 
   return (
     <div className="control-header">
-      <div className="testlab-table dropdown">
-        {showRowActions && (
-          <TableActionDropdown<T>
-            actions={rowActions}
-            disabled={!rowActionEnabled}
-            table={table}
+      <div className="control-header__search">
+        {showFilters && (
+          <DebouncedInput
+            label="Søk i tabell"
+            value={filterValue}
+            onChange={onChangeFilter}
+            ariaLabel={'Søk i tabell'}
           />
         )}
       </div>
-      <div className="control-header__search">
-        {loadingStateStatus && (
-          <>
-            <b>Status: </b>
-            {`${loadingStateStatus} `}
-            <Spinner title={loadingStateStatus} size="small" />
-          </>
-        )}
-      </div>
-      <div className="control-header__input">
-        {showFilters && (
-          <DebouncedInput
-            label="Søk"
-            value={filterValue}
-            onChange={onChangeFilter}
-            labelPlacement="left"
-            ariaLabel={'Søk i tabell'}
-            id={'search-input'}
+      <div className="control-header__actions">
+        {showRowActions && (
+          <TableActionsContainer<T>
+            actions={rowActions}
+            rowActionEnabled={rowActionEnabled}
+            table={table}
           />
         )}
       </div>

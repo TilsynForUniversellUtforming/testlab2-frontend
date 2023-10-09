@@ -1,7 +1,6 @@
 import './kvalitetssikring.scss';
 
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
-import { MenuDropdownProps } from '@common/dropdown/MenuDropdown';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
@@ -100,10 +99,34 @@ const KvalitetssikringApp = () => {
   }, [maalingStatus]);
 
   const rowActions = useMemo<TableRowAction[]>(() => {
-    if (maalingStatus === 'kvalitetssikring') {
-      return [
+    const actions: TableRowAction[] = [];
+    if (['crawling', 'kvalitetssikring'].includes(maalingStatus ?? '')) {
+      actions.push(
+        {
+          action: 'restart',
+          modalProps: {
+            title: 'Køyr utval på nytt',
+            message: `Vil du køyre nytt utval for ${extractDomain(
+              loeysingCrawResultat?.loeysing?.url
+            )}?`,
+            onConfirm: onClickRestart,
+          },
+        },
         {
           action: 'delete',
+          modalProps: {
+            title: 'Ta løysing ut av måling',
+            message: `Vil du ta løysing ${extractDomain(
+              loeysingCrawResultat?.loeysing?.url
+            )} ut av måling?`,
+            onConfirm: onClickDeleteLoeysing,
+          },
+        }
+      );
+      if (maalingStatus === 'kvalitetssikring') {
+        actions.push({
+          action: 'delete',
+          rowSelectionRequired: true,
           modalProps: {
             title: 'Ta url ut av måling',
             message: `Vil du ta ut ${joinStringsToList(
@@ -111,11 +134,11 @@ const KvalitetssikringApp = () => {
             )} frå måling?`,
             onConfirm: onClickRemoveUrl,
           },
-        },
-      ];
-    } else {
-      return [];
+        });
+      }
     }
+
+    return actions;
   }, [maalingStatus, urlRowSelection]);
 
   const fetchUrlList = useCallback(() => {
@@ -147,37 +170,6 @@ const KvalitetssikringApp = () => {
     fetchUrlList();
   });
 
-  const menuButtons = useMemo<MenuDropdownProps | undefined>(() => {
-    if (['crawling', 'kvalitetssikring'].includes(maalingStatus ?? '')) {
-      return {
-        title: 'Meny for testresultat',
-        disabled: loadingMaaling,
-        actions: [
-          {
-            action: 'restart',
-            modalProps: {
-              title: 'Køyr utval på nytt',
-              message: `Vil du køyre nytt utval for ${extractDomain(
-                loeysingCrawResultat?.loeysing?.url
-              )}?`,
-              onConfirm: onClickRestart,
-            },
-          },
-          {
-            action: 'delete',
-            modalProps: {
-              title: 'Ta løysing ut av måling',
-              message: `Vil du ta løysing ${extractDomain(
-                loeysingCrawResultat?.loeysing?.url
-              )} ut av måling?`,
-              onConfirm: onClickDeleteLoeysing,
-            },
-          },
-        ],
-      };
-    }
-  }, [maalingStatus]);
-
   return (
     <UserActionTable<CrawlUrl>
       heading={`Sideutval ${extractDomain(loeysingCrawResultat?.loeysing.url)}`}
@@ -203,7 +195,6 @@ const KvalitetssikringApp = () => {
         filterPreference: 'searchbar',
         rowActions: rowActions,
       }}
-      menuButtons={menuButtons}
     />
   );
 };

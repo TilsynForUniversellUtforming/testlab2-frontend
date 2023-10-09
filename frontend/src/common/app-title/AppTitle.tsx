@@ -4,7 +4,7 @@ import { isNotDefined } from '@common/util/util';
 import { Heading, Paragraph } from '@digdir/design-system-react';
 import { Link } from 'react-router-dom';
 
-export type size =
+export type AppTitleSize =
   | 'xxsmall'
   | 'xsmall'
   | 'small'
@@ -19,7 +19,7 @@ interface SubHeadingProps {
 
 export interface AppTitleProps extends SubHeadingProps {
   heading?: string;
-  size?: size;
+  size?: AppTitleSize;
   loading?: boolean;
 }
 

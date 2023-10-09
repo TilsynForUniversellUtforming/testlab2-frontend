@@ -1,7 +1,6 @@
 .debounced-input {
   &__container {
     display: flex;
-    align-items: center;
     input[name='debounced-input'] {
       min-width: 16rem;
     }

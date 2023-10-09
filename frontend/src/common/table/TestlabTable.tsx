@@ -1,6 +1,7 @@
 import './testlabTable.scss';
 import '@tanstack/react-table';
 
+import TableFilter from '@common/table/control/filter/TableFilter';
 import {
   Table,
   TableBody,
@@ -8,11 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from '@digdir/design-system-react';
-import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
+import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
+  FilterMeta,
   getCoreRowModel,
   getFacetedMinMaxValues,
   getFacetedRowModel,
@@ -30,7 +32,6 @@ import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import { isDefined } from '../util/util';
 import ControlHeader from './control/ControlHeader';
-import TableFilter from './control/filter/TableFilter';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableBody from './TestlabTableBody';
 import TestlabTableHeader from './TestlabTableHeader';
@@ -58,20 +59,6 @@ declare module '@tanstack/react-table' {
 }
 
 // eslint-disable-next-line
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
-
-// eslint-disable-next-line
 const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
   const rowValue = row.getValue(columnId);
   return rowValue === value;
@@ -89,7 +76,6 @@ export interface TestlabTableProps<T extends object> {
   onClickRetry?: () => void;
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
-  loadingStateStatus?: string;
 }
 
 /**
@@ -108,7 +94,6 @@ export interface TestlabTableProps<T extends object> {
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
  * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
- * @param {string} [props.loadingStateStatus] - The status to display when the table is loading.
  * @returns {ReactElement} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
@@ -125,7 +110,6 @@ const TestlabTable = <T extends object>({
     small: false,
   },
   rowActions,
-  loadingStateStatus,
 }: TestlabTableProps<T>): ReactElement => {
   const isLoading = loading ?? false;
   const [columns, setColumns] = useState<typeof defaultColumns>(() => [
@@ -146,6 +130,23 @@ const TestlabTable = <T extends object>({
   useEffect(() => {
     setColumns([...defaultColumns]);
   }, [defaultColumns]);
+
+  const fuzzyFilter: FilterFn<T> = (
+    row: Row<T>,
+    columnId: string,
+    value: string,
+    addMeta: (meta: FilterMeta) => void
+  ) => {
+    const itemRank: RankingInfo = rankItem(row.getValue(columnId), value, {
+      threshold: rankings.CONTAINS,
+    });
+
+    addMeta({
+      itemRank,
+    });
+
+    return itemRank.passed;
+  };
 
   const tableOptions: TableOptions<T> = {
     data: data,
@@ -228,7 +229,6 @@ const TestlabTable = <T extends object>({
         small={customStyle?.small}
         rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
         rowActions={rowActions}
-        loadingStateStatus={loadingStateStatus}
       />
       <Table
         className="testlab-table__table"

@@ -40,7 +40,6 @@ export const getAggregatedResultColumns = (): Array<
       />
     ),
     header: () => <>Score</>,
-    enableColumnFilter: false,
   },
   {
     accessorFn: (row) =>
@@ -54,27 +53,23 @@ export const getAggregatedResultColumns = (): Array<
       </>
     ),
     header: () => <>Tal testa</>,
-    enableColumnFilter: false,
   },
   {
     accessorFn: (row) => row.talSiderBrot,
     id: 'brot',
     cell: ({ row }) => <>{row.original.talSiderBrot}</>,
     header: () => <>Tal brot</>,
-    enableColumnFilter: false,
   },
   {
     accessorFn: (row) => row.talSiderSamsvar,
     id: 'samsvar',
     cell: ({ row }) => <>{row.original.talSiderSamsvar}</>,
     header: () => <>Tal samsvar</>,
-    enableColumnFilter: false,
   },
   {
     accessorFn: (row) => row.talSiderIkkjeForekomst,
     id: 'ikkjeForekomst',
     cell: ({ row }) => <>{row.original.talSiderIkkjeForekomst}</>,
     header: () => <>Tal ikkje-forekomst</>,
-    enableColumnFilter: false,
   },
 ];
