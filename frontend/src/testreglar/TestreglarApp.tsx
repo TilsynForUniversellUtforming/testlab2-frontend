@@ -97,6 +97,15 @@ const TestreglarApp = () => {
         onClick={() => navigate('..')}
       />
     );
+  } else if (error) {
+    return (
+      <ErrorCard
+        errorHeader="Testreglar"
+        error={error}
+        buttonText="Prøv igjen"
+        onClick={doFetchData}
+      />
+    );
   }
 
   return (
