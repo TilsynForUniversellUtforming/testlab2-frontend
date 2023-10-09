@@ -202,18 +202,22 @@ const TestingListApp = () => {
           pendingStatus={{
             statusText: 'Ikkje starta',
             statusCount: maaling?.testStatistics?.numPending ?? 0,
+            severity: 'neutral',
           }}
           runningStatus={{
             statusText: 'Testar',
             statusCount: maaling?.testStatistics?.numRunning ?? 0,
+            severity: 'info',
           }}
           finishedStatus={{
             statusText: 'Ferdig',
             statusCount: maaling?.testStatistics?.numFinished ?? 0,
+            severity: 'success',
           }}
           errorStatus={{
             statusText: 'Feila',
             statusCount: maaling?.testStatistics?.numError ?? 0,
+            severity: 'danger',
           }}
           show={!loading}
           loadingStateStatus={pollMaaling ? 'Utfører testing...' : undefined}

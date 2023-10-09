@@ -5,6 +5,11 @@
   display: flex;
   flex-direction: column;
   width: 75%;
+  &.large {
+    min-height: 2.5rem;
+    max-width: inherit;
+  }
+
   &__wrapper {
     height: 100%;
     background-color: var(--fds-semantic-background-subtle);
@@ -23,8 +28,13 @@
     &.success {
       background-color: var(--fds-semantic-surface-success-default);
     }
+    &.neutral {
+      background-color: var(--fds-semantic-surface-neutral-dark);
+    }
   }
   &__label {
-    text-align: center;
+    &.center {
+      text-align: center;
+    }
   }
 }

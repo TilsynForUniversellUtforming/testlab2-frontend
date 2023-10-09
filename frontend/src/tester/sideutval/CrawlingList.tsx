@@ -127,18 +127,22 @@ const CrawlingList = ({
         pendingStatus={{
           statusText: 'Ikkje starta',
           statusCount: maaling?.crawlStatistics?.numPending ?? 0,
+          severity: 'neutral',
         }}
         runningStatus={{
           statusText: 'Crawler',
           statusCount: maaling?.crawlStatistics?.numRunning ?? 0,
+          severity: 'info',
         }}
         finishedStatus={{
           statusText: 'Ferdig',
           statusCount: maaling?.crawlStatistics?.numFinished ?? 0,
+          severity: 'success',
         }}
         errorStatus={{
           statusText: 'Feila',
           statusCount: maaling?.crawlStatistics?.numError ?? 0,
+          severity: 'danger',
         }}
         show={!loading && maaling?.status !== 'planlegging'}
         loadingStateStatus={refreshing ? 'Utfører sideutval...' : undefined}

@@ -1,5 +1,10 @@
 import TableActionButton from '@common/button/TableActionButton';
-import { ButtonColor, ButtonColorType, ButtonSize } from '@common/types';
+import {
+  ButtonColor,
+  ButtonColorType,
+  ButtonSize,
+  ButtonVariant,
+} from '@common/types';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
@@ -48,6 +53,7 @@ export const TableActionsContainer = <T extends object>({
               key={`${tra.action}_${idx}`}
               disabled={tra.rowSelectionRequired && !rowActionEnabled}
               color={color}
+              variant={ButtonVariant.Outline}
               size={ButtonSize.Small}
             />
           );
@@ -57,6 +63,7 @@ export const TableActionsContainer = <T extends object>({
               action={tra.action}
               route={tra.route}
               key={`${tra.action}_${idx}`}
+              variant={ButtonVariant.Outline}
               color={color}
               size={ButtonSize.Small}
               disabled={tra.rowSelectionRequired && !rowActionEnabled}

@@ -1,5 +1,9 @@
 import { Action } from '@common/table/types';
-import { ButtonColorType, ButtonSizeType } from '@common/types';
+import {
+  ButtonColorType,
+  ButtonSizeType,
+  ButtonVariantType,
+} from '@common/types';
 import React from 'react';
 
 import { AppRoute } from '../appRoutes';
@@ -10,6 +14,7 @@ export interface TableActionButtonProps {
   route: AppRoute;
   color?: ButtonColorType;
   size?: ButtonSizeType;
+  variant?: ButtonVariantType;
   disabled?: boolean;
 }
 
@@ -18,6 +23,7 @@ const TableActionButton = ({
   route,
   color,
   size,
+  variant,
   disabled = false,
 }: TableActionButtonProps) => {
   if (action === 'add') {
@@ -26,6 +32,7 @@ const TableActionButton = ({
         title="Legg til"
         route={route}
         color={color}
+        variant={variant}
         size={size}
         disabled={disabled}
       />

@@ -40,7 +40,6 @@ const ControlHeader = <T extends object>({
             value={filterValue}
             onChange={onChangeFilter}
             ariaLabel={'Søk i tabell'}
-            id={'search-input'}
           />
         )}
       </div>

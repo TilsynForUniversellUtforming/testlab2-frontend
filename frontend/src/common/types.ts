@@ -6,12 +6,16 @@ export interface AppContext {
   setContextLoading: (loading: boolean) => void;
 }
 
+export type Size = 'xsmall' | 'small' | 'medium' | 'large';
+
 export type Option = {
   label: string;
   value: string;
 };
 
 export type Severity = 'info' | 'warning' | 'success' | 'danger';
+
+export type TestlabSeverity = Severity | 'neutral';
 
 export const ButtonColor = {
   Primary: 'primary',

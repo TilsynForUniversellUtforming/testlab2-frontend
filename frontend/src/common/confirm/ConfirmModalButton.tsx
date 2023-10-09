@@ -1,10 +1,13 @@
-import { ButtonColor, ButtonColorType, ButtonSizeType } from '@common/types';
+import {
+  ButtonColor,
+  ButtonColorType,
+  ButtonSizeType,
+  ButtonVariantType,
+} from '@common/types';
 import { Button } from '@digdir/design-system-react';
 import React from 'react';
 
 import { ConfirmModalProvider, useConfirmModal } from './ConfirmModalProvider';
-
-export type ButtonVariant = 'button' | 'dropdown';
 
 export interface ConfirmModalProps {
   className?: string;
@@ -14,8 +17,8 @@ export interface ConfirmModalProps {
   disabled?: boolean;
   icon?: JSX.Element;
   color?: ButtonColorType;
-  buttonVariant?: ButtonVariant;
   size?: ButtonSizeType;
+  variant?: ButtonVariantType;
 }
 
 const ConfirmButton = ({
@@ -27,7 +30,7 @@ const ConfirmButton = ({
   color,
   icon,
   size,
-  buttonVariant = 'button',
+  variant,
 }: ConfirmModalProps) => {
   const confirmModal = useConfirmModal();
 
@@ -51,19 +54,8 @@ const ConfirmButton = ({
         icon={icon}
         title={title}
         size={size}
+        variant={variant}
       />
-    );
-  }
-
-  if (buttonVariant === 'dropdown') {
-    return (
-      <button
-        onClick={handleClickConfirmation}
-        className="dropdown-content__button"
-        type="button"
-      >
-        {title}
-      </button>
     );
   }
 
@@ -75,6 +67,7 @@ const ConfirmButton = ({
       color={color}
       icon={icon}
       size={size}
+      variant={variant}
     >
       {title}
     </Button>
@@ -89,7 +82,7 @@ const ConfirmModalButton = ({
   disabled = false,
   color = ButtonColor.Primary,
   icon,
-  buttonVariant,
+  variant,
   size,
 }: ConfirmModalProps) => (
   <ConfirmModalProvider>
@@ -101,7 +94,7 @@ const ConfirmModalButton = ({
       disabled={disabled}
       color={color}
       icon={icon}
-      buttonVariant={buttonVariant}
+      variant={variant}
       size={size}
     />
   </ConfirmModalProvider>
