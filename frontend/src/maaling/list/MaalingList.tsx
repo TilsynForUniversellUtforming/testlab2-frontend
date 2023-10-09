@@ -109,7 +109,6 @@ const MaalingList = () => {
     <UserActionTable<Maaling>
       heading="Målingar"
       subHeading="Liste over alle målingar"
-      actionButtons={[{ route: appRoutes.SAK_CREATE, action: 'add' }]}
       tableProps={{
         data: maalingList,
         defaultColumns: maalingColumns,
@@ -123,7 +122,12 @@ const MaalingList = () => {
         onSelectRows: onSelectRows,
         rowActions: [
           {
+            action: 'add',
+            route: appRoutes.SAK_CREATE,
+          },
+          {
             action: 'delete',
+            rowSelectionRequired: true,
             modalProps: {
               title: 'Slett måling',
               disabled: maalingRowSelection.length === 0,

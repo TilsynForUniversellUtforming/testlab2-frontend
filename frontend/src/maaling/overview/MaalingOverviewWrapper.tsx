@@ -1,6 +1,7 @@
 import AppTitle from '@common/app-title/AppTitle';
 import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
+import useLoading from '@common/hooks/useLoading';
 import TestlabTable from '@common/table/TestlabTable';
 import { Tabs } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
@@ -15,16 +16,12 @@ import { MaalingContext } from '../types';
 import MaalingOverview from './MaalingOverview';
 
 const MaalingOverviewWrapper = () => {
-  const {
-    maaling,
-    loadingMaaling,
-    contextError,
-    refresh,
-    maalingList,
-  }: MaalingContext = useOutletContext();
+  const { maaling, contextError, refresh, maalingList }: MaalingContext =
+    useOutletContext();
   const { id } = useParams();
   const maalingName =
     maalingList.find((m) => m.id === Number(id))?.navn || maaling?.navn;
+  const [loading] = useLoading(maaling?.id !== Number(id));
 
   const loeysingColumns = useMemo(() => getLoeysingColumnsReadOnly(), []);
   const testregelColumns = useMemo(() => getTestregelColumnsReadOnly(), []);
@@ -59,8 +56,7 @@ const MaalingOverviewWrapper = () => {
               <TestlabTable<Loeysing>
                 defaultColumns={loeysingColumns}
                 data={maaling?.loeysingList ?? []}
-                filterPreference="rowsearch"
-                loading={loadingMaaling}
+                loading={loading}
                 displayError={displayError}
                 onClickRow={(row) =>
                   openInNewTab(
@@ -79,8 +75,7 @@ const MaalingOverviewWrapper = () => {
               <TestlabTable<Testregel>
                 defaultColumns={testregelColumns}
                 data={maaling?.testregelList ?? []}
-                filterPreference="rowsearch"
-                loading={loadingMaaling}
+                loading={loading}
                 displayError={displayError}
                 onClickRow={(row) =>
                   openInNewTab(

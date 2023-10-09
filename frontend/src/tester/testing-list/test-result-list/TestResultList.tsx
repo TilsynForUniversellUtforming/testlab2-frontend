@@ -57,11 +57,7 @@ const TestResultList = () => {
           },
           onClickRow: (row) =>
             navigate(String(row?.original.testregelId ?? '')),
-        }}
-        menuButtons={{
-          title: 'Meny for testresultat',
-          disabled: contextLoading,
-          actions: [
+          rowActions: [
             {
               action: 'restart',
               modalProps: {

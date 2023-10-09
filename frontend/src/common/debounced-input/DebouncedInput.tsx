@@ -9,8 +9,6 @@ export type Props = {
   debounce?: number;
   label?: string;
   ariaLabel?: string;
-  labelPlacement?: 'top' | 'left';
-  id: string;
 };
 
 const DebouncedInput = ({
@@ -19,8 +17,6 @@ const DebouncedInput = ({
   debounce = 500,
   label,
   ariaLabel,
-  labelPlacement = 'top',
-  id,
 }: Props) => {
   const [value, setValue] = useState(initialValue);
 
@@ -36,22 +32,13 @@ const DebouncedInput = ({
     return () => clearTimeout(timeout);
   }, [value]);
 
-  const labelTopPlacement = labelPlacement === 'top';
-
   return (
     <div className="debounced-input__container">
-      {!labelTopPlacement && (
-        <label className="debounced-input__label" htmlFor={id}>
-          {label}
-        </label>
-      )}
       <Textfield
-        label={labelTopPlacement ? label : undefined}
+        label={label}
         type="text"
         value={String(value)}
         onChange={(e) => setValue(e.target.value)}
-        id={id}
-        autoComplete="new-password"
         aria-label={ariaLabel}
       />
     </div>

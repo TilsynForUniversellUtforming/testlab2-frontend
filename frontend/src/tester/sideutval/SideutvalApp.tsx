@@ -13,7 +13,6 @@ import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useOutletContext, useParams } from 'react-router-dom';
 
-import StatusChart from '../chart/StatusChart';
 import CrawlingList from './CrawlingList';
 
 const maalingToCrawlResultat = (maaling?: Maaling): CrawlResultat[] => {
@@ -140,25 +139,6 @@ const SideutvalApp = () => {
           clearMessage={alert.clearMessage}
         />
       )}
-      <StatusChart
-        pendingStatus={{
-          statusText: 'Ikkje starta',
-          statusCount: maaling?.crawlStatistics?.numPending ?? 0,
-        }}
-        runningStatus={{
-          statusText: 'Crawler',
-          statusCount: maaling?.crawlStatistics?.numRunning ?? 0,
-        }}
-        finishedStatus={{
-          statusText: 'Ferdig',
-          statusCount: maaling?.crawlStatistics?.numFinished ?? 0,
-        }}
-        errorStatus={{
-          statusText: 'Feila',
-          statusCount: maaling?.crawlStatistics?.numError ?? 0,
-        }}
-        show={!loading && maaling?.status !== 'planlegging'}
-      />
       <CrawlingList
         id={id}
         maaling={maaling}

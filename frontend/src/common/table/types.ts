@@ -1,3 +1,4 @@
+import { AppRoute } from '@common/appRoutes';
 import { Table } from '@tanstack/react-table';
 
 import { ConfirmModalProps } from '../confirm/ConfirmModalButton';
@@ -16,13 +17,15 @@ export type TableStyle = {
   fixed?: boolean;
 };
 
-export type TableFilterPreference = 'all' | 'none' | 'searchbar' | 'rowsearch';
+export type TableFilterPreference = 'all' | 'none' | 'searchbar';
 
-export type RowActionType = 'delete' | 'restart';
+export type Action = 'add' | 'delete' | 'restart' | 'save';
 
 export type TableRowAction = {
-  action: RowActionType;
-  modalProps: ConfirmModalProps;
+  action: Action;
+  route?: AppRoute;
+  modalProps?: ConfirmModalProps;
+  rowSelectionRequired?: boolean;
 };
 
 export const CellCheckboxId = 'handling';

@@ -1,10 +1,13 @@
 import './status-chart.scss';
 
-import { Heading } from '@digdir/design-system-react';
+import LoadingBar from '@common/loading-bar/LoadingBar';
+import { TestlabSeverity } from '@common/types';
+import { Heading, Spinner } from '@digdir/design-system-react';
 
 export type ChartStatus = {
   statusCount: number;
   statusText: string;
+  severity: TestlabSeverity;
 };
 
 interface ChartProps {
@@ -13,7 +16,30 @@ interface ChartProps {
   finishedStatus: ChartStatus;
   errorStatus: ChartStatus;
   show: boolean;
+  loadingStateStatus?: string;
 }
+
+interface ProgressElementProps {
+  chartStatus: ChartStatus;
+  total: number;
+}
+
+const ProgressElement = ({ chartStatus, total }: ProgressElementProps) => {
+  const percentage = Math.round((chartStatus.statusCount / total) * 100);
+  const statusText = `${chartStatus.statusText} (${chartStatus.statusCount} av ${total})`;
+  return (
+    <div className="status-chart__progress-element">
+      <LoadingBar
+        percentage={percentage}
+        size={'large'}
+        customText={statusText}
+        dynamicSeverity={false}
+        textPlacement={'left'}
+        severity={chartStatus.severity}
+      />
+    </div>
+  );
+};
 
 const StatusChart = ({
   pendingStatus,
@@ -21,6 +47,7 @@ const StatusChart = ({
   finishedStatus,
   errorStatus,
   show,
+  loadingStateStatus,
 }: ChartProps) => {
   if (!show) {
     return null;
@@ -32,36 +59,25 @@ const StatusChart = ({
     finishedStatus.statusCount +
     errorStatus.statusCount;
 
-  const percentFinished = (x: number) => (x / total) * 100;
-
-  const ProgressElement = (props: {
-    chartStatus: ChartStatus;
-    variant: 'ikke-startet' | 'underveis' | 'ferdig' | 'feilet';
-  }) => (
-    <div className="status-chart__progress-element">
-      <Heading size="small">
-        {props.chartStatus.statusText} ({props.chartStatus.statusCount} av{' '}
-        {total})
-      </Heading>
-      <div
-        className={'status-chart__bar status-chart__bar--' + props.variant}
-        style={{ width: `${percentFinished(props.chartStatus.statusCount)}%` }}
-      ></div>
-    </div>
-  );
-
   return (
     <div className="status-chart">
-      <Heading size="large" className="status-chart__heading">
+      <Heading size="medium" className="status-chart__heading">
         Status
       </Heading>
-      {pendingStatus.statusCount > 0 && (
-        <ProgressElement chartStatus={pendingStatus} variant="ikke-startet" />
+      {[pendingStatus, runningStatus, finishedStatus, errorStatus].map(
+        (status, idx) => (
+          <ProgressElement
+            chartStatus={status}
+            total={total}
+            key={`${status.severity}_${idx}`}
+          />
+        )
       )}
-      <ProgressElement chartStatus={runningStatus} variant="underveis" />
-      <ProgressElement chartStatus={finishedStatus} variant="ferdig" />
-      {errorStatus.statusCount > 0 && (
-        <ProgressElement chartStatus={errorStatus} variant="feilet" />
+      {loadingStateStatus && (
+        <>
+          {`${loadingStateStatus} `}
+          <Spinner title={loadingStateStatus} size="small" />
+        </>
       )}
     </div>
   );

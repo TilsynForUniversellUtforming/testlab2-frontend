@@ -85,7 +85,6 @@ const TestregelList = () => {
     <UserActionTable<Testregel>
       heading="Testreglar"
       subHeading="Liste over alle testreglar"
-      actionButtons={[{ route: appRoutes.TESTREGEL_CREATE, action: 'add' }]}
       tableProps={{
         data: testreglar,
         defaultColumns: testRegelColumns,
@@ -99,7 +98,12 @@ const TestregelList = () => {
         onSelectRows: onSelectRows,
         rowActions: [
           {
+            action: 'add',
+            route: appRoutes.TESTREGEL_CREATE,
+          },
+          {
             action: 'delete',
+            rowSelectionRequired: true,
             modalProps: {
               title: 'Slett testreglar',
               disabled: testregelRowSelection.length === 0,
