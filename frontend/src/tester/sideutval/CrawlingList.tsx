@@ -7,7 +7,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import StatusChart from '../chart/StatusChart';
-import { getCrawlColumns, getCrawlColumnsLoading } from './CrawlColumns';
+import { getCrawlColumns } from './CrawlColumns';
 
 export interface Props {
   id: string;
@@ -38,7 +38,8 @@ const CrawlingList = ({
 
   const rowActions = useMemo<TableRowAction[]>(() => {
     const actions: TableRowAction[] = [];
-    if (maalingStatus === 'crawling' || maalingStatus === 'kvalitetssikring') {
+    if (maalingStatus === 'kvalitetssikring') {
+      const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
       actions.push({
         action: 'restart',
         rowSelectionRequired: true,
@@ -52,12 +53,11 @@ const CrawlingList = ({
         },
       });
 
-      const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
-      if (maalingStatus === 'kvalitetssikring' && failedCrawlings.length > 0) {
+      if (failedCrawlings.length > 0) {
         actions.push({
           action: 'restart',
           modalProps: {
-            title: 'Kjør sideutval for feila',
+            title: 'Køyr sideutval for feila',
             disabled: crawlList.length === 0,
             message: `Vil du køyra sideutval for alle feila på nytt?`,
             onConfirm: () => onClickRestart(failedCrawlings),
@@ -69,13 +69,7 @@ const CrawlingList = ({
     return actions;
   }, [maalingStatus, crawlList, crawlRowSelection]);
 
-  const crawlColumns = useMemo(() => {
-    if (typeof maaling !== 'undefined') {
-      return getCrawlColumns(maaling);
-    } else {
-      return getCrawlColumnsLoading();
-    }
-  }, [maaling]);
+  const crawlColumns = useMemo(() => getCrawlColumns(maaling), [maaling]);
 
   const onClickRefresh = useCallback(() => {
     setCrawlRowSelection([]);

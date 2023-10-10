@@ -1,9 +1,6 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import StatusBadge from '@common/status-badge/StatusBadge';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '@common/table/control/toggle/IndeterminateCheckbox';
+import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
 import { isDefined } from '@common/util/util';
 import { Maaling, TestResult } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
@@ -12,6 +9,8 @@ import React from 'react';
 /**
  * getTestingListColumns function returns an array of column definitions for TestResult.
  *
+ * @param {object} maaling - The current maaling.
+ *
  * @returns {Array<ColumnDef<TestResult>>} An array of column definitions.
  */
 export const getTestingListColumns = (
@@ -19,8 +18,6 @@ export const getTestingListColumns = (
 ): Array<ColumnDef<TestResult>> => [
   {
     id: 'testinglist_handling',
-    header: ({ table }) =>
-      maaling?.status === 'testing_ferdig' && <HeaderCheckbox table={table} />,
     cell: ({ row }) =>
       maaling?.status === 'testing_ferdig' && (
         <RowCheckbox
