@@ -18,8 +18,8 @@ export type Severity = 'info' | 'warning' | 'success' | 'danger';
 export type TestlabSeverity = Severity | 'neutral';
 
 export const ButtonColor = {
-  Primary: 'primary',
-  Secondary: 'secondary',
+  Primary: 'first',
+  Secondary: 'second',
   Success: 'success',
   Danger: 'danger',
   Inverted: 'inverted',
