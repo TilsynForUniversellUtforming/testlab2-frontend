@@ -81,7 +81,7 @@ const TestreglarApp = () => {
   const lastSegment = location.pathname.split('/').pop();
 
   const handleChange = (name: string) => {
-    if (name === 'Regelsett') {
+    if (name === 'regelsett') {
       navigate(appRoutes.REGELSETT_ROOT.path);
     } else {
       navigate('.');
@@ -111,23 +111,19 @@ const TestreglarApp = () => {
   return (
     <>
       <Tabs
-        activeTab={
-          lastSegment === appRoutes.REGELSETT_ROOT.path
-            ? 'Regelsett'
-            : 'Testreglar'
-        }
-        items={[
-          {
-            name: 'Testreglar',
-            content: <></>,
-          },
-          {
-            name: 'Regelsett',
-            content: <></>,
-          },
-        ]}
+        defaultValue="testreglar"
         onChange={handleChange}
-      />
+        value={
+          lastSegment === appRoutes.REGELSETT_ROOT.path
+            ? 'regelsett'
+            : 'testreglar'
+        }
+      >
+        <Tabs.List>
+          <Tabs.Tab value="testreglar">Testreglar</Tabs.Tab>
+          <Tabs.Tab value="regelsett">Regelsett</Tabs.Tab>
+        </Tabs.List>
+      </Tabs>
       <div className="testreglar__content">
         <Outlet context={testRegelContext} />
       </div>

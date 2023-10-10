@@ -30,7 +30,7 @@ interface Props {
 
 const getBadgeColor = (status: string, levels: Levels) => {
   if (levels.primary.includes(status)) {
-    return 'tertiary';
+    return 'third';
   } else if (levels.danger.includes(status)) {
     return 'danger';
   } else if (levels.success.includes(status)) {

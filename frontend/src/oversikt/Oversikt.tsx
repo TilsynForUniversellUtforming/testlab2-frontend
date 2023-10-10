@@ -30,7 +30,7 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             variant="outline"
             icon={<img src={route.imgSrc} alt={''} />}
             size="large"
-            color="secondary"
+            color="second"
             fullWidth={true}
             disabled={route.disabled}
           />
@@ -60,7 +60,7 @@ const Oversikt = () => {
               />
             }
             size="large"
-            color="secondary"
+            color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
           />
@@ -76,7 +76,7 @@ const Oversikt = () => {
               />
             }
             size="large"
-            color="secondary"
+            color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
             disabled={appRoutes.NY_TEST_ROOT.disabled}

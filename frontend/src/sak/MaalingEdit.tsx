@@ -14,7 +14,11 @@ import useMaalingFormState from './hooks/useMaalingFormState';
 import useSakForm from './hooks/useSakForm';
 import { SakFormState } from './types';
 
-const MaalingEdit = () => {
+interface Props {
+  onChangeTabs: (tab: string) => void;
+}
+
+const MaalingEdit = ({ onChangeTabs }: Props) => {
   const {
     maaling,
     loeysingList,
@@ -36,41 +40,45 @@ const MaalingEdit = () => {
     advisors
   );
 
-  const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    setLoading(true);
-    setError(undefined);
+  const doSubmitMaaling = useCallback(
+    (maalingFormState: SakFormState) => {
+      setLoading(true);
+      setError(undefined);
 
-    const doEditMaaling = async () => {
-      if (maaling) {
-        const maalingEdit: MaalingEditParams = {
-          id: maaling.id,
-          navn: maalingFormState.navn!,
-          loeysingIdList: maalingFormState.loeysingList.map(
-            (l) => l.loeysing.id
-          ),
-          testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
-          crawlParameters: {
-            maxLinksPerPage: maalingFormState.maxLinksPerPage,
-            numLinksToSelect: maalingFormState.numLinksToSelect,
-          },
-        };
+      const doEditMaaling = async () => {
+        if (maaling) {
+          const maalingEdit: MaalingEditParams = {
+            id: maaling.id,
+            navn: maalingFormState.navn!,
+            loeysingIdList: maalingFormState.loeysingList.map(
+              (l) => l.loeysing.id
+            ),
+            testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
+            crawlParameters: {
+              maxLinksPerPage: maalingFormState.maxLinksPerPage,
+              numLinksToSelect: maalingFormState.numLinksToSelect,
+            },
+          };
 
-        try {
-          const maaling = await updateMaaling(maalingEdit);
-          setMaaling(maaling);
-          setAlert('success', `${maalingEdit.navn} er oppdatert`);
-        } catch (e) {
-          setError(toError(e, 'Kunne ikkje lage sak'));
+          try {
+            const maaling = await updateMaaling(maalingEdit);
+            setMaaling(maaling);
+            setAlert('success', `${maalingEdit.navn} er oppdatert`);
+          } catch (e) {
+            setError(toError(e, 'Kunne ikkje lage sak'));
+          }
+        } else {
+          setError(new Error('Kunne ikkje oppdatere sak'));
         }
-      } else {
-        setError(new Error('Kunne ikkje oppdatere sak'));
-      }
-    };
+      };
 
-    doEditMaaling().finally(() => {
-      setLoading(false);
-    });
-  }, []);
+      doEditMaaling().finally(() => {
+        setLoading(false);
+        onChangeTabs('oversikt');
+      });
+    },
+    [maaling]
+  );
 
   const formStepState = useSakForm(maaling?.status, true);
   const { isLastStep, setNextStep } = formStepState;

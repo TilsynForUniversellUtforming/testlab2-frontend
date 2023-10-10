@@ -7,7 +7,7 @@ import { Tabs } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
 import MaalingEdit from '@sak/MaalingEdit';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import { Testregel } from '../../testreglar/api/types';
@@ -22,6 +22,10 @@ const MaalingOverviewWrapper = () => {
   const maalingName =
     maalingList.find((m) => m.id === Number(id))?.navn || maaling?.navn;
   const [loading] = useLoading(maaling?.id !== Number(id));
+  const [activeTab, setActiveTab] = useState<string>('oversikt');
+  const onChangeTabs = useCallback((tab: string) => {
+    setActiveTab(tab);
+  }, []);
 
   const loeysingColumns = useMemo(() => getLoeysingColumnsReadOnly(), []);
   const testregelColumns = useMemo(() => getTestregelColumnsReadOnly(), []);
@@ -40,56 +44,52 @@ const MaalingOverviewWrapper = () => {
   return (
     <>
       <AppTitle heading="Måling" subHeading={maalingName} />
-      <Tabs
-        items={[
-          {
-            name: 'Oversikt',
-            content: <MaalingOverview />,
-          },
-          {
-            name: 'Rediger måling',
-            content: <MaalingEdit />,
-          },
-          {
-            name: 'Nettløysingar',
-            content: (
-              <TestlabTable<Loeysing>
-                defaultColumns={loeysingColumns}
-                data={maaling?.loeysingList ?? []}
-                loading={loading}
-                displayError={displayError}
-                onClickRow={(row) =>
-                  openInNewTab(
-                    getFullPath(appRoutes.LOEYSING_EDIT, {
-                      pathParam: idPath,
-                      id: String(row?.original.id),
-                    })
-                  )
-                }
-              />
-            ),
-          },
-          {
-            name: 'Testreglar',
-            content: (
-              <TestlabTable<Testregel>
-                defaultColumns={testregelColumns}
-                data={maaling?.testregelList ?? []}
-                loading={loading}
-                displayError={displayError}
-                onClickRow={(row) =>
-                  openInNewTab(
-                    getFullPath(appRoutes.TESTREGEL_EDIT, {
-                      pathParam: idPath,
-                      id: String(row?.original.id),
-                    })
-                  )
-                }
-              />
-            ),
-          },
-        ]}
-      />
+      <Tabs value={activeTab} onChange={onChangeTabs}>
+        <Tabs.List>
+          <Tabs.Tab value="oversikt">Oversikt</Tabs.Tab>
+          <Tabs.Tab value="redigermaaling">Rediger måling</Tabs.Tab>
+          <Tabs.Tab value="nettloeysingar">Nettløysingar</Tabs.Tab>
+          <Tabs.Tab value="testreglar">Testreglar</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Content value="oversikt">
+          <MaalingOverview />
+        </Tabs.Content>
+        <Tabs.Content value="redigermaaling">
+          <MaalingEdit onChangeTabs={onChangeTabs} />
+        </Tabs.Content>
+        <Tabs.Content value="nettloeysingar">
+          <TestlabTable<Loeysing>
+            defaultColumns={loeysingColumns}
+            data={maaling?.loeysingList ?? []}
+            loading={loading}
+            displayError={displayError}
+            onClickRow={(row) =>
+              openInNewTab(
+                getFullPath(appRoutes.LOEYSING_EDIT, {
+                  pathParam: idPath,
+                  id: String(row?.original.id),
+                })
+              )
+            }
+          />
+        </Tabs.Content>
+        <Tabs.Content value="testreglar">
+          <TestlabTable<Testregel>
+            defaultColumns={testregelColumns}
+            data={maaling?.testregelList ?? []}
+            loading={loading}
+            displayError={displayError}
+            onClickRow={(row) =>
+              openInNewTab(
+                getFullPath(appRoutes.TESTREGEL_EDIT, {
+                  pathParam: idPath,
+                  id: String(row?.original.id),
+                })
+              )
+            }
+          />
+        </Tabs.Content>
+      </Tabs>
     </>
   );
 };
