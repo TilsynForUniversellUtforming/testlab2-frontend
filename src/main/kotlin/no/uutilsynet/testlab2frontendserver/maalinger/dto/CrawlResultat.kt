@@ -18,9 +18,7 @@ fun CrawlResultatDTO.toCrawlResultat() =
     CrawlResultat(
         this.loeysing,
         type =
-            if (this.type == JobStatus.ikke_ferdig) {
-              JobStatus.crawler
-            } else if (this.antallNettsider == 0 && this.type == JobStatus.ferdig) {
+            if (this.antallNettsider == 0 && this.type == JobStatus.ferdig) {
               JobStatus.feila
             } else {
               this.type

@@ -5,7 +5,7 @@ import StatusBadge from '@common/status-badge/StatusBadge';
 import { List, ListItem, Spinner } from '@digdir/design-system-react';
 import React from 'react';
 
-import { Maaling } from '../../api/types';
+import { Maaling, MaalingStatus } from '../../api/types';
 import useMaalingOverviewStatus from '../../hooks/useMaalingOverviewStatus';
 import { MaalingTestStatus } from '../../types';
 import MaalingStatusRow from './MaalingStatusRow';
@@ -31,7 +31,7 @@ const MaalingStatusContainer = ({
   const { crawlingStatus, testingStatus, publishStatus } =
     maalingOverviewStatus;
 
-  const pollingStatuses = ['crawling', 'testing'];
+  const pollingStatuses: MaalingStatus[] = ['crawling', 'testing'];
 
   return (
     <div className="status">
@@ -40,7 +40,7 @@ const MaalingStatusContainer = ({
           <div className="status__list-item">
             <div className="bold-text">Status</div>
             <div className="status__list-item-icon">
-              <StatusBadge
+              <StatusBadge<MaalingStatus>
                 status={maaling.status}
                 levels={{
                   primary: pollingStatuses,
