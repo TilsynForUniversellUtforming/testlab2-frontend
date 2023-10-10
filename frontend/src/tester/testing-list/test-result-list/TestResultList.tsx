@@ -1,6 +1,7 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
+import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain } from '@common/util/stringutils';
 import { AggregatedTestresult } from '@maaling/api/types';
@@ -34,6 +35,41 @@ const TestResultList = () => {
     loeysingTestResult?.loeysing?.namn
   );
 
+  const rowActions = useMemo<TableRowAction[]>(() => {
+    const rowActionList: TableRowAction[] = [];
+    if (maaling?.status === 'testing_ferdig') {
+      rowActionList.push(
+        {
+          action: 'restart',
+          modalProps: {
+            title: 'Køyr test på nytt',
+            message: `Vil du køyre test på nytt for ${extractDomain(
+              loeysingTestResult?.loeysing?.url
+            )}?`,
+            onConfirm: onClickRestart,
+          },
+        },
+        {
+          action: 'delete',
+          modalProps: {
+            title: 'Ta løysing ut av måling',
+            message: `Vil du ta ut test fra ${extractDomain(
+              loeysingTestResult?.loeysing?.url
+            )}?`,
+            onConfirm: () =>
+              setTestStatus({
+                loading: false,
+                message: 'Kan ikkje ta løysingar frå måling ennå',
+                severity: 'warning',
+              }),
+          },
+        }
+      );
+    }
+
+    return rowActionList;
+  }, [maaling]);
+
   return (
     <>
       <UserActionTable<AggregatedTestresult>
@@ -57,33 +93,7 @@ const TestResultList = () => {
           },
           onClickRow: (row) =>
             navigate(String(row?.original.testregelId ?? '')),
-          rowActions: [
-            {
-              action: 'restart',
-              modalProps: {
-                title: 'Køyr test på nytt',
-                message: `Vil du køyre test på nytt for ${extractDomain(
-                  loeysingTestResult?.loeysing?.url
-                )}?`,
-                onConfirm: onClickRestart,
-              },
-            },
-            {
-              action: 'delete',
-              modalProps: {
-                title: 'Ta løysing ut av måling',
-                message: `Vil du ta ut test fra ${extractDomain(
-                  loeysingTestResult?.loeysing?.url
-                )}?`,
-                onConfirm: () =>
-                  setTestStatus({
-                    loading: false,
-                    message: 'Kan ikkje ta løysingar frå måling ennå',
-                    severity: 'warning',
-                  }),
-              },
-            },
-          ],
+          rowActions: rowActions,
         }}
       />
       {testStatus.message && (

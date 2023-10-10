@@ -100,7 +100,7 @@ const KvalitetssikringApp = () => {
 
   const rowActions = useMemo<TableRowAction[]>(() => {
     const actions: TableRowAction[] = [];
-    if (['crawling', 'kvalitetssikring'].includes(maalingStatus ?? '')) {
+    if (maalingStatus === 'kvalitetssikring') {
       actions.push(
         {
           action: 'restart',
@@ -121,10 +121,8 @@ const KvalitetssikringApp = () => {
             )} ut av måling?`,
             onConfirm: onClickDeleteLoeysing,
           },
-        }
-      );
-      if (maalingStatus === 'kvalitetssikring') {
-        actions.push({
+        },
+        {
           action: 'delete',
           rowSelectionRequired: true,
           modalProps: {
@@ -134,8 +132,8 @@ const KvalitetssikringApp = () => {
             )} frå måling?`,
             onConfirm: onClickRemoveUrl,
           },
-        });
-      }
+        }
+      );
     }
 
     return actions;
