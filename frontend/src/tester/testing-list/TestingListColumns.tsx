@@ -5,7 +5,7 @@ import {
   RowCheckbox,
 } from '@common/table/control/toggle/IndeterminateCheckbox';
 import { isDefined } from '@common/util/util';
-import { TestResult } from '@maaling/api/types';
+import { Maaling, TestResult } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
@@ -14,13 +14,20 @@ import React from 'react';
  *
  * @returns {Array<ColumnDef<TestResult>>} An array of column definitions.
  */
-export const getTestingListColumns = (): Array<ColumnDef<TestResult>> => [
+export const getTestingListColumns = (
+  maaling?: Maaling
+): Array<ColumnDef<TestResult>> => [
   {
     id: 'testinglist_handling',
-    header: ({ table }) => <HeaderCheckbox table={table} />,
-    cell: ({ row }) => (
-      <RowCheckbox row={row} ariaLabel={`Velg ${row.original.loeysing.namn}`} />
-    ),
+    header: ({ table }) =>
+      maaling?.status === 'testing_ferdig' && <HeaderCheckbox table={table} />,
+    cell: ({ row }) =>
+      maaling?.status === 'testing_ferdig' && (
+        <RowCheckbox
+          row={row}
+          ariaLabel={`Velg ${row.original.loeysing.namn}`}
+        />
+      ),
     size: 1,
   },
   {

@@ -38,7 +38,10 @@ const TestingListApp = () => {
   const [pollMaaling, setPollMaaling] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
-  const testResultatColumns = useMemo(() => getTestingListColumns(), []);
+  const testResultatColumns = useMemo(
+    () => getTestingListColumns(maaling),
+    [maaling]
+  );
 
   const rowActions = useMemo<TableRowAction[]>(() => {
     const actions: TableRowAction[] = [];
@@ -57,18 +60,18 @@ const TestingListApp = () => {
           onConfirm: () => onClickRestart(testRowSelection),
         },
       });
-    }
 
-    if (failedTests.length > 0) {
-      actions.push({
-        action: 'restart',
-        modalProps: {
-          title: 'Test feila på nytt',
-          disabled: testResult.length === 0,
-          message: `Vil du køyra alle feila tester på nytt?`,
-          onConfirm: () => onClickRestart(failedTests),
-        },
-      });
+      if (failedTests.length > 0) {
+        actions.push({
+          action: 'restart',
+          modalProps: {
+            title: 'Test feila på nytt',
+            disabled: testResult.length === 0,
+            message: `Vil du køyra alle feila tester på nytt?`,
+            onConfirm: () => onClickRestart(failedTests),
+          },
+        });
+      }
     }
 
     return actions;
