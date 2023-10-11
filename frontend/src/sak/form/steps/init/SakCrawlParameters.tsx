@@ -13,14 +13,14 @@ const SakCrawlParameters = ({ displayAdvanced }: Props) => {
         <div className="sak__crawl-input">
           <TestlabForm.FormInput<SakFormState>
             label="Nettsider til sideutval (brutto-utval)"
-            name="maxLinksPerPage"
+            name="maxLenker"
             numeric
           />
         </div>
         <div className="sak__crawl-input">
           <TestlabForm.FormInput<SakFormState>
             label="Nettsider som blir valde frå utval (netto-utval)"
-            name="numLinksToSelect"
+            name="talLenker"
             numeric
           />
         </div>

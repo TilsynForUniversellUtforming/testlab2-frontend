@@ -31,8 +31,8 @@ export type SakFormState = {
   sakType?: Saktype;
   advisorId?: string;
   sakNumber: string | undefined;
-  maxLinksPerPage: number;
-  numLinksToSelect: number;
+  maxLenker: number;
+  talLenker: number;
   loeysingSource: LoeysingSource;
   loeysingList: LoeysingVerksemd[];
   utval?: Utval;
@@ -43,8 +43,8 @@ export const defaultSakFormState: SakFormState = {
   navn: '',
   loeysingList: [],
   testregelList: [],
-  maxLinksPerPage: 100,
-  numLinksToSelect: 30,
+  maxLenker: 100,
+  talLenker: 30,
   sakType: undefined,
   advisorId: undefined,
   sakNumber: '',
