@@ -2,7 +2,7 @@ import LoadingBar from '@common/loading-bar/LoadingBar';
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
 import { isDefined } from '@common/util/util';
-import { Maaling, TestResult } from '@maaling/api/types';
+import { JobStatus, Maaling, TestResult } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
@@ -72,7 +72,7 @@ export const getTestingListColumns = (
       }
 
       return (
-        <StatusBadge
+        <StatusBadge<JobStatus>
           status={status}
           customLabel={label}
           levels={{

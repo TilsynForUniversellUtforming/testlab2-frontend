@@ -106,9 +106,9 @@ const KvalitetssikringApp = () => {
           action: 'restart',
           modalProps: {
             title: 'Køyr utval på nytt',
-            message: `Vil du køyre nytt utval for ${extractDomain(
+            message: `Vil du køyre utval for ${extractDomain(
               loeysingCrawResultat?.loeysing?.url
-            )}?`,
+            )} på nytt?`,
             onConfirm: onClickRestart,
           },
         },

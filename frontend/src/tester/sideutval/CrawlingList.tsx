@@ -39,14 +39,14 @@ const CrawlingList = ({
   const rowActions = useMemo<TableRowAction[]>(() => {
     const actions: TableRowAction[] = [];
     if (maalingStatus === 'kvalitetssikring') {
-      const failedCrawlings = crawlList.filter((tr) => tr.type === 'feilet');
+      const failedCrawlings = crawlList.filter((tr) => tr.type === 'feila');
       actions.push({
         action: 'restart',
         rowSelectionRequired: true,
         modalProps: {
           title: 'Køyr utval på nytt',
           disabled: crawlList.length === 0,
-          message: `Vil du køyre nytt utval for ${joinStringsToList(
+          message: `Vil du køyre utval for ${joinStringsToList(
             crawlRowSelection.map((r) => r.loeysing.namn)
           )} på nytt?`,
           onConfirm: () => onClickRestart(crawlRowSelection),
