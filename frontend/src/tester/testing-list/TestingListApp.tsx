@@ -133,6 +133,7 @@ const TestingListApp = () => {
 
   const doFetchData = useCallback(async () => {
     try {
+      setError(undefined);
       if (maalingId && !loading && maaling && maaling.status === 'testing') {
         const refreshedMaaling = await fetchMaaling(maaling.id);
 

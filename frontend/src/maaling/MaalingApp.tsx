@@ -147,6 +147,7 @@ const MaalingApp = () => {
           setPollMaaling(
             maaling?.status === 'crawling' || maaling?.status === 'testing'
           );
+          setLoadingMaaling(false);
           return maaling;
         } else {
           throw new Error('Måling ikkje funnet');
