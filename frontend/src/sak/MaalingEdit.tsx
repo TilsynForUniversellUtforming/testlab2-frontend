@@ -55,8 +55,8 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
             ),
             testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
             crawlParameters: {
-              maxLinksPerPage: maalingFormState.maxLinksPerPage,
-              numLinksToSelect: maalingFormState.numLinksToSelect,
+              maxLenker: maalingFormState.maxLenker,
+              talLenker: maalingFormState.talLenker,
             },
           };
 

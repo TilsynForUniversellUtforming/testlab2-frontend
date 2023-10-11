@@ -1,9 +1,10 @@
-import { Loeysing } from '../../loeysingar/api/types';
+import { Loeysing } from '@loeysingar/api/types';
+
 import { Testregel } from '../../testreglar/api/types';
 
 export type CrawlParameters = {
-  maxLinksPerPage: number;
-  numLinksToSelect: number;
+  maxLenker: number;
+  talLenker: number;
 };
 
 export type MaalingInit = MaalingInitMedLoeysingList | MaalingInitMedUtval;
