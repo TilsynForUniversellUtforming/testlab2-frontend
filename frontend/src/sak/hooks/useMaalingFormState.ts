@@ -19,11 +19,11 @@ const toSakFormState = (
     : [],
   loeysingSource: 'manuell',
   testregelList: maaling?.testregelList ? maaling.testregelList : [],
-  maxLinksPerPage: maaling?.crawlParameters?.maxLinksPerPage
-    ? maaling.crawlParameters.maxLinksPerPage
+  maxLenker: maaling?.crawlParameters?.maxLenker
+    ? maaling.crawlParameters.maxLenker
     : 100,
-  numLinksToSelect: maaling?.crawlParameters?.numLinksToSelect
-    ? maaling.crawlParameters.numLinksToSelect
+  talLenker: maaling?.crawlParameters?.talLenker
+    ? maaling.crawlParameters.talLenker
     : 30,
   sakType: 'Tilsyn',
   advisorId: advisors[0]?.id ? String(advisors[0].id) : undefined,

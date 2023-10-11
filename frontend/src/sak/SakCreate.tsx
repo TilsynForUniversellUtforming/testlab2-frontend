@@ -41,15 +41,15 @@ const SakCreate = () => {
 
       if (
         maalingFormState.navn &&
-        maalingFormState.maxLinksPerPage &&
-        maalingFormState.numLinksToSelect
+        maalingFormState.maxLenker &&
+        maalingFormState.talLenker
       ) {
         const base = {
           navn: maalingFormState.navn,
           testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
           crawlParameters: {
-            maxLinksPerPage: maalingFormState.maxLinksPerPage,
-            numLinksToSelect: maalingFormState.numLinksToSelect,
+            maxLenker: maalingFormState.maxLenker,
+            talLenker: maalingFormState.talLenker,
           },
         };
         const maalingInit: MaalingInit = maalingFormState.utval

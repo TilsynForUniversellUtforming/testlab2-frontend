@@ -59,16 +59,16 @@ export const sakInitValidationSchema = z
         'Sakshandsamar kan ikkje vera tom'
       ),
     sakNumber: z.string().optional(),
-    maxLinksPerPage: z
+    maxLenker: z
       .union([z.number(), z.string()])
       .transform((val) => parseNumberInput(val))
-      .refine((value) => value >= 10 && value <= 2000, {
-        message: 'Brutto-utval av nettsider må være mellom 10 og 2000',
+      .refine((value) => value >= 1 && value <= 10000, {
+        message: 'Brutto-utval av nettsider må være mellom 1 og 10 000',
       }),
-    numLinksToSelect: z
+    talLenker: z
       .union([z.number(), z.string()])
       .transform((val) => parseNumberInput(val))
-      .refine((value) => value >= 10 && value <= 2000, {
+      .refine((value) => value >= 1 && value <= 2000, {
         message: 'Netto-utval av nettsider må være mellom 10 og 2000',
       }),
     loeysingSource: loeysingSourceSchema,
@@ -78,12 +78,11 @@ export const sakInitValidationSchema = z
   })
   .refine(
     (data) =>
-      parseNumberInput(data.maxLinksPerPage) >=
-      parseNumberInput(data.numLinksToSelect),
+      parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker),
     {
       message:
         'Brutto-utval av nettsider må vera større eller likt netto-utval',
-      path: ['numLinksToSelect'],
+      path: ['talLenker'],
     }
   );
 
@@ -93,8 +92,8 @@ export const sakLoeysingValidationSchema = z
     sakType: saktypeSchema.optional(),
     advisorId: z.string().optional(),
     sakNumber: z.string().optional(),
-    maxLinksPerPage: z.union([z.number(), z.string()]).optional(),
-    numLinksToSelect: z.union([z.number(), z.string()]).optional(),
+    maxLenker: z.union([z.number(), z.string()]).optional(),
+    talLenker: z.union([z.number(), z.string()]).optional(),
     loeysingSource: loeysingSourceSchema,
     loeysingList: z.array(loeysingVerksemdSchema).optional(),
     utval: utvalSchema.optional(),
@@ -123,8 +122,8 @@ export const sakTestreglarValidationSchema = z.object({
   sakType: saktypeSchema.optional(),
   advisorId: z.string().optional(),
   sakNumber: z.string().optional(),
-  maxLinksPerPage: z.union([z.number(), z.string()]).optional(),
-  numLinksToSelect: z.union([z.number(), z.string()]).optional(),
+  maxLenker: z.union([z.number(), z.string()]).optional(),
+  talLenker: z.union([z.number(), z.string()]).optional(),
   loeysingSource: loeysingSourceSchema,
   loeysingList: z.array(loeysingVerksemdSchema).optional(),
   utval: utvalSchema.optional(),
