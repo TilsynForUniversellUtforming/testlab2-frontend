@@ -100,7 +100,7 @@ const MaalingApp = () => {
     setTestStatus({ loading: true, message: undefined });
     setError(undefined);
 
-    if (maaling.crawlResultat.find((cr) => cr.type === 'feilet')) {
+    if (maaling.crawlResultat.find((cr) => cr.type === 'feila')) {
       setTestStatus({
         loading: false,
         message: 'Kunne ikkje starte test, måling har feil i sideutval',

@@ -13,7 +13,7 @@ import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import { deleteMaalingList } from '../api/maaling-api';
-import { IdList, Maaling } from '../api/types';
+import { IdList, Maaling, MaalingStatus } from '../api/types';
 import { MaalingContext } from '../types';
 
 const MaalingList = () => {
@@ -89,7 +89,7 @@ const MaalingList = () => {
       accessorFn: (row) => row.status,
       id: 'Status',
       cell: (info) => (
-        <StatusBadge
+        <StatusBadge<MaalingStatus>
           status={String(info.getValue())}
           levels={{
             primary: ['testing', 'crawling'],

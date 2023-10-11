@@ -1,46 +1,57 @@
 import { Tag } from '@digdir/design-system-react';
+import { Color } from '@maaling/api/types';
 
 import { sanitizeLabel } from '../util/stringutils';
 
 /**
  * Defines the levels for the status badge.
- * @typedef {Object} Levels
- * @property {string[]} primary - An array of labels for displaying the primary color.
- * @property {string[]} danger - An array of labels for displaying the danger color.
- * @property {string[]} success - An array of labels for displaying the success color.
+ * @param {string[]} primary - An array of labels for displaying the primary color.
+ * @param {string[]} danger - An array of labels for displaying the danger color.
+ * @param {string[]} success - An array of labels for displaying the success color.
  */
-export type Levels = {
-  primary: string[];
-  danger: string[];
-  success: string[];
+export type Levels<T> = {
+  primary: T[];
+  danger: T[];
+  success: T[];
 };
 
 /**
  * Props for the StatusBadge component.
- * @typedef {Object} Props
- * @property {*} [customLabel] - Optional custom label to display on the badge.
- * @property {string} [status] - The status of the badge, used to decide the color of the badge. If the customLabel is not set, the status will be used as the label.
- * @property {Levels} levels - The levels configuration for the badge.
+ * @param {string} [customLabel] - Optional custom label to display on the badge.
+ * @param {string} [status] - The status of the badge, used to decide the color of the badge. If the customLabel is not set, the status will be used as the label.
+ * @param {Levels} levels - The levels configuration for the badge.
  */
-interface Props {
+interface Props<T> {
   customLabel?: string;
   status?: string;
-  levels: Levels;
+  levels: Levels<T>;
 }
 
-const getBadgeColor = (status: string, levels: Levels) => {
-  if (levels.primary.includes(status)) {
-    return 'third';
-  } else if (levels.danger.includes(status)) {
-    return 'danger';
-  } else if (levels.success.includes(status)) {
-    return 'success';
-  } else {
+const getBadgeColor = <T extends string>(
+  status: string,
+  levels: Levels<T>
+): Color => {
+  try {
+    const typeStatus = status as unknown as T;
+    if (levels.primary.includes(typeStatus)) {
+      return 'third';
+    } else if (levels.danger.includes(typeStatus)) {
+      return 'danger';
+    } else if (levels.success.includes(typeStatus)) {
+      return 'success';
+    } else {
+      return 'neutral';
+    }
+  } catch (e) {
     return 'neutral';
   }
 };
 
-const StatusBadge = ({ customLabel, status, levels }: Props) => {
+const StatusBadge = <T extends string>({
+  customLabel,
+  status,
+  levels,
+}: Props<T>) => {
   if (status == null || typeof status === 'undefined') {
     return null;
   }
@@ -49,10 +60,8 @@ const StatusBadge = ({ customLabel, status, levels }: Props) => {
     ? customLabel
     : sanitizeLabel(String(status));
 
-  const color = getBadgeColor(status, levels);
-
   return (
-    <Tag color={color} size="xsmall">
+    <Tag color={getBadgeColor(status, levels)} size="xsmall">
       {sanitizedLabel}
     </Tag>
   );

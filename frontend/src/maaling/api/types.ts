@@ -37,9 +37,17 @@ export type MaalingStatus =
   | 'testing'
   | 'testing_ferdig';
 
-export type CrawlJobStatus = 'ikkje_starta' | 'crawler' | 'feilet' | 'ferdig';
+export type JobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
 
-export type TestJobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
+export type Color =
+  | 'first'
+  | 'second'
+  | 'third'
+  | 'neutral'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'info';
 
 export type Framgang = {
   prosessert: number;
@@ -47,7 +55,7 @@ export type Framgang = {
 };
 
 export type CrawlResultat = {
-  type: CrawlJobStatus;
+  type: JobStatus;
   framgang?: Framgang;
   loeysing: Loeysing;
   antallNettsider: number;
@@ -74,7 +82,7 @@ export type AggregatedTestresult = {
 
 export type TestResult = {
   loeysing: Loeysing;
-  tilstand: TestJobStatus;
+  tilstand: JobStatus;
   sistOppdatert: string;
   framgang?: Framgang;
   antalSider: number;

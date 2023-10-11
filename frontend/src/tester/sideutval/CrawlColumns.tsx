@@ -2,7 +2,7 @@ import StatusBadge from '@common/status-badge/StatusBadge';
 import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
 import { CellCheckboxId } from '@common/table/types';
 import { sanitizeLabel } from '@common/util/stringutils';
-import { CrawlResultat, Maaling } from '@maaling/api/types';
+import { CrawlResultat, JobStatus, Maaling } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
@@ -43,7 +43,7 @@ export const getCrawlColumns = (
     accessorFn: (row) =>
       `${
         row.framgang?.prosessert ||
-        (row.type !== 'feilet' ? row.antallNettsider : '') ||
+        (row.type !== 'feila' ? row.antallNettsider : '') ||
         ''
       }${row.type}`,
     sortingFn: 'alphanumeric',
@@ -57,7 +57,7 @@ export const getCrawlColumns = (
       let label: string;
       if (crawlSuccess) {
         label = `Ferdig, fant ${urlLength} sider`;
-      } else if (status === 'crawler') {
+      } else if (status === 'starta') {
         const framgang = row.original.framgang;
         if (framgang != null) {
           label = `Crawler ${framgang.prosessert} av ${framgang.maxLenker}`;
@@ -69,12 +69,12 @@ export const getCrawlColumns = (
       }
 
       return (
-        <StatusBadge
+        <StatusBadge<JobStatus>
           customLabel={label}
           status={status}
           levels={{
-            primary: ['crawler'],
-            danger: ['feilet'],
+            primary: ['starta', 'ikkje_starta'],
+            danger: ['feila'],
             success: ['ferdig'],
           }}
         />
