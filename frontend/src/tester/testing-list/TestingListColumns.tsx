@@ -1,10 +1,10 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import StatusBadge from '@common/status-badge/StatusBadge';
-import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
 import { isDefined } from '@common/util/util';
 import { JobStatus, Maaling, TestResult } from '@maaling/api/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
 /**
@@ -17,17 +17,11 @@ import React from 'react';
 export const getTestingListColumns = (
   maaling?: Maaling
 ): Array<ColumnDef<TestResult>> => [
-  {
-    id: 'testinglist_handling',
-    cell: ({ row }) =>
-      maaling?.status === 'testing_ferdig' && (
-        <RowCheckbox
-          row={row}
-          ariaLabel={`Velg ${row.original.loeysing.namn}`}
-        />
-      ),
-    size: 1,
-  },
+  getCheckboxColumn(
+    (row: Row<TestResult>) => `Velg ${row.original.loeysing.namn}`,
+    false,
+    maaling?.status === 'testing_ferdig'
+  ),
   {
     accessorFn: (row) => row.loeysing.namn,
     id: 'url',
@@ -46,7 +40,7 @@ export const getTestingListColumns = (
     cell: ({ row }) => (
       <LoadingBar
         percentage={row.original.compliancePercent}
-        tooltip={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
+        ariaLabel={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
         show={row.original.tilstand === 'ferdig'}
       />
     ),

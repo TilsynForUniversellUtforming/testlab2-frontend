@@ -36,6 +36,7 @@ const ProgressElement = ({ chartStatus, total }: ProgressElementProps) => {
         dynamicSeverity={false}
         textPlacement={'left'}
         severity={chartStatus.severity}
+        ariaLabel={chartStatus.statusText}
       />
     </div>
   );

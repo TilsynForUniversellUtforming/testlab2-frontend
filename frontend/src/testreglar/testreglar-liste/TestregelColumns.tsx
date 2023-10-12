@@ -1,6 +1,5 @@
-import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
-import { CellCheckboxId } from '@common/table/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
 import { Testregel } from '../api/types';
@@ -11,16 +10,10 @@ import { Testregel } from '../api/types';
  * @returns {Array<ColumnDef<Testregel>>} An array of column definitions.
  */
 export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
-  {
-    id: CellCheckboxId,
-    cell: ({ row }) => (
-      <RowCheckbox
-        row={row}
-        ariaLabel={`Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`}
-      />
-    ),
-    size: 1,
-  },
+  getCheckboxColumn(
+    (row: Row<Testregel>) =>
+      `Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`
+  ),
   {
     accessorFn: (row) => row.testregelNoekkel,
     id: 'testregel',

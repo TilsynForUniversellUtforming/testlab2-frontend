@@ -10,7 +10,7 @@ export interface Props {
   size?: Size;
   customText?: string;
   textPlacement?: 'left' | 'center';
-  tooltip?: string;
+  ariaLabel: string;
   show?: boolean;
   severity?: TestlabSeverity;
   dynamicSeverity?: boolean;
@@ -26,7 +26,7 @@ const getSeverity = (percentage: number): TestlabSeverity => {
  * Loading bar component with optional severity coloring.
  * @param {object} props - The props for the component.
  * @param {number} props.percentage - The current percentage value to display (between 0 and 100).
- * @param {string} props.tooltip - Optional tooltip text while hovering.
+ * @param {string} props.ariaLabel - aria-label for the loading bar.
  * @param {string} props.customText - Optional text
  * @param {boolean} [props.show=true] - If the loading bar should be visible.
  * @param {boolean} [props.dynamicSeverity=true] - If true, color of the loading bar changes based on percentage,
@@ -38,7 +38,7 @@ const LoadingBar = ({
   customText,
   textPlacement = 'center',
   show = true,
-  tooltip,
+  ariaLabel,
   severity = 'info',
   dynamicSeverity = true,
 }: Props) => {
@@ -48,7 +48,7 @@ const LoadingBar = ({
   const style = { width: `${percentage}%` };
 
   return (
-    <div className={classnames('loading-bar', size)} title={tooltip}>
+    <div className={classnames('loading-bar', size)} title={ariaLabel}>
       <Label
         className={classnames('loading-bar__label', textPlacement)}
         size={size}
@@ -62,6 +62,7 @@ const LoadingBar = ({
           aria-valuenow={percentage}
           aria-valuemin={0}
           aria-valuemax={100}
+          aria-label={ariaLabel}
           role="progressbar"
         />
       </div>

@@ -1,11 +1,7 @@
 import TestlabForm from '@common/form/TestlabForm';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '@common/table/control/toggle/IndeterminateCheckbox';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
-import { CellCheckboxId } from '@common/table/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import classNames from 'classnames';
 import React, { useCallback, useMemo } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
@@ -54,17 +50,11 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
 
   const testRegelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
-      {
-        id: CellCheckboxId,
-        header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => (
-          <RowCheckbox
-            row={row}
-            ariaLabel={`Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`}
-          />
-        ),
-        size: 1,
-      },
+      getCheckboxColumn(
+        (row: Row<Testregel>) =>
+          `Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`,
+        true
+      ),
       {
         accessorFn: (row) => row.kravTilSamsvar,
         id: 'Namn',
