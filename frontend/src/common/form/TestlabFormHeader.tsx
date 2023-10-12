@@ -1,29 +1,22 @@
-import { Heading, Paragraph } from '@digdir/design-system-react';
+import { Heading } from '@digdir/design-system-react';
 import React from 'react';
 
 const TestlabFormHeader = ({
   heading,
   subHeading,
-  hasRequiredFields,
 }: {
   heading: string;
   subHeading?: string;
-  hasRequiredFields?: boolean;
 }) => {
   return (
     <header className="testlab-form__header">
-      <Heading size="large" className="heading">
+      <Heading size="xlarge" className="heading" spacing>
         {heading}
       </Heading>
       {subHeading && (
-        <Paragraph spacing={!hasRequiredFields} role="doc-subtitle">
+        <Heading level={4} size="medium" spacing role="doc-subtitle">
           {subHeading}
-        </Paragraph>
-      )}
-      {hasRequiredFields && (
-        <Paragraph spacing size="xsmall">
-          Felter markert med stjerne er obligatoriske
-        </Paragraph>
+        </Heading>
       )}
     </header>
   );

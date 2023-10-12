@@ -1,6 +1,7 @@
 import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkeleton';
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
+import { Paragraph } from '@digdir/design-system-react';
 
 import { Testregel } from '../../api/types';
 
@@ -13,12 +14,11 @@ const TestregelFormSkeleton = ({ heading, subHeading }: Props) => (
   <div className="testregel-form">
     <form className="testlab-form">
       {heading && (
-        <TestlabFormHeader
-          heading={heading}
-          subHeading={subHeading}
-          hasRequiredFields
-        />
+        <TestlabFormHeader heading={heading} subHeading={subHeading} />
       )}
+      <Paragraph spacing size="small">
+        Felter markert med stjerne er obligatoriske
+      </Paragraph>
       <TestlabFormFieldSkeleton<Testregel>
         label="Namn"
         name="kravTilSamsvar"

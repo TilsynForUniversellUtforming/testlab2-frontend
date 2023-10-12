@@ -1,10 +1,8 @@
 .loading-bar {
   max-width: 12rem;
   height: 2rem;
-  border-radius: 1px;
   display: flex;
   flex-direction: column;
-  width: 75%;
   &.large {
     min-height: 2.5rem;
     max-width: inherit;
@@ -12,15 +10,17 @@
 
   &__wrapper {
     height: 100%;
-    background-color: var(--fds-semantic-background-subtle);
+    border-radius: 10px;
+    background-color: var(--fds-semantic-surface-neutral-subtle-hover);
   }
   &__percentage {
     height: 100%;
+    border-radius: 10px;
     &.info {
-      background-color: var(--fds-semantic-border-info-default);
+      background-color: var(--fds-semantic-surface-third-light-active);
     }
     &.danger {
-      background-color: var(--fds-semantic-surface-danger-default);
+      background-color: var(--fds-semantic-surface-danger-no_fill-active);
     }
     &.warning {
       background-color: var(--fds-semantic-surface-warning-default);

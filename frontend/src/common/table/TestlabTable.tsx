@@ -1,7 +1,6 @@
 import './testlabTable.scss';
 import '@tanstack/react-table';
 
-import TableFilter from '@common/table/control/filter/TableFilter';
 import {
   Table,
   TableBody,
@@ -216,8 +215,6 @@ const TestlabTable = <T extends object>({
   }
 
   const headerGroup = table.getHeaderGroups()[0];
-  const showFilters =
-    filterPreference !== 'none' && filterPreference !== 'searchbar';
 
   return (
     <div className="testlab-table">
@@ -238,23 +235,13 @@ const TestlabTable = <T extends object>({
           <TableRow>
             {headerGroup.headers.map((header) => (
               <TestlabTableHeader<T>
+                table={table}
                 header={header}
                 loading={isLoading}
                 key={header.column.id}
               />
             ))}
           </TableRow>
-          {showFilters && (
-            <TableRow>
-              {headerGroup.headers.map((header) => (
-                <TableFilter<T>
-                  table={table}
-                  column={header.column}
-                  key={header.column.id}
-                />
-              ))}
-            </TableRow>
-          )}
         </TableHeader>
         <TableBody>
           <TestlabTableBody<T>
