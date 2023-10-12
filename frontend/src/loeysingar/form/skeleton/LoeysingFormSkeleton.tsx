@@ -1,6 +1,7 @@
 import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkeleton';
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
+import { Paragraph } from '@digdir/design-system-react';
 import { LoeysingInit } from '@loeysingar/api/types';
 
 export interface Props {
@@ -12,13 +13,12 @@ const LoeysingFormSkeleton = ({ heading, subHeading }: Props) => (
   <div className="loeysing-form">
     <form className="testlab-form">
       {heading && (
-        <TestlabFormHeader
-          heading={heading}
-          subHeading={subHeading}
-          hasRequiredFields
-        />
+        <TestlabFormHeader heading={heading} subHeading={subHeading} />
       )}
       <div className="loeysing-form__input">
+        <Paragraph spacing size="small">
+          Felter markert med stjerne er obligatoriske
+        </Paragraph>
         <TestlabFormFieldSkeleton<LoeysingInit>
           label="Namn"
           name="namn"

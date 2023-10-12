@@ -1,13 +1,16 @@
+import TableFilterSelect from '@common/table/control/filter/TableFilterSelect';
 import { SortDirection, TableCell } from '@digdir/design-system-react';
-import { flexRender, Header } from '@tanstack/react-table';
+import { flexRender, Header, Table } from '@tanstack/react-table';
 import React from 'react';
 
 export interface Props<T> {
+  table: Table<T>;
   header: Header<T, unknown>;
   loading: boolean;
 }
 
 const TestlabTableHeader = <T extends object>({
+  table,
   header,
   loading,
 }: Props<T>) => {
@@ -34,6 +37,16 @@ const TestlabTableHeader = <T extends object>({
   }
   if (header.column?.getIsSorted() === 'desc') {
     sortDirection = 'desc';
+  }
+
+  if (column.columnDef?.meta?.select && column.getCanFilter()) {
+    return (
+      <TableFilterSelect
+        table={table}
+        header={header}
+        sortDirection={sortDirection}
+      />
+    );
   }
 
   return (

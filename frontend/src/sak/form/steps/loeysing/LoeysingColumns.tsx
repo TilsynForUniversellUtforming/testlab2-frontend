@@ -4,11 +4,10 @@ import {
   RowCheckbox,
 } from '@common/table/control/toggle/IndeterminateCheckbox';
 import { CellCheckboxId } from '@common/table/types';
+import { LoeysingVerksemd } from '@sak/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-import { LoeysingVerksemd } from '../../../types';
 
 /**
  * getLoeysingColumns function returns an array of column definitions for LoeysingVerksemd.

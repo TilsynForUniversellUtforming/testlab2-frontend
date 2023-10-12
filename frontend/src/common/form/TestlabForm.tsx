@@ -1,5 +1,6 @@
 import './TestlabForm.scss';
 
+import { Paragraph } from '@digdir/design-system-react';
 import React, { ReactElement, ReactNode } from 'react';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
@@ -59,11 +60,12 @@ const TestlabForm = <T extends object>({
     >
       <form className="testlab-form" onSubmit={handleSubmit(onSubmit)}>
         {heading && (
-          <TestlabFormHeader
-            heading={heading}
-            subHeading={subHeading}
-            hasRequiredFields={hasRequiredFields}
-          />
+          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+        )}
+        {hasRequiredFields && (
+          <Paragraph spacing size="small">
+            Felter markert med stjerne er obligatoriske
+          </Paragraph>
         )}
         {children}
       </form>

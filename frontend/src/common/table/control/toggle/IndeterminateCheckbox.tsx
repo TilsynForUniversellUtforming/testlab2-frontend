@@ -1,5 +1,7 @@
+import { CheckboxSize } from '@common/types';
+import { Checkbox } from '@digdir/design-system-react';
 import { Row, Table } from '@tanstack/react-table';
-import React, { HTMLProps } from 'react';
+import React, { HTMLProps, useEffect, useRef } from 'react';
 
 interface Props {
   indeterminate?: boolean;
@@ -14,9 +16,9 @@ const IndeterminateCheckbox = ({
   ariaLabel,
   id,
 }: Props & HTMLProps<HTMLInputElement>) => {
-  const ref = React.useRef<HTMLInputElement>(null!);
+  const ref = useRef<HTMLInputElement>(null!);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof indeterminate === 'boolean') {
       ref.current.indeterminate = !checked && indeterminate;
     }
@@ -27,20 +29,17 @@ const IndeterminateCheckbox = ({
       <label className="sr-only" htmlFor={id}>
         {ariaLabel}
       </label>
-      <input
+      <Checkbox
+        value={String(id)}
         type="checkbox"
         ref={ref}
         checked={checked}
         disabled={disabled}
         onChange={onChange}
-        style={{
-          width: '1rem',
-          height: '1rem',
-          cursor: 'pointer',
-        }}
         aria-label={ariaLabel}
         id={id}
         title={ariaLabel}
+        size={CheckboxSize.XSmall}
       />
     </>
   );

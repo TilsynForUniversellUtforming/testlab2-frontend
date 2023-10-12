@@ -1,6 +1,7 @@
 import TestlabForm from '@common/form/TestlabForm';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
+import { Paragraph } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
@@ -26,14 +27,19 @@ const SakStepFormWrapper = ({
 
   return (
     <div className="sak">
-      <TestlabForm<SakFormState> onSubmit={onSubmit} formMethods={formMethods}>
+      <TestlabForm<SakFormState>
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+        hasRequiredFields={false}
+      >
         <Stepper formStepState={formStepState} />
         <div className="sak__form">
-          <TestlabFormHeader
-            heading={heading}
-            subHeading={subHeading}
-            hasRequiredFields={hasRequiredFields}
-          />
+          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+          {hasRequiredFields && (
+            <Paragraph spacing size="small">
+              Felter markert med stjerne er obligatoriske
+            </Paragraph>
+          )}
           <div className="sak__container">{children}</div>
           <TestlabForm.FormButtons step={buttonStep} />
         </div>

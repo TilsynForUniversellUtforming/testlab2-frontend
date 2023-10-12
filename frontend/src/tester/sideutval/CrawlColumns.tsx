@@ -1,6 +1,7 @@
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
 import { CellCheckboxId } from '@common/table/types';
+import headingWithSorting from '@common/table/util';
 import { sanitizeLabel } from '@common/util/stringutils';
 import { CrawlResultat, JobStatus, Maaling } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
@@ -41,11 +42,12 @@ export const getCrawlColumns = (
   },
   {
     accessorFn: (row) =>
-      `${
+      headingWithSorting(
         row.framgang?.prosessert ||
-        (row.type !== 'feila' ? row.antallNettsider : '') ||
-        ''
-      }${row.type}`,
+          (row.type !== 'feila' ? row.antallNettsider : 0) ||
+          0,
+        row.type
+      ),
     sortingFn: 'alphanumeric',
     id: 'status',
     cell: ({ row }) => {

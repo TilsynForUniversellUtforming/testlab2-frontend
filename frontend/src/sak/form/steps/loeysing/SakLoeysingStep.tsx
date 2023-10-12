@@ -257,6 +257,7 @@ const SakLoeysingStep = ({
               rowActions={[
                 {
                   action: 'delete',
+                  rowSelectionRequired: true,
                   modalProps: {
                     title: 'Fjern rad',
                     disabled: rowSelection.length === 0,

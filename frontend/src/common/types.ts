@@ -43,3 +43,12 @@ export const ButtonSize = {
 } as const;
 
 export type ButtonSizeType = (typeof ButtonSize)[keyof typeof ButtonSize];
+
+export const CheckboxSize = {
+  XSmall: 'xsmall',
+  Small: 'small',
+  Medium: 'medium',
+  Large: 'large',
+} as const;
+
+export type CheckboxSizeType = (typeof CheckboxSize)[keyof typeof CheckboxSize];

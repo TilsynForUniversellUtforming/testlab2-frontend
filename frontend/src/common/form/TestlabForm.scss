@@ -23,6 +23,10 @@
     }
   }
 
+  &__header {
+    padding-bottom: 2rem;
+  }
+
   .asterisk-color {
     color: var(--fds-semantic-text-danger-default);
   }

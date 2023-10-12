@@ -1,6 +1,7 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
+import headingWithSorting from '@common/table/util';
 import { isDefined } from '@common/util/util';
 import { JobStatus, Maaling, TestResult } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
@@ -53,11 +54,12 @@ export const getTestingListColumns = (
   },
   {
     accessorFn: (row) =>
-      `${
+      headingWithSorting(
         row.framgang?.prosessert ||
-        (row.tilstand !== 'feila' ? row.antalSider : '') ||
-        ''
-      }${row.tilstand}`,
+          (row.tilstand !== 'feila' ? row.antalSider : 0) ||
+          0,
+        row.tilstand
+      ),
     sortingFn: 'alphanumeric',
     id: 'status',
     cell: ({ row }) => {
