@@ -1,10 +1,9 @@
 import StatusBadge from '@common/status-badge/StatusBadge';
-import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
-import { CellCheckboxId } from '@common/table/types';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
 import { sanitizeLabel } from '@common/util/stringutils';
 import { CrawlResultat, JobStatus, Maaling } from '@maaling/api/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
 /**
@@ -17,17 +16,11 @@ import React from 'react';
 export const getCrawlColumns = (
   maaling?: Maaling
 ): Array<ColumnDef<CrawlResultat>> => [
-  {
-    id: CellCheckboxId,
-    cell: ({ row }) =>
-      maaling?.status === 'kvalitetssikring' && (
-        <RowCheckbox
-          row={row}
-          ariaLabel={`Velg ${row.original.loeysing.namn}`}
-        />
-      ),
-    size: 1,
-  },
+  getCheckboxColumn(
+    (row: Row<CrawlResultat>) => `Velg ${row.original.loeysing.namn}`,
+    false,
+    maaling?.status === 'kvalitetssikring'
+  ),
   {
     accessorFn: (row) => row.loeysing.url,
     id: 'url',

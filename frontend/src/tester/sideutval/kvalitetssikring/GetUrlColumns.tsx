@@ -1,18 +1,11 @@
-import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
-import { CellCheckboxId } from '@common/table/types';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import { CrawlUrl } from '@maaling/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 export const getUrlColumnsKvalitetssikring = (): Array<ColumnDef<CrawlUrl>> => [
-  {
-    id: CellCheckboxId,
-    cell: ({ row }) => (
-      <RowCheckbox row={row} ariaLabel={`Velg ${row.original.url}`} />
-    ),
-    size: 1,
-  },
+  getCheckboxColumn((row: Row<CrawlUrl>) => `Velg ${row.original.url}`),
   {
     accessorFn: (row) => row.url,
     id: 'url',

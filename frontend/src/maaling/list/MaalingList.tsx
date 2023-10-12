@@ -3,12 +3,11 @@ import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
 import StatusBadge from '@common/status-badge/StatusBadge';
-import { RowCheckbox } from '@common/table/control/toggle/IndeterminateCheckbox';
-import { CellCheckboxId } from '@common/table/types';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import UserActionTable from '@common/table/UserActionTable';
 import { joinStringsToList } from '@common/util/stringutils';
 import { formatDateString } from '@common/util/util';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -66,13 +65,7 @@ const MaalingList = () => {
   }, []);
 
   const maalingColumns: ColumnDef<Maaling>[] = [
-    {
-      id: CellCheckboxId,
-      cell: ({ row }) => (
-        <RowCheckbox row={row} ariaLabel={`Velg ${row.original.navn}`} />
-      ),
-      size: 1,
-    },
+    getCheckboxColumn((row: Row<Maaling>) => `Velg ${row.original.navn}`),
     {
       accessorFn: (row) => row.navn,
       id: 'Namn',

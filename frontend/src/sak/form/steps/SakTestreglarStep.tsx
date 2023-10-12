@@ -1,11 +1,7 @@
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { getErrorMessage } from '@common/form/util';
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '@common/table/control/toggle/IndeterminateCheckbox';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
-import { CellCheckboxId } from '@common/table/types';
 import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
@@ -16,7 +12,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sakTestreglarValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
 import { SakFormBaseProps, SakFormState } from '@sak/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
@@ -86,17 +82,11 @@ const SakTestreglarStep = ({
 
   const testregelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
-      {
-        id: CellCheckboxId,
-        header: ({ table }) => <HeaderCheckbox table={table} />,
-        cell: ({ row }) => (
-          <RowCheckbox
-            row={row}
-            ariaLabel={`Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`}
-          />
-        ),
-        size: 1,
-      },
+      getCheckboxColumn(
+        (row: Row<Testregel>) =>
+          `Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`,
+        true
+      ),
       {
         accessorFn: (row) => row.testregelNoekkel,
         id: 'TestregelId',

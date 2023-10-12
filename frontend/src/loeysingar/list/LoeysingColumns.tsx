@@ -1,9 +1,5 @@
-import {
-  HeaderCheckbox,
-  RowCheckbox,
-} from '@common/table/control/toggle/IndeterminateCheckbox';
-import { CellCheckboxId } from '@common/table/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
 import { Loeysing } from '../api/types';
@@ -14,14 +10,7 @@ import { Loeysing } from '../api/types';
  * @returns {Array<ColumnDef<Loeysing>>} An array of column definitions.
  */
 export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
-  {
-    id: CellCheckboxId,
-    header: ({ table }) => <HeaderCheckbox table={table} />,
-    cell: ({ row }) => (
-      <RowCheckbox row={row} ariaLabel={`Velg ${row.original.namn}`} />
-    ),
-    size: 1,
-  },
+  getCheckboxColumn((row: Row<Loeysing>) => `Velg ${row.original.namn}`, true),
   {
     accessorFn: (row) => row.namn,
     id: 'løsying namn',
