@@ -69,14 +69,14 @@ fun mergeLists(
   return testKoeyringList.map { testKoeyring ->
     val aggregatedResultList =
         resultMap[testKoeyring.loeysing]?.map { result ->
-          val totalPages =
-              result.talSiderSamsvar + result.talSiderBrot + result.talSiderIkkjeForekomst
+          val totalElements =
+              result.talElementSamsvar + result.talElementBrot + result.talElementVarsel
           val compliancePercent =
-              if (totalPages > 0) {
-                val compliantPages = result.talSiderSamsvar + result.talSiderIkkjeForekomst
-                ((compliantPages.toDouble() / totalPages) * 100).roundToInt()
+              if (totalElements > 0) {
+                val compliantPages = result.talElementSamsvar + result.talElementVarsel
+                ((compliantPages.toDouble() / totalElements) * 100).roundToInt()
               } else {
-                0
+                100
               }
 
           AggegatedTestresultTestregel(

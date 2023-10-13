@@ -25,7 +25,7 @@ export const getAggregatedResultColumns = (): Array<
     accessorFn: (row) => row.suksesskriterium,
     id: 'suksesskriterium',
     cell: (info) => info.getValue(),
-    header: () => <>Krav</>,
+    header: () => <>Hovudkrav</>,
     meta: {
       select: true,
     },
@@ -43,33 +43,33 @@ export const getAggregatedResultColumns = (): Array<
   },
   {
     accessorFn: (row) =>
-      row.talSiderSamsvar + row.talSiderIkkjeForekomst + row.talSiderBrot,
+      row.talElementSamsvar + row.talElementVarsel + row.talElementBrot,
     id: 'testa',
     cell: ({ row }) => (
       <>
-        {row.original.talSiderSamsvar +
-          row.original.talSiderIkkjeForekomst +
-          row.original.talSiderBrot}
+        {row.original.talElementSamsvar +
+          row.original.talElementVarsel +
+          row.original.talElementBrot}
       </>
     ),
     header: () => <>Tal testa</>,
   },
   {
-    accessorFn: (row) => row.talSiderBrot,
+    accessorFn: (row) => row.talElementBrot,
     id: 'brot',
-    cell: ({ row }) => <>{row.original.talSiderBrot}</>,
+    cell: ({ row }) => <>{row.original.talElementBrot}</>,
     header: () => <>Tal brot</>,
   },
   {
-    accessorFn: (row) => row.talSiderSamsvar,
+    accessorFn: (row) => row.talElementSamsvar,
     id: 'samsvar',
-    cell: ({ row }) => <>{row.original.talSiderSamsvar}</>,
+    cell: ({ row }) => <>{row.original.talElementSamsvar}</>,
     header: () => <>Tal samsvar</>,
   },
   {
-    accessorFn: (row) => row.talSiderIkkjeForekomst,
-    id: 'ikkjeForekomst',
-    cell: ({ row }) => <>{row.original.talSiderIkkjeForekomst}</>,
-    header: () => <>Tal ikkje-forekomst</>,
+    accessorFn: (row) => row.talElementVarsel,
+    id: 'varsel',
+    cell: ({ row }) => <>{row.original.talElementVarsel}</>,
+    header: () => <>Tal varsel</>,
   },
 ];
