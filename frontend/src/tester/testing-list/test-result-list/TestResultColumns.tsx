@@ -42,15 +42,10 @@ export const getAggregatedResultColumns = (): Array<
     header: () => <>Score</>,
   },
   {
-    accessorFn: (row) =>
-      row.talElementSamsvar + row.talElementVarsel + row.talElementBrot,
+    accessorFn: (row) => row.talElementSamsvar + row.talElementBrot,
     id: 'testa',
     cell: ({ row }) => (
-      <>
-        {row.original.talElementSamsvar +
-          row.original.talElementVarsel +
-          row.original.talElementBrot}
-      </>
+      <>{row.original.talElementSamsvar + row.original.talElementBrot}</>
     ),
     header: () => <>Tal testa</>,
   },
@@ -65,11 +60,5 @@ export const getAggregatedResultColumns = (): Array<
     id: 'samsvar',
     cell: ({ row }) => <>{row.original.talElementSamsvar}</>,
     header: () => <>Tal samsvar</>,
-  },
-  {
-    accessorFn: (row) => row.talElementVarsel,
-    id: 'varsel',
-    cell: ({ row }) => <>{row.original.talElementVarsel}</>,
-    header: () => <>Tal varsel</>,
   },
 ];

@@ -69,12 +69,10 @@ fun mergeLists(
   return testKoeyringList.map { testKoeyring ->
     val aggregatedResultList =
         resultMap[testKoeyring.loeysing]?.map { result ->
-          val totalElements =
-              result.talElementSamsvar + result.talElementBrot + result.talElementVarsel
+          val totalElements = result.talElementSamsvar + result.talElementBrot
           val compliancePercent =
               if (totalElements > 0) {
-                val compliantPages = result.talElementSamsvar + result.talElementVarsel
-                ((compliantPages.toDouble() / totalElements) * 100).roundToInt()
+                ((result.talElementSamsvar.toDouble() / totalElements) * 100).roundToInt()
               } else {
                 100
               }
@@ -85,10 +83,6 @@ fun mergeLists(
               fleireSuksesskriterium = result.fleireSuksesskriterium,
               talElementSamsvar = result.talElementSamsvar,
               talElementBrot = result.talElementBrot,
-              talElementVarsel = result.talElementVarsel,
-              talSiderSamsvar = result.talSiderSamsvar,
-              talSiderBrot = result.talSiderBrot,
-              talSiderIkkjeForekomst = result.talSiderIkkjeForekomst,
               compliancePercent = compliancePercent)
         }
             ?: emptyList()
