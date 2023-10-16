@@ -83,6 +83,7 @@ fun mergeLists(
               fleireSuksesskriterium = result.fleireSuksesskriterium,
               talElementSamsvar = result.talElementSamsvar,
               talElementBrot = result.talElementBrot,
+              talElementVarsel = result.talElementVarsel,
               compliancePercent = compliancePercent)
         }
             ?: emptyList()
