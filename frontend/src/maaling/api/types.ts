@@ -74,6 +74,7 @@ export type AggregatedTestresult = {
   fleireSuksesskriterium: string[];
   talElementSamsvar: number;
   talElementBrot: number;
+  talElementVarsel: number;
   compliancePercent?: number;
 };
 
