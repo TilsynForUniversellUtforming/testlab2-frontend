@@ -69,7 +69,7 @@ export const sakInitValidationSchema = z
       .union([z.number(), z.string()])
       .transform((val) => parseNumberInput(val))
       .refine((value) => value >= 1 && value <= 2000, {
-        message: 'Netto-utval av nettsider må være mellom 10 og 2000',
+        message: 'Netto-utval av nettsider må være mellom 1 og 2000',
       }),
     loeysingSource: loeysingSourceSchema,
     loeysingList: z.array(loeysingVerksemdSchema).optional(),
