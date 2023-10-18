@@ -23,6 +23,7 @@ const DebouncedInput = ({
   onFocus,
   debounce = 500,
   label,
+  description,
   ariaLabel,
   id,
   errorMessage,
@@ -46,6 +47,7 @@ const DebouncedInput = ({
       <Textfield
         id={id}
         label={label}
+        description={description}
         type="text"
         value={String(value)}
         onChange={(e) => setValue(e.target.value)}
