@@ -1,0 +1,45 @@
+.testlab-form-autocomplete {
+  position: relative;
+
+  &__list {
+    padding: 0;
+    min-width: 12rem;
+    list-style: none;
+    box-shadow: var(--fds-shadow-medium);
+    width: 100%;
+    position: absolute;
+    z-index: 9999;
+    background-color: var(--fds-semantic-background-default);
+    margin: 0.5rem 0 0;
+    overflow: visible;
+    &-item {
+      display: flex;
+      align-items: stretch;
+      border-radius: 3px;
+      &:hover {
+        background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      }
+
+      .button-wrapper {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+    &__button {
+      flex-grow: 1;
+      width: 100%;
+      padding: 1rem;
+      margin: 0;
+      border: none;
+      background-color: transparent;
+      transition: color 0.2s;
+      cursor: pointer;
+      color: var(--fds-semantic-text-neutral-default);
+      font-size: smaller;
+      text-align: start;
+    }
+  }
+}

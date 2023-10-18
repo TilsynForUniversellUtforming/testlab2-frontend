@@ -1,10 +1,4 @@
 .debounced-input {
-  &__container {
-    display: flex;
-    input[name='debounced-input'] {
-      min-width: 16rem;
-    }
-  }
   &__label {
     margin-right: 0.75rem;
   }
