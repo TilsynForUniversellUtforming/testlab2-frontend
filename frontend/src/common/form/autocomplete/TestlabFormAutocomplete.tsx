@@ -1,11 +1,12 @@
 import './testlab-form-autocomplete.scss';
 
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Path, PathValue, useFormContext } from 'react-hook-form';
 
 export interface Props<FormData, ResultData> {
   label: string;
+  value?: string;
   description?: string;
   required?: boolean;
   hidden?: boolean;
@@ -22,6 +23,7 @@ const TestlabFormAutocomplete = <
   ResultData extends PathValue<FormData, Path<FormData>>,
 >({
   label,
+  value,
   description,
   required = false,
   resultList,
@@ -34,6 +36,7 @@ const TestlabFormAutocomplete = <
   const [show, setShow] = useState(false);
   const resultsRef = useRef<HTMLUListElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [inputValue, setInputValue] = useState(value);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -55,8 +58,18 @@ const TestlabFormAutocomplete = <
 
   const handleOnClick = (name: Path<FormData>, result: ResultData) => {
     setShow(false);
+    setInputValue(result[resultLabelKey]);
     setValue(name, result);
   };
+
+  const handleOnChange = useCallback(
+    (nextInputValue: string) => {
+      if (inputValue !== nextInputValue) {
+        onChange(nextInputValue);
+      }
+    },
+    [inputValue]
+  );
 
   return (
     <div className="testlab-form-autocomplete">
@@ -72,7 +85,8 @@ const TestlabFormAutocomplete = <
       </label>
       <DebouncedInput
         id="testlab-form-autocorrect"
-        onChange={onChange}
+        value={inputValue}
+        onChange={handleOnChange}
         errorMessage={errorMessage}
         onFocus={() => setShow(true)}
       />
