@@ -189,17 +189,20 @@ const TestingListApp = () => {
           onClickRetry: doFetchData,
           displayError: { error },
           rowActions: rowActions,
-          onClickRow: (row) =>
-            navigate(
-              getFullPath(
-                appRoutes.TEST_RESULT_LIST,
-                { pathParam: idPath, id: maalingId ?? '' },
-                {
-                  pathParam: ':loeysingId',
-                  id: String(row?.original.loeysing.id),
-                }
-              )
-            ),
+          onClickRow:
+            maaling?.status === 'testing_ferdig'
+              ? (row) =>
+                  navigate(
+                    getFullPath(
+                      appRoutes.TEST_RESULT_LIST,
+                      { pathParam: idPath, id: maalingId ?? '' },
+                      {
+                        pathParam: ':loeysingId',
+                        id: String(row?.original.loeysing.id),
+                      }
+                    )
+                  )
+              : undefined,
         }}
       >
         <StatusChart
