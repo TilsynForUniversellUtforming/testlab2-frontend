@@ -21,7 +21,7 @@ interface Props extends SakFormBaseProps {
 
 const SakInitStep = ({
   formStepState,
-  maalingFormState,
+  sakFormState,
   advisors,
   onSubmit,
 }: Props) => {
@@ -29,7 +29,7 @@ const SakInitStep = ({
   const [displayAdvanced, setDisplayAdvanced] = useState(false);
 
   const formMethods = useForm<SakFormState>({
-    defaultValues: maalingFormState,
+    defaultValues: sakFormState,
     resolver: zodResolver(sakInitValidationSchema),
   });
 

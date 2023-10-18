@@ -36,7 +36,7 @@ interface Props extends SakFormBaseProps {
 
 const SakLoeysingStep = ({
   formStepState,
-  maalingFormState,
+  sakFormState,
   loeysingList,
   utvalList,
   verksemdList,
@@ -45,7 +45,7 @@ const SakLoeysingStep = ({
   onSubmit,
 }: Props) => {
   const formMethods = useForm<SakFormState>({
-    defaultValues: maalingFormState,
+    defaultValues: sakFormState,
     resolver: zodResolver(sakLoeysingValidationSchema),
   });
 

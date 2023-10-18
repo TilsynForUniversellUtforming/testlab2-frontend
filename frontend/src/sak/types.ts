@@ -37,6 +37,8 @@ export type SakFormState = {
   loeysingList: LoeysingVerksemd[];
   utval?: Utval;
   testregelList: Testregel[];
+  // Ny
+  verksemd?: Loeysing;
 };
 
 export const defaultSakFormState: SakFormState = {
@@ -49,6 +51,8 @@ export const defaultSakFormState: SakFormState = {
   advisorId: undefined,
   sakNumber: '',
   loeysingSource: 'utval',
+  // Ny
+  verksemd: undefined,
 };
 
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
@@ -71,8 +75,9 @@ export type SakStep = {
 };
 
 const initStep: SakStepBase = {
-  heading: 'La oss opprette ei sak',
-  subHeading: 'Fortell oss litt om saka du vil opprette.',
+  heading: 'Legg inn virksomhet',
+  subHeading:
+    'Søk enten på navn, eller legg inn organisasjonsnummer dersom du har det. ',
   stepperTitle: 'Saka',
   stepperSubTitle: 'Om saka',
   sakStepType: 'Init',
@@ -116,7 +121,7 @@ export const startedSakSteps = [
 
 export interface SakFormBaseProps {
   formStepState: FormStepState;
-  maalingFormState: SakFormState;
+  sakFormState: SakFormState;
   onSubmit: (maalingFormState: SakFormState) => void;
 }
 

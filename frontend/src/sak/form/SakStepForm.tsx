@@ -7,7 +7,7 @@ import { User } from '../../user/api/types';
 import { SakFormBaseProps } from '../types';
 import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
 import SakConfirmStep from './steps/confirmation/SakConfirmStep';
-import SakInitStep from './steps/init/SakInitStep';
+import SakInngaaendeInitStep from './steps/init/SakInngaaendeInitStep';
 import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
 import SakTestreglarStep from './steps/SakTestreglarStep';
 
@@ -29,7 +29,7 @@ const SakStepForm = ({
   verksemdList,
   regelsettList,
   advisors,
-  maalingFormState,
+  sakFormState,
   onSubmit,
   formStepState,
 }: Props): ReactElement => {
@@ -42,10 +42,9 @@ const SakStepForm = ({
   switch (currentStep.sakStepType) {
     case 'Init':
       return (
-        <SakInitStep
+        <SakInngaaendeInitStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
-          advisors={advisors}
+          sakFormState={sakFormState}
           onSubmit={onSubmit}
         />
       );
@@ -53,7 +52,7 @@ const SakStepForm = ({
       return (
         <SakLoeysingStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
+          sakFormState={sakFormState}
           loeysingList={loeysingList}
           utvalList={utvalList}
           verksemdList={verksemdList}
@@ -66,7 +65,7 @@ const SakStepForm = ({
       return (
         <SakTestreglarStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
+          sakFormState={sakFormState}
           regelsettList={regelsettList}
           onSubmit={onSubmit}
           error={error}
@@ -77,7 +76,7 @@ const SakStepForm = ({
       return (
         <SakConfirmStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
+          sakFormState={sakFormState}
           advisors={advisors}
           regelsettList={regelsettList}
           onSubmit={onSubmit}

@@ -45,6 +45,20 @@ const testregelSchema = z.object({
   kravTilSamsvar: z.string(),
 });
 
+export const sakInitVerksemdValidationSchema = z.object({
+  navn: z.string().optional(),
+  sakType: saktypeSchema.optional(),
+  advisorId: z.string().optional(),
+  sakNumber: z.string().optional(),
+  maxLenker: z.union([z.number(), z.string()]).optional(),
+  talLenker: z.union([z.number(), z.string()]).optional(),
+  loeysingSource: loeysingSourceSchema,
+  loeysingList: z.array(loeysingVerksemdSchema).optional(),
+  utval: utvalSchema.optional(),
+  testregelList: z.array(testregelSchema).optional(),
+  verksemd: loeysingSchema,
+});
+
 export const sakInitValidationSchema = z
   .object({
     navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),

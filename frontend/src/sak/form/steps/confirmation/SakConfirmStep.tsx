@@ -20,18 +20,18 @@ interface Props extends SakFormBaseProps {
 
 const SakConfirmStep = ({
   formStepState,
-  maalingFormState,
+  sakFormState,
   regelsettList,
   advisors,
   onSubmit,
   error,
   loading,
 }: Props) => {
-  const { navn, loeysingList, testregelList } = maalingFormState;
+  const { navn, loeysingList, testregelList } = sakFormState;
   const { onClickBack } = formStepState;
 
   const formMethods = useForm<SakFormState>({
-    defaultValues: maalingFormState,
+    defaultValues: sakFormState,
   });
 
   const {
@@ -83,7 +83,7 @@ const SakConfirmStep = ({
     >
       <SakConfirmContent
         regelsettList={regelsettList}
-        maalingFormState={maalingFormState}
+        maalingFormState={sakFormState}
         error={error}
         loading={loading}
         formErrors={errors}

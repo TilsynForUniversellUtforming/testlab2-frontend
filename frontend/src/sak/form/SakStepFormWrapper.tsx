@@ -8,7 +8,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { SakFormBaseProps, SakFormState } from '../types';
 import Stepper from './Stepper';
 
-export interface Props extends Omit<SakFormBaseProps, 'maalingFormState'> {
+export interface Props extends Omit<SakFormBaseProps, 'sakFormState'> {
   formMethods: UseFormReturn<SakFormState>;
   buttonStep: TestlabFormButtonStep;
   hasRequiredFields?: boolean;

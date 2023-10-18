@@ -103,7 +103,7 @@ const SakCreate = () => {
       <AppTitle heading="Ny sak" subHeading="Opprett ein ny sak" />
       <SakStepForm
         formStepState={formStepState}
-        maalingFormState={maalingFormState}
+        sakFormState={maalingFormState}
         loeysingList={loeysingList}
         utvalList={utvalList}
         verksemdList={verksemdList}

@@ -27,14 +27,14 @@ interface Props extends SakFormBaseProps {
 
 const SakTestreglarStep = ({
   onSubmit,
-  maalingFormState,
+  sakFormState,
   regelsettList,
   formStepState,
   error,
   loading,
 }: Props) => {
   const formMethods = useForm<SakFormState>({
-    defaultValues: maalingFormState,
+    defaultValues: sakFormState,
     resolver: zodResolver(sakTestreglarValidationSchema),
   });
 

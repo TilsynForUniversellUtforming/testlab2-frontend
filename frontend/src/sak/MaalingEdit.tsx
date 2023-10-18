@@ -96,7 +96,7 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
     <>
       <SakStepForm
         formStepState={formStepState}
-        maalingFormState={maalingFormState}
+        sakFormState={maalingFormState}
         loeysingList={loeysingList}
         utvalList={utvalList}
         verksemdList={verksemdList}
