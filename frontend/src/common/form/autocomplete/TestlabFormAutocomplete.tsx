@@ -1,6 +1,7 @@
 import './testlab-form-autocomplete.scss';
 
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
+import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Path, PathValue, useFormContext } from 'react-hook-form';
 
@@ -73,18 +74,10 @@ const TestlabFormAutocomplete = <
 
   return (
     <div className="testlab-form-autocomplete">
-      <label
-        htmlFor="testlab-form-autocorrect"
-        className="testlab-form__input-label"
-      >
-        {label}
-        {required && <span className="asterisk-color">*</span>}
-        {description && (
-          <div className="testlab-form__input-sub-label">{description}</div>
-        )}
-      </label>
       <DebouncedInput
         id="testlab-form-autocorrect"
+        label={<TestlabFormRequiredLabel label={label} required={required} />}
+        description={description}
         value={inputValue}
         onChange={handleOnChange}
         errorMessage={errorMessage}
