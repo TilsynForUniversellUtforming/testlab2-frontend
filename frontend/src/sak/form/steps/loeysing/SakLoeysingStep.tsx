@@ -212,7 +212,7 @@ const SakLoeysingStep = ({
               name="chooseUtval"
               value={String(getValues('utval')?.id)}
               onChange={handleChangeUtval}
-              error={listErrors && <>{listErrors}</>}
+              error={listErrors}
             >
               {utvalList.map((u) => (
                 <Radio value={String(u.id)} key={String(u.id)}>

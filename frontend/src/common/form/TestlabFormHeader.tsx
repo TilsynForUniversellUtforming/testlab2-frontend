@@ -10,11 +10,11 @@ const TestlabFormHeader = ({
 }) => {
   return (
     <header className="testlab-form__header">
-      <Heading size="xlarge" className="heading" spacing>
+      <Heading size="xlarge" level={2} className="heading" spacing>
         {heading}
       </Heading>
       {subHeading && (
-        <Heading level={4} size="medium" spacing role="doc-subtitle">
+        <Heading level={3} size="medium" spacing role="doc-subtitle">
           {subHeading}
         </Heading>
       )}
