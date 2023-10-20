@@ -10,6 +10,7 @@ import {
   utval,
 } from '@common/appRoutes';
 import TestlabLinkButton from '@common/button/TestlabLinkButton';
+import { ButtonVariant } from '@common/types';
 import { Heading } from '@digdir/design-system-react';
 import React from 'react';
 
@@ -27,7 +28,7 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
           <TestlabLinkButton
             route={route}
             title={route.navn}
-            variant="outline"
+            variant={ButtonVariant.Outline}
             icon={<img src={route.imgSrc} alt={''} />}
             size="large"
             color="second"
@@ -51,7 +52,7 @@ const Oversikt = () => {
           <TestlabLinkButton
             route={appRoutes.SAK_CREATE}
             title={appRoutes.SAK_CREATE.navn}
-            variant="outline"
+            variant={ButtonVariant.Outline}
             icon={
               <img
                 className="lenker__img"
@@ -67,7 +68,7 @@ const Oversikt = () => {
           <TestlabLinkButton
             route={appRoutes.NY_TEST_ROOT}
             title={appRoutes.NY_TEST_ROOT.navn}
-            variant="outline"
+            variant={ButtonVariant.Outline}
             icon={
               <img
                 className="lenker__img"

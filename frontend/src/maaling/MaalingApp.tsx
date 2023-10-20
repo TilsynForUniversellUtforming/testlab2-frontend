@@ -104,7 +104,7 @@ const MaalingApp = () => {
       setTestStatus({
         loading: false,
         message: 'Kunne ikkje starte test, måling har feil i sideutval',
-        severity: 'danger',
+        severity: 'warning',
       });
     }
 

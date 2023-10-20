@@ -42,6 +42,8 @@ const TestlabFormSelect = <T extends object>({
             options={options}
             error={isDefined(errorMessage)}
             disabled={disabled}
+            label={label}
+            hideLabel
           />
           {errorMessage && (
             <ErrorMessage size="small">{errorMessage}</ErrorMessage>

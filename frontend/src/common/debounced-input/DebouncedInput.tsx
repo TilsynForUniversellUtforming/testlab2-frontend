@@ -1,10 +1,6 @@
 import './debounced-input.scss';
 
-import {
-  ErrorMessage,
-  Textfield,
-  TextfieldProps,
-} from '@digdir/design-system-react';
+import { Textfield, TextfieldProps } from '@digdir/design-system-react';
 import React, { useEffect, useState } from 'react';
 
 export type Props = {
@@ -53,11 +49,7 @@ const DebouncedInput = ({
         onChange={(e) => setValue(e.target.value)}
         onFocus={onFocus}
         aria-label={ariaLabel}
-        error={
-          errorMessage && (
-            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-          )
-        }
+        error={errorMessage}
       />
     </div>
   );

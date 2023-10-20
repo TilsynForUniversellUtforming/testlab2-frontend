@@ -1,6 +1,7 @@
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
+import { ButtonVariant } from '@common/types';
 import { isNotDefined } from '@common/util/util';
 import { Button } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -91,7 +92,7 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
         <Button
           title="Avanserte instillinger"
           icon={<CogIcon />}
-          variant={'quiet'}
+          variant={ButtonVariant.Quiet}
           iconPlacement={'right'}
           onClick={toggleAdvancedDisplay}
         >

@@ -1,7 +1,7 @@
 import './testlab-search.scss';
 
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
-import { Button, ErrorMessage, Textfield } from '@digdir/design-system-react';
+import { Button, Textfield } from '@digdir/design-system-react';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 export interface Props {
@@ -52,7 +52,7 @@ const TestlabSearch = ({
           id="testlab-search"
           onChange={handleOnChange}
           inputMode={numeric ? 'numeric' : 'text'}
-          error={error && <ErrorMessage size="small">{error}</ErrorMessage>}
+          error={error}
         />
         <Button
           className="testlab__search-button"
