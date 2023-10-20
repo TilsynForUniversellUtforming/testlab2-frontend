@@ -28,9 +28,9 @@ export const ButtonColor = {
 export type ButtonColorType = (typeof ButtonColor)[keyof typeof ButtonColor];
 
 export const ButtonVariant = {
-  Filled: 'filled',
-  Outline: 'outline',
-  Quiet: 'quiet',
+  Filled: 'primary',
+  Outline: 'secondary',
+  Quiet: 'tertiary',
 } as const;
 
 export type ButtonVariantType =
