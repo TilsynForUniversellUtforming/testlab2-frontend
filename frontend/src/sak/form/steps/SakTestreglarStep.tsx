@@ -43,7 +43,8 @@ const SakTestreglarStep = ({
   const [rowSelection, setRowSelection] = useState<Testregel[]>([]);
   const [testregelId, setTestregelId] = useState<string | undefined>(undefined);
 
-  const { control, setValue, getValues, setError, formState } = formMethods;
+  const { control, setValue, getValues, setError, formState, clearErrors } =
+    formMethods;
 
   const selection = useWatch<SakFormState>({
     control,
@@ -99,15 +100,14 @@ const SakTestreglarStep = ({
         id: 'Krav',
         cell: (info) => info.getValue(),
         header: () => <>Krav</>,
-        meta: {
-          select: true,
-        },
       },
     ],
     []
   );
 
   const onClickAdd = () => {
+    clearErrors();
+
     if (testregelId) {
       const testregelList: Testregel[] = [];
       if (testregelId.includes(regelsettPrefix)) {
@@ -194,31 +194,29 @@ const SakTestreglarStep = ({
             Legg til
           </Button>
         </div>
-        <div className="sak-testreglar__table">
-          <TestlabTable<Testregel>
-            data={selection}
-            defaultColumns={testregelColumns}
-            displayError={{ error }}
-            loading={loading}
-            onSelectRows={handleSelectRow}
-            customStyle={{ small: true }}
-            rowActions={[
-              {
-                action: 'delete',
-                rowSelectionRequired: true,
-                modalProps: {
-                  title: 'Fjern rad',
-                  disabled: rowSelection.length === 0,
-                  message: `Fjern ${joinStringsToList(
-                    rowSelection.map((rs) => rs.testregelNoekkel)
-                  )}?`,
-                  onConfirm: onClickRemove,
-                },
+        {formError && <ErrorMessage>{formError}</ErrorMessage>}
+        <TestlabTable<Testregel>
+          data={selection}
+          defaultColumns={testregelColumns}
+          displayError={{ error }}
+          loading={loading}
+          onSelectRows={handleSelectRow}
+          customStyle={{ small: true }}
+          rowActions={[
+            {
+              action: 'delete',
+              rowSelectionRequired: true,
+              modalProps: {
+                title: 'Fjern rad',
+                disabled: rowSelection.length === 0,
+                message: `Fjern ${joinStringsToList(
+                  rowSelection.map((rs) => rs.testregelNoekkel)
+                )}?`,
+                onConfirm: onClickRemove,
               },
-            ]}
-          />
-          {formError && <ErrorMessage>{formError}</ErrorMessage>}
-        </div>
+            },
+          ]}
+        />
       </div>
     </SakStepFormWrapper>
   );

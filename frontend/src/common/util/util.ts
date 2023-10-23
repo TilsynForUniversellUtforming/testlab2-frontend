@@ -41,8 +41,10 @@ export const isUrl = (url: string) => {
   }
 };
 
+export const removeSpaces = (s: string) => s.replace(/\s/g, '');
+
 export function isOrgnummer(s: string): boolean {
-  const utenMellomrom = s.replace(/\s/g, '');
+  const utenMellomrom = removeSpaces(s);
   if (utenMellomrom.length !== 9) {
     return false;
   }

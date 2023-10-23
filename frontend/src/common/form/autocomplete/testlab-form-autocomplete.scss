@@ -40,6 +40,12 @@
       color: var(--fds-semantic-text-neutral-default);
       font-size: smaller;
       text-align: start;
+      &-title {
+        font-weight: 600;
+      }
+      &-description {
+        word-break: break-word;
+      }
     }
   }
 }
