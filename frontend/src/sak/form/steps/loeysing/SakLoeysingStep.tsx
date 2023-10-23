@@ -1,7 +1,9 @@
+import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
-import { getErrorMessage } from '@common/form/util';
+import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
 import { joinStringsToList } from '@common/util/stringutils';
+import { removeSpaces } from '@common/util/util';
 import {
   Button,
   ErrorMessage,
@@ -55,28 +57,14 @@ const SakLoeysingStep = ({
   const { onClickBack } = formStepState;
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
+  const [selectableLoeysingList, setSelectableLoeysingList] = useState<
+    Loeysing[]
+  >([]);
   const [rowSelection, setRowSelection] = useState<LoeysingVerksemd[]>([]);
   const [source, selection] = useWatch<SakFormState>({
     control,
     name: ['loeysingSource', 'loeysingList'],
   }) as [LoeysingSource, LoeysingVerksemd[]];
-
-  const loeysingOptions: SingleSelectOption[] = useMemo(() => {
-    const filteredLoeysingList = loeysingList.filter(
-      (ll) => !selection.find((s) => s.loeysing.id === ll.id)
-    );
-
-    return filteredLoeysingList.map((l) => ({
-      label: l.namn,
-      formattedLabel: (
-        <>
-          <b>{l.namn}</b>
-          <div>{l.url}</div>
-        </>
-      ),
-      value: String(l.id),
-    }));
-  }, [selection]);
 
   const verksemdOptions: SingleSelectOption[] = verksemdList.map((l) => ({
     label: l.namn,
@@ -132,6 +120,11 @@ const SakLoeysingStep = ({
           message: 'Løysing og verksemd må veljast',
         });
       }
+    } else {
+      setError('loeysingList', {
+        type: 'manual',
+        message: 'Løysing og verksemd må veljast',
+      });
     }
   };
 
@@ -178,6 +171,45 @@ const SakLoeysingStep = ({
       onSubmit(data);
     }
   }, []);
+
+  const handleChangeLoeysing = useCallback(
+    (searchString: string) => {
+      clearErrors();
+      setLoeysingId(undefined);
+      const selection = getValues('loeysingList');
+
+      if (searchString.length === 0) {
+        setSelectableLoeysingList([]);
+        return;
+      }
+
+      const selectionIds = new Set(selection.map((s) => s.loeysing.id));
+      const normalizedSearchString = removeSpaces(searchString).toLowerCase();
+      const loweredSearchString = searchString.toLowerCase();
+
+      const filteredList = loeysingList.filter((loeysing) => {
+        if (selectionIds.has(loeysing.id)) {
+          return false;
+        }
+
+        return (
+          normalizeString(loeysing.namn).includes(normalizedSearchString) ||
+          loeysing.url.toLowerCase().includes(loweredSearchString) ||
+          loeysing.orgnummer.includes(normalizedSearchString)
+        );
+      });
+
+      if (filteredList.length === 0) {
+        setError('loeysingList', {
+          type: 'manual',
+          message: `Fann ikkje ${searchString}`,
+        });
+      }
+
+      setSelectableLoeysingList(filteredList);
+    },
+    [loeysingList, getValues, setError, clearErrors]
+  );
 
   return (
     <SakStepFormWrapper
@@ -227,11 +259,18 @@ const SakLoeysingStep = ({
         <div className="sak-loeysing">
           <div className="sak-loeysing__input-wrapper">
             <div className="sak-loeysing__input-select">
-              <Select
-                options={loeysingOptions}
+              <TestlabFormAutocomplete<SakFormState, Loeysing>
                 label="Løysing"
-                onChange={setLoeysingId}
-                value={loeysingId}
+                description="Søk etter namn, orgnr. eller url"
+                resultList={selectableLoeysingList}
+                resultLabelKey="namn"
+                resultDescriptionKey="url"
+                onChange={handleChangeLoeysing}
+                onClick={(loesying: Loeysing) =>
+                  setLoeysingId(String(loesying.id))
+                }
+                name="loeysingList"
+                size="small"
               />
             </div>
             <div className="sak-loeysing__input-select">
@@ -246,31 +285,29 @@ const SakLoeysingStep = ({
               Legg til
             </Button>
           </div>
-          <div className="sak-loeysing__table">
-            <TestlabTable<LoeysingVerksemd>
-              data={selection}
-              defaultColumns={loeysingColumns}
-              displayError={{ error }}
-              loading={loading}
-              onSelectRows={handleSelectRow}
-              customStyle={{ small: true }}
-              rowActions={[
-                {
-                  action: 'delete',
-                  rowSelectionRequired: true,
-                  modalProps: {
-                    title: 'Fjern rad',
-                    disabled: rowSelection.length === 0,
-                    message: `Fjern ${joinStringsToList(
-                      rowSelection.map((rs) => rs.loeysing.namn)
-                    )}?`,
-                    onConfirm: onClickRemove,
-                  },
+          {listErrors && <ErrorMessage>{listErrors}</ErrorMessage>}
+          <TestlabTable<LoeysingVerksemd>
+            data={selection}
+            defaultColumns={loeysingColumns}
+            displayError={{ error }}
+            loading={loading}
+            onSelectRows={handleSelectRow}
+            customStyle={{ small: true }}
+            rowActions={[
+              {
+                action: 'delete',
+                rowSelectionRequired: true,
+                modalProps: {
+                  title: 'Fjern rad',
+                  disabled: rowSelection.length === 0,
+                  message: `Fjern ${joinStringsToList(
+                    rowSelection.map((rs) => rs.loeysing.namn)
+                  )}?`,
+                  onConfirm: onClickRemove,
                 },
-              ]}
-            />
-            {listErrors && <ErrorMessage>{listErrors}</ErrorMessage>}
-          </div>
+              },
+            ]}
+          />
         </div>
       )}
     </SakStepFormWrapper>

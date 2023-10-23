@@ -1,50 +1,67 @@
 import './testlab-form-autocomplete.scss';
 
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
+import TestlabFormAutocompleteList from '@common/form/autocomplete/TestlabFormAutocompleteList';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
+import { Size } from '@common/types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Path, PathValue, useFormContext } from 'react-hook-form';
+import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
 export interface Props<FormData, ResultData> {
-  label: string;
-  value?: string;
-  description?: string;
-  required?: boolean;
-  hidden?: boolean;
-  disabled?: boolean;
   resultList: ResultData[];
+  label: string;
   onChange: (value: string) => void;
   resultLabelKey: keyof ResultData;
   name: Path<FormData>;
+  resultDescriptionKey?: keyof ResultData;
+  retainSelection?: boolean;
+  value?: string;
+  description?: string;
+  required?: boolean;
+  onClick?: (result: ResultData) => void;
   errorMessage?: string;
+  size?: Size;
+  maxListLength?: number;
 }
 
 const TestlabFormAutocomplete = <
   FormData extends object,
   ResultData extends PathValue<FormData, Path<FormData>>,
 >({
+  resultList,
   label,
+  onChange,
+  resultLabelKey,
+  resultDescriptionKey,
+  name,
+  retainSelection = true,
   value,
   description,
   required = false,
-  resultList,
-  onChange,
-  name,
-  resultLabelKey,
+  onClick,
   errorMessage,
+  size,
+  maxListLength,
 }: Props<FormData, ResultData>) => {
-  const { setValue } = useFormContext<FormData>();
+  const { control, setValue } = useFormContext<FormData>();
   const [show, setShow] = useState(false);
   const resultsRef = useRef<HTMLUListElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const [inputValue, setInputValue] = useState(value);
+  const selection = useWatch<FormData>({
+    control,
+    name: name,
+  }) as ResultData;
+
+  useEffect(() => {
+    if (selection) {
+      setInputValue(undefined);
+    }
+  }, [selection]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
       resultsRef.current &&
-      !resultsRef.current.contains(event.target as Node) &&
-      buttonRef.current &&
-      !buttonRef.current.contains(event.target as Node)
+      !resultsRef.current.contains(event.target as Node)
     ) {
       setShow(false);
     }
@@ -57,11 +74,18 @@ const TestlabFormAutocomplete = <
     };
   }, []);
 
-  const handleOnClick = (name: Path<FormData>, result: ResultData) => {
-    setShow(false);
-    setInputValue(result[resultLabelKey]);
-    setValue(name, result);
-  };
+  const handleOnClick = useCallback(
+    (name: Path<FormData>, result: ResultData) => {
+      setShow(false);
+      setInputValue(retainSelection ? result[resultLabelKey] : undefined);
+      if (onClick) {
+        onClick(result);
+      } else {
+        setValue(name, result);
+      }
+    },
+    []
+  );
 
   const handleOnChange = useCallback(
     (nextInputValue: string) => {
@@ -82,33 +106,18 @@ const TestlabFormAutocomplete = <
         onChange={handleOnChange}
         errorMessage={errorMessage}
         onFocus={() => setShow(true)}
+        size={size}
       />
       <ul className="testlab-form-autocomplete__list" ref={resultsRef}>
-        {show &&
-          resultList.map((result, idx) => {
-            const resultLabel =
-              typeof result[resultLabelKey] === 'string'
-                ? result[resultLabelKey]
-                : null;
-
-            return (
-              <li
-                className="testlab-form-autocomplete__list-item"
-                key={`${resultLabel}_${idx}`}
-              >
-                <div className="button-wrapper">
-                  <button
-                    type="button"
-                    onClick={() => handleOnClick(name, result)}
-                    className="testlab-form-autocomplete__list__button"
-                    ref={buttonRef}
-                  >
-                    {resultLabel}
-                  </button>
-                </div>
-              </li>
-            );
-          })}
+        <TestlabFormAutocompleteList
+          resultList={resultList}
+          resultLabelKey={resultLabelKey}
+          resultDescriptionKey={resultDescriptionKey}
+          onClick={handleOnClick}
+          show={show}
+          name={name}
+          maxListLength={maxListLength}
+        />
       </ul>
     </div>
   );

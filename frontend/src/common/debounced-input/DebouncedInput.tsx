@@ -23,6 +23,7 @@ const DebouncedInput = ({
   ariaLabel,
   id,
   errorMessage,
+  size,
 }: Props & Omit<TextfieldProps, 'onChange'>) => {
   const [value, setValue] = useState(initialValue || '');
 
@@ -50,6 +51,7 @@ const DebouncedInput = ({
         onFocus={onFocus}
         aria-label={ariaLabel}
         error={errorMessage}
+        size={size}
       />
     </div>
   );

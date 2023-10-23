@@ -1,8 +1,18 @@
 .sak {
   padding: 1rem 0;
+
+  .testlab-table {
+    max-width: 48rem;
+  }
+
   .testlab-form {
     display: flex;
     justify-content: left;
+
+    &__select,
+    &__input {
+      max-width: 24rem;
+    }
 
     &__navigation-buttons {
       margin-top: auto;
@@ -18,22 +28,19 @@
   &__container {
     padding-bottom: 1.5rem;
 
-    .sak-init {
-      width: 75%;
-    }
-
+    .sak-init,
     .sak-loeysing {
-      width: 75%;
       &__input-wrapper {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
         align-items: end;
         padding-bottom: 1rem;
+        gap: 2rem;
       }
 
       &__input-select {
-        width: 35%;
+        max-width: 20rem;
+        flex: 1;
       }
 
       &__utval {
@@ -48,23 +55,20 @@
     }
 
     .sak-testreglar {
-      width: 75%;
       &__input-wrapper {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
         align-items: end;
         padding-bottom: 1rem;
+        gap: 2rem;
       }
 
       &__input-select {
-        width: 50%;
+        max-width: 20rem;
+        flex: 1;
       }
     }
 
     .sak-confirm {
-      min-width: 50vw;
-
       span,
       div,
       ol,

@@ -58,7 +58,11 @@ const TestlabForm = <T extends object>({
       register={formMethods.register}
       setFocus={formMethods.setFocus}
     >
-      <form className="testlab-form" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="testlab-form"
+        onSubmit={handleSubmit(onSubmit)}
+        autoComplete="off"
+      >
         {heading && (
           <TestlabFormHeader heading={heading} subHeading={subHeading} />
         )}
