@@ -9,3 +9,16 @@ export const getErrorMessage = <
   name: TFieldName
 ): string | undefined =>
   (form.errors as FieldErrors<TFieldValues>)[name]?.message as string;
+
+/**
+ * Helper function to retain just the alphanumerical values from a string.
+ * @param {string} str - The input parameter without formatting.
+ * @return {string} The formatted parameter.
+ */
+
+export const normalizeString = (str: string): string => {
+  return str
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-zæøå0-9]/gi, '');
+};
