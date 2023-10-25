@@ -81,16 +81,19 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
   );
 
   const formStepState = useSakForm(maaling?.status, true);
-  const { isLastStep, setNextStep } = formStepState;
+  const { isLastStep, setNextStep, currentStepIdx } = formStepState;
 
-  const handleSubmit = (maalingFormState: SakFormState) => {
-    setMaalingFormState(maalingFormState);
-    if (!isLastStep) {
-      return setNextStep();
-    } else {
-      doSubmitMaaling(maalingFormState);
-    }
-  };
+  const handleSubmit = useCallback(
+    (maalingFormState: SakFormState) => {
+      setMaalingFormState(maalingFormState);
+      if (!isLastStep(currentStepIdx)) {
+        return setNextStep();
+      } else {
+        doSubmitMaaling(maalingFormState);
+      }
+    },
+    [isLastStep, setNextStep, currentStepIdx]
+  );
 
   return (
     <>

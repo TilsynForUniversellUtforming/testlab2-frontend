@@ -1,9 +1,8 @@
 import toError from '@common/error/util';
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
-import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { getErrorMessage } from '@common/form/util';
 import TestlabSearch from '@common/search/TestlabSearch';
-import { isNotDefined, isOrgnummer } from '@common/util/util';
+import { isOrgnummer } from '@common/util/util';
 import { ErrorMessage } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -16,7 +15,7 @@ import { sakInitVerksemdValidationSchema } from '@sak/form/steps/sakFormValidati
 import { SakContext, SakFormBaseProps, SakFormState } from '@sak/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
 import SakStepFormWrapper from '../../SakStepFormWrapper';
 
@@ -26,7 +25,6 @@ const SakInngaaendeInitStep = ({
   onSubmit,
 }: SakFormBaseProps) => {
   const { setContextError }: SakContext = useOutletContext();
-  const navigate = useNavigate();
   const [virksomhetAutocompleteList, setVirksomhetAutocompleteList] = useState<
     Loeysing[]
   >([]);
@@ -52,14 +50,6 @@ const SakInngaaendeInitStep = ({
     control,
     name: 'verksemd',
   }) as Loeysing | undefined;
-
-  const doSubmit = useCallback((maalingFormState: SakFormState) => {
-    if (isNotDefined(formState.errors)) {
-      onSubmit(maalingFormState);
-    } else {
-      return;
-    }
-  }, []);
 
   const onChangeAutocomplete = useCallback(async (verksemdSearch: string) => {
     setAutoCompleteError(undefined);
@@ -105,17 +95,11 @@ const SakInngaaendeInitStep = ({
     }
   }, []);
 
-  const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Start',
-    onClickBack: () => navigate('/'),
-  };
-
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
-      onSubmit={doSubmit}
+      onSubmit={onSubmit}
       formMethods={formMethods}
-      buttonStep={buttonStep}
       hasRequiredFields
     >
       <div className="sak-init">

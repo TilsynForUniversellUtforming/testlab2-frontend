@@ -1,5 +1,4 @@
 import { utval } from '@common/appRoutes';
-import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { isDefined } from '@common/util/util';
 import { SakFormBaseProps, SakFormState } from '@sak/types';
@@ -28,7 +27,6 @@ const SakConfirmStep = ({
   loading,
 }: Props) => {
   const { navn, loeysingList, testregelList } = sakFormState;
-  const { onClickBack } = formStepState;
 
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
@@ -67,19 +65,11 @@ const SakConfirmStep = ({
 
   useEffectOnce(() => handleFormErrors());
 
-  const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Custom',
-    customColor: 'success',
-    customNextText: 'Lagre og gå til måling',
-    onClickBack: onClickBack,
-  };
-
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
-      buttonStep={buttonStep}
     >
       <SakConfirmContent
         regelsettList={regelsettList}
