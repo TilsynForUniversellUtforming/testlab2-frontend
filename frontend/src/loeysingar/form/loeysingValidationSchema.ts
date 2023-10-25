@@ -1,4 +1,4 @@
-import { isOrgnummer, isUrl } from '@common/util/util';
+import { isOrgnummer, isUrl } from '@common/util/validationUtils';
 import { z } from 'zod';
 
 export const loeysingValidationSchema = z.object({

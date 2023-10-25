@@ -1,5 +1,5 @@
 import ErrorCard from '@common/error/ErrorCard';
-import { isDefined } from '@common/util/util';
+import { isDefined } from '@common/util/validationUtils';
 import { Accordion, Spinner } from '@digdir/design-system-react';
 import React from 'react';
 import { FieldErrors } from 'react-hook-form';

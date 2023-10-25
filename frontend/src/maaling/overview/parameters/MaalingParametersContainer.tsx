@@ -1,6 +1,7 @@
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
-import { formatDateString } from '@common/util/util';
+import { getFullPath, idPath } from '@common/util/routeUtils';
+import { formatDateString } from '@common/util/stringutils';
 import { List, ListItem } from '@digdir/design-system-react';
+import { MAALING } from '@maaling/MaalingRoutes';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -24,7 +25,7 @@ const MaalingParametersContainer = ({ id, maaling }: Props) => (
         <div className="bold-text">Sak</div>
         <div>
           <Link
-            to={getFullPath(appRoutes.MAALING, {
+            to={getFullPath(MAALING, {
               pathParam: idPath,
               id: id,
             })}

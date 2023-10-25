@@ -1,8 +1,9 @@
-import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { joinStringsToList } from '@common/util/stringutils';
 import { CrawlResultat, Maaling } from '@maaling/api/types';
+import { MAALING, TEST_CRAWLING_RESULT_LIST } from '@maaling/MaalingRoutes';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -82,7 +83,7 @@ const CrawlingList = ({
       subHeading={maaling?.navn ? `Måling: ${maaling.navn}` : undefined}
       linkPath={
         maaling
-          ? getFullPath(AppRoutes.MAALING, {
+          ? getFullPath(MAALING, {
               id: id,
               pathParam: idPath,
             })
@@ -106,7 +107,7 @@ const CrawlingList = ({
             ? (row) =>
                 navigate(
                   getFullPath(
-                    appRoutes.TEST_CRAWLING_RESULT_LIST,
+                    TEST_CRAWLING_RESULT_LIST,
                     { pathParam: idPath, id: String(maaling?.id) },
                     {
                       pathParam: ':loeysingId',

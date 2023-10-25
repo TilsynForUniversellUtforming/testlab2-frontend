@@ -1,5 +1,4 @@
 import useAlert from '@common/alert/useAlert';
-import appRoutes from '@common/appRoutes';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -7,6 +6,7 @@ import { useOutletContext, useParams } from 'react-router-dom';
 
 import { updateTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
+import { TESTREGEL_EDIT } from '../TestregelRoutes';
 import { TestregelContext } from '../types';
 import TestregelFormSkeleton from './skeleton/TestregelFormSkeleton';
 import TestregelForm from './TestregelForm';
@@ -35,10 +35,7 @@ const TestregelEdit = () => {
     }
   }, [testreglar]);
 
-  useContentDocumentTitle(
-    appRoutes.TESTREGEL_EDIT.navn,
-    testregel?.kravTilSamsvar
-  );
+  useContentDocumentTitle(TESTREGEL_EDIT.navn, testregel?.kravTilSamsvar);
 
   const krav = testreglar
     .map((tr) => tr.krav)

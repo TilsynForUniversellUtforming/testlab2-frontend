@@ -2,7 +2,7 @@ import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { ButtonVariant } from '@common/types';
-import { isNotDefined } from '@common/util/util';
+import { isNotDefined } from '@common/util/validationUtils';
 import { Button } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CogIcon } from '@navikt/aksel-icons';
