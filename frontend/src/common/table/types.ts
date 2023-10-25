@@ -1,4 +1,4 @@
-import { AppRoute } from '@common/appRoutes';
+import { AppRoute } from '@common/util/routeUtils';
 import { Table } from '@tanstack/react-table';
 
 import { ConfirmModalProps } from '../confirm/ConfirmModalButton';

@@ -1,16 +1,21 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { joinStringsToList } from '@common/util/stringutils';
-import { isNotDefined } from '@common/util/util';
+import { isNotDefined } from '@common/util/validationUtils';
 import { fetchMaaling, restart } from '@maaling/api/maaling-api';
 import { RestartRequest, TestResult } from '@maaling/api/types';
+import {
+  MAALING,
+  TEST_RESULT_LIST,
+  TEST_TESTING_LIST,
+} from '@maaling/MaalingRoutes';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -85,7 +90,7 @@ const TestingListApp = () => {
     }
   }, [maaling]);
 
-  useContentDocumentTitle(appRoutes.TEST_TESTING_LIST.navn, maaling?.navn);
+  useContentDocumentTitle(TEST_TESTING_LIST.navn, maaling?.navn);
 
   const onClickRestart = useCallback(
     (testRowSelection: TestResult[]) => {
@@ -175,7 +180,7 @@ const TestingListApp = () => {
         subHeading={`Måling: ${maaling?.navn ?? ''}`}
         linkPath={
           maaling
-            ? getFullPath(AppRoutes.MAALING, {
+            ? getFullPath(MAALING, {
                 id: String(maaling.id),
                 pathParam: idPath,
               })
@@ -194,7 +199,7 @@ const TestingListApp = () => {
               ? (row) =>
                   navigate(
                     getFullPath(
-                      appRoutes.TEST_RESULT_LIST,
+                      TEST_RESULT_LIST,
                       { pathParam: idPath, id: maalingId ?? '' },
                       {
                         pathParam: ':loeysingId',

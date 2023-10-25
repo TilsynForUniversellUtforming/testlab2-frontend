@@ -1,14 +1,14 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import appRoutes from '@common/appRoutes';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
-import { isNotDefined } from '@common/util/util';
+import { isNotDefined } from '@common/util/validationUtils';
 import { fetchMaaling, restart } from '@maaling/api/maaling-api';
 import { CrawlResultat, Maaling, RestartRequest } from '@maaling/api/types';
+import { TEST_SIDEUTVAL_LIST } from '@maaling/MaalingRoutes';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useOutletContext, useParams } from 'react-router-dom';
@@ -52,7 +52,7 @@ const SideutvalApp = () => {
     }
   }, [maaling]);
 
-  useContentDocumentTitle(appRoutes.TEST_SIDEUTVAL_LIST.navn, maaling?.navn);
+  useContentDocumentTitle(TEST_SIDEUTVAL_LIST.navn, maaling?.navn);
 
   const doFetchData = useCallback(async () => {
     setError(undefined);

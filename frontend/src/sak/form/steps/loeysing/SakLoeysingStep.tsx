@@ -2,8 +2,7 @@ import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutoco
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
-import { joinStringsToList } from '@common/util/stringutils';
-import { removeSpaces } from '@common/util/util';
+import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
 import {
   Button,
   ErrorMessage,

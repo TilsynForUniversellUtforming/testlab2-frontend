@@ -1,10 +1,11 @@
 import AlertTimed from '@common/alert/AlertTimed';
-import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { extractDomain } from '@common/util/stringutils';
 import { AggregatedTestresult } from '@maaling/api/types';
+import { MAALING, TEST_RESULT_LIST } from '@maaling/MaalingRoutes';
 import { MaalingTestStatus } from '@maaling/types';
 import { useMemo, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -31,7 +32,7 @@ const TestResultList = () => {
   });
 
   useContentDocumentTitle(
-    appRoutes.TEST_RESULT_LIST.navn,
+    TEST_RESULT_LIST.navn,
     loeysingTestResult?.loeysing?.namn
   );
 
@@ -77,7 +78,7 @@ const TestResultList = () => {
         subHeading={`Måling: ${maaling?.navn ?? ''}`}
         linkPath={
           maaling
-            ? getFullPath(AppRoutes.MAALING, {
+            ? getFullPath(MAALING, {
                 id: String(maaling.id),
                 pathParam: idPath,
               })

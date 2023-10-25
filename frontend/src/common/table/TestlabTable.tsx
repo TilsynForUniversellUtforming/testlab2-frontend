@@ -29,7 +29,7 @@ import { TableOptions } from '@tanstack/table-core';
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
-import { isDefined } from '../util/util';
+import { isDefined } from '../util/validationUtils';
 import ControlHeader from './control/ControlHeader';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableBody from './TestlabTableBody';

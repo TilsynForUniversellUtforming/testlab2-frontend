@@ -1,5 +1,6 @@
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
+import { getFullPath, idPath } from '@common/util/routeUtils';
+import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { LoeysingVerksemd } from '@sak/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
@@ -23,7 +24,7 @@ export const getLoeysingVerksemdColumns = (): Array<
     id: 'url',
     cell: ({ row, getValue }) => (
       <Link
-        to={getFullPath(appRoutes.LOEYSING_EDIT, {
+        to={getFullPath(LOEYSING_EDIT, {
           pathParam: idPath,
           id: String(row.original.loeysing.id),
         })}

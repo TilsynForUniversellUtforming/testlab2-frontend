@@ -4,7 +4,7 @@ import { ButtonColor, ButtonVariant } from '@common/types';
 import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 
-import { anna, appRoutes, saksbehandling, testing, utval } from '../appRoutes';
+import { anna, ROOT, saksbehandling, testing, utval } from '../../AppRoutes';
 import TestlabLinkButton from '../button/TestlabLinkButton';
 import NavigationLinksDropdown from '../dropdown/NavigationLinksDropdown';
 import { useEffectOnce } from '../hooks/useEffectOnce';
@@ -31,17 +31,13 @@ const Navigation = () => {
     <div className="navigation" ref={navRef}>
       <div className="home">
         <TestlabLinkButton
-          route={appRoutes.ROOT}
+          route={ROOT}
           className="link"
           title={''}
           variant={ButtonVariant.Quiet}
           color={ButtonColor.Inverted}
           icon={
-            <img
-              src={appRoutes.ROOT.imgSrc}
-              alt={'Heim'}
-              style={{ width: '100%' }}
-            />
+            <img src={ROOT.imgSrc} alt={'Heim'} style={{ width: '100%' }} />
           }
         />
         <HamburgerMenu open={open} onClick={() => setOpen((open) => !open)} />

@@ -1,7 +1,6 @@
-import { utval } from '@common/appRoutes';
 import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
-import { isDefined } from '@common/util/util';
+import { isDefined } from '@common/util/validationUtils';
 import { SakFormBaseProps, SakFormState } from '@sak/types';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -27,7 +26,7 @@ const SakConfirmStep = ({
   error,
   loading,
 }: Props) => {
-  const { navn, loeysingList, testregelList } = maalingFormState;
+  const { navn, loeysingList, testregelList, utval } = maalingFormState;
   const { onClickBack } = formStepState;
 
   const formMethods = useForm<SakFormState>({

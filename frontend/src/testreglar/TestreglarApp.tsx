@@ -1,6 +1,5 @@
 import './testreglar.scss';
 
-import { appRoutes } from '@common/appRoutes';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
@@ -10,6 +9,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { fetchRegelsettList, fetchTestreglarList } from './api/testreglar-api';
 import { Testregel, TestRegelsett } from './api/types';
+import { REGELSETT_ROOT } from './TestregelRoutes';
 import { TestregelContext } from './types';
 
 const TestreglarApp = () => {
@@ -82,7 +82,7 @@ const TestreglarApp = () => {
 
   const handleChange = (name: string) => {
     if (name === 'regelsett') {
-      navigate(appRoutes.REGELSETT_ROOT.path);
+      navigate(REGELSETT_ROOT.path);
     } else {
       navigate('.');
     }
@@ -113,11 +113,7 @@ const TestreglarApp = () => {
       <Tabs
         defaultValue="testreglar"
         onChange={handleChange}
-        value={
-          lastSegment === appRoutes.REGELSETT_ROOT.path
-            ? 'regelsett'
-            : 'testreglar'
-        }
+        value={lastSegment === REGELSETT_ROOT.path ? 'regelsett' : 'testreglar'}
       >
         <Tabs.List>
           <Tabs.Tab value="testreglar">Testreglar</Tabs.Tab>

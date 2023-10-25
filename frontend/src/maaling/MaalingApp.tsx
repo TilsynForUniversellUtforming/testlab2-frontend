@@ -1,7 +1,7 @@
 import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
-import { withErrorHandling } from '@common/util/api/util';
-import { isDefined, isNotDefined } from '@common/util/util';
+import { withErrorHandling } from '@common/util/apiUtils';
+import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';

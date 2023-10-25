@@ -1,18 +1,20 @@
 import './Oversikt.scss';
 
 import AppTitle from '@common/app-title/AppTitle';
+import TestlabLinkButton from '@common/button/TestlabLinkButton';
+import { ButtonVariant } from '@common/types';
+import { AppRoute } from '@common/util/routeUtils';
+import { Heading } from '@digdir/design-system-react';
+import { SAK_CREATE } from '@sak/SakRoutes';
+import React from 'react';
+
 import {
   anna,
-  AppRoute,
-  appRoutes,
+  NY_TEST_ROOT,
   saksbehandling,
   testing,
   utval,
-} from '@common/appRoutes';
-import TestlabLinkButton from '@common/button/TestlabLinkButton';
-import { ButtonVariant } from '@common/types';
-import { Heading } from '@digdir/design-system-react';
-import React from 'react';
+} from '../AppRoutes';
 
 interface OversiktLinkListProps {
   heading: string;
@@ -50,14 +52,14 @@ const Oversikt = () => {
         </Heading>
         <div className="oversikt__sak-links">
           <TestlabLinkButton
-            route={appRoutes.SAK_CREATE}
-            title={appRoutes.SAK_CREATE.navn}
+            route={SAK_CREATE}
+            title={SAK_CREATE.navn}
             variant={ButtonVariant.Outline}
             icon={
               <img
                 className="lenker__img"
-                src={appRoutes.SAK_CREATE.imgSrc}
-                alt={appRoutes.SAK_CREATE.navn}
+                src={SAK_CREATE.imgSrc}
+                alt={SAK_CREATE.navn}
               />
             }
             size="large"
@@ -66,21 +68,21 @@ const Oversikt = () => {
             className="oversikt__sak-ny"
           />
           <TestlabLinkButton
-            route={appRoutes.NY_TEST_ROOT}
-            title={appRoutes.NY_TEST_ROOT.navn}
+            route={NY_TEST_ROOT}
+            title={NY_TEST_ROOT.navn}
             variant={ButtonVariant.Outline}
             icon={
               <img
                 className="lenker__img"
-                src={appRoutes.NY_TEST_ROOT.imgSrc}
-                alt={appRoutes.NY_TEST_ROOT.navn}
+                src={NY_TEST_ROOT.imgSrc}
+                alt={NY_TEST_ROOT.navn}
               />
             }
             size="large"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
-            disabled={appRoutes.NY_TEST_ROOT.disabled}
+            disabled={NY_TEST_ROOT.disabled}
           />
         </div>
       </div>

@@ -1,10 +1,11 @@
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
-import { isNotDefined } from '@common/util/util';
+import { getFullPath, idPath } from '@common/util/routeUtils';
+import { isNotDefined } from '@common/util/validationUtils';
 import { restart } from '@maaling/api/maaling-api';
 import { Maaling, RestartRequest, TestResult } from '@maaling/api/types';
+import { MAALING, TEST_RESULT_LIST } from '@maaling/MaalingRoutes';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -48,7 +49,7 @@ const TestResultListApp = () => {
     }
   }, [maaling]);
 
-  useContentDocumentTitle(appRoutes.TEST_RESULT_LIST.navn, maaling?.navn);
+  useContentDocumentTitle(TEST_RESULT_LIST.navn, maaling?.navn);
 
   const onClickRestart = useCallback(() => {
     setLoading(true);
@@ -75,7 +76,7 @@ const TestResultListApp = () => {
         const restartedMaaling = await restart(restartCrawlingRequest);
         setMaaling(restartedMaaling);
         navigate(
-          getFullPath(appRoutes.MAALING, {
+          getFullPath(MAALING, {
             id: String(maaling.id),
             pathParam: idPath,
           })

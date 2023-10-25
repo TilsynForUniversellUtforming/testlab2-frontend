@@ -2,7 +2,7 @@ import LoadingBar from '@common/loading-bar/LoadingBar';
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
-import { isDefined } from '@common/util/util';
+import { isDefined } from '@common/util/validationUtils';
 import { JobStatus, Maaling, TestResult } from '@maaling/api/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
