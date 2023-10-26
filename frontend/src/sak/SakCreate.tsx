@@ -1,12 +1,13 @@
 import './sak.scss';
 
 import AppTitle from '@common/app-title/AppTitle';
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { createMaaling } from '@maaling/api/maaling-api';
 import { MaalingInit } from '@maaling/api/types';
+import { MAALING } from '@maaling/MaalingRoutes';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -65,7 +66,7 @@ const SakCreate = () => {
           const maaling = await createMaaling(maalingInit);
           setMaaling(maaling);
           navigate(
-            getFullPath(appRoutes.MAALING, {
+            getFullPath(MAALING, {
               pathParam: idPath,
               id: String(maaling.id),
             })

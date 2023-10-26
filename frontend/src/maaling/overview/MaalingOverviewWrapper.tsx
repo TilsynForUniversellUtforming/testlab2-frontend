@@ -1,16 +1,19 @@
 import AppTitle from '@common/app-title/AppTitle';
-import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useLoading from '@common/hooks/useLoading';
 import TestlabTable from '@common/table/TestlabTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Tabs } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
+import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
+import { MAALING } from '@maaling/MaalingRoutes';
 import MaalingEdit from '@sak/MaalingEdit';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import { Testregel } from '../../testreglar/api/types';
+import { TESTREGEL_EDIT } from '../../testreglar/TestregelRoutes';
 import { getTestregelColumnsReadOnly } from '../../testreglar/testreglar-liste/TestregelColumns';
 import { MaalingContext } from '../types';
 import MaalingOverview from './MaalingOverview';
@@ -39,7 +42,7 @@ const MaalingOverviewWrapper = () => {
     window.open(url, '_blank', 'noreferrer');
   };
 
-  useContentDocumentTitle(appRoutes.MAALING.navn, maalingName);
+  useContentDocumentTitle(MAALING.navn, maalingName);
 
   return (
     <>
@@ -65,7 +68,7 @@ const MaalingOverviewWrapper = () => {
             displayError={displayError}
             onClickRow={(row) =>
               openInNewTab(
-                getFullPath(appRoutes.LOEYSING_EDIT, {
+                getFullPath(LOEYSING_EDIT, {
                   pathParam: idPath,
                   id: String(row?.original.id),
                 })
@@ -81,7 +84,7 @@ const MaalingOverviewWrapper = () => {
             displayError={displayError}
             onClickRow={(row) =>
               openInNewTab(
-                getFullPath(appRoutes.TESTREGEL_EDIT, {
+                getFullPath(TESTREGEL_EDIT, {
                   pathParam: idPath,
                   id: String(row?.original.id),
                 })

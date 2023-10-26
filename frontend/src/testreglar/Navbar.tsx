@@ -1,5 +1,6 @@
-import appRoutes from '@common/appRoutes';
 import { NavLink } from 'react-router-dom';
+
+import { REGELSETT_LIST, TESTREGEL_LIST } from './TestregelRoutes';
 
 const Navbar = () => {
   return (
@@ -7,13 +8,11 @@ const Navbar = () => {
       <ul>
         <li>
           <NavLink to={''} end>
-            {appRoutes.TESTREGEL_LIST.navn}
+            {TESTREGEL_LIST.navn}
           </NavLink>
         </li>
         <li>
-          <NavLink to={appRoutes.REGELSETT_LIST.path}>
-            {appRoutes.REGELSETT_LIST.navn}
-          </NavLink>
+          <NavLink to={REGELSETT_LIST.path}>{REGELSETT_LIST.navn}</NavLink>
         </li>
       </ul>
     </div>

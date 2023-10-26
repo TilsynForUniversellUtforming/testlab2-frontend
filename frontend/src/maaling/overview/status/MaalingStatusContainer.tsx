@@ -1,8 +1,9 @@
 import AlertTimed from '@common/alert/AlertTimed';
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import TestlabLoadingButton from '@common/button/TestlabLoadingButton';
 import StatusBadge from '@common/status-badge/StatusBadge';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { List, ListItem, Spinner } from '@digdir/design-system-react';
+import { TEST_SIDEUTVAL_LIST, TEST_TESTING_LIST } from '@maaling/MaalingRoutes';
 import React from 'react';
 
 import { Maaling, MaalingStatus } from '../../api/types';
@@ -62,7 +63,7 @@ const MaalingStatusContainer = ({
                 showLink={crawlingStatus.showResult}
                 finished={crawlingStatus.finished}
                 error={crawlingStatus.failed}
-                linkPath={getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+                linkPath={getFullPath(TEST_SIDEUTVAL_LIST, {
                   pathParam: idPath,
                   id: String(maaling.id),
                 })}
@@ -74,7 +75,7 @@ const MaalingStatusContainer = ({
                 showLink={testingStatus.showResult}
                 finished={testingStatus.finished}
                 error={testingStatus.failed}
-                linkPath={getFullPath(appRoutes.TEST_TESTING_LIST, {
+                linkPath={getFullPath(TEST_TESTING_LIST, {
                   pathParam: idPath,
                   id: String(maaling.id),
                 })}
@@ -86,7 +87,7 @@ const MaalingStatusContainer = ({
                 showLink={publishStatus.showResult}
                 finished={publishStatus.finished}
                 error={publishStatus.failed}
-                linkPath={getFullPath(appRoutes.TEST_TESTING_LIST, {
+                linkPath={getFullPath(TEST_TESTING_LIST, {
                   pathParam: idPath,
                   id: String(maaling.id),
                 })}

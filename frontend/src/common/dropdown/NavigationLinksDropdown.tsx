@@ -7,8 +7,8 @@ import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AppRoute, getFullPath } from '../appRoutes';
 import { useEffectOnce } from '../hooks/useEffectOnce';
+import { AppRoute, getFullPath } from '../util/routeUtils';
 
 interface Props {
   navn: string;

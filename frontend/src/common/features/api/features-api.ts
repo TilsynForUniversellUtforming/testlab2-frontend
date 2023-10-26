@@ -1,4 +1,4 @@
-import { responseToJson } from '../../util/api/util';
+import { responseToJson } from '../../util/apiUtils';
 import { Feature } from './types';
 
 const fetchFeatures = async (): Promise<Feature[]> =>

@@ -1,6 +1,7 @@
-import appRoutes, { getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
+import { LOEYSING_CREATE, LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -98,7 +99,7 @@ const LoeysingList = () => {
         rowActions: [
           {
             action: 'add',
-            route: appRoutes.LOEYSING_CREATE,
+            route: LOEYSING_CREATE,
           },
           {
             action: 'delete',
@@ -113,7 +114,7 @@ const LoeysingList = () => {
         ],
         onClickRow: (row) =>
           navigate(
-            getFullPath(appRoutes.LOEYSING_EDIT, {
+            getFullPath(LOEYSING_EDIT, {
               pathParam: idPath,
               id: String(row?.original.id),
             })

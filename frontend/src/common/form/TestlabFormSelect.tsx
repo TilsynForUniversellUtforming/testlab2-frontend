@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@common/form/util';
-import { isDefined } from '@common/util/util';
+import { isDefined } from '@common/util/validationUtils';
 import { ErrorMessage, Select } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';

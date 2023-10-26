@@ -1,6 +1,6 @@
 import './app-title.scss';
 
-import { isNotDefined } from '@common/util/util';
+import { isNotDefined } from '@common/util/validationUtils';
 import { Heading, Paragraph } from '@digdir/design-system-react';
 import { Link } from 'react-router-dom';
 

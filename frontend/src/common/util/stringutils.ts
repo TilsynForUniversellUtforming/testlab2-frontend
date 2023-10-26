@@ -30,3 +30,16 @@ export const parseNumberInput = (value: number | string): number => {
     throw Error('Ugyldig type');
   }
 };
+
+export const formatDateString = (dateString: string): string => {
+  const date = new Date(dateString);
+  const format = new Intl.DateTimeFormat('nb-NO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+
+  return format.format(date);
+};
+
+export const removeSpaces = (s: string) => s.replace(/\s/g, '');

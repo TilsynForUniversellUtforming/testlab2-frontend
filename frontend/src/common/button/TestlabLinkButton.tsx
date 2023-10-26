@@ -4,7 +4,7 @@ import { Button, ButtonProps } from '@digdir/design-system-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AppRoute, getFullPath } from '../appRoutes';
+import { AppRoute, getFullPath } from '../util/routeUtils';
 
 export interface Props extends ButtonProps {
   route: AppRoute;

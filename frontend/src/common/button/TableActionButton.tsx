@@ -6,7 +6,7 @@ import {
 } from '@common/types';
 import React from 'react';
 
-import { AppRoute } from '../appRoutes';
+import { AppRoute } from '../util/routeUtils';
 import TestlabLinkButton from './TestlabLinkButton';
 
 export interface TableActionButtonProps {

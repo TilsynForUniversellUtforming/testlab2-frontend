@@ -1,15 +1,20 @@
 import './kvalitetssikring.scss';
 
-import AppRoutes, { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
 import { fetchLoeysingNettsider, restart } from '@maaling/api/maaling-api';
 import { RestartRequest } from '@maaling/api/types';
+import {
+  MAALING,
+  TEST_CRAWLING_RESULT_LIST,
+  TEST_SIDEUTVAL_LIST,
+} from '@maaling/MaalingRoutes';
 import { CrawlUrl, MaalingContext } from '@maaling/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -39,7 +44,7 @@ const KvalitetssikringApp = () => {
   );
 
   useContentDocumentTitle(
-    appRoutes.TEST_CRAWLING_RESULT_LIST.navn,
+    TEST_CRAWLING_RESULT_LIST.navn,
     loeysingCrawResultat?.loeysing?.namn
   );
 
@@ -60,7 +65,7 @@ const KvalitetssikringApp = () => {
           setMaaling(restartedMaaling);
 
           navigate(
-            getFullPath(appRoutes.TEST_SIDEUTVAL_LIST, {
+            getFullPath(TEST_SIDEUTVAL_LIST, {
               id: maalingId,
               pathParam: idPath,
             })
@@ -175,7 +180,7 @@ const KvalitetssikringApp = () => {
       loading={loading}
       linkPath={
         maaling
-          ? getFullPath(AppRoutes.MAALING, {
+          ? getFullPath(MAALING, {
               id: String(maaling.id),
               pathParam: idPath,
             })

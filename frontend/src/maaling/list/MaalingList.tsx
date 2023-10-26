@@ -1,12 +1,13 @@
-import { appRoutes, getFullPath, idPath } from '@common/appRoutes';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import UserActionTable from '@common/table/UserActionTable';
-import { joinStringsToList } from '@common/util/stringutils';
-import { formatDateString } from '@common/util/util';
+import { getFullPath, idPath } from '@common/util/routeUtils';
+import { formatDateString, joinStringsToList } from '@common/util/stringutils';
+import { MAALING } from '@maaling/MaalingRoutes';
+import { SAK_CREATE } from '@sak/SakRoutes';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -116,7 +117,7 @@ const MaalingList = () => {
         rowActions: [
           {
             action: 'add',
-            route: appRoutes.SAK_CREATE,
+            route: SAK_CREATE,
           },
           {
             action: 'delete',
@@ -131,7 +132,7 @@ const MaalingList = () => {
         ],
         onClickRow: (row) =>
           navigate(
-            getFullPath(appRoutes.MAALING, {
+            getFullPath(MAALING, {
               pathParam: idPath,
               id: String(row?.original.id),
             })

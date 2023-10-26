@@ -1,4 +1,4 @@
-import { responseToJson } from '@common/util/api/util';
+import { responseToJson } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
