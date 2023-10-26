@@ -2,7 +2,7 @@ import toError from '@common/error/util';
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { getErrorMessage } from '@common/form/util';
 import TestlabSearch from '@common/search/TestlabSearch';
-import { isOrgnummer } from '@common/util/util';
+import { isOrgnummer } from '@common/util/validationUtils';
 import { ErrorMessage } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
