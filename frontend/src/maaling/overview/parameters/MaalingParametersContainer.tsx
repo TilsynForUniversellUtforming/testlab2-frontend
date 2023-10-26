@@ -1,6 +1,5 @@
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { formatDateString } from '@common/util/stringutils';
-import { List, ListItem } from '@digdir/design-system-react';
 import { MAALING } from '@maaling/MaalingRoutes';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -13,14 +12,14 @@ export interface Props {
 }
 
 const MaalingParametersContainer = ({ id, maaling }: Props) => (
-  <List>
-    <ListItem>
+  <ul className="testlab-list">
+    <li className="testlab-list__item">
       <div className="parameter__item">
         <div className="bold-text">Type</div>
         <div>Kontroll</div>
       </div>
-    </ListItem>
-    <ListItem>
+    </li>
+    <li className="testlab-list__item">
       <div className="parameter__item">
         <div className="bold-text">Sak</div>
         <div>
@@ -34,20 +33,20 @@ const MaalingParametersContainer = ({ id, maaling }: Props) => (
           </Link>
         </div>
       </div>
-    </ListItem>
-    <ListItem>
+    </li>
+    <li className="testlab-list__item">
       <div className="parameter__item">
         <div className="bold-text">Dato start</div>
         <div>{formatDateString(maaling.datoStart)}</div>
       </div>
-    </ListItem>
-    <ListItem>
+    </li>
+    <li className="testlab-list__item">
       <div className="parameter__item">
         <div className="bold-text">Dato avslutta</div>
         <div>Pågår</div>
       </div>
-    </ListItem>
-  </List>
+    </li>
+  </ul>
 );
 
 export default MaalingParametersContainer;
