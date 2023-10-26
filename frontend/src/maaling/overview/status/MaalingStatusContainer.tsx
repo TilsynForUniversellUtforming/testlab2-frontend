@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import TestlabLoadingButton from '@common/button/TestlabLoadingButton';
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { List, ListItem, Spinner } from '@digdir/design-system-react';
+import { Spinner } from '@digdir/design-system-react';
 import { TEST_SIDEUTVAL_LIST, TEST_TESTING_LIST } from '@maaling/MaalingRoutes';
 import React from 'react';
 
@@ -36,8 +36,8 @@ const MaalingStatusContainer = ({
 
   return (
     <div className="status">
-      <List>
-        <ListItem>
+      <ul className="testlab-list">
+        <li className="testlab-list__item">
           <div className="status__list-item">
             <div className="bold-text">Status</div>
             <div className="status__list-item-icon">
@@ -54,8 +54,8 @@ const MaalingStatusContainer = ({
               )}
             </div>
           </div>
-        </ListItem>
-        <ListItem>
+        </li>
+        <li className="testlab-list__item">
           <div className="status-list status__list-item">
             <div className="status__item">
               <MaalingStatusRow
@@ -94,12 +94,12 @@ const MaalingStatusContainer = ({
               />
             </div>
           </div>
-        </ListItem>
+        </li>
         {maaling.status !== 'testing' &&
           (crawlingStatus.canStartProcess ||
             testingStatus.canStartProcess ||
             publishStatus.canStartProcess) && (
-            <ListItem>
+            <li className="testlab-list__item">
               <div className="status__list-item centered">
                 {crawlingStatus.canStartProcess && (
                   <TestlabLoadingButton
@@ -126,9 +126,9 @@ const MaalingStatusContainer = ({
                   />
                 )}
               </div>
-            </ListItem>
+            </li>
           )}
-      </List>
+      </ul>
       {testStatus.message && (
         <div className="status__alert">
           <AlertTimed

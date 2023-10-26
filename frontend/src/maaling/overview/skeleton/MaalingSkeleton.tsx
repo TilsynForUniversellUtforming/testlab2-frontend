@@ -1,4 +1,3 @@
-import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
@@ -8,32 +7,32 @@ const MaalingSkeleton = () => {
   return (
     <div className="maaling-overview">
       <div className="parameter">
-        <List>
-          <ListItem>
+        <ul className="testlab-list">
+          <li className="testlab-list__item">
             <div className="parameter__item">
               <div className="bold-text">Type</div>
               <Skeleton width={125} />
             </div>
-          </ListItem>
-          <ListItem>
+          </li>
+          <li className="testlab-list__item">
             <div className="parameter__item">
               <div className="bold-text">Sak</div>
               <Skeleton width={125} />
             </div>
-          </ListItem>
-          <ListItem>
+          </li>
+          <li className="testlab-list__item">
             <div className="parameter__item">
               <div className="bold-text">Dato start</div>
               <Skeleton width={125} />
             </div>
-          </ListItem>
-          <ListItem>
+          </li>
+          <li className="testlab-list__item">
             <div className="parameter__item">
               <div className="bold-text">Dato avslutta</div>
               <Skeleton width={125} />
             </div>
-          </ListItem>
-        </List>
+          </li>
+        </ul>
       </div>
       <div className="status">
         <MaalingStatusContainerSkeleton />

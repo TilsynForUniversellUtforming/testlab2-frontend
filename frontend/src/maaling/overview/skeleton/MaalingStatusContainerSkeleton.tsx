@@ -1,4 +1,3 @@
-import { List, ListItem } from '@digdir/design-system-react';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
@@ -9,14 +8,14 @@ const StatusIconSkeleton = () => (
 );
 
 const MaalingStatusContainerSkeleton = () => (
-  <List>
-    <ListItem>
+  <ul className="testlab-list">
+    <li className="testlab-list__item">
       <div className="status__list-item">
         <div className="bold-text">Status</div>
         <Skeleton width={85} />
       </div>
-    </ListItem>
-    <ListItem>
+    </li>
+    <li className="testlab-list__item">
       <div className="status-list status__list-item">
         <div className="status__item">
           <div className="link-text">
@@ -37,15 +36,15 @@ const MaalingStatusContainerSkeleton = () => (
           <StatusIconSkeleton />
         </div>
       </div>
-    </ListItem>
-    <ListItem>
+    </li>
+    <li className="testlab-list__item">
       <div
         style={{ display: 'flex', justifyContent: 'center', padding: '1rem 0' }}
       >
         <Skeleton height={35} width={145} />
       </div>
-    </ListItem>
-  </List>
+    </li>
+  </ul>
 );
 
 export default MaalingStatusContainerSkeleton;
