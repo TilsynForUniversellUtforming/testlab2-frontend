@@ -4,9 +4,9 @@ import { Accordion, Spinner } from '@digdir/design-system-react';
 import React from 'react';
 import { FieldErrors } from 'react-hook-form';
 
-import { TestRegelsett } from '../../../../testreglar/api/types';
-import { User } from '../../../../user/api/types';
-import { SakFormState } from '../../../types';
+import { TestRegelsett } from '../../../../../testreglar/api/types';
+import { User } from '../../../../../user/api/types';
+import { SakFormState } from '../../../../types';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {

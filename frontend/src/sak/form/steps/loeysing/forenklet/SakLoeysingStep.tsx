@@ -23,7 +23,7 @@ import { Verksemd } from '@verksemder/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import SakStepFormWrapper from '../../SakStepFormWrapper';
+import SakStepFormWrapper from '../../../SakStepFormWrapper';
 import { getLoeysingVerksemdColumns } from './LoeysingColumns';
 
 interface Props extends SakFormBaseProps {

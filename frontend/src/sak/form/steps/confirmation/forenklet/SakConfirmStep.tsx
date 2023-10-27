@@ -4,9 +4,9 @@ import { SakFormBaseProps, SakFormState } from '@sak/types';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { TestRegelsett } from '../../../../testreglar/api/types';
-import { User } from '../../../../user/api/types';
-import SakStepFormWrapper from '../../SakStepFormWrapper';
+import { TestRegelsett } from '../../../../../testreglar/api/types';
+import { User } from '../../../../../user/api/types';
+import SakStepFormWrapper from '../../../SakStepFormWrapper';
 import SakConfirmContent from './SakConfirmContent';
 
 interface Props extends SakFormBaseProps {

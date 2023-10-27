@@ -15,8 +15,8 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Testregel, TestRegelsett } from '../../../testreglar/api/types';
-import SakStepFormWrapper from '../SakStepFormWrapper';
+import { Testregel, TestRegelsett } from '../../../../../testreglar/api/types';
+import SakStepFormWrapper from '../../../SakStepFormWrapper';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;

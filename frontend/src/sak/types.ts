@@ -75,9 +75,8 @@ export type SakStep = {
 };
 
 const initStep: SakStepBase = {
-  heading: 'Legg inn virksomhet',
-  subHeading:
-    'Søk enten på navn, eller legg inn organisasjonsnummer dersom du har det. ',
+  heading: 'La oss opprette ei sak',
+  subHeading: 'Fortell oss litt om saka du vil opprette.',
   stepperTitle: 'Saka',
   stepperSubTitle: 'Om saka',
   sakStepType: 'Init',

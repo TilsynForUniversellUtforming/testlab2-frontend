@@ -1,5 +1,5 @@
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import SakInitStep from '@sak/form/steps/init/SakInitStep';
+import SakInitWrapper from '@sak/form/steps/init/SakInitWrapper';
 import { Verksemd } from '@verksemder/api/types';
 import React, { ReactElement } from 'react';
 
@@ -7,9 +7,9 @@ import { TestRegelsett } from '../../testreglar/api/types';
 import { User } from '../../user/api/types';
 import { SakFormBaseProps } from '../types';
 import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
-import SakConfirmStep from './steps/confirmation/SakConfirmStep';
-import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
-import SakTestreglarStep from './steps/SakTestreglarStep';
+import SakConfirmStep from './steps/confirmation/forenklet/SakConfirmStep';
+import SakLoeysingStep from './steps/loeysing/forenklet/SakLoeysingStep';
+import SakTestreglarStep from './steps/testreglar/forenklet/SakTestreglarStep';
 
 export interface Props extends SakFormBaseProps {
   error: Error | undefined;
@@ -42,7 +42,7 @@ const SakStepForm = ({
   switch (currentStep.sakStepType) {
     case 'Init':
       return (
-        <SakInitStep
+        <SakInitWrapper
           formStepState={formStepState}
           sakFormState={sakFormState}
           onSubmit={onSubmit}

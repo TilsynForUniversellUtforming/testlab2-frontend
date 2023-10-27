@@ -56,15 +56,14 @@ export const sakInitVerksemdValidationSchema = z.object({
   loeysingList: z.array(loeysingVerksemdSchema).optional(),
   utval: utvalSchema.optional(),
   testregelList: z.array(testregelSchema).optional(),
-  verksemd: loeysingSchema,
 });
 
 export const sakInitValidationSchema = z
   .object({
-    navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
     sakType: saktypeSchema
       .optional()
       .refine((value) => value !== undefined, 'Type sak må vejast'),
+    navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
     advisorId: z
       .string()
       .optional()
@@ -89,16 +88,34 @@ export const sakInitValidationSchema = z
     loeysingList: z.array(loeysingVerksemdSchema).optional(),
     utval: utvalSchema.optional(),
     testregelList: z.array(testregelSchema).optional(),
+    verksemd: loeysingSchema.optional(),
   })
-  .refine(
-    (data) =>
-      parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker),
-    {
-      message:
-        'Brutto-utval av nettsider må vera større eller likt netto-utval',
-      path: ['talLenker'],
+
+  // TODO TODO TODO - Legg til alle andre her, gjør alt over OPTIONAL.
+  // TODO - Alternativ 1, bare lag opplegget separat...
+  // TODO - Alternativ 2, finn ut av union
+  .superRefine((data, ctx) => {
+    if (data.sakType !== 'Forenklet kontroll') {
+      if (data.verksemd) {
+        return ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Manglar verksemd',
+          path: ['verksemd'],
+        });
+      }
+    } else {
+      if (
+        parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker)
+      ) {
+        return ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            'Brutto-utval av nettsider må vera større eller likt netto-utval',
+          path: ['talLenker'],
+        });
+      }
     }
-  );
+  });
 
 export const sakLoeysingValidationSchema = z
   .object({
