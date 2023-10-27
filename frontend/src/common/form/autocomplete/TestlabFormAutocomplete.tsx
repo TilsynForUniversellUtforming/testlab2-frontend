@@ -40,7 +40,7 @@ const TestlabFormAutocomplete = <
   required = false,
   onClick,
   errorMessage,
-  size,
+  size = 'small',
   maxListLength,
 }: Props<FormData, ResultData>) => {
   const { control, setValue } = useFormContext<FormData>();
@@ -97,7 +97,7 @@ const TestlabFormAutocomplete = <
   );
 
   return (
-    <div className="testlab-form-autocomplete">
+    <div className="testlab-form-autocomplete testlab-form__input">
       <DebouncedInput
         id="testlab-form-autocorrect"
         label={<TestlabFormRequiredLabel label={label} required={required} />}

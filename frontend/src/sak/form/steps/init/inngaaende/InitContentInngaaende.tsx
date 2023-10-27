@@ -9,13 +9,13 @@ import {
   findLoeysingByOrgnummer,
 } from '@loeysingar/api/loeysing-api';
 import { Loeysing } from '@loeysingar/api/types';
-import VerksemdResult from '@sak/form/steps/init/ingaaende/VerksemdResult';
+import VerksemdResult from '@sak/form/steps/init/inngaaende/VerksemdResult';
 import { SakContext, SakFormState } from '@sak/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-const InitContentIngaaende = () => {
+const InitContentInngaaende = () => {
   const { setContextError }: SakContext = useOutletContext();
   const [virksomhetAutocompleteList, setVirksomhetAutocompleteList] = useState<
     Loeysing[]
@@ -108,4 +108,4 @@ const InitContentIngaaende = () => {
   );
 };
 
-export default InitContentIngaaende;
+export default InitContentInngaaende;

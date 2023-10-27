@@ -1,5 +1,5 @@
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import SakInitWrapper from '@sak/form/steps/init/SakInitWrapper';
+import SakInitContainer from '@sak/form/steps/init/SakInitContainer';
 import { Verksemd } from '@verksemder/api/types';
 import React, { ReactElement } from 'react';
 
@@ -28,7 +28,6 @@ const SakStepForm = ({
   utvalList,
   verksemdList,
   regelsettList,
-  advisors,
   sakFormState,
   onSubmit,
   formStepState,
@@ -42,11 +41,10 @@ const SakStepForm = ({
   switch (currentStep.sakStepType) {
     case 'Init':
       return (
-        <SakInitWrapper
+        <SakInitContainer
           formStepState={formStepState}
           sakFormState={sakFormState}
           onSubmit={onSubmit}
-          advisors={advisors}
         />
       );
     case 'Loeysing':
@@ -78,8 +76,6 @@ const SakStepForm = ({
         <SakConfirmStep
           formStepState={formStepState}
           sakFormState={sakFormState}
-          advisors={advisors}
-          regelsettList={regelsettList}
           onSubmit={onSubmit}
           error={error}
           loading={loading}

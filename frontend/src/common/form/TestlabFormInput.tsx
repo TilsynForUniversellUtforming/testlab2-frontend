@@ -1,11 +1,10 @@
 import { getErrorMessage } from '@common/form/util';
-import { Textfield } from '@digdir/design-system-react';
+import { Textfield, TextfieldProps } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
-export interface EditProps<T extends object> {
+export interface EditProps<T extends object> extends TextfieldProps {
   label: string;
-  sublabel?: string;
   required?: boolean;
   hidden?: boolean;
   name: Path<T>;
@@ -15,10 +14,11 @@ export interface EditProps<T extends object> {
 
 const TestlabFormInput = <T extends object>({
   label,
-  sublabel,
+  description,
   name,
   required = false,
   numeric = false,
+  size = 'small',
 }: EditProps<T>) => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
@@ -32,8 +32,8 @@ const TestlabFormInput = <T extends object>({
           <label htmlFor={name} className="testlab-form__input-label">
             {label}
             {required && <span className="asterisk-color">*</span>}
-            {sublabel && (
-              <div className="testlab-form__input-sub-label">{sublabel}</div>
+            {description && (
+              <div className="testlab-form__input-sub-label">{description}</div>
             )}
           </label>
           <Textfield
@@ -45,6 +45,7 @@ const TestlabFormInput = <T extends object>({
             onBlur={onBlur}
             name={name}
             inputMode={numeric ? 'numeric' : 'text'}
+            size={size}
           />
         </div>
       )}

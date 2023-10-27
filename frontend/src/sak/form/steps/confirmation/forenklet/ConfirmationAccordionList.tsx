@@ -1,4 +1,4 @@
-import { Accordion, ErrorMessage, ListItem } from '@digdir/design-system-react';
+import { Accordion, ListItem } from '@digdir/design-system-react';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -12,7 +12,6 @@ export interface Props {
   accordionHeader: string;
   subtitle?: string;
   listItems: ListItem[];
-  errorMessage?: string;
   open?: boolean;
   hideNumbering?: boolean;
 }
@@ -20,38 +19,26 @@ export interface Props {
 const ConfirmationAccordionList = ({
   accordionHeader,
   listItems,
-  errorMessage,
   open = false,
   hideNumbering = false,
-}: Props) => {
-  if (errorMessage) {
-    return (
-      <>
-        <h4 className="sak-confirm__header">{accordionHeader}</h4>
-        <ErrorMessage>{errorMessage}</ErrorMessage>
-      </>
-    );
-  }
-
-  return (
-    <Accordion.Item defaultOpen={open}>
-      <Accordion.Header>{accordionHeader}</Accordion.Header>
-      <Accordion.Content>
-        <ol
-          className={classNames('accordion-list', {
-            unnumbered: hideNumbering,
-          })}
-        >
-          {listItems.map((li) => (
-            <li className="accordion-list__item" key={li.id}>
-              <div>{li.header}</div>
-              <div className="sak-confirm__muted">{li.text}</div>
-            </li>
-          ))}
-        </ol>
-      </Accordion.Content>
-    </Accordion.Item>
-  );
-};
+}: Props) => (
+  <Accordion.Item defaultOpen={open}>
+    <Accordion.Header>{accordionHeader}</Accordion.Header>
+    <Accordion.Content>
+      <ol
+        className={classNames('accordion-list', {
+          unnumbered: hideNumbering,
+        })}
+      >
+        {listItems.map((li) => (
+          <li className="accordion-list__item" key={li.id}>
+            <div>{li.header}</div>
+            <div className="sak-confirm__muted">{li.text}</div>
+          </li>
+        ))}
+      </ol>
+    </Accordion.Content>
+  </Accordion.Item>
+);
 
 export default ConfirmationAccordionList;

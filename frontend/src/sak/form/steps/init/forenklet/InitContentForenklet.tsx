@@ -4,16 +4,13 @@ import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import SakCrawlParameters from '@sak/form/steps/init/forenklet/SakCrawlParameters';
-import { SakFormState } from '@sak/types';
+import { SakContext, SakFormState } from '@sak/types';
 import { useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
-import { User } from '../../../../../user/api/types';
+const InitContentForenklet = () => {
+  const { advisors }: SakContext = useOutletContext();
 
-interface Props {
-  advisors: User[];
-}
-
-const InitContentForenklet = ({ advisors }: Props) => {
   const [displayAdvanced, setDisplayAdvanced] = useState(false);
 
   const toggleAdvancedDisplay = () => {
@@ -24,14 +21,14 @@ const InitContentForenklet = ({ advisors }: Props) => {
     <>
       <TestlabFormInput<SakFormState>
         label="Tittel"
-        sublabel="Angi sakstype og årstall. Ta med namn på verksemd
+        description="Angi sakstype og årstall. Ta med namn på verksemd
 når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
         name="navn"
         required
       />
       <TestlabFormSelect<SakFormState>
         label="Sakshandsamar"
-        sublabel="Angi kven som skal følgje opp saka."
+        description="Angi kven som skal følgje opp saka."
         name="advisorId"
         options={advisors.map((a) => ({
           label: a.name,
@@ -41,7 +38,7 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
       />
       <TestlabFormInput<SakFormState>
         label="Saksnummer"
-        sublabel="Angi saksnummer frå Websak. Eksempel: 23/297."
+        description="Angi saksnummer frå Websak. Eksempel: 23/297."
         name="sakNumber"
       />
       <Button

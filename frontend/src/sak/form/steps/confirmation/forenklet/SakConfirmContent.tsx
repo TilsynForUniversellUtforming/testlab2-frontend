@@ -1,30 +1,17 @@
-import ErrorCard from '@common/error/ErrorCard';
-import { isDefined } from '@common/util/validationUtils';
-import { Accordion, Spinner } from '@digdir/design-system-react';
-import React from 'react';
-import { FieldErrors } from 'react-hook-form';
+import { Accordion } from '@digdir/design-system-react';
+import { SakContext, SakFormState } from '@sak/types';
+import React, { useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
-import { TestRegelsett } from '../../../../../testreglar/api/types';
-import { User } from '../../../../../user/api/types';
-import { SakFormState } from '../../../../types';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
-  regelsettList: TestRegelsett[];
-  error: Error | undefined;
-  loading: boolean;
   maalingFormState: SakFormState;
-  formErrors?: FieldErrors<SakFormState>;
-  advisors: User[];
 }
 
-const SakConfirmContent = ({
-  error,
-  loading,
-  maalingFormState,
-  formErrors,
-  advisors,
-}: SakConfirmContentProps) => {
+const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
+  const { advisors }: SakContext = useOutletContext();
+
   const {
     navn,
     sakType,
@@ -35,74 +22,56 @@ const SakConfirmContent = ({
     testregelList,
   } = maalingFormState;
 
-  if (loading) {
-    return <Spinner title="Hentar sak" variant="default" />;
-  }
+  const [sakItems, loeysingListItems, utvalListItems, testregelItems] =
+    useMemo(() => {
+      const advisorName =
+        advisors.find((a) => a.id === Number(advisorId))?.name ?? '';
 
-  if (error) {
-    return (
-      <div className="sak-confirm">
-        <ErrorCard error={error} />
-      </div>
-    );
-  }
+      const sakItems = [
+        {
+          id: 1,
+          header: 'Namn',
+          text: navn ?? '',
+        },
+        {
+          id: 2,
+          header: 'Sakstype',
+          text: sakType ?? '',
+        },
+        {
+          id: 3,
+          header: 'Sakshandsamar',
+          text: advisorName,
+        },
+      ];
 
-  const sakError = [
-    formErrors?.navn,
-    formErrors?.sakType,
-    formErrors?.advisorId,
-  ]
-    .map((e) => e?.message)
-    .filter(isDefined)
-    .join(', ');
-  const loeysingError = formErrors?.loeysingList;
-  const testregelError = formErrors?.testregelList;
+      if (sakNumber) {
+        sakItems.push({
+          id: 4,
+          header: 'Saksnummer',
+          text: sakNumber,
+        });
+      }
 
-  const advisorName =
-    advisors.find((a) => a.id === Number(advisorId))?.name ?? '';
+      const loeysingListItems = loeysingList.map((lo) => ({
+        id: lo.loeysing.id,
+        header: `Løysing: ${lo.loeysing.namn} - Ansvarleg verksemd: ${lo.verksemd.namn}`,
+        text: lo.loeysing.url,
+      }));
 
-  const sakItems = [
-    {
-      id: 1,
-      header: 'Namn',
-      text: navn ?? '',
-    },
-    {
-      id: 2,
-      header: 'Sakstype',
-      text: sakType ?? '',
-    },
-    {
-      id: 3,
-      header: 'Sakshandsamar',
-      text: advisorName,
-    },
-  ];
+      const utvalListItems = utval
+        ? [{ id: utval.id, header: utval.namn, text: '' }]
+        : [];
 
-  if (sakNumber) {
-    sakItems.push({
-      id: 4,
-      header: 'Saksnummer',
-      text: sakNumber,
-    });
-  }
+      const testregelItems =
+        testregelList.map((tr) => ({
+          id: tr.id,
+          header: `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`,
+          text: tr.krav,
+        })) ?? [];
 
-  const loeysingListItems = loeysingList.map((lo) => ({
-    id: lo.loeysing.id,
-    header: `Løysing: ${lo.loeysing.namn} - Ansvarleg verksemd: ${lo.verksemd.namn}`,
-    text: lo.loeysing.url,
-  }));
-
-  const utvalListItems = utval
-    ? [{ id: utval.id, header: utval.namn, text: '' }]
-    : [];
-
-  const testregelItems =
-    testregelList.map((tr) => ({
-      id: tr.id,
-      header: `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`,
-      text: tr.krav,
-    })) ?? [];
+      return [sakItems, loeysingListItems, utvalListItems, testregelItems];
+    }, []);
 
   return (
     <div className="sak-confirm">
@@ -112,14 +81,12 @@ const SakConfirmContent = ({
           hideNumbering
           accordionHeader="Om saka"
           listItems={sakItems}
-          errorMessage={sakError.length > 0 ? sakError : undefined}
         />
 
         {loeysingListItems.length > 0 && (
           <ConfirmationAccordionList
             accordionHeader={`Løysingar (${loeysingListItems.length})`}
             listItems={loeysingListItems}
-            errorMessage={loeysingError?.message}
           />
         )}
 
@@ -127,14 +94,12 @@ const SakConfirmContent = ({
           <ConfirmationAccordionList
             accordionHeader="Utval"
             listItems={utvalListItems}
-            errorMessage={loeysingError?.message}
           />
         )}
 
         <ConfirmationAccordionList
           accordionHeader={`Testreglar (${testregelItems.length})`}
           listItems={testregelItems}
-          errorMessage={testregelError?.message}
         />
       </Accordion>
     </div>

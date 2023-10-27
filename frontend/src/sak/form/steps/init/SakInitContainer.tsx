@@ -1,7 +1,7 @@
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InitContentForenklet from '@sak/form/steps/init/forenklet/InitContentForenklet';
-import InitContentIngaaende from '@sak/form/steps/init/ingaaende/InitContentIngaaende';
+import InitContentInngaaende from '@sak/form/steps/init/inngaaende/InitContentInngaaende';
 import { sakInitValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
 import {
   SakFormBaseProps,
@@ -12,19 +12,25 @@ import {
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { User } from '../../../../user/api/types';
 import SakStepFormWrapper from '../../SakStepFormWrapper';
 
-interface Props extends SakFormBaseProps {
-  advisors: User[];
-}
+const SakInitContent = ({ type }: { type?: Saktype }) => {
+  if (!type) {
+    return null;
+  }
 
-const SakInitWrapper = ({
+  if (type === 'Forenklet kontroll') {
+    return <InitContentForenklet />;
+  } else {
+    return <InitContentInngaaende />;
+  }
+};
+
+const SakInitContainer = ({
   formStepState,
   sakFormState,
-  advisors,
   onSubmit,
-}: Props) => {
+}: SakFormBaseProps) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
     resolver: zodResolver(sakInitValidationSchema),
@@ -45,18 +51,15 @@ const SakInitWrapper = ({
       <div className="sak-init">
         <TestlabFormSelect<SakFormState>
           label="Type sak"
-          sublabel="Angi type sak du skal opprette"
+          description="Angi type sak du skal opprette"
           name="sakType"
           options={saktypeOptions}
           required
         />
-        {type && type === 'Forenklet kontroll' && (
-          <InitContentForenklet advisors={advisors} />
-        )}
-        {type && type !== 'Forenklet kontroll' && <InitContentIngaaende />}
+        <SakInitContent type={type} />
       </div>
     </SakStepFormWrapper>
   );
 };
 
-export default SakInitWrapper;
+export default SakInitContainer;

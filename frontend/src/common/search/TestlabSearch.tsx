@@ -1,12 +1,10 @@
 import './testlab-search.scss';
 
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
-import { Button, Textfield } from '@digdir/design-system-react';
+import { Button, Textfield, TextfieldProps } from '@digdir/design-system-react';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 export interface Props {
-  label: string;
-  description?: string;
   required?: boolean;
   hidden?: boolean;
   numeric?: boolean;
@@ -23,7 +21,7 @@ const TestlabSearch = ({
   errorMessage,
   searchText = 'Søk',
   onClickSearch,
-}: Props) => {
+}: Props & TextfieldProps) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState(errorMessage);
 
@@ -53,6 +51,7 @@ const TestlabSearch = ({
           onChange={handleOnChange}
           inputMode={numeric ? 'numeric' : 'text'}
           error={error}
+          size={'small'}
         />
         <Button
           className="testlab__search-button"
