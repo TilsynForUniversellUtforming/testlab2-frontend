@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@common/form/util';
-import { ErrorMessage, Textfield } from '@digdir/design-system-react';
+import { Textfield } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
@@ -40,11 +40,7 @@ const TestlabFormInput = <T extends object>({
             type={numeric ? 'number' : 'text'}
             value={value}
             id={name}
-            error={
-              errorMessage && (
-                <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-              )
-            }
+            error={errorMessage}
             onChange={onChange}
             onBlur={onBlur}
             name={name}

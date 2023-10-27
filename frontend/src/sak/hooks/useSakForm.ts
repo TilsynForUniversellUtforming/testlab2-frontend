@@ -75,7 +75,7 @@ const useSakForm = (
         return currentStepIdx + 1;
       }
     });
-  }, [isLastStep, currentStepIdx]);
+  }, [currentStepIdx]);
 
   const goToStep = useCallback(
     (stepIdx: number) => {
@@ -94,7 +94,7 @@ const useSakForm = (
         return currentStepIdx - 1;
       }
     });
-  }, [isFirstStep]);
+  }, []);
 
   useEffect(() => {
     if (isFirstStep(currentStepIdx)) {
@@ -115,7 +115,7 @@ const useSakForm = (
         onClickBack: setPreviousStep,
       });
     }
-  }, [currentStepIdx, isFirstStep, isLastStep, setPreviousStep]);
+  }, [currentStepIdx]);
 
   return {
     currentStepIdx: currentStepIdx,

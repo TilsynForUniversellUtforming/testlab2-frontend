@@ -45,13 +45,7 @@ const testregelSchema = z.object({
   kravTilSamsvar: z.string(),
 });
 
-export const sakInitVerksemdValidationSchema = z.object({
-  navn: z.string().optional(),
-  sakType: saktypeSchema.optional(),
-  advisorId: z.string().optional(),
-  sakNumber: z.string().optional(),
-  maxLenker: z.union([z.number(), z.string()]).optional(),
-  talLenker: z.union([z.number(), z.string()]).optional(),
+export const sakInitBaseSchema = z.object({
   loeysingSource: loeysingSourceSchema,
   loeysingList: z.array(loeysingVerksemdSchema).optional(),
   utval: utvalSchema.optional(),
@@ -59,63 +53,81 @@ export const sakInitVerksemdValidationSchema = z.object({
 });
 
 export const sakInitValidationSchema = z
-  .object({
-    sakType: saktypeSchema
-      .optional()
-      .refine((value) => value !== undefined, 'Type sak må vejast'),
-    navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
-    advisorId: z
-      .string()
-      .optional()
-      .refine(
-        (value) => value !== undefined && value !== '',
-        'Sakshandsamar kan ikkje vera tom'
-      ),
-    sakNumber: z.string().optional(),
-    maxLenker: z
-      .union([z.number(), z.string()])
-      .transform((val) => parseNumberInput(val))
-      .refine((value) => value >= 1 && value <= 10000, {
-        message: 'Brutto-utval av nettsider må være mellom 1 og 10 000',
-      }),
-    talLenker: z
-      .union([z.number(), z.string()])
-      .transform((val) => parseNumberInput(val))
-      .refine((value) => value >= 1 && value <= 2000, {
-        message: 'Netto-utval av nettsider må være mellom 1 og 2000',
-      }),
-    loeysingSource: loeysingSourceSchema,
-    loeysingList: z.array(loeysingVerksemdSchema).optional(),
-    utval: utvalSchema.optional(),
-    testregelList: z.array(testregelSchema).optional(),
-    verksemd: loeysingSchema.optional(),
-  })
+  .discriminatedUnion('sakType', [
+    z.object({
+      sakType: z
+        .literal(undefined)
+        .refine(
+          (value) => value !== undefined && value !== '',
+          'Type sak må vejast'
+        ),
+    }),
 
-  // TODO TODO TODO - Legg til alle andre her, gjør alt over OPTIONAL.
-  // TODO - Alternativ 1, bare lag opplegget separat...
-  // TODO - Alternativ 2, finn ut av union
-  .superRefine((data, ctx) => {
-    if (data.sakType !== 'Forenklet kontroll') {
-      if (data.verksemd) {
-        return ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Manglar verksemd',
-          path: ['verksemd'],
-        });
+    z.object({
+      sakType: z.literal('Forenklet kontroll'),
+      navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
+      advisorId: z
+        .string()
+        .optional()
+        .refine(
+          (value) => value !== undefined && value !== '',
+          'Sakshandsamar kan ikkje vera tom'
+        ),
+      sakNumber: z.string().optional(),
+      maxLenker: z
+        .union([z.number(), z.string()])
+        .transform((val) => parseNumberInput(val))
+        .refine((value) => value >= 1 && value <= 10000, {
+          message: 'Brutto-utval av nettsider må være mellom 1 og 10 000',
+        }),
+      talLenker: z
+        .union([z.number(), z.string()])
+        .transform((val) => parseNumberInput(val))
+        .refine((value) => value >= 1 && value <= 2000, {
+          message: 'Netto-utval av nettsider må være mellom 1 og 2000',
+        }),
+    }),
+
+    z.object({
+      sakType: z.literal('Dispensasjonssøknad'),
+      verksemd: verksemdSchema,
+    }),
+
+    z.object({
+      sakType: z.literal('IKT-fagleg uttale'),
+      verksemd: verksemdSchema,
+    }),
+
+    z.object({
+      sakType: z.literal('Statusmåling'),
+      verksemd: verksemdSchema,
+    }),
+
+    z.object({
+      sakType: z.literal('Tilsyn'),
+      verksemd: verksemdSchema,
+    }),
+
+    z.object({
+      sakType: z.literal('Anna'),
+      verksemd: verksemdSchema,
+    }),
+  ])
+  .and(sakInitBaseSchema)
+  .refine(
+    (data) => {
+      if (data.sakType === 'Forenklet kontroll') {
+        return (
+          parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker)
+        );
       }
-    } else {
-      if (
-        parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker)
-      ) {
-        return ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            'Brutto-utval av nettsider må vera større eller likt netto-utval',
-          path: ['talLenker'],
-        });
-      }
+    },
+    {
+      message:
+        'Brutto-utval av nettsider må vera større eller likt netto-utval',
+      path: ['talLenker'],
     }
-  });
+  );
 
 export const sakLoeysingValidationSchema = z
   .object({
