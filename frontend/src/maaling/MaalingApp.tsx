@@ -13,7 +13,6 @@ import { fetchRegelsettList } from '../testreglar/api/testreglar-api';
 import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
-import getVerksemdList_dummy from '../verksemder/api/verksemd-api';
 import {
   fetchMaaling,
   fetchMaalingList,
@@ -168,14 +167,14 @@ const MaalingApp = () => {
           utvalList,
           regelsett,
           advisors,
-          verksemdList,
+          // verksemdList,
         ] = await Promise.all([
           fetchMaalingList(),
           fetchLoeysingList(),
           fetchUtvalList(),
           fetchRegelsettList(),
           getAdvisors_dummy(),
-          getVerksemdList_dummy(),
+          // getVerksemdList_dummy(),
         ]);
 
         return {
@@ -184,7 +183,7 @@ const MaalingApp = () => {
           utvalList,
           regelsett,
           advisors,
-          verksemdList,
+          verksemdList: loeysingList,
         };
       },
       'Kan ikkje hente data',

@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 export interface Props {
-  label: string;
+  label: ReactNode;
   required: boolean;
 }
 

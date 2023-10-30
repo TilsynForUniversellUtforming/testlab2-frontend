@@ -36,6 +36,7 @@
 
   .control-header {
     &__search {
+      max-width: 16rem;
       padding-bottom: 2rem;
     }
     &__actions {

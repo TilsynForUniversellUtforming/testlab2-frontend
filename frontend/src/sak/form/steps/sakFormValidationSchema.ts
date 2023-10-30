@@ -1,13 +1,12 @@
 import { parseNumberInput } from '@common/util/stringutils';
+import { isDefined } from '@common/util/validationUtils';
 import { z } from 'zod';
 
 const saktypeSchema = z.union([
-  z.literal('Dispensasjonssøknad'),
-  z.literal('IKT-fagleg uttale'),
+  z.literal('Retest'),
+  z.literal('Inngående kontroll'),
   z.literal('Forenklet kontroll'),
-  z.literal('Statusmåling'),
   z.literal('Tilsyn'),
-  z.literal('Anna'),
 ]);
 
 const loeysingSourceSchema = z.union([
@@ -28,6 +27,12 @@ const verksemdSchema = z.object({
   organisasjonsnummer: z.string(),
 });
 
+const inngaaendeVerksemdScheama = loeysingSchema
+  .optional()
+  .refine((value) => isDefined(value), {
+    message: 'Verksemd må veljast',
+  });
+
 const loeysingVerksemdSchema = z.object({
   loeysing: loeysingSchema,
   verksemd: verksemdSchema,
@@ -45,40 +50,75 @@ const testregelSchema = z.object({
   kravTilSamsvar: z.string(),
 });
 
+export const sakInitBaseSchema = z.object({
+  loeysingSource: loeysingSourceSchema,
+  loeysingList: z.array(loeysingVerksemdSchema).optional(),
+  utval: utvalSchema.optional(),
+  testregelList: z.array(testregelSchema).optional(),
+});
+
 export const sakInitValidationSchema = z
-  .object({
-    navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
-    sakType: saktypeSchema
-      .optional()
-      .refine((value) => value !== undefined, 'Type sak må vejast'),
-    advisorId: z
-      .string()
-      .optional()
-      .refine(
-        (value) => value !== undefined && value !== '',
-        'Sakshandsamar kan ikkje vera tom'
-      ),
-    sakNumber: z.string().optional(),
-    maxLenker: z
-      .union([z.number(), z.string()])
-      .transform((val) => parseNumberInput(val))
-      .refine((value) => value >= 1 && value <= 10000, {
-        message: 'Brutto-utval av nettsider må være mellom 1 og 10 000',
-      }),
-    talLenker: z
-      .union([z.number(), z.string()])
-      .transform((val) => parseNumberInput(val))
-      .refine((value) => value >= 1 && value <= 2000, {
-        message: 'Netto-utval av nettsider må være mellom 1 og 2000',
-      }),
-    loeysingSource: loeysingSourceSchema,
-    loeysingList: z.array(loeysingVerksemdSchema).optional(),
-    utval: utvalSchema.optional(),
-    testregelList: z.array(testregelSchema).optional(),
-  })
+  .discriminatedUnion('sakType', [
+    z.object({
+      sakType: z
+        .literal(undefined)
+        .refine(
+          (value) => value !== undefined && value !== '',
+          'Type sak må vejast'
+        ),
+    }),
+
+    z.object({
+      sakType: z.literal('Forenklet kontroll'),
+      navn: z.string().trim().nonempty('Tittel kan ikkje vera tom'),
+      advisorId: z
+        .string()
+        .optional()
+        .refine(
+          (value) => value !== undefined && value !== '',
+          'Sakshandsamar kan ikkje vera tom'
+        ),
+      sakNumber: z.string().optional(),
+      maxLenker: z
+        .union([z.number(), z.string()])
+        .transform((val) => parseNumberInput(val))
+        .refine((value) => value >= 1 && value <= 10000, {
+          message: 'Brutto-utval av nettsider må være mellom 1 og 10 000',
+        }),
+      talLenker: z
+        .union([z.number(), z.string()])
+        .transform((val) => parseNumberInput(val))
+        .refine((value) => value >= 1 && value <= 2000, {
+          message: 'Netto-utval av nettsider må være mellom 1 og 2000',
+        }),
+    }),
+
+    z.object({
+      sakType: z.literal('Inngående kontroll'),
+      verksemd: inngaaendeVerksemdScheama,
+    }),
+
+    z.object({
+      sakType: z.literal('Tilsyn'),
+      verksemd: inngaaendeVerksemdScheama,
+    }),
+
+    z.object({
+      sakType: z.literal('Retest'),
+      verksemd: inngaaendeVerksemdScheama,
+    }),
+  ])
+  .and(sakInitBaseSchema)
   .refine(
-    (data) =>
-      parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker),
+    (data) => {
+      if (data.sakType === 'Forenklet kontroll') {
+        return (
+          parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker)
+        );
+      } else {
+        return true;
+      }
+    },
     {
       message:
         'Brutto-utval av nettsider må vera større eller likt netto-utval',

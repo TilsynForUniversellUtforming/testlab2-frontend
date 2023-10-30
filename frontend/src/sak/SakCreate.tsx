@@ -35,68 +35,64 @@ const SakCreate = () => {
   const [maalingFormState, setMaalingFormState] =
     useState<SakFormState>(defaultSakFormState);
 
-  const doSubmitMaaling = useCallback((maalingFormState: SakFormState) => {
-    const doCreateMaaling = async () => {
-      setLoading(true);
-      setError(undefined);
+  const doCreateMaaling = async (maalingFormState: SakFormState) => {
+    setLoading(true);
+    setError(undefined);
 
-      if (
-        maalingFormState.navn &&
-        maalingFormState.maxLenker &&
-        maalingFormState.talLenker
-      ) {
-        const base = {
-          navn: maalingFormState.navn,
-          testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
-          crawlParameters: {
-            maxLenker: maalingFormState.maxLenker,
-            talLenker: maalingFormState.talLenker,
-          },
-        };
-        const maalingInit: MaalingInit = maalingFormState.utval
-          ? { ...base, utvalId: maalingFormState.utval.id }
-          : {
-              ...base,
-              loeysingIdList: maalingFormState.loeysingList.map(
-                (l) => l.loeysing.id
-              ),
-            };
+    if (
+      maalingFormState.navn &&
+      maalingFormState.maxLenker &&
+      maalingFormState.talLenker
+    ) {
+      const base = {
+        navn: maalingFormState.navn,
+        testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
+        crawlParameters: {
+          maxLenker: maalingFormState.maxLenker,
+          talLenker: maalingFormState.talLenker,
+        },
+      };
+      const maalingInit: MaalingInit = maalingFormState.utval
+        ? { ...base, utvalId: maalingFormState.utval.id }
+        : {
+            ...base,
+            loeysingIdList: maalingFormState.loeysingList.map(
+              (l) => l.loeysing.id
+            ),
+          };
 
-        try {
-          const maaling = await createMaaling(maalingInit);
-          setMaaling(maaling);
-          navigate(
-            getFullPath(MAALING, {
-              pathParam: idPath,
-              id: String(maaling.id),
-            })
-          );
-        } catch (e) {
-          setError(toError(e, 'Kunne ikkje oppdatere måling'));
-        }
-      } else {
-        setError(new Error('Måling manglar parametre'));
+      try {
+        const maaling = await createMaaling(maalingInit);
+        setMaaling(maaling);
+        navigate(
+          getFullPath(MAALING, {
+            pathParam: idPath,
+            id: String(maaling.id),
+          })
+        );
+      } catch (e) {
+        setError(toError(e, 'Kunne ikkje oppdatere måling'));
       }
-    };
-
-    doCreateMaaling().finally(() => {
-      setLoading(false);
-    });
-  }, []);
+    } else {
+      setError(new Error('Måling manglar parametre'));
+    }
+  };
 
   const formStepState = useSakForm('planlegging');
-  const { isLastStep, setNextStep } = formStepState;
+  const { isLastStep, setNextStep, currentStepIdx } = formStepState;
 
   const handleSubmit = useCallback(
     (maalingFormState: SakFormState) => {
       setMaalingFormState(maalingFormState);
-      if (!isLastStep) {
+      if (!isLastStep(currentStepIdx)) {
         return setNextStep();
       } else {
-        doSubmitMaaling(maalingFormState);
+        doCreateMaaling(maalingFormState).finally(() => {
+          setLoading(false);
+        });
       }
     },
-    [isLastStep, setNextStep]
+    [isLastStep, setNextStep, currentStepIdx]
   );
 
   return (
@@ -104,7 +100,7 @@ const SakCreate = () => {
       <AppTitle heading="Ny sak" subHeading="Opprett ein ny sak" />
       <SakStepForm
         formStepState={formStepState}
-        maalingFormState={maalingFormState}
+        sakFormState={maalingFormState}
         loeysingList={loeysingList}
         utvalList={utvalList}
         verksemdList={verksemdList}

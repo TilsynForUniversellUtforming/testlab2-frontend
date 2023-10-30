@@ -1,5 +1,4 @@
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
-import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
@@ -24,7 +23,7 @@ import { Verksemd } from '@verksemder/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import SakStepFormWrapper from '../../SakStepFormWrapper';
+import SakStepFormWrapper from '../../../SakStepFormWrapper';
 import { getLoeysingVerksemdColumns } from './LoeysingColumns';
 
 interface Props extends SakFormBaseProps {
@@ -37,7 +36,7 @@ interface Props extends SakFormBaseProps {
 
 const SakLoeysingStep = ({
   formStepState,
-  maalingFormState,
+  sakFormState,
   loeysingList,
   utvalList,
   verksemdList,
@@ -46,14 +45,13 @@ const SakLoeysingStep = ({
   onSubmit,
 }: Props) => {
   const formMethods = useForm<SakFormState>({
-    defaultValues: maalingFormState,
+    defaultValues: sakFormState,
     resolver: zodResolver(sakLoeysingValidationSchema),
   });
 
   const { control, setValue, getValues, setError, clearErrors, formState } =
     formMethods;
 
-  const { onClickBack } = formStepState;
   const [loeysingId, setLoeysingId] = useState<string | undefined>(undefined);
   const [verksemdId, setVerksemdId] = useState<string | undefined>(undefined);
   const [selectableLoeysingList, setSelectableLoeysingList] = useState<
@@ -79,11 +77,6 @@ const SakLoeysingStep = ({
   const handleSelectRow = useCallback((selection: LoeysingVerksemd[]) => {
     setRowSelection(selection);
   }, []);
-
-  const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Middle',
-    onClickBack: onClickBack,
-  };
 
   const loeysingColumns = useMemo(() => getLoeysingVerksemdColumns(), []);
 
@@ -160,17 +153,6 @@ const SakLoeysingStep = ({
     clearErrors();
   };
 
-  const onSubmitLoeysing = useCallback((data: SakFormState) => {
-    if (source === 'manuell' && data.loeysingList.length === 0) {
-      setError('loeysingList', {
-        type: 'manual',
-        message: 'Løysing og verksemd må veljast',
-      });
-    } else {
-      onSubmit(data);
-    }
-  }, []);
-
   const handleChangeLoeysing = useCallback(
     (searchString: string) => {
       clearErrors();
@@ -213,9 +195,8 @@ const SakLoeysingStep = ({
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
-      onSubmit={onSubmitLoeysing}
+      onSubmit={onSubmit}
       formMethods={formMethods}
-      buttonStep={buttonStep}
     >
       <div className="sak-loeysing__utval">
         <Radio.Group

@@ -1,0 +1,21 @@
+.testlab-divider {
+  background-color: var(--fds-semantic-border-neutral-subtle);
+  height: 1px;
+  border: 0;
+
+  &.xsmall {
+    margin: var(--fds-spacing-2) 0;
+  }
+
+  &.small {
+    margin: var(--fds-spacing-4) 0;
+  }
+
+  &.medium {
+    margin: var(--fds-spacing-6) 0;
+  }
+
+  &.large {
+    margin: var(--fds-spacing-8) 0;
+  }
+}
