@@ -14,7 +14,7 @@ const TestlabFormHeader = ({
         {heading}
       </Heading>
       {subHeading && (
-        <Heading level={3} size="medium" spacing role="doc-subtitle">
+        <Heading level={3} size="small" role="doc-subtitle">
           {subHeading}
         </Heading>
       )}

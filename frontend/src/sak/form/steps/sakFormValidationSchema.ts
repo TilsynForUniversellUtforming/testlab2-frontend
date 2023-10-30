@@ -1,13 +1,12 @@
 import { parseNumberInput } from '@common/util/stringutils';
+import { isDefined } from '@common/util/validationUtils';
 import { z } from 'zod';
 
 const saktypeSchema = z.union([
-  z.literal('Dispensasjonssøknad'),
-  z.literal('IKT-fagleg uttale'),
+  z.literal('Retest'),
+  z.literal('Inngående kontroll'),
   z.literal('Forenklet kontroll'),
-  z.literal('Statusmåling'),
   z.literal('Tilsyn'),
-  z.literal('Anna'),
 ]);
 
 const loeysingSourceSchema = z.union([
@@ -27,6 +26,12 @@ const verksemdSchema = z.object({
   namn: z.string(),
   organisasjonsnummer: z.string(),
 });
+
+const inngaaendeVerksemdScheama = loeysingSchema
+  .optional()
+  .refine((value) => isDefined(value), {
+    message: 'Verksemd må veljast',
+  });
 
 const loeysingVerksemdSchema = z.object({
   loeysing: loeysingSchema,
@@ -89,28 +94,18 @@ export const sakInitValidationSchema = z
     }),
 
     z.object({
-      sakType: z.literal('Dispensasjonssøknad'),
-      verksemd: verksemdSchema,
-    }),
-
-    z.object({
-      sakType: z.literal('IKT-fagleg uttale'),
-      verksemd: verksemdSchema,
-    }),
-
-    z.object({
-      sakType: z.literal('Statusmåling'),
-      verksemd: verksemdSchema,
+      sakType: z.literal('Inngående kontroll'),
+      verksemd: inngaaendeVerksemdScheama,
     }),
 
     z.object({
       sakType: z.literal('Tilsyn'),
-      verksemd: verksemdSchema,
+      verksemd: inngaaendeVerksemdScheama,
     }),
 
     z.object({
-      sakType: z.literal('Anna'),
-      verksemd: verksemdSchema,
+      sakType: z.literal('Retest'),
+      verksemd: inngaaendeVerksemdScheama,
     }),
   ])
   .and(sakInitBaseSchema)
@@ -120,6 +115,8 @@ export const sakInitValidationSchema = z
         return (
           parseNumberInput(data.maxLenker) >= parseNumberInput(data.talLenker)
         );
+      } else {
+        return true;
       }
     },
     {

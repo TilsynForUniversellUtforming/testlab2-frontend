@@ -1,15 +1,15 @@
+import TestlabDivider from '@common/divider/TestlabDivider';
 import toError from '@common/error/util';
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { getErrorMessage } from '@common/form/util';
 import TestlabSearch from '@common/search/TestlabSearch';
 import { isOrgnummer } from '@common/util/validationUtils';
-import { ErrorMessage } from '@digdir/design-system-react';
 import {
   findLoeysingByName,
   findLoeysingByOrgnummer,
 } from '@loeysingar/api/loeysing-api';
 import { Loeysing } from '@loeysingar/api/types';
-import VerksemdResult from '@sak/form/steps/init/inngaaende/VerksemdResult';
+import SakVerksemdResult from '@sak/form/steps/init/inngaaende/SakVerksemdResult';
 import { SakContext, SakFormState } from '@sak/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -23,20 +23,19 @@ const InitContentInngaaende = () => {
 
   const [autoCompleteError, setAutoCompleteError] = useState<string>();
   const [searchError, setSearchError] = useState<string>();
-
-  const { control, formState, setValue } = useFormContext<SakFormState>();
-  const [errorMessage, setErrorMessage] = useState(
-    getErrorMessage(formState, 'testregelList')
-  );
-
-  useEffect(() => {
-    setErrorMessage(getErrorMessage(formState, 'testregelList'));
-  }, [formState.errors]);
-
+  const { control, setValue, formState } = useFormContext<SakFormState>();
   const verksemd = useWatch<SakFormState>({
     control,
     name: 'verksemd',
   }) as Loeysing | undefined;
+
+  useEffect(() => {
+    const errorMessage = verksemd
+      ? undefined
+      : getErrorMessage(formState, 'verksemd');
+    setSearchError(errorMessage);
+    setAutoCompleteError(errorMessage);
+  }, [formState, verksemd]);
 
   const onChangeAutocomplete = useCallback(async (verksemdSearch: string) => {
     setAutoCompleteError(undefined);
@@ -61,6 +60,7 @@ const InitContentInngaaende = () => {
   const onClickSearch = useCallback(async (orgnummer: string) => {
     setSearchError(undefined);
     if (!orgnummer) {
+      setSearchError('Du må skrive eit organisasjonsnummer');
       return;
     }
     if (!isOrgnummer(orgnummer)) {
@@ -88,11 +88,12 @@ const InitContentInngaaende = () => {
         label="Navn på testobjekt"
         description="Søk etter virksomhetsnavn, kommunenavn eller etat"
         resultList={virksomhetAutocompleteList}
-        resultLabelKey={'namn'}
+        resultLabelKey="namn"
         onChange={onChangeAutocomplete}
         errorMessage={autoCompleteError}
         name="verksemd"
         required
+        spacing
       />
       <TestlabSearch
         label="Organisasjonsnummer"
@@ -102,8 +103,8 @@ const InitContentInngaaende = () => {
         errorMessage={searchError}
         required
       />
-      <VerksemdResult verksemd={verksemd} />
-      {errorMessage && <ErrorMessage size="small">{errorMessage}</ErrorMessage>}
+      {verksemd && <TestlabDivider size="large" />}
+      <SakVerksemdResult verksemd={verksemd} />
     </>
   );
 };

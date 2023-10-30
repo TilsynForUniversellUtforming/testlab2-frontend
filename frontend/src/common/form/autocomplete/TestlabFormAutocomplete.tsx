@@ -4,6 +4,7 @@ import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabFormAutocompleteList from '@common/form/autocomplete/TestlabFormAutocompleteList';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { Size } from '@common/types';
+import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
@@ -22,6 +23,7 @@ export interface Props<FormData, ResultData> {
   errorMessage?: string;
   size?: Size;
   maxListLength?: number;
+  spacing?: boolean;
 }
 
 const TestlabFormAutocomplete = <
@@ -42,6 +44,7 @@ const TestlabFormAutocomplete = <
   errorMessage,
   size = 'small',
   maxListLength,
+  spacing = false,
 }: Props<FormData, ResultData>) => {
   const { control, setValue } = useFormContext<FormData>();
   const [show, setShow] = useState(false);
@@ -97,7 +100,11 @@ const TestlabFormAutocomplete = <
   );
 
   return (
-    <div className="testlab-form-autocomplete testlab-form__input">
+    <div
+      className={classnames('testlab-form-autocomplete', {
+        'testlab-form__input': spacing,
+      })}
+    >
       <DebouncedInput
         id="testlab-form-autocorrect"
         label={<TestlabFormRequiredLabel label={label} required={required} />}

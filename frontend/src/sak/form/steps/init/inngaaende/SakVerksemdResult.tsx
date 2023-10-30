@@ -1,25 +1,25 @@
+import { Heading } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 
 interface Props {
   verksemd?: Loeysing;
 }
 
-const VerksemdResult = ({ verksemd }: Props) => {
+const SakVerksemdResult = ({ verksemd }: Props) => {
   if (!verksemd) {
     return null;
   }
 
   return (
     <div className="sak-init__verksemd-result">
+      <Heading level={2} size="small">
+        {verksemd.namn}
+      </Heading>
       <div className="entry">
         <div className="label">Hentet fra:</div>
         <div className="value">Testlab</div>
       </div>
       <br />
-      <div className="entry">
-        <div className="label">Namn:</div>
-        <div className="value">{verksemd.namn}</div>
-      </div>
       <div className="entry">
         <div className="label">Orgnr:</div>
         <div className="value">{verksemd.orgnummer}</div>
@@ -48,4 +48,4 @@ const VerksemdResult = ({ verksemd }: Props) => {
   );
 };
 
-export default VerksemdResult;
+export default SakVerksemdResult;

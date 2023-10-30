@@ -77,8 +77,6 @@ const SakStepForm = ({
           formStepState={formStepState}
           sakFormState={sakFormState}
           onSubmit={onSubmit}
-          error={error}
-          loading={loading}
         />
       );
     default:
