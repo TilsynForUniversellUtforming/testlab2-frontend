@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -44,13 +45,28 @@ class LoeysingResource(
       }
 
   @GetMapping
-  fun getLoeysingList(): List<Loeysing> =
-      try {
-        restTemplate.getList(loeysingUrl)
-      } catch (e: Error) {
-        logger.error("Klarte ikkje å hente løysingar", e)
-        throw RuntimeException("Klarte ikkje å hente løysingar")
+  fun getLoeysingList(
+      @RequestParam("name", required = false) namn: String?,
+      @RequestParam("orgnummer", required = false) orgnummer: String?
+  ): ResponseEntity<Any> {
+    if (namn != null && orgnummer != null) {
+      return ResponseEntity.badRequest().body("Må søke med enten namn eller orgnummer")
+    }
+    return try {
+      if (namn != null) {
+        ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?namn=$namn"))
+      } else if (orgnummer != null) {
+        ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?orgnummer=$orgnummer"))
+      } else {
+        ResponseEntity.ok(getLoeysingList())
       }
+    } catch (e: Error) {
+      logger.error("Klarte ikkje å hente løysingar", e)
+      return ResponseEntity.internalServerError().body("Klarte ikkje å hente løysingar")
+    }
+  }
+
+  private fun getLoeysingList() = restTemplate.getList<Loeysing>(loeysingUrl)
 
   @PostMapping
   fun createLoeysing(@RequestBody dto: CreateLoeysingDTO): ResponseEntity<out Any> =

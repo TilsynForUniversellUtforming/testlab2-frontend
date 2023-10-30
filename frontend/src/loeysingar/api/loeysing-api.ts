@@ -9,6 +9,22 @@ export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
     responseToJson(response, 'Kunne ikkje hente løysingar')
   );
 
+export const findLoeysingByName = async (name: string): Promise<Loeysing[]> =>
+  await fetch(`/api/v1/loeysing?name=${name}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje søke etter virksomhet')
+  );
+
+export const findLoeysingByOrgnummer = async (
+  orgnummer: string
+): Promise<Loeysing[]> =>
+  await fetch(`/api/v1/loeysing?orgnummer=${orgnummer}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje søke etter virksomhet')
+  );
+
 export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   await fetch('/api/v1/loeysing', {
     method: 'GET',

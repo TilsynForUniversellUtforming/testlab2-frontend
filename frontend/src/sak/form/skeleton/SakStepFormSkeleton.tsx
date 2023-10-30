@@ -37,15 +37,6 @@ const SakStepFormSkeleton = ({ steps }: Props) => (
             <div className="testlab-form__select">
               <Skeleton height={35} width={350} />
             </div>
-            <div className="testlab-form__select">
-              <Skeleton height={35} width={350} />
-            </div>
-            <div className="testlab-form__select">
-              <Skeleton height={35} width={350} />
-            </div>
-            <div className="testlab-form__select">
-              <Skeleton height={35} width={350} />
-            </div>
           </div>
         </div>
         <div className="testlab-form__navigation-buttons">

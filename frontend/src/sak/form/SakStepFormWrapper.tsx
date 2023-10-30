@@ -1,5 +1,4 @@
 import TestlabForm from '@common/form/TestlabForm';
-import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
 import { Paragraph } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
@@ -8,9 +7,8 @@ import { UseFormReturn } from 'react-hook-form';
 import { SakFormBaseProps, SakFormState } from '../types';
 import Stepper from './Stepper';
 
-export interface Props extends Omit<SakFormBaseProps, 'maalingFormState'> {
+export interface Props extends Omit<SakFormBaseProps, 'sakFormState'> {
   formMethods: UseFormReturn<SakFormState>;
-  buttonStep: TestlabFormButtonStep;
   hasRequiredFields?: boolean;
   children: ReactNode;
 }
@@ -19,7 +17,6 @@ const SakStepFormWrapper = ({
   formStepState,
   onSubmit,
   formMethods,
-  buttonStep,
   hasRequiredFields = false,
   children,
 }: Props) => {
@@ -41,7 +38,7 @@ const SakStepFormWrapper = ({
             </Paragraph>
           )}
           <div className="sak__container">{children}</div>
-          <TestlabForm.FormButtons step={buttonStep} />
+          <TestlabForm.FormButtons step={formStepState.buttonStep} />
         </div>
       </TestlabForm>
     </div>

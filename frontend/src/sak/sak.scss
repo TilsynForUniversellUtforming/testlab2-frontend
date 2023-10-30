@@ -23,6 +23,7 @@
     justify-self: end;
     display: flex;
     flex-direction: column;
+    min-width: 30vw;
   }
 
   &__container {
@@ -50,6 +51,31 @@
         gap: 2rem;
         [class^='FieldSet-module_content__'] {
           display: flex;
+        }
+      }
+
+      &__verksemd-result {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-bottom: 2rem;
+
+        .entry {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          width: 100%;
+        }
+
+        .label,
+        .value {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
+        .label {
+          font-weight: 600;
         }
       }
     }

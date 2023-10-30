@@ -37,6 +37,8 @@ export type SakFormState = {
   loeysingList: LoeysingVerksemd[];
   utval?: Utval;
   testregelList: Testregel[];
+  // Ny
+  verksemd?: Loeysing;
 };
 
 export const defaultSakFormState: SakFormState = {
@@ -49,6 +51,8 @@ export const defaultSakFormState: SakFormState = {
   advisorId: undefined,
   sakNumber: '',
   loeysingSource: 'utval',
+  // Ny
+  verksemd: undefined,
 };
 
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
@@ -116,23 +120,24 @@ export const startedSakSteps = [
 
 export interface SakFormBaseProps {
   formStepState: FormStepState;
-  maalingFormState: SakFormState;
+  sakFormState: SakFormState;
   onSubmit: (maalingFormState: SakFormState) => void;
 }
 
 export type Saktype =
-  | 'Dispensasjonssøknad'
-  | 'IKT-fagleg uttale'
   | 'Forenklet kontroll'
-  | 'Statusmåling'
-  | 'Tilsyn'
-  | 'Anna';
+  | 'Inngående kontroll'
+  | 'Retest'
+  | 'Tilsyn';
+
+export const saktypeForenklet = {
+  label: 'Forenklet kontroll',
+  value: 'Forenklet kontroll',
+};
 
 export const saktypeOptions = [
-  { label: 'Dispensasjonssøknad', value: 'Dispensasjonssøknad' },
-  { label: 'IKT-fagleg uttale', value: 'IKT-fagleg uttale' },
-  { label: 'Forenklet kontroll', value: 'Forenklet kontroll' },
-  { label: 'Statusmåling', value: 'Statusmåling' },
+  saktypeForenklet,
+  { label: 'Inngående kontroll', value: 'Inngående kontroll' },
+  { label: 'Retest', value: 'Retest' },
   { label: 'Tilsyn', value: 'Tilsyn' },
-  { label: 'Anna', value: 'Anna' },
 ];

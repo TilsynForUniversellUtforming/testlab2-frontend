@@ -1,4 +1,3 @@
-import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
@@ -16,8 +15,8 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Testregel, TestRegelsett } from '../../../testreglar/api/types';
-import SakStepFormWrapper from '../SakStepFormWrapper';
+import { Testregel, TestRegelsett } from '../../../../../testreglar/api/types';
+import SakStepFormWrapper from '../../../SakStepFormWrapper';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
@@ -27,19 +26,18 @@ interface Props extends SakFormBaseProps {
 
 const SakTestreglarStep = ({
   onSubmit,
-  maalingFormState,
+  sakFormState,
   regelsettList,
   formStepState,
   error,
   loading,
 }: Props) => {
   const formMethods = useForm<SakFormState>({
-    defaultValues: maalingFormState,
+    defaultValues: sakFormState,
     resolver: zodResolver(sakTestreglarValidationSchema),
   });
 
   const regelsettPrefix = 'regelsett';
-  const { onClickBack } = formStepState;
   const [rowSelection, setRowSelection] = useState<Testregel[]>([]);
   const [testregelId, setTestregelId] = useState<string | undefined>(undefined);
 
@@ -75,11 +73,6 @@ const SakTestreglarStep = ({
   const handleSelectRow = useCallback((selection: Testregel[]) => {
     setRowSelection(selection);
   }, []);
-
-  const buttonStep: TestlabFormButtonStep = {
-    stepType: 'Middle',
-    onClickBack: onClickBack,
-  };
 
   const testregelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
@@ -155,23 +148,11 @@ const SakTestreglarStep = ({
 
   const formError = getErrorMessage(formState, 'testregelList');
 
-  const onSubmitTestreglar = (data: SakFormState) => {
-    if (data.testregelList.length === 0) {
-      setError('testregelList', {
-        type: 'manual',
-        message: 'Testreglar må veljast',
-      });
-    } else {
-      onSubmit(data);
-    }
-  };
-
   return (
     <SakStepFormWrapper
       formStepState={formStepState}
-      onSubmit={onSubmitTestreglar}
+      onSubmit={onSubmit}
       formMethods={formMethods}
-      buttonStep={buttonStep}
     >
       <div className="sak-testreglar">
         <div className="sak-testreglar__input-wrapper">

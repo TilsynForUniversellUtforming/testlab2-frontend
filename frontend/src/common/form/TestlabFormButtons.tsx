@@ -3,10 +3,10 @@ import { Button } from '@digdir/design-system-react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router-dom';
 
-export type StepType = 'Start' | 'Middle' | 'Submit' | 'Custom';
+export type TestlabButtonStepType = 'Start' | 'Middle' | 'Submit' | 'Custom';
 
 export type TestlabFormButtonStep = {
-  stepType: StepType;
+  stepType: TestlabButtonStepType;
   customBackText?: string;
   customNextText?: string;
   customColor?: ButtonColorType;
@@ -39,7 +39,7 @@ const TestlabFormButtons = ({
     buttonStep;
 
   const buttonTexts: Record<
-    StepType,
+    TestlabButtonStepType,
     { back: string; next: string; color: ButtonColorType }
   > = {
     Start: { back: 'Avbryt', next: 'Neste', color: ButtonColor.Primary },

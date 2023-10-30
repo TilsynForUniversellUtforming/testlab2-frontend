@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RestController
 class Features(val featuresProperties: FeaturesProperties) {
   @GetMapping
   fun list(): List<Feature> {
-    return listOf(
-        Feature("maalinger", featuresProperties.maalinger),
-        Feature("testreglar", featuresProperties.testreglar))
+    return listOf(Feature("inngaaende", featuresProperties.inngaaende))
   }
 }
 
 data class Feature(val key: String, val active: Boolean)
 
 @ConfigurationProperties(prefix = "features")
-data class FeaturesProperties(val maalinger: Boolean, val testreglar: Boolean)
+data class FeaturesProperties(val inngaaende: Boolean)

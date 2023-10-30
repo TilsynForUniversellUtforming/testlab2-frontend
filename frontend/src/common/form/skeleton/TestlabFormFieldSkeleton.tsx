@@ -10,7 +10,7 @@ interface Props<T extends object> extends EditProps<T> {
 
 const TestlabFormFieldSkeleton = <T extends object>({
   label,
-  sublabel,
+  description,
   name,
   required = false,
   width,
@@ -20,8 +20,8 @@ const TestlabFormFieldSkeleton = <T extends object>({
     <label htmlFor={name} className="testlab-form__input-label">
       {label}
       {required && <span className="asterisk-color">*</span>}
-      {sublabel && (
-        <div className="testlab-form__input-sub-label">{sublabel}</div>
+      {description && (
+        <div className="testlab-form__input-sub-label">{description}</div>
       )}
     </label>
     <div id={name}>

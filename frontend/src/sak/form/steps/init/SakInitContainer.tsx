@@ -1,0 +1,89 @@
+import fetchFeatures from '@common/features/api/features-api';
+import { Feature } from '@common/features/api/types';
+import TestlabFormSelect from '@common/form/TestlabFormSelect';
+import { Option } from '@common/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import InitContentForenklet from '@sak/form/steps/init/forenklet/InitContentForenklet';
+import InitContentInngaaende from '@sak/form/steps/init/inngaaende/InitContentInngaaende';
+import { sakInitValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
+import {
+  SakFormBaseProps,
+  SakFormState,
+  Saktype,
+  saktypeForenklet,
+  saktypeOptions,
+} from '@sak/types';
+import React, { useEffect, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+
+import SakStepFormWrapper from '../../SakStepFormWrapper';
+
+const SakInitContent = ({ type }: { type?: Saktype }) => {
+  if (!type) {
+    return null;
+  }
+
+  if (type === 'Forenklet kontroll') {
+    return <InitContentForenklet />;
+  } else {
+    return <InitContentInngaaende />;
+  }
+};
+
+const SakInitContainer = ({
+  formStepState,
+  sakFormState,
+  onSubmit,
+}: SakFormBaseProps) => {
+  const formMethods = useForm<SakFormState>({
+    defaultValues: sakFormState,
+    resolver: zodResolver(sakInitValidationSchema),
+  });
+
+  const type = useWatch<SakFormState>({
+    control: formMethods.control,
+    name: 'sakType',
+  }) as Saktype;
+
+  const [sakTypeOptions, setSakTypeOptions] = useState<Option[]>([
+    saktypeForenklet,
+  ]);
+
+  useEffect(() => {
+    const fetchAndSetAvailability = async () => {
+      const data: Feature[] = await fetchFeatures();
+      const isActive = data.find(
+        (feature: Feature) => feature.key === 'inngaaende'
+      )?.active;
+      if (isActive) {
+        setSakTypeOptions(saktypeOptions);
+      } else {
+        setSakTypeOptions([saktypeForenklet]);
+      }
+    };
+
+    fetchAndSetAvailability();
+  }, []);
+
+  return (
+    <SakStepFormWrapper
+      formStepState={formStepState}
+      onSubmit={onSubmit}
+      formMethods={formMethods}
+      hasRequiredFields
+    >
+      <div className="sak-init">
+        <TestlabFormSelect<SakFormState>
+          label="Type sak"
+          description="Angi type sak du skal opprette"
+          name="sakType"
+          options={sakTypeOptions}
+          required
+        />
+        <SakInitContent type={type} />
+      </div>
+    </SakStepFormWrapper>
+  );
+};
+
+export default SakInitContainer;

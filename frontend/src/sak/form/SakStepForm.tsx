@@ -1,4 +1,5 @@
 import { Loeysing, Utval } from '@loeysingar/api/types';
+import SakInitContainer from '@sak/form/steps/init/SakInitContainer';
 import { Verksemd } from '@verksemder/api/types';
 import React, { ReactElement } from 'react';
 
@@ -6,10 +7,9 @@ import { TestRegelsett } from '../../testreglar/api/types';
 import { User } from '../../user/api/types';
 import { SakFormBaseProps } from '../types';
 import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
-import SakConfirmStep from './steps/confirmation/SakConfirmStep';
-import SakInitStep from './steps/init/SakInitStep';
-import SakLoeysingStep from './steps/loeysing/SakLoeysingStep';
-import SakTestreglarStep from './steps/SakTestreglarStep';
+import SakConfirmStep from './steps/confirmation/forenklet/SakConfirmStep';
+import SakLoeysingStep from './steps/loeysing/forenklet/SakLoeysingStep';
+import SakTestreglarStep from './steps/testreglar/forenklet/SakTestreglarStep';
 
 export interface Props extends SakFormBaseProps {
   error: Error | undefined;
@@ -28,8 +28,7 @@ const SakStepForm = ({
   utvalList,
   verksemdList,
   regelsettList,
-  advisors,
-  maalingFormState,
+  sakFormState,
   onSubmit,
   formStepState,
 }: Props): ReactElement => {
@@ -42,10 +41,9 @@ const SakStepForm = ({
   switch (currentStep.sakStepType) {
     case 'Init':
       return (
-        <SakInitStep
+        <SakInitContainer
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
-          advisors={advisors}
+          sakFormState={sakFormState}
           onSubmit={onSubmit}
         />
       );
@@ -53,7 +51,7 @@ const SakStepForm = ({
       return (
         <SakLoeysingStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
+          sakFormState={sakFormState}
           loeysingList={loeysingList}
           utvalList={utvalList}
           verksemdList={verksemdList}
@@ -66,7 +64,7 @@ const SakStepForm = ({
       return (
         <SakTestreglarStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
+          sakFormState={sakFormState}
           regelsettList={regelsettList}
           onSubmit={onSubmit}
           error={error}
@@ -77,12 +75,8 @@ const SakStepForm = ({
       return (
         <SakConfirmStep
           formStepState={formStepState}
-          maalingFormState={maalingFormState}
-          advisors={advisors}
-          regelsettList={regelsettList}
+          sakFormState={sakFormState}
           onSubmit={onSubmit}
-          error={error}
-          loading={loading}
         />
       );
     default:
