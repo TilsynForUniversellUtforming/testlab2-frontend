@@ -3,24 +3,24 @@ import StatusBadge from '@common/status-badge/StatusBadge';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
 import { isDefined } from '@common/util/validationUtils';
-import { JobStatus, Maaling, TestResult } from '@maaling/api/types';
+import { JobStatus, MaalingStatus, TestResult } from '@maaling/api/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
 /**
  * getTestingListColumns function returns an array of column definitions for TestResult.
  *
- * @param {object} maaling - The current maaling.
+ * @param {MaalingStatus} maalingStatus - The status of the current maaling.
  *
  * @returns {Array<ColumnDef<TestResult>>} An array of column definitions.
  */
 export const getTestingListColumns = (
-  maaling?: Maaling
+  maalingStatus?: MaalingStatus
 ): Array<ColumnDef<TestResult>> => [
   getCheckboxColumn(
     (row: Row<TestResult>) => `Velg ${row.original.loeysing.namn}`,
     false,
-    maaling?.status === 'testing_ferdig'
+    maalingStatus === 'testing_ferdig'
   ),
   {
     accessorFn: (row) => row.loeysing.namn,
@@ -37,13 +37,14 @@ export const getTestingListColumns = (
   {
     accessorFn: (row) => row.compliancePercent,
     id: 'compliancePercent',
-    cell: ({ row }) => (
-      <LoadingBar
-        percentage={row.original.compliancePercent}
-        ariaLabel={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
-        show={row.original.tilstand === 'ferdig'}
-      />
-    ),
+    cell: ({ row }) =>
+      maalingStatus === 'testing_ferdig' && (
+        <LoadingBar
+          percentage={row.original.compliancePercent}
+          ariaLabel={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
+          show={row.original.tilstand === 'ferdig'}
+        />
+      ),
     header: () => <>Resultat</>,
   },
   {
