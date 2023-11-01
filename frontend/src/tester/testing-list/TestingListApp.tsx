@@ -44,8 +44,8 @@ const TestingListApp = () => {
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
   const testResultatColumns = useMemo(
-    () => getTestingListColumns(maaling),
-    [maaling]
+    () => getTestingListColumns(maaling?.status),
+    [maaling?.status]
   );
 
   const rowActions = useMemo<TableRowAction[]>(() => {
