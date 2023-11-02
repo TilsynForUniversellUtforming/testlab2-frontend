@@ -1,6 +1,4 @@
-import { Loeysing, Utval } from '@loeysingar/api/types';
-import SakInitContainer from '@sak/form/steps/init/SakInitContainer';
-import { Verksemd } from '@verksemder/api/types';
+import InitStepContainer from '@sak/form/steps/init/InitStepContainer';
 import React, { ReactElement } from 'react';
 
 import { TestRegelsett } from '../../testreglar/api/types';
@@ -8,25 +6,19 @@ import { User } from '../../user/api/types';
 import { SakFormBaseProps } from '../types';
 import SakStepFormSkeleton from './skeleton/SakStepFormSkeleton';
 import SakConfirmStep from './steps/confirmation/forenklet/SakConfirmStep';
-import SakLoeysingStep from './steps/loeysing/forenklet/SakLoeysingStep';
+import LoeysingStepForenklet from './steps/loeysing/forenklet/LoeysingStepForenklet';
 import SakTestreglarStep from './steps/testreglar/forenklet/SakTestreglarStep';
 
 export interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
-  loeysingList: Loeysing[];
-  utvalList: Utval[];
-  verksemdList: Verksemd[];
   regelsettList: TestRegelsett[];
   advisors: User[];
 }
 
-const SakStepForm = ({
+const SakForm = ({
   error,
   loading,
-  loeysingList,
-  utvalList,
-  verksemdList,
   regelsettList,
   sakFormState,
   onSubmit,
@@ -41,7 +33,7 @@ const SakStepForm = ({
   switch (currentStep.sakStepType) {
     case 'Init':
       return (
-        <SakInitContainer
+        <InitStepContainer
           formStepState={formStepState}
           sakFormState={sakFormState}
           onSubmit={onSubmit}
@@ -49,15 +41,10 @@ const SakStepForm = ({
       );
     case 'Loeysing':
       return (
-        <SakLoeysingStep
+        <LoeysingStepForenklet
           formStepState={formStepState}
           sakFormState={sakFormState}
-          loeysingList={loeysingList}
-          utvalList={utvalList}
-          verksemdList={verksemdList}
           onSubmit={onSubmit}
-          error={error}
-          loading={loading}
         />
       );
     case 'Testregel':
@@ -84,4 +71,4 @@ const SakStepForm = ({
   }
 };
 
-export default SakStepForm;
+export default SakForm;

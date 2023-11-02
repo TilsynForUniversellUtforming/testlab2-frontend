@@ -12,6 +12,11 @@ export type LoeysingVerksemd = {
   verksemd: Verksemd;
 };
 
+export type VerksemdLoeysingRelation = {
+  verksemd: Loeysing;
+  loeysingList: Loeysing[];
+};
+
 export type LoeysingSource = 'utval' | 'manuell';
 
 export interface SakContext extends AppContext {

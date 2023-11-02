@@ -5,9 +5,10 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Option } from '../types';
-import { EditProps } from './TestlabFormInput';
+import { TestlabInputBaseProps } from './TestlabFormInput';
 
-export interface EditSelectProps<T extends object> extends EditProps<T> {
+export interface TestlabInputSelectProps<T extends object>
+  extends TestlabInputBaseProps<T> {
   options: Option[];
 }
 
@@ -18,7 +19,7 @@ const TestlabFormSelect = <T extends object>({
   name,
   required = false,
   disabled,
-}: EditSelectProps<T>) => {
+}: TestlabInputSelectProps<T>) => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 

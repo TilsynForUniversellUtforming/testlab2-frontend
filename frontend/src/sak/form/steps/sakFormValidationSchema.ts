@@ -151,7 +151,7 @@ export const sakLoeysingValidationSchema = z
     },
     (data) => {
       if (data.loeysingSource === 'utval') {
-        return { message: 'Utval må veljast', path: ['loeysingList'] };
+        return { message: 'Utval må veljast', path: ['utval'] };
       }
       return { message: 'Minst ei løysing må veljast', path: ['loeysingList'] };
     }

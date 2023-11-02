@@ -1,9 +1,9 @@
 import './testlab-form-skeleton.scss';
 
-import { EditProps } from '@common/form/TestlabFormInput';
+import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import Skeleton from 'react-loading-skeleton';
 
-interface Props<T extends object> extends EditProps<T> {
+interface Props<T extends object> extends TestlabInputBaseProps<T> {
   width?: number;
   height?: number;
 }

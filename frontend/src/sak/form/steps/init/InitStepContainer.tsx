@@ -16,7 +16,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import SakStepFormWrapper from '../../SakStepFormWrapper';
+import SakFormWrapper from '../../SakFormWrapper';
 
 const SakInitContent = ({ type }: { type?: Saktype }) => {
   if (!type) {
@@ -30,7 +30,7 @@ const SakInitContent = ({ type }: { type?: Saktype }) => {
   }
 };
 
-const SakInitContainer = ({
+const InitStepContainer = ({
   formStepState,
   sakFormState,
   onSubmit,
@@ -66,7 +66,7 @@ const SakInitContainer = ({
   }, []);
 
   return (
-    <SakStepFormWrapper
+    <SakFormWrapper
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
@@ -82,8 +82,8 @@ const SakInitContainer = ({
         />
         <SakInitContent type={type} />
       </div>
-    </SakStepFormWrapper>
+    </SakFormWrapper>
   );
 };
 
-export default SakInitContainer;
+export default InitStepContainer;
