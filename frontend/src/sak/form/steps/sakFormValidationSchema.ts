@@ -156,7 +156,7 @@ export const sakLoeysingValidationSchemaV2 = z
     loeysingList: z.array(loeysingVerksemdSchema).optional(),
     utval: utvalSchema.optional(),
     testregelList: z.array(testregelSchema).optional(),
-    verksemd: verksemdLoeysingRelationSchema,
+    verksemd: verksemdLoeysingRelationSchema.optional(),
   })
   .refine(
     (data) => {
