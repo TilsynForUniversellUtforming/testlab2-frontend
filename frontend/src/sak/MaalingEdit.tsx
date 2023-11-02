@@ -9,7 +9,7 @@ import { MaalingContext } from '@maaling/types';
 import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import SakStepForm from './form/SakStepForm';
+import SakForm from './form/SakForm';
 import useMaalingFormState from './hooks/useMaalingFormState';
 import useSakForm from './hooks/useSakForm';
 import { SakFormState } from './types';
@@ -21,8 +21,6 @@ interface Props {
 const MaalingEdit = ({ onChangeTabs }: Props) => {
   const {
     maaling,
-    loeysingList,
-    utvalList,
     verksemdList,
     regelsettList,
     advisors,
@@ -97,12 +95,9 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
 
   return (
     <>
-      <SakStepForm
+      <SakForm
         formStepState={formStepState}
         sakFormState={maalingFormState}
-        loeysingList={loeysingList}
-        utvalList={utvalList}
-        verksemdList={verksemdList}
         regelsettList={regelsettList}
         advisors={advisors}
         onSubmit={handleSubmit}

@@ -11,7 +11,7 @@ import { MAALING } from '@maaling/MaalingRoutes';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
-import SakStepForm from './form/SakStepForm';
+import SakForm from './form/SakForm';
 import useSakForm from './hooks/useSakForm';
 import { defaultSakFormState, SakContext, SakFormState } from './types';
 
@@ -22,9 +22,6 @@ const SakCreate = () => {
     setMaaling,
     contextLoading,
     contextError,
-    loeysingList,
-    utvalList,
-    verksemdList,
     regelsettList,
     advisors,
   }: SakContext = useOutletContext();
@@ -98,12 +95,9 @@ const SakCreate = () => {
   return (
     <>
       <AppTitle heading="Ny sak" subHeading="Opprett ein ny sak" />
-      <SakStepForm
+      <SakForm
         formStepState={formStepState}
         sakFormState={maalingFormState}
-        loeysingList={loeysingList}
-        utvalList={utvalList}
-        verksemdList={verksemdList}
         regelsettList={regelsettList}
         advisors={advisors}
         onSubmit={handleSubmit}

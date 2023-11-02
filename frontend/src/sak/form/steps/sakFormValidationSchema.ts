@@ -14,7 +14,7 @@ const loeysingSourceSchema = z.union([
   z.literal('manuell'),
 ]);
 
-const loeysingSchema = z.object({
+const sakLoeysingSchema = z.object({
   id: z.number(),
   namn: z.string(),
   url: z.string(),
@@ -27,14 +27,19 @@ const verksemdSchema = z.object({
   organisasjonsnummer: z.string(),
 });
 
-const inngaaendeVerksemdScheama = loeysingSchema
+const verksemdLoeysingRelationSchema = z.object({
+  verksemd: sakLoeysingSchema,
+  loeysingList: z.array(sakLoeysingSchema).optional(),
+});
+
+const inngaaendeVerksemdScheama = verksemdLoeysingRelationSchema
   .optional()
-  .refine((value) => isDefined(value), {
+  .refine((value) => isDefined(value?.verksemd), {
     message: 'Verksemd må veljast',
   });
 
 const loeysingVerksemdSchema = z.object({
-  loeysing: loeysingSchema,
+  loeysing: sakLoeysingSchema,
   verksemd: verksemdSchema,
 });
 
@@ -48,6 +53,19 @@ const testregelSchema = z.object({
   krav: z.string(),
   testregelNoekkel: z.string(),
   kravTilSamsvar: z.string(),
+});
+
+export const sakBaseSchema = z.object({
+  navn: z.string().optional(),
+  advisorId: z.string().optional(),
+  sakNumber: z.string().optional(),
+  maxLenker: z.union([z.number(), z.string()]).optional(),
+  talLenker: z.union([z.number(), z.string()]).optional(),
+  loeysingSource: loeysingSourceSchema,
+  loeysingList: z.array(loeysingVerksemdSchema).optional(),
+  utval: utvalSchema.optional(),
+  testregelList: z.array(testregelSchema).optional(),
+  verksemd: inngaaendeVerksemdScheama.optional(),
 });
 
 export const sakInitBaseSchema = z.object({
@@ -126,6 +144,70 @@ export const sakInitValidationSchema = z
     }
   );
 
+export const sakLoeysingValidationSchemaV2 = z
+  .object({
+    navn: z.string().optional(),
+    sakType: saktypeSchema.optional(),
+    advisorId: z.string().optional(),
+    sakNumber: z.string().optional(),
+    maxLenker: z.union([z.number(), z.string()]).optional(),
+    talLenker: z.union([z.number(), z.string()]).optional(),
+    loeysingSource: loeysingSourceSchema,
+    loeysingList: z.array(loeysingVerksemdSchema).optional(),
+    utval: utvalSchema.optional(),
+    testregelList: z.array(testregelSchema).optional(),
+    verksemd: verksemdLoeysingRelationSchema,
+  })
+  .refine(
+    (data) => {
+      if (data.sakType === 'Forenklet kontroll') {
+        if (data.loeysingSource === 'utval' && !data.utval) {
+          return false;
+        }
+
+        return !(
+          data.loeysingSource === 'manuell' &&
+          (!data.loeysingList || data.loeysingList.length === 0)
+        );
+      } else {
+        const loeysingList = data.verksemd?.loeysingList || [];
+        return (
+          loeysingList.length > 0 &&
+          loeysingList.filter((l) => l.id === 0).length === 0
+        );
+      }
+    },
+    (data) => {
+      if (data.sakType === 'Forenklet kontroll') {
+        if (data.loeysingSource === 'utval') {
+          return { message: 'Utval må veljast', path: ['utval'] };
+        }
+        return {
+          message: 'Minst ei løysing må veljast',
+          path: ['loeysingList'],
+        };
+      }
+
+      const loeysingList = data.verksemd?.loeysingList || [];
+      if (loeysingList.length <= 0) {
+        return {
+          message: 'Ein vermeksemd må ha minst ei løysing for testing',
+          path: ['verksemd'],
+        };
+      } else if (loeysingList.find((l) => l.id === 0)) {
+        return {
+          message: 'Nokre felt manglar løysing',
+          path: ['verksemd.loeysingList'],
+        };
+      }
+
+      return {
+        message: 'Noko gjekk gale',
+        path: ['verksemd'],
+      };
+    }
+  );
+
 export const sakLoeysingValidationSchema = z
   .object({
     navn: z.string().optional(),
@@ -151,7 +233,7 @@ export const sakLoeysingValidationSchema = z
     },
     (data) => {
       if (data.loeysingSource === 'utval') {
-        return { message: 'Utval må veljast', path: ['loeysingList'] };
+        return { message: 'Utval må veljast', path: ['utval'] };
       }
       return { message: 'Minst ei løysing må veljast', path: ['loeysingList'] };
     }

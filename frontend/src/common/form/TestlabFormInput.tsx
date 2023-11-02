@@ -3,7 +3,8 @@ import { Textfield, TextfieldProps } from '@digdir/design-system-react';
 import React from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
-export interface EditProps<T extends object> extends TextfieldProps {
+export interface TestlabInputBaseProps<T extends object>
+  extends TextfieldProps {
   label: string;
   required?: boolean;
   hidden?: boolean;
@@ -19,7 +20,7 @@ const TestlabFormInput = <T extends object>({
   required = false,
   numeric = false,
   size = 'small',
-}: EditProps<T>) => {
+}: TestlabInputBaseProps<T>) => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 

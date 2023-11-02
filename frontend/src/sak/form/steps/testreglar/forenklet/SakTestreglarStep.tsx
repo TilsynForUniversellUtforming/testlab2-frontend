@@ -16,7 +16,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Testregel, TestRegelsett } from '../../../../../testreglar/api/types';
-import SakStepFormWrapper from '../../../SakStepFormWrapper';
+import SakFormWrapper from '../../../SakFormWrapper';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
@@ -149,7 +149,7 @@ const SakTestreglarStep = ({
   const formError = getErrorMessage(formState, 'testregelList');
 
   return (
-    <SakStepFormWrapper
+    <SakFormWrapper
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
@@ -199,7 +199,7 @@ const SakTestreglarStep = ({
           ]}
         />
       </div>
-    </SakStepFormWrapper>
+    </SakFormWrapper>
   );
 };
 

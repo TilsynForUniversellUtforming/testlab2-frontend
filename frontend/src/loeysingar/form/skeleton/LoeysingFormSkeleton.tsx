@@ -13,7 +13,7 @@ const LoeysingFormSkeleton = ({ heading, subHeading }: Props) => (
   <div className="loeysing-form">
     <form className="testlab-form">
       {heading && (
-        <TestlabFormHeader heading={heading} subHeading={subHeading} />
+        <TestlabFormHeader heading={heading} description={subHeading} />
       )}
       <div className="loeysing-form__input">
         <Paragraph spacing size="small">

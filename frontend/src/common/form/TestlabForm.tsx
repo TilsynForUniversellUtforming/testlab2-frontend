@@ -11,7 +11,7 @@ import TestlabFormSelect from './TestlabFormSelect';
 
 export interface TestlabFormProps<T extends object> {
   heading?: string;
-  subHeading?: string;
+  description?: string;
   onSubmit: SubmitHandler<T>;
   formMethods: UseFormReturn<T>;
   hasRequiredFields?: boolean;
@@ -23,7 +23,7 @@ export interface TestlabFormProps<T extends object> {
  * @template T - Type for form data.
  * @param {TestlabFormProps<T>} props - Props for the TestlabForm component.
  * @param {string} props.heading - Main heading for the form.
- * @param {string} [props.subHeading] - Sub-heading for the form, optional.
+ * @param {string} [props.description] - Description for the form, optional.
  * @param {SubmitHandler<T>} props.onSubmit - Submit handler function for the form.
  * @param {UseFormReturn<T>} props.formMethods - React hook form methods for the form.
  * @param {ReactNode} props.children - React children to render within the form.
@@ -32,7 +32,7 @@ export interface TestlabFormProps<T extends object> {
  */
 const TestlabForm = <T extends object>({
   heading,
-  subHeading,
+  description,
   children,
   formMethods,
   onSubmit,
@@ -64,7 +64,7 @@ const TestlabForm = <T extends object>({
         autoComplete="off"
       >
         {heading && (
-          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+          <TestlabFormHeader heading={heading} description={description} />
         )}
         {hasRequiredFields && (
           <Paragraph spacing size="small">

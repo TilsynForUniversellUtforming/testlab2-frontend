@@ -88,7 +88,7 @@ const LoeysingEdit = () => {
   return (
     <LoeysingForm
       heading="Endre løysing"
-      subHeading={loeysing?.namn}
+      description={loeysing?.namn}
       onSubmit={onSubmit}
       loeysing={loeysing}
       alert={alert}

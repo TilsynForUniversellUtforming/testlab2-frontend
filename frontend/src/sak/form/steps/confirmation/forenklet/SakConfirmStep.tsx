@@ -2,7 +2,7 @@ import { SakFormBaseProps, SakFormState } from '@sak/types';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import SakStepFormWrapper from '../../../SakStepFormWrapper';
+import SakFormWrapper from '../../../SakFormWrapper';
 import SakConfirmContent from './SakConfirmContent';
 
 const SakConfirmStep = ({
@@ -15,13 +15,13 @@ const SakConfirmStep = ({
   });
 
   return (
-    <SakStepFormWrapper
+    <SakFormWrapper
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
     >
       <SakConfirmContent maalingFormState={sakFormState} />
-    </SakStepFormWrapper>
+    </SakFormWrapper>
   );
 };
 

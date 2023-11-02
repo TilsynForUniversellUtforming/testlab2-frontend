@@ -19,7 +19,7 @@ const LoeysingForm = ({
   loeysing,
   alert,
   heading,
-  subHeading,
+  description,
   onSubmit,
 }: Props) => {
   const formMethods = useForm<LoeysingInit>({
@@ -35,7 +35,7 @@ const LoeysingForm = ({
     <div className="loeysing-form">
       <TestlabForm<LoeysingInit>
         heading={heading}
-        subHeading={subHeading}
+        description={description}
         onSubmit={onSubmit}
         formMethods={formMethods}
         hasRequiredFields

@@ -46,7 +46,7 @@ const TestregelForm = ({
     <div className="testregel-form">
       <TestlabForm<Testregel>
         heading={heading}
-        subHeading={subHeading}
+        description={subHeading}
         onSubmit={onSubmit}
         formMethods={formMethods}
       >
