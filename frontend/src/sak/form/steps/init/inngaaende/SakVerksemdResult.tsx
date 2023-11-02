@@ -1,11 +1,21 @@
-import { Heading } from '@digdir/design-system-react';
-import { Loeysing } from '@loeysingar/api/types';
+import { Alert, Heading, Spinner } from '@digdir/design-system-react';
+import { VerksemdLoeysingRelation } from '@sak/types';
 
 interface Props {
-  verksemd?: Loeysing;
+  verksemd?: VerksemdLoeysingRelation;
+  loading: boolean;
+  errorMessage?: string;
 }
 
-const SakVerksemdResult = ({ verksemd }: Props) => {
+const SakVerksemdResult = ({ verksemd, loading, errorMessage }: Props) => {
+  if (errorMessage) {
+    return <Alert severity="danger">{errorMessage}</Alert>;
+  }
+
+  if (loading) {
+    return <Spinner title="Hentar relasjonar" />;
+  }
+
   if (!verksemd) {
     return null;
   }
@@ -13,7 +23,7 @@ const SakVerksemdResult = ({ verksemd }: Props) => {
   return (
     <div className="sak-init__verksemd-result">
       <Heading level={2} size="small">
-        {verksemd.namn}
+        {verksemd.verksemd.namn}
       </Heading>
       <div className="entry">
         <div className="label">Hentet fra:</div>
@@ -22,7 +32,7 @@ const SakVerksemdResult = ({ verksemd }: Props) => {
       <br />
       <div className="entry">
         <div className="label">Orgnr:</div>
-        <div className="value">{verksemd.orgnummer}</div>
+        <div className="value">{verksemd.verksemd.orgnummer}</div>
       </div>
       <div className="entry">
         <div className="label">Kontaktperson:</div>

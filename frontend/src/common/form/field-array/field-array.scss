@@ -1,0 +1,16 @@
+.testlab-form__field-array {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  max-width: 30rem;
+  &-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    &__input {
+      padding-top: 2rem;
+    }
+  }
+}

@@ -13,7 +13,7 @@ export interface Props extends Omit<SakFormBaseProps, 'sakFormState'> {
   children: ReactNode;
 }
 
-const SakStepFormWrapper = ({
+const SakFormWrapper = ({
   formStepState,
   onSubmit,
   formMethods,
@@ -31,7 +31,7 @@ const SakStepFormWrapper = ({
       >
         <Stepper formStepState={formStepState} />
         <div className="sak__form">
-          <TestlabFormHeader heading={heading} subHeading={subHeading} />
+          <TestlabFormHeader heading={heading} description={subHeading} />
           {hasRequiredFields && (
             <Paragraph spacing size="small">
               Felter markert med stjerne er obligatoriske
@@ -45,4 +45,4 @@ const SakStepFormWrapper = ({
   );
 };
 
-export default SakStepFormWrapper;
+export default SakFormWrapper;

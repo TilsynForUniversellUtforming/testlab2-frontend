@@ -2,33 +2,32 @@ import './testlab-form-autocomplete.scss';
 
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabFormAutocompleteList from '@common/form/autocomplete/TestlabFormAutocompleteList';
+import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
-import { Size } from '@common/types';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
-export interface Props<FormData, ResultData> {
-  resultList: ResultData[];
-  label: string;
+export interface AutoCompleteProps<
+  FormDataType extends object,
+  ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
+> extends Omit<TestlabInputBaseProps<FormDataType>, 'onChange'> {
+  resultList: ResultDataType[];
   onChange: (value: string) => void;
-  resultLabelKey: keyof ResultData;
-  name: Path<FormData>;
-  resultDescriptionKey?: keyof ResultData;
+  resultLabelKey: keyof ResultDataType;
+  resultDescriptionKey?: keyof ResultDataType;
   retainSelection?: boolean;
   value?: string;
   description?: string;
-  required?: boolean;
-  onClick?: (result: ResultData) => void;
+  onClick?: (result: ResultDataType) => void;
   errorMessage?: string;
-  size?: Size;
   maxListLength?: number;
   spacing?: boolean;
 }
 
 const TestlabFormAutocomplete = <
-  FormData extends object,
-  ResultData extends PathValue<FormData, Path<FormData>>,
+  FormDataType extends object,
+  ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
 >({
   resultList,
   label,
@@ -45,18 +44,18 @@ const TestlabFormAutocomplete = <
   size = 'small',
   maxListLength,
   spacing = false,
-}: Props<FormData, ResultData>) => {
-  const { control, setValue } = useFormContext<FormData>();
+}: AutoCompleteProps<FormDataType, ResultDataType>) => {
+  const { control, setValue } = useFormContext<FormDataType>();
   const [show, setShow] = useState(false);
   const resultsRef = useRef<HTMLUListElement>(null);
   const [inputValue, setInputValue] = useState(value);
-  const selection = useWatch<FormData>({
+  const selection = useWatch<FormDataType>({
     control,
     name: name,
-  }) as ResultData;
+  }) as ResultDataType;
 
   useEffect(() => {
-    if (selection) {
+    if (selection && !retainSelection) {
       setInputValue(undefined);
     }
   }, [selection]);
@@ -78,9 +77,9 @@ const TestlabFormAutocomplete = <
   }, []);
 
   const handleOnClick = useCallback(
-    (name: Path<FormData>, result: ResultData) => {
+    (name: Path<FormDataType>, result: ResultDataType) => {
       setShow(false);
-      setInputValue(retainSelection ? result[resultLabelKey] : undefined);
+      setInputValue(result[resultLabelKey]);
       if (onClick) {
         onClick(result);
       } else {
@@ -102,7 +101,7 @@ const TestlabFormAutocomplete = <
   return (
     <div
       className={classnames('testlab-form-autocomplete', {
-        'testlab-form__input': spacing,
+        spacing: spacing,
       })}
     >
       <DebouncedInput

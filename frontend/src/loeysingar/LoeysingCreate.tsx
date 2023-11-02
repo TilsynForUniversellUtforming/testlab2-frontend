@@ -77,7 +77,7 @@ const LoeysingCreate = () => {
     <LoeysingForm
       heading="Ny løysing"
       onSubmit={onSubmit}
-      subHeading="Her kan du opprette ei ny løsying."
+      description="Her kan du opprette ei ny løsying."
       alert={alert}
     />
   );

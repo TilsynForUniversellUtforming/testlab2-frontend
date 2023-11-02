@@ -14,7 +14,7 @@ const TestregelFormSkeleton = ({ heading, subHeading }: Props) => (
   <div className="testregel-form">
     <form className="testlab-form">
       {heading && (
-        <TestlabFormHeader heading={heading} subHeading={subHeading} />
+        <TestlabFormHeader heading={heading} description={subHeading} />
       )}
       <Paragraph spacing size="small">
         Felter markert med stjerne er obligatoriske
