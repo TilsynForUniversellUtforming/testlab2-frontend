@@ -1,6 +1,10 @@
+import './field-array.scss';
+
 import { AutoCompleteProps } from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import { TestlabInputSelectProps } from '@common/form/TestlabFormSelect';
+import { ButtonSize, ButtonVariant } from '@common/types';
+import { Button } from '@digdir/design-system-react';
 import { ReactElement } from 'react';
 import {
   ArrayPath,
@@ -11,66 +15,53 @@ import {
   useFormContext,
 } from 'react-hook-form';
 
-// const Total = ({ control }: { control: Control<FormValues> }) => {
-//   const formValues = useWatch({
-//     name: "cart",
-//     control
-//   });
-//   const total = formValues.reduce(
-//     (acc, current) => acc + (current.price || 0) * (current.quantity || 0),
-//     0
-//   );
-//   return <p>Total Amount: {total}</p>;
-// };
-
-// type ValidInputs = typeof TestlabFormInput | typeof TestlabFormSelect | typeof TestlabFormAutocomplete;
-
-interface Props<
-  FormData extends object,
-  ResultData extends PathValue<FormData, Path<FormData>>,
-> {
-  name: ArrayPath<FormData>;
+interface Props<FormData extends object> {
+  fieldName: ArrayPath<FormData>;
   defaultValues: FieldArray<FormData, ArrayPath<FormData>>;
-  child: ReactElement<
+  children: ReactElement<
     | TestlabInputBaseProps<FormData>
     | TestlabInputSelectProps<FormData>
-    | AutoCompleteProps<FormData, ResultData>
+    | AutoCompleteProps<FormData, PathValue<FormData, Path<FormData>>>
   >;
 }
 
-const TestlabFormFieldArray = <
-  FormData extends object,
-  ResultData extends PathValue<FormData, Path<FormData>>,
->({
-  name,
+const TestlabFormFieldArray = <FormData extends object>({
+  fieldName,
   defaultValues,
-}: Props<FormData, ResultData>) => {
-  const { control /*formState*/ } = useFormContext<FormData>();
+  children,
+}: Props<FormData>) => {
+  const { control } = useFormContext<FormData>();
 
   const { fields, append, remove } = useFieldArray({
-    name: name,
+    name: fieldName,
     control,
   });
 
   return (
-    <div>
+    <div className="testlab-form__field-array">
       {fields.map((field, index) => {
         return (
-          <div key={field.id}>
-            <section className={'section'} key={field.id}>
-              <button type="button" onClick={() => remove(index)}>
-                DELETE
-              </button>
-              <button type="button" onClick={() => append(defaultValues)}>
-                APPEND
-              </button>
-            </section>
+          <div className="testlab-form__field-array-entry" key={field.id}>
+            {children}
+            <Button
+              size={ButtonSize.Small}
+              variant={ButtonVariant.Quiet}
+              type="button"
+              onClick={() => remove(index)}
+            >
+              Fjern
+            </Button>
           </div>
         );
       })}
-
-      {/*<Total control={control} />*/}
-      {/*<input type="submit" />*/}
+      <Button
+        size={ButtonSize.Small}
+        variant={ButtonVariant.Quiet}
+        type="button"
+        onClick={() => append(defaultValues)}
+      >
+        Legg til
+      </Button>
     </div>
   );
 };

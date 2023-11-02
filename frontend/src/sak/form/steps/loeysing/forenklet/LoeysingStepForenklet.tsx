@@ -1,25 +1,15 @@
+import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
+import { isDefined } from '@common/util/validationUtils';
 import { Radio } from '@digdir/design-system-react';
-import { zodResolver } from '@hookform/resolvers/zod';
 import SakLoeysingList from '@sak/form/steps/loeysing/forenklet/SakLoeysingList';
 import SakUtvalList from '@sak/form/steps/loeysing/forenklet/SakUtvalList';
-import { sakLoeysingValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
-import { LoeysingSource, SakFormBaseProps, SakFormState } from '@sak/types';
+import { LoeysingSource, SakFormState } from '@sak/types';
 import React from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-import SakFormWrapper from '../../../SakFormWrapper';
-
-const LoeysingStepForenklet = ({
-  formStepState,
-  sakFormState,
-  onSubmit,
-}: SakFormBaseProps) => {
-  const formMethods = useForm<SakFormState>({
-    defaultValues: sakFormState,
-    resolver: zodResolver(sakLoeysingValidationSchema),
-  });
-
-  const { control, setValue, getValues, clearErrors } = formMethods;
+const LoeysingStepForenklet = () => {
+  const { control, setValue, getValues, clearErrors } =
+    useFormContext<SakFormState>();
 
   const handleChangeSource = (source?: string) => {
     if (typeof source === 'undefined') {
@@ -40,11 +30,7 @@ const LoeysingStepForenklet = ({
   }) as LoeysingSource;
 
   return (
-    <SakFormWrapper
-      formStepState={formStepState}
-      onSubmit={onSubmit}
-      formMethods={formMethods}
-    >
+    <>
       <div className="sak-loeysing__utval">
         <Radio.Group
           legend="Vil du bruke eit ferdig utval?"
@@ -57,9 +43,13 @@ const LoeysingStepForenklet = ({
           <Radio value="manuell">Velg løysingar sjølv</Radio>
         </Radio.Group>
       </div>
-      {source === 'utval' && <SakUtvalList />}
-      {source === 'manuell' && <SakLoeysingList />}
-    </SakFormWrapper>
+      <ConditionalComponentContainer
+        condition={source === 'utval'}
+        show={isDefined(source)}
+        conditionalComponent={<SakUtvalList />}
+        otherComponent={<SakLoeysingList />}
+      />
+    </>
   );
 };
 

@@ -144,7 +144,7 @@ const SakLoeysingList = () => {
   const listErrors = getErrorMessage(formState, 'loeysingList');
 
   return (
-    <div className="sak-loeysing">
+    <>
       <div className="sak-loeysing__input-wrapper">
         <div className="sak-loeysing__input-select">
           <TestlabFormAutocomplete<SakFormState, Loeysing>
@@ -192,7 +192,7 @@ const SakLoeysingList = () => {
           },
         ]}
       />
-    </div>
+    </>
   );
 };
 

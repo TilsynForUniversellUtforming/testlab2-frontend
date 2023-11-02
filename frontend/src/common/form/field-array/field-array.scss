@@ -1,0 +1,11 @@
+.testlab-form__field-array {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  &-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+}

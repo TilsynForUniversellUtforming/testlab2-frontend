@@ -43,7 +43,7 @@ export type SakFormState = {
   utval?: Utval;
   testregelList: Testregel[];
   // Ny
-  verksemd?: Loeysing;
+  verksemd?: VerksemdLoeysingRelation;
 };
 
 export const defaultSakFormState: SakFormState = {

@@ -1,58 +1,57 @@
-import TestlabForm from '@common/form/TestlabForm';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { loeysingValidationSchema } from '@loeysingar/form/loeysingValidationSchema';
-import { VerksemdLoeysingRelation } from '@sak/types';
-import { useForm } from 'react-hook-form';
+import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
+import TestlabFormFieldArray from '@common/form/field-array/TestlabFormFieldArray';
+import { Loeysing } from '@loeysingar/api/types';
+import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
+import { SakFormState } from '@sak/types';
+import { useCallback } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-interface Props {
-  verksemdLoeysingRelation: VerksemdLoeysingRelation;
-}
-
-const VerksemdLoesyingRelationForm = ({ verksemdLoeysingRelation }: Props) => {
-  // const [loeysingList, setLoeysingList] = useState<VerksemdLoeysingRelation>(
-  //   verksemdLoeysingRelation
-  // );
-
-  const onSubmit = (verksemdLoeysingRelation: VerksemdLoeysingRelation) => {
-    console.log(verksemdLoeysingRelation);
+const VerksemdLoesyingRelationForm = () => {
+  const defaultValues: Loeysing = {
+    id: 0,
+    namn: '',
+    url: '',
+    orgnummer: '0',
   };
 
-  const formMethods = useForm<VerksemdLoeysingRelation>({
-    defaultValues: {
-      verksemd: verksemdLoeysingRelation?.verksemd,
-      loeysingList: verksemdLoeysingRelation?.loeysingList,
+  const { virksomhetAutocompleteList, onChangeAutocomplete } =
+    useLoeysingAutocomplete();
+
+  const { control, setValue } = useFormContext<SakFormState>();
+
+  const source = useWatch<SakFormState>({
+    control,
+    name: 'verksemd.loeysingList',
+  }) as Loeysing[] | undefined;
+
+  const onClickLoeysing = useCallback(
+    (loeysing: Loeysing) => {
+      const updatedLoeysingList = source || [];
+      updatedLoeysingList.push(loeysing);
+      setValue('verksemd.loeysingList', updatedLoeysingList);
     },
-    resolver: zodResolver(loeysingValidationSchema),
-  });
+    [source]
+  );
 
   return (
     <>
-      <TestlabForm<VerksemdLoeysingRelation>
-        heading="Utvalgte nettsteder"
-        description="Det kom ingen utvalgte nettsteder med i søket.
-Legg inn navn på virksomheter, underenheter eller digitale verktøy
-som skal være en del av denne testen. Sideutvalg gjøres på et senere tidspunkt"
-        onSubmit={onSubmit}
-        formMethods={formMethods}
-        hasRequiredFields
+      <TestlabFormFieldArray<SakFormState>
+        fieldName="verksemd.loeysingList"
+        defaultValues={defaultValues}
       >
-        <div className="loeysing-form__input">
-          <TestlabForm.FormInput label="Namn" name="namn" required />
-        </div>
-        <div className="loeysing-form__input">
-          <TestlabForm.FormInput label="Url" name="url" required />
-        </div>
-        <div className="loeysing-form__input">
-          <TestlabForm.FormInput
-            label="Organisasjonsnummer"
-            name="organisasjonsnummer"
-            required
-          />
-        </div>
-        <div className="loeysing-form__submit">
-          <TestlabForm.FormButtons />
-        </div>
-      </TestlabForm>
+        <TestlabFormAutocomplete<SakFormState, Loeysing>
+          label="Namn på løysing"
+          resultList={virksomhetAutocompleteList}
+          resultLabelKey="namn"
+          resultDescriptionKey="orgnummer"
+          onChange={onChangeAutocomplete}
+          onClick={onClickLoeysing}
+          name="verksemd.loeysingList"
+          retainSelection
+          required
+          spacing
+        />
+      </TestlabFormFieldArray>
     </>
   );
 };

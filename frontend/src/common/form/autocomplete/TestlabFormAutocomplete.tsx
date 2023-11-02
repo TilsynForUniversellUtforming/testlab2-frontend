@@ -55,10 +55,10 @@ const TestlabFormAutocomplete = <
   }) as ResultDataType;
 
   useEffect(() => {
-    if (selection) {
+    if (selection && !retainSelection) {
       setInputValue(undefined);
     }
-  }, [selection]);
+  }, [selection, retainSelection]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -77,7 +77,7 @@ const TestlabFormAutocomplete = <
   }, []);
 
   const handleOnClick = useCallback(
-    (name: Path<FormDataType>, result: ResultDataType) => {
+    (result: ResultDataType) => {
       setShow(false);
       setInputValue(retainSelection ? result[resultLabelKey] : undefined);
       if (onClick) {
@@ -86,7 +86,7 @@ const TestlabFormAutocomplete = <
         setValue(name, result);
       }
     },
-    []
+    [name]
   );
 
   const handleOnChange = useCallback(
