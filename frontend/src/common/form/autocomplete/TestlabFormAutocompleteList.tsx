@@ -4,7 +4,7 @@ import { Path, PathValue } from 'react-hook-form';
 export interface Props<FormData, ResultData> {
   resultList: ResultData[];
   resultLabelKey: keyof ResultData;
-  onClick: (result: ResultData) => void;
+  onClick: (name: Path<FormData>, result: ResultData) => void;
   show: boolean;
   name: Path<FormData>;
   resultDescriptionKey?: keyof ResultData;
@@ -19,6 +19,7 @@ const TestlabFormAutocompleteList = <
   resultLabelKey,
   onClick,
   show,
+  name,
   resultDescriptionKey,
   maxListLength = 10,
 }: Props<FormData, ResultData>) => {
@@ -55,7 +56,7 @@ const TestlabFormAutocompleteList = <
             <div className="button-wrapper">
               <button
                 type="button"
-                onClick={() => onClick(result)}
+                onClick={() => onClick(name, result)}
                 className="testlab-form-autocomplete__list__button"
               >
                 <div className="testlab-form-autocomplete__list__button-title">

@@ -58,7 +58,7 @@ const TestlabFormAutocomplete = <
     if (selection && !retainSelection) {
       setInputValue(undefined);
     }
-  }, [selection, retainSelection]);
+  }, [selection]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -77,16 +77,16 @@ const TestlabFormAutocomplete = <
   }, []);
 
   const handleOnClick = useCallback(
-    (result: ResultDataType) => {
+    (name: Path<FormDataType>, result: ResultDataType) => {
       setShow(false);
-      setInputValue(retainSelection ? result[resultLabelKey] : undefined);
+      setInputValue(result[resultLabelKey]);
       if (onClick) {
         onClick(result);
       } else {
         setValue(name, result);
       }
     },
-    [name]
+    []
   );
 
   const handleOnChange = useCallback(

@@ -14,7 +14,7 @@ const loeysingSourceSchema = z.union([
   z.literal('manuell'),
 ]);
 
-const loeysingSchema = z.object({
+const sakLoeysingSchema = z.object({
   id: z.number(),
   namn: z.string(),
   url: z.string(),
@@ -28,8 +28,8 @@ const verksemdSchema = z.object({
 });
 
 const verksemdLoeysingRelationSchema = z.object({
-  verksemd: loeysingSchema,
-  loeysingList: z.array(loeysingSchema).optional(),
+  verksemd: sakLoeysingSchema,
+  loeysingList: z.array(sakLoeysingSchema).optional(),
 });
 
 const inngaaendeVerksemdScheama = verksemdLoeysingRelationSchema
@@ -39,7 +39,7 @@ const inngaaendeVerksemdScheama = verksemdLoeysingRelationSchema
   });
 
 const loeysingVerksemdSchema = z.object({
-  loeysing: loeysingSchema,
+  loeysing: sakLoeysingSchema,
   verksemd: verksemdSchema,
 });
 
@@ -57,7 +57,6 @@ const testregelSchema = z.object({
 
 export const sakBaseSchema = z.object({
   navn: z.string().optional(),
-  sakType: saktypeSchema.optional(),
   advisorId: z.string().optional(),
   sakNumber: z.string().optional(),
   maxLenker: z.union([z.number(), z.string()]).optional(),
@@ -66,7 +65,7 @@ export const sakBaseSchema = z.object({
   loeysingList: z.array(loeysingVerksemdSchema).optional(),
   utval: utvalSchema.optional(),
   testregelList: z.array(testregelSchema).optional(),
-  verksemd: inngaaendeVerksemdScheama,
+  verksemd: inngaaendeVerksemdScheama.optional(),
 });
 
 export const sakInitBaseSchema = z.object({
@@ -171,8 +170,10 @@ export const sakLoeysingValidationSchemaV2 = z
           (!data.loeysingList || data.loeysingList.length === 0)
         );
       } else {
+        const loeysingList = data.verksemd?.loeysingList || [];
         return (
-          data.verksemd?.loeysingList && data.verksemd.loeysingList?.length > 0
+          loeysingList.length > 0 &&
+          loeysingList.filter((l) => l.id === 0).length === 0
         );
       }
     },
@@ -187,9 +188,22 @@ export const sakLoeysingValidationSchemaV2 = z
         };
       }
 
+      const loeysingList = data.verksemd?.loeysingList || [];
+      if (loeysingList.length <= 0) {
+        return {
+          message: 'Ein vermeksemd må ha minst ei løysing for testing',
+          path: ['verksemd'],
+        };
+      } else if (loeysingList.find((l) => l.id === 0)) {
+        return {
+          message: 'Nokre felt manglar løysing',
+          path: ['verksemd.loeysingList'],
+        };
+      }
+
       return {
-        message: 'En vermeksemd må ha minst ei løysing for testing',
-        path: ['verksemd.loeysingList'],
+        message: 'Noko gjekk gale',
+        path: ['verksemd'],
       };
     }
   );

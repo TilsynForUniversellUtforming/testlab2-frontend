@@ -54,6 +54,14 @@
         }
       }
 
+      &__inngaaende-selection {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0 auto;
+        gap: 1rem;
+      }
+
       &__verksemd-result {
         display: flex;
         flex-direction: column;

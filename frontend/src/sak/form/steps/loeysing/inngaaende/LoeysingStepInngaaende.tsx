@@ -12,9 +12,13 @@ interface Props {
 const LoeysingStepInngaaende = ({ loeysingList }: Props) => (
   <ConditionalComponentContainer
     condition={isDefined(loeysingList)}
-    conditionalComponent={loeysingList?.map((loeysing) => (
-      <Chip.Toggle key={loeysing.id}>{loeysing.namn}</Chip.Toggle>
-    ))}
+    conditionalComponent={
+      <div className="sak-loeysing__inngaaende-selection">
+        {loeysingList?.map((loeysing) => (
+          <Chip.Toggle key={loeysing.id}>{loeysing.namn}</Chip.Toggle>
+        ))}
+      </div>
+    }
     otherComponent={<VerksemdLoesyingRelationForm />}
   />
 );

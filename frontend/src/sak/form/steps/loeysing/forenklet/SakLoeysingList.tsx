@@ -155,6 +155,7 @@ const SakLoeysingList = () => {
             resultDescriptionKey="url"
             onChange={handleChangeLoeysing}
             onClick={(loesying: Loeysing) => setLoeysingId(String(loesying.id))}
+            retainSelection={false}
             name="loeysingList"
             size="small"
           />

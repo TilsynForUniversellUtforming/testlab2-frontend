@@ -1,12 +1,15 @@
-import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import TestlabFormFieldArray from '@common/form/field-array/TestlabFormFieldArray';
+import { getErrorMessage } from '@common/form/util';
+import { Tabs } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
-import { SakFormState } from '@sak/types';
-import { useCallback } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { SakFormState, VerksemdLoeysingRelation } from '@sak/types';
+import { useEffect, useState } from 'react';
+import { FieldErrors, useFormContext } from 'react-hook-form';
 
 const VerksemdLoesyingRelationForm = () => {
+  const [errorForm, setErrorForm] = useState<string | undefined>();
+
   const defaultValues: Loeysing = {
     id: 0,
     namn: '',
@@ -14,45 +17,54 @@ const VerksemdLoesyingRelationForm = () => {
     orgnummer: '0',
   };
 
-  const { virksomhetAutocompleteList, onChangeAutocomplete } =
+  const { virksomhetAutocompleteList, onChangeAutocomplete, errorMessage } =
     useLoeysingAutocomplete();
 
-  const { control, setValue } = useFormContext<SakFormState>();
+  const { formState } = useFormContext<SakFormState>();
 
-  const source = useWatch<SakFormState>({
-    control,
-    name: 'verksemd.loeysingList',
-  }) as Loeysing[] | undefined;
+  useEffect(() => {
+    const error = (formState.errors as FieldErrors<SakFormState>)[
+      'verksemd'
+    ] as FieldErrors<VerksemdLoeysingRelation>;
 
-  const onClickLoeysing = useCallback(
-    (loeysing: Loeysing) => {
-      const updatedLoeysingList = source || [];
-      updatedLoeysingList.push(loeysing);
-      setValue('verksemd.loeysingList', updatedLoeysingList);
-    },
-    [source]
-  );
+    const verksemdError = getErrorMessage(formState, 'verksemd');
+    if (verksemdError) {
+      setErrorForm(verksemdError);
+    } else if (error && error['loeysingList']) {
+      setErrorForm(error['loeysingList']?.message as string);
+    } else {
+      setErrorForm(undefined);
+    }
+  }, [formState.errors]);
 
   return (
-    <>
-      <TestlabFormFieldArray<SakFormState>
-        fieldName="verksemd.loeysingList"
-        defaultValues={defaultValues}
-      >
-        <TestlabFormAutocomplete<SakFormState, Loeysing>
-          label="Namn på løysing"
-          resultList={virksomhetAutocompleteList}
-          resultLabelKey="namn"
-          resultDescriptionKey="orgnummer"
-          onChange={onChangeAutocomplete}
-          onClick={onClickLoeysing}
-          name="verksemd.loeysingList"
-          retainSelection
-          required
-          spacing
+    <Tabs value="manuelt" onClick={(e) => e.preventDefault()}>
+      <Tabs.List>
+        <Tabs.Tab value="manuelt">Legg inn manuelt</Tabs.Tab>
+        <Tabs.Tab value="import">Importer fil</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Content value="manuelt">
+        <TestlabFormFieldArray<SakFormState, Loeysing>
+          fieldName="verksemd.loeysingList"
+          defaultValues={defaultValues}
+          buttonAddText="Legg til løysing"
+          buttonRemoveText="Fjern løysing"
+          errorMessageForm={errorForm}
+          autocompleteProps={{
+            label: 'Namn på løysing',
+            resultList: virksomhetAutocompleteList,
+            resultLabelKey: 'namn',
+            resultDescriptionKey: 'orgnummer',
+            onChange: onChangeAutocomplete,
+            name: 'verksemd.loeysingList',
+            errorMessage: errorMessage,
+            retainSelection: false,
+            required: true,
+            spacing: true,
+          }}
         />
-      </TestlabFormFieldArray>
-    </>
+      </Tabs.Content>
+    </Tabs>
   );
 };
 
