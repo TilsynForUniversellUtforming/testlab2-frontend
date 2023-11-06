@@ -5,7 +5,7 @@ import React, { ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { SakFormBaseProps, SakFormState } from '../types';
-import Stepper from './Stepper';
+import Stepper from './stepper/Stepper';
 
 export interface Props extends Omit<SakFormBaseProps, 'sakFormState'> {
   formMethods: UseFormReturn<SakFormState>;

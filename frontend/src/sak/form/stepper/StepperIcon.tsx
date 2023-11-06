@@ -4,8 +4,7 @@ import {
   TasklistIcon,
   WrenchIcon,
 } from '@navikt/aksel-icons';
-
-import { SakStepType } from '../types';
+import { SakStepType } from '@sak/types';
 
 const StepperIcon = ({ sakStepType }: { sakStepType: SakStepType }) => {
   switch (sakStepType) {

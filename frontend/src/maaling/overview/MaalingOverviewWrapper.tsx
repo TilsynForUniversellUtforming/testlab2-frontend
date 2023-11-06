@@ -8,13 +8,13 @@ import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { MAALING } from '@maaling/MaalingRoutes';
-import MaalingEdit from '@sak/MaalingEdit';
+import SakEdit from '@sak/SakEdit';
+import { Testregel } from '@testreglar/api/types';
+import { TESTREGEL_EDIT } from '@testreglar/TestregelRoutes';
+import { getTestregelColumnsReadOnly } from '@testreglar/testreglar-liste/TestregelColumns';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
-import { Testregel } from '../../testreglar/api/types';
-import { TESTREGEL_EDIT } from '../../testreglar/TestregelRoutes';
-import { getTestregelColumnsReadOnly } from '../../testreglar/testreglar-liste/TestregelColumns';
 import { MaalingContext } from '../types';
 import MaalingOverview from './MaalingOverview';
 
@@ -58,7 +58,7 @@ const MaalingOverviewWrapper = () => {
           <MaalingOverview />
         </Tabs.Content>
         <Tabs.Content value="redigermaaling">
-          <MaalingEdit onChangeTabs={onChangeTabs} />
+          <SakEdit onChangeTabs={onChangeTabs} />
         </Tabs.Content>
         <Tabs.Content value="nettloeysingar">
           <TestlabTable<Loeysing>

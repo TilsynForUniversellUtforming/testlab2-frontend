@@ -4,9 +4,10 @@ import TestlabFormAutocomplete, {
   AutoCompleteProps,
 } from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { ButtonSize, ButtonVariant } from '@common/types';
+import { isNotDefined } from '@common/util/validationUtils';
 import { Button, ErrorMessage } from '@digdir/design-system-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ArrayPath,
   FieldArray,
@@ -40,6 +41,7 @@ const TestlabFormFieldArray = <
   buttonAddText = 'Legg til',
   buttonRemoveText = 'Fjern',
 }: Props<FormDataType, ResultDataType>) => {
+  const [defaultValueIdx, setDefaultValueIdx] = useState<number | undefined>();
   const { control, clearErrors } = useFormContext<FormDataType>();
   const { fields, append, remove, insert } = useFieldArray({
     name: fieldName,
@@ -59,11 +61,30 @@ const TestlabFormFieldArray = <
     errorMessage,
   } = autocompleteProps;
 
-  const onClick = useCallback((value: ResultDataType, idx: number) => {
-    insert(idx, value);
-    remove(idx + 1);
-    clearErrors();
-  }, []);
+  const onClickAutocomplete = useCallback(
+    (value: ResultDataType, idx: number) => {
+      insert(idx, value);
+      remove(idx + 1);
+      clearErrors();
+      setDefaultValueIdx(undefined);
+    },
+    []
+  );
+
+  const onClickAdd = () => {
+    if (isNotDefined(defaultValueIdx)) {
+      append(defaultValues);
+      setDefaultValueIdx(fields.length);
+      clearErrors();
+    }
+  };
+
+  const onClickRemove = (idx: number) => {
+    remove(idx);
+    if (idx === defaultValueIdx) {
+      setDefaultValueIdx(undefined);
+    }
+  };
 
   return (
     <div className="testlab-form__field-array">
@@ -76,7 +97,7 @@ const TestlabFormFieldArray = <
               'id'
             >
           ]
-        ); // TODO - better label type
+        );
 
         return (
           <div className="testlab-form__field-array-entry" key={field.id}>
@@ -89,12 +110,13 @@ const TestlabFormFieldArray = <
                   resultLabelKey={resultLabelKey}
                   resultDescriptionKey={resultDescriptionKey}
                   onChange={onChange}
-                  onClick={(value) => onClick(value, idx)}
+                  onClick={(value) => onClickAutocomplete(value, idx)}
                   name={name}
                   retainSelection={retainSelection}
                   required={required}
                   spacing={spacing}
                   errorMessage={errorMessage}
+                  hideLabel
                 />
               </div>
             )}
@@ -102,7 +124,7 @@ const TestlabFormFieldArray = <
               size={ButtonSize.Small}
               variant={ButtonVariant.Quiet}
               type="button"
-              onClick={() => remove(idx)}
+              onClick={() => onClickRemove(idx)}
               icon={<MinusCircleIcon />}
             >
               {buttonRemoveText}
@@ -114,7 +136,7 @@ const TestlabFormFieldArray = <
         size={ButtonSize.Small}
         variant={ButtonVariant.Quiet}
         type="button"
-        onClick={() => append(defaultValues)}
+        onClick={onClickAdd}
         icon={<PlusCircleIcon />}
       >
         {buttonAddText}

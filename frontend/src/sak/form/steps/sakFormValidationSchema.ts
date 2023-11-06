@@ -2,34 +2,16 @@ import { parseNumberInput } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import { z } from 'zod';
 
-const saktypeSchema = z.union([
-  z.literal('Retest'),
-  z.literal('Inngående kontroll'),
-  z.literal('Forenklet kontroll'),
-  z.literal('Tilsyn'),
-]);
-
-const loeysingSourceSchema = z.union([
-  z.literal('utval'),
-  z.literal('manuell'),
-]);
-
-const sakLoeysingSchema = z.object({
+export const loeysingSchema = z.object({
   id: z.number(),
   namn: z.string(),
   url: z.string(),
   orgnummer: z.string(),
 });
 
-const verksemdSchema = z.object({
-  id: z.number(),
-  namn: z.string(),
-  organisasjonsnummer: z.string(),
-});
-
 const verksemdLoeysingRelationSchema = z.object({
-  verksemd: sakLoeysingSchema,
-  loeysingList: z.array(sakLoeysingSchema).optional(),
+  verksemd: loeysingSchema,
+  loeysingList: z.array(loeysingSchema).optional(),
 });
 
 const inngaaendeVerksemdScheama = verksemdLoeysingRelationSchema
@@ -37,43 +19,6 @@ const inngaaendeVerksemdScheama = verksemdLoeysingRelationSchema
   .refine((value) => isDefined(value?.verksemd), {
     message: 'Verksemd må veljast',
   });
-
-const loeysingVerksemdSchema = z.object({
-  loeysing: sakLoeysingSchema,
-  verksemd: verksemdSchema,
-});
-
-const utvalSchema = z.object({
-  id: z.number(),
-  namn: z.string(),
-});
-
-const testregelSchema = z.object({
-  id: z.number(),
-  krav: z.string(),
-  testregelNoekkel: z.string(),
-  kravTilSamsvar: z.string(),
-});
-
-export const sakBaseSchema = z.object({
-  navn: z.string().optional(),
-  advisorId: z.string().optional(),
-  sakNumber: z.string().optional(),
-  maxLenker: z.union([z.number(), z.string()]).optional(),
-  talLenker: z.union([z.number(), z.string()]).optional(),
-  loeysingSource: loeysingSourceSchema,
-  loeysingList: z.array(loeysingVerksemdSchema).optional(),
-  utval: utvalSchema.optional(),
-  testregelList: z.array(testregelSchema).optional(),
-  verksemd: inngaaendeVerksemdScheama.optional(),
-});
-
-export const sakInitBaseSchema = z.object({
-  loeysingSource: loeysingSourceSchema,
-  loeysingList: z.array(loeysingVerksemdSchema).optional(),
-  utval: utvalSchema.optional(),
-  testregelList: z.array(testregelSchema).optional(),
-});
 
 export const sakInitValidationSchema = z
   .discriminatedUnion('sakType', [
@@ -126,7 +71,6 @@ export const sakInitValidationSchema = z
       verksemd: inngaaendeVerksemdScheama,
     }),
   ])
-  .and(sakInitBaseSchema)
   .refine(
     (data) => {
       if (data.sakType === 'Forenklet kontroll') {
@@ -143,111 +87,3 @@ export const sakInitValidationSchema = z
       path: ['talLenker'],
     }
   );
-
-export const sakLoeysingValidationSchemaV2 = z
-  .object({
-    navn: z.string().optional(),
-    sakType: saktypeSchema.optional(),
-    advisorId: z.string().optional(),
-    sakNumber: z.string().optional(),
-    maxLenker: z.union([z.number(), z.string()]).optional(),
-    talLenker: z.union([z.number(), z.string()]).optional(),
-    loeysingSource: loeysingSourceSchema,
-    loeysingList: z.array(loeysingVerksemdSchema).optional(),
-    utval: utvalSchema.optional(),
-    testregelList: z.array(testregelSchema).optional(),
-    verksemd: verksemdLoeysingRelationSchema.optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.sakType === 'Forenklet kontroll') {
-        if (data.loeysingSource === 'utval' && !data.utval) {
-          return false;
-        }
-
-        return !(
-          data.loeysingSource === 'manuell' &&
-          (!data.loeysingList || data.loeysingList.length === 0)
-        );
-      } else {
-        const loeysingList = data.verksemd?.loeysingList || [];
-        return (
-          loeysingList.length > 0 &&
-          loeysingList.filter((l) => l.id === 0).length === 0
-        );
-      }
-    },
-    (data) => {
-      if (data.sakType === 'Forenklet kontroll') {
-        if (data.loeysingSource === 'utval') {
-          return { message: 'Utval må veljast', path: ['utval'] };
-        }
-        return {
-          message: 'Minst ei løysing må veljast',
-          path: ['loeysingList'],
-        };
-      }
-
-      const loeysingList = data.verksemd?.loeysingList || [];
-      if (loeysingList.length <= 0) {
-        return {
-          message: 'Ein vermeksemd må ha minst ei løysing for testing',
-          path: ['verksemd'],
-        };
-      } else if (loeysingList.find((l) => l.id === 0)) {
-        return {
-          message: 'Nokre felt manglar løysing',
-          path: ['verksemd.loeysingList'],
-        };
-      }
-
-      return {
-        message: 'Noko gjekk gale',
-        path: ['verksemd'],
-      };
-    }
-  );
-
-export const sakLoeysingValidationSchema = z
-  .object({
-    navn: z.string().optional(),
-    sakType: saktypeSchema.optional(),
-    advisorId: z.string().optional(),
-    sakNumber: z.string().optional(),
-    maxLenker: z.union([z.number(), z.string()]).optional(),
-    talLenker: z.union([z.number(), z.string()]).optional(),
-    loeysingSource: loeysingSourceSchema,
-    loeysingList: z.array(loeysingVerksemdSchema).optional(),
-    utval: utvalSchema.optional(),
-    testregelList: z.array(testregelSchema).optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.loeysingSource === 'utval' && !data.utval) {
-        return false;
-      }
-      return !(
-        data.loeysingSource === 'manuell' &&
-        (!data.loeysingList || data.loeysingList.length === 0)
-      );
-    },
-    (data) => {
-      if (data.loeysingSource === 'utval') {
-        return { message: 'Utval må veljast', path: ['utval'] };
-      }
-      return { message: 'Minst ei løysing må veljast', path: ['loeysingList'] };
-    }
-  );
-
-export const sakTestreglarValidationSchema = z.object({
-  navn: z.string().optional(),
-  sakType: saktypeSchema.optional(),
-  advisorId: z.string().optional(),
-  sakNumber: z.string().optional(),
-  maxLenker: z.union([z.number(), z.string()]).optional(),
-  talLenker: z.union([z.number(), z.string()]).optional(),
-  loeysingSource: loeysingSourceSchema,
-  loeysingList: z.array(loeysingVerksemdSchema).optional(),
-  utval: utvalSchema.optional(),
-  testregelList: z.array(testregelSchema).min(1, 'Testreglar må veljast'),
-});
