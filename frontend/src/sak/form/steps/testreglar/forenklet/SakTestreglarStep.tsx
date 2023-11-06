@@ -9,14 +9,13 @@ import {
   SingleSelectOption,
 } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { sakTestreglarValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
+import SakFormWrapper from '@sak/form/SakFormWrapper';
+import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';
 import { SakFormBaseProps, SakFormState } from '@sak/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
+import { Testregel, TestRegelsett } from '@testreglar/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-
-import { Testregel, TestRegelsett } from '../../../../../testreglar/api/types';
-import SakFormWrapper from '../../../SakFormWrapper';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
@@ -34,7 +33,7 @@ const SakTestreglarStep = ({
 }: Props) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
-    resolver: zodResolver(sakTestreglarValidationSchema),
+    resolver: zodResolver(sakTestreglarValidationSchemaForenklet),
   });
 
   const regelsettPrefix = 'regelsett';

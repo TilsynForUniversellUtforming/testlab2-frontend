@@ -1,7 +1,7 @@
 import { SakStep } from '@sak/types';
 import Skeleton from 'react-loading-skeleton';
 
-import StepperIcon from '../StepperIcon';
+import StepperIcon from '../stepper/StepperIcon';
 
 export interface Props {
   steps: SakStep[];

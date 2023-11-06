@@ -21,6 +21,7 @@ export default defineConfig({
       '@loeysingar': '/src/loeysingar',
       '@verksemder': '/src/verksemder',
       '@sak': '/src/sak',
+      '@testreglar': '/src/testreglar',
     },
   },
 });

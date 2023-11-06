@@ -80,7 +80,10 @@ const SakCreate = () => {
 
   const handleSubmit = useCallback(
     (maalingFormState: SakFormState) => {
-      setMaalingFormState(maalingFormState);
+      setMaalingFormState((prevState) => ({
+        ...prevState,
+        ...maalingFormState,
+      }));
       if (!isLastStep(currentStepIdx)) {
         return setNextStep();
       } else {

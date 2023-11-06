@@ -25,6 +25,7 @@ const DebouncedInput = ({
   errorMessage,
   size,
   disabled,
+  hideLabel,
 }: Props & Omit<TextfieldProps, 'onChange'>) => {
   const [value, setValue] = useState(initialValue || '');
 
@@ -54,6 +55,7 @@ const DebouncedInput = ({
         error={errorMessage}
         size={size}
         disabled={disabled}
+        hideLabel={hideLabel}
       />
     </div>
   );

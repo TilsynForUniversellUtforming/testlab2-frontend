@@ -18,7 +18,7 @@ interface Props {
   onChangeTabs: (tab: string) => void;
 }
 
-const MaalingEdit = ({ onChangeTabs }: Props) => {
+const SakEdit = ({ onChangeTabs }: Props) => {
   const {
     maaling,
     verksemdList,
@@ -83,7 +83,10 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
 
   const handleSubmit = useCallback(
     (maalingFormState: SakFormState) => {
-      setMaalingFormState(maalingFormState);
+      setMaalingFormState((prevState) => ({
+        ...prevState,
+        ...maalingFormState,
+      }));
       if (!isLastStep(currentStepIdx)) {
         return setNextStep();
       } else {
@@ -115,4 +118,4 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
   );
 };
 
-export default MaalingEdit;
+export default SakEdit;

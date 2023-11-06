@@ -44,6 +44,7 @@ const TestlabFormAutocomplete = <
   size = 'small',
   maxListLength,
   spacing = false,
+  hideLabel,
 }: AutoCompleteProps<FormDataType, ResultDataType>) => {
   const { control, setValue } = useFormContext<FormDataType>();
   const [show, setShow] = useState(false);
@@ -113,6 +114,7 @@ const TestlabFormAutocomplete = <
         errorMessage={errorMessage}
         onFocus={() => setShow(true)}
         size={size}
+        hideLabel={hideLabel}
       />
       <ul className="testlab-form-autocomplete__list" ref={resultsRef}>
         <TestlabFormAutocompleteList

@@ -1,9 +1,9 @@
 import './sak-stepper.scss';
 
+import { FormStepState } from '@sak/hooks/useSakForm';
 import classNames from 'classnames';
 import React from 'react';
 
-import { FormStepState } from '../hooks/useSakForm';
 import StepperIcon from './StepperIcon';
 
 interface Props {

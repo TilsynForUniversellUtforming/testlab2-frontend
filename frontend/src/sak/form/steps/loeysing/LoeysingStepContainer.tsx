@@ -3,8 +3,9 @@ import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import LoeysingStepForenklet from '@sak/form/steps/loeysing/forenklet/LoeysingStepForenklet';
+import { sakLoeysingValidationSchemaForenklet } from '@sak/form/steps/loeysing/forenklet/sakLoeysingValidationSchemaForenklet';
 import LoeysingStepInngaaende from '@sak/form/steps/loeysing/inngaaende/LoeysingStepInngaaende';
-import { sakLoeysingValidationSchemaV2 } from '@sak/form/steps/sakFormValidationSchema';
+import { sakLoeysingValidationSchemaInngaaende } from '@sak/form/steps/loeysing/inngaaende/sakLoeysingValidtionSchemaInngaaende';
 import { SakFormBaseProps, SakFormState } from '@sak/types';
 import { useForm } from 'react-hook-form';
 
@@ -15,7 +16,11 @@ const LoeysingStepContainer = ({
 }: SakFormBaseProps) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
-    resolver: zodResolver(sakLoeysingValidationSchemaV2),
+    resolver: zodResolver(
+      sakFormState.sakType === 'Forenklet kontroll'
+        ? sakLoeysingValidationSchemaForenklet
+        : sakLoeysingValidationSchemaInngaaende
+    ),
   });
 
   return (

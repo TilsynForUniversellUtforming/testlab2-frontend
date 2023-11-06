@@ -41,26 +41,6 @@ const InitStepContainer = ({
     name: 'sakType',
   }) as Saktype;
 
-  // const [sakTypeOptions, setSakTypeOptions] = useState<Option[]>([
-  //   saktypeForenklet,
-  // ]);
-  //
-  // useEffect(() => {
-  //   const fetchAndSetAvailability = async () => {
-  //     const data: Feature[] = await fetchFeatures();
-  //     const isActive = data.find(
-  //       (feature: Feature) => feature.key === 'inngaaende'
-  //     )?.active;
-  //     if (isActive) {
-  //       setSakTypeOptions(saktypeOptions);
-  //     } else {
-  //       setSakTypeOptions([saktypeForenklet]);
-  //     }
-  //   };
-  //
-  //   fetchAndSetAvailability();
-  // }, []);
-
   return (
     <SakFormWrapper
       formStepState={formStepState}

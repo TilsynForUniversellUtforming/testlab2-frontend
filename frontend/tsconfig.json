@@ -21,7 +21,8 @@
       "@maaling/*": ["./maaling/*"],
       "@loeysingar/*": ["./loeysingar/*"],
       "@verksemder/*": ["./verksemder/*"],
-      "@sak/*": ["./sak/*"]
+      "@sak/*": ["./sak/*"],
+      "@testreglar/*": ["./testreglar/*"]
     }
   },
   "include": ["src"],

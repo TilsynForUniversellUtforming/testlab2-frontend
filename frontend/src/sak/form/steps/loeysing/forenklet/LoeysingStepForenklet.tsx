@@ -29,6 +29,8 @@ const LoeysingStepForenklet = () => {
     name: 'loeysingSource',
   }) as LoeysingSource;
 
+  console.log(source);
+
   return (
     <>
       <div className="sak-loeysing__utval">
