@@ -1,4 +1,4 @@
-import { loeysingSchema } from '@sak/form/steps/sakFormValidationSchema';
+import { loeysingSchema } from '@sak/form/steps/init/sakFormValidationSchema';
 import { z } from 'zod';
 
 const loeysingSourceSchema = z.union([

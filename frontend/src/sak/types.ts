@@ -1,9 +1,9 @@
 import { AppContext } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { Maaling } from '@maaling/api/types';
+import { Testregel, TestRegelsett } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
-import { Testregel, TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { FormStepState } from './hooks/useSakForm';
 
@@ -12,8 +12,21 @@ export type LoeysingVerksemd = {
   verksemd: Verksemd;
 };
 
+export type VerksemdInit = {
+  namn: string;
+  orgnummer: string;
+  ceo: string;
+  contactPerson: string;
+};
+
 export type VerksemdLoeysingRelation = {
   verksemd: Loeysing;
+  loeysingList: Loeysing[];
+};
+
+export type SakVerksemdLoeysingRelation = {
+  verksemd?: Loeysing;
+  manualVerksemd?: VerksemdInit;
   loeysingList: Loeysing[];
 };
 
@@ -35,7 +48,7 @@ export type SakFormState = {
   navn: string;
   sakType?: Saktype;
   advisorId?: string;
-  sakNumber: string | undefined;
+  sakNumber?: string;
   maxLenker: number;
   talLenker: number;
   loeysingSource: LoeysingSource;
@@ -43,7 +56,7 @@ export type SakFormState = {
   utval?: Utval;
   testregelList: Testregel[];
   // Ny
-  verksemd?: VerksemdLoeysingRelation;
+  verksemdLoeysingRelation?: SakVerksemdLoeysingRelation;
 };
 
 export const defaultSakFormState: SakFormState = {
@@ -57,7 +70,11 @@ export const defaultSakFormState: SakFormState = {
   sakNumber: '',
   loeysingSource: 'utval',
   // Ny
-  verksemd: undefined,
+  verksemdLoeysingRelation: {
+    verksemd: undefined,
+    manualVerksemd: undefined,
+    loeysingList: [],
+  },
 };
 
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';

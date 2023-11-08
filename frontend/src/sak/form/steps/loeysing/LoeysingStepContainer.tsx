@@ -23,6 +23,8 @@ const LoeysingStepContainer = ({
     ),
   });
 
+  console.log(formMethods);
+
   return (
     <SakFormWrapper
       formStepState={formStepState}
@@ -30,7 +32,7 @@ const LoeysingStepContainer = ({
       formMethods={formMethods}
       hasRequiredFields={
         sakFormState?.sakType !== 'Forenklet kontroll' &&
-        isNotDefined(sakFormState.verksemd?.loeysingList)
+        isNotDefined(sakFormState.verksemdLoeysingRelation?.loeysingList)
       }
     >
       <div className="sak-loeysing">
@@ -40,7 +42,7 @@ const LoeysingStepContainer = ({
           conditionalComponent={<LoeysingStepForenklet />}
           otherComponent={
             <LoeysingStepInngaaende
-              loeysingList={sakFormState.verksemd?.loeysingList}
+              loeysingList={sakFormState.verksemdLoeysingRelation?.loeysingList}
             />
           }
         />

@@ -9,16 +9,16 @@ import { useCallback, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 const useLoeysingAutocomplete = () => {
-  const [virksomhetAutocompleteList, setVirksomhetAutocompleteList] = useState<
+  const [verksemdAutocompleteList, setVerksemdAutocompleteList] = useState<
     Loeysing[]
   >([]);
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [verksemdNotFound, setVerksemdNotFound] = useState(false);
 
   const { setContextError } = useOutletContext<SakContext>();
 
   const onChangeAutocomplete = useCallback(
     async (verksemdSearch: string) => {
-      setErrorMessage(undefined);
+      setVerksemdNotFound(false);
       try {
         if (verksemdSearch.length > 0) {
           const loeysingList: Loeysing[] = [];
@@ -30,13 +30,13 @@ const useLoeysingAutocomplete = () => {
             const loeysingListByName = await findLoeysingByName(verksemdSearch);
             loeysingList.push(...loeysingListByName);
           }
-          setVirksomhetAutocompleteList(loeysingList);
+          setVerksemdAutocompleteList(loeysingList);
 
           if (loeysingList.length === 0) {
-            setErrorMessage(`Fann ikkje ${verksemdSearch}`);
+            setVerksemdNotFound(true);
           }
         } else {
-          setVirksomhetAutocompleteList([]);
+          setVerksemdAutocompleteList([]);
         }
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje hente løysingar'));
@@ -46,10 +46,9 @@ const useLoeysingAutocomplete = () => {
   );
 
   return {
-    virksomhetAutocompleteList,
+    verksemdAutocompleteList,
     onChangeAutocomplete,
-    errorMessage,
-    setErrorMessage,
+    verksemdNotFound,
   };
 };
 

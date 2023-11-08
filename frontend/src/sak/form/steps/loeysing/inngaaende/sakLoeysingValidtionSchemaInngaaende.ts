@@ -1,10 +1,9 @@
 import { isDefined } from '@common/util/validationUtils';
-import { loeysingSchema } from '@sak/form/steps/sakFormValidationSchema';
+import { loeysingSchema } from '@sak/form/steps/init/sakFormValidationSchema';
 import { z } from 'zod';
 
-export const verksemdLoeysingRelationSchema = z
+const verksemdLoeysingRelationSchema = z
   .object({
-    verksemd: loeysingSchema,
     loeysingList: z
       .array(loeysingSchema.optional())
       .min(1, 'Ein vermeksemd må ha minst ei løysing for testing'),
@@ -33,5 +32,5 @@ export const verksemdLoeysingRelationSchema = z
   );
 
 export const sakLoeysingValidationSchemaInngaaende = z.object({
-  verksemd: verksemdLoeysingRelationSchema,
+  verksemdLoeysingRelation: verksemdLoeysingRelationSchema,
 });

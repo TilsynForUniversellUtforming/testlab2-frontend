@@ -11,7 +11,7 @@ const verksemdList_dummy_response = [
   },
 ];
 
-const verksemdLoesyingRelation_dummy_response: Loeysing[] = [
+const verksemdLoeysingRelation_dummy_response: Loeysing[] = [
   {
     id: 2,
     namn: 'digdir.no',
@@ -30,13 +30,13 @@ const getVerksemdList_dummy = async (): Promise<Verksemd[]> => {
   return verksemdList_dummy_response;
 };
 
-export const getVerksemdLoesyingRelations_dummy = async (
+export const getVerksemdLoeysingRelations_dummy = async (
   verksemd: Loeysing
 ): Promise<VerksemdLoeysingRelation> => {
   if (verksemd.id === 1) {
     return {
       verksemd: verksemd,
-      loeysingList: verksemdLoesyingRelation_dummy_response,
+      loeysingList: verksemdLoeysingRelation_dummy_response,
     };
   } else {
     return {
