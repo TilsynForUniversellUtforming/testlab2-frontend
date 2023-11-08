@@ -81,14 +81,14 @@ class LoeysingResource(
                     Int::class.java)
                     ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
             val createdLoeysing =
-                restTemplate.getForObject(
-                    "${testingApiProperties.url}${location}", Loeysing::class.java)
+                restTemplate.getForObject(location, Loeysing::class.java)
                     ?: throw RuntimeException("Kunne ikkje hente løysing frå servaren")
             ResponseEntity.created(URI("/loeysing/${createdLoeysing.id}")).body(getLoeysingList())
           }
           .getOrElse {
-            ResponseEntity.internalServerError()
-                .body("noko gikk gjekk da eg forsøkte å lage ei ny løysing")
+            val feilmelding = "noko gjekk gale da eg forsøkte å lage ei ny løysing"
+            logger.error(feilmelding, it)
+            ResponseEntity.internalServerError().build()
           }
 
   @PutMapping
