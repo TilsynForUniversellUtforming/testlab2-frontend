@@ -4,6 +4,8 @@ import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabFormAutocompleteList from '@common/form/autocomplete/TestlabFormAutocompleteList';
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
+import { getErrorMessage } from '@common/form/util';
+import { isDefined } from '@common/util/validationUtils';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
@@ -17,12 +19,11 @@ export interface AutoCompleteProps<
   resultLabelKey: keyof ResultDataType;
   resultDescriptionKey?: keyof ResultDataType;
   retainSelection?: boolean;
-  value?: string;
   description?: string;
   onClick?: (result: ResultDataType) => void;
-  errorMessage?: string;
   maxListLength?: number;
   spacing?: boolean;
+  hideError?: boolean;
 }
 
 const TestlabFormAutocomplete = <
@@ -36,20 +37,20 @@ const TestlabFormAutocomplete = <
   resultDescriptionKey,
   name,
   retainSelection = true,
-  value,
   description,
   required = false,
   onClick,
-  errorMessage,
   size = 'small',
   maxListLength,
   spacing = false,
   hideLabel,
+  hideError = false,
 }: AutoCompleteProps<FormDataType, ResultDataType>) => {
-  const { control, setValue } = useFormContext<FormDataType>();
-  const [show, setShow] = useState(false);
+  const { control, setValue, formState } = useFormContext<FormDataType>();
+  const [showResultList, setShowResultList] = useState(false);
   const resultsRef = useRef<HTMLUListElement>(null);
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState<string | undefined>();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const selection = useWatch<FormDataType>({
     control,
     name: name,
@@ -61,12 +62,24 @@ const TestlabFormAutocomplete = <
     }
   }, [selection]);
 
+  useEffect(() => {
+    if (hideError) {
+      return;
+    }
+
+    if (resultList.length === 0 && isDefined(inputValue)) {
+      setErrorMessage(`Ingen treff på ${inputValue}`);
+    } else {
+      setErrorMessage(getErrorMessage(formState, name));
+    }
+  }, [resultList.length, formState.errors, inputValue, hideError]);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       resultsRef.current &&
       !resultsRef.current.contains(event.target as Node)
     ) {
-      setShow(false);
+      setShowResultList(false);
     }
   };
 
@@ -79,7 +92,7 @@ const TestlabFormAutocomplete = <
 
   const handleOnClick = useCallback(
     (name: Path<FormDataType>, result: ResultDataType) => {
-      setShow(false);
+      setShowResultList(false);
       setInputValue(result[resultLabelKey]);
       if (onClick) {
         onClick(result);
@@ -94,6 +107,7 @@ const TestlabFormAutocomplete = <
     (nextInputValue: string) => {
       if (inputValue !== nextInputValue) {
         onChange(nextInputValue);
+        setInputValue(nextInputValue);
       }
     },
     [inputValue]
@@ -109,10 +123,9 @@ const TestlabFormAutocomplete = <
         id="testlab-form-autocorrect"
         label={<TestlabFormRequiredLabel label={label} required={required} />}
         description={description}
-        value={inputValue}
         onChange={handleOnChange}
         errorMessage={errorMessage}
-        onFocus={() => setShow(true)}
+        onFocus={() => setShowResultList(true)}
         size={size}
         hideLabel={hideLabel}
       />
@@ -122,7 +135,7 @@ const TestlabFormAutocomplete = <
           resultLabelKey={resultLabelKey}
           resultDescriptionKey={resultDescriptionKey}
           onClick={handleOnClick}
-          show={show}
+          show={showResultList}
           name={name}
           maxListLength={maxListLength}
         />

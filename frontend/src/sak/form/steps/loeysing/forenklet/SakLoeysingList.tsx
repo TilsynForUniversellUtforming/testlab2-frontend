@@ -154,10 +154,11 @@ const SakLoeysingList = () => {
             resultLabelKey="namn"
             resultDescriptionKey="url"
             onChange={handleChangeLoeysing}
-            onClick={(loesying: Loeysing) => setLoeysingId(String(loesying.id))}
+            onClick={(loeysing: Loeysing) => setLoeysingId(String(loeysing.id))}
             retainSelection={false}
             name="loeysingList"
             size="small"
+            hideError
           />
         </div>
         <div className="sak-loeysing__input-select">

@@ -1,24 +1,39 @@
 import { parseNumberInput } from '@common/util/stringutils';
-import { isDefined } from '@common/util/validationUtils';
+import { isDefined, isOrgnummer } from '@common/util/validationUtils';
 import { z } from 'zod';
 
+const orgnummerSchema = z
+  .string()
+  .nonempty('Organisasjonsnummer kan ikkje vera tom')
+  .refine(
+    (value) => isOrgnummer(value),
+    'Dette er ikkje eit gyldig organisasjonsnummer'
+  );
+
 export const loeysingSchema = z.object({
-  id: z.number(),
-  namn: z.string(),
-  url: z.string(),
-  orgnummer: z.string(),
+  id: z.number().positive('Løysing manlgar id'),
+  namn: z.string().nonempty('Løysing må ha namn'),
+  url: z.string().nonempty('Løysing må ha url'),
+  orgnummer: orgnummerSchema,
 });
 
-const verksemdLoeysingRelationSchema = z.object({
-  verksemd: loeysingSchema,
-  loeysingList: z.array(loeysingSchema).optional(),
+export const verksemdInitSchema = z.object({
+  namn: z.string().nonempty('Ei verksemd må ha eit namn'),
+  orgnummer: orgnummerSchema,
+  ceo: z.string().nonempty('Ei verksemd må ha ein dagleg leiar'),
+  contactPerson: z.string().nonempty('Ei verksemd må ha ein kontaktperson'),
 });
 
-const inngaaendeVerksemdScheama = verksemdLoeysingRelationSchema
-  .optional()
-  .refine((value) => isDefined(value?.verksemd), {
-    message: 'Verksemd må veljast',
-  });
+const inngaaendeVerksemdScheama = z
+  .object({
+    verksemd: loeysingSchema,
+    manualVerksemd: verksemdInitSchema,
+    loeysingList: z.array(loeysingSchema).optional(),
+  })
+  .deepPartial()
+  .refine((data) => {
+    isDefined(data?.verksemd) || isDefined(data?.manualVerksemd);
+  }, 'Verksemd må veljast');
 
 export const sakInitValidationSchema = z
   .discriminatedUnion('sakType', [
@@ -58,17 +73,17 @@ export const sakInitValidationSchema = z
 
     z.object({
       sakType: z.literal('Inngående kontroll'),
-      verksemd: inngaaendeVerksemdScheama,
+      verksemdLoeysingRelation: inngaaendeVerksemdScheama,
     }),
 
     z.object({
       sakType: z.literal('Tilsyn'),
-      verksemd: inngaaendeVerksemdScheama,
+      verksemdLoeysingRelation: inngaaendeVerksemdScheama,
     }),
 
     z.object({
       sakType: z.literal('Retest'),
-      verksemd: inngaaendeVerksemdScheama,
+      verksemdLoeysingRelation: inngaaendeVerksemdScheama,
     }),
   ])
   .refine(

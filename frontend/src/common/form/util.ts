@@ -1,5 +1,10 @@
-import type { FieldPath, FieldValues, FormState } from 'react-hook-form';
-import { FieldErrors } from 'react-hook-form/dist/types/errors';
+import {
+  type FieldPath,
+  type FieldValues,
+  type FormState,
+  get,
+} from 'react-hook-form';
+import { FieldError } from 'react-hook-form/dist/types/errors';
 
 export const getErrorMessage = <
   TFieldValues extends FieldValues,
@@ -7,8 +12,10 @@ export const getErrorMessage = <
 >(
   form: FormState<TFieldValues>,
   name: TFieldName
-): string | undefined =>
-  (form.errors as FieldErrors<TFieldValues>)[name]?.message as string;
+): string | undefined => {
+  const error: FieldError | undefined = get(form.errors, name);
+  return error?.message;
+};
 
 /**
  * Helper function to retain just the alphanumerical values from a string.

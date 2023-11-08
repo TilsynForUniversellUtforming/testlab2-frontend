@@ -1,8 +1,10 @@
+import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
+import { isDefined } from '@common/util/validationUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import InitContentForenklet from '@sak/form/steps/init/forenklet/InitContentForenklet';
 import InitContentInngaaende from '@sak/form/steps/init/inngaaende/InitContentInngaaende';
-import { sakInitValidationSchema } from '@sak/form/steps/sakFormValidationSchema';
+import { sakInitValidationSchema } from '@sak/form/steps/init/sakFormValidationSchema';
 import {
   SakFormBaseProps,
   SakFormState,
@@ -13,18 +15,6 @@ import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import SakFormWrapper from '../../SakFormWrapper';
-
-const SakInitContent = ({ type }: { type?: Saktype }) => {
-  if (!type) {
-    return null;
-  }
-
-  if (type === 'Forenklet kontroll') {
-    return <InitContentForenklet />;
-  } else {
-    return <InitContentInngaaende />;
-  }
-};
 
 const InitStepContainer = ({
   formStepState,
@@ -56,7 +46,12 @@ const InitStepContainer = ({
           options={saktypeOptions}
           required
         />
-        <SakInitContent type={type} />
+        <ConditionalComponentContainer
+          show={isDefined(type)}
+          condition={type && type === 'Forenklet kontroll'}
+          conditionalComponent={<InitContentForenklet />}
+          otherComponent={<InitContentInngaaende />}
+        />
       </div>
     </SakFormWrapper>
   );

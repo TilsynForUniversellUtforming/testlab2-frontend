@@ -39,7 +39,7 @@ const TestlabFormInput = <T extends object>({
           </label>
           <Textfield
             type={numeric ? 'number' : 'text'}
-            value={value}
+            value={value || ''}
             id={name}
             error={errorMessage}
             onChange={onChange}

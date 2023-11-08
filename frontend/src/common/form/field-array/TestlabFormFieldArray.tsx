@@ -4,7 +4,7 @@ import TestlabFormAutocomplete, {
   AutoCompleteProps,
 } from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { isNotDefined } from '@common/util/validationUtils';
+import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Button, ErrorMessage } from '@digdir/design-system-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { useCallback, useState } from 'react';
@@ -25,7 +25,7 @@ interface Props<
   fieldName: ArrayPath<FormDataType>;
   defaultValues: FieldArray<FormDataType, ArrayPath<FormDataType>>;
   autocompleteProps: AutoCompleteProps<FormDataType, ResultDataType>;
-  errorMessageForm?: string;
+  customErrorMessage?: string;
   buttonAddText?: string;
   buttonRemoveText?: string;
 }
@@ -36,7 +36,7 @@ const TestlabFormFieldArray = <
 >({
   fieldName,
   defaultValues,
-  errorMessageForm,
+  customErrorMessage,
   autocompleteProps,
   buttonAddText = 'Legg til',
   buttonRemoveText = 'Fjern',
@@ -58,7 +58,6 @@ const TestlabFormFieldArray = <
     retainSelection,
     required,
     spacing,
-    errorMessage,
   } = autocompleteProps;
 
   const onClickAutocomplete = useCallback(
@@ -115,7 +114,6 @@ const TestlabFormFieldArray = <
                   retainSelection={retainSelection}
                   required={required}
                   spacing={spacing}
-                  errorMessage={errorMessage}
                   hideLabel
                 />
               </div>
@@ -138,11 +136,12 @@ const TestlabFormFieldArray = <
         type="button"
         onClick={onClickAdd}
         icon={<PlusCircleIcon />}
+        disabled={isDefined(defaultValueIdx)}
       >
         {buttonAddText}
       </Button>
-      {errorMessageForm && (
-        <ErrorMessage size="small">{errorMessageForm}</ErrorMessage>
+      {customErrorMessage && (
+        <ErrorMessage size="small">{customErrorMessage}</ErrorMessage>
       )}
     </div>
   );

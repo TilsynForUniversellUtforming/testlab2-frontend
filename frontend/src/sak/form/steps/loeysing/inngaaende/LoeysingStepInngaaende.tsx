@@ -3,7 +3,7 @@ import { isDefined } from '@common/util/validationUtils';
 import { Chip } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 
-import VerksemdLoesyingRelationForm from './VerksemdLoesyingRelationForm';
+import VerksemdLoeysingRelationForm from './VerksemdLoeysingRelationForm';
 
 interface Props {
   loeysingList?: Loeysing[];
@@ -19,7 +19,7 @@ const LoeysingStepInngaaende = ({ loeysingList }: Props) => (
         ))}
       </div>
     }
-    otherComponent={<VerksemdLoesyingRelationForm />}
+    otherComponent={<VerksemdLoeysingRelationForm />}
   />
 );
 

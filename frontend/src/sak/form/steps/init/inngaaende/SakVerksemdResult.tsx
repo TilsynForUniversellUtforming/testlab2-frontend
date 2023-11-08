@@ -1,19 +1,34 @@
+import TestlabDivider from '@common/divider/TestlabDivider';
 import { Alert, Heading, Spinner } from '@digdir/design-system-react';
-import { VerksemdLoeysingRelation } from '@sak/types';
+import { Loeysing } from '@loeysingar/api/types';
+import SakVerksemdManualEntry from '@sak/form/steps/init/inngaaende/SakVerksemdManualEntry';
+import { VerksemdInit } from '@sak/types';
 
 interface Props {
-  verksemd?: VerksemdLoeysingRelation;
+  verksemd?: Loeysing;
+  manualVerksemd?: VerksemdInit;
+  verksemdNotFound: boolean;
   loading: boolean;
-  errorMessage?: string;
+  errorMessageRelations?: string;
 }
 
-const SakVerksemdResult = ({ verksemd, loading, errorMessage }: Props) => {
-  if (errorMessage) {
-    return <Alert severity="danger">{errorMessage}</Alert>;
+const SakVerksemdResult = ({
+  verksemd,
+  manualVerksemd,
+  verksemdNotFound,
+  loading,
+  errorMessageRelations,
+}: Props) => {
+  if (errorMessageRelations) {
+    return <Alert severity="danger">{errorMessageRelations}</Alert>;
   }
 
   if (loading) {
     return <Spinner title="Hentar relasjonar" />;
+  }
+
+  if (verksemdNotFound || manualVerksemd) {
+    return <SakVerksemdManualEntry />;
   }
 
   if (!verksemd) {
@@ -22,8 +37,9 @@ const SakVerksemdResult = ({ verksemd, loading, errorMessage }: Props) => {
 
   return (
     <div className="sak-init__verksemd-result">
+      <TestlabDivider size="large" />
       <Heading level={2} size="small">
-        {verksemd.verksemd.namn}
+        {verksemd.namn}
       </Heading>
       <div className="entry">
         <div className="label">Hentet fra:</div>
@@ -32,7 +48,7 @@ const SakVerksemdResult = ({ verksemd, loading, errorMessage }: Props) => {
       <br />
       <div className="entry">
         <div className="label">Orgnr:</div>
-        <div className="value">{verksemd.verksemd.orgnummer}</div>
+        <div className="value">{verksemd.orgnummer}</div>
       </div>
       <div className="entry">
         <div className="label">Kontaktperson:</div>
