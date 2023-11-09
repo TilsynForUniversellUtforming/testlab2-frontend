@@ -1,5 +1,9 @@
 import { parseNumberInput } from '@common/util/stringutils';
-import { isDefined, isOrgnummer } from '@common/util/validationUtils';
+import {
+  isDefined,
+  isOrgnummer,
+  isValidObject,
+} from '@common/util/validationUtils';
 import { z } from 'zod';
 
 const orgnummerSchema = z
@@ -12,34 +16,41 @@ const orgnummerSchema = z
 
 export const loeysingSchema = z.object({
   id: z.number().positive('Løysing manlgar id'),
-  namn: z.string().nonempty('Løysing må ha namn'),
-  url: z.string().nonempty('Løysing må ha url'),
+  namn: z.string().min(1, 'Løysing må ha namn'),
+  url: z.string().url('Løysing må ha url'),
   orgnummer: orgnummerSchema,
 });
 
 export const verksemdInitSchema = z.object({
-  namn: z.string().nonempty('Ei verksemd må ha eit namn'),
+  namn: z.string().min(1, 'Ei verksemd må ha eit namn'),
   orgnummer: orgnummerSchema,
-  ceo: z.string().nonempty('Ei verksemd må ha ein dagleg leiar'),
-  contactPerson: z.string().nonempty('Ei verksemd må ha ein kontaktperson'),
+  ceo: z.string().min(1, 'Ei verksemd må ha ein dagleg leiar'),
+  contactPerson: z.string().min(1, 'Ei verksemd må ha ein kontaktperson'),
 });
 
 const inngaaendeVerksemdSchemaSelection = z.object({
-  verksemd: loeysingSchema.optional().refine((data) => {
-    isDefined(data);
-  }, 'Verksemd må veljast'),
-  manualVerksemd: verksemdInitSchema,
+  verksemd: loeysingSchema
+    .optional()
+    .refine((data) => isDefined(data), 'Verksemd må veljast'),
+  manualVerksemd: z.any().optional(),
   loeysingList: z.array(loeysingSchema).optional(),
 });
 
-const inngaaendeVerksemdSchemaManual = z.object({
-  verksemd: loeysingSchema.optional(),
-  manualVerksemd: verksemdInitSchema,
-  loeysingList: z.array(loeysingSchema).optional(),
-});
+const inngaaendeVerksemdSchemaManual = z
+  .object({
+    verksemd: loeysingSchema.partial().optional(),
+    manualVerksemd: verksemdInitSchema,
+    loeysingList: z.array(loeysingSchema).optional(),
+  })
+  .refine(
+    (data) => {
+      return isDefined(data.verksemd) || isValidObject(data.manualVerksemd);
+    },
+    { message: 'Verksemd må veljast', path: ['verksemd'] }
+  );
 
-const inngaaendeVerksemdSchema = inngaaendeVerksemdSchemaSelection.or(
-  inngaaendeVerksemdSchemaManual
+const inngaaendeVerksemdSchema = inngaaendeVerksemdSchemaManual.or(
+  inngaaendeVerksemdSchemaSelection
 );
 
 export const sakInitValidationSchema = z
