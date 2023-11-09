@@ -1,8 +1,8 @@
 package no.uutilsynet.testlab2frontendserver.loeysing
 
 import java.net.URI
+import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiProperties
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,11 +24,11 @@ import org.springframework.web.client.getForObject
 @RequestMapping("api/v1/loeysing")
 class LoeysingResource(
     val restTemplate: RestTemplate,
-    private val testingApiProperties: TestingApiProperties
+    loeysingsregisterApiProperties: LoeysingsregisterApiProperties
 ) {
   val logger: Logger = LoggerFactory.getLogger(LoeysingResource::class.java)
 
-  val loeysingUrl = "${testingApiProperties.url}/v2/loeysing"
+  val loeysingUrl = "${loeysingsregisterApiProperties.url}/v1/loeysing"
 
   data class CreateLoeysingDTO(val namn: String, val url: String, val organisasjonsnummer: String)
 
@@ -38,7 +38,8 @@ class LoeysingResource(
   fun getLoeysing(@PathVariable id: Int): ResponseEntity<Loeysing> =
       try {
         val url = "$loeysingUrl/$id"
-        restTemplate.getForObject(url)
+        val loeysing: Loeysing = restTemplate.getForObject(url)
+        ResponseEntity.ok(loeysing)
       } catch (e: Error) {
         logger.error("Klarte ikkje å hente løysing med id $id", e)
         throw RuntimeException("Klarte ikkje å hente løysing")
@@ -54,9 +55,9 @@ class LoeysingResource(
     }
     return try {
       if (namn != null) {
-        ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?namn=$namn"))
+        ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?search=$namn"))
       } else if (orgnummer != null) {
-        ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?orgnummer=$orgnummer"))
+        ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?search=$orgnummer"))
       } else {
         ResponseEntity.ok(getLoeysingList())
       }
@@ -77,24 +78,23 @@ class LoeysingResource(
                     mapOf(
                         "namn" to dto.namn,
                         "url" to dto.url,
-                        "orgnummer" to dto.organisasjonsnummer),
-                    Int::class.java)
+                        "orgnummer" to dto.organisasjonsnummer))
                     ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
             val createdLoeysing =
-                restTemplate.getForObject(
-                    "${testingApiProperties.url}${location}", Loeysing::class.java)
+                restTemplate.getForObject(location, Loeysing::class.java)
                     ?: throw RuntimeException("Kunne ikkje hente løysing frå servaren")
             ResponseEntity.created(URI("/loeysing/${createdLoeysing.id}")).body(getLoeysingList())
           }
           .getOrElse {
-            ResponseEntity.internalServerError()
-                .body("noko gikk gjekk da eg forsøkte å lage ei ny løysing")
+            val feilmelding = "noko gjekk gale da eg forsøkte å lage ei ny løysing"
+            logger.error(feilmelding, it)
+            ResponseEntity.internalServerError().build()
           }
 
   @PutMapping
   fun updateLoeysing(@RequestBody loeysing: Loeysing): ResponseEntity<out Any> =
       runCatching {
-            restTemplate.put(loeysingUrl, loeysing, Int::class.java)
+            restTemplate.put(loeysingUrl, loeysing)
             ResponseEntity.ok(getLoeysingList())
           }
           .getOrElse {
