@@ -20,6 +20,24 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
   return value != null;
 };
 
+export const isValidObject = <T extends Record<string, unknown>>(
+  objectToCheck: T
+): boolean => {
+  if (typeof objectToCheck !== 'object' || objectToCheck === null) {
+    return false;
+  }
+
+  const keys = Object.keys(objectToCheck);
+  if (keys.length === 0) {
+    return false;
+  }
+
+  return keys.every((key) => {
+    const value = objectToCheck[key];
+    return value !== null && value !== undefined && value !== '';
+  });
+};
+
 export const isNotDefined = <T>(value: T | undefined | null): value is T =>
   !isDefined(value);
 
