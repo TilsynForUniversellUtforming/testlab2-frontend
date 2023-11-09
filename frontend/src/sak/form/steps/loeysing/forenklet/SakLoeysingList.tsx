@@ -158,7 +158,6 @@ const SakLoeysingList = () => {
             retainSelection={false}
             name="loeysingList"
             size="small"
-            hideError
           />
         </div>
         <div className="sak-loeysing__input-select">

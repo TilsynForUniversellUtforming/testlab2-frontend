@@ -58,6 +58,7 @@ const TestlabFormFieldArray = <
     retainSelection,
     required,
     spacing,
+    customError,
   } = autocompleteProps;
 
   const onClickAutocomplete = useCallback(
@@ -114,6 +115,7 @@ const TestlabFormFieldArray = <
                   retainSelection={retainSelection}
                   required={required}
                   spacing={spacing}
+                  customError={customError}
                   hideLabel
                 />
               </div>

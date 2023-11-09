@@ -13,10 +13,10 @@ export type LoeysingVerksemd = {
 };
 
 export type VerksemdInit = {
-  namn: string;
-  orgnummer: string;
-  ceo: string;
-  contactPerson: string;
+  namn?: string;
+  orgnummer?: string;
+  ceo?: string;
+  contactPerson?: string;
 };
 
 export type VerksemdLoeysingRelation = {
@@ -72,7 +72,12 @@ export const defaultSakFormState: SakFormState = {
   // Ny
   verksemdLoeysingRelation: {
     verksemd: undefined,
-    manualVerksemd: undefined,
+    manualVerksemd: {
+      namn: '',
+      orgnummer: '',
+      ceo: '',
+      contactPerson: '',
+    },
     loeysingList: [],
   },
 };

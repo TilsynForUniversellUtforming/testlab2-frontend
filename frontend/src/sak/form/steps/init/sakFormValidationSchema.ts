@@ -24,16 +24,23 @@ export const verksemdInitSchema = z.object({
   contactPerson: z.string().nonempty('Ei verksemd må ha ein kontaktperson'),
 });
 
-const inngaaendeVerksemdScheama = z
-  .object({
-    verksemd: loeysingSchema,
-    manualVerksemd: verksemdInitSchema,
-    loeysingList: z.array(loeysingSchema).optional(),
-  })
-  .deepPartial()
-  .refine((data) => {
-    isDefined(data?.verksemd) || isDefined(data?.manualVerksemd);
-  }, 'Verksemd må veljast');
+const inngaaendeVerksemdSchemaSelection = z.object({
+  verksemd: loeysingSchema.optional().refine((data) => {
+    isDefined(data);
+  }, 'Verksemd må veljast'),
+  manualVerksemd: verksemdInitSchema,
+  loeysingList: z.array(loeysingSchema).optional(),
+});
+
+const inngaaendeVerksemdSchemaManual = z.object({
+  verksemd: loeysingSchema.optional(),
+  manualVerksemd: verksemdInitSchema,
+  loeysingList: z.array(loeysingSchema).optional(),
+});
+
+const inngaaendeVerksemdSchema = inngaaendeVerksemdSchemaSelection.or(
+  inngaaendeVerksemdSchemaManual
+);
 
 export const sakInitValidationSchema = z
   .discriminatedUnion('sakType', [
@@ -73,17 +80,17 @@ export const sakInitValidationSchema = z
 
     z.object({
       sakType: z.literal('Inngående kontroll'),
-      verksemdLoeysingRelation: inngaaendeVerksemdScheama,
+      verksemdLoeysingRelation: inngaaendeVerksemdSchema,
     }),
 
     z.object({
       sakType: z.literal('Tilsyn'),
-      verksemdLoeysingRelation: inngaaendeVerksemdScheama,
+      verksemdLoeysingRelation: inngaaendeVerksemdSchema,
     }),
 
     z.object({
       sakType: z.literal('Retest'),
-      verksemdLoeysingRelation: inngaaendeVerksemdScheama,
+      verksemdLoeysingRelation: inngaaendeVerksemdSchema,
     }),
   ])
   .refine(

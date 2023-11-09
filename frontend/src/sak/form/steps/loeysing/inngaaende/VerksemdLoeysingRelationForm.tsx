@@ -12,7 +12,7 @@ const VerksemdLoeysingRelationForm = () => {
     orgnummer: '',
   };
 
-  const { verksemdAutocompleteList, onChangeAutocomplete } =
+  const { verksemdAutocompleteList, onChangeAutocomplete, errorMessage } =
     useLoeysingAutocomplete();
 
   return (
@@ -27,7 +27,6 @@ const VerksemdLoeysingRelationForm = () => {
           defaultValues={defaultValues}
           buttonAddText="Legg til løysing"
           buttonRemoveText="Fjern løysing"
-          // customErrorMessage={errorMessage}
           autocompleteProps={{
             label: 'Namn på løysing',
             resultList: verksemdAutocompleteList,
@@ -36,6 +35,7 @@ const VerksemdLoeysingRelationForm = () => {
             onChange: onChangeAutocomplete,
             name: 'verksemdLoeysingRelation.loeysingList',
             retainSelection: false,
+            customError: errorMessage,
             required: true,
           }}
         />

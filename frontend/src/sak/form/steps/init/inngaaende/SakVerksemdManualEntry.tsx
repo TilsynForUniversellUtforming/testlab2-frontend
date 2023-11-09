@@ -14,7 +14,7 @@ const SakVerksemdManualEntry = () => (
       name="verksemdLoeysingRelation.manualVerksemd.namn"
     />
     <TestlabFormInput<SakFormState>
-      label="Organiasjonsnummer"
+      label="Organisasjonsnummer"
       name="verksemdLoeysingRelation.manualVerksemd.orgnummer"
     />
     <TestlabFormInput<SakFormState>

@@ -1,54 +1,53 @@
-import toError from '@common/error/util';
 import {
   findLoeysingByName,
   findLoeysingByOrgnummer,
 } from '@loeysingar/api/loeysing-api';
 import { Loeysing } from '@loeysingar/api/types';
-import { SakContext } from '@sak/types';
 import { useCallback, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
 
 const useLoeysingAutocomplete = () => {
   const [verksemdAutocompleteList, setVerksemdAutocompleteList] = useState<
     Loeysing[]
   >([]);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+
   const [verksemdNotFound, setVerksemdNotFound] = useState(false);
 
-  const { setContextError } = useOutletContext<SakContext>();
-
-  const onChangeAutocomplete = useCallback(
-    async (verksemdSearch: string) => {
-      setVerksemdNotFound(false);
-      try {
-        if (verksemdSearch.length > 0) {
-          const loeysingList: Loeysing[] = [];
-          if (!isNaN(Number(verksemdSearch))) {
-            const loeysingListByOrgNr =
-              await findLoeysingByOrgnummer(verksemdSearch);
-            loeysingList.push(...loeysingListByOrgNr);
-          } else {
-            const loeysingListByName = await findLoeysingByName(verksemdSearch);
-            loeysingList.push(...loeysingListByName);
-          }
-          setVerksemdAutocompleteList(loeysingList);
-
-          if (loeysingList.length === 0) {
-            setVerksemdNotFound(true);
-          }
+  const onChangeAutocomplete = useCallback(async (verksemdSearch: string) => {
+    setVerksemdNotFound(false);
+    setErrorMessage(undefined);
+    try {
+      if (verksemdSearch.length > 0) {
+        const loeysingList: Loeysing[] = [];
+        if (!isNaN(Number(verksemdSearch))) {
+          const loeysingListByOrgNr =
+            await findLoeysingByOrgnummer(verksemdSearch);
+          loeysingList.push(...loeysingListByOrgNr);
         } else {
-          setVerksemdAutocompleteList([]);
+          const loeysingListByName = await findLoeysingByName(verksemdSearch);
+          loeysingList.push(...loeysingListByName);
         }
-      } catch (e) {
-        setContextError(toError(e, 'Kunne ikkje hente løysingar'));
+        setVerksemdAutocompleteList(loeysingList);
+
+        if (loeysingList.length === 0) {
+          setVerksemdNotFound(true);
+          setErrorMessage(`Fann ikkje ${verksemdSearch}`);
+        }
+      } else {
+        setVerksemdAutocompleteList([]);
       }
-    },
-    [setContextError]
-  );
+    } catch (e) {
+      setErrorMessage(
+        'Noko gjekk gale ved henting av løysing, ver vennleg og prøv igjen'
+      );
+    }
+  }, []);
 
   return {
     verksemdAutocompleteList,
     onChangeAutocomplete,
     verksemdNotFound,
+    errorMessage,
   };
 };
 

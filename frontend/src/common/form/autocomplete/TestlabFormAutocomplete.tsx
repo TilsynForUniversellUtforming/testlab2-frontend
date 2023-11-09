@@ -1,14 +1,14 @@
 import './testlab-form-autocomplete.scss';
 
-import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabFormAutocompleteList from '@common/form/autocomplete/TestlabFormAutocompleteList';
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
+import { Textfield } from '@digdir/design-system-react';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
+import { Path, PathValue, useFormContext } from 'react-hook-form';
 
 export interface AutoCompleteProps<
   FormDataType extends object,
@@ -23,7 +23,7 @@ export interface AutoCompleteProps<
   onClick?: (result: ResultDataType) => void;
   maxListLength?: number;
   spacing?: boolean;
-  hideError?: boolean;
+  customError?: string;
 }
 
 const TestlabFormAutocomplete = <
@@ -44,35 +44,22 @@ const TestlabFormAutocomplete = <
   maxListLength,
   spacing = false,
   hideLabel,
-  hideError = false,
+  customError,
 }: AutoCompleteProps<FormDataType, ResultDataType>) => {
-  const { control, setValue, formState } = useFormContext<FormDataType>();
+  const { setValue, formState } = useFormContext<FormDataType>();
   const [showResultList, setShowResultList] = useState(false);
   const resultsRef = useRef<HTMLUListElement>(null);
-  const [inputValue, setInputValue] = useState<string | undefined>();
+  const [inputValueLabel, setInputValueLabel] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  const selection = useWatch<FormDataType>({
-    control,
-    name: name,
-  }) as ResultDataType;
 
   useEffect(() => {
-    if (selection && !retainSelection) {
-      setInputValue(undefined);
-    }
-  }, [selection]);
-
-  useEffect(() => {
-    if (hideError) {
-      return;
-    }
-
-    if (resultList.length === 0 && isDefined(inputValue)) {
-      setErrorMessage(`Ingen treff på ${inputValue}`);
+    if (customError) {
+      setErrorMessage(customError);
     } else {
       setErrorMessage(getErrorMessage(formState, name));
     }
-  }, [resultList.length, formState.errors, inputValue, hideError]);
+  }, [customError, formState.errors]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -90,10 +77,20 @@ const TestlabFormAutocomplete = <
     };
   }, []);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isDefined(inputValue)) {
+        onChange(inputValue);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [inputValue]);
+
   const handleOnClick = useCallback(
     (name: Path<FormDataType>, result: ResultDataType) => {
       setShowResultList(false);
-      setInputValue(result[resultLabelKey]);
+      setInputValueLabel(retainSelection ? result[resultLabelKey] : '');
       if (onClick) {
         onClick(result);
       } else {
@@ -103,15 +100,10 @@ const TestlabFormAutocomplete = <
     []
   );
 
-  const handleOnChange = useCallback(
-    (nextInputValue: string) => {
-      if (inputValue !== nextInputValue) {
-        onChange(nextInputValue);
-        setInputValue(nextInputValue);
-      }
-    },
-    [inputValue]
-  );
+  const handleOnChange = useCallback((input: string) => {
+    setInputValue(input);
+    setInputValueLabel(input);
+  }, []);
 
   return (
     <div
@@ -119,13 +111,14 @@ const TestlabFormAutocomplete = <
         spacing: spacing,
       })}
     >
-      <DebouncedInput
-        id="testlab-form-autocorrect"
+      <Textfield
         label={<TestlabFormRequiredLabel label={label} required={required} />}
         description={description}
-        onChange={handleOnChange}
-        errorMessage={errorMessage}
+        type="text"
+        value={inputValueLabel}
+        onChange={(e) => handleOnChange(e.target.value)}
         onFocus={() => setShowResultList(true)}
+        error={errorMessage}
         size={size}
         hideLabel={hideLabel}
       />
