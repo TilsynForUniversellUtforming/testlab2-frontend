@@ -1,6 +1,6 @@
 .testlab-form-autocomplete {
   position: relative;
-  min-width: 12rem;
+  max-width: 24rem;
 
   &.spacing {
     padding-bottom: 0.5rem;
@@ -8,7 +8,6 @@
 
   &__list {
     padding: 0;
-    min-width: 12rem;
     list-style: none;
     box-shadow: var(--fds-shadow-medium);
     width: 100%;

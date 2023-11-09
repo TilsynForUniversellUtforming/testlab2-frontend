@@ -23,8 +23,6 @@ const LoeysingStepContainer = ({
     ),
   });
 
-  console.log(formMethods);
-
   return (
     <SakFormWrapper
       formStepState={formStepState}

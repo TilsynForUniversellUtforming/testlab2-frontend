@@ -17,8 +17,12 @@ const InitContentInngaaende = () => {
     name: 'verksemdLoeysingRelation',
   }) as SakVerksemdLoeysingRelation | undefined;
 
-  const { verksemdAutocompleteList, onChangeAutocomplete, verksemdNotFound } =
-    useLoeysingAutocomplete();
+  const {
+    verksemdAutocompleteList,
+    onChangeAutocomplete,
+    verksemdNotFound,
+    errorMessage,
+  } = useLoeysingAutocomplete();
 
   const handleGetVerksemdLoeysingRelations = async (verksemd: Loeysing) => {
     setErrorMessageRelations(undefined);
@@ -40,9 +44,16 @@ const InitContentInngaaende = () => {
   };
 
   const onClick = useCallback((verksemd: Loeysing) => {
+    setValue('verksemdLoeysingRelation.verksemd', verksemd);
     handleGetVerksemdLoeysingRelations(verksemd).then(
-      (verksemdLoeysingRelation) =>
-        setValue('verksemdLoeysingRelation', verksemdLoeysingRelation)
+      (verksemdLoeysingRelationList) => {
+        if (verksemdLoeysingRelationList) {
+          setValue(
+            'verksemdLoeysingRelation.loeysingList',
+            verksemdLoeysingRelationList
+          );
+        }
+      }
     );
   }, []);
 
@@ -57,7 +68,8 @@ const InitContentInngaaende = () => {
         onChange={onChangeAutocomplete}
         onClick={onClick}
         retainSelection={false}
-        name="verksemdLoeysingRelation"
+        name="verksemdLoeysingRelation.verksemd"
+        customError={errorMessage}
         required
         spacing
       />

@@ -1,5 +1,4 @@
 import { Loeysing } from '@loeysingar/api/types';
-import { VerksemdLoeysingRelation } from '@sak/types';
 
 import { Verksemd } from './types';
 
@@ -32,17 +31,11 @@ const getVerksemdList_dummy = async (): Promise<Verksemd[]> => {
 
 export const getVerksemdLoeysingRelations_dummy = async (
   verksemd: Loeysing
-): Promise<VerksemdLoeysingRelation> => {
+): Promise<Loeysing[]> => {
   if (verksemd.id === 1) {
-    return {
-      verksemd: verksemd,
-      loeysingList: verksemdLoeysingRelation_dummy_response,
-    };
+    return verksemdLoeysingRelation_dummy_response;
   } else {
-    return {
-      verksemd: verksemd,
-      loeysingList: [],
-    };
+    return [];
   }
 };
 

@@ -27,7 +27,7 @@ const SakVerksemdResult = ({
     return <Spinner title="Hentar relasjonar" />;
   }
 
-  if (verksemdNotFound || manualVerksemd) {
+  if (verksemdNotFound || manualVerksemd?.namn) {
     return <SakVerksemdManualEntry />;
   }
 
