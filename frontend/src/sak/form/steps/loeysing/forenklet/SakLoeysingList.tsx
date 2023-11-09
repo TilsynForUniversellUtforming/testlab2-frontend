@@ -1,6 +1,7 @@
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
+import { ButtonSize } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
 import {
   Button,
@@ -35,7 +36,7 @@ const SakLoeysingList = () => {
 
   const loeysingColumns = useMemo(() => getLoeysingVerksemdColumns(), []);
 
-  const onClickAdd = () => {
+  const onClickAdd = useCallback(() => {
     if (loeysingId && verksemdId) {
       const loeysing = loeysingList.find((l) => l.id === Number(loeysingId));
       const verksemd = verksemdList.find((l) => l.id === Number(verksemdId));
@@ -59,6 +60,7 @@ const SakLoeysingList = () => {
           clearErrors();
         }
 
+        setSelectableLoeysingList([]);
         setLoeysingId(undefined);
         setVerksemdId(undefined);
       } else {
@@ -73,7 +75,7 @@ const SakLoeysingList = () => {
         message: 'Løysing og verksemd må veljast',
       });
     }
-  };
+  }, [loeysingId, verksemdId, loeysingList, verksemdList]);
 
   const handleChangeLoeysing = useCallback(
     (searchString: string) => {
@@ -155,7 +157,8 @@ const SakLoeysingList = () => {
             resultDescriptionKey="url"
             onChange={handleChangeLoeysing}
             onClick={(loeysing: Loeysing) => setLoeysingId(String(loeysing.id))}
-            retainSelection={false}
+            retainLabelValueChange={false}
+            hideErrors
             name="loeysingList"
             size="small"
           />
@@ -166,9 +169,15 @@ const SakLoeysingList = () => {
             label="Ansvarlig verksemd (i saka)"
             onChange={setVerksemdId}
             value={verksemdId}
+            error={!!listErrors}
           />
         </div>
-        <Button title="Legg til" color="success" onClick={onClickAdd}>
+        <Button
+          title="Legg til"
+          color="success"
+          onClick={onClickAdd}
+          size={ButtonSize.Small}
+        >
           Legg til
         </Button>
       </div>
@@ -183,11 +192,11 @@ const SakLoeysingList = () => {
             action: 'delete',
             rowSelectionRequired: true,
             modalProps: {
-              title: 'Fjern rad',
+              title: 'Fjern løysing',
               disabled: rowSelection.length === 0,
-              message: `Fjern ${joinStringsToList(
+              message: `Vil du fjerne ${joinStringsToList(
                 rowSelection.map((rs) => rs.loeysing.namn)
-              )}?`,
+              )} frå saka? Dette kan ikkje angrast`,
               onConfirm: onClickRemove,
             },
           },

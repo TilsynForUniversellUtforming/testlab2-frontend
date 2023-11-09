@@ -55,7 +55,7 @@ const TestlabFormFieldArray = <
     resultDescriptionKey,
     onChange,
     name,
-    retainSelection,
+    retainValueOnClick,
     required,
     spacing,
     customError,
@@ -112,7 +112,7 @@ const TestlabFormFieldArray = <
                   onChange={onChange}
                   onClick={(value) => onClickAutocomplete(value, idx)}
                   name={name}
-                  retainSelection={retainSelection}
+                  retainValueOnClick={retainValueOnClick}
                   required={required}
                   spacing={spacing}
                   customError={customError}

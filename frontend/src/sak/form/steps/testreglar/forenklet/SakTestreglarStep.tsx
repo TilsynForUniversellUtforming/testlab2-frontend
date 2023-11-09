@@ -1,6 +1,7 @@
 import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
+import { ButtonSize } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
@@ -134,6 +135,11 @@ const SakTestreglarStep = ({
           message: 'Testreglar må veljast',
         });
       }
+    } else {
+      setError('testregelList', {
+        type: 'manual',
+        message: 'Testreglar må veljast',
+      });
     }
   };
 
@@ -168,9 +174,15 @@ const SakTestreglarStep = ({
               onChange={setTestregelId}
               options={testRegelOptions}
               value={testregelId}
+              error={!!formError}
             />
           </div>
-          <Button title="Legg til" color="success" onClick={onClickAdd}>
+          <Button
+            title="Legg til"
+            color="success"
+            onClick={onClickAdd}
+            size={ButtonSize.Small}
+          >
             Legg til
           </Button>
         </div>
@@ -187,11 +199,11 @@ const SakTestreglarStep = ({
               action: 'delete',
               rowSelectionRequired: true,
               modalProps: {
-                title: 'Fjern rad',
+                title: 'Fjern testregel',
                 disabled: rowSelection.length === 0,
-                message: `Fjern ${joinStringsToList(
+                message: `Vil du fjerne ${joinStringsToList(
                   rowSelection.map((rs) => rs.testregelNoekkel)
-                )}?`,
+                )} frå saka? Dette kan ikkje angrast`,
                 onConfirm: onClickRemove,
               },
             },

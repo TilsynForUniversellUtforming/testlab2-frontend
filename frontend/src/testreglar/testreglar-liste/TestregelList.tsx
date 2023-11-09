@@ -1,6 +1,7 @@
 import toError from '@common/error/util';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { joinStringsToList } from '@common/util/stringutils';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -67,9 +68,11 @@ const TestregelList = () => {
       setDeleteMessage('');
     } else {
       setDeleteMessage(
-        `Vil du sletta ${rowSelection
-          .map((tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`)
-          .join(',')}?`
+        `Vil du sletta ${joinStringsToList(
+          rowSelection.map(
+            (tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`
+          )
+        )}? Dette kan ikkje angrast`
       );
     }
   }, []);

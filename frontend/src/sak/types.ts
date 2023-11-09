@@ -19,11 +19,6 @@ export type VerksemdInit = {
   contactPerson?: string;
 };
 
-export type VerksemdLoeysingRelation = {
-  verksemd: Loeysing;
-  loeysingList: Loeysing[];
-};
-
 export type SakVerksemdLoeysingRelation = {
   verksemd?: Loeysing;
   manualVerksemd?: VerksemdInit;

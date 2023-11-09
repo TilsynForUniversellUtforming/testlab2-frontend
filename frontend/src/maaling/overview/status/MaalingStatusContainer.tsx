@@ -50,7 +50,7 @@ const MaalingStatusContainer = ({
                 }}
               />
               {pollingStatuses.includes(maaling.status) && (
-                <Spinner title="Oppdaterer måling" variant="inverted" />
+                <Spinner title="Oppdaterer måling" size="small" />
               )}
             </div>
           </div>

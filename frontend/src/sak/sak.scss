@@ -29,6 +29,14 @@
   &__container {
     padding-bottom: 1.5rem;
 
+    .sak-init {
+      max-width: 24rem;
+    }
+
+    .sak-loeysing {
+      max-width: 48rem;
+    }
+
     .sak-init,
     .sak-loeysing {
       &__input-wrapper {
@@ -36,7 +44,8 @@
         flex-direction: row;
         align-items: end;
         padding-bottom: 1rem;
-        gap: 2rem;
+        gap: 1rem;
+        justify-content: space-between;
       }
 
       &__input-select {

@@ -1,6 +1,7 @@
 import toError from '@common/error/util';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { joinStringsToList } from '@common/util/stringutils';
 import { LOEYSING_CREATE, LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -63,7 +64,9 @@ const LoeysingList = () => {
       setDeleteMessage('');
     } else {
       setDeleteMessage(
-        `Vil du sletta ${rowSelection.map((r) => r.namn).join(',')}?`
+        `Vil du sletta ${joinStringsToList(
+          rowSelection.map((r) => r.namn)
+        )}? Dette kan ikkje angrast`
       );
     }
   }, []);

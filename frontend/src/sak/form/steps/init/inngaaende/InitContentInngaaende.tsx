@@ -67,7 +67,7 @@ const InitContentInngaaende = () => {
         resultDescriptionKey="orgnummer"
         onChange={onChangeAutocomplete}
         onClick={onClick}
-        retainSelection={false}
+        retainValueOnClick={false}
         name="verksemdLoeysingRelation.verksemd"
         customError={errorMessage}
         required
