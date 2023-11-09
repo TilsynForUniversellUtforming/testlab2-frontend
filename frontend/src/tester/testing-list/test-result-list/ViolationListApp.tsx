@@ -42,7 +42,7 @@ const ViolationListApp = () => {
   });
 
   const onClickDelete = (testResultatRowSelection: TestResultat[]) => {
-    console.log(testResultatRowSelection);
+    console.info(testResultatRowSelection);
   };
 
   useEffect(() => {

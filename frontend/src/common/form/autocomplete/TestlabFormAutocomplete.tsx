@@ -8,7 +8,7 @@ import { isDefined } from '@common/util/validationUtils';
 import { Textfield } from '@digdir/design-system-react';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Path, PathValue, useFormContext } from 'react-hook-form';
+import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
 export interface AutoCompleteProps<
   FormDataType extends object,
@@ -18,11 +18,13 @@ export interface AutoCompleteProps<
   onChange: (value: string) => void;
   resultLabelKey: keyof ResultDataType;
   resultDescriptionKey?: keyof ResultDataType;
-  retainSelection?: boolean;
+  retainValueOnClick?: boolean;
+  retainLabelValueChange?: boolean;
   description?: string;
   onClick?: (result: ResultDataType) => void;
   maxListLength?: number;
   spacing?: boolean;
+  hideErrors?: boolean;
   customError?: string;
 }
 
@@ -36,7 +38,8 @@ const TestlabFormAutocomplete = <
   resultLabelKey,
   resultDescriptionKey,
   name,
-  retainSelection = true,
+  retainValueOnClick = true,
+  retainLabelValueChange = false,
   description,
   required = false,
   onClick,
@@ -44,16 +47,34 @@ const TestlabFormAutocomplete = <
   maxListLength,
   spacing = false,
   hideLabel,
+  hideErrors = false,
   customError,
 }: AutoCompleteProps<FormDataType, ResultDataType>) => {
-  const { setValue, formState } = useFormContext<FormDataType>();
+  const { control, setValue, formState } = useFormContext<FormDataType>();
   const [showResultList, setShowResultList] = useState(false);
   const resultsRef = useRef<HTMLUListElement>(null);
   const [inputValueLabel, setInputValueLabel] = useState<string>('');
   const [inputValue, setInputValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
+  const resultData = useWatch<FormDataType>({
+    control,
+    name: name,
+  }) as ResultDataType;
+
   useEffect(() => {
+    if (retainLabelValueChange) {
+      return;
+    } else {
+      setInputValue('');
+      setInputValueLabel('');
+    }
+  }, [resultData]);
+
+  useEffect(() => {
+    if (hideErrors) {
+      return;
+    }
     if (customError) {
       setErrorMessage(customError);
     } else {
@@ -90,7 +111,7 @@ const TestlabFormAutocomplete = <
   const handleOnClick = useCallback(
     (name: Path<FormDataType>, result: ResultDataType) => {
       setShowResultList(false);
-      setInputValueLabel(retainSelection ? result[resultLabelKey] : '');
+      setInputValueLabel(retainValueOnClick ? result[resultLabelKey] : '');
       if (onClick) {
         onClick(result);
       } else {

@@ -1,6 +1,7 @@
 import './testlab-divider.scss';
 
 import { Size } from '@common/types';
+import { Divider } from '@digdir/design-system-react';
 import classnames from 'classnames';
 
 interface Props {
@@ -8,7 +9,10 @@ interface Props {
 }
 
 const TestlabDivider = ({ size = 'medium' }: Props) => (
-  <hr className={classnames('testlab-divider', { [size]: size })} />
+  <Divider
+    color="default"
+    className={classnames('testlab-divider', { [size]: size })}
+  />
 );
 
 export default TestlabDivider;

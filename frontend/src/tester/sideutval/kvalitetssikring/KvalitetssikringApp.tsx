@@ -84,11 +84,11 @@ const KvalitetssikringApp = () => {
   }, []);
 
   const onClickDeleteLoeysing = useCallback(() => {
-    console.log('Sletter løysing');
+    console.info('Sletter løysing');
   }, []);
 
   const onClickRemoveUrl = useCallback(() => {
-    console.log(urlRowSelection);
+    console.info(urlRowSelection);
   }, [urlRowSelection]);
 
   const onSelectRows = useCallback((rowSelection: CrawlUrl[]) => {

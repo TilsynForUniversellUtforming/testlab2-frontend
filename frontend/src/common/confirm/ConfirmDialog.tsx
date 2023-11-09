@@ -1,7 +1,8 @@
 import './confirm-dialog.scss';
 
+import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
-import { Button } from '@digdir/design-system-react';
+import { Button, Heading, Paragraph } from '@digdir/design-system-react';
 import React from 'react';
 
 export interface Props {
@@ -23,15 +24,20 @@ const ConfirmDialog = ({
     return null;
   }
 
-  const confirmLabel = message ? message : 'Er du sikker?';
-
   return (
     <div role="presentation" className="modal-overlay" onClick={closeModal}>
       <span className="invisible">Lukk vindu</span>
       <div className="modal-box">
-        {headerTitle && <div className="modal-header">{headerTitle}</div>}
-        <div className="modal-text">{confirmLabel}</div>
-        <div className="modal-buttons">
+        <div className="modal-box__heading">
+          <Heading level={4} size="medium">
+            {headerTitle}
+          </Heading>
+          <TestlabDivider size="xsmall" />
+        </div>
+        <Paragraph className="modal-box__message" size="small">
+          {message}
+        </Paragraph>
+        <div className="modal-box__buttons">
           <Button variant={ButtonVariant.Outline} onClick={closeModal}>
             Lukk
           </Button>

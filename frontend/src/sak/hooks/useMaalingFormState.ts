@@ -25,7 +25,7 @@ const toSakFormState = (
   talLenker: maaling?.crawlParameters?.talLenker
     ? maaling.crawlParameters.talLenker
     : 30,
-  sakType: 'Tilsyn',
+  sakType: 'Forenklet kontroll',
   advisorId: advisors[0]?.id ? String(advisors[0].id) : undefined,
   sakNumber: undefined,
 });

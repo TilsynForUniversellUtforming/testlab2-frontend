@@ -34,7 +34,7 @@ const VerksemdLoeysingRelationForm = () => {
             resultDescriptionKey: 'orgnummer',
             onChange: onChangeAutocomplete,
             name: 'verksemdLoeysingRelation.loeysingList',
-            retainSelection: false,
+            retainValueOnClick: false,
             customError: errorMessage,
             required: true,
           }}
