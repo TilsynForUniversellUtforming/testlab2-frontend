@@ -22,7 +22,24 @@ export type VerksemdInit = {
 export type SakVerksemdLoeysingRelation = {
   verksemd?: Loeysing;
   manualVerksemd?: VerksemdInit;
-  loeysingList: Loeysing[];
+  loeysingList: Loeysing[]; // TODO - Fix
+};
+
+export type NettsideProperties = {
+  url: string;
+  description: string;
+};
+
+export type LoeysingNettsideRelation = {
+  loeysing: Loeysing;
+  forside?: NettsideProperties;
+  navigasjonsmeny?: NettsideProperties;
+  bilder?: NettsideProperties;
+  overskrifter?: NettsideProperties;
+  artikkel?: NettsideProperties;
+  skjema?: NettsideProperties;
+  tabell?: NettsideProperties;
+  knapper?: NettsideProperties;
 };
 
 export type LoeysingSource = 'utval' | 'manuell';

@@ -3,6 +3,7 @@ import './field-array.scss';
 import TestlabFormAutocomplete, {
   AutoCompleteProps,
 } from '@common/form/autocomplete/TestlabFormAutocomplete';
+import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Button, ErrorMessage } from '@digdir/design-system-react';
@@ -25,7 +26,6 @@ interface Props<
   fieldName: ArrayPath<FormDataType>;
   defaultValues: FieldArray<FormDataType, ArrayPath<FormDataType>>;
   autocompleteProps: AutoCompleteProps<FormDataType, ResultDataType>;
-  customErrorMessage?: string;
   buttonAddText?: string;
   buttonRemoveText?: string;
 }
@@ -36,13 +36,12 @@ const TestlabFormFieldArray = <
 >({
   fieldName,
   defaultValues,
-  customErrorMessage,
   autocompleteProps,
   buttonAddText = 'Legg til',
   buttonRemoveText = 'Fjern',
 }: Props<FormDataType, ResultDataType>) => {
   const [defaultValueIdx, setDefaultValueIdx] = useState<number | undefined>();
-  const { control, clearErrors } = useFormContext<FormDataType>();
+  const { control, clearErrors, formState } = useFormContext<FormDataType>();
   const { fields, append, remove, insert } = useFieldArray({
     name: fieldName,
     control,
@@ -86,6 +85,8 @@ const TestlabFormFieldArray = <
     }
   };
 
+  const errorMessage = getErrorMessage(formState, fieldName);
+
   return (
     <div className="testlab-form__field-array">
       {fields.map((field, idx) => {
@@ -101,7 +102,9 @@ const TestlabFormFieldArray = <
 
         return (
           <div className="testlab-form__field-array-entry" key={field.id}>
-            {valueLabel}
+            <div className="testlab-form__field-array-entry-label">
+              {valueLabel}
+            </div>
             {!valueLabel && (
               <div className="testlab-form__field-array-entry__input">
                 <TestlabFormAutocomplete<FormDataType, ResultDataType>
@@ -142,8 +145,8 @@ const TestlabFormFieldArray = <
       >
         {buttonAddText}
       </Button>
-      {customErrorMessage && (
-        <ErrorMessage size="small">{customErrorMessage}</ErrorMessage>
+      {errorMessage && fields.length === 0 && (
+        <ErrorMessage size="small">{errorMessage}</ErrorMessage>
       )}
     </div>
   );

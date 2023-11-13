@@ -72,6 +72,7 @@ const TestlabFormAutocomplete = <
   }, [resultData]);
 
   useEffect(() => {
+    console.log(formState.errors);
     if (hideErrors) {
       return;
     }

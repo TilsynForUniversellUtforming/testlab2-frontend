@@ -1,4 +1,5 @@
 import {
+  ArrayPath,
   type FieldPath,
   type FieldValues,
   type FormState,
@@ -6,12 +7,9 @@ import {
 } from 'react-hook-form';
 import { FieldError } from 'react-hook-form/dist/types/errors';
 
-export const getErrorMessage = <
-  TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
->(
+export const getErrorMessage = <TFieldValues extends FieldValues>(
   form: FormState<TFieldValues>,
-  name: TFieldName
+  name: FieldPath<TFieldValues> | ArrayPath<TFieldValues>
 ): string | undefined => {
   const error: FieldError | undefined = get(form.errors, name);
   return error?.message;
