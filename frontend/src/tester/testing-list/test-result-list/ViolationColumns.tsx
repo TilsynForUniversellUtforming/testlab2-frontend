@@ -59,4 +59,10 @@ export const getTestresultatColumns = (): Array<ColumnDef<TestResultat>> => [
     cell: (info) => info.getValue(),
     header: () => <>Peker</>,
   },
+  {
+    accessorFn: (row) => row.elementUtfall,
+    id: 'utfall',
+    cell: (info) => info.getValue(),
+    header: () => <>Testutfall</>,
+  },
 ];
