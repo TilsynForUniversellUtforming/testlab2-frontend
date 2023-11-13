@@ -1,18 +1,20 @@
 import { Chip } from '@digdir/design-system-react';
-import { Loeysing } from '@loeysingar/api/types';
+import { LoeysingNettsideRelation } from '@sak/types';
 
 import VerksemdLoeysingRelationForm from './verksemd-loeysing-relation/VerksemdLoeysingRelationForm';
 
 interface Props {
-  loeysingList?: Loeysing[];
+  loeysingList?: LoeysingNettsideRelation[];
 }
 
 const LoeysingStepInngaaende = ({ loeysingList }: Props) => {
   return (
     <>
       <div className="sak-loeysing__inngaaende-selection">
-        {loeysingList?.map((loeysing) => (
-          <Chip.Toggle key={loeysing.id}>{loeysing.namn}</Chip.Toggle>
+        {loeysingList?.map((loeysingRelation) => (
+          <Chip.Toggle key={loeysingRelation.loeysing.id}>
+            {loeysingRelation.loeysing.namn}
+          </Chip.Toggle>
         ))}
       </div>
       <VerksemdLoeysingRelationForm />

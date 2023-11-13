@@ -12,7 +12,7 @@ import { useCallback, useState } from 'react';
 import {
   ArrayPath,
   FieldArray,
-  FieldArrayWithId,
+  get,
   Path,
   PathValue,
   useFieldArray,
@@ -90,15 +90,7 @@ const TestlabFormFieldArray = <
   return (
     <div className="testlab-form__field-array">
       {fields.map((field, idx) => {
-        const valueLabel = String(
-          field[
-            resultLabelKey as keyof FieldArrayWithId<
-              FormDataType,
-              ArrayPath<FormDataType>,
-              'id'
-            >
-          ]
-        );
+        const valueLabel = get(field, String(resultLabelKey));
 
         return (
           <div className="testlab-form__field-array-entry" key={field.id}>

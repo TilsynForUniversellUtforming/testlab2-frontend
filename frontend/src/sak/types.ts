@@ -22,7 +22,7 @@ export type VerksemdInit = {
 export type SakVerksemdLoeysingRelation = {
   verksemd?: Loeysing;
   manualVerksemd?: VerksemdInit;
-  loeysingList: Loeysing[]; // TODO - Fix
+  loeysingList: LoeysingNettsideRelation[];
 };
 
 export type NettsideProperties = {

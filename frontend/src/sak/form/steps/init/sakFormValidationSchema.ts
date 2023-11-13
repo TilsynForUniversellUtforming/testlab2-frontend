@@ -33,14 +33,14 @@ const inngaaendeVerksemdSchemaSelection = z.object({
     .optional()
     .refine((data) => isDefined(data), 'Verksemd må veljast'),
   manualVerksemd: z.any().optional(),
-  loeysingList: z.array(loeysingSchema).optional(),
+  loeysingList: z.array(z.any()).optional(),
 });
 
 const inngaaendeVerksemdSchemaManual = z
   .object({
     verksemd: loeysingSchema.partial().optional(),
     manualVerksemd: verksemdInitSchema,
-    loeysingList: z.array(loeysingSchema).optional(),
+    loeysingList: z.array(z.any()).optional(),
   })
   .refine(
     (data) => {
