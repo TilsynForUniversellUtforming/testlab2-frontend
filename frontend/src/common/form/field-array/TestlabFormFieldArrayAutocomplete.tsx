@@ -30,7 +30,7 @@ interface Props<
   buttonRemoveText?: string;
 }
 
-const TestlabFormFieldArray = <
+const TestlabFormFieldArrayAutocomplete = <
   FormDataType extends object,
   ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
 >({
@@ -144,4 +144,4 @@ const TestlabFormFieldArray = <
   );
 };
 
-export default TestlabFormFieldArray;
+export default TestlabFormFieldArrayAutocomplete;

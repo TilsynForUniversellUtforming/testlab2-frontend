@@ -40,7 +40,9 @@ const LoeysingStepContainer = ({
           conditionalComponent={<LoeysingStepForenklet />}
           otherComponent={
             <LoeysingStepInngaaende
-              loeysingList={sakFormState.verksemdLoeysingRelation?.loeysingList}
+              loeysingNettsideRelationList={
+                sakFormState.verksemdLoeysingRelation?.loeysingList
+              }
             />
           }
         />

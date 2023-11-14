@@ -1,4 +1,4 @@
-import TestlabFormFieldArray from '@common/form/field-array/TestlabFormFieldArray';
+import TestlabFormFieldArrayAutocomplete from '@common/form/field-array/TestlabFormFieldArrayAutocomplete';
 import { Tabs } from '@digdir/design-system-react';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
 import { LoeysingNettsideRelation, SakFormState } from '@sak/types';
@@ -33,7 +33,10 @@ const VerksemdLoeysingRelationForm = () => {
           <Tabs.Tab value="import">Importer fil</Tabs.Tab>
         </Tabs.List>
         <Tabs.Content value="manuelt">
-          <TestlabFormFieldArray<SakFormState, LoeysingNettsideRelation>
+          <TestlabFormFieldArrayAutocomplete<
+            SakFormState,
+            LoeysingNettsideRelation
+          >
             fieldName="verksemdLoeysingRelation.loeysingList"
             defaultValues={defaultValues}
             buttonAddText="Legg til løysing"

@@ -5,7 +5,7 @@ import { Button, Chip, Heading, Paragraph } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import SakVerksemdResult from '@sak/form/steps/init/inngaaende/SakVerksemdResult';
-import VerksemdLoeysingRelationForm from '@sak/form/steps/init/inngaaende/verksemd-loeysing-relation/VerksemdLoeysingRelationForm';
+import VerksemdLoeysingRelationForm from '@sak/form/steps/init/inngaaende/VerksemdLoeysingRelationForm';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
 import { SakFormState, SakVerksemdLoeysingRelation } from '@sak/types';
 import { getVerksemdLoeysingRelations_dummy } from '@verksemder/api/verksemd-api';

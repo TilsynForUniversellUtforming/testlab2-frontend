@@ -27,19 +27,13 @@ export type SakVerksemdLoeysingRelation = {
 
 export type NettsideProperties = {
   url: string;
-  description: string;
+  reason?: string;
+  description?: string;
 };
 
 export type LoeysingNettsideRelation = {
   loeysing: Loeysing;
-  forside?: NettsideProperties;
-  navigasjonsmeny?: NettsideProperties;
-  bilder?: NettsideProperties;
-  overskrifter?: NettsideProperties;
-  artikkel?: NettsideProperties;
-  skjema?: NettsideProperties;
-  tabell?: NettsideProperties;
-  knapper?: NettsideProperties;
+  properties: NettsideProperties[];
 };
 
 export type LoeysingSource = 'utval' | 'manuell';
