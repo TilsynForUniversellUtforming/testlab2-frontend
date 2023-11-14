@@ -3,6 +3,7 @@ import './field-array.scss';
 import TestlabFormAutocomplete, {
   AutoCompleteProps,
 } from '@common/form/autocomplete/TestlabFormAutocomplete';
+import { getLabelString } from '@common/form/autocomplete/util';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
@@ -12,7 +13,6 @@ import { useCallback, useState } from 'react';
 import {
   ArrayPath,
   FieldArray,
-  get,
   Path,
   PathValue,
   useFieldArray,
@@ -90,7 +90,7 @@ const TestlabFormFieldArray = <
   return (
     <div className="testlab-form__field-array">
       {fields.map((field, idx) => {
-        const valueLabel = get(field, String(resultLabelKey));
+        const valueLabel = getLabelString(field, resultLabelKey);
 
         return (
           <div className="testlab-form__field-array-entry" key={field.id}>

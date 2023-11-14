@@ -11,7 +11,11 @@ export const getErrorMessage = <TFieldValues extends FieldValues>(
   form: FormState<TFieldValues>,
   name: FieldPath<TFieldValues> | ArrayPath<TFieldValues>
 ): string | undefined => {
-  const error: FieldError | undefined = get(form.errors, name);
+  const regex = /\.(\d)\./g;
+  const error: FieldError | undefined = get(
+    form.errors,
+    String(name).replaceAll(regex, '.[$1].')
+  );
   return error?.message;
 };
 

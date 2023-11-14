@@ -72,6 +72,35 @@
         padding-bottom: 2rem;
       }
 
+      &__nettsted-props {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 4rem;
+        margin-bottom: 2rem;
+
+        @media (max-width: 64rem) {
+          grid-template-columns: 1fr;
+          justify-items: center;
+        }
+
+        &-entry {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+
+          .testlab-form-input {
+            flex-grow: 1;
+            label {
+              display: block;
+            }
+            input {
+              width: 100%;
+              box-sizing: border-box;
+            }
+          }
+        }
+      }
+
       &__verksemd-result {
         display: flex;
         flex-direction: column;

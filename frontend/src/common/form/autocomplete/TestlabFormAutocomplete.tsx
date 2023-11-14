@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
-import { NestedKeyOf, resultToString } from './util';
+import { getLabelString } from './util';
 
 export interface AutoCompleteProps<
   FormDataType extends object,
@@ -18,8 +18,8 @@ export interface AutoCompleteProps<
 > extends Omit<TestlabInputBaseProps<FormDataType>, 'onChange'> {
   resultList: ResultDataType[];
   onChange: (value: string) => void;
-  resultLabelKey: NestedKeyOf<ResultDataType>;
-  resultDescriptionKey?: NestedKeyOf<ResultDataType>;
+  resultLabelKey: Path<ResultDataType>;
+  resultDescriptionKey?: Path<ResultDataType>;
   retainValueOnClick?: boolean;
   retainLabelValueChange?: boolean;
   description?: string;
@@ -114,7 +114,7 @@ const TestlabFormAutocomplete = <
     (name: Path<FormDataType>, result: ResultDataType) => {
       setShowResultList(false);
       setInputValueLabel(
-        retainValueOnClick ? resultToString(result, resultLabelKey) : ''
+        retainValueOnClick ? getLabelString(result, resultLabelKey) : ''
       );
       if (onClick) {
         onClick(result);

@@ -14,7 +14,7 @@ const NettsidePropertiesFormInput = ({
   nameUrl,
   nameDescription,
 }: Props) => (
-  <div>
+  <div className="sak-loeysing__nettsted-props-entry">
     <Heading size="xsmall" level={6}>
       {heading}
     </Heading>

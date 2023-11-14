@@ -1,57 +1,7 @@
 import { parseNumberInput } from '@common/util/stringutils';
-import {
-  isDefined,
-  isOrgnummer,
-  isValidObject,
-} from '@common/util/validationUtils';
 import { z } from 'zod';
 
-const orgnummerSchema = z
-  .string()
-  .nonempty('Organisasjonsnummer kan ikkje vera tom')
-  .refine(
-    (value) => isOrgnummer(value),
-    'Dette er ikkje eit gyldig organisasjonsnummer'
-  );
-
-export const loeysingSchema = z.object({
-  id: z.number().positive('Løysing manlgar id'),
-  namn: z.string().min(1, 'Løysing må ha namn'),
-  url: z.string().url('Løysing må ha url'),
-  orgnummer: orgnummerSchema,
-});
-
-export const verksemdInitSchema = z.object({
-  namn: z.string().min(1, 'Ei verksemd må ha eit namn'),
-  orgnummer: orgnummerSchema,
-  ceo: z.string().min(1, 'Ei verksemd må ha ein dagleg leiar'),
-  contactPerson: z.string().min(1, 'Ei verksemd må ha ein kontaktperson'),
-});
-
-const inngaaendeVerksemdSchemaSelection = z.object({
-  verksemd: loeysingSchema
-    .optional()
-    .refine((data) => isDefined(data), 'Verksemd må veljast'),
-  manualVerksemd: z.any().optional(),
-  loeysingList: z.array(z.any()).optional(),
-});
-
-const inngaaendeVerksemdSchemaManual = z
-  .object({
-    verksemd: loeysingSchema.partial().optional(),
-    manualVerksemd: verksemdInitSchema,
-    loeysingList: z.array(z.any()).optional(),
-  })
-  .refine(
-    (data) => {
-      return isDefined(data.verksemd) || isValidObject(data.manualVerksemd);
-    },
-    { message: 'Verksemd må veljast', path: ['verksemd'] }
-  );
-
-const inngaaendeVerksemdSchema = inngaaendeVerksemdSchemaManual.or(
-  inngaaendeVerksemdSchemaSelection
-);
+import { inngaaendeVerksemdSchema } from './inngaaendeVerksemdSchema';
 
 export const sakInitValidationSchema = z
   .discriminatedUnion('sakType', [

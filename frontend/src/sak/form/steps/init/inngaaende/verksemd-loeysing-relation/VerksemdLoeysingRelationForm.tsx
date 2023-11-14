@@ -50,7 +50,6 @@ const VerksemdLoeysingRelationForm = () => {
               required: true,
             }}
           />
-          {/*<LoeysingNettsideRelationForm />*/}
         </Tabs.Content>
       </Tabs>
     </>

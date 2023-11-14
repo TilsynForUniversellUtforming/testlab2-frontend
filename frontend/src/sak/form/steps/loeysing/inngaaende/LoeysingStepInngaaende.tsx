@@ -1,24 +1,19 @@
-import { Chip } from '@digdir/design-system-react';
+import { ErrorMessage } from '@digdir/design-system-react';
 import { LoeysingNettsideRelation } from '@sak/types';
 
-import VerksemdLoeysingRelationForm from './verksemd-loeysing-relation/VerksemdLoeysingRelationForm';
+import LoeysingNettsideRelationForm from '../../init/inngaaende/verksemd-loeysing-relation/LoeysingNettsideRelationForm';
 
 interface Props {
   loeysingList?: LoeysingNettsideRelation[];
 }
 
 const LoeysingStepInngaaende = ({ loeysingList }: Props) => {
+  if (!loeysingList) {
+    return <ErrorMessage>Noko gjekk gale</ErrorMessage>;
+  }
+
   return (
-    <>
-      <div className="sak-loeysing__inngaaende-selection">
-        {loeysingList?.map((loeysingRelation) => (
-          <Chip.Toggle key={loeysingRelation.loeysing.id}>
-            {loeysingRelation.loeysing.namn}
-          </Chip.Toggle>
-        ))}
-      </div>
-      <VerksemdLoeysingRelationForm />
-    </>
+    <LoeysingNettsideRelationForm loeysingNettsideRelationList={loeysingList} />
   );
 };
 

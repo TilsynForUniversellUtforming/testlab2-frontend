@@ -1,4 +1,3 @@
-import { NestedKeyOf } from '@common/form/autocomplete/util';
 import { useEffect, useState } from 'react';
 import { get, Path, PathValue } from 'react-hook-form';
 
@@ -7,11 +6,11 @@ export interface Props<
   ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
 > {
   resultList: ResultDataType[];
-  resultLabelKey: NestedKeyOf<ResultDataType>;
+  resultLabelKey: Path<ResultDataType>;
+  resultDescriptionKey?: Path<ResultDataType>;
   onClick: (name: Path<FormDataType>, result: ResultDataType) => void;
   show: boolean;
   name: Path<FormDataType>;
-  resultDescriptionKey?: NestedKeyOf<ResultDataType>;
   maxListLength?: number;
 }
 

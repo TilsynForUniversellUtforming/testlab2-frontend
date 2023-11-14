@@ -31,8 +31,6 @@ const InitStepContainer = ({
     name: 'sakType',
   }) as Saktype;
 
-  console.log(formMethods.formState.errors);
-
   return (
     <SakFormWrapper
       formStepState={formStepState}
