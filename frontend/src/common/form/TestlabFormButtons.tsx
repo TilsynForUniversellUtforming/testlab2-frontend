@@ -1,6 +1,7 @@
 import { ButtonColor, ButtonColorType, ButtonVariant } from '@common/types';
 import { Button } from '@digdir/design-system-react';
 import classNames from 'classnames';
+import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export type TestlabButtonStepType = 'Start' | 'Middle' | 'Submit' | 'Custom';
@@ -22,11 +23,21 @@ export interface TestlabFormButtonProps {
   onClickBack?: () => void;
 }
 
+/**
+ * A pair of buttons for navigating through form steps or for custom actions, styled according to the Testlab design system.
+ *
+ * @param {TestlabFormButtonProps} props - The props for the component.
+ * @param {TestlabFormButtonStep} [props.step] - The current step information of the form, including type, custom texts, and actions.
+ * @param {string} [props.className] - Optional additional class names for custom styling.
+ * @param {boolean} [props.loading] - Indicates if the form is in a loading state.
+ *
+ * @returns {ReactNode}
+ */
 const TestlabFormButtons = ({
   step,
   className,
   loading,
-}: TestlabFormButtonProps) => {
+}: TestlabFormButtonProps): ReactNode => {
   const navigate = useNavigate();
 
   const defaultStep: TestlabFormButtonStep = {

@@ -6,6 +6,12 @@ import {
 } from 'react-hook-form';
 import { FieldError } from 'react-hook-form/dist/types/errors';
 
+/**
+ * Retrieves the error message for a specific form field.
+ * @param {FormState<TFieldValues>} form - The state of the form.
+ * @param {TFieldName} name - The name of the field.
+ * @return {string | undefined} The error message, if present.
+ */
 export const getErrorMessage = <
   TFieldValues extends FieldValues,
   TFieldName extends FieldPath<TFieldValues>,
