@@ -1,6 +1,6 @@
 import { getErrorMessage } from '@common/form/util';
 import { Textfield, TextfieldProps } from '@digdir/design-system-react';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
 export interface TestlabInputBaseProps<T extends object>
@@ -13,6 +13,19 @@ export interface TestlabInputBaseProps<T extends object>
   disabled?: boolean;
 }
 
+/**
+ * A form input component integrated with react-hook-form, supporting text and numeric input.
+ *
+ * @template T - The type of the form data object.
+ * @param {TestlabInputBaseProps<T>} props - The props for the component.
+ * @param {string} props.label - Label for the input field.
+ * @param {string} [props.description] - Optional description for the input field.
+ * @param {Path<T>} props.name - The name of the input field, correlating to the property in form data.
+ * @param {boolean} [props.required=false] - Indicates if the input is required.
+ * @param {boolean} [props.numeric=false] - If true, the input type will be numeric.
+ * @param {string} [props.size='small'] - Size of the input field.
+ * @returns {ReactNode}
+ */
 const TestlabFormInput = <T extends object>({
   label,
   description,
@@ -20,7 +33,7 @@ const TestlabFormInput = <T extends object>({
   required = false,
   numeric = false,
   size = 'small',
-}: TestlabInputBaseProps<T>) => {
+}: TestlabInputBaseProps<T>): ReactNode => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 

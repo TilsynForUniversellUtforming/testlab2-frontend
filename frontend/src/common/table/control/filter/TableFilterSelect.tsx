@@ -1,6 +1,6 @@
 import { headingWithoutSorting } from '@common/table/util';
 import { Option } from '@common/types';
-import { sanitizeLabel } from '@common/util/stringutils';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Select, SortDirection, TableCell } from '@digdir/design-system-react';
 import { flexRender, Header, Table } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
@@ -40,7 +40,7 @@ const TableFilterSelect = <T extends object>({
     ];
     const computedOptions: Option[] = keysWithoutSortingNumbers
       .map((value) => ({
-        label: sanitizeLabel(value),
+        label: sanitizeEnumLabel(value),
         value: value,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
@@ -68,8 +68,8 @@ const TableFilterSelect = <T extends object>({
               sortDirection === 'desc'
                 ? 'rotate(0deg)'
                 : sortDirection === 'asc'
-                ? 'rotate(180deg)'
-                : 'none',
+                  ? 'rotate(180deg)'
+                  : 'none',
           }}
         >
           <path
