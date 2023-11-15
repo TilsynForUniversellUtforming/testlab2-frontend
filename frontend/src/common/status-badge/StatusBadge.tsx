@@ -1,7 +1,7 @@
 import { Tag } from '@digdir/design-system-react';
 import { Color } from '@maaling/api/types';
 
-import { sanitizeLabel } from '../util/stringutils';
+import { sanitizeEnumLabel } from '../util/stringutils';
 
 /**
  * Defines the levels for the status badge.
@@ -58,7 +58,7 @@ const StatusBadge = <T extends string>({
 
   const sanitizedLabel = customLabel
     ? customLabel
-    : sanitizeLabel(String(status));
+    : sanitizeEnumLabel(String(status));
 
   return (
     <Tag color={getBadgeColor(status, levels)} size="xsmall">
