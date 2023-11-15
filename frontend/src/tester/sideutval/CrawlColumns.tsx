@@ -1,7 +1,7 @@
 import StatusBadge from '@common/status-badge/StatusBadge';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
-import { sanitizeLabel } from '@common/util/stringutils';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { CrawlResultat, JobStatus, Maaling } from '@maaling/api/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
@@ -60,7 +60,7 @@ export const getCrawlColumns = (
           label = 'Crawler';
         }
       } else {
-        label = sanitizeLabel(status);
+        label = sanitizeEnumLabel(status);
       }
 
       return (

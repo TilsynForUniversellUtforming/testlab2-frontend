@@ -1,3 +1,8 @@
+/**
+ * Joins an array of strings into a single readable string.
+ * @param {string[]} list - Array of strings to join.
+ * @returns {string} Joined string.
+ */
 export const joinStringsToList = (list: string[]): string => {
   if (list.length === 1) return list[0];
   const firsts = list.slice(0, list.length - 1);
@@ -5,12 +10,28 @@ export const joinStringsToList = (list: string[]): string => {
   return firsts.join(', ') + ' og ' + last;
 };
 
+/**
+ * Capitalizes the first character of a string.
+ * @param {string} str - String to capitalize.
+ * @returns {string} Capitalized string.
+ */
 export const capitalize = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
-export const sanitizeLabel = (label: string) =>
+/**
+ * Sanitizes an emum value to be used in a label by replacing underscores with
+ * spaces and capitalizing the first character.
+ * @param {string} label - Label to sanitize.
+ * @returns {string} Sanitized label.
+ */
+export const sanitizeEnumLabel = (label: string): string =>
   capitalize(label.replace('_', ' '));
 
+/**
+ * Extracts the domain from a given URL.
+ * @param {string} [url] - URL to extract the domain from.
+ * @returns {string} Extracted domain, or the original URL if extraction fails.
+ */
 export const extractDomain = (url?: string): string => {
   if (!url) return '';
 
@@ -22,6 +43,12 @@ export const extractDomain = (url?: string): string => {
   }
 };
 
+/**
+ * Parses a value as a number, throwing an error if the value is not a valid number.
+ * @param {number|string} value - Value to parse as a number.
+ * @returns {number} Parsed number.
+ * @throws {Error} Will throw an error if the value is not a valid number.
+ */
 export const parseNumberInput = (value: number | string): number => {
   const numberValue = Number(value);
   if (!isNaN(numberValue)) {
@@ -31,6 +58,11 @@ export const parseNumberInput = (value: number | string): number => {
   }
 };
 
+/**
+ * Formats a date string into 'dd.mm.yyyy' format.
+ * @param {string} dateString - Date string to format.
+ * @returns {string} Formatted date string.
+ */
 export const formatDateString = (dateString: string): string => {
   const date = new Date(dateString);
   const format = new Intl.DateTimeFormat('nb-NO', {
@@ -39,7 +71,16 @@ export const formatDateString = (dateString: string): string => {
     day: '2-digit',
   });
 
-  return format.format(date);
+  try {
+    return format.format(date);
+  } catch (e) {
+    return dateString;
+  }
 };
 
-export const removeSpaces = (s: string) => s.replace(/\s/g, '');
+/**
+ * Removes all spaces from a string.
+ * @param {string} s - String from which spaces are to be removed.
+ * @returns {string} String without spaces.
+ */
+export const removeSpaces = (s: string): string => s.replace(/\s/g, '');
