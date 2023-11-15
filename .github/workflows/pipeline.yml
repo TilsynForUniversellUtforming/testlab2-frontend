@@ -35,6 +35,8 @@ jobs:
       - name: build frontend app
         working-directory: frontend
         run: npm run build
+      - name: test frontend app
+        run: npm run test
       - name: compile and test server app
         run: mvn -B test
       - name: make public folder
