@@ -19,21 +19,25 @@ export type VerksemdInit = {
   contactPerson?: string;
 };
 
+export type LoeysingNettsideRelation = {
+  loeysing: Loeysing;
+  properties: NettsideProperties[];
+};
+
+export type LoeysingNettsideRelationTest = {
+  useInTest: boolean;
+} & LoeysingNettsideRelation;
+
 export type SakVerksemdLoeysingRelation = {
   verksemd?: Loeysing;
   manualVerksemd?: VerksemdInit;
-  loeysingList: LoeysingNettsideRelation[];
+  loeysingList: LoeysingNettsideRelationTest[];
 };
 
 export type NettsideProperties = {
   url: string;
   reason?: string;
   description?: string;
-};
-
-export type LoeysingNettsideRelation = {
-  loeysing: Loeysing;
-  properties: NettsideProperties[];
 };
 
 export type LoeysingSource = 'utval' | 'manuell';

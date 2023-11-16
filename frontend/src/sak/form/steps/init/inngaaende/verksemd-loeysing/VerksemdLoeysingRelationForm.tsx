@@ -1,29 +1,38 @@
 import TestlabFormFieldArrayAutocomplete from '@common/form/field-array/TestlabFormFieldArrayAutocomplete';
 import { Tabs } from '@digdir/design-system-react';
+import { defaultValues } from '@sak/form/steps/init/inngaaende/types';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
-import { LoeysingNettsideRelation, SakFormState } from '@sak/types';
+import { LoeysingNettsideRelationTest, SakFormState } from '@sak/types';
+import { useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 const VerksemdLoeysingRelationForm = () => {
-  const defaultValues: LoeysingNettsideRelation = {
-    loeysing: { id: 0, namn: '', url: '', orgnummer: '' },
-  };
+  const { control } = useFormContext<SakFormState>();
 
   const { verksemdAutocompleteList, onChangeAutocomplete, errorMessage } =
     useLoeysingAutocomplete();
 
-  const loeysingList: LoeysingNettsideRelation[] = verksemdAutocompleteList.map(
-    (loeysing) => ({
-      loeysing: loeysing,
-      forside: undefined,
-      navigasjonsmeny: undefined,
-      bilder: undefined,
-      overskrifter: undefined,
-      artikkel: undefined,
-      skjema: undefined,
-      tabell: undefined,
-      knapper: undefined,
-    })
-  );
+  const selectedLoeysingList = useWatch<SakFormState>({
+    control,
+    name: 'verksemdLoeysingRelation.loeysingList',
+  }) as LoeysingNettsideRelationTest[];
+
+  const loeysingList: LoeysingNettsideRelationTest[] = useMemo(() => {
+    if (verksemdAutocompleteList.length > 0) {
+      const selectedLoeysingIdList = selectedLoeysingList.map(
+        (lnr) => lnr.loeysing.id
+      );
+      return verksemdAutocompleteList
+        .filter((l) => !selectedLoeysingIdList.includes(l.id))
+        .map((loeysing) => ({
+          loeysing: loeysing,
+          properties: [],
+          useInTest: true,
+        }));
+    } else {
+      return [];
+    }
+  }, [verksemdAutocompleteList, selectedLoeysingList]);
 
   return (
     <>
@@ -35,7 +44,7 @@ const VerksemdLoeysingRelationForm = () => {
         <Tabs.Content value="manuelt">
           <TestlabFormFieldArrayAutocomplete<
             SakFormState,
-            LoeysingNettsideRelation
+            LoeysingNettsideRelationTest
           >
             fieldName="verksemdLoeysingRelation.loeysingList"
             defaultValues={defaultValues}

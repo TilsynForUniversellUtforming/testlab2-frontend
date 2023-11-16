@@ -22,21 +22,15 @@ export const loeysingSchema = z.object({
 
 const loeysingNettsideRelationScehma = z.object({
   loeysing: loeysingSchema,
-  forside: z.undefined(),
-  navigasjonsmeny: z.undefined(),
-  bilder: z.undefined(),
-  overskrifter: z.undefined(),
-  artikkel: z.undefined(),
-  skjema: z.undefined(),
-  tabell: z.undefined(),
-  knapper: z.undefined(),
+  properties: z.array(z.undefined()).optional(),
+  useInTest: z.boolean(),
 });
 
 const verksemdLoeysingRelationSchema = z
   .object({
     loeysingList: z
       .array(loeysingNettsideRelationScehma.optional())
-      .min(1, 'Ein vermeksemd må ha minst ei løysing for testing'),
+      .min(1, 'Ein vermeksemd må ha minst ei nettløysing for testing'),
   })
   .refine(
     (verksemdLoeysing) =>
@@ -61,7 +55,15 @@ const verksemdLoeysingRelationSchema = z
       );
     },
     {
-      message: 'Løsyingar må være unike',
+      message: 'Nettløsyingar må være unike',
+      path: ['loeysingList'],
+    }
+  )
+  .refine(
+    (verksemdLoesying) =>
+      verksemdLoesying.loeysingList.some((l) => l?.useInTest || false),
+    {
+      message: 'Minst ei nettløysing må være med i testen',
       path: ['loeysingList'],
     }
   );

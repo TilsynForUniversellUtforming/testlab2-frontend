@@ -32,17 +32,18 @@ export const isDefined = <T>(value: T | undefined | null): value is T => {
  * @param {T | undefined | null} value - The value to check.
  * @returns {boolean} True if the value is not defined, otherwise false.
  */
-export const isNotDefined = <T>(value: T | undefined | null): value is T =>
-  !isDefined(value);
+export const isNotDefined = <T>(
+  value: T | undefined | null
+): value is undefined | null => !isDefined(value);
 
 /**
  * Checks if an object is valid (not null, undefined, and has at least one key).
  * @template T - The type of the object to check.
- * @param {T} objectToCheck - The object to validate.
+ * @param {T | undefined | null} objectToCheck - The object to validate.
  * @returns {boolean} True if the object is valid, otherwise false.
  */
 export const isValidObject = <T extends Record<string, unknown>>(
-  objectToCheck: T
+  objectToCheck?: T
 ): boolean => {
   if (typeof objectToCheck !== 'object' || objectToCheck === null) {
     return false;

@@ -1,3 +1,4 @@
+import { isNotDefined } from '@common/util/validationUtils';
 import {
   ArrayPath,
   type FieldPath,
@@ -18,6 +19,9 @@ export const getErrorMessage = <TFieldValues extends FieldValues>(
   form: FormState<TFieldValues>,
   name: FieldPath<TFieldValues> | ArrayPath<TFieldValues>
 ): string | undefined => {
+  if (isNotDefined(form?.errors)) {
+    return undefined;
+  }
   const regex = /\.(\d)\./g;
   const error: FieldError | undefined = get(
     form.errors,

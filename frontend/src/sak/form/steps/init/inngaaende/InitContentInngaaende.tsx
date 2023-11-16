@@ -1,11 +1,12 @@
-import TestlabDivider from '@common/divider/TestlabDivider';
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
-import { ButtonSize, ButtonVariant } from '@common/types';
-import { Button, Chip, Heading, Paragraph } from '@digdir/design-system-react';
+import { isDefined, isValidObject } from '@common/util/validationUtils';
 import { Loeysing } from '@loeysingar/api/types';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
 import SakVerksemdResult from '@sak/form/steps/init/inngaaende/SakVerksemdResult';
-import VerksemdLoeysingRelationForm from '@sak/form/steps/init/inngaaende/VerksemdLoeysingRelationForm';
+import {
+  defaultManualVerksemd,
+  defaultValues,
+} from '@sak/form/steps/init/inngaaende/types';
+import VerksemdLoeysingRelationWrapper from '@sak/form/steps/init/inngaaende/verksemd-loeysing/VerksemdLoeysingRelationWrapper';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
 import { SakFormState, SakVerksemdLoeysingRelation } from '@sak/types';
 import { getVerksemdLoeysingRelations_dummy } from '@verksemder/api/verksemd-api';
@@ -15,12 +16,11 @@ import { useFormContext, useWatch } from 'react-hook-form';
 const InitContentInngaaende = () => {
   const [loadingRelations, setLoadingRelations] = useState(false);
   const [errorMessageRelations, setErrorMessageRelations] = useState<string>();
-  const [showManualLoeysingRelation, setShowManualLoeysingRelation] =
-    useState(false);
   const [noVerksemdLoeysingRelations, setNoVerksemdLoeysingRelations] =
-    useState(false);
+    useState(true);
+  const [showManualEntry, setShowManualEntry] = useState<boolean>(false);
 
-  const { control, setValue } = useFormContext<SakFormState>();
+  const { control, setValue, formState } = useFormContext<SakFormState>();
   const verksemdLoeysingRelation = useWatch<SakFormState>({
     control,
     name: 'verksemdLoeysingRelation',
@@ -34,11 +34,17 @@ const InitContentInngaaende = () => {
   } = useLoeysingAutocomplete();
 
   useEffect(() => {
-    const noVerksemdLoeysingRelations =
-      verksemdLoeysingRelation?.loeysingList.filter((l) => l.loeysing.id > 0)
-        .length === 0;
-    setNoVerksemdLoeysingRelations(noVerksemdLoeysingRelations);
-  }, [verksemdLoeysingRelation?.loeysingList]);
+    setShowManualEntry(
+      verksemdNotFound ||
+        isValidObject(verksemdLoeysingRelation?.manualVerksemd)
+    );
+  }, [verksemdNotFound, verksemdLoeysingRelation?.manualVerksemd]);
+
+  useEffect(() => {
+    if (verksemdNotFound) {
+      setValue('verksemdLoeysingRelation.loeysingList', [defaultValues]);
+    }
+  }, [verksemdNotFound]);
 
   const handleGetVerksemdLoeysingRelations = async (verksemd: Loeysing) => {
     setErrorMessageRelations(undefined);
@@ -61,27 +67,27 @@ const InitContentInngaaende = () => {
 
   const onClick = useCallback((verksemd: Loeysing) => {
     setValue('verksemdLoeysingRelation.verksemd', verksemd);
+    setValue('verksemdLoeysingRelation.manualVerksemd', defaultManualVerksemd);
     handleGetVerksemdLoeysingRelations(verksemd).then(
       (verksemdLoeysingRelationList) => {
-        if (verksemdLoeysingRelationList) {
+        if (isDefined(verksemdLoeysingRelationList)) {
           setValue(
             'verksemdLoeysingRelation.loeysingList',
-            verksemdLoeysingRelationList.map((loeysing) => ({
-              loeysing: loeysing,
-              forside: undefined,
-              navigasjonsmeny: undefined,
-              bilder: undefined,
-              overskrifter: undefined,
-              artikkel: undefined,
-              skjema: undefined,
-              tabell: undefined,
-              knapper: undefined,
+            verksemdLoeysingRelationList.map((vlr) => ({
+              ...vlr,
+              useInTest: false,
             }))
           );
+          setNoVerksemdLoeysingRelations(false);
+        } else {
+          setValue('verksemdLoeysingRelation.loeysingList', [defaultValues]);
+          setNoVerksemdLoeysingRelations(true);
         }
       }
     );
   }, []);
+
+  console.log(formState);
 
   return (
     <>
@@ -101,53 +107,15 @@ const InitContentInngaaende = () => {
       />
       <SakVerksemdResult
         verksemd={verksemdLoeysingRelation?.verksemd}
-        manualVerksemd={verksemdLoeysingRelation?.manualVerksemd}
-        verksemdNotFound={verksemdNotFound}
+        showManualEntry={showManualEntry}
         loading={loadingRelations}
         errorMessageRelations={errorMessageRelations}
       />
-      {(verksemdNotFound || verksemdLoeysingRelation?.verksemd) && (
-        <>
-          <TestlabDivider size="large" />
-          <Heading size="small" level={5} spacing>
-            Utvalgte nettsteder
-          </Heading>
-          {noVerksemdLoeysingRelations && (
-            <Paragraph size="small">
-              Det kom ingen utvalgte nettsteder med i søket. Legg inn navn på
-              virksomheter, underenheter eller digitale verktøy som skal være en
-              del av denne testen. Sideutvalg gjøres på et senere tidspunkt
-            </Paragraph>
-          )}
-          <div className="sak-loeysing__inngaaende-selection">
-            {verksemdLoeysingRelation?.loeysingList?.map((loeysingRelation) => {
-              if (!loeysingRelation?.loeysing?.namn) {
-                return null;
-              }
-
-              return (
-                <Chip.Toggle key={loeysingRelation.loeysing.id}>
-                  {loeysingRelation.loeysing.namn}
-                </Chip.Toggle>
-              );
-            })}
-          </div>
-          {!(showManualLoeysingRelation || noVerksemdLoeysingRelations) && (
-            <Button
-              size={ButtonSize.Small}
-              variant={ButtonVariant.Quiet}
-              type="button"
-              onClick={() => setShowManualLoeysingRelation(true)}
-              icon={<PlusCircleIcon />}
-            >
-              Legg til løsning
-            </Button>
-          )}
-          {(showManualLoeysingRelation || noVerksemdLoeysingRelations) && (
-            <VerksemdLoeysingRelationForm />
-          )}
-        </>
-      )}
+      <VerksemdLoeysingRelationWrapper
+        verksemdLoeysingRelation={verksemdLoeysingRelation}
+        verksemdNotFound={verksemdNotFound}
+        noVerksemdLoeysingRelations={noVerksemdLoeysingRelations}
+      />
     </>
   );
 };

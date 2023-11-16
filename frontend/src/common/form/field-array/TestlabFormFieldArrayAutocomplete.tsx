@@ -1,5 +1,6 @@
 import './field-array.scss';
 
+import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import TestlabFormAutocomplete, {
   AutoCompleteProps,
 } from '@common/form/autocomplete/TestlabFormAutocomplete';
@@ -9,15 +10,21 @@ import { ButtonSize, ButtonVariant } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Button, ErrorMessage } from '@digdir/design-system-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ArrayPath,
   FieldArray,
+  FieldArrayWithId,
   Path,
   PathValue,
   useFieldArray,
   useFormContext,
 } from 'react-hook-form';
+
+const extractType = <T extends FieldArrayWithId>(obj: T): Omit<T, 'id'> => {
+  const { id, ...rest } = obj;
+  return rest as Omit<T, 'id'>;
+};
 
 interface Props<
   FormDataType extends object,
@@ -46,6 +53,16 @@ const TestlabFormFieldArrayAutocomplete = <
     name: fieldName,
     control,
   });
+
+  useEffect(() => {
+    const fieldsWithoutId = fields.map((field) =>
+      JSON.stringify(extractType(field))
+    );
+    const defaultValueIndex = fieldsWithoutId.indexOf(
+      JSON.stringify(defaultValues)
+    );
+    setDefaultValueIdx(defaultValueIndex >= 0 ? defaultValueIndex : undefined);
+  }, [fields]);
 
   const {
     label,
@@ -94,27 +111,32 @@ const TestlabFormFieldArrayAutocomplete = <
 
         return (
           <div className="testlab-form__field-array-entry" key={field.id}>
-            <div className="testlab-form__field-array-entry-label">
-              {valueLabel}
-            </div>
-            {!valueLabel && (
-              <div className="testlab-form__field-array-entry__input">
-                <TestlabFormAutocomplete<FormDataType, ResultDataType>
-                  label={label}
-                  resultList={resultList}
-                  resultLabelKey={resultLabelKey}
-                  resultDescriptionKey={resultDescriptionKey}
-                  onChange={onChange}
-                  onClick={(value) => onClickAutocomplete(value, idx)}
-                  name={name}
-                  retainValueOnClick={retainValueOnClick}
-                  required={required}
-                  spacing={spacing}
-                  customError={customError}
-                  hideLabel
-                />
-              </div>
-            )}
+            <ConditionalComponentContainer
+              condition={isDefined(valueLabel)}
+              conditionalComponent={
+                <div className="testlab-form__field-array-entry-label">
+                  {valueLabel}
+                </div>
+              }
+              otherComponent={
+                <div className="testlab-form__field-array-entry__input">
+                  <TestlabFormAutocomplete<FormDataType, ResultDataType>
+                    label={label}
+                    resultList={resultList}
+                    resultLabelKey={resultLabelKey}
+                    resultDescriptionKey={resultDescriptionKey}
+                    onChange={onChange}
+                    onClick={(value) => onClickAutocomplete(value, idx)}
+                    name={name}
+                    retainValueOnClick={retainValueOnClick}
+                    required={required}
+                    spacing={spacing}
+                    customError={customError}
+                    hideLabel
+                  />
+                </div>
+              }
+            />
             <Button
               size={ButtonSize.Small}
               variant={ButtonVariant.Quiet}
@@ -137,9 +159,10 @@ const TestlabFormFieldArrayAutocomplete = <
       >
         {buttonAddText}
       </Button>
-      {errorMessage && fields.length === 0 && (
-        <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-      )}
+      {errorMessage &&
+        (fields.length === 0 || isNotDefined(defaultValueIdx)) && (
+          <ErrorMessage size="small">{errorMessage}</ErrorMessage>
+        )}
     </div>
   );
 };
