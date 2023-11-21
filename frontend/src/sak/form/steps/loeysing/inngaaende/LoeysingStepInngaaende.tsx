@@ -3,7 +3,7 @@ import {
   Accordion,
   Chip,
   ErrorMessage,
-  Paragraph,
+  Heading,
 } from '@digdir/design-system-react';
 import LoeysingNettsideForm from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/LoeysingNettsideForm';
 import { LoeysingNettsideRelation, SakFormState } from '@sak/types';
@@ -34,7 +34,9 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
 
   return (
     <>
-      <Paragraph spacing>Utvalgte nettsteder</Paragraph>
+      <Heading level={5} size="small" spacing>
+        Utvalgte nettsteder
+      </Heading>
       <div className="sak-loeysing__inngaaende-selection">
         {loeysingNettsideRelationList?.map((loeysingRelation) => {
           if (!loeysingRelation?.loeysing?.namn) {

@@ -8,7 +8,8 @@ export type NettsidePropertyType =
   | 'artikkel'
   | 'skjema'
   | 'tabell'
-  | 'knapper';
+  | 'knapper'
+  | 'egendefinert';
 
 export const nettsidePropertyOptions: SingleSelectOption[] = [
   { label: 'Forside', value: 'forside' },
@@ -19,5 +20,5 @@ export const nettsidePropertyOptions: SingleSelectOption[] = [
   { label: 'Skjema', value: 'skjema' },
   { label: 'Tabeller', value: 'tabell' },
   { label: 'Kapper', value: 'knapper' },
-  { label: 'Ingen', value: '' },
+  { label: 'Egendefinert', value: 'egendefinert' },
 ];

@@ -1,12 +1,19 @@
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import TestlabDivider from '@common/divider/TestlabDivider';
+import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { isValidObject } from '@common/util/validationUtils';
-import { Button, Heading, Paragraph } from '@digdir/design-system-react';
+import {
+  Button,
+  ErrorMessage,
+  Heading,
+  Paragraph,
+} from '@digdir/design-system-react';
 import LoeysingRelationList from '@sak/form/steps/init/inngaaende/verksemd-loeysing/LoeysingRelationList';
 import VerksemdLoeysingRelationForm from '@sak/form/steps/init/inngaaende/verksemd-loeysing/VerksemdLoeysingRelationForm';
-import { SakVerksemdLoeysingRelation } from '@sak/types';
+import { SakFormState, SakVerksemdLoeysingRelation } from '@sak/types';
 import { useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 interface Props {
   verksemdLoeysingRelation?: SakVerksemdLoeysingRelation;
@@ -22,6 +29,8 @@ const VerksemdLoeysingRelationWrapper = ({
   const [showManualLoeysingRelation, setShowManualLoeysingRelation] =
     useState<boolean>(noVerksemdLoeysingRelations);
 
+  const { formState } = useFormContext<SakFormState>();
+
   useEffect(() => {
     setShowManualLoeysingRelation(noVerksemdLoeysingRelations);
   }, [noVerksemdLoeysingRelations]);
@@ -34,6 +43,11 @@ const VerksemdLoeysingRelationWrapper = ({
     return null;
   }
 
+  const listError = getErrorMessage(
+    formState,
+    'verksemdLoeysingRelation.loeysingList'
+  );
+
   return (
     <>
       <TestlabDivider size="large" />
@@ -41,8 +55,9 @@ const VerksemdLoeysingRelationWrapper = ({
         Utvalde nettløysingar
       </Heading>
       <Paragraph size="small" spacing>
-        Du kan velja kva nettløysingar du vil testa på. Du kan velja så mange du
-        vil, av både mobil og nettstader.
+        Vel kva nettløysingar du vil testa på. Du må velja men minst ein, men
+        kan vejla så mange du vil av både mobil og nettstader. Du kan også
+        leggja til fleira manuelt.
         {noVerksemdLoeysingRelations && (
           <>
             <br />
@@ -69,6 +84,9 @@ const VerksemdLoeysingRelationWrapper = ({
           </Button>
         }
       />
+      {!showManualLoeysingRelation && listError && (
+        <ErrorMessage>{listError}</ErrorMessage>
+      )}
     </>
   );
 };

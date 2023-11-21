@@ -20,7 +20,7 @@ const InitContentInngaaende = () => {
     useState(true);
   const [showManualEntry, setShowManualEntry] = useState<boolean>(false);
 
-  const { control, setValue, formState } = useFormContext<SakFormState>();
+  const { control, setValue } = useFormContext<SakFormState>();
   const verksemdLoeysingRelation = useWatch<SakFormState>({
     control,
     name: 'verksemdLoeysingRelation',
@@ -86,8 +86,6 @@ const InitContentInngaaende = () => {
       }
     );
   }, []);
-
-  console.log(formState);
 
   return (
     <>

@@ -153,11 +153,27 @@ const SakTestreglarStep = ({
 
   const formError = getErrorMessage(formState, 'testregelList');
 
+  const getDescription = (): string | undefined => {
+    const isForenkletKontroll = sakFormState.sakType === 'Forenklet kontroll';
+    if (isForenkletKontroll) {
+      return formStepState.currentStep.description;
+    } else {
+      const verksemdLoeysingRelation = sakFormState?.verksemdLoeysingRelation;
+      const verksemdNamn = verksemdLoeysingRelation?.verksemd?.namn;
+      const manualVerksemdNamn = verksemdLoeysingRelation?.manualVerksemd?.namn;
+      console.log('manualVerksemdNamn', manualVerksemdNamn);
+      console.log('verksemdNamn', verksemdNamn);
+      return manualVerksemdNamn || verksemdNamn;
+    }
+  };
+
   return (
     <SakFormWrapper
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
+      heading={formStepState.currentStep.heading}
+      description={getDescription()}
     >
       <div className="sak-testreglar">
         <div className="sak-testreglar__input-wrapper">

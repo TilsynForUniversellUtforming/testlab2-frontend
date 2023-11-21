@@ -36,6 +36,7 @@ const LoeysingRelationList = ({ loeysingList }: Props) => {
           return (
             <Chip.Toggle
               key={loeysingRelation.loeysing.id}
+              checkmark={false}
               selected={loeysingRelation.useInTest}
               onClick={() =>
                 handleClickToggle(index, !loeysingRelation.useInTest)

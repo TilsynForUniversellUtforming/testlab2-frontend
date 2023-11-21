@@ -1,66 +1,94 @@
 import TestlabFormInput from '@common/form/TestlabFormInput';
-import { isDefined } from '@common/util/validationUtils';
+import TestlabFormSelect from '@common/form/TestlabFormSelect';
+import { ButtonSize, ButtonVariant } from '@common/types';
+import { Button } from '@digdir/design-system-react';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
 import {
-  Heading,
-  Select,
-  SingleSelectOption,
-} from '@digdir/design-system-react';
+  nettsidePropertyOptions,
+  NettsidePropertyType,
+} from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { SakFormState } from '@sak/types';
-import { useCallback, useState } from 'react';
-import { Path, useFormContext } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Path, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
-  heading: string;
+  isWeb: boolean;
+  onClickAdd: () => void;
+  nextPropertyPath: Path<SakFormState>;
+  nameType: Path<SakFormState>;
   nameUrl: Path<SakFormState>;
   nameReason: Path<SakFormState>;
   nameDescription: Path<SakFormState>;
-  options: SingleSelectOption[];
 }
 
 const NettsidePropertiesFormInput = ({
-  heading,
+  isWeb,
+  onClickAdd,
+  nextPropertyPath,
+  nameType,
   nameUrl,
   nameReason,
   nameDescription,
-  options,
 }: Props) => {
-  const [optionSelected, setOptionSelected] = useState<boolean>(false);
-  const { setValue } = useFormContext<SakFormState>();
-  const onChange = useCallback((option: string) => {
-    if (isDefined(option)) {
-      setValue(nameDescription, option);
-      setOptionSelected(true);
-    } else {
-      setOptionSelected(false);
-    }
-  }, []);
+  const [displayDescription, setDisplayDescription] = useState<boolean>(false);
+  const { control, setValue } = useFormContext<SakFormState>();
+
+  const type = useWatch<SakFormState>({
+    control,
+    name: nameType,
+  }) as NettsidePropertyType | undefined;
+
+  useEffect(() => {
+    setDisplayDescription(!!type && type === 'egendefinert');
+  }, [type]);
+
+  const onClickAddType = (type: NettsidePropertyType) => {
+    setValue(nextPropertyPath, {
+      type: type,
+      url: '',
+      reason: undefined,
+      description: undefined,
+    });
+    onClickAdd();
+  };
 
   return (
     <div className="sak-loeysing__nettsted-props-entry">
-      <Heading size="xsmall" level={6}>
-        {heading}
-      </Heading>
-      <TestlabFormInput<SakFormState>
-        label="Url til side"
-        name={nameUrl}
-        required
+      <TestlabFormSelect
+        label="Velg sidetype"
+        options={nettsidePropertyOptions}
+        name={nameType}
       />
+      {isWeb && (
+        <TestlabFormInput<SakFormState>
+          label="Url til side"
+          name={nameUrl}
+          required
+        />
+      )}
       <TestlabFormInput<SakFormState>
         label="Begrunnelse for sidevalg"
         name={nameReason}
         required
       />
-      <TestlabFormInput<SakFormState>
-        label="Beskrivelse av siden"
-        name={nameDescription}
-        disabled={optionSelected}
-        required
-      />
-      <Select
-        label="Standardside (valgfritt)"
-        options={options}
-        onChange={onChange}
-      />
+      {displayDescription && (
+        <TestlabFormInput<SakFormState>
+          label="Beskrivelse av siden"
+          name={nameDescription}
+          required
+        />
+      )}
+      {type && (
+        <Button
+          size={ButtonSize.Small}
+          variant={ButtonVariant.Quiet}
+          type="button"
+          onClick={() => onClickAddType(type)}
+          icon={<PlusCircleIcon />}
+        >
+          Legg til side av type {type}
+        </Button>
+      )}
     </div>
   );
 };

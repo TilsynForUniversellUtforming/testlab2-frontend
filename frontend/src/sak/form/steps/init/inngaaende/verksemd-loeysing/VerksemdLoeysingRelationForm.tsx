@@ -1,5 +1,4 @@
 import TestlabFormFieldArrayAutocomplete from '@common/form/field-array/TestlabFormFieldArrayAutocomplete';
-import { Tabs } from '@digdir/design-system-react';
 import { defaultValues } from '@sak/form/steps/init/inngaaende/types';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
 import { LoeysingNettsideRelationTest, SakFormState } from '@sak/types';
@@ -35,36 +34,26 @@ const VerksemdLoeysingRelationForm = () => {
   }, [verksemdAutocompleteList, selectedLoeysingList]);
 
   return (
-    <>
-      <Tabs value="manuelt" onClick={(e) => e.preventDefault()}>
-        <Tabs.List>
-          <Tabs.Tab value="manuelt">Legg inn manuelt</Tabs.Tab>
-          <Tabs.Tab value="import">Importer fil</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Content value="manuelt">
-          <TestlabFormFieldArrayAutocomplete<
-            SakFormState,
-            LoeysingNettsideRelationTest
-          >
-            fieldName="verksemdLoeysingRelation.loeysingList"
-            defaultValues={defaultValues}
-            buttonAddText="Legg til løysing"
-            buttonRemoveText="Fjern løysing"
-            autocompleteProps={{
-              label: 'Namn på løysing',
-              resultList: loeysingList,
-              resultLabelKey: 'loeysing.namn',
-              resultDescriptionKey: 'loeysing.orgnummer',
-              onChange: onChangeAutocomplete,
-              name: 'verksemdLoeysingRelation.loeysingList',
-              retainValueOnClick: false,
-              customError: errorMessage,
-              required: true,
-            }}
-          />
-        </Tabs.Content>
-      </Tabs>
-    </>
+    <TestlabFormFieldArrayAutocomplete<
+      SakFormState,
+      LoeysingNettsideRelationTest
+    >
+      fieldName="verksemdLoeysingRelation.loeysingList"
+      defaultValues={defaultValues}
+      buttonAddText="Legg til løysing"
+      buttonRemoveText="Fjern løysing"
+      autocompleteProps={{
+        label: 'Namn på løysing',
+        resultList: loeysingList,
+        resultLabelKey: 'loeysing.namn',
+        resultDescriptionKey: 'loeysing.url',
+        onChange: onChangeAutocomplete,
+        name: 'verksemdLoeysingRelation.loeysingList',
+        retainValueOnClick: false,
+        customError: errorMessage,
+        required: true,
+      }}
+    />
   );
 };
 
