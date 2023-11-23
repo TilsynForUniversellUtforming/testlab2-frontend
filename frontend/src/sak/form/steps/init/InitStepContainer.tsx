@@ -36,6 +36,8 @@ const InitStepContainer = ({
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
+      heading={formStepState.currentStep.heading}
+      description={formStepState.currentStep.description}
       hasRequiredFields
     >
       <div className="sak-init">

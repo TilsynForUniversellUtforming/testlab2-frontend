@@ -16,14 +16,16 @@ import React, {
 } from 'react';
 import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
+import { getLabelString } from './util';
+
 export interface AutoCompleteProps<
   FormDataType extends object,
   ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
 > extends Omit<TestlabInputBaseProps<FormDataType>, 'onChange'> {
   resultList: ResultDataType[];
   onChange: (value: string) => void;
-  resultLabelKey: keyof ResultDataType;
-  resultDescriptionKey?: keyof ResultDataType;
+  resultLabelKey: Path<ResultDataType>;
+  resultDescriptionKey?: Path<ResultDataType>;
   retainValueOnClick?: boolean;
   retainLabelValueChange?: boolean;
   description?: string;
@@ -146,7 +148,9 @@ const TestlabFormAutocomplete = <
   const handleOnClick = useCallback(
     (name: Path<FormDataType>, result: ResultDataType) => {
       setShowResultList(false);
-      setInputValueLabel(retainValueOnClick ? result[resultLabelKey] : '');
+      setInputValueLabel(
+        retainValueOnClick ? getLabelString(result, resultLabelKey) : ''
+      );
       if (onClick) {
         onClick(result);
       } else {

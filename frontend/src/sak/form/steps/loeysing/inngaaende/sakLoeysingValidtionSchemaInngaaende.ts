@@ -1,35 +1,70 @@
-import { isDefined } from '@common/util/validationUtils';
-import { loeysingSchema } from '@sak/form/steps/init/sakFormValidationSchema';
+import { isNotDefined } from '@common/util/validationUtils';
 import { z } from 'zod';
 
-const verksemdLoeysingRelationSchema = z
+import { loeysingSchema } from '../../init/inngaaendeVerksemdSchema';
+
+const nettsidePropertyType = z.union([
+  z.literal('forside'),
+  z.literal('navigasjonsmeny'),
+  z.literal('bilder'),
+  z.literal('overskrifter'),
+  z.literal('artikkel'),
+  z.literal('skjema'),
+  z.literal('tabell'),
+  z.literal('knapper'),
+  z.literal('egendefinert'),
+  z.literal(undefined),
+]);
+
+const nettsidePropertiesSchema = z
   .object({
-    loeysingList: z
-      .array(loeysingSchema.optional())
-      .min(1, 'Ein vermeksemd må ha minst ei løysing for testing'),
+    type: nettsidePropertyType,
+    url: z.undefined().or(z.string().min(1, 'Manglar url')),
+    description: z.undefined().or(z.string().min(1, 'Manglar beskrivelse')),
+    reason: z.undefined().or(z.string().min(1, 'Manglar begrunnelse')),
   })
-  .refine(
-    (verksemdLoeysing) =>
-      verksemdLoeysing.loeysingList.every(
-        (loeysing) => loeysing?.id !== 0 && isDefined(loeysing?.id)
-      ),
-    {
-      message: 'Nokre felt manglar løysing',
-      path: ['loeysingList'],
+  .superRefine((nettsideProps, ctx) => {
+    const { url, reason, description, type } = nettsideProps;
+
+    if ((url || reason || type) && !(url && reason && type)) {
+      const message = 'Alle felt må vera fylt ut eller tomme';
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: message,
+        path: ['url'],
+      });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: message,
+        path: ['reason'],
+      });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: message,
+        path: ['type'],
+      });
     }
-  )
-  .refine(
-    (verksemdLoeysing) => {
-      return (
-        new Set(verksemdLoeysing.loeysingList.map((loeysing) => loeysing?.id))
-          .size === verksemdLoeysing.loeysingList.length
-      );
-    },
-    {
-      message: 'Løsyingar må være unike',
-      path: ['loeysingList'],
+
+    if (type === 'egendefinert' && isNotDefined(description)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Manglar beskrivelse',
+        path: ['description'],
+      });
     }
-  );
+  });
+
+const loeysingNettsideRelationScehma = z.object({
+  loeysing: loeysingSchema,
+  properties: z.array(nettsidePropertiesSchema),
+  useInTest: z.boolean(),
+});
+
+const verksemdLoeysingRelationSchema = z.object({
+  verksemd: z.any(),
+  manualVerksemd: z.any(),
+  loeysingList: z.array(loeysingNettsideRelationScehma),
+});
 
 export const sakLoeysingValidationSchemaInngaaende = z.object({
   verksemdLoeysingRelation: verksemdLoeysingRelationSchema,

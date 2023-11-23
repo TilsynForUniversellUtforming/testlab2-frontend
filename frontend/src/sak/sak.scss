@@ -29,16 +29,9 @@
   &__container {
     padding-bottom: 1.5rem;
 
-    .sak-init {
-      max-width: 24rem;
-    }
-
-    .sak-loeysing {
-      max-width: 48rem;
-    }
-
     .sak-init,
     .sak-loeysing {
+      max-width: 48rem;
       &__input-wrapper {
         display: flex;
         flex-direction: row;
@@ -68,7 +61,19 @@
         flex-direction: row;
         flex-wrap: wrap;
         margin: 0 auto;
+        gap: 0.75rem;
+        padding-bottom: 2rem;
+      }
+
+      &__nettsted-props {
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
+        align-items: start;
+
+        &-entry {
+          width: 100%;
+        }
       }
 
       &__verksemd-result {
@@ -76,6 +81,7 @@
         flex-direction: column;
         gap: 0.75rem;
         padding-bottom: 2rem;
+        max-width: 24rem;
 
         .entry {
           display: flex;

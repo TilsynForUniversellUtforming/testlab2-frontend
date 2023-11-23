@@ -10,6 +10,8 @@ import Stepper from './stepper/Stepper';
 export interface Props extends Omit<SakFormBaseProps, 'sakFormState'> {
   formMethods: UseFormReturn<SakFormState>;
   hasRequiredFields?: boolean;
+  heading: string;
+  description?: string;
   children: ReactNode;
 }
 
@@ -18,10 +20,10 @@ const SakFormWrapper = ({
   onSubmit,
   formMethods,
   hasRequiredFields = false,
+  heading,
+  description,
   children,
 }: Props) => {
-  const { heading, subHeading } = formStepState.currentStep;
-
   return (
     <div className="sak">
       <TestlabForm<SakFormState>
@@ -31,7 +33,7 @@ const SakFormWrapper = ({
       >
         <Stepper formStepState={formStepState} />
         <div className="sak__form">
-          <TestlabFormHeader heading={heading} description={subHeading} />
+          <TestlabFormHeader heading={heading} description={description} />
           {hasRequiredFields && (
             <Paragraph spacing size="small">
               Felter markert med stjerne er obligatoriske

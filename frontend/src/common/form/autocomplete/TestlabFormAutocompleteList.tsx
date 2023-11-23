@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Path, PathValue } from 'react-hook-form';
+import { get, Path, PathValue } from 'react-hook-form';
 
-export interface Props<FormData, ResultData> {
-  resultList: ResultData[];
-  resultLabelKey: keyof ResultData;
-  onClick: (name: Path<FormData>, result: ResultData) => void;
+export interface Props<
+  FormDataType extends object,
+  ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
+> {
+  resultList: ResultDataType[];
+  resultLabelKey: Path<ResultDataType>;
+  resultDescriptionKey?: Path<ResultDataType>;
+  onClick: (name: Path<FormDataType>, result: ResultDataType) => void;
   show: boolean;
-  name: Path<FormData>;
-  resultDescriptionKey?: keyof ResultData;
+  name: Path<FormDataType>;
   maxListLength?: number;
 }
 
 const TestlabFormAutocompleteList = <
-  FormData extends object,
-  ResultData extends PathValue<FormData, Path<FormData>>,
+  FormDataType extends object,
+  ResultDataType extends PathValue<FormDataType, Path<FormDataType>>,
 >({
   resultList,
   resultLabelKey,
@@ -22,7 +25,7 @@ const TestlabFormAutocompleteList = <
   name,
   resultDescriptionKey,
   maxListLength = 10,
-}: Props<FormData, ResultData>) => {
+}: Props<FormDataType, ResultDataType>) => {
   const [listLength, setListLength] = useState(maxListLength);
   const [results, setResults] = useState(resultList.slice(0, maxListLength));
 
@@ -37,16 +40,9 @@ const TestlabFormAutocompleteList = <
   return (
     <>
       {results.slice(0, listLength).map((result, idx) => {
-        const resultLabel =
-          typeof result[resultLabelKey] === 'string'
-            ? result[resultLabelKey]
-            : null;
-
+        const resultLabel = get(result, String(resultLabelKey)) || '';
         const resultDescription =
-          resultDescriptionKey &&
-          typeof result[resultDescriptionKey] === 'string'
-            ? result[resultDescriptionKey]
-            : null;
+          get(result, String(resultDescriptionKey)) || '';
 
         return (
           <li
@@ -60,7 +56,7 @@ const TestlabFormAutocompleteList = <
                 className="testlab-form-autocomplete__list__button"
               >
                 <div className="testlab-form-autocomplete__list__button-title">
-                  {resultLabel}
+                  {String(resultLabel)}
                 </div>
                 {resultDescription && (
                   <div className="testlab-form-autocomplete__list__button-description">
