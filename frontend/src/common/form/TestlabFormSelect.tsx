@@ -10,7 +10,6 @@ import { TestlabInputBaseProps } from './TestlabFormInput';
 export interface TestlabInputSelectProps<T extends object>
   extends TestlabInputBaseProps<T> {
   options: Option[];
-  customOnChange?: (option: Option) => void;
 }
 
 /**
