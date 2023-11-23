@@ -6,12 +6,12 @@ import { loeysingSchema } from '../../init/inngaaendeVerksemdSchema';
 const nettsidePropertyType = z.union([
   z.literal('forside'),
   z.literal('navigasjonsmeny'),
-  z.literal('bilder'),
+  z.literal('bilder_og_video'),
   z.literal('overskrifter'),
-  z.literal('artikkel'),
+  z.literal('artikkelside'),
   z.literal('skjema'),
-  z.literal('tabell'),
-  z.literal('knapper'),
+  z.literal('tabeller'),
+  z.literal('kapper'),
   z.literal('egendefinert'),
   z.literal(undefined),
 ]);
