@@ -23,7 +23,10 @@ const nettsidePropertiesSchema = z
     reason: z.undefined().or(z.string().min(1)),
   })
   .superRefine((nettsideProps, ctx) => {
-    if (nettsideProps.url || nettsideProps.description || nettsideProps.type) {
+    if (
+      (nettsideProps.url || nettsideProps.description || nettsideProps.type) &&
+      !(nettsideProps.url && nettsideProps.description && nettsideProps.type)
+    ) {
       const message = 'Alle felt må vera fylt ut eller tomme';
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -46,6 +49,7 @@ const nettsidePropertiesSchema = z
 const loeysingNettsideRelationScehma = z.object({
   loeysing: loeysingSchema,
   properties: z.array(nettsidePropertiesSchema),
+  useInTest: z.boolean(),
 });
 
 const verksemdLoeysingRelationSchema = z.object({

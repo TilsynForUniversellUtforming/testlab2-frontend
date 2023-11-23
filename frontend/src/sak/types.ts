@@ -36,7 +36,7 @@ export type SakVerksemdLoeysingRelation = {
 };
 
 export type NettsideProperties = {
-  type: NettsidePropertyType;
+  type?: NettsidePropertyType;
   url?: string;
   reason?: string;
   description?: string;

@@ -1,14 +1,13 @@
-import { isDefined } from '@common/util/validationUtils';
 import {
   Accordion,
   Chip,
   ErrorMessage,
   Heading,
+  Paragraph,
 } from '@digdir/design-system-react';
 import LoeysingNettsideForm from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/LoeysingNettsideForm';
-import { LoeysingNettsideRelation, SakFormState } from '@sak/types';
+import { LoeysingNettsideRelation } from '@sak/types';
 import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 
 interface Props {
   loeysingNettsideRelationList?: LoeysingNettsideRelation[];
@@ -19,59 +18,59 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
     return <ErrorMessage>Noko gjekk gale</ErrorMessage>;
   }
 
-  const { formState } = useFormContext<SakFormState>();
-  const [open, setOpen] = useState<boolean[]>(
-    Array(loeysingNettsideRelationList.length).fill(true)
-  );
+  const [displayLoeysingList, setDisplayLoeysingList] = useState<number[]>([]);
 
-  const onClickOpen = (open: boolean[], index: number) => {
-    const updatedOpen = [...open];
-    updatedOpen[index] = !updatedOpen[index];
-    setOpen(updatedOpen);
+  const toggleDisplayLoesying = (loeysingId: number) => {
+    if (!displayLoeysingList.includes(loeysingId)) {
+      setDisplayLoeysingList([...displayLoeysingList, loeysingId]);
+    } else {
+      setDisplayLoeysingList(
+        displayLoeysingList.filter((id) => id !== loeysingId)
+      );
+    }
   };
-
-  const listErrors = formState?.errors?.verksemdLoeysingRelation?.loeysingList;
 
   return (
     <>
       <Heading level={5} size="small" spacing>
         Utvalgte nettsteder
       </Heading>
+      <Paragraph size="small">
+        Valfritt steg kvar du kan leggja til sideutval for dei løysingane som
+        skal vera med i testen. Vel frå lista med løysingar nedanfor ved å
+        trykke på løsyinga.
+      </Paragraph>
+      <br />
       <div className="sak-loeysing__inngaaende-selection">
-        {loeysingNettsideRelationList?.map((loeysingRelation) => {
-          if (!loeysingRelation?.loeysing?.namn) {
-            return null;
-          }
-
-          return (
-            <Chip.Toggle key={loeysingRelation.loeysing.id}>
-              {loeysingRelation.loeysing.namn}
-            </Chip.Toggle>
-          );
-        })}
-      </div>
-      <Accordion border>
-        {loeysingNettsideRelationList.map((lnr, index) => (
-          <Accordion.Item
-            key={lnr.loeysing.id}
-            color="second"
-            open={
-              open[index] ||
-              isDefined(listErrors ? listErrors[index] : undefined)
-            }
+        {loeysingNettsideRelationList?.map((loeysingRelation) => (
+          <Chip.Toggle
+            key={loeysingRelation.loeysing.id}
+            onClick={() => toggleDisplayLoesying(loeysingRelation.loeysing.id)}
+            selected={displayLoeysingList.includes(
+              loeysingRelation.loeysing.id
+            )}
           >
-            <Accordion.Header onHeaderClick={() => onClickOpen(open, index)}>
-              {lnr.loeysing.namn}
-            </Accordion.Header>
-            <Accordion.Content>
-              <LoeysingNettsideForm
-                heading={lnr.loeysing?.namn}
-                loeysingIndex={index}
-              />
-            </Accordion.Content>
-          </Accordion.Item>
+            {loeysingRelation.loeysing.namn}
+          </Chip.Toggle>
         ))}
-      </Accordion>
+      </div>
+      {displayLoeysingList.length > 0 && (
+        <Accordion border>
+          {loeysingNettsideRelationList
+            .filter((lnr) => displayLoeysingList.includes(lnr.loeysing.id))
+            .map((lnr, index) => (
+              <Accordion.Item key={lnr.loeysing.id} color="second">
+                <Accordion.Header>{lnr.loeysing.namn}</Accordion.Header>
+                <Accordion.Content>
+                  <LoeysingNettsideForm
+                    heading={lnr.loeysing?.namn}
+                    loeysingIndex={index}
+                  />
+                </Accordion.Content>
+              </Accordion.Item>
+            ))}
+        </Accordion>
+      )}
     </>
   );
 };

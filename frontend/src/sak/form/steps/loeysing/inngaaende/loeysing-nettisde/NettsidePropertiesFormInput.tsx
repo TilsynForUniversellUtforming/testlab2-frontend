@@ -1,8 +1,9 @@
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { ButtonSize, ButtonVariant } from '@common/types';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Button } from '@digdir/design-system-react';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import {
   nettsidePropertyOptions,
   NettsidePropertyType,
@@ -13,8 +14,9 @@ import { Path, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
   isWeb: boolean;
-  onClickAdd: () => void;
-  nextPropertyPath: Path<SakFormState>;
+  disableAdd: boolean;
+  onClickAdd: (type: NettsidePropertyType) => void;
+  onClickRemove: () => void;
   nameType: Path<SakFormState>;
   nameUrl: Path<SakFormState>;
   nameReason: Path<SakFormState>;
@@ -23,15 +25,16 @@ interface Props {
 
 const NettsidePropertiesFormInput = ({
   isWeb,
+  disableAdd,
   onClickAdd,
-  nextPropertyPath,
+  onClickRemove,
   nameType,
   nameUrl,
   nameReason,
   nameDescription,
 }: Props) => {
   const [displayDescription, setDisplayDescription] = useState<boolean>(false);
-  const { control, setValue } = useFormContext<SakFormState>();
+  const { control } = useFormContext<SakFormState>();
 
   const type = useWatch<SakFormState>({
     control,
@@ -42,16 +45,6 @@ const NettsidePropertiesFormInput = ({
     setDisplayDescription(!!type && type === 'egendefinert');
   }, [type]);
 
-  const onClickAddType = (type: NettsidePropertyType) => {
-    setValue(nextPropertyPath, {
-      type: type,
-      url: '',
-      reason: undefined,
-      description: undefined,
-    });
-    onClickAdd();
-  };
-
   return (
     <div className="sak-loeysing__nettsted-props-entry">
       <TestlabFormSelect
@@ -59,6 +52,13 @@ const NettsidePropertiesFormInput = ({
         options={nettsidePropertyOptions}
         name={nameType}
       />
+      {displayDescription && (
+        <TestlabFormInput<SakFormState>
+          label="Beskrivelse av siden"
+          name={nameDescription}
+          required
+        />
+      )}
       {isWeb && (
         <TestlabFormInput<SakFormState>
           label="Url til side"
@@ -71,22 +71,25 @@ const NettsidePropertiesFormInput = ({
         name={nameReason}
         required
       />
-      {displayDescription && (
-        <TestlabFormInput<SakFormState>
-          label="Beskrivelse av siden"
-          name={nameDescription}
-          required
-        />
-      )}
+      <Button
+        size={ButtonSize.Small}
+        variant={ButtonVariant.Quiet}
+        type="button"
+        onClick={onClickRemove}
+        icon={<MinusCircleIcon />}
+      >
+        Fjern side
+      </Button>
       {type && (
         <Button
           size={ButtonSize.Small}
           variant={ButtonVariant.Quiet}
           type="button"
-          onClick={() => onClickAddType(type)}
+          onClick={() => onClickAdd(type)}
           icon={<PlusCircleIcon />}
+          disabled={disableAdd}
         >
-          Legg til side av type {type}
+          Legg til flere sider innen {sanitizeEnumLabel(type)}
         </Button>
       )}
     </div>

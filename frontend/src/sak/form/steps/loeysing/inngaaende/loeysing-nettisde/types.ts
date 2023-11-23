@@ -3,22 +3,22 @@ import { SingleSelectOption } from '@digdir/design-system-react';
 export type NettsidePropertyType =
   | 'forside'
   | 'navigasjonsmeny'
-  | 'bilder'
+  | 'bilder_og_video'
   | 'overskrifter'
-  | 'artikkel'
+  | 'artikkelside'
   | 'skjema'
-  | 'tabell'
-  | 'knapper'
+  | 'tabeller'
+  | 'kapper'
   | 'egendefinert';
 
 export const nettsidePropertyOptions: SingleSelectOption[] = [
   { label: 'Forside', value: 'forside' },
   { label: 'Navigasjonsmeny', value: 'navigasjonsmeny' },
-  { label: 'Bilder og video', value: 'bilder' },
+  { label: 'Bilder og video', value: 'bilder_og_video' },
   { label: 'Overskrifter', value: 'overskrifter' },
-  { label: 'Artikkelside', value: 'artikkel' },
+  { label: 'Artikkelside', value: 'artikkelside' },
   { label: 'Skjema', value: 'skjema' },
-  { label: 'Tabeller', value: 'tabell' },
-  { label: 'Kapper', value: 'knapper' },
+  { label: 'Tabeller', value: 'tabeller' },
+  { label: 'Kapper', value: 'kapper' },
   { label: 'Egendefinert', value: 'egendefinert' },
 ];
