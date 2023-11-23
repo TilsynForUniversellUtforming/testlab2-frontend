@@ -1,9 +1,9 @@
 import TableActionButton from '@common/button/TableActionButton';
+import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import { ButtonSize } from '@common/types';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
-import ConfirmModalButton from '../confirm/ConfirmModalButton';
 import { TableRowAction } from '../table/types';
 
 interface Props<T extends object> {

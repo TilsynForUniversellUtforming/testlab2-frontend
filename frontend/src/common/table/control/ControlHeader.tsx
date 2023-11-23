@@ -1,15 +1,14 @@
+import TableSearch from '@common/table/control/search/TableSearch';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
-import DebouncedInput from '../../debounced-input/DebouncedInput';
 import TableActionsContainer from '../../dropdown/TableActionsContainer';
 import { TableFilterPreference, TableRowAction } from '../types';
 
 export interface Props<T extends object> {
   table: Table<T>;
   filterPreference: TableFilterPreference;
-  filterValue: string;
-  onChangeFilter: (value: string | number) => void;
+  onChangeFilter: (value: string) => void;
   rowActions?: TableRowAction[];
   rowActionEnabled: boolean;
   small?: boolean;
@@ -18,7 +17,6 @@ export interface Props<T extends object> {
 const ControlHeader = <T extends object>({
   table,
   filterPreference,
-  filterValue,
   onChangeFilter,
   rowActions,
   rowActionEnabled,
@@ -33,16 +31,7 @@ const ControlHeader = <T extends object>({
 
   return (
     <div className="control-header">
-      <div className="control-header__search">
-        {showFilters && (
-          <DebouncedInput
-            label="Søk i tabell"
-            value={filterValue}
-            onChange={onChangeFilter}
-            ariaLabel={'Søk i tabell'}
-          />
-        )}
-      </div>
+      <TableSearch showSearch={showFilters} onChangeFilter={onChangeFilter} />
       <div className="control-header__actions">
         {showRowActions && (
           <TableActionsContainer<T>

@@ -9,7 +9,7 @@
   .dropdown-content {
     padding: 0;
     margin: 0;
-    min-width: 12rem;
+    min-width: 12rem !important;
     list-style: none;
     box-shadow: var(--fds-shadow-medium);
     position: absolute;
@@ -17,7 +17,7 @@
     border-radius: 3px;
     z-index: 9999;
     &.links {
-      margin: 8px 0 auto;
+      margin: 0.25rem 0 auto;
       display: none;
       &.show {
         display: initial;

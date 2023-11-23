@@ -192,8 +192,8 @@ const TestlabTable = <T extends object>({
     }
   }, [rowSelection, rowSelectionEnabled]);
 
-  const onChangeGlobalFilter = useCallback((value: string | number) => {
-    setGlobalFilter(String(value));
+  const onChangeGlobalFilter = useCallback((value: string) => {
+    setGlobalFilter(value);
   }, []);
 
   const handleClickRetry = () => {
@@ -221,7 +221,6 @@ const TestlabTable = <T extends object>({
       <ControlHeader
         filterPreference={filterPreference ?? 'all'}
         table={table}
-        filterValue={globalFilter}
         onChangeFilter={onChangeGlobalFilter}
         small={customStyle?.small}
         rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
