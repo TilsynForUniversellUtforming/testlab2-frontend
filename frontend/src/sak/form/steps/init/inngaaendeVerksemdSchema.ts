@@ -22,7 +22,7 @@ export const loeysingSchema = z.object({
 
 const loeysingNettsideRelationScehma = z.object({
   loeysing: loeysingSchema,
-  properties: z.array(z.undefined()).optional(),
+  properties: z.any().optional(),
   useInTest: z.boolean(),
 });
 

@@ -1,31 +1,19 @@
+import TestlabDivider from '@common/divider/TestlabDivider';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Button, ErrorMessage } from '@digdir/design-system-react';
 import NettsidePropertiesFormInput from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/NettsidePropertiesFormInput';
 import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { NettsideProperties, SakFormState } from '@sak/types';
-import { useEffect, useState } from 'react';
-import {
-  FieldArrayWithId,
-  Path,
-  useFieldArray,
-  useFormContext,
-} from 'react-hook-form';
+import { Fragment, useMemo } from 'react';
+import { Path, useFieldArray, useFormContext } from 'react-hook-form';
 
 interface Props {
   loeysingIndex: number;
 }
 
-// TODO - flytt original til egen util klasse
-const extractType = <T extends FieldArrayWithId>(obj: T): Omit<T, 'id'> => {
-  const { id, ...rest } = obj;
-  return rest as Omit<T, 'id'>;
-};
-
 const NettsidePropertiesFieldArray = ({ loeysingIndex }: Props) => {
   const fieldName: Path<SakFormState> = `verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties`;
-  const [defaultValueIdx, setDefaultValueIdx] = useState<number | undefined>();
   const { control, clearErrors, formState } = useFormContext<SakFormState>();
   const { fields, append, remove } = useFieldArray({
     name: fieldName,
@@ -34,76 +22,70 @@ const NettsidePropertiesFieldArray = ({ loeysingIndex }: Props) => {
 
   const defaultValues: NettsideProperties = {
     type: undefined,
-    url: '',
-    reason: '',
-    description: '',
+    url: undefined,
+    reason: undefined,
+    description: undefined,
   };
 
-  useEffect(() => {
-    const fieldsWithoutId = fields.map((field) =>
-      JSON.stringify(extractType(field))
-    );
-    const defaultValueIndex = fieldsWithoutId.indexOf(
-      JSON.stringify(defaultValues)
-    );
-    setDefaultValueIdx(defaultValueIndex >= 0 ? defaultValueIndex : undefined);
-  }, [fields]);
-
   const onClickAdd = (type?: NettsidePropertyType) => {
-    if (isNotDefined(defaultValueIdx)) {
-      const appendValues = type
-        ? {
-            ...defaultValues,
-            type: type,
-          }
-        : defaultValues;
-
-      append(appendValues);
-      setDefaultValueIdx(fields.length);
-      clearErrors();
-    }
+    append({
+      ...defaultValues,
+      type: type,
+    });
+    clearErrors();
   };
 
   const onClickRemove = (idx: number) => {
     remove(idx);
-    if (idx === defaultValueIdx) {
-      setDefaultValueIdx(undefined);
-    }
   };
 
   const errorMessage = getErrorMessage(formState, fieldName);
 
+  const indexes = new Map(fields.map(({ id }, index) => [id, index]));
+
+  const sortedFields = useMemo(() => {
+    return [...fields].sort((a, b) => {
+      const typeA = a.type || 'z';
+      const typeB = b.type || 'z';
+
+      return typeA.localeCompare(typeB);
+    });
+  }, [fields]);
+
   return (
     <div className="sak-loeysing__nettsted-props testlab-form__field-array">
-      {fields.map((field, idx) => {
+      {sortedFields.map((field, idx, array) => {
+        const sortedIdx = indexes.get(field.id) || 0;
+        const addBreak = idx !== 0 && field.type !== array[idx - 1].type;
+
         return (
-          <div className="testlab-form__field-array-entry" key={field.id}>
-            <NettsidePropertiesFormInput
-              isWeb
-              disableAdd={isDefined(defaultValueIdx)}
-              onClickAdd={onClickAdd}
-              onClickRemove={() => onClickRemove(idx)}
-              nameType={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${idx}.type`}
-              nameUrl={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${idx}.url`}
-              nameReason={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${idx}.reason`}
-              nameDescription={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${idx}.description`}
-            />
-          </div>
+          <Fragment key={field.id}>
+            {addBreak && <TestlabDivider size="small" />}
+            <div className="testlab-form__field-array-entry">
+              <NettsidePropertiesFormInput
+                isWeb
+                onClickAdd={onClickAdd}
+                onClickRemove={() => onClickRemove(sortedIdx)}
+                nameType={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${sortedIdx}.type`}
+                nameUrl={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${sortedIdx}.url`}
+                nameReason={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${sortedIdx}.reason`}
+                nameDescription={`verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties.${sortedIdx}.description`}
+              />
+            </div>
+          </Fragment>
         );
       })}
-      <Button
-        size={ButtonSize.Small}
-        variant={ButtonVariant.Outline}
-        type="button"
-        onClick={() => onClickAdd()}
-        disabled={isDefined(defaultValueIdx)}
-      >
-        Legg til side
-      </Button>
-      {errorMessage &&
-        (fields.length === 0 || isNotDefined(defaultValueIdx)) && (
-          <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-        )}
+      <div className="testlab-form__navigation-buttons">
+        <Button
+          size={ButtonSize.Small}
+          variant={ButtonVariant.Outline}
+          type="button"
+          onClick={() => onClickAdd()}
+        >
+          Legg til side
+        </Button>
+      </div>
+      {errorMessage && <ErrorMessage size="small">{errorMessage}</ErrorMessage>}
     </div>
   );
 };

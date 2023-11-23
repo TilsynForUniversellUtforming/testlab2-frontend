@@ -14,7 +14,6 @@ import { Path, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
   isWeb: boolean;
-  disableAdd: boolean;
   onClickAdd: (type: NettsidePropertyType) => void;
   onClickRemove: () => void;
   nameType: Path<SakFormState>;
@@ -25,7 +24,6 @@ interface Props {
 
 const NettsidePropertiesFormInput = ({
   isWeb,
-  disableAdd,
   onClickAdd,
   onClickRemove,
   nameType,
@@ -87,7 +85,6 @@ const NettsidePropertiesFormInput = ({
           type="button"
           onClick={() => onClickAdd(type)}
           icon={<PlusCircleIcon />}
-          disabled={disableAdd}
         >
           Legg til flere sider innen {sanitizeEnumLabel(type)}
         </Button>

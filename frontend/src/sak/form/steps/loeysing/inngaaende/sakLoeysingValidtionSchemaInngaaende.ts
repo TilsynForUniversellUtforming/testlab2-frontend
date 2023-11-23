@@ -1,3 +1,4 @@
+import { isNotDefined } from '@common/util/validationUtils';
 import { z } from 'zod';
 
 import { loeysingSchema } from '../../init/inngaaendeVerksemdSchema';
@@ -18,15 +19,14 @@ const nettsidePropertyType = z.union([
 const nettsidePropertiesSchema = z
   .object({
     type: nettsidePropertyType,
-    url: z.undefined().or(z.string().min(1)),
-    description: z.undefined().or(z.string().min(1)),
-    reason: z.undefined().or(z.string().min(1)),
+    url: z.undefined().or(z.string().min(1, 'Manglar url')),
+    description: z.undefined().or(z.string().min(1, 'Manglar beskrivelse')),
+    reason: z.undefined().or(z.string().min(1, 'Manglar begrunnelse')),
   })
   .superRefine((nettsideProps, ctx) => {
-    if (
-      (nettsideProps.url || nettsideProps.description || nettsideProps.type) &&
-      !(nettsideProps.url && nettsideProps.description && nettsideProps.type)
-    ) {
+    const { url, reason, description, type } = nettsideProps;
+
+    if ((url || reason || type) && !(url && reason && type)) {
       const message = 'Alle felt må vera fylt ut eller tomme';
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -36,12 +36,20 @@ const nettsidePropertiesSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: message,
-        path: ['description'],
+        path: ['reason'],
       });
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: message,
         path: ['type'],
+      });
+    }
+
+    if (type === 'egendefinert' && isNotDefined(description)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Manglar beskrivelse',
+        path: ['description'],
       });
     }
   });

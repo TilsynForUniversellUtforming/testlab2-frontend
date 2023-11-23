@@ -161,8 +161,6 @@ const SakTestreglarStep = ({
       const verksemdLoeysingRelation = sakFormState?.verksemdLoeysingRelation;
       const verksemdNamn = verksemdLoeysingRelation?.verksemd?.namn;
       const manualVerksemdNamn = verksemdLoeysingRelation?.manualVerksemd?.namn;
-      console.log('manualVerksemdNamn', manualVerksemdNamn);
-      console.log('verksemdNamn', verksemdNamn);
       return manualVerksemdNamn || verksemdNamn;
     }
   };

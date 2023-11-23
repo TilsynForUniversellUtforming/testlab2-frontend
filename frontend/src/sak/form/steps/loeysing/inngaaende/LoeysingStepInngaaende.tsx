@@ -18,17 +18,25 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
     return <ErrorMessage>Noko gjekk gale</ErrorMessage>;
   }
 
-  const [displayLoeysingList, setDisplayLoeysingList] = useState<number[]>([]);
+  const [displayLoeysingIdList, setDisplayLoeysingIdList] = useState<number[]>(
+    loeysingNettsideRelationList
+      .filter((lnr) => lnr.properties.length > 0)
+      .map((lnr) => lnr.loeysing.id)
+  );
 
   const toggleDisplayLoesying = (loeysingId: number) => {
-    if (!displayLoeysingList.includes(loeysingId)) {
-      setDisplayLoeysingList([...displayLoeysingList, loeysingId]);
+    if (!displayLoeysingIdList.includes(loeysingId)) {
+      setDisplayLoeysingIdList([...displayLoeysingIdList, loeysingId]);
     } else {
-      setDisplayLoeysingList(
-        displayLoeysingList.filter((id) => id !== loeysingId)
+      setDisplayLoeysingIdList(
+        displayLoeysingIdList.filter((id) => id !== loeysingId)
       );
     }
   };
+
+  const loesyingIndexes = new Map(
+    loeysingNettsideRelationList.map((lnr, index) => [lnr.loeysing.id, index])
+  );
 
   return (
     <>
@@ -46,7 +54,7 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
           <Chip.Toggle
             key={loeysingRelation.loeysing.id}
             onClick={() => toggleDisplayLoesying(loeysingRelation.loeysing.id)}
-            selected={displayLoeysingList.includes(
+            selected={displayLoeysingIdList.includes(
               loeysingRelation.loeysing.id
             )}
           >
@@ -54,17 +62,17 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
           </Chip.Toggle>
         ))}
       </div>
-      {displayLoeysingList.length > 0 && (
+      {displayLoeysingIdList.length > 0 && (
         <Accordion border>
           {loeysingNettsideRelationList
-            .filter((lnr) => displayLoeysingList.includes(lnr.loeysing.id))
-            .map((lnr, index) => (
+            .filter((lnr) => displayLoeysingIdList.includes(lnr.loeysing.id))
+            .map((lnr) => (
               <Accordion.Item key={lnr.loeysing.id} color="second">
                 <Accordion.Header>{lnr.loeysing.namn}</Accordion.Header>
                 <Accordion.Content>
                   <LoeysingNettsideForm
                     heading={lnr.loeysing?.namn}
-                    loeysingIndex={index}
+                    loeysingIndex={loesyingIndexes.get(lnr.loeysing.id) || 0}
                   />
                 </Accordion.Content>
               </Accordion.Item>

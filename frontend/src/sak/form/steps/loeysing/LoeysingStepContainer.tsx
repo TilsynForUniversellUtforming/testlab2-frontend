@@ -24,11 +24,6 @@ const LoeysingStepContainer = ({
     ),
   });
 
-  const { formState } = formMethods;
-
-  console.log(formState);
-  console.log(sakFormState);
-
   const loeysingList =
     sakFormState.verksemdLoeysingRelation?.loeysingList.filter(
       (loeysing) => loeysing.useInTest
