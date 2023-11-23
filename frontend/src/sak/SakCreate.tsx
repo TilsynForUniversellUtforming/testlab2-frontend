@@ -1,6 +1,5 @@
 import './sak.scss';
 
-import AppTitle from '@common/app-title/AppTitle';
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
@@ -96,18 +95,15 @@ const SakCreate = () => {
   );
 
   return (
-    <>
-      <AppTitle heading="Ny sak" subHeading="Opprett ein ny sak" />
-      <SakForm
-        formStepState={formStepState}
-        sakFormState={maalingFormState}
-        regelsettList={regelsettList}
-        advisors={advisors}
-        onSubmit={handleSubmit}
-        loading={loading}
-        error={error}
-      />
-    </>
+    <SakForm
+      formStepState={formStepState}
+      sakFormState={maalingFormState}
+      regelsettList={regelsettList}
+      advisors={advisors}
+      onSubmit={handleSubmit}
+      loading={loading}
+      error={error}
+    />
   );
 };
 

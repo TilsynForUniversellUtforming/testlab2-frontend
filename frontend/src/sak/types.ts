@@ -1,6 +1,7 @@
 import { AppContext } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { Maaling } from '@maaling/api/types';
+import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { Testregel, TestRegelsett } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
@@ -19,10 +20,26 @@ export type VerksemdInit = {
   contactPerson?: string;
 };
 
+export type LoeysingNettsideRelation = {
+  loeysing: Loeysing;
+  properties: NettsideProperties[];
+};
+
+export type LoeysingNettsideRelationTest = {
+  useInTest: boolean;
+} & LoeysingNettsideRelation;
+
 export type SakVerksemdLoeysingRelation = {
   verksemd?: Loeysing;
   manualVerksemd?: VerksemdInit;
-  loeysingList: Loeysing[];
+  loeysingList: LoeysingNettsideRelationTest[];
+};
+
+export type NettsideProperties = {
+  type?: NettsidePropertyType;
+  url?: string;
+  reason?: string;
+  description?: string;
 };
 
 export type LoeysingSource = 'utval' | 'manuell';
@@ -90,7 +107,7 @@ export type SakStepBase = {
 export type SakStep = {
   index: number;
   heading: string;
-  subHeading?: string;
+  description?: string;
   stepperTitle: string;
   stepperSubTitle: string;
   sakStepType: SakStepType;

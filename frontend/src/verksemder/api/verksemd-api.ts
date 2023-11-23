@@ -1,4 +1,5 @@
 import { Loeysing } from '@loeysingar/api/types';
+import { LoeysingNettsideRelation } from '@sak/types';
 
 import { Verksemd } from './types';
 
@@ -10,18 +11,24 @@ const verksemdList_dummy_response = [
   },
 ];
 
-const verksemdLoeysingRelation_dummy_response: Loeysing[] = [
+const verksemdLoeysingRelation_dummy_response: LoeysingNettsideRelation[] = [
   {
-    id: 2,
-    namn: 'digdir.no',
-    url: 'https://www.digdir.no/',
-    orgnummer: '991825827',
+    loeysing: {
+      id: 2,
+      namn: 'digdir.no',
+      url: 'https://www.digdir.no/',
+      orgnummer: '991825827',
+    },
+    properties: [],
   },
   {
-    id: 4,
-    namn: 'Demoside',
-    url: 'https://www.tutorialspoint.com/',
-    orgnummer: '000000000',
+    loeysing: {
+      id: 4,
+      namn: 'Demoside',
+      url: 'https://www.tutorialspoint.com/',
+      orgnummer: '000000000',
+    },
+    properties: [],
   },
 ];
 
@@ -31,7 +38,7 @@ const getVerksemdList_dummy = async (): Promise<Verksemd[]> => {
 
 export const getVerksemdLoeysingRelations_dummy = async (
   verksemd: Loeysing
-): Promise<Loeysing[]> => {
+): Promise<LoeysingNettsideRelation[]> => {
   if (verksemd.id === 1) {
     return verksemdLoeysingRelation_dummy_response;
   } else {

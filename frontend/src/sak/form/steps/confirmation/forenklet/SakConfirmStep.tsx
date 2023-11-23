@@ -19,6 +19,8 @@ const SakConfirmStep = ({
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
+      heading={formStepState.currentStep.heading}
+      description={formStepState.currentStep.description}
     >
       <SakConfirmContent maalingFormState={sakFormState} />
     </SakFormWrapper>

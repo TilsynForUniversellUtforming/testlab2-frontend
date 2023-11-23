@@ -57,10 +57,7 @@ const TestResultListApp = () => {
     if (typeof maaling === 'undefined') {
       setError(new Error('Måling finnes ikkje'));
       return;
-    } else if (
-      isNotDefined(loeysingTestResult?.loeysing) ||
-      !loeysingTestResult?.loeysing
-    ) {
+    } else if (isNotDefined(loeysingTestResult)) {
       setError(new Error('Løysing finnes ikkje på måling'));
       return;
     }

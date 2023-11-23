@@ -1,4 +1,6 @@
+import { isNotDefined } from '@common/util/validationUtils';
 import {
+  ArrayPath,
   type FieldPath,
   type FieldValues,
   type FormState,
@@ -8,18 +10,23 @@ import { FieldError } from 'react-hook-form/dist/types/errors';
 
 /**
  * Retrieves the error message for a specific form field.
+ * @template TFieldValues - The form field type
  * @param {FormState<TFieldValues>} form - The state of the form.
- * @param {TFieldName} name - The name of the field.
+ * @param {FieldPath<TFieldValues>} name - The name of the field.
  * @return {string | undefined} The error message, if present.
  */
-export const getErrorMessage = <
-  TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
->(
+export const getErrorMessage = <TFieldValues extends FieldValues>(
   form: FormState<TFieldValues>,
-  name: TFieldName
+  name: FieldPath<TFieldValues> | ArrayPath<TFieldValues>
 ): string | undefined => {
-  const error: FieldError | undefined = get(form.errors, name);
+  if (isNotDefined(form?.errors)) {
+    return undefined;
+  }
+  const regex = /\.(\d)\./g;
+  const error: FieldError | undefined = get(
+    form.errors,
+    String(name).replaceAll(regex, '.[$1].')
+  );
   return error?.message;
 };
 

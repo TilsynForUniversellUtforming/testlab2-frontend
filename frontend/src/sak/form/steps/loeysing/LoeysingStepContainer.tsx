@@ -1,5 +1,4 @@
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
-import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import LoeysingStepForenklet from '@sak/form/steps/loeysing/forenklet/LoeysingStepForenklet';
@@ -14,33 +13,40 @@ const LoeysingStepContainer = ({
   sakFormState,
   onSubmit,
 }: SakFormBaseProps) => {
+  const isForenkletKontroll = sakFormState?.sakType === 'Forenklet kontroll';
+
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
     resolver: zodResolver(
-      sakFormState.sakType === 'Forenklet kontroll'
+      isForenkletKontroll
         ? sakLoeysingValidationSchemaForenklet
         : sakLoeysingValidationSchemaInngaaende
     ),
   });
 
+  const loeysingList =
+    sakFormState.verksemdLoeysingRelation?.loeysingList.filter(
+      (loeysing) => loeysing.useInTest
+    );
   return (
     <SakFormWrapper
       formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
-      hasRequiredFields={
-        sakFormState?.sakType !== 'Forenklet kontroll' &&
-        isNotDefined(sakFormState.verksemdLoeysingRelation?.loeysingList)
+      heading={
+        isForenkletKontroll ? formStepState.currentStep.heading : 'Opprett sak'
+      }
+      description={
+        isForenkletKontroll ? formStepState.currentStep.description : ''
       }
     >
       <div className="sak-loeysing">
         <ConditionalComponentContainer
-          condition={sakFormState?.sakType === 'Forenklet kontroll'}
-          show={isDefined(sakFormState.sakType)}
+          condition={isForenkletKontroll}
           conditionalComponent={<LoeysingStepForenklet />}
           otherComponent={
             <LoeysingStepInngaaende
-              loeysingList={sakFormState.verksemdLoeysingRelation?.loeysingList}
+              loeysingNettsideRelationList={loeysingList}
             />
           }
         />

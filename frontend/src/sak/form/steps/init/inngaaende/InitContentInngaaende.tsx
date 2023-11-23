@@ -1,15 +1,24 @@
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
+import { isDefined, isValidObject } from '@common/util/validationUtils';
 import { Loeysing } from '@loeysingar/api/types';
 import SakVerksemdResult from '@sak/form/steps/init/inngaaende/SakVerksemdResult';
+import {
+  defaultManualVerksemd,
+  defaultValues,
+} from '@sak/form/steps/init/inngaaende/types';
+import VerksemdLoeysingRelationWrapper from '@sak/form/steps/init/inngaaende/verksemd-loeysing/VerksemdLoeysingRelationWrapper';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
 import { SakFormState, SakVerksemdLoeysingRelation } from '@sak/types';
 import { getVerksemdLoeysingRelations_dummy } from '@verksemder/api/verksemd-api';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 const InitContentInngaaende = () => {
   const [loadingRelations, setLoadingRelations] = useState(false);
   const [errorMessageRelations, setErrorMessageRelations] = useState<string>();
+  const [noVerksemdLoeysingRelations, setNoVerksemdLoeysingRelations] =
+    useState(true);
+  const [showManualEntry, setShowManualEntry] = useState<boolean>(false);
 
   const { control, setValue } = useFormContext<SakFormState>();
   const verksemdLoeysingRelation = useWatch<SakFormState>({
@@ -23,6 +32,19 @@ const InitContentInngaaende = () => {
     verksemdNotFound,
     errorMessage,
   } = useLoeysingAutocomplete();
+
+  useEffect(() => {
+    setShowManualEntry(
+      verksemdNotFound ||
+        isValidObject(verksemdLoeysingRelation?.manualVerksemd)
+    );
+  }, [verksemdNotFound, verksemdLoeysingRelation?.manualVerksemd]);
+
+  useEffect(() => {
+    if (verksemdNotFound) {
+      setValue('verksemdLoeysingRelation.loeysingList', [defaultValues]);
+    }
+  }, [verksemdNotFound]);
 
   const handleGetVerksemdLoeysingRelations = async (verksemd: Loeysing) => {
     setErrorMessageRelations(undefined);
@@ -45,13 +67,21 @@ const InitContentInngaaende = () => {
 
   const onClick = useCallback((verksemd: Loeysing) => {
     setValue('verksemdLoeysingRelation.verksemd', verksemd);
+    setValue('verksemdLoeysingRelation.manualVerksemd', defaultManualVerksemd);
     handleGetVerksemdLoeysingRelations(verksemd).then(
       (verksemdLoeysingRelationList) => {
-        if (verksemdLoeysingRelationList) {
+        if (isDefined(verksemdLoeysingRelationList)) {
           setValue(
             'verksemdLoeysingRelation.loeysingList',
-            verksemdLoeysingRelationList
+            verksemdLoeysingRelationList.map((vlr) => ({
+              ...vlr,
+              useInTest: false,
+            }))
           );
+          setNoVerksemdLoeysingRelations(false);
+        } else {
+          setValue('verksemdLoeysingRelation.loeysingList', [defaultValues]);
+          setNoVerksemdLoeysingRelations(true);
         }
       }
     );
@@ -75,10 +105,14 @@ const InitContentInngaaende = () => {
       />
       <SakVerksemdResult
         verksemd={verksemdLoeysingRelation?.verksemd}
-        manualVerksemd={verksemdLoeysingRelation?.manualVerksemd}
-        verksemdNotFound={verksemdNotFound}
+        showManualEntry={showManualEntry}
         loading={loadingRelations}
         errorMessageRelations={errorMessageRelations}
+      />
+      <VerksemdLoeysingRelationWrapper
+        verksemdLoeysingRelation={verksemdLoeysingRelation}
+        verksemdNotFound={verksemdNotFound}
+        noVerksemdLoeysingRelations={noVerksemdLoeysingRelations}
       />
     </>
   );
