@@ -51,6 +51,7 @@ export const HeaderCheckbox = <T extends object>({
   table: Table<T>;
 }) => (
   <IndeterminateCheckbox
+    id="alle-rader"
     checked={table.getIsAllRowsSelected()}
     indeterminate={table.getIsSomeRowsSelected()}
     onChange={table.getToggleAllRowsSelectedHandler()}
