@@ -38,6 +38,7 @@ const TableFilterSelect = <T extends object>({
         )
       ),
     ];
+
     const computedOptions: Option[] = keysWithoutSortingNumbers
       .map((value) => ({
         label: sanitizeEnumLabel(value),
@@ -47,7 +48,7 @@ const TableFilterSelect = <T extends object>({
     computedOptions.unshift(defaultOption);
 
     return computedOptions;
-  }, [column]);
+  }, [column.getFacetedUniqueValues().keys()]);
 
   return (
     <TableCell className="testlab-table__column-filter">

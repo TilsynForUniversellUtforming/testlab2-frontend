@@ -7,6 +7,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.CreateTestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelType
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
@@ -45,7 +46,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Test
   fun `skal kunne hente liste med Regelsett`() {
-    val regelsettList = listOf(Regelsett(1, "Standard regelsett", testregelList))
+    val regelsettList =
+        listOf(Regelsett(1, "Standard regelsett", TestregelType.forenklet, testregelList))
     val json = mapper.writeValueAsString(testregelList)
     server
         .expect(
@@ -64,8 +66,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
     val expectedRequestData =
         mapOf(
             "krav" to "2.4.2 Sidetitler",
-            "testregelNoekkel" to "QW-ACT-R1",
-            "kravTilSamsvar" to "HTML Page has a title")
+            "testregelSchema" to "QW-ACT-R1",
+            "name" to "HTML Page has a title")
 
     server
         .expect(
@@ -85,7 +87,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
     val result =
         testregelResource.createTestregel(
-            CreateTestregelDTO("2.4.2 Sidetitler", "QW-ACT-R1", "HTML Page has a title"))
+            CreateTestregelDTO(
+                "2.4.2 Sidetitler", "QW-ACT-R1", "HTML Page has a title", TestregelType.forenklet))
 
     assertThat(result).isEqualTo(testregelList)
   }
@@ -135,6 +138,12 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   private val testregelList =
       listOf(
-          Testregel(1, "2.4.2 Sidetitler", "QW-ACT-R1", "HTML Page has a title"),
-          Testregel(2, "4.1.2 Navn, rolle, verdi", "QW-ACT-R12", "Link has accessible name"))
+          Testregel(
+              1, "HTML Page has a title", "QW-ACT-R1", "2.4.2 Sidetitler", TestregelType.forenklet),
+          Testregel(
+              2,
+              "Link has accessible name",
+              "QW-ACT-R12",
+              "4.1.2 Navn, rolle, verdi",
+              TestregelType.forenklet))
 }

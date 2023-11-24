@@ -22,17 +22,18 @@ const TestregelCreate = () => {
   const onSubmit = useCallback((testregelInit: Testregel) => {
     const testregel: TestregelCreateRequest = {
       krav: testregelInit.krav,
-      testregelNoekkel: testregelInit.testregelNoekkel,
-      kravTilSamsvar: testregelInit.kravTilSamsvar,
+      testregelSchema: testregelInit.testregelSchema,
+      name: testregelInit.name,
+      type: testregelInit.type,
     };
 
     const existingTestregel = testreglar.find(
-      (tr) => tr.testregelNoekkel === testregel.testregelNoekkel
+      (tr) => tr.testregelSchema === testregel.testregelSchema
     );
     if (existingTestregel) {
       setAlert(
         'danger',
-        `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+        `Testregel med testregel-id ${testregel.testregelSchema} finst allereie`
       );
       return;
     }
@@ -42,7 +43,7 @@ const TestregelCreate = () => {
         setContextLoading(true);
         const data = await createTestregel(testregel);
         setTestregelList(data);
-        setAlert('success', `${testregel.kravTilSamsvar} er oppretta`);
+        setAlert('success', `${testregel.name} er oppretta`);
       } catch (e) {
         setContextError(toError(e, 'Kunne ikkje lage testregel'));
       }

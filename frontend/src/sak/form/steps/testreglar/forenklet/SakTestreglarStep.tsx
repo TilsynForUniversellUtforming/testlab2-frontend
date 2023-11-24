@@ -55,17 +55,28 @@ const SakTestreglarStep = ({
       .flat(1)
       .filter((tr) => !selection.find((s) => s.id === tr.id));
 
-    const options: SingleSelectOption[] = filteredRegelsettList.map((tr) => ({
-      label: `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`,
-      value: String(tr.id),
-    }));
+    const isForenklet = sakFormState.sakType === 'Forenklet kontroll';
 
-    regelsettList.forEach((rs) =>
-      options.unshift({
-        label: `Regelsett '${rs.namn}'`,
-        value: `${regelsettPrefix}${String(rs.id)}`,
-      })
-    );
+    const options: SingleSelectOption[] = filteredRegelsettList
+      .filter((testregel) =>
+        isForenklet
+          ? testregel.type === 'forenklet'
+          : testregel.type === 'inngaaende'
+      )
+      .map((tr) => ({
+        label: tr.name,
+        value: String(tr.id),
+      }));
+
+    // TODO - Tillat regelsett for inngående kontroll
+    if (isForenklet) {
+      regelsettList.forEach((rs) =>
+        options.unshift({
+          label: `Regelsett '${rs.namn}'`,
+          value: `${regelsettPrefix}${String(rs.id)}`,
+        })
+      );
+    }
 
     return options;
   }, [selection]);
@@ -77,15 +88,13 @@ const SakTestreglarStep = ({
   const testregelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
       getCheckboxColumn(
-        (row: Row<Testregel>) =>
-          `Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`,
+        (row: Row<Testregel>) => `Velg ${row.original.name}`,
         true
       ),
       {
-        accessorFn: (row) => row.testregelNoekkel,
+        accessorFn: (row) => row.testregelSchema,
         id: 'TestregelId',
-        cell: ({ row }) =>
-          `${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`,
+        cell: ({ row }) => row.original.name,
         header: () => <>Testregel</>,
       },
       {
@@ -216,7 +225,7 @@ const SakTestreglarStep = ({
                 title: 'Fjern testregel',
                 disabled: rowSelection.length === 0,
                 message: `Vil du fjerne ${joinStringsToList(
-                  rowSelection.map((rs) => rs.testregelNoekkel)
+                  rowSelection.map((rs) => rs.testregelSchema)
                 )} frå saka? Dette kan ikkje angrast`,
                 onConfirm: onClickRemove,
               },

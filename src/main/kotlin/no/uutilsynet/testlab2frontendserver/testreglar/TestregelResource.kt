@@ -6,6 +6,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.CreateTestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelType
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -43,7 +44,7 @@ class TestregelResource(
   fun listRegelsett(): List<Regelsett> =
       runCatching {
             val testreglar = listTestreglar().filter { it.id <= 35 }
-            listOf(Regelsett(1, "Standard regelsett", testreglar))
+            listOf(Regelsett(1, "Standard regelsett", TestregelType.forenklet, testreglar))
           }
           .getOrElse {
             logger.error("Kunne ikkje hente regelsett", it)
@@ -53,7 +54,7 @@ class TestregelResource(
   @PostMapping
   fun createTestregel(@RequestBody testregel: CreateTestregelDTO): List<Testregel> =
       try {
-        logger.debug("Lagrer ny testregel med navn: ${testregel.kravTilSamsvar} fra $testregelUrl")
+        logger.debug("Lagrer ny testregel med navn: ${testregel.name} fra $testregelUrl")
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()
       } catch (e: Error) {

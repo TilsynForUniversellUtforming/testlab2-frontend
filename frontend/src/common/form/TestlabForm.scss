@@ -7,6 +7,11 @@
     width: 100%;
     padding-bottom: 2rem;
   }
+
+  &__select {
+    max-width: 24rem;
+  }
+
   &__input-label {
     color: var(--fds-semantic-text-neutral-default);
   }

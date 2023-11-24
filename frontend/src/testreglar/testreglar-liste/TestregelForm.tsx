@@ -1,11 +1,14 @@
 import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import TestlabForm from '@common/form/TestlabForm';
+import TestlabFormInput from '@common/form/TestlabFormInput';
+import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { Option } from '@common/types';
+import { isDefined } from '@common/util/validationUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
-import { Testregel } from '../api/types';
+import { Testregel, TestregelType } from '../api/types';
 import { testreglarValidationSchema } from './testreglarValidationSchema';
 
 export interface Props {
@@ -32,15 +35,34 @@ const TestregelForm = ({
     value: k,
   }));
 
+  const typeOptions: Option[] = [
+    {
+      label: 'Inngående kontroll',
+      value: 'inngaaende',
+    },
+    {
+      label: 'Forenklet kontroll',
+      value: 'forenklet',
+    },
+  ];
+
   const formMethods = useForm<Testregel>({
     defaultValues: {
       id: testregel?.id,
-      testregelNoekkel: testregel?.testregelNoekkel ?? '',
-      kravTilSamsvar: testregel?.kravTilSamsvar ?? '',
+      testregelSchema: testregel?.testregelSchema ?? '',
+      name: testregel?.name ?? '',
       krav: testregel?.krav,
+      type: testregel?.type || 'inngaaende',
     },
     resolver: zodResolver(testreglarValidationSchema),
   });
+
+  const { control } = formMethods;
+
+  const testregelType = useWatch({
+    control,
+    name: 'type',
+  }) as TestregelType;
 
   return (
     <div className="testregel-form">
@@ -50,13 +72,31 @@ const TestregelForm = ({
         onSubmit={onSubmit}
         formMethods={formMethods}
       >
-        <TestlabForm.FormInput label="Namn" name="kravTilSamsvar" required />
-        <TestlabForm.FormInput
-          label="Testregel test-id (unik)"
-          name="testregelNoekkel"
+        <TestlabFormSelect
+          radio
+          name="type"
+          options={typeOptions}
+          label="Hvilken type testregel"
+          size="small"
+          disabled={isDefined(testregel?.type)}
+        />
+        <TestlabFormInput label="Namn" name="name" required textarea />
+        <TestlabFormInput
+          label={
+            testregelType === 'inngaaende'
+              ? 'WCAG testregel'
+              : 'QualWeb regel-id (unik)'
+          }
+          description={
+            testregelType === 'inngaaende'
+              ? 'Testregel må være i gyldig JSON-format'
+              : ''
+          }
+          name="testregelSchema"
+          textarea={testregelType === 'inngaaende'}
           required
         />
-        <TestlabForm.FormSelect
+        <TestlabFormSelect
           label="Krav"
           options={kravOptions}
           name="krav"
