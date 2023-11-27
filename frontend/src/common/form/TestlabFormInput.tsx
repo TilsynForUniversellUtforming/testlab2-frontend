@@ -1,5 +1,10 @@
+import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { getErrorMessage } from '@common/form/util';
-import { Textfield, TextfieldProps } from '@digdir/design-system-react';
+import {
+  Textarea,
+  Textfield,
+  TextfieldProps,
+} from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
@@ -11,6 +16,7 @@ export interface TestlabInputBaseProps<T extends object>
   name: Path<T>;
   numeric?: boolean;
   disabled?: boolean;
+  textarea?: boolean;
 }
 
 /**
@@ -33,6 +39,7 @@ const TestlabFormInput = <T extends object>({
   required = false,
   numeric = false,
   size = 'small',
+  textarea = false,
 }: TestlabInputBaseProps<T>): ReactNode => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
@@ -50,16 +57,33 @@ const TestlabFormInput = <T extends object>({
               <div className="testlab-form__input-sub-label">{description}</div>
             )}
           </label>
-          <Textfield
-            type={numeric ? 'number' : 'text'}
-            value={value || ''}
-            id={name}
-            error={errorMessage}
-            onChange={onChange}
-            onBlur={onBlur}
-            name={name}
-            inputMode={numeric ? 'numeric' : 'text'}
-            size={size}
+          <ConditionalComponentContainer
+            condition={textarea}
+            conditionalComponent={
+              <Textarea
+                value={value || ''}
+                id={name}
+                error={errorMessage}
+                onChange={onChange}
+                onBlur={onBlur}
+                name={name}
+                inputMode={numeric ? 'numeric' : 'text'}
+                size={size}
+              />
+            }
+            otherComponent={
+              <Textfield
+                type={numeric ? 'number' : 'text'}
+                value={value || ''}
+                id={name}
+                error={errorMessage}
+                onChange={onChange}
+                onBlur={onBlur}
+                name={name}
+                inputMode={numeric ? 'numeric' : 'text'}
+                size={size}
+              />
+            }
           />
         </div>
       )}

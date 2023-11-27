@@ -1,6 +1,7 @@
+import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { ErrorMessage, Select } from '@digdir/design-system-react';
+import { ErrorMessage, Radio, Select } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -10,6 +11,7 @@ import { TestlabInputBaseProps } from './TestlabFormInput';
 export interface TestlabInputSelectProps<T extends object>
   extends TestlabInputBaseProps<T> {
   options: Option[];
+  radio?: boolean;
 }
 
 /**
@@ -33,9 +35,41 @@ const TestlabFormSelect = <T extends object>({
   name,
   required = false,
   disabled,
+  radio = false,
+  size,
 }: TestlabInputSelectProps<T>): ReactNode => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
+
+  if (radio) {
+    return (
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <div className="testlab-form__select">
+            <Radio.Group
+              legend={
+                <TestlabFormRequiredLabel label={label} required={required} />
+              }
+              description={description}
+              error={errorMessage}
+              onChange={onChange}
+              value={value}
+              size={size}
+              disabled={disabled}
+            >
+              {options.map((option) => (
+                <Radio key={option.value} value={option.value}>
+                  {option.label}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </div>
+        )}
+      />
+    );
+  }
 
   return (
     <Controller

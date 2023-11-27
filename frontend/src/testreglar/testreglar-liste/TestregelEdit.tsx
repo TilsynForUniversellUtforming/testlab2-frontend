@@ -35,7 +35,7 @@ const TestregelEdit = () => {
     }
   }, [testreglar]);
 
-  useContentDocumentTitle(TESTREGEL_EDIT.navn, testregel?.kravTilSamsvar);
+  useContentDocumentTitle(TESTREGEL_EDIT.navn, testregel?.name);
 
   const krav = testreglar
     .map((tr) => tr.krav)
@@ -47,13 +47,13 @@ const TestregelEdit = () => {
       const numericId = Number(id);
       const existingTestregel = testreglar.find(
         (tr) =>
-          tr.testregelNoekkel === testregel.testregelNoekkel &&
+          tr.testregelSchema === testregel.testregelSchema &&
           tr.id !== numericId
       );
       if (existingTestregel) {
         setAlert(
           'danger',
-          `Testregel med testregel-id ${testregel.testregelNoekkel} finst allereie`
+          `Testregel med testregel-id ${testregel.testregelSchema} finst allereie`
         );
         return;
       }
@@ -64,7 +64,7 @@ const TestregelEdit = () => {
           setContextError(undefined);
           const data = await updateTestregel({ ...testregel, id: numericId });
           setTestregelList(data);
-          setAlert('success', `${testregel.kravTilSamsvar} er endra`);
+          setAlert('success', `${testregel.name} er endra`);
         } catch (e) {
           setContextError(toError(e, 'Kunne ikkje endre testregel'));
         }
@@ -86,7 +86,7 @@ const TestregelEdit = () => {
   return (
     <TestregelForm
       heading="Endre testregel"
-      subHeading={testregel?.testregelNoekkel}
+      subHeading={testregel?.name}
       onSubmit={onSubmit}
       testregel={testregel}
       krav={krav}

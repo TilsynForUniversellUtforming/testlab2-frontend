@@ -20,6 +20,7 @@ const RegelsettEdit = () => {
     defaultValues: {
       id: selectedRegelsett?.id,
       namn: selectedRegelsett?.namn,
+      type: 'forenklet',
       testregelList: selectedRegelsett?.testregelList,
     },
   });

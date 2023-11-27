@@ -16,21 +16,26 @@ export enum TestStatus {
   'Gjennomgått workshop' = 'Gjennomgått workshop',
 }
 
+export type TestregelType = 'forenklet' | 'inngaaende';
+
 export type Testregel = {
   id: number;
+  name: string;
   krav: string;
-  testregelNoekkel: string;
-  kravTilSamsvar: string;
+  testregelSchema: string;
+  type: TestregelType;
 };
 
 export type TestregelCreateRequest = {
   krav: string;
-  testregelNoekkel: string;
-  kravTilSamsvar: string;
+  testregelSchema: string;
+  name: string;
+  type: TestregelType;
 };
 
 export type TestRegelsett = {
   id: number;
   namn: string;
+  type: TestregelType;
   testregelList: Testregel[];
 };

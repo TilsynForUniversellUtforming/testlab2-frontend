@@ -66,7 +66,7 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
       const testregelItems =
         testregelList.map((tr) => ({
           id: tr.id,
-          header: `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`,
+          header: tr.name,
           text: tr.krav,
         })) ?? [];
 
