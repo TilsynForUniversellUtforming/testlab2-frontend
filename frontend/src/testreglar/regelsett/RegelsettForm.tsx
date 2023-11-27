@@ -40,7 +40,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
 
   const listErrors = formState.errors['testregelList'];
 
-  const selectableTestreglar = testreglar.filter((tr) => tr.testregelNoekkel);
+  const selectableTestreglar = testreglar.filter((tr) => tr.testregelSchema);
 
   const selectedRows = useMemo(() => {
     const rowArray: boolean[] = [];
@@ -51,18 +51,17 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
   const testRegelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
       getCheckboxColumn(
-        (row: Row<Testregel>) =>
-          `Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`,
+        (row: Row<Testregel>) => `Velg ${row.original.name}`,
         true
       ),
       {
-        accessorFn: (row) => row.kravTilSamsvar,
+        accessorFn: (row) => row.name,
         id: 'Namn',
         cell: (info) => info.getValue(),
         header: () => <span>Namn</span>,
       },
       {
-        accessorFn: (row) => row.testregelNoekkel,
+        accessorFn: (row) => row.testregelSchema,
         id: 'TestregelId',
         cell: (info) => info.getValue(),
         header: () => <span>Testregel</span>,
@@ -88,9 +87,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
                 // numbered={selection.length > 0}
               >
                 {selection.length > 0 &&
-                  selection.map((tr) => (
-                    <li key={tr.id}>{tr.kravTilSamsvar}</li>
-                  ))}
+                  selection.map((tr) => <li key={tr.id}>{tr.name}</li>)}
                 {selection.length === 0 && (
                   <li
                     className={classNames({ invalid: listErrors })}

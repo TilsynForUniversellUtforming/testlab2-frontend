@@ -69,9 +69,7 @@ const TestregelList = () => {
     } else {
       setDeleteMessage(
         `Vil du sletta ${joinStringsToList(
-          rowSelection.map(
-            (tr) => `${tr.testregelNoekkel} - ${tr.kravTilSamsvar}`
-          )
+          rowSelection.map((tr) => `${tr.name}`)
         )}? Dette kan ikkje angrast`
       );
     }

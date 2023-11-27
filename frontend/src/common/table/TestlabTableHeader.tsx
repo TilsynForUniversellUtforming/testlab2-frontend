@@ -20,7 +20,7 @@ const TestlabTableHeader = <T extends object>({
 
   const column = header.column;
 
-  if (!column.getCanSort()) {
+  if (!column.getCanSort() || loading) {
     const size: number | undefined = column.columnDef.size;
     const width = size ? `${3 * size}rem` : 'auto';
 

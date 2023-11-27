@@ -1,4 +1,5 @@
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
@@ -10,18 +11,9 @@ import { Testregel } from '../api/types';
  * @returns {Array<ColumnDef<Testregel>>} An array of column definitions.
  */
 export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
-  getCheckboxColumn(
-    (row: Row<Testregel>) =>
-      `Velg ${row.original.testregelNoekkel} - ${row.original.kravTilSamsvar}`
-  ),
+  getCheckboxColumn((row: Row<Testregel>) => `Velg ${row.original.name}`),
   {
-    accessorFn: (row) => row.testregelNoekkel,
-    id: 'testregel',
-    cell: (info) => info.getValue(),
-    header: () => <>Testregel</>,
-  },
-  {
-    accessorFn: (row) => row.kravTilSamsvar,
+    accessorFn: (row) => row.name,
     id: 'testregel-namn',
     cell: (info) => info.getValue(),
     header: () => <>Namn</>,
@@ -35,6 +27,15 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
       select: true,
     },
   },
+  {
+    accessorFn: (row) => row.type,
+    id: 'type',
+    cell: (info) => sanitizeEnumLabel(String(info.getValue())),
+    header: () => <>Type</>,
+    meta: {
+      select: true,
+    },
+  },
 ];
 
 /**
@@ -44,13 +45,13 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
  */
 export const getTestregelColumnsReadOnly = (): Array<ColumnDef<Testregel>> => [
   {
-    accessorFn: (row) => row.testregelNoekkel,
+    accessorFn: (row) => row.testregelSchema,
     id: 'testregel',
     cell: (info) => info.getValue(),
     header: () => <>Testregel</>,
   },
   {
-    accessorFn: (row) => row.kravTilSamsvar,
+    accessorFn: (row) => row.name,
     id: 'testregel namn',
     cell: ({ getValue }) => getValue(),
     header: () => <>Namn</>,

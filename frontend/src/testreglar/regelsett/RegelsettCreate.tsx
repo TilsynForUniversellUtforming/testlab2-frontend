@@ -14,6 +14,7 @@ const RegelsettCreate = () => {
     defaultValues: {
       namn: '',
       testregelList: [],
+      type: 'forenklet',
     },
   });
 
