@@ -1,12 +1,12 @@
 import { AppContext } from '@common/types';
 
-import { Testregel, TestRegelsett } from './api/types';
+import { Regelsett, Testregel } from './api/types';
 
 export interface TestregelContext extends AppContext {
   testreglar: Testregel[];
-  regelsett: TestRegelsett[];
+  regelsett: Regelsett[];
   setTestregelList: (testRegelList: Testregel[]) => void;
-  setRegelsettList: (regelsettList: TestRegelsett[]) => void;
+  setRegelsettList: (regelsettList: Regelsett[]) => void;
 }
 
 export type Evne = {

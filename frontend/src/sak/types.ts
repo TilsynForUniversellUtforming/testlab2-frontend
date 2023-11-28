@@ -2,7 +2,7 @@ import { AppContext } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { Maaling } from '@maaling/api/types';
 import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
-import { Testregel, TestRegelsett } from '@testreglar/api/types';
+import { Regelsett, Testregel } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
 import { User } from '../user/api/types';
@@ -45,7 +45,8 @@ export type NettsideProperties = {
 export type LoeysingSource = 'utval' | 'manuell';
 
 export interface SakContext extends AppContext {
-  regelsettList: TestRegelsett[];
+  regelsettList: Regelsett[];
+  testregelList: Testregel[];
   loeysingList: Loeysing[];
   utvalList: Utval[];
   verksemdList: Verksemd[];

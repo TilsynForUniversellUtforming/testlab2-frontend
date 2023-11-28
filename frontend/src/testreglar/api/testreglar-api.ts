@@ -1,6 +1,6 @@
 import { responseToJson } from '@common/util/apiUtils';
 
-import { Testregel, TestregelCreateRequest, TestRegelsett } from './types';
+import { Testregel, TestregelCreateRequest } from './types';
 
 export const fetchTestreglarList = async (): Promise<Testregel[]> =>
   await fetch(`/api/v1/testreglar`, {
@@ -8,11 +8,6 @@ export const fetchTestreglarList = async (): Promise<Testregel[]> =>
   }).then((response) =>
     responseToJson(response, 'Kunne ikke hente testreglar')
   );
-
-export const fetchRegelsettList = async (): Promise<TestRegelsett[]> =>
-  await fetch(`/api/v1/testreglar/regelsett`, {
-    method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikke hente regelsett'));
 
 export const createTestregel = async (
   testregel: TestregelCreateRequest

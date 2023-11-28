@@ -7,14 +7,14 @@ import React, { useCallback, useMemo } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { Testregel, TestRegelsett } from '../api/types';
+import { Regelsett, Testregel } from '../api/types';
 import { TestregelContext } from '../types';
 
 export interface Props {
   label: string;
-  regelsett?: TestRegelsett;
-  formMethods: UseFormReturn<TestRegelsett>;
-  onSubmit: (testregel: TestRegelsett) => void;
+  regelsett?: Regelsett;
+  formMethods: UseFormReturn<Regelsett>;
+  onSubmit: (testregel: Regelsett) => void;
 }
 
 const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
@@ -72,7 +72,7 @@ const RegelsettForm = ({ label, regelsett, formMethods, onSubmit }: Props) => {
 
   return (
     <>
-      <TestlabForm<TestRegelsett>
+      <TestlabForm<Regelsett>
         heading={label}
         onSubmit={onSubmit}
         formMethods={formMethods}

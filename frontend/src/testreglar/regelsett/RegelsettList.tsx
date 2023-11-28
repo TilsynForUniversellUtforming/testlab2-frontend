@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import { TestRegelsett } from '../api/types';
+import { Regelsett } from '../api/types';
 import { TestregelContext } from '../types';
 
 const RegelsettList = () => {
@@ -17,7 +17,7 @@ const RegelsettList = () => {
     setLoading(contextLoading);
   }, [contextLoading]);
 
-  const regelsettColumns: ColumnDef<TestRegelsett>[] = [
+  const regelsettColumns: ColumnDef<Regelsett>[] = [
     {
       accessorFn: (row) => row.namn,
       id: 'Namn',
@@ -42,7 +42,7 @@ const RegelsettList = () => {
   ];
 
   return (
-    <UserActionTable<TestRegelsett>
+    <UserActionTable<Regelsett>
       heading="Regelsett"
       subHeading="Liste over alle regelsett"
       tableProps={{

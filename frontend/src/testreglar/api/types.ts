@@ -33,9 +33,25 @@ export type TestregelCreateRequest = {
   type: TestregelType;
 };
 
-export type TestRegelsett = {
+export type Regelsett = {
   id: number;
   namn: string;
   type: TestregelType;
+  default: boolean;
   testregelList: Testregel[];
+};
+
+export type RegelsettCreate = {
+  namn: string;
+  type: TestregelType;
+  default: boolean;
+  testregelIdList: number[];
+};
+
+export type RegelsettEdit = {
+  id: number;
+  namn: string;
+  type: TestregelType;
+  default: boolean;
+  testregelIdList: Testregel[];
 };

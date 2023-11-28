@@ -17,13 +17,8 @@ import { defaultSakFormState, SakContext, SakFormState } from './types';
 const SakCreate = () => {
   const navigate = useNavigate();
 
-  const {
-    setMaaling,
-    contextLoading,
-    contextError,
-    regelsettList,
-    advisors,
-  }: SakContext = useOutletContext();
+  const { setMaaling, contextLoading, contextError }: SakContext =
+    useOutletContext();
 
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
@@ -98,8 +93,6 @@ const SakCreate = () => {
     <SakForm
       formStepState={formStepState}
       sakFormState={maalingFormState}
-      regelsettList={regelsettList}
-      advisors={advisors}
       onSubmit={handleSubmit}
       loading={loading}
       error={error}

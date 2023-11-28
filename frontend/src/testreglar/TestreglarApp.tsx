@@ -4,17 +4,18 @@ import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { Tabs } from '@digdir/design-system-react';
+import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import React, { useCallback, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { fetchRegelsettList, fetchTestreglarList } from './api/testreglar-api';
-import { Testregel, TestRegelsett } from './api/types';
+import { fetchTestreglarList } from './api/testreglar-api';
+import { Regelsett, Testregel } from './api/types';
 import { REGELSETT_ROOT } from './TestregelRoutes';
 import { TestregelContext } from './types';
 
 const TestreglarApp = () => {
   const [testreglar, setTestreglar] = useState<Testregel[]>([]);
-  const [regelsett, setRegelsett] = useState<TestRegelsett[]>([]);
+  const [regelsett, setRegelsett] = useState<Regelsett[]>([]);
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showTestreglar, setShowTestreglar] = useState(false);
@@ -24,7 +25,7 @@ const TestreglarApp = () => {
     setTestreglar(testregelList);
   }, []);
 
-  const handleRegelsett = useCallback((regelsettList: TestRegelsett[]) => {
+  const handleRegelsett = useCallback((regelsettList: Regelsett[]) => {
     setRegelsett(regelsettList);
   }, []);
 

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOutletContext, useParams } from 'react-router-dom';
 
-import { TestRegelsett } from '../api/types';
+import { Regelsett } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
@@ -12,11 +12,11 @@ const RegelsettEdit = () => {
   const { id } = useParams();
   const numberId = Number(id);
 
-  const selectedRegelsett: TestRegelsett | undefined = regelsett.find(
+  const selectedRegelsett: Regelsett | undefined = regelsett.find(
     (tr) => tr.id === numberId
   );
 
-  const formMethods = useForm<TestRegelsett>({
+  const formMethods = useForm<Regelsett>({
     defaultValues: {
       id: selectedRegelsett?.id,
       namn: selectedRegelsett?.namn,

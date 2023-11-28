@@ -22,7 +22,6 @@ const SakEdit = ({ onChangeTabs }: Props) => {
   const {
     maaling,
     verksemdList,
-    regelsettList,
     advisors,
     setMaaling,
     loadingMaaling,
@@ -101,8 +100,6 @@ const SakEdit = ({ onChangeTabs }: Props) => {
       <SakForm
         formStepState={formStepState}
         sakFormState={maalingFormState}
-        regelsettList={regelsettList}
-        advisors={advisors}
         onSubmit={handleSubmit}
         loading={loading}
         error={error}

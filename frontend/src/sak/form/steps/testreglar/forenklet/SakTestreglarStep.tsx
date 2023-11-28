@@ -12,26 +12,27 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';
-import { SakFormBaseProps, SakFormState } from '@sak/types';
+import { SakContext, SakFormBaseProps, SakFormState } from '@sak/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { Testregel, TestRegelsett } from '@testreglar/api/types';
+import { Testregel } from '@testreglar/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
 
 interface Props extends SakFormBaseProps {
   error: Error | undefined;
   loading: boolean;
-  regelsettList: TestRegelsett[];
 }
 
 const SakTestreglarStep = ({
   onSubmit,
   sakFormState,
-  regelsettList,
   formStepState,
   error,
   loading,
 }: Props) => {
+  const { testregelList, regelsettList }: SakContext = useOutletContext();
+
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
     resolver: zodResolver(sakTestreglarValidationSchemaForenklet),
@@ -50,33 +51,29 @@ const SakTestreglarStep = ({
   }) as Testregel[];
 
   const testRegelOptions = useMemo(() => {
-    const filteredRegelsettList = regelsettList
-      .map((rs) => rs.testregelList)
-      .flat(1)
-      .filter((tr) => !selection.find((s) => s.id === tr.id));
-
     const isForenklet = sakFormState.sakType === 'Forenklet kontroll';
 
-    const options: SingleSelectOption[] = filteredRegelsettList
-      .filter((testregel) =>
-        isForenklet
-          ? testregel.type === 'forenklet'
-          : testregel.type === 'inngaaende'
+    const filteredRegelsettList = regelsettList.filter((rs) =>
+      isForenklet ? rs.type === 'forenklet' : rs.type === 'inngaaende'
+    );
+
+    const options: SingleSelectOption[] = testregelList
+      .filter(
+        (tr) =>
+          (isForenklet ? tr.type === 'forenklet' : tr.type === 'inngaaende') &&
+          !selection.find((s) => s.id === tr.id)
       )
       .map((tr) => ({
         label: tr.name,
         value: String(tr.id),
       }));
 
-    // TODO - Tillat regelsett for inngående kontroll
-    if (isForenklet) {
-      regelsettList.forEach((rs) =>
-        options.unshift({
-          label: `Regelsett '${rs.namn}'`,
-          value: `${regelsettPrefix}${String(rs.id)}`,
-        })
-      );
-    }
+    filteredRegelsettList.forEach((rs) =>
+      options.unshift({
+        label: `Regelsett '${rs.namn}'`,
+        value: `${regelsettPrefix}${String(rs.id)}`,
+      })
+    );
 
     return options;
   }, [selection]);
@@ -111,28 +108,30 @@ const SakTestreglarStep = ({
     clearErrors();
 
     if (testregelId) {
-      const testregelList: Testregel[] = [];
+      const selectedTestregelList: Testregel[] = [];
       if (testregelId.includes(regelsettPrefix)) {
         const regelsettId = testregelId.replace(regelsettPrefix, '');
-        const selectedTestregelList = regelsettList.find(
+        const regelsettTestregelList = regelsettList.find(
           (rs) => rs.id === Number(regelsettId)
         )?.testregelList;
-        if (selectedTestregelList) {
-          selectedTestregelList.forEach((tr) => testregelList.push(tr));
+
+        if (regelsettTestregelList) {
+          regelsettTestregelList.forEach((tr) =>
+            selectedTestregelList.push(tr)
+          );
         }
       } else {
-        const selectedTestregel = regelsettList
-          .map((rs) => rs.testregelList)
-          .flat(1)
-          .find((tr) => tr.id === Number(testregelId));
+        const selectedTestregel = testregelList.find(
+          (tr) => tr.id === Number(testregelId)
+        );
         if (selectedTestregel) {
-          testregelList.push(selectedTestregel);
+          selectedTestregelList.push(selectedTestregel);
         }
       }
 
-      if (testregelList && testregelList.length > 0) {
+      if (selectedTestregelList && selectedTestregelList.length > 0) {
         const values = getValues('testregelList');
-        values.push(...testregelList);
+        values.push(...selectedTestregelList);
         const filteredValues = values.filter(
           (value, idx, self) => self.findIndex((v) => v.id === value.id) === idx
         );
