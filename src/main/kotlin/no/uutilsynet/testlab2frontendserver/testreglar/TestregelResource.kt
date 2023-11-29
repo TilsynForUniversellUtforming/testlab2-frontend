@@ -4,9 +4,7 @@ import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.CreateTestregelDTO
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelType
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -39,17 +37,6 @@ class TestregelResource(
         logger.error("klarte ikke å hente testreglar", e)
         throw Error("Klarte ikke å hente testreglar")
       }
-
-  @GetMapping("regelsett")
-  fun listRegelsett(): List<Regelsett> =
-      runCatching {
-            val testreglar = listTestreglar().filter { it.id <= 35 }
-            listOf(Regelsett(1, "Standard regelsett", TestregelType.forenklet, testreglar))
-          }
-          .getOrElse {
-            logger.error("Kunne ikkje hente regelsett", it)
-            throw Error("Kunne ikkje hente regelsett")
-          }
 
   @PostMapping
   fun createTestregel(@RequestBody testregel: CreateTestregelDTO): List<Testregel> =

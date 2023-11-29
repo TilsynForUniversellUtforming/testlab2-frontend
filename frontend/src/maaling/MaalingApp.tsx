@@ -5,12 +5,13 @@ import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
+import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
+import { fetchTestreglarList } from '@testreglar/api/testreglar-api';
+import { Regelsett, Testregel } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import { fetchRegelsettList } from '../testreglar/api/testreglar-api';
-import { TestRegelsett } from '../testreglar/api/types';
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';
 import {
@@ -33,7 +34,8 @@ const MaalingApp = () => {
   const [maaling, setMaaling] = useState<Maaling | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
-  const [regelsettList, setRegelsettList] = useState<TestRegelsett[]>([]);
+  const [regelsettList, setRegelsettList] = useState<Regelsett[]>([]);
+  const [testregelList, setTestregelList] = useState<Testregel[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [utvalList, setUtvalList] = useState<Utval[]>([]);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
@@ -166,6 +168,7 @@ const MaalingApp = () => {
           loeysingList,
           utvalList,
           regelsett,
+          testregelList,
           advisors,
           // verksemdList,
         ] = await Promise.all([
@@ -173,6 +176,7 @@ const MaalingApp = () => {
           fetchLoeysingList(),
           fetchUtvalList(),
           fetchRegelsettList(),
+          fetchTestreglarList(),
           getAdvisors_dummy(),
           // getVerksemdList_dummy(),
         ]);
@@ -182,6 +186,7 @@ const MaalingApp = () => {
           loeysingList,
           utvalList,
           regelsett,
+          testregelList,
           advisors,
           verksemdList: loeysingList,
         };
@@ -211,6 +216,12 @@ const MaalingApp = () => {
 
           if (data?.regelsett) {
             setRegelsettList(data.regelsett);
+          } else {
+            setError(new Error('Kunne ikkje hente regelsett'));
+          }
+
+          if (data?.regelsett) {
+            setTestregelList(data.regelsett);
           } else {
             setError(new Error('Kunne ikkje hente regelsett'));
           }
@@ -298,6 +309,7 @@ const MaalingApp = () => {
     loeysingList: loeysingList,
     verksemdList: verksemdList,
     regelsettList: regelsettList,
+    testregelList: testregelList,
     utvalList: utvalList,
     handleStartCrawling: doStartCrawling,
     handleStartTest: doStartTest,
