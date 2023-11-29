@@ -73,7 +73,7 @@ const TestregelCreate = () => {
   return (
     <TestregelForm
       heading="Lag ny testregel"
-      subHeading="Her kan du opprette ein ny testregel"
+      description="Her kan du opprette ein ny testregel"
       onSubmit={onSubmit}
       krav={krav}
       kravDisabled={false}

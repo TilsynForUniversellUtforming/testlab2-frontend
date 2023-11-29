@@ -53,5 +53,5 @@ export type RegelsettEdit = {
   namn: string;
   type: TestregelType;
   standard: boolean;
-  testregelIdList: Testregel[];
+  testregelIdList: number[];
 };

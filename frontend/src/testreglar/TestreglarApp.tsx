@@ -83,7 +83,7 @@ const TestreglarApp = () => {
     contextError: error,
     contextLoading: loading,
     testregelList: testreglar,
-    regelsett: regelsett,
+    regelsettList: regelsett,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
     setContextError: handleError,

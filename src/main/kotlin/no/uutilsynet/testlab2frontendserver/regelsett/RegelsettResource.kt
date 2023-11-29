@@ -91,11 +91,11 @@ class RegelsettResource(
   }
 
   @PutMapping
-  fun updateRegelsett(@RequestBody regelsett: RegelsettEdit): ResponseEntity<Regelsett> =
+  fun updateRegelsett(@RequestBody regelsett: RegelsettEdit): List<RegelsettBase> =
       runCatching {
             logger.debug("Oppdaterer regelsett id: ${regelsett.id} fra $regelsettUrl")
             restTemplate.put(regelsettUrl, regelsett, Unit::class.java)
-            getRegelsett(regelsett.id)
+            listRegelsett(true)
           }
           .getOrElse {
             logger.error("Kunne ikkje oppdatere regelsett med id ${regelsett.id}")

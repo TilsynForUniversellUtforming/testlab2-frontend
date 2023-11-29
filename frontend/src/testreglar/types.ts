@@ -4,7 +4,7 @@ import { Regelsett, Testregel } from './api/types';
 
 export interface TestregelContext extends AppContext {
   testregelList: Testregel[];
-  regelsett: Regelsett[];
+  regelsettList: Regelsett[];
   setTestregelList: (testRegelList: Testregel[]) => void;
   setRegelsettList: (regelsettList: Regelsett[]) => void;
 }

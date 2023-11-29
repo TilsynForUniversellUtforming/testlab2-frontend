@@ -1,12 +1,13 @@
 import toError from '@common/error/util';
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { joinStringsToList } from '@common/util/stringutils';
 import { deleteRegelsettList } from '@testreglar/api/regelsett-api';
 import { getRegelsettColumns } from '@testreglar/regelsett/RegelsettCoulmns';
-import { REGELSETT_CREATE } from '@testreglar/TestregelRoutes';
+import { REGELSETT_CREATE, REGELSETT_EDIT } from '@testreglar/TestregelRoutes';
 import { TestregelContext } from '@testreglar/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import { Regelsett } from '../api/types';
 
@@ -14,10 +15,12 @@ const RegelsettList = () => {
   const {
     contextError,
     contextLoading,
-    regelsett,
+    regelsettList,
     refresh,
     setRegelsettList,
   }: TestregelContext = useOutletContext();
+  const navigate = useNavigate();
+
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [regelsettRowSelection, setRegelsettRowSelection] = useState<
     Regelsett[]
@@ -30,7 +33,10 @@ const RegelsettList = () => {
     setLoading(contextLoading);
   }, [contextLoading]);
 
-  const regelsettColumns = useMemo(() => getRegelsettColumns(), [regelsett]);
+  const regelsettColumns = useMemo(
+    () => getRegelsettColumns(),
+    [regelsettList]
+  );
 
   const onClickDelete = useCallback(() => {
     setLoading(true);
@@ -85,7 +91,7 @@ const RegelsettList = () => {
       heading="Regelsett"
       subHeading="Liste over alle regelsett"
       tableProps={{
-        data: regelsett,
+        data: regelsettList,
         defaultColumns: regelsettColumns,
         displayError: {
           onClick: onClickRefresh,
@@ -111,6 +117,13 @@ const RegelsettList = () => {
             },
           },
         ],
+        onClickRow: (row) =>
+          navigate(
+            getFullPath(REGELSETT_EDIT, {
+              pathParam: idPath,
+              id: String(row?.original.id),
+            })
+          ),
       }}
     />
   );

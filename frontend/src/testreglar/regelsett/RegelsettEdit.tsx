@@ -1,52 +1,54 @@
 import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { updateRegelsett } from '@testreglar/api/regelsett-api';
-import { regelsettValidationSchema } from '@testreglar/regelsett/regelsettValidationSchema';
-import React, { useCallback } from 'react';
-import { useForm } from 'react-hook-form';
+import RegelsettFormSkeleton from '@testreglar/regelsett/skeleton/RegelsettFormSkeleton';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
-import { Regelsett } from '../api/types';
+import { Regelsett, RegelsettEdit } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
+const getRegelsett = (regelsettList: Regelsett[], id: string | undefined) =>
+  regelsettList.find((rs) => rs.id === Number(id));
+
 const RegelsettEdit = () => {
   const {
-    regelsett,
+    regelsettList,
     setContextError,
-    setContextLoading,
+    contextLoading,
     setRegelsettList,
   }: TestregelContext = useOutletContext();
-
-  const [alert, setAlert] = useAlert();
   const { id } = useParams();
-  const numberId = Number(id);
+  const [alert, setAlert] = useAlert();
+  const [regelsett, setRegelsett] = useState(getRegelsett(regelsettList, id));
+  const [loading, setLoading] = useState(contextLoading);
 
-  const selectedRegelsett: Regelsett | undefined = regelsett.find(
-    (tr) => tr.id === numberId
-  );
-
-  const formMethods = useForm<Regelsett>({
-    defaultValues: {
-      id: selectedRegelsett?.id,
-      namn: selectedRegelsett?.namn,
-      standard: selectedRegelsett?.standard,
-      type: 'forenklet',
-      testregelList: selectedRegelsett?.testregelList,
-    },
-    resolver: zodResolver(regelsettValidationSchema),
-  });
+  useEffect(() => {
+    const foundRegelsett = getRegelsett(regelsettList, id);
+    if (foundRegelsett) {
+      setRegelsett(foundRegelsett);
+      setLoading(false);
+    }
+  }, [regelsettList]);
 
   const onSubmit = useCallback(
     (regelsett: Regelsett) => {
       const numericId = Number(id);
-      setContextLoading(true);
+      setLoading(true);
       setContextError(undefined);
 
       const update = async () => {
+        const regelsettEdit: RegelsettEdit = {
+          id: numericId,
+          namn: regelsett.namn,
+          type: regelsett.type,
+          standard: regelsett.standard,
+          testregelIdList: regelsett.testregelList.map((tr) => tr.id),
+        };
+
         try {
-          const data = await updateRegelsett({ ...regelsett, id: numericId });
+          const data = await updateRegelsett(regelsettEdit);
           setRegelsettList(data);
           setAlert('success', `Regelsett ${regelsett.namn} er endra`);
         } catch (e) {
@@ -55,18 +57,26 @@ const RegelsettEdit = () => {
       };
 
       update().finally(() => {
-        setContextLoading(false);
+        setLoading(false);
       });
     },
     [id]
   );
 
+  if (loading) {
+    return (
+      <RegelsettFormSkeleton
+        heading="Endre regelsett"
+        description="Laster..."
+      />
+    );
+  }
+
   return (
     <RegelsettForm
       heading="Endre regelsett"
-      description="Her kan du endra eit eksisterande regelsett"
-      formMethods={formMethods}
-      regelsett={selectedRegelsett}
+      description={`Her kan du endra ${regelsett?.namn || 'regelsett'}`}
+      regelsett={regelsett}
       onSubmit={onSubmit}
       alert={alert}
     />

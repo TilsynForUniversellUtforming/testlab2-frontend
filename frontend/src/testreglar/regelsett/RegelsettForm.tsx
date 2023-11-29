@@ -8,9 +8,11 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
 import { Option } from '@common/types';
 import { isDefined } from '@common/util/validationUtils';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef, Row } from '@tanstack/react-table';
+import { regelsettValidationSchema } from '@testreglar/regelsett/regelsettValidationSchema';
 import React, { useCallback, useMemo } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
 import { Regelsett, Testregel, TestregelType } from '../api/types';
@@ -20,7 +22,6 @@ export interface Props {
   heading: string;
   description: string;
   regelsett?: Regelsett;
-  formMethods: UseFormReturn<Regelsett>;
   onSubmit: (testregel: Regelsett) => void;
   alert?: AlertProps;
 }
@@ -29,10 +30,20 @@ const RegelsettForm = ({
   heading,
   description,
   regelsett,
-  formMethods,
   onSubmit,
   alert,
 }: Props) => {
+  const formMethods = useForm<Regelsett>({
+    defaultValues: {
+      id: regelsett?.id,
+      namn: regelsett?.namn,
+      standard: regelsett?.standard,
+      type: regelsett?.type,
+      testregelList: regelsett?.testregelList,
+    },
+    resolver: zodResolver(regelsettValidationSchema),
+  });
+
   const { control, setValue } = formMethods;
   const {
     contextError,
@@ -102,12 +113,7 @@ const RegelsettForm = ({
         onSubmit={onSubmit}
         formMethods={formMethods}
       >
-        <TestlabFormInput
-          label="Namn"
-          name="namn"
-          description="Namn på regelsettet"
-          required
-        />
+        <TestlabFormInput label="Namn" name="namn" required />
         <TestlabFormSelect
           radio
           name="type"
@@ -122,7 +128,6 @@ const RegelsettForm = ({
           description="Bestemmer om regelsettet skal komma opp som det standard regelsettet ein bruker i samband med å opprett saker"
           checkboxLabel="Standard regelsett"
           name="standard"
-          disabled={isDefined(regelsett?.type)}
         />
         <TestlabTable<Testregel>
           data={selectableTestreglar}

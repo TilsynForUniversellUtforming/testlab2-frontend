@@ -1,5 +1,9 @@
 import { responseToJson } from '@common/util/apiUtils';
-import { Regelsett, RegelsettCreate } from '@testreglar/api/types';
+import {
+  Regelsett,
+  RegelsettCreate,
+  RegelsettEdit,
+} from '@testreglar/api/types';
 
 export const fetchRegelsettList = async (
   includeTestreglar: boolean = false,
@@ -42,9 +46,9 @@ export const createRegelsett = async (
   );
 
 export const updateRegelsett = async (
-  regelsett: Regelsett
+  regelsett: RegelsettEdit
 ): Promise<Regelsett[]> =>
-  await fetch(`/api/v1/testreglar`, {
+  await fetch(`/api/v1/regelsett`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

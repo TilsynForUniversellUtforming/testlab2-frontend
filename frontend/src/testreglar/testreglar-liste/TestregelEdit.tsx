@@ -1,12 +1,10 @@
 import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
-import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import { updateTestregel } from '../api/testreglar-api';
 import { Testregel } from '../api/types';
-import { TESTREGEL_EDIT } from '../TestregelRoutes';
 import { TestregelContext } from '../types';
 import TestregelFormSkeleton from './skeleton/TestregelFormSkeleton';
 import TestregelForm from './TestregelForm';
@@ -34,8 +32,6 @@ const TestregelEdit = () => {
       setLoading(false);
     }
   }, [testregelList]);
-
-  useContentDocumentTitle(TESTREGEL_EDIT.navn, testregel?.name);
 
   const krav = testregelList
     .map((tr) => tr.krav)
@@ -86,7 +82,7 @@ const TestregelEdit = () => {
   return (
     <TestregelForm
       heading="Endre testregel"
-      subHeading={testregel?.name}
+      description={`Her kan du endra ${testregel?.name || 'testregel'}`}
       onSubmit={onSubmit}
       testregel={testregel}
       krav={krav}

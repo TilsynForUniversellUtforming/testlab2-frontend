@@ -1,10 +1,8 @@
 import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { createRegelsett } from '@testreglar/api/regelsett-api';
-import { regelsettValidationSchema } from '@testreglar/regelsett/regelsettValidationSchema';
-import React, { useCallback } from 'react';
-import { useForm } from 'react-hook-form';
+import RegelsettFormSkeleton from '@testreglar/regelsett/skeleton/RegelsettFormSkeleton';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import { Regelsett, RegelsettCreate } from '../api/types';
@@ -14,20 +12,15 @@ import RegelsettForm from './RegelsettForm';
 const RegelsettCreate = () => {
   const [alert, setAlert] = useAlert();
   const {
+    contextLoading,
     setContextError,
-    setContextLoading,
     setRegelsettList,
   }: TestregelContext = useOutletContext();
+  const [loading, setLoading] = useState(contextLoading);
 
-  const formMethods = useForm<Regelsett>({
-    defaultValues: {
-      namn: '',
-      testregelList: [],
-      type: 'inngaaende',
-      standard: false,
-    },
-    resolver: zodResolver(regelsettValidationSchema),
-  });
+  useEffect(() => {
+    setLoading(contextLoading);
+  }, [contextLoading]);
 
   const onSubmit = useCallback((regelsettInit: Regelsett) => {
     const regelsett: RegelsettCreate = {
@@ -38,7 +31,7 @@ const RegelsettCreate = () => {
     };
 
     const create = async () => {
-      setContextLoading(true);
+      setLoading(true);
       setContextError(undefined);
       try {
         const data = await createRegelsett(regelsett);
@@ -50,15 +43,23 @@ const RegelsettCreate = () => {
     };
 
     create().finally(() => {
-      setContextLoading(false);
+      setLoading(false);
     });
   }, []);
+
+  if (loading) {
+    return (
+      <RegelsettFormSkeleton
+        heading="Endre regelsett"
+        description="Laster..."
+      />
+    );
+  }
 
   return (
     <RegelsettForm
       heading="Nytt regelsett"
       description="Her kan du opprette eit regelsett. Fyll ut skjema og vel dei testreglane du ønskjer å ha i regelsettet frå tabellen under."
-      formMethods={formMethods}
       onSubmit={onSubmit}
       alert={alert}
     />
