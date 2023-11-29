@@ -51,7 +51,7 @@ const VerksemdLoeysingRelationWrapper = ({
   return (
     <>
       <TestlabDivider size="large" />
-      <Heading size="small" level={5} spacing>
+      <Heading size="medium" level={2} spacing>
         Utvalde nettløysingar
       </Heading>
       <Paragraph size="small" spacing>

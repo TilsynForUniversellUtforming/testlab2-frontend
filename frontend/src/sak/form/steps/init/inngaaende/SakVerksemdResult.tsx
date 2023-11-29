@@ -36,7 +36,7 @@ const SakVerksemdResult = ({
     <>
       <TestlabDivider size="large" />
       <div className="sak-init__verksemd-result">
-        <Heading level={2} size="small">
+        <Heading level={2} size="medium">
           {verksemd.namn}
         </Heading>
         <div className="entry">

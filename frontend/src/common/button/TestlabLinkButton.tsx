@@ -2,7 +2,7 @@ import './link-button.scss';
 
 import { Button, ButtonProps } from '@digdir/design-system-react';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { AppRoute, getFullPath } from '../util/routeUtils';
 
@@ -10,6 +10,7 @@ export interface Props extends ButtonProps {
   route: AppRoute;
   title: string;
   disabled?: boolean;
+  redirectExternal?: boolean;
 }
 
 const TestlabLinkButton = ({
@@ -21,11 +22,11 @@ const TestlabLinkButton = ({
   icon,
   size,
   fullWidth,
-}: Props) => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="link-button-wrapper">
+  redirectExternal = false,
+  onClick,
+}: Props) => (
+  <div className="link-button-wrapper">
+    <Link to={getFullPath(route)} target={redirectExternal ? '_blank' : ''}>
       <Button
         variant={variant}
         color={color}
@@ -33,13 +34,13 @@ const TestlabLinkButton = ({
         icon={icon}
         size={size}
         fullWidth={fullWidth}
-        onClick={() => navigate(getFullPath(route))}
         disabled={disabled}
+        onClick={onClick}
       >
         {title}
       </Button>
-    </div>
-  );
-};
+    </Link>
+  </div>
+);
 
 export default TestlabLinkButton;

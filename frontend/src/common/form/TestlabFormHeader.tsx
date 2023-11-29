@@ -1,4 +1,4 @@
-import { Heading } from '@digdir/design-system-react';
+import { Heading, Ingress } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 
 /**
@@ -17,14 +17,10 @@ const TestlabFormHeader = ({
   description?: string;
 }): ReactNode => (
   <header className="testlab-form__header">
-    <Heading size="xlarge" level={2} className="heading" spacing>
+    <Heading size="xlarge" level={1} className="heading" spacing>
       {heading}
     </Heading>
-    {description && (
-      <Heading level={3} size="small" role="doc-subtitle">
-        {description}
-      </Heading>
-    )}
+    {description && <Ingress level={3}>{description}</Ingress>}
   </header>
 );
 
