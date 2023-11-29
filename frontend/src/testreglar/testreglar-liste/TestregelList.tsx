@@ -15,7 +15,7 @@ const TestregelList = () => {
   const {
     contextError,
     contextLoading,
-    testreglar,
+    testregelList,
     setTestregelList,
     refresh,
   }: TestregelContext = useOutletContext();
@@ -29,7 +29,10 @@ const TestregelList = () => {
   const [error, setError] = useState(contextError);
   const [loading, setLoading] = useState(contextLoading);
 
-  const testRegelColumns = useMemo(() => getTestregelColumns(), []);
+  const testRegelColumns = useMemo(
+    () => getTestregelColumns(),
+    [testregelList]
+  );
 
   useEffect(() => {
     setLoading(contextLoading);
@@ -88,7 +91,7 @@ const TestregelList = () => {
       heading="Testreglar"
       subHeading="Liste over alle testreglar"
       tableProps={{
-        data: testreglar,
+        data: testregelList,
         defaultColumns: testRegelColumns,
         displayError: {
           onClick: onClickRefresh,

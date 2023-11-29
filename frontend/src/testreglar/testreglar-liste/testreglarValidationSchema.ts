@@ -1,20 +1,19 @@
 import { z } from 'zod';
 
-export const testreglarValidationSchema = z
-  .object({
-    name: z.string().nonempty('Namn kan ikkje vera tomt'),
-    testregelSchema: z
-      .string()
-      .nonempty('Testregel test-id kan ikkje vera tom'),
-    krav: z
-      .string()
-      .optional()
-      .refine(
-        (value) => value !== undefined && value !== '',
-        'Krav sak må vejast'
-      ),
-    type: z.union([z.literal('forenklet'), z.literal('inngaaende')]),
-  })
+export const testregelSchema = z.object({
+  name: z.string().nonempty('Namn kan ikkje vera tomt'),
+  testregelSchema: z.string().nonempty('Testregel test-id kan ikkje vera tom'),
+  krav: z
+    .string()
+    .optional()
+    .refine(
+      (value) => value !== undefined && value !== '',
+      'Krav sak må vejast'
+    ),
+  type: z.union([z.literal('forenklet'), z.literal('inngaaende')]),
+});
+
+export const testreglarValidationSchema = testregelSchema
   .refine(
     (data) => {
       if (data.type === 'forenklet') {

@@ -13,7 +13,7 @@ import { testreglarValidationSchema } from './testreglarValidationSchema';
 
 export interface Props {
   heading: string;
-  subHeading?: string;
+  description: string;
   onSubmit: (testregel: Testregel) => void;
   testregel?: Testregel;
   krav: string[];
@@ -23,7 +23,7 @@ export interface Props {
 
 const TestregelForm = ({
   heading,
-  subHeading,
+  description,
   onSubmit,
   testregel,
   krav,
@@ -68,7 +68,7 @@ const TestregelForm = ({
     <div className="testregel-form">
       <TestlabForm<Testregel>
         heading={heading}
-        description={subHeading}
+        description={description}
         onSubmit={onSubmit}
         formMethods={formMethods}
       >

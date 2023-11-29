@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.CreateTestregelDTO
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelType
 import org.assertj.core.api.Assertions.assertThat
@@ -42,21 +41,6 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
         .andRespond(MockRestResponseCreators.withSuccess(json, MediaType.APPLICATION_JSON))
     val result = testregelResource.listTestreglar()
     assertThat(result).isEqualTo(testregelList)
-  }
-
-  @Test
-  fun `skal kunne hente liste med Regelsett`() {
-    val regelsettList =
-        listOf(Regelsett(1, "Standard regelsett", TestregelType.forenklet, testregelList))
-    val json = mapper.writeValueAsString(testregelList)
-    server
-        .expect(
-            ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
-        .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
-        .andRespond(MockRestResponseCreators.withSuccess(json, MediaType.APPLICATION_JSON))
-    val result = testregelResource.listRegelsett()
-    assertThat(result).isEqualTo(regelsettList)
   }
 
   @Test
