@@ -3,7 +3,7 @@ import { AppContext } from '@common/types';
 import { Regelsett, Testregel } from './api/types';
 
 export interface TestregelContext extends AppContext {
-  testreglar: Testregel[];
+  testregelList: Testregel[];
   regelsett: Regelsett[];
   setTestregelList: (testRegelList: Testregel[]) => void;
   setRegelsettList: (regelsettList: Regelsett[]) => void;

@@ -5,7 +5,7 @@ import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { Tabs } from '@digdir/design-system-react';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { fetchTestreglarList } from './api/testreglar-api';
@@ -20,6 +20,19 @@ const TestreglarApp = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showTestreglar, setShowTestreglar] = useState(false);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const [tab, setTab] = useState(
+    location.pathname.includes(REGELSETT_ROOT.path) ? 'regelsett' : 'testreglar'
+  );
+
+  useEffect(() => {
+    setTab(
+      location.pathname.includes(REGELSETT_ROOT.path)
+        ? 'regelsett'
+        : 'testreglar'
+    );
+  }, [location.pathname]);
 
   const handleTestreglar = useCallback((testregelList: Testregel[]) => {
     setTestreglar(testregelList);
@@ -44,7 +57,7 @@ const TestreglarApp = () => {
     const fetchData = async () => {
       try {
         const testreglar = await fetchTestreglarList();
-        const regelsett = await fetchRegelsettList();
+        const regelsett = await fetchRegelsettList(true);
         setTestreglar(testreglar);
         setRegelsett(regelsett);
         setLoading(false);
@@ -69,7 +82,7 @@ const TestreglarApp = () => {
   const testRegelContext: TestregelContext = {
     contextError: error,
     contextLoading: loading,
-    testreglar: testreglar,
+    testregelList: testreglar,
     regelsett: regelsett,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
@@ -77,9 +90,6 @@ const TestreglarApp = () => {
     setContextLoading: handleLoading,
     refresh: doFetchData,
   };
-
-  const location = useLocation();
-  const lastSegment = location.pathname.split('/').pop();
 
   const handleChange = (name: string) => {
     if (name === 'regelsett') {
@@ -111,11 +121,7 @@ const TestreglarApp = () => {
 
   return (
     <>
-      <Tabs
-        defaultValue="testreglar"
-        onChange={handleChange}
-        value={lastSegment === REGELSETT_ROOT.path ? 'regelsett' : 'testreglar'}
-      >
+      <Tabs defaultValue="testreglar" onChange={handleChange} value={tab}>
         <Tabs.List>
           <Tabs.Tab value="testreglar">Testreglar</Tabs.Tab>
           <Tabs.Tab value="regelsett">Regelsett</Tabs.Tab>

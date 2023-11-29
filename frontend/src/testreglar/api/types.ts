@@ -37,14 +37,14 @@ export type Regelsett = {
   id: number;
   namn: string;
   type: TestregelType;
-  default: boolean;
+  standard: boolean;
   testregelList: Testregel[];
 };
 
 export type RegelsettCreate = {
   namn: string;
   type: TestregelType;
-  default: boolean;
+  standard: boolean;
   testregelIdList: number[];
 };
 
@@ -52,6 +52,6 @@ export type RegelsettEdit = {
   id: number;
   namn: string;
   type: TestregelType;
-  default: boolean;
+  standard: boolean;
   testregelIdList: Testregel[];
 };

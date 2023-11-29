@@ -14,6 +14,10 @@
     margin-bottom: 1rem;
     table-layout: fixed;
     overflow-wrap: break-word;
+
+    &.table-error {
+      box-shadow: 0 0 0 2px var(--fds-semantic-border-danger-default);
+    }
   }
 
   &__header-button {

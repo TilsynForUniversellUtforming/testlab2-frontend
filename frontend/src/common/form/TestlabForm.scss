@@ -23,6 +23,7 @@
   &__navigation-buttons {
     display: flex;
     justify-content: start;
+    padding-top: 2rem;
     button + button {
       margin-left: 1rem;
     }

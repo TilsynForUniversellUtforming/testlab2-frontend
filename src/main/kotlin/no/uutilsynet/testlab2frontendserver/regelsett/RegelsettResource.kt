@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettCreate
@@ -36,7 +37,7 @@ class RegelsettResource(
       runCatching {
             logger.debug("Lagrer nytt regelsett med namn: ${regelsett.namn} fra $regelsettUrl")
             restTemplate.postForEntity(regelsettUrl, regelsett, Int::class.java)
-            listRegelsett()
+            listRegelsett(true)
           }
           .getOrElse {
             logger.error("Klarte ikkje å lage regelsett", it)
@@ -45,8 +46,8 @@ class RegelsettResource(
 
   @GetMapping
   fun listRegelsett(
-      @RequestParam(required = false, defaultValue = "false") includeInactive: Boolean = false,
       @RequestParam(required = false, defaultValue = "false") includeTestreglar: Boolean = false,
+      @RequestParam(required = false, defaultValue = "false") includeInactive: Boolean = false,
   ): List<RegelsettBase> =
       runCatching {
             if (includeTestreglar) {
@@ -101,8 +102,12 @@ class RegelsettResource(
             throw it
           }
 
-  @DeleteMapping("{id}")
-  fun deleteRegelsett(@PathVariable id: Int) =
+  @DeleteMapping
+  fun deleteRegelsett(@RequestBody idList: IdList): ResponseEntity<out Any> {
+    for (id in idList.idList) {
       runCatching { restTemplate.delete("$regelsettUrl/$id") }
           .getOrElse { logger.error("Kunne ikkje deaktivere regelsett med id $id") }
+    }
+    return ResponseEntity.ok().body(listRegelsett(true))
+  }
 }

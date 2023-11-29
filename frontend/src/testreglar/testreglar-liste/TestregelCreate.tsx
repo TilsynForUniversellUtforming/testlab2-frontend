@@ -12,7 +12,7 @@ import TestregelForm from './TestregelForm';
 const TestregelCreate = () => {
   const {
     contextLoading,
-    testreglar,
+    testregelList,
     setTestregelList,
     setContextLoading,
     setContextError,
@@ -27,7 +27,7 @@ const TestregelCreate = () => {
       type: testregelInit.type,
     };
 
-    const existingTestregel = testreglar.find(
+    const existingTestregel = testregelList.find(
       (tr) => tr.testregelSchema === testregel.testregelSchema
     );
     if (existingTestregel) {
@@ -54,7 +54,7 @@ const TestregelCreate = () => {
     });
   }, []);
 
-  const krav = testreglar
+  const krav = testregelList
     .map((tr) => tr.krav)
     .sort()
     .filter(

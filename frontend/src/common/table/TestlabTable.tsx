@@ -2,6 +2,7 @@ import './testlabTable.scss';
 import '@tanstack/react-table';
 
 import {
+  ErrorMessage,
   Table,
   TableBody,
   TableFooter,
@@ -26,6 +27,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { TableOptions } from '@tanstack/table-core';
+import classnames from 'classnames';
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
@@ -67,6 +69,7 @@ export interface TestlabTableProps<T extends object> {
   data: T[];
   defaultColumns: ColumnDef<T>[];
   displayError?: TestlabError;
+  actionRequiredError?: string;
   loading?: boolean;
   filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
@@ -85,6 +88,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {T[]} props.data - The data to be displayed in the table.
  * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
  * @param {TestlabError} props.displayError - The error to show in the error card.
+ * @param {string} props.actionRequiredError - Optional error message to display if a table requires a user action.
  * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
  * @param {TableFilterPreference} [props.filterPreference='all'] - The default filter preference.
  * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
@@ -99,6 +103,7 @@ const TestlabTable = <T extends object>({
   data,
   defaultColumns,
   displayError,
+  actionRequiredError,
   loading = false,
   filterPreference = 'all',
   selectedRows = [],
@@ -227,7 +232,9 @@ const TestlabTable = <T extends object>({
         rowActions={rowActions}
       />
       <Table
-        className="testlab-table__table"
+        className={classnames('testlab-table__table', {
+          'table-error': !!actionRequiredError,
+        })}
         selectRows={typeof onClickRow !== 'undefined'}
       >
         <TableHeader>
@@ -255,6 +262,9 @@ const TestlabTable = <T extends object>({
           </TableRow>
         </TableFooter>
       </Table>
+      {actionRequiredError && (
+        <ErrorMessage size="small">{actionRequiredError}</ErrorMessage>
+      )}
     </div>
   );
 };

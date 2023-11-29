@@ -17,27 +17,27 @@ const getTestregel = (testregelList: Testregel[], id: string | undefined) =>
 const TestregelEdit = () => {
   const {
     contextLoading,
-    testreglar,
+    testregelList,
     setTestregelList,
     setContextLoading,
     setContextError,
   }: TestregelContext = useOutletContext();
   const { id } = useParams();
-  const [testregel, setTestregel] = useState(getTestregel(testreglar, id));
+  const [testregel, setTestregel] = useState(getTestregel(testregelList, id));
   const [loading, setLoading] = useState(contextLoading);
   const [alert, setAlert] = useAlert();
 
   useEffect(() => {
-    const foundLoeysing = getTestregel(testreglar, id);
+    const foundLoeysing = getTestregel(testregelList, id);
     if (foundLoeysing) {
       setTestregel(foundLoeysing);
       setLoading(false);
     }
-  }, [testreglar]);
+  }, [testregelList]);
 
   useContentDocumentTitle(TESTREGEL_EDIT.navn, testregel?.name);
 
-  const krav = testreglar
+  const krav = testregelList
     .map((tr) => tr.krav)
     .sort()
     .filter((value, index, current) => current.indexOf(value) === index);
@@ -45,7 +45,7 @@ const TestregelEdit = () => {
   const onSubmit = useCallback(
     (testregel: Testregel) => {
       const numericId = Number(id);
-      const existingTestregel = testreglar.find(
+      const existingTestregel = testregelList.find(
         (tr) =>
           tr.testregelSchema === testregel.testregelSchema &&
           tr.id !== numericId
