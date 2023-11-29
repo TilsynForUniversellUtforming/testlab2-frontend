@@ -24,7 +24,7 @@ const LoeysingRelationList = ({ loeysingList }: Props) => {
 
   return (
     <>
-      <Heading size="small" level={6} spacing>
+      <Heading size="small" level={3} spacing>
         Nettstader
       </Heading>
       <div className="sak-loeysing__inngaaende-selection">

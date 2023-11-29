@@ -1,4 +1,6 @@
+import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import TestlabFormFieldArrayAutocomplete from '@common/form/field-array/TestlabFormFieldArrayAutocomplete';
+import { LOEYSING_CREATE } from '@loeysingar/LoeysingRoutes';
 import { defaultValues } from '@sak/form/steps/init/inngaaende/types';
 import useLoeysingAutocomplete from '@sak/hooks/useLoeysingAutocomplete';
 import { LoeysingNettsideRelationTest, SakFormState } from '@sak/types';
@@ -34,26 +36,36 @@ const VerksemdLoeysingRelationForm = () => {
   }, [verksemdAutocompleteList, selectedLoeysingList]);
 
   return (
-    <TestlabFormFieldArrayAutocomplete<
-      SakFormState,
-      LoeysingNettsideRelationTest
-    >
-      fieldName="verksemdLoeysingRelation.loeysingList"
-      defaultValues={defaultValues}
-      buttonAddText="Legg til løysing"
-      buttonRemoveText="Fjern løysing"
-      autocompleteProps={{
-        label: 'Namn på løysing',
-        resultList: loeysingList,
-        resultLabelKey: 'loeysing.namn',
-        resultDescriptionKey: 'loeysing.url',
-        onChange: onChangeAutocomplete,
-        name: 'verksemdLoeysingRelation.loeysingList',
-        retainValueOnClick: false,
-        customError: errorMessage,
-        required: true,
-      }}
-    />
+    <>
+      <TestlabFormFieldArrayAutocomplete<
+        SakFormState,
+        LoeysingNettsideRelationTest
+      >
+        fieldName="verksemdLoeysingRelation.loeysingList"
+        defaultValues={defaultValues}
+        buttonAddText="Legg til løysing"
+        buttonRemoveText="Fjern løysing"
+        autocompleteProps={{
+          label: 'Namn på løysing',
+          resultList: loeysingList,
+          resultLabelKey: 'loeysing.namn',
+          resultDescriptionKey: 'loeysing.url',
+          onChange: onChangeAutocomplete,
+          name: 'verksemdLoeysingRelation.loeysingList',
+          retainValueOnClick: false,
+          customError: errorMessage,
+          required: true,
+        }}
+      />
+      {errorMessage && (
+        <TestlabLinkButton
+          title="Legg inn løsying (ekstern)"
+          route={LOEYSING_CREATE}
+          redirectExternal
+          size="small"
+        />
+      )}
+    </>
   );
 };
 
