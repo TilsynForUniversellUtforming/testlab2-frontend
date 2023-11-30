@@ -70,6 +70,7 @@ export type SakFormState = {
   testregelList: Testregel[];
   // Ny
   verksemdLoeysingRelation?: SakVerksemdLoeysingRelation;
+  sakId?: number;
 };
 
 export const defaultSakFormState: SakFormState = {
@@ -93,6 +94,7 @@ export const defaultSakFormState: SakFormState = {
     },
     loeysingList: [],
   },
+  sakId: undefined,
 };
 
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';

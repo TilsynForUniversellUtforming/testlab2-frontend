@@ -67,5 +67,6 @@ const verksemdLoeysingRelationSchema = z.object({
 });
 
 export const sakLoeysingValidationSchemaInngaaende = z.object({
+  sakId: z.number(),
   verksemdLoeysingRelation: verksemdLoeysingRelationSchema,
 });

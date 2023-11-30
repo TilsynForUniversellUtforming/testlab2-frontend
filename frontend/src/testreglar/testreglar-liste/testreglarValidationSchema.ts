@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const testregelSchema = z.object({
+  id: z.number().optional(),
   name: z.string().nonempty('Namn kan ikkje vera tomt'),
   testregelSchema: z.string().nonempty('Testregel test-id kan ikkje vera tom'),
   krav: z

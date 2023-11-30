@@ -20,6 +20,7 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
     loeysingList,
     utval,
     testregelList,
+    verksemdLoeysingRelation,
   } = maalingFormState;
 
   const [sakItems, loeysingListItems, utvalListItems, testregelItems] =
@@ -27,23 +28,45 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
       const advisorName =
         advisors.find((a) => a.id === Number(advisorId))?.name ?? '';
 
-      const sakItems = [
-        {
-          id: 1,
-          header: 'Namn',
-          text: navn ?? '',
-        },
-        {
-          id: 2,
-          header: 'Sakstype',
-          text: sakType ?? '',
-        },
-        {
-          id: 3,
-          header: 'Sakshandsamar',
-          text: advisorName,
-        },
-      ];
+      const isForenklet = sakType === 'Forenklet kontroll';
+
+      const inngaanendeVerkemdNamn = isForenklet
+        ? ''
+        : verksemdLoeysingRelation?.verksemd?.namn ||
+          verksemdLoeysingRelation?.manualVerksemd?.namn ||
+          '';
+
+      const sakItems = isForenklet
+        ? [
+            {
+              id: 1,
+              header: 'Namn',
+              text: navn ?? '',
+            },
+            {
+              id: 2,
+              header: 'Sakstype',
+              text: sakType ?? '',
+            },
+            {
+              id: 3,
+              header: 'Sakshandsamar',
+              text: advisorName,
+            },
+          ]
+        : [
+            {
+              id: 1,
+              header: 'Namn',
+              text: `Kontroll ${verksemdLoeysingRelation?.verksemd
+                ?.namn} ${new Date().getFullYear()}`,
+            },
+            {
+              id: 2,
+              header: 'Sakstype',
+              text: sakType ?? '',
+            },
+          ];
 
       if (sakNumber) {
         sakItems.push({
@@ -53,11 +76,17 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
         });
       }
 
-      const loeysingListItems = loeysingList.map((lo) => ({
-        id: lo.loeysing.id,
-        header: `Løysing: ${lo.loeysing.namn} - Ansvarleg verksemd: ${lo.verksemd.namn}`,
-        text: lo.loeysing.url,
-      }));
+      const loeysingListItems = isForenklet
+        ? loeysingList.map((lo) => ({
+            id: lo.loeysing.id,
+            header: `Løysing: ${lo.loeysing.namn} - Ansvarleg verksemd: ${lo.verksemd.namn}`,
+            text: lo.loeysing.url,
+          }))
+        : verksemdLoeysingRelation?.loeysingList.map((lo) => ({
+            id: lo.loeysing.id,
+            header: `Løysing: ${lo.loeysing.namn} - Ansvarleg verksemd: ${inngaanendeVerkemdNamn}`,
+            text: lo.loeysing.url,
+          })) || [];
 
       const utvalListItems = utval
         ? [{ id: utval.id, header: utval.namn, text: '' }]

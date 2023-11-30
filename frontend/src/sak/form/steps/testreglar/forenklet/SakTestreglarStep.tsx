@@ -12,6 +12,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';
+import { sakTestreglarValidationSchemaInngaaende } from '@sak/form/steps/testreglar/inngaaende/sakTestreglarValidationSchemaInngaaende';
 import { SakContext, SakFormBaseProps, SakFormState } from '@sak/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { Testregel } from '@testreglar/api/types';
@@ -32,10 +33,15 @@ const SakTestreglarStep = ({
   loading,
 }: Props) => {
   const { testregelList, regelsettList }: SakContext = useOutletContext();
+  const isForenkletKontroll = sakFormState?.sakType === 'Forenklet kontroll';
 
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
-    resolver: zodResolver(sakTestreglarValidationSchemaForenklet),
+    resolver: zodResolver(
+      isForenkletKontroll
+        ? sakTestreglarValidationSchemaForenklet
+        : sakTestreglarValidationSchemaInngaaende
+    ),
   });
 
   const regelsettPrefix = 'regelsett';
@@ -208,7 +214,6 @@ const SakTestreglarStep = ({
             Legg til
           </Button>
         </div>
-        {formError && <ErrorMessage>{formError}</ErrorMessage>}
         <TestlabTable<Testregel>
           data={selection}
           defaultColumns={testregelColumns}
@@ -216,6 +221,7 @@ const SakTestreglarStep = ({
           loading={loading}
           onSelectRows={handleSelectRow}
           customStyle={{ small: true }}
+          actionRequiredError={formError ? ' ' : ''}
           rowActions={[
             {
               action: 'delete',
@@ -231,6 +237,7 @@ const SakTestreglarStep = ({
             },
           ]}
         />
+        {formError && <ErrorMessage>{formError}</ErrorMessage>}
       </div>
     </SakFormWrapper>
   );

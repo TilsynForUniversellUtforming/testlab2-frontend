@@ -14,9 +14,18 @@ const SakConfirmStep = ({
     defaultValues: sakFormState,
   });
 
+  // TODO - Gjør ordentlig
+  let formStep = formStepState;
+  if (sakFormState?.sakType !== 'Forenklet kontroll') {
+    formStep = {
+      ...formStep,
+      buttonStep: { ...formStep?.buttonStep, customNextText: 'Start test' },
+    };
+  }
+
   return (
     <SakFormWrapper
-      formStepState={formStepState}
+      formStepState={formStep}
       onSubmit={onSubmit}
       formMethods={formMethods}
       heading={formStepState.currentStep.heading}

@@ -2,19 +2,32 @@
   display: flex;
   align-items: start;
   flex-direction: column;
-  max-width: 30rem;
   &-entry {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
     gap: 2rem;
     padding-bottom: 1rem;
-    width: 100%;
+    justify-content: center;
+
+    &:hover {
+      color: var(--semantic-text-neutral-subtle);
+    }
+
     &__input {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
       width: 100%;
     }
+
     &-label {
-      padding-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      margin: 1rem;
     }
   }
 }
