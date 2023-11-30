@@ -50,6 +50,7 @@ const RegelsettEdit = () => {
         try {
           const data = await updateRegelsett(regelsettEdit);
           setRegelsettList(data);
+          setRegelsett(data.find((rs) => rs.id === numericId));
           setAlert('success', `Regelsett ${regelsett.namn} er endra`);
         } catch (e) {
           setContextError(toError(e, 'Kunne ikkje endre regelsett'));
