@@ -32,6 +32,16 @@
     .sak-init,
     .sak-loeysing {
       max-width: 48rem;
+      &__nettsted-wrapper {
+        background: var(--fds-semantic-background-subtle);
+        padding: 2rem;
+        border-radius: 5px;
+      }
+
+      &__nettsted-type-selection {
+        padding-bottom: 2rem;
+      }
+
       &__input-wrapper {
         display: flex;
         flex-direction: row;

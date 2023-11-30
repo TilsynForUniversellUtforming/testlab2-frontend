@@ -10,7 +10,7 @@ interface Props {
 
 const TestlabDivider = ({ size = 'medium' }: Props) => (
   <Divider
-    color="default"
+    color="subtle"
     className={classnames('testlab-divider', { [size]: size })}
   />
 );

@@ -10,9 +10,10 @@ import { Path, useFieldArray, useFormContext } from 'react-hook-form';
 
 interface Props {
   loeysingIndex: number;
+  onClose: () => void;
 }
 
-const NettsidePropertiesFieldArray = ({ loeysingIndex }: Props) => {
+const NettsidePropertiesFieldArray = ({ loeysingIndex, onClose }: Props) => {
   const fieldName: Path<SakFormState> = `verksemdLoeysingRelation.loeysingList.${loeysingIndex}.properties`;
   const { control, clearErrors, formState } = useFormContext<SakFormState>();
   const { fields, append, remove } = useFieldArray({
@@ -83,6 +84,14 @@ const NettsidePropertiesFieldArray = ({ loeysingIndex }: Props) => {
           onClick={() => onClickAdd()}
         >
           Legg til side
+        </Button>
+        <Button
+          size={ButtonSize.Small}
+          type="button"
+          onClick={onClose}
+          variant={ButtonVariant.Outline}
+        >
+          Lukk
         </Button>
       </div>
       {errorMessage && <ErrorMessage size="small">{errorMessage}</ErrorMessage>}

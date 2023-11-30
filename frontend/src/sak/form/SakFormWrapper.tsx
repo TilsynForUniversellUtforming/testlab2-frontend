@@ -1,4 +1,5 @@
 import TestlabForm from '@common/form/TestlabForm';
+import TestlabFormButtons from '@common/form/TestlabFormButtons';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
 import { Paragraph } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
@@ -40,7 +41,7 @@ const SakFormWrapper = ({
             </Paragraph>
           )}
           <div className="sak__container">{children}</div>
-          <TestlabForm.FormButtons step={formStepState.buttonStep} />
+          <TestlabFormButtons step={formStepState.buttonStep} />
         </div>
       </TestlabForm>
     </div>

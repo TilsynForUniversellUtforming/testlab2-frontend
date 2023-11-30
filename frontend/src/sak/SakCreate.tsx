@@ -154,11 +154,10 @@ const SakCreate = () => {
               }))
             )
             .finally(() => setLoading(false));
-          return setNextStep();
         } else {
           doUpdateSak(maalingFormState).finally(() => setLoading(false));
-          return setNextStep();
         }
+        return setNextStep();
       }
     },
     [isLastStep, setNextStep, currentStepIdx]

@@ -163,7 +163,7 @@ export const startedSakSteps = [
 export interface SakFormBaseProps {
   formStepState: FormStepState;
   sakFormState: SakFormState;
-  onSubmit: (maalingFormState: SakFormState) => void;
+  onSubmit: (sakFormState: SakFormState) => void;
 }
 
 export type Saktype =
