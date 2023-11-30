@@ -143,6 +143,7 @@ const TestlabFormFieldArrayAutocomplete = <
               type="button"
               onClick={() => onClickRemove(idx)}
               icon={<MinusCircleIcon />}
+              className="testlab-form__field-array-entry__button-add"
             >
               {buttonRemoveText}
             </Button>
