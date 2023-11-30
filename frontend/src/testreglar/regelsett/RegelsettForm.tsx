@@ -36,10 +36,10 @@ const RegelsettForm = ({
   const formMethods = useForm<Regelsett>({
     defaultValues: {
       id: regelsett?.id,
-      namn: regelsett?.namn,
-      standard: regelsett?.standard,
-      type: regelsett?.type,
-      testregelList: regelsett?.testregelList,
+      namn: regelsett?.namn || '',
+      standard: regelsett?.standard || false,
+      type: regelsett?.type || 'inngaaende',
+      testregelList: regelsett?.testregelList || [],
     },
     resolver: zodResolver(regelsettValidationSchema),
   });
@@ -71,15 +71,25 @@ const RegelsettForm = ({
       value: 'forenklet',
     },
   ];
+
   const selectableTestreglar = testregelList.filter(
     (tr) => tr.type === regelsettType
   );
 
   const selectedRows = useMemo(() => {
-    const rowArray: boolean[] = [];
-    regelsett?.testregelList.forEach((tr) => (rowArray[tr.id - 1] = true));
+    const rowArray = new Array(selectableTestreglar.length);
+
+    regelsett?.testregelList.forEach((tr) => {
+      const index = selectableTestreglar.findIndex(
+        (selectableTr) => selectableTr.id === tr.id
+      );
+      if (index !== -1) {
+        rowArray[index] = true;
+      }
+    });
+
     return rowArray;
-  }, []);
+  }, [selectableTestreglar, regelsett?.testregelList]);
 
   const testRegelColumns = useMemo<ColumnDef<Testregel>[]>(
     () => [
@@ -98,6 +108,9 @@ const RegelsettForm = ({
         id: 'krav',
         cell: (info) => info.getValue(),
         header: () => <>Krav</>,
+        meta: {
+          select: true,
+        },
       },
     ],
     []
