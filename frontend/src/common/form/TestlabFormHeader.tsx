@@ -20,7 +20,11 @@ const TestlabFormHeader = ({
     <Heading size="xlarge" level={1} className="heading" spacing>
       {heading}
     </Heading>
-    {description && <Ingress level={3}>{description}</Ingress>}
+    {description && (
+      <Ingress level={3} role="doc-subtitle">
+        {description}
+      </Ingress>
+    )}
   </header>
 );
 
