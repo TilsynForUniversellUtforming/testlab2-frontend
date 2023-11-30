@@ -26,7 +26,10 @@ const TestlabLinkButton = ({
   onClick,
 }: Props) => (
   <div className="link-button-wrapper">
-    <Link to={getFullPath(route)} target={redirectExternal ? '_blank' : ''}>
+    <Link
+      to={disabled ? '.' : getFullPath(route)}
+      target={redirectExternal ? '_blank' : ''}
+    >
       <Button
         variant={variant}
         color={color}

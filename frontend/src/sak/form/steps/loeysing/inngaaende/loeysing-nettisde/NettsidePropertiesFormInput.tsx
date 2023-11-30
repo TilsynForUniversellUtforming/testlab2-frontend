@@ -86,7 +86,7 @@ const NettsidePropertiesFormInput = ({
           onClick={() => onClickAdd(type)}
           icon={<PlusCircleIcon />}
         >
-          Legg til flere sider innen {sanitizeEnumLabel(type)}
+          Legg til fleire sider innan {sanitizeEnumLabel(type)}
         </Button>
       )}
     </div>

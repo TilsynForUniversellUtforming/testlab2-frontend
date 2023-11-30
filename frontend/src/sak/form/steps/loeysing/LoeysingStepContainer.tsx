@@ -27,7 +27,7 @@ const LoeysingStepContainer = ({
   const loeysingList =
     sakFormState.verksemdLoeysingRelation?.loeysingList.filter(
       (loeysing) => loeysing.useInTest
-    );
+    ) || [];
 
   return (
     <SakFormWrapper
