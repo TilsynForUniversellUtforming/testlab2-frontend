@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver
 
-import no.uutilsynet.testlab2frontendserver.common.RestTemplateHeaderModifierInterceptor
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
@@ -13,12 +12,11 @@ import org.springframework.web.client.RestTemplate
 @ConfigurationPropertiesScan
 class Testlab2FrontendServerApplication(
     val restTemplateBuilder: RestTemplateBuilder,
-    val restTemplateHeaderModifierInterceptor: RestTemplateHeaderModifierInterceptor
 ) {
 
   @Bean
   fun restTemplate(): RestTemplate {
-    return restTemplateBuilder.interceptors(restTemplateHeaderModifierInterceptor).build()
+    return restTemplateBuilder.build()
   }
 }
 

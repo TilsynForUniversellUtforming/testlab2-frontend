@@ -3,7 +3,6 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 import java.net.URI
 import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.common.SecurityHelper
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Aggregeringstype
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlUrl
