@@ -15,7 +15,7 @@ const decodeHtmlEntities = (text: string): string => {
   text.replace(/<[^>]*>/g, '');
 
   // Add spacing after punctiation if missing
-  text = text.replace(/([,.!?;:](?![\s]))/g, '$1 ');
+  text = text.replace(/([,.!?;:])(?=\S)(?!$)/g, '$1 ');
 
   // Convert html-tags to readable text
   text.replace(
@@ -78,7 +78,7 @@ const translateToTestingStep = (jsonData: any): Map<string, TestingStep> => {
       ruting,
     } = step;
 
-    const selectionOutcome = Object.entries(ruting).map((route) => {
+    const selectionOutcome = Object.entries(ruting).map(([_, route]) => {
       // eslint-disable-next-line
       const { type: action, steg, fasit, utfall } = route as any;
 
