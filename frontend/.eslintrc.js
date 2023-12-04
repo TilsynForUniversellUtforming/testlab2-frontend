@@ -40,7 +40,12 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
-      { ignoreRestSiblings: true },
+      {
+        ignoreRestSiblings: true,
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
     ],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
