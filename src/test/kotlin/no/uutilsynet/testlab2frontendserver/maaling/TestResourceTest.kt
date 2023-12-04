@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maaling
 
+import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.MaalingResource
 import org.hamcrest.CoreMatchers
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
@@ -19,6 +21,12 @@ import org.springframework.web.client.RestTemplate
 @RestClientTest
 class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
   @Autowired private lateinit var server: MockRestServiceServer
+  @MockBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
+
+  @BeforeEach
+  fun setup() {
+    restTemplate.interceptors.clear()
+  }
 
   @Test
   @DisplayName(

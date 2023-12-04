@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
@@ -18,10 +19,12 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.ExpectedCount
@@ -44,6 +47,11 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
       jacksonObjectMapper()
           .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
           .registerModule(JavaTimeModule())
+
+  @BeforeEach
+  fun setup() {
+    restTemplate.interceptors.clear()
+  }
 
   @Test
   fun `skal kunne hente liste med Testregel`() {
