@@ -39,7 +39,7 @@ const IndeterminateCheckbox = ({
         aria-label={ariaLabel}
         id={id}
         title={ariaLabel}
-        size={CheckboxSize.XSmall}
+        size={CheckboxSize.Small}
       />
     </>
   );
