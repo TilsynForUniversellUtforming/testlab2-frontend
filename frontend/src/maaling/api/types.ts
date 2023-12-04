@@ -113,3 +113,19 @@ export type RestartRequest = {
   loeysingIdList: IdList;
   process: RestartProcess;
 };
+
+export type ACTElement = {
+  htmlCode: string;
+  pointer: string;
+};
+
+export type AutotesterResult = {
+  suksesskriterium: string[];
+  side: string;
+  testregelId: string;
+  sideNivaa: number;
+  testVartUtfoert: Date;
+  elementUtfall: string;
+  elementResultat: string;
+  elementOmtale?: ACTElement;
+};
