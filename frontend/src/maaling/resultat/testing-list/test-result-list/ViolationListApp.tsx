@@ -4,13 +4,12 @@ import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
 import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
-import { Maaling, TestResult } from '@maaling/api/types';
+import { fetchTestResultatLoeysing } from '@maaling/api/maaling-api';
+import { AutotesterResult, Maaling, TestResult } from '@maaling/api/types';
 import { MaalingTestStatus } from '@maaling/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
-import fetchTestResultatLoeysing from '../../api/tester-api';
-import { TestResultat } from '../../api/types';
 import { TestResultContext } from '../../types';
 import { getTestresultatColumns } from './ViolationColumns';
 
@@ -26,14 +25,14 @@ const ViolationListApp = () => {
   const { contextError, contextLoading, maaling }: TestResultContext =
     useOutletContext();
 
-  const [testResult, setTestresult] = useState<TestResultat[]>([]);
+  const [testResult, setTestresult] = useState<AutotesterResult[]>([]);
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState(contextLoading);
   const [selectedLoeysing, setSelectedLoeysing] = useState(
     getSelectedLoeysing(loeysingId, maaling)
   );
   const [testResultatRowSelection, setTestResultatRowSelection] = useState<
-    TestResultat[]
+    AutotesterResult[]
   >([]);
 
   const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
@@ -41,7 +40,7 @@ const ViolationListApp = () => {
     message: undefined,
   });
 
-  const onClickDelete = (testResultatRowSelection: TestResultat[]) => {
+  const onClickDelete = (testResultatRowSelection: AutotesterResult[]) => {
     console.info(testResultatRowSelection);
   };
 
@@ -87,7 +86,7 @@ const ViolationListApp = () => {
 
   return (
     <>
-      <UserActionTable<TestResultat>
+      <UserActionTable<AutotesterResult>
         heading={`Brot ${extractDomain(selectedLoeysing?.loeysing?.url)}`}
         subHeading={`Testregel ${testregelId}`}
         tableProps={{

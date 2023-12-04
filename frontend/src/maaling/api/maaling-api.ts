@@ -2,6 +2,7 @@ import { responseToJson } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
+  AutotesterResult,
   IdList,
   Maaling,
   MaalingEditParams,
@@ -94,4 +95,14 @@ export const fetchLoeysingNettsider = async (
     }
   ).then((response) =>
     responseToJson(response, 'Kunne ikkje hente sideutval for måling')
+  );
+
+export const fetchTestResultatLoeysing = async (
+  id: number,
+  loeysingId: number
+): Promise<AutotesterResult[]> =>
+  await fetch(`/api/v1/testing/${id}/resultat?loeysingId=${loeysingId}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente løysingar')
   );

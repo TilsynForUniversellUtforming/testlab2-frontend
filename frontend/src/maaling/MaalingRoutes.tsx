@@ -8,15 +8,15 @@ import MaalingList from '@maaling/list/MaalingList';
 import MaalingApp from '@maaling/MaalingApp';
 import MaalingOverviewApp from '@maaling/overview/MaalingOverviewApp';
 import MaalingOverviewWrapper from '@maaling/overview/MaalingOverviewWrapper';
+import KvalitetssikringApp from '@maaling/resultat/sideutval/kvalitetssikring/KvalitetssikringApp';
+import SideutvalApp from '@maaling/resultat/sideutval/SideutvalApp';
+import TestResultList from '@maaling/resultat/testing-list/test-result-list/TestResultList';
+import TestResultListApp from '@maaling/resultat/testing-list/test-result-list/TestResultListApp';
+import ViolationListApp from '@maaling/resultat/testing-list/test-result-list/ViolationListApp';
+import TestingListApp from '@maaling/resultat/testing-list/TestingListApp';
 import { RouteObject } from 'react-router-dom';
 
 import maalingImg from '../assets/maalingar.svg';
-import KvalitetssikringApp from '../tester/sideutval/kvalitetssikring/KvalitetssikringApp';
-import SideutvalApp from '../tester/sideutval/SideutvalApp';
-import TestResultList from '../tester/testing-list/test-result-list/TestResultList';
-import TestResultListApp from '../tester/testing-list/test-result-list/TestResultListApp';
-import ViolationListApp from '../tester/testing-list/test-result-list/ViolationListApp';
-import TestingListApp from '../tester/testing-list/TestingListApp';
 
 export const MAALING_ROOT: AppRoute = {
   navn: 'Målingar',
