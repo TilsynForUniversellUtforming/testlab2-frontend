@@ -61,7 +61,7 @@ const StatusBadge = <T extends string>({
     : sanitizeEnumLabel(String(status));
 
   return (
-    <Tag color={getBadgeColor(status, levels)} size="xsmall">
+    <Tag color={getBadgeColor(status, levels)} size="small">
       {sanitizedLabel}
     </Tag>
   );
