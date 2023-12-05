@@ -4,26 +4,17 @@ import { TestingStep } from '../../types';
 import { parseTestregel } from '../../util/testregelParser';
 
 const json =
-  '{"namn":"4.1.2c Iframe er identifiserte i koden","id":"4.1.2c","testlabId":248,"versjon":"1.0","type":"Nett","spraak":"nn","kravTilSamsvar":"<p>Der det er brukt iframe-elementet i koden, har iframe ein ledetekst som identifiserer innhaldet.</p>","side":"2.1","element":"3.1","kolonner":[{"title":"2.2"},{"title":"3.2"},{"title":"3.3"},{"title":"3.4"},{"title":"3.5"},{"title":"3.6"}],"steg":[{"stegnr":"2.1","spm":"Kva side testar du på?","ht":"Oppgi URL eller side-ID.","type":"tekst","label":"URL/Side:","datalist":"Sideutvalg","oblig":true,"ruting":{"alle":{"type":"gaaTil","steg":"2.2"}}},{"stegnr":"2.2","spm":"Har nettsida  &#x3C;iframe&#x3E;-element?","ht":"<p>Søk etter <code>&#x3C;iframe&#x3E;</code>-elementet i kjeldekoden til nettsida.</p>","type":"jaNei","kilde":[],"ruting":{"ja":{"type":"gaaTil","steg":"3.1"},"nei":{"type":"ikkjeForekomst","utfall":"Testside har ikkje iframe."}}},{"stegnr":"3.1","spm":"Beskriv iframen som skal vurderast.","ht":"<p>Du skal registrere og legge til data for kvart enkelt <code>&#x3C;iframe&#x3E;</code>-element.</p><p>Legg inn overskrift, eller andre stikkord som er slik at innhaldet kan identifiserast.</p>","type":"tekst","label":"Iframe element:","multilinje":true,"oblig":true,"ruting":{"alle":{"type":"gaaTil","steg":"3.2"}}},{"stegnr":"3.2","spm":"Har &#x3C;iframe&#x3E;-elementet attributtet \\"aria-label\\" ?","ht":"<p>Sjå i koden om du finn attributtet \\"aria-label\\" på <code>&#x3C;iframe&#x3E;</code>-elementet.</p><p><strong>MERK:</strong> Du skal ikkje vurdere kvaliteten på teksten.</p>","type":"jaNei","kilde":["ARIA14"],"ruting":{"ja":{"type":"gaaTil","steg":"3.6"},"nei":{"type":"gaaTil","steg":"3.3"}}},{"stegnr":"3.3","spm":"Har &#x3C;iframe&#x3E;-elementet attributtet \\"aria-labelledby\\" ?","ht":"Velg frå alternativa under.","type":"jaNei","kilde":["ARIA16"],"ruting":{"ja":{"type":"gaaTil","steg":"3.4"},"nei":{"type":"gaaTil","steg":"3.5"}}},{"stegnr":"3.4","spm":"Er aria-labelledby attributtet kopla til annan tekst på sida (lenkekontekst)?","ht":"<p>Gjer eit søk i koden på id i aria-labelledby. Dersom det finst fleire id-ar, skal du undersøke alle. Id-ane vil då vere skilt med mellomrom. (Aria-labelledby=\\"id1 id2\\").</p>","type":"jaNei","kilde":["ARIA16"],"ruting":{"ja":{"type":"gaaTil","steg":"3.6"},"nei":{"type":"gaaTil","steg":"3.5"}}},{"stegnr":"3.5","spm":"Har &#x3C;iframe&#x3E;-elementet eit title-attributt?","ht":"Du kan nytte kodeverktøyet i nettlesaren til å sjekke dette.","type":"jaNei","kilde":["H64"],"ruting":{"ja":{"type":"gaaTil","steg":"3.6"},"nei":{"type":"avslutt","fasit":"Nei","utfall":"Iframe er ikkje er kopla til ein ledetekst i koden."}}},{"stegnr":"3.6","spm":"Identifiserar ledeteksten innhaldet som ligg i &#x3C;iframe&#x3E;?","ht":"<p>Ta utgangspunktet i ledeteksten du fann i førre steg. Det er tilstrekkeleg at ledeteksten identifiserar innhaldet. Ledeteksten treng ikkje gi ei utfyllande skildring av innhaldet.</p><p>For reklame er det tilstrekkeleg at ledeteksten seier at det handlar om reklame.</p><p><strong>Merk:</strong> Ledeteksten skal vere på same språk som nettsida.</p>","type":"jaNei","kilde":["G108"],"ruting":{"ja":{"type":"avslutt","fasit":"Ja","utfall":"Iframe er kopla til ein ledetekst i koden. Ledeteksten identifiserar innhaldet i iframe."},"nei":{"type":"avslutt","fasit":"Nei","utfall":"Ledeteksten identifiserar ikkje innhaldet i iframe."}}}]}';
+  '{"namn":"1.3.2a Meiningsfylt leserekkefølge er ivareteken i koden.","id":"1.3.2a","testlabId":235,"versjon":"1.0","type":"Nett","spraak":"nn","kravTilSamsvar":"<p>Kravet kan oppfyllast på fleire måtar.</p>\\r\\n<ul>\\r\\n<li>Leserekkefølge på innhaldet i visning med CSS slått av, samanlikna med vanleg visning, er anten:\\r\\n<ul>\\r\\n<li>Den same, eller</li>\\r\\n<li>ei leserekkefølge som på annan måte presenterer det same meiningsinnhaldet.</li>\\r\\n</ul>\\r\\n</li>\\r\\n</ul>","side":"2.1","element":"3.1","kolonner":[{"title":"2.2"},{"title":"2.4"},{"title":"3.2"},{"title":"3.3"},{"title":"3.4"}],"steg":[{"stegnr":"2.1","spm":"Kva side testar du på?","ht":"Oppgi URL eller side-ID.","type":"tekst","label":"URL/Side:","datalist":"Sideutvalg","oblig":true,"ruting":{"alle":{"type":"gaaTil","steg":"2.2"}}},{"stegnr":"2.2","spm":"Finst det innhald på nettsida kor meiningsinnhaldet blir påvirka av rekkefølgjen som innhaldet blir presentert i?","ht":"<p>Ei rekkefølgje er meiningsfull dersom rekkefølga på innhaldet ikkje kan endrast utan å endre meiningsinnhaldet. </p><p>Eksempel på innhald som står i ei meiningsfylt rekkefølgje er tekst, tabellar og nummererte lister.</p><p>Unummererte lister er ikkje i ei meiningsfylt rekkefølgje.</p>","type":"jaNei","kilde":[],"ruting":{"ja":{"type":"gaaTil","steg":"2.3"},"nei":{"type":"ikkjeForekomst","utfall":"Testside har ikkje innhald der meiningsinnhaldet blir påvirka av rekkefølgja som innhaldet blir presentert i."}}},{"stegnr":"2.3","spm":"Opne nettsida i eit nytt nettlesarvindauge og slå av stilarket (CSS).","ht":"<p>Korleis du slår av CSS, avheng av kva nettlesar du brukar.</p>","type":"instruksjon","kilde":["C6"],"ruting":{"alle":{"type":"gaaTil","steg":"2.4"}}},{"stegnr":"2.4","spm":"Er det lik rekkefølgje på innhaldselementa i dei to visningane?","ht":"<p>Gjer ein visuell sjekk. Ta utgangspunkt i vanleg visning og sjå om innhaldet kjem i same rekkefølgje i visninga med CSS slått av.</p><p>Les nettsida frå toppen og nedover, frå venstre mot høgre. Dette gjeld også der innhald er delt opp i blokkar. Då skal blokkane også lesast frå toppen og ned, frå venstre mot høgre.</p><p>Det kan hende at du eventuelt må felle ut menyar og opne modalvindauge for å teste alt innhald på nettsida.</p><p>I visninga med CSS slått av, kan det dukke opp innhald som er skjult i vanleg visning. Dette er ikkje eit brot på kravet og du kan sjå bort frå dette innhaldet. Eksempel på slikt innhald er</p><ul><li>snarveglenker som blir synleg ved fokus</li><li>skjulte menypunkt</li><li>skjulte overskrifter</li></ul>","type":"jaNei","kilde":["C27"],"ruting":{"ja":{"type":"avslutt","fasit":"Ja","utfall":"Leserekkefølge og/eller meiningsinnhald er den same når stilark (CSS) er slått av."},"nei":{"type":"gaaTil","steg":"3.1"}}},{"stegnr":"3.1","spm":"Kva type funksjonalitet er elementet ein del av?","ht":"Velg frå alternativa under.","type":"radio","svarArray":["Skjema","Mediaspelar","Meny","Modalvindauge","Anna"],"ruting":{"alle":{"type":"gaaTil","steg":"3.2"}}},{"stegnr":"3.2","spm":"Må innhaldet vere i ei bestemt rekkefølgje for at du skal kunne forstå innhaldet?","ht":"<p>Meiningsinnhaldet skal ikkje vere endra, sjølv om rekkefølgja er ulik.</p><p>Merk at det kan vere fleire rekkefølgjer som gir same mening.</p>","type":"radio","svarArray":["Ja","Nei","Ikkje mogleg å verifisere"],"kilde":["SK"],"ruting":{"alt0":{"type":"ikkjeForekomst","utfall":"Bilde av tekst, som let seg tilpasse."},"alt1":{"type":"gaaTil","steg":"3.4"},"alt2":{"type":"gaaTil","steg":"3.4"}}}]}';
 
 describe('parseJSONAndValidateSteg', () => {
   it('should get the keys sorted order and correct length', () => {
     const resultMap = parseTestregel(json);
     const keys = Array.from(resultMap.keys());
 
-    expect(keys).toStrictEqual([
-      '2.1',
-      '2.2',
-      '3.1',
-      '3.2',
-      '3.3',
-      '3.4',
-      '3.5',
-      '3.6',
-    ]);
+    expect(keys).toStrictEqual(['2.1', '2.2', '2.3', '2.4', '3.1', '3.2']);
   });
 
-  it('should parse and validatate testregel with tekst', () => {
+  it('should parse testregel with tekst', () => {
     const resultMap = parseTestregel(json);
     const expected: TestingStep = {
       heading: 'Kva side testar du på?',
@@ -42,19 +33,22 @@ describe('parseJSONAndValidateSteg', () => {
     expect(result).toMatchObject(expected);
   });
 
-  it('should parse and validatate testregel with jaNei and ruting ja/nei', () => {
+  it('should parse testregel - jaNei', () => {
     const resultMap = parseTestregel(json);
     const expected: TestingStep = {
-      heading: 'Har nettsida  <iframe>-element?',
-      description: 'Søk etter <iframe>-elementet i kjeldekoden til nettsida.',
+      heading:
+        'Finst det innhald på nettsida kor meiningsinnhaldet blir påvirka av rekkefølgjen som innhaldet blir presentert i?',
+      description:
+        'Ei rekkefølgje er meiningsfull dersom rekkefølga på innhaldet ikkje kan endrast utan å endre meiningsinnhaldet. Eksempel på innhald som står i ei meiningsfylt rekkefølgje er tekst, tabellar og nummererte lister. Unummererte lister er ikkje i ei meiningsfylt rekkefølgje.',
       input: {
         inputType: 'jaNei',
         inputSelectionOutcome: [
-          { label: 'Ja', action: 'gaaTil', target: '3.1' },
+          { label: 'Ja', action: 'gaaTil', target: '2.3' },
           {
             label: 'Nei',
             action: 'ikkjeForekomst',
-            utfall: 'Testside har ikkje iframe.',
+            utfall:
+              'Testside har ikkje innhald der meiningsinnhaldet blir påvirka av rekkefølgja som innhaldet blir presentert i.',
           },
         ],
         required: false,
@@ -62,6 +56,78 @@ describe('parseJSONAndValidateSteg', () => {
     };
 
     const result = resultMap.get('2.2');
+
+    expect(result).toMatchObject(expected);
+  });
+
+  it('should parse testregel - instruksjon', () => {
+    const resultMap = parseTestregel(json);
+    const expected: TestingStep = {
+      heading:
+        'Opne nettsida i eit nytt nettlesarvindauge og slå av stilarket (CSS).',
+      description: 'Korleis du slår av CSS, avheng av kva nettlesar du brukar.',
+      input: {
+        inputType: 'instruksjon',
+        inputSelectionOutcome: [{ label: '', action: 'gaaTil', target: '2.4' }],
+        required: false,
+      },
+    };
+
+    const result = resultMap.get('2.3');
+
+    expect(result).toMatchObject(expected);
+  });
+
+  it('should parse testregel - radio - alle', () => {
+    const resultMap = parseTestregel(json);
+    const expected: TestingStep = {
+      heading: 'Kva type funksjonalitet er elementet ein del av?',
+      description: 'Velg frå alternativa under.',
+      input: {
+        inputType: 'radio',
+        inputSelectionOutcome: [
+          { label: 'Skjema', action: 'gaaTil', target: '3.2' },
+          { label: 'Mediaspelar', action: 'gaaTil', target: '3.2' },
+          { label: 'Meny', action: 'gaaTil', target: '3.2' },
+          { label: 'Modalvindauge', action: 'gaaTil', target: '3.2' },
+          { label: 'Anna', action: 'gaaTil', target: '3.2' },
+        ],
+        required: false,
+      },
+    };
+
+    const result = resultMap.get('3.1');
+
+    expect(result).toMatchObject(expected);
+  });
+
+  it('should parse testregel - radio - alternatives', () => {
+    const resultMap = parseTestregel(json);
+    const expected: TestingStep = {
+      heading:
+        'Må innhaldet vere i ei bestemt rekkefølgje for at du skal kunne forstå innhaldet?',
+      description:
+        'Meiningsinnhaldet skal ikkje vere endra, sjølv om rekkefølgja er ulik. Merk at det kan vere fleire rekkefølgjer som gir same mening.',
+      input: {
+        inputType: 'radio',
+        inputSelectionOutcome: [
+          {
+            label: 'Ja',
+            action: 'ikkjeForekomst',
+            utfall: 'Bilde av tekst, som let seg tilpasse.',
+          },
+          { label: 'Nei', action: 'gaaTil', target: '3.4' },
+          {
+            label: 'Ikkje mogleg å verifisere',
+            action: 'gaaTil',
+            target: '3.4',
+          },
+        ],
+        required: false,
+      },
+    };
+
+    const result = resultMap.get('3.2');
 
     expect(result).toMatchObject(expected);
   });

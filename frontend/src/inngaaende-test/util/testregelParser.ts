@@ -1,3 +1,4 @@
+import { capitalize } from '@common/util/stringutils';
 import { isNotDefined } from '@common/util/validationUtils';
 
 import {
@@ -73,13 +74,7 @@ const handleJaNei = (ruting: RutingDTO): SelectionOutcome[] => {
     const route = ruting['alle'] ? ruting['alle'] : ruting[key];
     const { type: action, steg, fasit, utfall } = route;
 
-    return toSelectedOutcome(
-      action,
-      key.charAt(0).toUpperCase() + key.slice(1),
-      steg,
-      fasit,
-      utfall
-    );
+    return toSelectedOutcome(action, capitalize(key), steg, fasit, utfall);
   });
 };
 
