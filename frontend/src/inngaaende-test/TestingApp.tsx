@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { TestingStep } from './types';
-import { parseJSONAndValidateSteg } from './util/translateUtil';
+import { parseTestregel } from './util/testregelParser';
 
 const TestingApp = () => {
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
@@ -17,7 +17,7 @@ const TestingApp = () => {
       const doFetchSteps = async () => {
         if (id) {
           const testregel = await getTestregel(Number(id));
-          return parseJSONAndValidateSteg(testregel.testregelSchema);
+          return parseTestregel(testregel.testregelSchema);
         } else {
           throw new Error('Steg ikkje funnet');
         }
