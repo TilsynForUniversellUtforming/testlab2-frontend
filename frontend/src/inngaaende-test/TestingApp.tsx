@@ -1,11 +1,17 @@
+import './test.scss';
+
+import { Spinner } from '@digdir/design-system-react';
 import { getTestregel } from '@testreglar/api/testreglar-api';
+import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import TestForm from './testregel-form/TestForm';
 import { TestingStep } from './types';
 import { parseTestregel } from './util/testregelParser';
 
 const TestingApp = () => {
+  const [testregel, setTestregel] = useState<Testregel>();
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
@@ -14,21 +20,25 @@ const TestingApp = () => {
   useEffect(() => {
     if (!loading && !error && id) {
       setLoading(true);
-      const doFetchSteps = async () => {
+      const doFetchTestregel = async () => {
         if (id) {
-          const testregel = await getTestregel(Number(id));
-          return parseTestregel(testregel.testregelSchema);
+          return await getTestregel(Number(id));
         } else {
-          throw new Error('Steg ikkje funnet');
+          throw new Error('Testregel-id manglar');
         }
       };
 
-      doFetchSteps()
-        .then((data) => {
-          if (data) {
-            setTestingSteps(data);
+      doFetchTestregel()
+        .then((testregel) => {
+          if (testregel) {
+            setTestregel(testregel);
+            try {
+              setTestingSteps(parseTestregel(testregel.testregelSchema));
+            } catch (e) {
+              setError('Kunne ikkje hente teststeg');
+            }
           } else {
-            setError('Kunne ikkje hente test steg');
+            setError('Fann ikkje testregel');
           }
           setLoading(false);
         })
@@ -38,7 +48,17 @@ const TestingApp = () => {
     }
   }, [id]);
 
-  console.log(testingSteps);
+  if (!testingSteps || !testregel || loading) {
+    return <Spinner title="Laster" />;
+  }
+
+  return (
+    <TestForm
+      heading={testregel.name}
+      steps={testingSteps}
+      firstStepKey={Array.from(testingSteps.keys())[0]}
+    />
+  );
 };
 
 export default TestingApp;

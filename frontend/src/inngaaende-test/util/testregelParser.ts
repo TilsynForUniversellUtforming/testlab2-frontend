@@ -15,6 +15,8 @@ import {
 
 const decodeHtmlEntities = (text: string): string => {
   const entities: { [key: string]: string } = {
+    '&lt;': '<',
+    '&gt;': '>',
     '&#x3C;': '<',
     '&#x3E;': '>',
     '&quot;': '"',
@@ -27,7 +29,7 @@ const decodeHtmlEntities = (text: string): string => {
     .replace(/([,.!?:])(?=\S)(?!$)/g, '$1 ') // Add spacing after punctiation if missing
     .replace(
       // Convert html-tags to readable text
-      /&#x3C;|&#x3E;|&quot;|&apos;|&amp;/g,
+      /&#x3C;|&#x3E;|&quot;|&apos;|&amp;|&lt;|&gt;/g,
       (entity) => entities[entity]
     );
 };
@@ -121,13 +123,15 @@ const translateToTestingStep = (
 ): Map<string, TestingStep> => {
   const stepMap = new Map<string, TestingStep>();
 
-  const sortedSteps = testregel.steg.sort((a, b) => {
-    const stegnrA = parseFloat(a.stegnr);
-    const stegnrB = parseFloat(b.stegnr);
-    return stegnrA - stegnrB;
-  });
+  const sortedStepsWithoutFist = testregel.steg
+    .sort((a, b) => {
+      const stegnrA = parseFloat(a.stegnr);
+      const stegnrB = parseFloat(b.stegnr);
+      return stegnrA - stegnrB;
+    })
+    .slice(1);
 
-  sortedSteps.forEach((step: StegDTO) => {
+  sortedStepsWithoutFist.forEach((step: StegDTO) => {
     const {
       stegnr,
       spm,

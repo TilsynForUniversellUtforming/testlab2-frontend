@@ -11,11 +11,11 @@ import { RouteObject } from 'react-router-dom';
 import diskusjonImg from './assets/diskusjon.svg';
 import mineSakerImg from './assets/mine-saker.svg';
 import mineTestarImg from './assets/mine-testar.svg';
-import nyTestImg from './assets/ny_test.svg';
 import resultatImg from './assets/resultat.svg';
 import teknikkImg from './assets/teknikk.svg';
 import konkurranseImg from './assets/teknikk.svg';
 import tilsynImg from './assets/tilsyn.svg';
+import { TestingRoutes } from './inngaaende-test/TestingRoutes';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
 import { TESTREGEL_ROOT, TestregelRoutes } from './testreglar/TestregelRoutes';
@@ -45,14 +45,6 @@ export const MINE_TESTAR_ROOT: AppRoute = {
   path: '/',
   parentRoute: ROOT,
   imgSrc: mineTestarImg,
-  disabled: true,
-};
-
-export const NY_TEST_ROOT: AppRoute = {
-  navn: 'Ny test',
-  path: '/',
-  parentRoute: ROOT,
-  imgSrc: nyTestImg,
   disabled: true,
 };
 
@@ -112,6 +104,7 @@ export const AppRoutes: RouteObject = {
     TestregelRoutes,
     VerksemdRoutes,
     KravRoutes,
+    TestingRoutes,
     {
       path: '*',
       element: <Page404 />,
