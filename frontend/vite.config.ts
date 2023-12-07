@@ -28,6 +28,7 @@ export default defineConfig({
       '@verksemder': '/src/verksemder',
       '@sak': '/src/sak',
       '@testreglar': '/src/testreglar',
+      '@test': '/src/inngaaende-test',
     },
   },
 });

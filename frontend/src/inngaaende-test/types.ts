@@ -1,8 +1,10 @@
-export type TestingStepInputType =
+export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
   | 'radio' // Multi radio
   | 'tekst' // Text input
   | 'instruksjon'; // Kun tekst til brukeren
+
+export type TestingStepInputType = TestingStepInputDTO | 'multiline';
 
 export type TestingRouteActionType = 'gaaTil' | 'avslutt' | 'ikkjeForekomst';
 
@@ -67,7 +69,8 @@ export type StegDTO = {
   stegnr: string;
   spm: string;
   ht: string;
-  type: TestingStepInputType;
+  type: TestingStepInputDTO;
+  multilinje: boolean;
   label: string;
   datalist: string;
   oblig: boolean;

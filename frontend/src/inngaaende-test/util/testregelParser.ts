@@ -54,7 +54,7 @@ const toSelectedOutcome = (
 
 const handleTekst = (
   ruting: RutingDTO,
-  inputLabel: string
+  inputLabel: string = ''
 ): SelectionOutcome[] => {
   if (ruting['alle']) {
     const route = ruting['alle'];
@@ -67,7 +67,7 @@ const handleTekst = (
 };
 
 const handleInstruksjon = (ruting: RutingDTO): SelectionOutcome[] =>
-  handleTekst(ruting, '');
+  handleTekst(ruting);
 
 const handleJaNei = (ruting: RutingDTO): SelectionOutcome[] => {
   const jaNeiArray: JaNeiType[] = ['ja', 'nei'];
@@ -103,8 +103,8 @@ const handleRadio = (
 const toInputSelectionOutcome = (
   inputType: TestingStepInputType,
   ruting: RutingDTO,
-  inputLabel: string,
-  svarArray: string[]
+  inputLabel: string = '',
+  svarArray: string[] = []
 ): SelectionOutcome[] => {
   switch (inputType) {
     case 'radio':
@@ -114,6 +114,7 @@ const toInputSelectionOutcome = (
     case 'instruksjon':
       return handleInstruksjon(ruting);
     case 'tekst':
+    case 'multiline':
       return handleTekst(ruting, inputLabel);
   }
 };
@@ -123,25 +124,22 @@ const translateToTestingStep = (
 ): Map<string, TestingStep> => {
   const stepMap = new Map<string, TestingStep>();
 
-  const sortedStepsWithoutFist = testregel.steg
-    .sort((a, b) => {
-      const stegnrA = parseFloat(a.stegnr);
-      const stegnrB = parseFloat(b.stegnr);
-      return stegnrA - stegnrB;
-    })
-    .slice(1);
+  const stepsWithoutFirst = testregel.steg.slice(1);
 
-  sortedStepsWithoutFist.forEach((step: StegDTO) => {
+  stepsWithoutFirst.forEach((step: StegDTO) => {
     const {
       stegnr,
       spm,
       ht,
-      type: inputType,
+      type,
       svarArray,
       label,
       oblig,
       ruting,
+      multilinje,
     } = step;
+
+    const inputType: TestingStepInputType = multilinje ? 'multiline' : type;
 
     const testingStep: TestingStep = {
       heading: decodeHtmlEntities(spm),
@@ -152,8 +150,8 @@ const translateToTestingStep = (
         inputSelectionOutcome: toInputSelectionOutcome(
           inputType,
           ruting,
-          label || '',
-          svarArray || []
+          label,
+          svarArray
         ),
       },
     };

@@ -3,13 +3,13 @@ import './Oversikt.scss';
 import AppTitle from '@common/app-title/AppTitle';
 import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import { ButtonVariant } from '@common/types';
-import { AppRoute, idPath } from '@common/util/routeUtils';
+import { AppRoute } from '@common/util/routeUtils';
 import { Heading } from '@digdir/design-system-react';
 import { SAK_CREATE } from '@sak/SakRoutes';
+import { TEST_ROOT } from '@test/TestingRoutes';
 import React from 'react';
 
 import { anna, saksbehandling, testing, utval } from '../AppRoutes';
-import { NY_TEST_ROOT } from '../inngaaende-test/TestingRoutes';
 
 interface OversiktLinkListProps {
   heading: string;
@@ -63,22 +63,21 @@ const Oversikt = () => {
             className="oversikt__sak-ny"
           />
           <TestlabLinkButton
-            route={NY_TEST_ROOT}
-            ids={[{ id: '55', pathParam: idPath }]}
-            title={NY_TEST_ROOT.navn}
+            route={TEST_ROOT}
+            title={TEST_ROOT.navn}
             variant={ButtonVariant.Outline}
             icon={
               <img
                 className="lenker__img"
-                src={NY_TEST_ROOT.imgSrc}
-                alt={NY_TEST_ROOT.navn}
+                src={TEST_ROOT.imgSrc}
+                alt={TEST_ROOT.navn}
               />
             }
             size="large"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
-            disabled={NY_TEST_ROOT.disabled}
+            disabled={TEST_ROOT.disabled}
           />
         </div>
       </div>
