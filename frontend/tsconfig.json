@@ -22,7 +22,8 @@
       "@loeysingar/*": ["./loeysingar/*"],
       "@verksemder/*": ["./verksemder/*"],
       "@sak/*": ["./sak/*"],
-      "@testreglar/*": ["./testreglar/*"]
+      "@testreglar/*": ["./testreglar/*"],
+      "@test/*": ["./inngaaende-test/*"]
     }
   },
   "include": ["src"],

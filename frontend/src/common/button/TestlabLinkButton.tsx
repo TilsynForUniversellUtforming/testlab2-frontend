@@ -4,10 +4,11 @@ import { Button, ButtonProps } from '@digdir/design-system-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { AppRoute, getFullPath } from '../util/routeUtils';
+import { AppRoute, getFullPath, IdReplacement } from '../util/routeUtils';
 
 export interface Props extends ButtonProps {
   route: AppRoute;
+  ids?: IdReplacement[];
   title: string;
   disabled?: boolean;
   redirectExternal?: boolean;
@@ -18,6 +19,7 @@ const TestlabLinkButton = ({
   variant,
   color,
   route,
+  ids = [],
   disabled = false,
   icon,
   size,
@@ -27,7 +29,7 @@ const TestlabLinkButton = ({
 }: Props) => (
   <div className="link-button-wrapper">
     <Link
-      to={disabled ? '.' : getFullPath(route)}
+      to={disabled ? '.' : getFullPath(route, ...ids)}
       target={redirectExternal ? '_blank' : ''}
     >
       <Button

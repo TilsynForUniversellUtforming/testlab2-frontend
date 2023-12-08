@@ -6,15 +6,10 @@ import { ButtonVariant } from '@common/types';
 import { AppRoute } from '@common/util/routeUtils';
 import { Heading } from '@digdir/design-system-react';
 import { SAK_CREATE } from '@sak/SakRoutes';
+import { TEST_ROOT } from '@test/TestingRoutes';
 import React from 'react';
 
-import {
-  anna,
-  NY_TEST_ROOT,
-  saksbehandling,
-  testing,
-  utval,
-} from '../AppRoutes';
+import { anna, saksbehandling, testing, utval } from '../AppRoutes';
 
 interface OversiktLinkListProps {
   heading: string;
@@ -68,21 +63,21 @@ const Oversikt = () => {
             className="oversikt__sak-ny"
           />
           <TestlabLinkButton
-            route={NY_TEST_ROOT}
-            title={NY_TEST_ROOT.navn}
+            route={TEST_ROOT}
+            title={TEST_ROOT.navn}
             variant={ButtonVariant.Outline}
             icon={
               <img
                 className="lenker__img"
-                src={NY_TEST_ROOT.imgSrc}
-                alt={NY_TEST_ROOT.navn}
+                src={TEST_ROOT.imgSrc}
+                alt={TEST_ROOT.navn}
               />
             }
             size="large"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
-            disabled={NY_TEST_ROOT.disabled}
+            disabled={TEST_ROOT.disabled}
           />
         </div>
       </div>
