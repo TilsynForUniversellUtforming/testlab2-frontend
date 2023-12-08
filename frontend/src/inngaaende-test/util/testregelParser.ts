@@ -13,25 +13,9 @@ import {
   TestregelDTO,
 } from '../types';
 
-const decodeHtmlEntities = (text: string): string => {
-  const entities: { [key: string]: string } = {
-    '&lt;': '<',
-    '&gt;': '>',
-    '&#x3C;': '<',
-    '&#x3E;': '>',
-    '&quot;': '"',
-    '&apos;': "'",
-    '&amp;': '&',
-  };
-
-  return text
-    .replace(/<[^>]*>/g, '') // Remove rich text formatting
-    .replace(/([,.!?:])(?=\S)(?!$)/g, '$1 ') // Add spacing after punctiation if missing
-    .replace(
-      // Convert html-tags to readable text
-      /&#x3C;|&#x3E;|&quot;|&apos;|&amp;|&lt;|&gt;/g,
-      (entity) => entities[entity]
-    );
+const parseHtmlEntities = (text: string): string => {
+  const parser = new DOMParser();
+  return parser.parseFromString(text, 'text/html').body.textContent || text;
 };
 
 const toSelectedOutcome = (
@@ -142,8 +126,8 @@ const translateToTestingStep = (
     const inputType: TestingStepInputType = multilinje ? 'multiline' : type;
 
     const testingStep: TestingStep = {
-      heading: decodeHtmlEntities(spm),
-      description: decodeHtmlEntities(ht),
+      heading: parseHtmlEntities(spm),
+      description: parseHtmlEntities(ht),
       input: {
         inputType: inputType,
         required: oblig || false,
