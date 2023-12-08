@@ -15,7 +15,9 @@ import {
 
 const parseHtmlEntities = (text: string): string => {
   const parser = new DOMParser();
-  return parser.parseFromString(text, 'text/html').body.textContent || text;
+  return (
+    parser.parseFromString(text, 'text/html').body.textContent || text
+  ).replace(/([,.!?:])(?=\S)(?!$)/g, '$1 '); // Add spacing after punctiation if missing
 };
 
 const toSelectedOutcome = (
