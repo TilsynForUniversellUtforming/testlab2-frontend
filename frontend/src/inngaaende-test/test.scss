@@ -1,0 +1,29 @@
+.test-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 48rem;
+  margin: auto;
+  padding-bottom: 3rem;
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  &-entry {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    &__help {
+      display: block;
+    }
+  }
+
+  &__result-card {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+}

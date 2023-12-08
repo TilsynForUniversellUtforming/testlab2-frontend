@@ -3,10 +3,14 @@ import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { Option } from '@common/types';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { isDefined } from '@common/util/validationUtils';
+import { Link } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TESTREGEL_DEMO } from '@test/TestingRoutes';
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
 import { Testregel, TestregelType } from '../api/types';
 import { testreglarValidationSchema } from './testreglarValidationSchema';
@@ -30,6 +34,8 @@ const TestregelForm = ({
   kravDisabled,
   alert,
 }: Props) => {
+  const { id } = useParams();
+
   const kravOptions: Option[] = krav.map((k) => ({
     label: k,
     value: k,
@@ -63,6 +69,8 @@ const TestregelForm = ({
     control,
     name: 'type',
   }) as TestregelType;
+
+  const showDemoLink = testregel && testregel.type === 'inngaaende' && id;
 
   return (
     <div className="testregel-form">
@@ -103,6 +111,13 @@ const TestregelForm = ({
           disabled={kravDisabled}
           required
         />
+        {showDemoLink && (
+          <Link
+            href={getFullPath(TESTREGEL_DEMO, { id: id, pathParam: idPath })}
+          >
+            Demo {testregel?.name}
+          </Link>
+        )}
         <TestlabForm.FormButtons />
       </TestlabForm>
       {alert && (

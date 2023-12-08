@@ -53,3 +53,10 @@ export const deleteTestregelList = async (
     throw Error(message);
   }
 };
+
+export const getTestregel = async (id: number): Promise<Testregel> =>
+  await fetch(`/api/v1/testreglar/${id}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke hente testreglar')
+  );
