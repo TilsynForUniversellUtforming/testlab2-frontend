@@ -1,10 +1,17 @@
-.file-drop-container {
+.file-upload-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
 
-  .file-upload-instructions {
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+
+  &-instructions {
     border: 0.125rem dotted var(--colors-blue-300);
-    padding: 2rem 0;
+    padding: 3rem;
     width: 100%;
     text-align: center;
     position: relative;
@@ -14,16 +21,32 @@
     }
 
     &.file {
-      border: none;
+      border: 1px solid var(--colors-blue-300);
       padding: 0;
     }
+  }
 
-    .file-upload-canvas {
-      border: 1px solid;
-      &.hidden {
-        display: none;
-      }
+  &-canvas {
+    max-width: 32rem;
+    max-height: 32rem;
+    width: auto;
+    height: auto;
+    &.hidden {
+      display: none;
     }
+
+    &.full-size {
+      max-width: none;
+      max-height: none;
+    }
+  }
+
+  &-user-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .file-count {
