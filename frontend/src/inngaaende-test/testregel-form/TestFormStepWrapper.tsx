@@ -19,17 +19,18 @@ const TestFormStepWrapper = ({
   onAction,
 }: FormStepProps) => {
   if (formStep.key === 'avslutt') {
+    const isSamsvar = formStep.fasit?.toLowerCase() === 'ja';
     return (
       <TestResultCard
-        resultTitle={
-          formStep.fasit?.toLowerCase() === 'ja' ? 'Samsvar' : 'Ikkje samsvar'
-        }
+        resultSeverity={isSamsvar ? 'success' : 'danger'}
+        resultTitle={isSamsvar ? 'Samsvar' : 'Ikkje samsvar'}
         resultDescription={formStep.utfall || 'Inget resultat'}
       />
     );
   } else if (formStep.key === 'ikkjeForekomst') {
     return (
       <TestResultCard
+        resultSeverity={'info'}
         resultTitle="Ikkje forekomst"
         resultDescription={formStep.utfall || 'Inget resultat'}
       />
