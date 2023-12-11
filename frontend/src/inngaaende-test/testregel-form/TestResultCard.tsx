@@ -1,5 +1,5 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
-import FileUpload from '@common/file-upload/FileUpload';
+import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestlabSeverity } from '@common/types';
 import { Heading, Paragraph, Tag, Textarea } from '@digdir/design-system-react';
 import { useState } from 'react';
@@ -37,7 +37,7 @@ const TestResultCard = ({
         value={String(resultComment)}
         onChange={(e) => setResultComment(e.target.value)}
       />
-      <FileUpload />
+      <ImageUpload />
     </div>
   );
 };
