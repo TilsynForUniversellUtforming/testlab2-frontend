@@ -1,31 +1,19 @@
-import './file-upload.scss';
+import './image-upload.scss';
 
-import CircleIcon from '@common/icon/CircleIcon';
-import SquareIcon from '@common/icon/SquareIcon';
-import { ButtonVariant } from '@common/types';
-import { Button, Paragraph, ToggleGroup } from '@digdir/design-system-react';
-import {
-  ArrowUndoIcon,
-  EraserIcon,
-  ExpandIcon,
-  ShrinkIcon,
-  TrashIcon,
-  TrendFlatIcon,
-  UploadIcon,
-} from '@navikt/aksel-icons';
+import AlertTimed from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
+import ImageEditControls from '@common/image-edit/ImageEditControls';
+import { Paragraph } from '@digdir/design-system-react';
+import { UploadIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-export type LineType = 'rectangle' | 'arrow' | 'line' | 'circle' | 'text';
+import { LineType, Position } from './types';
 
-export type Position = { x: number; y: number };
-
-export type History = { imageData: ImageData; isText: boolean };
-
-const FileUpload = () => {
+const ImageUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [isImageFullSize, setIsImageFullSize] = useState(true);
+  const [isImageFullSize, setIsImageFullSize] = useState(false);
   const [lineType, setLineType] = useState<LineType>('arrow');
   const [isDrawing, setIsDrawing] = useState(false);
   const [startX, setStartX] = useState<number>(0);
@@ -33,7 +21,8 @@ const FileUpload = () => {
   const [imgData, setImgData] = useState<ImageData>();
   const [textPosition, setTextPosition] = useState<Position>({ x: 0, y: 0 });
   const [currentText, setCurrentText] = useState('');
-  const [history, setHistory] = useState<History[]>([]);
+  const [history, setHistory] = useState<ImageData[]>([]);
+  const [alert, setAlert] = useAlert();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -45,31 +34,28 @@ const FileUpload = () => {
       const ctx = canvas?.getContext('2d', { willReadFrequently: true });
       if (ctx && event.dataTransfer.files) {
         const file = event.dataTransfer.files[0];
-        setSelectedFile(file);
 
         const reader = new FileReader();
         reader.onload = (e) => {
           if (canvas) {
             const img = new Image();
             img.onload = () => {
-              let canvasWidth, canvasHeight;
-
-              if (isImageFullSize) {
-                canvasWidth = img.width;
-                canvasHeight = img.height;
-              } else {
-                // Scale down the image
-                const maxWidth = 32 * 16;
-                const scale = Math.min(1, maxWidth / img.width);
-                canvasWidth = img.width * scale;
-                canvasHeight = img.height * scale;
+              const imageTooWide = img.width > window.screen.width * 0.8;
+              const imageTooTall = img.height > window.screen.height * 0.8;
+              if (imageTooWide || imageTooTall) {
+                setAlert('danger', 'Bilete er for stort');
+                setSelectedFile(null);
+                return;
               }
+              const canvasWidth = img.width;
+              const canvasHeight = img.height;
 
               canvas.width = canvasWidth;
               canvas.height = canvasHeight;
 
               ctx.clearRect(0, 0, canvasWidth, canvasHeight);
               ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+              setSelectedFile(file);
             };
             img.src = e.target?.result as string;
           }
@@ -77,7 +63,7 @@ const FileUpload = () => {
         reader.readAsDataURL(file);
       }
     },
-    [canvasRef, isImageFullSize]
+    [canvasRef]
   );
 
   const handleDragOver = useCallback(
@@ -124,7 +110,7 @@ const FileUpload = () => {
     const ctx = canvas?.getContext('2d', { willReadFrequently: true });
     if (canvas && ctx) {
       setImgData(ctx.getImageData(0, 0, canvas.width, canvas.height));
-      saveToHistory(ctx, false);
+      saveToHistory(ctx);
     }
   };
 
@@ -214,7 +200,7 @@ const FileUpload = () => {
           const canvas = canvasRef?.current;
           const ctx = canvas?.getContext('2d', { willReadFrequently: true });
           if (ctx) {
-            saveToHistory(ctx, true);
+            saveToHistory(ctx);
           }
         }
       }
@@ -309,13 +295,10 @@ const FileUpload = () => {
     }
   };
 
-  const saveToHistory = (ctx: CanvasRenderingContext2D, isText: boolean) => {
+  const saveToHistory = (ctx: CanvasRenderingContext2D) => {
     setHistory((prevHistory) => [
       ...prevHistory,
-      {
-        imageData: ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height),
-        isText,
-      },
+      ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height),
     ]);
   };
 
@@ -326,9 +309,13 @@ const FileUpload = () => {
         newHistory.pop();
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d', { willReadFrequently: true });
-        if (canvas && ctx && newHistory.length > 0) {
-          const previousState = newHistory[newHistory.length - 1];
-          ctx.putImageData(previousState.imageData, 0, 0);
+        if (canvas && ctx) {
+          if (newHistory.length > 0) {
+            const previousState = newHistory[newHistory.length - 1];
+            ctx.putImageData(previousState, 0, 0);
+          } else {
+            clearStrokes();
+          }
         }
       }
       return newHistory;
@@ -336,38 +323,22 @@ const FileUpload = () => {
   };
 
   return (
-    <div className="file-upload-container">
+    <div className="image-upload-container">
       <div
-        className="file-upload"
+        className="image-upload"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
-        {selectedFile && (
-          <div className="file-upload-user-actions">
-            <Button
-              onClick={handleClearCanvas}
-              title="Fjern bilde"
-              icon={<TrashIcon />}
-              variant={ButtonVariant.Quiet}
-            />
-            <Button
-              onClick={toggleImageSize}
-              title={isImageFullSize ? 'Minimer' : 'Full storleik'}
-              icon={isImageFullSize ? <ShrinkIcon /> : <ExpandIcon />}
-              variant={ButtonVariant.Quiet}
-            />
-          </div>
-        )}
         <div
-          className={classnames('file-upload-instructions', {
+          className={classnames('image-upload-instructions', {
             file: selectedFile,
             'drag-over': isDragOver,
           })}
         >
           <canvas
             ref={canvasRef}
-            className={classnames('file-upload-canvas', {
+            className={classnames('image-upload-canvas', {
               hidden: !selectedFile,
               'full-size': isImageFullSize,
             })}
@@ -386,58 +357,27 @@ const FileUpload = () => {
         <Paragraph size="small" spacing>
           Antall filer {selectedFile ? 1 : 0}/1
         </Paragraph>
-        {selectedFile && (
-          <div className="file-upload-user-actions">
-            <Button
-              onClick={clearStrokes}
-              title="Fjern markeringer"
-              icon={<EraserIcon />}
-              variant={ButtonVariant.Quiet}
-              disabled={!isImageFullSize}
-            />
-            <Button
-              onClick={handleUndo}
-              title="Tilbake"
-              icon={<ArrowUndoIcon />}
-              variant={ButtonVariant.Quiet}
-              disabled={history.length === 0}
-            />
-            <ToggleGroup
-              defaultValue={'arrow'}
-              onChange={handleSetLineType}
-              size="small"
-            >
-              <ToggleGroup.Item
-                value="arrow"
-                icon={<TrendFlatIcon />}
-                title="Teikn pil"
-                disabled={!isImageFullSize}
-              />
-              <ToggleGroup.Item
-                value="rectangle"
-                icon={<SquareIcon selected={lineType === 'rectangle'} />}
-                title="Teikn firkant"
-                disabled={!isImageFullSize}
-              />
-              <ToggleGroup.Item
-                value="circle"
-                icon={<CircleIcon selected={lineType === 'circle'} />}
-                title="Teikn sirkel"
-                disabled={!isImageFullSize}
-              />
-              <ToggleGroup.Item
-                value="text"
-                title="Tekst"
-                disabled={!isImageFullSize}
-              >
-                Aa
-              </ToggleGroup.Item>
-            </ToggleGroup>
-          </div>
-        )}
+        <ImageEditControls
+          show={!!selectedFile}
+          isImageFullSize={isImageFullSize}
+          emptyHistory={history.length === 0}
+          handleClearCanvas={handleClearCanvas}
+          handleClearStrokes={clearStrokes}
+          toggleImageSize={toggleImageSize}
+          handleUndo={handleUndo}
+          handleSetLineType={handleSetLineType}
+          lineType={lineType}
+        />
       </div>
+      {alert && (
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
     </div>
   );
 };
 
-export default FileUpload;
+export default ImageUpload;

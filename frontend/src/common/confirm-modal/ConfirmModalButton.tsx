@@ -19,6 +19,7 @@ export interface ConfirmModalProps {
   color?: ButtonColorType;
   size?: ButtonSizeType;
   variant?: ButtonVariantType;
+  iconOnly?: boolean;
 }
 
 const ConfirmModalButton = ({
@@ -31,6 +32,7 @@ const ConfirmModalButton = ({
   icon,
   variant,
   size,
+  iconOnly,
 }: ConfirmModalProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const onConfirmModal = useCallback(() => {
@@ -48,8 +50,9 @@ const ConfirmModalButton = ({
         icon={icon}
         size={size}
         variant={variant}
+        title={iconOnly ? title : undefined}
       >
-        {title}
+        {iconOnly ? null : title}
       </Button>
       <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
         <Modal.Header>{title}</Modal.Header>
