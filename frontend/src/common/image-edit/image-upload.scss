@@ -26,6 +26,20 @@
     }
   }
 
+  &-manual-input {
+    display: none;
+  }
+
+  &-manual-link {
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--fds-semantic-text-action-default);
+    &:hover {
+      color: var(--fds-semantic-text-action-hover);
+      text-decoration-thickness: max(2px, 0.125rem, 0.12em);
+    }
+  }
+
   &-canvas {
     max-width: 32rem;
     max-height: 32rem;

@@ -13,7 +13,7 @@ import { LineType, Position } from './types';
 const ImageUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [isImageFullSize, setIsImageFullSize] = useState(false);
+  const [isImageFullSize, setIsImageFullSize] = useState(true);
   const [lineType, setLineType] = useState<LineType>('arrow');
   const [isDrawing, setIsDrawing] = useState(false);
   const [startX, setStartX] = useState<number>(0);
@@ -26,45 +26,61 @@ const ImageUpload = () => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const handleSelectFile = (file: File) => {
+    setIsDragOver(false);
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d', { willReadFrequently: true });
+    if (ctx && canvas) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (canvas) {
+          const img = new Image();
+          img.onload = () => {
+            const imageTooWide = img.width > window.screen.width * 0.8;
+            const imageTooTall = img.height > window.screen.height * 0.8;
+            if (imageTooWide || imageTooTall) {
+              setAlert('danger', 'Bilete er for stort');
+              setSelectedFile(null);
+              return;
+            }
+            const canvasWidth = img.width;
+            const canvasHeight = img.height;
+
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+            setSelectedFile(file);
+          };
+          img.src = e.target?.result as string;
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setAlert('danger', 'Kunne ikkje prosessere bilete');
+    }
+  };
+
   const handleDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      setIsDragOver(false);
-      const canvas = canvasRef.current;
-      const ctx = canvas?.getContext('2d', { willReadFrequently: true });
-      if (ctx && event.dataTransfer.files) {
-        const file = event.dataTransfer.files[0];
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          if (canvas) {
-            const img = new Image();
-            img.onload = () => {
-              const imageTooWide = img.width > window.screen.width * 0.8;
-              const imageTooTall = img.height > window.screen.height * 0.8;
-              if (imageTooWide || imageTooTall) {
-                setAlert('danger', 'Bilete er for stort');
-                setSelectedFile(null);
-                return;
-              }
-              const canvasWidth = img.width;
-              const canvasHeight = img.height;
-
-              canvas.width = canvasWidth;
-              canvas.height = canvasHeight;
-
-              ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-              ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-              setSelectedFile(file);
-            };
-            img.src = e.target?.result as string;
-          }
-        };
-        reader.readAsDataURL(file);
+      if (event.dataTransfer.files.length === 1) {
+        handleSelectFile(event.dataTransfer.files[0]);
+      } else {
+        setAlert('danger', 'Feil i opplasting av fil');
       }
     },
     [canvasRef]
   );
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length === 1) {
+      handleSelectFile(event.target.files[0]);
+    } else {
+      setAlert('danger', 'Feil i opplasting av fil');
+    }
+  };
 
   const handleDragOver = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -349,7 +365,22 @@ const ImageUpload = () => {
           {!selectedFile && (
             <>
               <UploadIcon title="Last opp" fontSize={42} />
-              <Paragraph>Dra og slepp eller leit etter fil</Paragraph>
+              <Paragraph>
+                Dra og slepp eller&nbsp;
+                <label
+                  htmlFor="file-upload"
+                  className="image-upload-manual-link"
+                >
+                  leit etter fil
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                  accept=".jpg,.png,.bmp"
+                  className="image-upload-manual-input"
+                />
+              </Paragraph>
               <Paragraph>Filformater: .jpg, .png, og .bmp</Paragraph>
             </>
           )}
