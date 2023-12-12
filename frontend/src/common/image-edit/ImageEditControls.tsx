@@ -52,7 +52,7 @@ const ImageEditControls = ({
       />
       <Button
         onClick={toggleImageSize}
-        title={isImageFullSize ? 'Minimer' : 'Full storleik'}
+        title={isImageFullSize ? 'Minimer' : 'Utvid'}
         icon={isImageFullSize ? <ShrinkIcon /> : <ExpandIcon />}
         variant={ButtonVariant.Quiet}
       />
@@ -61,7 +61,7 @@ const ImageEditControls = ({
         message="Vil du fjerne alle tegninger? Dette kan ikkje angrast"
         icon={<EraserIcon />}
         onConfirm={handleClearStrokes}
-        disabled={!isImageFullSize || emptyHistory}
+        disabled={emptyHistory}
         iconOnly={true}
         variant={ButtonVariant.Quiet}
       />
