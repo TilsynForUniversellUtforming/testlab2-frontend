@@ -23,7 +23,7 @@ class SecurityConfig {
       authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
       csrf { disable() }
-      cors {}
+      cors { disable() }
     }
 
     return http.build()
