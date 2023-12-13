@@ -18,15 +18,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
-  val rolesExtractor = RoleExtractor()
+    val rolesExtractor = RoleExtractor()
 
-  @Bean
-  open fun filterChain(http: HttpSecurity): SecurityFilterChain {
-    http {
-      authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
-      oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
-      csrf { disable() }
-    }
+    @Bean
+    open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+        http {
+            authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
+            oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
+            csrf { disable() }
+        }
 
     return http.build()
   }
@@ -54,6 +54,6 @@ class SecurityConfig {
                 .flatten()
                 .toSet()
 
-        roles
-      }
+            roles
+        }
 }
