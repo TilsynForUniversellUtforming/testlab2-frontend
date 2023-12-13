@@ -26,20 +26,21 @@ class SecurityConfig {
       authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
       csrf { disable() }
+        cors {  }
     }
 
     return http.build()
   }
 
-  @Bean
-  fun corsConfigurationSource(): CorsConfigurationSource {
-    val configuration = CorsConfiguration()
-    configuration.allowedOrigins =
-        listOf("https://test-testlab.uutilsynet.no", "https://beta-testlab.uutilsynet.no")
-    val source = UrlBasedCorsConfigurationSource()
-    source.registerCorsConfiguration("/**", configuration)
-    return source
-  }
+//  @Bean
+//  fun corsConfigurationSource(): CorsConfigurationSource {
+//    val configuration = CorsConfiguration()
+//    configuration.allowedOrigins =
+//        listOf("https://test-testlab.uutilsynet.no", "https://beta-testlab.uutilsynet.no")
+//    val source = UrlBasedCorsConfigurationSource()
+//    source.registerCorsConfiguration("/**", configuration)
+//    return source
+//  }
 
   private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
       GrantedAuthoritiesMapper { authorities: Collection<GrantedAuthority> ->
