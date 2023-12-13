@@ -73,7 +73,7 @@ const ImageEditControls = ({
         disabled={emptyHistory}
       />
       <ToggleGroup
-        defaultValue="arrow"
+        defaultValue={lineType}
         onChange={handleSetLineType}
         size="small"
       >
