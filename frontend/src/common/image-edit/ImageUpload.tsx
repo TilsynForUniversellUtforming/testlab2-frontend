@@ -10,17 +10,14 @@ import { UploadIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import React, { useRef, useState } from 'react';
 
-import { LineType } from './types';
-
 const ImageUpload = () => {
-  const [isImageFullSize, setIsImageFullSize] = useState(true);
-  const [lineType, setLineType] = useState<LineType>('arrow');
+  const [isEditMode, setIsEditMode] = useState(false);
   const [alert, setAlert] = useAlert();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const {
-    handleSelectFile,
+    handleFileChange,
     handleDrop,
     handleDragOver,
     handleDragLeave,
@@ -28,36 +25,22 @@ const ImageUpload = () => {
     isDragOver,
     handleClearFile,
   } = useFileUpload({ canvasRef, setAlert });
+
   const {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handleSetLineType,
+    lineType,
+    handleChangeColor,
+    color,
     clearStrokes,
     handleUndo,
-    clearText,
     emptyImageHistory,
-  } = useCanvasDrawing({ canvasRef, lineType, isImageFullSize, selectedFile });
+  } = useCanvasDrawing({ canvasRef, isEditMode, selectedFile });
 
-  const toggleImageSize = () => {
-    setIsImageFullSize((prev) => !prev);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length === 1) {
-      handleSelectFile(event.target.files[0]);
-    } else {
-      setAlert('danger', 'Feil i opplasting av fil');
-    }
-  };
-
-  const handleSetLineType = (value: string) => {
-    if (['rectangle', 'arrow', 'line', 'circle', 'text'].includes(value)) {
-      setLineType(value as LineType);
-
-      if (value === 'text') {
-        clearText();
-      }
-    }
+  const toggleEditMode = () => {
+    setIsEditMode((prev) => !prev);
   };
 
   return (
@@ -78,7 +61,7 @@ const ImageUpload = () => {
             ref={canvasRef}
             className={classnames('image-upload-canvas', {
               hidden: !selectedFile,
-              'full-size': isImageFullSize,
+              'full-size': isEditMode,
             })}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -103,7 +86,7 @@ const ImageUpload = () => {
                   className="image-upload-manual-input"
                 />
               </Paragraph>
-              <Paragraph>Filformater: .jpg, .png, og .bmp</Paragraph>
+              <Paragraph>Filformater: .jpg og .png, og .bmp</Paragraph>
             </>
           )}
         </div>
@@ -112,14 +95,16 @@ const ImageUpload = () => {
         </Paragraph>
         <ImageEditControls
           show={!!selectedFile}
-          isImageFullSize={isImageFullSize}
+          isEditMode={isEditMode}
           emptyHistory={emptyImageHistory}
           handleClearCanvas={handleClearFile}
           handleClearStrokes={clearStrokes}
-          toggleImageSize={toggleImageSize}
+          toggleImageSize={toggleEditMode}
           handleUndo={handleUndo}
           handleSetLineType={handleSetLineType}
           lineType={lineType}
+          handleChangeColor={handleChangeColor}
+          color={color}
         />
       </div>
       {alert && (

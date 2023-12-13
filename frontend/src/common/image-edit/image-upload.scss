@@ -61,6 +61,25 @@
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
+
+    .farge {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 2rem;
+      height: 2.2rem;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .farge::-webkit-color-swatch {
+      border-radius: 3px;
+      border: none;
+    }
+    .farge::-moz-color-swatch {
+      border-radius: 3px;
+      border: none;
+    }
   }
 
   .file-count {
