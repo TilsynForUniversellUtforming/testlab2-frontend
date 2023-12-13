@@ -8,14 +8,14 @@ import {
   ArrowUndoIcon,
   ArrowUpIcon,
   EraserIcon,
-  ExpandIcon,
-  ShrinkIcon,
+  FloppydiskIcon,
+  PencilLineIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
 
 interface Props {
   show: boolean;
-  isImageFullSize: boolean;
+  isEditMode: boolean;
   emptyHistory: boolean;
   handleClearCanvas: () => void;
   handleClearStrokes: () => void;
@@ -23,11 +23,13 @@ interface Props {
   handleUndo: () => void;
   handleSetLineType: (lineType: string) => void;
   lineType: LineType;
+  handleChangeColor: (color: string) => void;
+  color: string;
 }
 
 const ImageEditControls = ({
   show,
-  isImageFullSize,
+  isEditMode,
   emptyHistory,
   handleClearCanvas,
   handleClearStrokes,
@@ -35,15 +37,21 @@ const ImageEditControls = ({
   handleUndo,
   handleSetLineType,
   lineType,
+  handleChangeColor,
+  color,
 }: Props) => {
   if (!show) {
     return null;
   }
 
+  const onChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleChangeColor(event.target.value);
+  };
+
   return (
     <div className="image-upload-user-actions">
       <ConfirmModalButton
-        title="Slett bilde"
+        title="Slett"
         message="Vil du ta slette biletet? Dette kan ikkje angrast"
         icon={<TrashIcon />}
         onConfirm={handleClearCanvas}
@@ -52,57 +60,62 @@ const ImageEditControls = ({
       />
       <Button
         onClick={toggleImageSize}
-        title={isImageFullSize ? 'Minimer' : 'Utvid'}
-        icon={isImageFullSize ? <ShrinkIcon /> : <ExpandIcon />}
+        title={isEditMode ? 'Lagre' : 'Rediger'}
+        icon={isEditMode ? <FloppydiskIcon /> : <PencilLineIcon />}
         variant={ButtonVariant.Quiet}
       />
-      <ConfirmModalButton
-        title="Fjern tegning"
-        message="Vil du fjerne alle tegninger? Dette kan ikkje angrast"
-        icon={<EraserIcon />}
-        onConfirm={handleClearStrokes}
-        disabled={emptyHistory}
-        iconOnly={true}
-        variant={ButtonVariant.Quiet}
-      />
-      <Button
-        onClick={handleUndo}
-        title="Tilbake"
-        icon={<ArrowUndoIcon />}
-        variant={ButtonVariant.Quiet}
-        disabled={emptyHistory}
-      />
-      <ToggleGroup
-        defaultValue={lineType}
-        onChange={handleSetLineType}
-        size="small"
-      >
-        <ToggleGroup.Item
-          value="arrow"
-          icon={<ArrowUpIcon />}
-          title="Teikn pil"
-          disabled={!isImageFullSize}
-        />
-        <ToggleGroup.Item
-          value="rectangle"
-          icon={<SquareIcon selected={lineType === 'rectangle'} />}
-          title="Teikn firkant"
-          disabled={!isImageFullSize}
-        />
-        <ToggleGroup.Item
-          value="circle"
-          icon={<CircleIcon selected={lineType === 'circle'} />}
-          title="Teikn sirkel"
-          disabled={!isImageFullSize}
-        />
-        <ToggleGroup.Item
-          value="text"
-          title="Tekst"
-          disabled={!isImageFullSize}
-        >
-          Aa
-        </ToggleGroup.Item>
-      </ToggleGroup>
+      {isEditMode && (
+        <>
+          <ConfirmModalButton
+            title="Nullstill"
+            message="Vil du nullstille markeringar? Dette kan ikkje angrast"
+            icon={<EraserIcon />}
+            onConfirm={handleClearStrokes}
+            disabled={emptyHistory}
+            iconOnly={true}
+            variant={ButtonVariant.Quiet}
+          />
+          <Button
+            onClick={handleUndo}
+            title="Tilbake"
+            icon={<ArrowUndoIcon />}
+            variant={ButtonVariant.Quiet}
+            disabled={emptyHistory}
+          />
+          <ToggleGroup
+            defaultValue={lineType}
+            onChange={handleSetLineType}
+            size="small"
+          >
+            <ToggleGroup.Item
+              value="arrow"
+              icon={<ArrowUpIcon />}
+              title="Pil"
+            />
+            <ToggleGroup.Item
+              value="rectangle"
+              icon={<SquareIcon selected={lineType === 'rectangle'} />}
+              title="Rektangel"
+            />
+            <ToggleGroup.Item
+              value="circle"
+              icon={<CircleIcon selected={lineType === 'circle'} />}
+              title="Ellipse"
+            />
+            <ToggleGroup.Item value="text" title="Tekstmodus">
+              Aa
+            </ToggleGroup.Item>
+          </ToggleGroup>
+          <input
+            type="color"
+            id="farge"
+            className="farge"
+            value={color}
+            onChange={onChangeColor}
+            title="Farge"
+          />
+        </>
+      )}
     </div>
   );
 };

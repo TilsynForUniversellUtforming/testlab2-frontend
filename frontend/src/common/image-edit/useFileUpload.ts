@@ -15,6 +15,13 @@ const useFileUpload = ({ canvasRef, setAlert }: UseFileUploadProps) => {
   const handleSelectFile = useCallback(
     (file: File) => {
       setIsDragOver(false);
+
+      const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/bmp'];
+      if (!allowedMimeTypes.includes(file.type)) {
+        setAlert('danger', 'Feil filformat');
+        return;
+      }
+
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext('2d', { willReadFrequently: true });
       if (ctx && canvas) {
@@ -51,6 +58,14 @@ const useFileUpload = ({ canvasRef, setAlert }: UseFileUploadProps) => {
     [canvasRef, setIsDragOver, setAlert]
   );
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length === 1) {
+      handleSelectFile(event.target.files[0]);
+    } else {
+      setAlert('danger', 'Feil i opplasting av fil');
+    }
+  };
+
   const handleDrop = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
@@ -80,7 +95,7 @@ const useFileUpload = ({ canvasRef, setAlert }: UseFileUploadProps) => {
   );
 
   return {
-    handleSelectFile,
+    handleFileChange,
     handleDrop,
     handleDragOver,
     handleDragLeave,

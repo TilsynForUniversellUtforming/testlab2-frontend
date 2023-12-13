@@ -8,8 +8,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 interface UseCanvasDrawingProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
-  lineType: LineType;
-  isImageFullSize: boolean;
+  isEditMode: boolean;
   selectedFile: File | null;
 }
 
@@ -17,9 +16,12 @@ interface UseCanvasDrawingReturnType {
   handleMouseDown: (event: React.MouseEvent) => void;
   handleMouseMove: (event: React.MouseEvent) => void;
   handleMouseUp: () => void;
+  handleSetLineType: (lineType: string) => void;
+  lineType: LineType;
+  handleChangeColor: (color: string) => void;
+  color: string;
   clearStrokes: () => void;
   handleUndo: () => void;
-  clearText: () => void;
   emptyImageHistory: boolean;
 }
 
@@ -27,8 +29,7 @@ const defaultStartPosition: Position = { x: 0, y: 0 };
 
 const useCanvasDrawing = ({
   canvasRef,
-  lineType,
-  isImageFullSize,
+  isEditMode,
   selectedFile,
 }: UseCanvasDrawingProps): UseCanvasDrawingReturnType => {
   const [isDrawing, setIsDrawing] = useState(false);
@@ -39,8 +40,8 @@ const useCanvasDrawing = ({
     useState<Position>(defaultStartPosition);
   const [currentText, setCurrentText] = useState<string>('');
   const [imageHistory, setImageHistory] = useState<ImageData[]>([]);
-
-  const clearText = useCallback(() => setCurrentText(''), []);
+  const [lineType, setLineType] = useState<LineType>('arrow');
+  const [color, setColor] = useState<string>('#ff0000');
 
   const getCanvasContext = () => {
     const canvas = canvasRef.current;
@@ -65,19 +66,19 @@ const useCanvasDrawing = ({
 
       switch (lineType) {
         case 'arrow':
-          drawArrow(ctx, startX, startY, currentX, currentY);
+          drawArrow(ctx, startX, startY, currentX, currentY, color);
           break;
         case 'rectangle':
-          drawRectangle(ctx, startX, startY, currentX, currentY);
+          drawRectangle(ctx, startX, startY, currentX, currentY, color);
           break;
         case 'circle':
-          drawCircle(ctx, startX, startY, currentX, currentY);
+          drawCircle(ctx, startX, startY, currentX, currentY, color);
           break;
         case 'text':
           return;
       }
     },
-    [startX, startY, lineType]
+    [startX, startY, lineType, color]
   );
 
   const saveToHistory = (ctx: CanvasRenderingContext2D) => {
@@ -89,7 +90,7 @@ const useCanvasDrawing = ({
 
   const handleMouseDown = useCallback(
     (event: React.MouseEvent) => {
-      if (!isImageFullSize) return;
+      if (!isEditMode) return;
 
       const { canvas, ctx } = getCanvasContext();
       if (canvas && ctx) {
@@ -109,7 +110,7 @@ const useCanvasDrawing = ({
         }
       }
     },
-    [canvasRef, isImageFullSize, lineType]
+    [canvasRef, isEditMode, lineType]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -201,23 +202,28 @@ const useCanvasDrawing = ({
       if (ctx && canvas) {
         const textHeight = 24;
         const textWidth = ctx.measureText(text).width;
-
-        // The first render of ctx will calculate the width wrong
         const correctedTextWidth =
           textWidth <= textHeight ? textHeight : textWidth;
-        console.log('correctedTextWidth', correctedTextWidth);
-        console.log('minTextWidth', textHeight);
 
         ctx.fillStyle = 'white';
         ctx.fillRect(
           textPosition.x,
           textPosition.y - textHeight,
           correctedTextWidth,
-          textHeight * 1.5
+          textHeight * 1.3
+        );
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          textPosition.x,
+          textPosition.y - textHeight,
+          correctedTextWidth,
+          textHeight * 1.3
         );
 
         ctx.font = '24px Arial';
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = color;
         ctx.fillText(text, textPosition.x, textPosition.y);
 
         saveToHistory(ctx);
@@ -231,17 +237,38 @@ const useCanvasDrawing = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lineType, currentText, textPosition, canvasRef, handleUndo]);
+  }, [lineType, currentText, textPosition, canvasRef, handleUndo, color]);
 
   const emptyImageHistory = imageHistory.length === 0;
+
+  const handleSetLineType = useCallback((value: string) => {
+    if (['rectangle', 'arrow', 'circle', 'text'].includes(value)) {
+      setLineType(value as LineType);
+
+      if (value === 'text') {
+        setCurrentText('');
+      }
+    }
+  }, []);
+
+  const handleChangeColor = useCallback((color: string) => {
+    if (/^#(?:[0-9a-fA-F]{3}){1,2}$/.test(color)) {
+      setColor(color);
+    } else {
+      setColor('#FF0000');
+    }
+  }, []);
 
   return {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handleSetLineType,
+    lineType,
+    handleChangeColor,
+    color,
     clearStrokes,
     handleUndo,
-    clearText,
     emptyImageHistory,
   };
 };

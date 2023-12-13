@@ -3,7 +3,8 @@ export const drawCircle = (
   startX: number,
   startY: number,
   currentX: number,
-  currentY: number
+  currentY: number,
+  color: string
 ) => {
   const radiusX = Math.abs(currentX - startX) / 2;
   const radiusY = Math.abs(currentY - startY) / 2;
@@ -14,7 +15,7 @@ export const drawCircle = (
   ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
 
   ctx.lineWidth = 4;
-  ctx.strokeStyle = 'red';
+  ctx.strokeStyle = color;
   ctx.stroke();
 };
 
@@ -23,7 +24,8 @@ export const drawArrow = (
   startX: number,
   startY: number,
   currentX: number,
-  currentY: number
+  currentY: number,
+  color: string
 ) => {
   const dx = currentX - startX;
   const dy = currentY - startY;
@@ -44,11 +46,11 @@ export const drawArrow = (
     currentY - headlength * Math.sin(angle + Math.PI / 6)
   );
   ctx.closePath();
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = color;
   ctx.fill();
 
   ctx.lineWidth = 4;
-  ctx.strokeStyle = 'red';
+  ctx.strokeStyle = color;
   ctx.stroke();
 };
 
@@ -57,12 +59,13 @@ export const drawRectangle = (
   startX: number,
   startY: number,
   currentX: number,
-  currentY: number
+  currentY: number,
+  color: string
 ) => {
   ctx.beginPath();
   ctx.rect(startX, startY, currentX - startX, currentY - startY);
   ctx.lineWidth = 4;
-  ctx.strokeStyle = 'red';
+  ctx.strokeStyle = color;
   ctx.stroke();
   ctx.closePath();
 };
