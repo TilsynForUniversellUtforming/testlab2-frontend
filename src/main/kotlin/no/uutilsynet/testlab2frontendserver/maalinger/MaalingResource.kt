@@ -93,6 +93,7 @@ class MaalingResource(
             ResponseEntity.created(URI("/maaling/${newMaaling.id}")).body(newMaaling)
           }
           .getOrElse {
+            logger.error("Kunne ikkje lage ny måling", it.message)
             ResponseEntity.internalServerError()
                 .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
           }
