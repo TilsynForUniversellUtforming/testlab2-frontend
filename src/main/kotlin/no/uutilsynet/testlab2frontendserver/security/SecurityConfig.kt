@@ -11,6 +11,9 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -23,21 +26,23 @@ class SecurityConfig {
       authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
       csrf { disable() }
-      cors { disable() }
     }
 
     return http.build()
   }
 
-  //  @Bean
-  //  fun corsConfigurationSource(): CorsConfigurationSource {
-  //    val configuration = CorsConfiguration()
-  //    configuration.allowedOrigins =
-  //        listOf("https://test-testlab.uutilsynet.no", "https://beta-testlab.uutilsynet.no")
-  //    val source = UrlBasedCorsConfigurationSource()
-  //    source.registerCorsConfiguration("/**", configuration)
-  //    return source
-  //  }
+  @Bean
+  fun corsConfigurationSource(): CorsConfigurationSource {
+    val configuration = CorsConfiguration()
+    configuration.allowedOrigins =
+        listOf(
+            "https://user.difi.no",
+            "https://test-testlab.uutilsynet.no",
+            "https://beta-testlab.uutilsynet.no")
+    val source = UrlBasedCorsConfigurationSource()
+    source.registerCorsConfiguration("/**", configuration)
+    return source
+  }
 
   private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
       GrantedAuthoritiesMapper { authorities: Collection<GrantedAuthority> ->

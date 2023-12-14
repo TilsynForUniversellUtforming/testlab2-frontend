@@ -16,8 +16,6 @@ export const responseToJson = (
   if (response.ok) {
     return response.json();
   } else {
-    console.error(response.statusText);
-    console.error(response.status);
     throw new Error(errorMessage);
   }
 };
