@@ -21,6 +21,7 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestClientException
+import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.client.RestTemplate
 
 @RestController
@@ -93,7 +94,11 @@ class MaalingResource(
             ResponseEntity.created(URI("/maaling/${newMaaling.id}")).body(newMaaling)
           }
           .getOrElse {
-            logger.error("Kunne ikkje lage ny måling", it.message)
+            logger.error("Kunne ikkje lage ny måling ${it.message} ${it.stackTrace}")
+            if (it is RestClientResponseException) {
+              logger.error(
+                  "Rest error ${it.responseBodyAsString}   ${it.statusCode} ${it.statusCode}")
+            }
             ResponseEntity.internalServerError()
                 .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
           }
