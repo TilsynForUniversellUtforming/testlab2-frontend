@@ -6,6 +6,7 @@ import {
   ShapeStart,
 } from '@common/image-edit/types';
 import {
+  arrowHeadLength,
   drawArrow,
   drawCircle,
   drawRectangle,
@@ -15,8 +16,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   checkInsideCircle,
   checkInsideRectangle,
-  checkInsideRotatedRectangle,
-} from './util/selectionUtils';
+  checkInsideRotatedLine,
+  generateShapeId,
+} from './util/canvasDrawingUtils';
 
 // TODO - TEXT
 // useEffect(() => {
@@ -106,10 +108,10 @@ const useCanvasDrawing = ({
   selectedFile,
 }: UseCanvasDrawingProps): UseCanvasDrawingReturnType => {
   const [isDrawing, setIsDrawing] = useState(false);
-  const [_isDragging, setIsDragging] = useState(false);
-  const [_cursorClickPoint, setCursorClickPoint] =
+  const [isDragging, setIsDragging] = useState(false);
+  const [cursorClickPoint, setCursorClickPoint] =
     useState<Point>(defaultStartPoint);
-  const [_draggingShape, setDraggingShape] = useState<Shape | undefined>();
+  const [draggingShape, setDraggingShape] = useState<Shape | undefined>();
   const [_currentText, setCurrentText] = useState<string>('');
   const [lineType, setLineType] = useState<LineType>('arrow');
   const [color, setColor] = useState<string>('#ff0000');
@@ -156,26 +158,31 @@ const useCanvasDrawing = ({
     setShapeList((prevShapes) => [...prevShapes, shape]);
   };
 
-  const findShapeInCoordinates = (position: Point) => {
+  const removeShape = (shape: Shape) => {
+    setShapeList((prevShapes) =>
+      prevShapes.filter((prevShape) => prevShape.id !== shape.id)
+    );
+  };
+
+  const findShapeInCoordinates = (point: Point): Shape | undefined => {
     for (const shape of shapeList) {
       let isInside = false;
       switch (shape.type) {
         case 'arrow':
-          isInside = checkInsideRotatedRectangle(shape, position);
+          isInside = checkInsideRotatedLine(shape, point, arrowHeadLength);
           break;
         case 'rectangle':
-          isInside = checkInsideRectangle(shape, position);
+          isInside = checkInsideRectangle(shape, point);
           break;
         case 'circle':
-          isInside = checkInsideCircle(shape, position);
+          isInside = checkInsideCircle(shape, point);
           break;
         case 'text':
           return;
       }
 
       if (isInside) {
-        setDraggingShape(shape);
-        break;
+        return shape;
       }
     }
   };
@@ -203,7 +210,13 @@ const useCanvasDrawing = ({
           });
         } else if (drawMode === 'move') {
           setIsDragging(true);
-          findShapeInCoordinates({ x, y });
+          const point: Point = { x, y };
+          const shape = findShapeInCoordinates(point);
+          if (shape) {
+            setDraggingShape(shape);
+            removeShape(shape);
+            setCursorClickPoint(point);
+          }
         }
       }
     },
@@ -225,50 +238,86 @@ const useCanvasDrawing = ({
             ...shapeStart,
             endX: currentX,
             endY: currentY,
+            id: generateShapeId(),
           });
+        } else if (drawMode === 'move' && draggingShape && isDragging) {
+          const deltaX = currentX - cursorClickPoint.x;
+          const deltaY = currentY - cursorClickPoint.y;
+
+          const newStartX = draggingShape.startX + deltaX;
+          const newStartY = draggingShape.startY + deltaY;
+          const newEndX = draggingShape.endX + deltaX;
+          const newEndY = draggingShape.endY + deltaY;
+
+          setDraggingShape({
+            ...draggingShape,
+            startX: newStartX,
+            startY: newStartY,
+            endX: newEndX,
+            endY: newEndY,
+          });
+
+          setCursorClickPoint({ x: currentX, y: currentY });
         }
       }
     },
-    [isEditMode, isDrawing, shapeStart, shapeInProgres, drawMode]
+    [
+      isEditMode,
+      isDrawing,
+      shapeStart,
+      shapeInProgres,
+      drawMode,
+      draggingShape,
+      cursorClickPoint,
+    ]
   );
 
   const handleMouseUp = useCallback(
     (event: React.MouseEvent) => {
       setIsDrawing(false);
+      setIsDragging(false);
+
       const { canvas, ctx } = getCanvasContext();
-      if (canvas && ctx && shapeStart) {
+      if (canvas && ctx) {
         const rect = canvas.getBoundingClientRect();
         const currentX = event.clientX - rect.left;
         const currentY = event.clientY - rect.top;
 
-        if (lineType === 'arrow') {
-          const shape = {
-            ...shapeStart,
-            endX: currentX,
-            endY: currentY,
-          };
-          addShape(shape);
-        } else {
-          const minX = Math.min(shapeStart.startX, currentX);
-          const maxX = Math.max(shapeStart.startX, currentX);
-          const minY = Math.min(shapeStart.startY, currentY);
-          const maxY = Math.max(shapeStart.startY, currentY);
+        if (drawMode === 'draw' && shapeStart) {
+          if (lineType === 'arrow') {
+            const shape = {
+              ...shapeStart,
+              endX: currentX,
+              endY: currentY,
+              id: generateShapeId(),
+            };
+            addShape(shape);
+          } else {
+            const minX = Math.min(shapeStart.startX, currentX);
+            const maxX = Math.max(shapeStart.startX, currentX);
+            const minY = Math.min(shapeStart.startY, currentY);
+            const maxY = Math.max(shapeStart.startY, currentY);
 
-          const shape = {
-            ...shapeStart,
-            startX: minX,
-            endX: maxX,
-            startY: minY,
-            endY: maxY,
-          };
-          addShape(shape);
+            const shape = {
+              ...shapeStart,
+              startX: minX,
+              endX: maxX,
+              startY: minY,
+              endY: maxY,
+              id: generateShapeId(),
+            };
+            addShape(shape);
+          }
+        } else if (drawMode === 'move' && draggingShape) {
+          addShape(draggingShape);
         }
 
+        setDraggingShape(undefined);
         setShapeStart(undefined);
         setShapeInProgress(undefined);
       }
     },
-    [lineType, shapeStart]
+    [lineType, drawMode, shapeStart, draggingShape]
   );
 
   const handleUndo = useCallback(() => {
@@ -311,11 +360,15 @@ const useCanvasDrawing = ({
         if (shapeInProgres) {
           draw(shapeInProgres);
         }
+
+        if (draggingShape) {
+          draw(draggingShape);
+        }
       }
     };
 
     clearStrokes(redrawShapes);
-  }, [shapeList, clearStrokes, shapeInProgres]);
+  }, [shapeList, clearStrokes, shapeInProgres, draggingShape]);
 
   const emptyStrokes = shapeList.length === 0;
 
@@ -342,6 +395,8 @@ const useCanvasDrawing = ({
       setColor('#FF0000');
     }
   }, []);
+
+  console.log(shapeList);
 
   return {
     onMouseDown: handleMouseDown,

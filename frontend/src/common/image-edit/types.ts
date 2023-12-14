@@ -4,13 +4,6 @@ export type DrawMode = 'draw' | 'move' | 'copy';
 
 export type Point = { x: number; y: number };
 
-export type BoundingBox = {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-};
-
 export type ShapeStart = {
   type: LineType;
   startX: number;
@@ -19,6 +12,7 @@ export type ShapeStart = {
 };
 
 export type Shape = {
+  id: string;
   endX: number;
   endY: number;
 } & ShapeStart;
