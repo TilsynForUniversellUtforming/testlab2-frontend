@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import React, { useRef, useState } from 'react';
 
 const ImageUpload = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(true);
   const [alert, setAlert] = useAlert();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -27,16 +27,18 @@ const ImageUpload = () => {
   } = useFileUpload({ canvasRef, setAlert });
 
   const {
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-    handleSetLineType,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+    setLineType,
     lineType,
-    handleChangeColor,
+    setColor,
     color,
+    setDrawMode,
+    drawMode,
     clearStrokes,
-    handleUndo,
-    emptyImageHistory,
+    undo,
+    emptyStrokes,
   } = useCanvasDrawing({ canvasRef, isEditMode, selectedFile });
 
   const toggleEditMode = () => {
@@ -63,9 +65,9 @@ const ImageUpload = () => {
               hidden: !selectedFile,
               'full-size': isEditMode,
             })}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
           />
           {!selectedFile && (
             <>
@@ -96,15 +98,17 @@ const ImageUpload = () => {
         <ImageEditControls
           show={!!selectedFile}
           isEditMode={isEditMode}
-          emptyHistory={emptyImageHistory}
+          emptyStrokes={emptyStrokes}
           handleClearCanvas={handleClearFile}
           handleClearStrokes={clearStrokes}
           toggleImageSize={toggleEditMode}
-          handleUndo={handleUndo}
-          handleSetLineType={handleSetLineType}
+          handleUndo={undo}
+          setLineType={setLineType}
           lineType={lineType}
-          handleChangeColor={handleChangeColor}
+          setColor={setColor}
           color={color}
+          setDrawMode={setDrawMode}
+          drawMode={drawMode}
         />
       </div>
       {alert && (

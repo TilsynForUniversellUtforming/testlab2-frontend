@@ -1,52 +1,59 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import CircleIcon from '@common/icon/CircleIcon';
 import SquareIcon from '@common/icon/SquareIcon';
-import { LineType } from '@common/image-edit/types';
+import { DrawMode, LineType } from '@common/image-edit/types';
 import { ButtonVariant } from '@common/types';
 import { Button, ToggleGroup } from '@digdir/design-system-react';
 import {
   ArrowUndoIcon,
   ArrowUpIcon,
   EraserIcon,
+  FilesIcon,
   FloppydiskIcon,
+  PencilIcon,
   PencilLineIcon,
+  PushPinIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
 
 interface Props {
   show: boolean;
   isEditMode: boolean;
-  emptyHistory: boolean;
+  emptyStrokes: boolean;
   handleClearCanvas: () => void;
   handleClearStrokes: () => void;
   toggleImageSize: () => void;
   handleUndo: () => void;
-  handleSetLineType: (lineType: string) => void;
+  setLineType: (lineType: string) => void;
   lineType: LineType;
-  handleChangeColor: (color: string) => void;
+  setColor: (color: string) => void;
   color: string;
+  setDrawMode: (drawMode: string) => void;
+  drawMode: DrawMode;
 }
 
 const ImageEditControls = ({
   show,
   isEditMode,
-  emptyHistory,
+  emptyStrokes,
   handleClearCanvas,
   handleClearStrokes,
   toggleImageSize,
   handleUndo,
-  handleSetLineType,
+  setLineType,
   lineType,
-  handleChangeColor,
+  setColor,
   color,
+  setDrawMode,
+  drawMode,
 }: Props) => {
+  const onChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setColor(event.target.value);
+  };
+
   if (!show) {
     return null;
   }
-
-  const onChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleChangeColor(event.target.value);
-  };
 
   return (
     <div className="image-upload-user-actions">
@@ -71,7 +78,7 @@ const ImageEditControls = ({
             message="Vil du nullstille markeringar? Dette kan ikkje angrast"
             icon={<EraserIcon />}
             onConfirm={handleClearStrokes}
-            disabled={emptyHistory}
+            disabled={emptyStrokes}
             iconOnly={true}
             variant={ButtonVariant.Quiet}
           />
@@ -80,11 +87,32 @@ const ImageEditControls = ({
             title="Tilbake"
             icon={<ArrowUndoIcon />}
             variant={ButtonVariant.Quiet}
-            disabled={emptyHistory}
+            disabled={emptyStrokes}
           />
           <ToggleGroup
+            defaultValue={drawMode}
+            onChange={setDrawMode}
+            size="small"
+          >
+            <ToggleGroup.Item
+              value="draw"
+              icon={<PencilIcon />}
+              title="Flytt"
+            />
+            <ToggleGroup.Item
+              value="move"
+              icon={<PushPinIcon />}
+              title="Flytt"
+            />
+            <ToggleGroup.Item
+              value="copy"
+              icon={<FilesIcon />}
+              title="Kopier"
+            />
+          </ToggleGroup>
+          <ToggleGroup
             defaultValue={lineType}
-            onChange={handleSetLineType}
+            onChange={setLineType}
             size="small"
           >
             <ToggleGroup.Item
