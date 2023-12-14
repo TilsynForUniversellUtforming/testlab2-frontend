@@ -208,13 +208,18 @@ const useCanvasDrawing = ({
             startY: y,
             color: color,
           });
-        } else if (drawMode === 'move') {
+        } else if (drawMode === 'move' || drawMode === 'copy') {
           setIsDragging(true);
           const point: Point = { x, y };
           const shape = findShapeInCoordinates(point);
           if (shape) {
-            setDraggingShape(shape);
-            removeShape(shape);
+            if (drawMode === 'move') {
+              setDraggingShape(shape);
+              removeShape(shape);
+            } else if (drawMode === 'copy') {
+              setDraggingShape({ ...shape, id: generateShapeId() });
+            }
+
             setCursorClickPoint(point);
           }
         }
@@ -240,7 +245,11 @@ const useCanvasDrawing = ({
             endY: currentY,
             id: generateShapeId(),
           });
-        } else if (drawMode === 'move' && draggingShape && isDragging) {
+        } else if (
+          (drawMode === 'move' || drawMode === 'copy') &&
+          draggingShape &&
+          isDragging
+        ) {
           const deltaX = currentX - cursorClickPoint.x;
           const deltaY = currentY - cursorClickPoint.y;
 
@@ -308,7 +317,10 @@ const useCanvasDrawing = ({
             };
             addShape(shape);
           }
-        } else if (drawMode === 'move' && draggingShape) {
+        } else if (
+          (drawMode === 'move' || drawMode === 'copy') &&
+          draggingShape
+        ) {
           addShape(draggingShape);
         }
 
@@ -383,7 +395,7 @@ const useCanvasDrawing = ({
   }, []);
 
   const handleSetDrawMode = (mode: string) => {
-    if (['draw', 'move', 'edit'].includes(mode)) {
+    if (['draw', 'move', 'copy'].includes(mode)) {
       setDrawMode(mode as DrawMode);
     }
   };
@@ -395,8 +407,6 @@ const useCanvasDrawing = ({
       setColor('#FF0000');
     }
   }, []);
-
-  console.log(shapeList);
 
   return {
     onMouseDown: handleMouseDown,

@@ -7,13 +7,13 @@ import { Button, ToggleGroup } from '@digdir/design-system-react';
 import {
   ArrowUndoIcon,
   ArrowUpIcon,
-  EraserIcon,
   FilesIcon,
   FloppydiskIcon,
   PencilIcon,
   PencilLineIcon,
   PushPinIcon,
   TrashIcon,
+  XMarkIcon,
 } from '@navikt/aksel-icons';
 
 interface Props {
@@ -76,7 +76,7 @@ const ImageEditControls = ({
           <ConfirmModalButton
             title="Nullstill"
             message="Vil du nullstille markeringar? Dette kan ikkje angrast"
-            icon={<EraserIcon />}
+            icon={<XMarkIcon />}
             onConfirm={handleClearStrokes}
             disabled={emptyStrokes}
             iconOnly={true}
@@ -110,38 +110,42 @@ const ImageEditControls = ({
               title="Kopier"
             />
           </ToggleGroup>
-          <ToggleGroup
-            defaultValue={lineType}
-            onChange={setLineType}
-            size="small"
-          >
-            <ToggleGroup.Item
-              value="arrow"
-              icon={<ArrowUpIcon />}
-              title="Pil"
-            />
-            <ToggleGroup.Item
-              value="rectangle"
-              icon={<SquareIcon selected={lineType === 'rectangle'} />}
-              title="Rektangel"
-            />
-            <ToggleGroup.Item
-              value="circle"
-              icon={<CircleIcon selected={lineType === 'circle'} />}
-              title="Ellipse"
-            />
-            <ToggleGroup.Item value="text" title="Tekstmodus">
-              Aa
-            </ToggleGroup.Item>
-          </ToggleGroup>
-          <input
-            type="color"
-            id="farge"
-            className="farge"
-            value={color}
-            onChange={onChangeColor}
-            title="Farge"
-          />
+          {drawMode === 'draw' && (
+            <>
+              <ToggleGroup
+                defaultValue={lineType}
+                onChange={setLineType}
+                size="small"
+              >
+                <ToggleGroup.Item
+                  value="arrow"
+                  icon={<ArrowUpIcon />}
+                  title="Pil"
+                />
+                <ToggleGroup.Item
+                  value="rectangle"
+                  icon={<SquareIcon selected={lineType === 'rectangle'} />}
+                  title="Rektangel"
+                />
+                <ToggleGroup.Item
+                  value="circle"
+                  icon={<CircleIcon selected={lineType === 'circle'} />}
+                  title="Ellipse"
+                />
+                <ToggleGroup.Item value="text" title="Tekstmodus">
+                  Aa
+                </ToggleGroup.Item>
+              </ToggleGroup>
+              <input
+                type="color"
+                id="farge"
+                className="farge"
+                value={color}
+                onChange={onChangeColor}
+                title="Farge"
+              />
+            </>
+          )}
         </>
       )}
     </div>
