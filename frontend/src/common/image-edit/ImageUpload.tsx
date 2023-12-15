@@ -46,14 +46,14 @@ const ImageUpload = () => {
     clearStrokes,
     undo,
     emptyStrokes,
-  } = useCanvasDrawing({ canvasRef, isEditMode, selectedFile });
+  } = useCanvasDrawing(canvasRef, isEditMode, selectedFile, showContextMenu);
 
   const toggleEditMode = () => {
     setIsEditMode((prev) => !prev);
   };
 
   const handleContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    event.preventDefault(); // Prevent the default context menu from showing
+    event.preventDefault();
 
     const canvas = canvasRef.current;
     if (canvas) {
@@ -66,16 +66,26 @@ const ImageUpload = () => {
     }
   };
 
+  const drawButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    const handleClick = () => {
-      setShowContextMenu(false);
+    const handleClick = (e: MouseEvent) => {
+      e.preventDefault();
+      if (
+        !(
+          drawButtonRef.current &&
+          e.target instanceof Node &&
+          drawButtonRef.current.contains(e.target)
+        )
+      ) {
+        setShowContextMenu(false);
+      }
     };
 
-    window.addEventListener('click', handleClick);
+    window.addEventListener('click', (e) => handleClick(e));
     return () => {
-      window.removeEventListener('click', handleClick);
+      window.removeEventListener('click', (e) => handleClick(e));
     };
-  }, []);
+  }, [drawButtonRef]);
 
   return (
     <div className="image-upload-container">
@@ -117,6 +127,7 @@ const ImageUpload = () => {
                 lineType={lineType}
                 setDrawMode={setDrawMode}
                 drawMode={drawMode}
+                ref={drawButtonRef}
               />
             </div>
           )}

@@ -52,30 +52,34 @@ const ImageControl = ({
         icon={isEditMode ? <FloppydiskIcon /> : <DocPencilIcon />}
         variant={ButtonVariant.Quiet}
       />
-      <ConfirmModalButton
-        title="Nullstill"
-        message="Vil du nullstille markeringar? Dette kan ikkje angrast"
-        icon={<XMarkIcon />}
-        onConfirm={handleClearStrokes}
-        disabled={emptyStrokes}
-        iconOnly={true}
-        variant={ButtonVariant.Quiet}
-      />
-      <Button
-        onClick={handleUndo}
-        title="Tilbake"
-        icon={<ArrowUndoIcon />}
-        variant={ButtonVariant.Quiet}
-        disabled={emptyStrokes}
-      />
-      <input
-        type="color"
-        id="farge"
-        className="farge"
-        value={color}
-        onChange={setColor}
-        title="Farge"
-      />
+      {isEditMode && (
+        <>
+          <ConfirmModalButton
+            title="Nullstill"
+            message="Vil du nullstille markeringar? Dette kan ikkje angrast"
+            icon={<XMarkIcon />}
+            onConfirm={handleClearStrokes}
+            disabled={emptyStrokes}
+            iconOnly={true}
+            variant={ButtonVariant.Quiet}
+          />
+          <Button
+            onClick={handleUndo}
+            title="Tilbake"
+            icon={<ArrowUndoIcon />}
+            variant={ButtonVariant.Quiet}
+            disabled={emptyStrokes}
+          />
+          <input
+            type="color"
+            id="farge"
+            className="farge"
+            value={color}
+            onChange={setColor}
+            title="Farge"
+          />
+        </>
+      )}
     </div>
   );
 };

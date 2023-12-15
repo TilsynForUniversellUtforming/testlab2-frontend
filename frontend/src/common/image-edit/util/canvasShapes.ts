@@ -3,6 +3,18 @@ import { Shape, TextShape } from '@common/image-edit/types';
 export const lineWidth = 4;
 export const arrowHeadLength = 20;
 
+export const drawLine = (ctx: CanvasRenderingContext2D, shape: Shape) => {
+  const { startX, startY, endX, endY, color } = shape;
+
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
+
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+};
+
 export const drawArrow = (ctx: CanvasRenderingContext2D, shape: Shape) => {
   const { startX, startY, endX, endY, color } = shape;
 

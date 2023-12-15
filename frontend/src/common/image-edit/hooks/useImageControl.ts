@@ -2,12 +2,12 @@ import { DrawMode, LineType } from '@common/image-edit/types';
 import { useCallback, useState } from 'react';
 
 const useImageControl = () => {
-  const [lineType, setLineType] = useState<LineType>('arrow');
+  const [lineType, setLineType] = useState<LineType>('rectangle');
   const [color, setColor] = useState<string>('#ff0000');
   const [drawMode, setDrawMode] = useState<DrawMode>('draw');
 
   const handleSetLineType = useCallback((value: string) => {
-    if (['rectangle', 'arrow', 'circle', 'text'].includes(value)) {
+    if (['line', 'rectangle', 'arrow', 'circle', 'text'].includes(value)) {
       setLineType(value as LineType);
     }
   }, []);

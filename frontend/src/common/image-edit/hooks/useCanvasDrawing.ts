@@ -10,6 +10,7 @@ import {
   arrowHeadLength,
   drawArrow,
   drawCircle,
+  drawLine,
   drawRectangle,
   drawText,
   drawTextIndicator,
@@ -22,12 +23,6 @@ import {
   checkInsideRotatedLine,
   generateShapeId,
 } from '../util/canvasDrawingUtils';
-
-interface UseCanvasDrawingProps {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
-  isEditMode: boolean;
-  selectedFile: File | null;
-}
 
 interface UseCanvasDrawingReturnType {
   onMouseDown: (event: React.MouseEvent) => void;
@@ -46,11 +41,12 @@ interface UseCanvasDrawingReturnType {
 
 const defaultStartPoint: Point = { x: 0, y: 0 };
 
-const useCanvasDrawing = ({
-  canvasRef,
-  isEditMode,
-  selectedFile,
-}: UseCanvasDrawingProps): UseCanvasDrawingReturnType => {
+const useCanvasDrawing = (
+  canvasRef: React.RefObject<HTMLCanvasElement>,
+  isEditMode: boolean,
+  selectedFile: File | null,
+  contextMenuOpen: boolean
+): UseCanvasDrawingReturnType => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   // const [isWriting, setIsWriting] = useState(false);
@@ -62,7 +58,7 @@ const useCanvasDrawing = ({
 
   const [shapeList, setShapeList] = useState<Shape[]>([]);
   const [shapeStart, setShapeStart] = useState<ShapeStart | undefined>();
-  const [shapeInProgres, setShapeInProgress] = useState<Shape | undefined>();
+  const [shapeInProgress, setShapeInProgress] = useState<Shape | undefined>();
 
   const { lineType, setLineType, color, setColor, drawMode, setDrawMode } =
     useImageControl();
@@ -104,6 +100,9 @@ const useCanvasDrawing = ({
 
     if (ctx) {
       switch (shape.type) {
+        case 'line':
+          drawLine(ctx, shape);
+          break;
         case 'arrow':
           drawArrow(ctx, shape);
           break;
@@ -132,6 +131,7 @@ const useCanvasDrawing = ({
       let isInside = false;
       switch (shape.type) {
         case 'arrow':
+        case 'line':
           isInside = checkInsideRotatedLine(shape, point, arrowHeadLength);
           break;
         case 'rectangle':
@@ -150,9 +150,9 @@ const useCanvasDrawing = ({
     }
   };
 
-  const handleMouseDown = useCallback(
+  const onStart = useCallback(
     (event: React.MouseEvent) => {
-      if (!isEditMode || event.button !== 0) return;
+      if (!isEditMode || event.button !== 0 || contextMenuOpen) return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -190,10 +190,18 @@ const useCanvasDrawing = ({
         setCursorClickPoint(point);
       }
     },
-    [canvasRef, isEditMode, lineType, color, drawMode, shapeList]
+    [
+      canvasRef,
+      isEditMode,
+      lineType,
+      color,
+      drawMode,
+      shapeList,
+      contextMenuOpen,
+    ]
   );
 
-  const handleMouseMove = useCallback(
+  const onMove = useCallback(
     (event: React.MouseEvent) => {
       if (!isEditMode) return;
 
@@ -242,14 +250,14 @@ const useCanvasDrawing = ({
       isDrawing,
       isErasing,
       shapeStart,
-      shapeInProgres,
+      shapeInProgress,
       drawMode,
       draggingShape,
       cursorClickPoint,
     ]
   );
 
-  const handleMouseUp = useCallback(
+  const onEnd = useCallback(
     (event: React.MouseEvent) => {
       setIsDrawing(false);
       setIsDragging(false);
@@ -261,8 +269,8 @@ const useCanvasDrawing = ({
         const currentY = event.clientY - rect.top;
 
         if (drawMode === 'draw' && shapeStart) {
-          if (lineType === 'arrow') {
-            const shape = {
+          if (lineType === 'arrow' || lineType === 'line') {
+            const shape: Shape = {
               ...shapeStart,
               endX: currentX,
               endY: currentY,
@@ -298,7 +306,7 @@ const useCanvasDrawing = ({
         setShapeInProgress(undefined);
       }
     },
-    [lineType, drawMode, shapeStart, draggingShape]
+    [lineType, drawMode, shapeStart, shapeInProgress, draggingShape]
   );
 
   // SKRIVING
@@ -370,8 +378,8 @@ const useCanvasDrawing = ({
           draw(shape);
         });
 
-        if (shapeInProgres) {
-          draw(shapeInProgres);
+        if (shapeInProgress) {
+          draw(shapeInProgress);
         }
 
         if (draggingShape) {
@@ -381,14 +389,14 @@ const useCanvasDrawing = ({
     };
 
     clearStrokes(redrawShapes);
-  }, [shapeList, clearStrokes, shapeInProgres, draggingShape]);
+  }, [shapeList, clearStrokes, shapeInProgress, draggingShape]);
 
   const emptyStrokes = shapeList.length === 0;
 
   return {
-    onMouseDown: handleMouseDown,
-    onMouseMove: handleMouseMove,
-    onMouseUp: handleMouseUp,
+    onMouseDown: onStart,
+    onMouseMove: onMove,
+    onMouseUp: onEnd,
     setLineType,
     lineType,
     setColor,
