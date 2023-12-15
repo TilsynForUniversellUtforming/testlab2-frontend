@@ -2,18 +2,25 @@ import './image-upload.scss';
 
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import ImageEditControls from '@common/image-edit/ImageEditControls';
-import useCanvasDrawing from '@common/image-edit/useCanvasDrawing';
-import useFileUpload from '@common/image-edit/useFileUpload';
+import CanvasDrawingControls from '@common/image-edit/CanvasDrawingControls';
+import ImageControl from '@common/image-edit/control/ImageControl';
+import useCanvasDrawing from '@common/image-edit/hooks/useCanvasDrawing';
+import useFileUpload from '@common/image-edit/hooks/useFileUpload';
 import { Paragraph } from '@digdir/design-system-react';
 import { UploadIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Point } from './types';
 
 const ImageUpload = () => {
   const [isEditMode, setIsEditMode] = useState(true);
   const [alert, setAlert] = useAlert();
-
+  const [contextMenuPosition, setContextMenuPosition] = useState<Point>({
+    x: 0,
+    y: 0,
+  });
+  const [showContextMenu, setShowContextMenu] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const {
@@ -45,6 +52,31 @@ const ImageUpload = () => {
     setIsEditMode((prev) => !prev);
   };
 
+  const handleContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    event.preventDefault(); // Prevent the default context menu from showing
+
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      setContextMenuPosition({ x, y });
+      setShowContextMenu(true);
+    }
+  };
+
+  useEffect(() => {
+    const handleClick = () => {
+      setShowContextMenu(false);
+    };
+
+    window.addEventListener('click', handleClick);
+    return () => {
+      window.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   return (
     <div className="image-upload-container">
       <div
@@ -64,11 +96,30 @@ const ImageUpload = () => {
             className={classnames('image-upload-canvas', {
               hidden: !selectedFile,
               'full-size': isEditMode,
+              [drawMode]: drawMode,
             })}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
+            onContextMenu={handleContextMenu}
           />
+          {showContextMenu && (
+            <div
+              className="image-upload-canvas-control"
+              style={{
+                top: `${contextMenuPosition.y}px`,
+                left: `${contextMenuPosition.x}px`,
+              }}
+            >
+              <CanvasDrawingControls
+                show={isEditMode}
+                setLineType={setLineType}
+                lineType={lineType}
+                setDrawMode={setDrawMode}
+                drawMode={drawMode}
+              />
+            </div>
+          )}
           {!selectedFile && (
             <>
               <UploadIcon title="Last opp" fontSize={42} />
@@ -95,7 +146,7 @@ const ImageUpload = () => {
         <Paragraph size="small" spacing>
           Antall filer {selectedFile ? 1 : 0}/1
         </Paragraph>
-        <ImageEditControls
+        <ImageControl
           show={!!selectedFile}
           isEditMode={isEditMode}
           emptyStrokes={emptyStrokes}
@@ -103,12 +154,8 @@ const ImageUpload = () => {
           handleClearStrokes={clearStrokes}
           toggleImageSize={toggleEditMode}
           handleUndo={undo}
-          setLineType={setLineType}
-          lineType={lineType}
           setColor={setColor}
           color={color}
-          setDrawMode={setDrawMode}
-          drawMode={drawMode}
         />
       </div>
       {alert && (

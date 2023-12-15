@@ -1,6 +1,6 @@
 export type LineType = 'rectangle' | 'arrow' | 'line' | 'circle' | 'text';
 
-export type DrawMode = 'draw' | 'move' | 'copy';
+export type DrawMode = 'draw' | 'move' | 'copy' | 'erase';
 
 export type Point = { x: number; y: number };
 
@@ -17,6 +17,6 @@ export type Shape = {
   endY: number;
 } & ShapeStart;
 
-export type Text = {
+export type TextShape = {
   text: string;
-} & Shape;
+} & ShapeStart;

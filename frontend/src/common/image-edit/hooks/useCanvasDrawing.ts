@@ -1,3 +1,4 @@
+import useImageControl from '@common/image-edit/hooks/useImageControl';
 import {
   DrawMode,
   LineType,
@@ -10,6 +11,8 @@ import {
   drawArrow,
   drawCircle,
   drawRectangle,
+  drawText,
+  drawTextIndicator,
 } from '@common/image-edit/util/canvasShapes';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -18,66 +21,7 @@ import {
   checkInsideRectangle,
   checkInsideRotatedLine,
   generateShapeId,
-} from './util/canvasDrawingUtils';
-
-// TODO - TEXT
-// useEffect(() => {
-//   const isTextMode = lineType === 'text';
-//
-//   const handleKeyDown = (event: KeyboardEvent) => {
-//     if (event.key === 'Backspace') {
-//       setCurrentText((prevText) => prevText.slice(0, -1));
-//       handleUndo();
-//     } else if (event.key.length === 1) {
-//       const nextText = currentText + event.key;
-//       setCurrentText(nextText);
-//       const paddedDrawText = ` ${nextText} `;
-//       drawText(paddedDrawText);
-//     }
-//   };
-//
-//   const drawText = (text: string) => {
-//     const { canvas, ctx } = getCanvasContext();
-//     if (ctx && canvas) {
-//       const textHeight = 24;
-//       const textWidth = ctx.measureText(text).width;
-//       const correctedTextWidth =
-//         textWidth <= textHeight ? textHeight : textWidth;
-//
-//       ctx.fillStyle = 'white';
-//       ctx.fillRect(
-//         textPosition.x,
-//         textPosition.y - textHeight,
-//         correctedTextWidth,
-//         textHeight * 1.3
-//       );
-//
-//       ctx.strokeStyle = color;
-//       ctx.lineWidth = 2;
-//       ctx.strokeRect(
-//         textPosition.x,
-//         textPosition.y - textHeight,
-//         correctedTextWidth,
-//         textHeight * 1.3
-//       );
-//
-//       ctx.font = '24px Arial';
-//       ctx.fillStyle = color;
-//       ctx.fillText(text, textPosition.x, textPosition.y);
-//
-//       saveToHistory(ctx);
-//     }
-//   };
-//
-//   if (isTextMode) {
-//     window.addEventListener('keydown', handleKeyDown);
-//   }
-//
-//   return () => {
-//     window.removeEventListener('keydown', handleKeyDown);
-//   };
-// }, [lineType, currentText, textPosition, canvasRef, handleUndo, color]);
-// TODO - TEXT
+} from '../util/canvasDrawingUtils';
 
 interface UseCanvasDrawingProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -91,7 +35,7 @@ interface UseCanvasDrawingReturnType {
   onMouseMove: (event: React.MouseEvent) => void;
   setLineType: (lineType: string) => void;
   lineType: LineType;
-  setColor: (color: string) => void;
+  setColor: (event: React.ChangeEvent<HTMLInputElement>) => void;
   color: string;
   setDrawMode: (drawMode: string) => void;
   drawMode: DrawMode;
@@ -109,16 +53,19 @@ const useCanvasDrawing = ({
 }: UseCanvasDrawingProps): UseCanvasDrawingReturnType => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  // const [isWriting, setIsWriting] = useState(false);
+  const [isErasing, setIsErasing] = useState(false);
   const [cursorClickPoint, setCursorClickPoint] =
     useState<Point>(defaultStartPoint);
   const [draggingShape, setDraggingShape] = useState<Shape | undefined>();
-  const [_currentText, setCurrentText] = useState<string>('');
-  const [lineType, setLineType] = useState<LineType>('arrow');
-  const [color, setColor] = useState<string>('#ff0000');
+  const [currentText, setCurrentText] = useState<string>('');
+
   const [shapeList, setShapeList] = useState<Shape[]>([]);
   const [shapeStart, setShapeStart] = useState<ShapeStart | undefined>();
   const [shapeInProgres, setShapeInProgress] = useState<Shape | undefined>();
-  const [drawMode, setDrawMode] = useState<DrawMode>('draw');
+
+  const { lineType, setLineType, color, setColor, drawMode, setDrawMode } =
+    useImageControl();
 
   const getCanvasContext = () => {
     const canvas = canvasRef.current;
@@ -126,9 +73,27 @@ const useCanvasDrawing = ({
     return { canvas, ctx };
   };
 
+  const addShape = (shape: Shape) => {
+    setShapeList((prevShapes) => [...prevShapes, shape]);
+  };
+
+  const removeShape = (shape: Shape) => {
+    setShapeList((prevShapes) =>
+      prevShapes.filter((prevShape) => prevShape.id !== shape.id)
+    );
+  };
+
+  const handleUndo = useCallback(() => {
+    setShapeList((prevShapes) => prevShapes.slice(0, -1));
+  }, []);
+
+  const clearShapes = () => {
+    setShapeList([]);
+  };
+
   useEffect(() => {
     if (!selectedFile) {
-      setShapeList([]);
+      clearShapes();
       setCurrentText('');
       setCursorClickPoint(defaultStartPoint);
     }
@@ -149,19 +114,17 @@ const useCanvasDrawing = ({
           drawCircle(ctx, shape);
           break;
         case 'text':
-          return;
+          drawTextIndicator(ctx, shape);
+          break;
       }
     }
   };
 
-  const addShape = (shape: Shape) => {
-    setShapeList((prevShapes) => [...prevShapes, shape]);
-  };
-
-  const removeShape = (shape: Shape) => {
-    setShapeList((prevShapes) =>
-      prevShapes.filter((prevShape) => prevShape.id !== shape.id)
-    );
+  const erase = (point: Point) => {
+    const shape = findShapeInCoordinates(point);
+    if (shape) {
+      removeShape(shape);
+    }
   };
 
   const findShapeInCoordinates = (point: Point): Shape | undefined => {
@@ -189,7 +152,7 @@ const useCanvasDrawing = ({
 
   const handleMouseDown = useCallback(
     (event: React.MouseEvent) => {
-      if (!isEditMode) return;
+      if (!isEditMode || event.button !== 0) return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -199,6 +162,7 @@ const useCanvasDrawing = ({
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
+        const point: Point = { x, y };
 
         if (drawMode === 'draw') {
           setIsDrawing(true);
@@ -210,7 +174,6 @@ const useCanvasDrawing = ({
           });
         } else if (drawMode === 'move' || drawMode === 'copy') {
           setIsDragging(true);
-          const point: Point = { x, y };
           const shape = findShapeInCoordinates(point);
           if (shape) {
             if (drawMode === 'move') {
@@ -219,13 +182,15 @@ const useCanvasDrawing = ({
             } else if (drawMode === 'copy') {
               setDraggingShape({ ...shape, id: generateShapeId() });
             }
-
-            setCursorClickPoint(point);
           }
+        } else if (drawMode === 'erase') {
+          setIsErasing(true);
+          erase({ x, y });
         }
+        setCursorClickPoint(point);
       }
     },
-    [canvasRef, isEditMode, lineType, color, drawMode]
+    [canvasRef, isEditMode, lineType, color, drawMode, shapeList]
   );
 
   const handleMouseMove = useCallback(
@@ -267,12 +232,15 @@ const useCanvasDrawing = ({
           });
 
           setCursorClickPoint({ x: currentX, y: currentY });
+        } else if (drawMode === 'erase' && isErasing) {
+          erase({ x: currentX, y: currentY });
         }
       }
     },
     [
       isEditMode,
       isDrawing,
+      isErasing,
       shapeStart,
       shapeInProgres,
       drawMode,
@@ -324,6 +292,7 @@ const useCanvasDrawing = ({
           addShape(draggingShape);
         }
 
+        setIsErasing(false);
         setDraggingShape(undefined);
         setShapeStart(undefined);
         setShapeInProgress(undefined);
@@ -332,9 +301,41 @@ const useCanvasDrawing = ({
     [lineType, drawMode, shapeStart, draggingShape]
   );
 
-  const handleUndo = useCallback(() => {
-    setShapeList((prevShapes) => prevShapes.slice(0, -1));
-  }, []);
+  // SKRIVING
+  useEffect(() => {
+    const isTextMode = lineType === 'text';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // if (event.key === 'Backspace') {
+      //   setCurrentText((prevText) => prevText.slice(0, -1));
+      //   handleUndo();
+      // } else
+
+      if (event.key.length === 1) {
+        const nextText = currentText + event.key;
+
+        const { canvas, ctx } = getCanvasContext();
+
+        if (canvas && ctx) {
+          drawText(ctx, {
+            type: 'text',
+            startX: cursorClickPoint.x,
+            startY: cursorClickPoint.y,
+            color: color,
+            text: nextText,
+          });
+        }
+      }
+    };
+
+    if (isTextMode) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [lineType, currentText, cursorClickPoint, canvasRef, color]);
 
   const clearStrokes = useCallback(
     (redrawCallback?: () => void) => {
@@ -350,7 +351,7 @@ const useCanvasDrawing = ({
             if (redrawCallback) {
               redrawCallback();
             } else {
-              setShapeList([]);
+              clearShapes();
             }
           };
           img.src = e.target?.result as string;
@@ -384,39 +385,15 @@ const useCanvasDrawing = ({
 
   const emptyStrokes = shapeList.length === 0;
 
-  const handleSetLineType = useCallback((value: string) => {
-    if (['rectangle', 'arrow', 'circle', 'text'].includes(value)) {
-      setLineType(value as LineType);
-
-      if (value === 'text') {
-        setCurrentText('');
-      }
-    }
-  }, []);
-
-  const handleSetDrawMode = (mode: string) => {
-    if (['draw', 'move', 'copy'].includes(mode)) {
-      setDrawMode(mode as DrawMode);
-    }
-  };
-
-  const handleChangeColor = useCallback((color: string) => {
-    if (/^#(?:[0-9a-fA-F]{3}){1,2}$/.test(color)) {
-      setColor(color);
-    } else {
-      setColor('#FF0000');
-    }
-  }, []);
-
   return {
     onMouseDown: handleMouseDown,
     onMouseMove: handleMouseMove,
     onMouseUp: handleMouseUp,
-    setLineType: handleSetLineType,
+    setLineType,
     lineType,
-    setColor: handleChangeColor,
+    setColor,
     color,
-    setDrawMode: handleSetDrawMode,
+    setDrawMode,
     drawMode,
     clearStrokes,
     undo: handleUndo,
