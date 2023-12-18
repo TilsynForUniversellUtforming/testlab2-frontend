@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.sak
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 
 data class SakDTO(
+    val id: Int,
     val virksomhet: String,
     val loeysingar: List<SakLoeysingDTO> = emptyList(),
     val testreglar: List<Testregel> = emptyList()

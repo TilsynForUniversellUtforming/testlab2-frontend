@@ -43,11 +43,11 @@ const TestregelForm = ({
 
   const typeOptions: Option[] = [
     {
-      label: 'Inngående kontroll',
-      value: 'inngaaende',
+      label: 'Manuell',
+      value: 'manuell',
     },
     {
-      label: 'Forenklet kontroll',
+      label: 'Forenklet',
       value: 'forenklet',
     },
   ];
@@ -58,7 +58,7 @@ const TestregelForm = ({
       testregelSchema: testregel?.testregelSchema ?? '',
       name: testregel?.name ?? '',
       krav: testregel?.krav,
-      type: testregel?.type || 'inngaaende',
+      type: testregel?.type || 'manuell',
     },
     resolver: zodResolver(testreglarValidationSchema),
   });
@@ -70,7 +70,7 @@ const TestregelForm = ({
     name: 'type',
   }) as TestregelType;
 
-  const showDemoLink = testregel && testregel.type === 'inngaaende' && id;
+  const showDemoLink = testregel && testregel.type === 'manuell' && id;
 
   return (
     <div className="testregel-form">
@@ -91,17 +91,17 @@ const TestregelForm = ({
         <TestlabFormInput label="Namn" name="name" required textarea />
         <TestlabFormInput
           label={
-            testregelType === 'inngaaende'
+            testregelType === 'manuell'
               ? 'WCAG testregel'
               : 'QualWeb regel-id (unik)'
           }
           description={
-            testregelType === 'inngaaende'
+            testregelType === 'manuell'
               ? 'Testregel må være i gyldig JSON-format'
               : ''
           }
           name="testregelSchema"
-          textarea={testregelType === 'inngaaende'}
+          textarea={testregelType === 'manuell'}
           required
         />
         <TestlabFormSelect

@@ -38,7 +38,7 @@ const RegelsettForm = ({
       id: regelsett?.id,
       namn: regelsett?.namn || '',
       standard: regelsett?.standard || false,
-      type: regelsett?.type || 'inngaaende',
+      type: regelsett?.type || 'manuell',
       testregelList: regelsett?.testregelList || [],
     },
     resolver: zodResolver(regelsettValidationSchema),
@@ -63,11 +63,11 @@ const RegelsettForm = ({
 
   const typeOptions: Option[] = [
     {
-      label: 'Inngående kontroll',
-      value: 'inngaaende',
+      label: 'Manuell',
+      value: 'manuell',
     },
     {
-      label: 'Forenklet kontroll',
+      label: 'Forenklet',
       value: 'forenklet',
     },
   ];

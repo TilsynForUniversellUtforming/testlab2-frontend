@@ -16,7 +16,7 @@ export enum TestStatus {
   'Gjennomgått workshop' = 'Gjennomgått workshop',
 }
 
-export type TestregelType = 'forenklet' | 'inngaaende';
+export type TestregelType = 'forenklet' | 'manuell';
 
 export type Testregel = {
   id: number;

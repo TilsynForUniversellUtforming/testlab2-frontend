@@ -11,7 +11,7 @@ export const testregelSchema = z.object({
       (value) => value !== undefined && value !== '',
       'Krav sak må vejast'
     ),
-  type: z.union([z.literal('forenklet'), z.literal('inngaaende')]),
+  type: z.union([z.literal('forenklet'), z.literal('manuell')]),
 });
 
 export const testreglarValidationSchema = testregelSchema
@@ -26,7 +26,7 @@ export const testreglarValidationSchema = testregelSchema
   )
   .refine(
     (data) => {
-      if (data.type === 'inngaaende') {
+      if (data.type === 'manuell') {
         try {
           JSON.parse(data.testregelSchema);
           return true;

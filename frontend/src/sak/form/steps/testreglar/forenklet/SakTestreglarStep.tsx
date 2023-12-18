@@ -60,13 +60,13 @@ const SakTestreglarStep = ({
     const isForenklet = sakFormState.sakType === 'Forenklet kontroll';
 
     const filteredRegelsettList = regelsettList.filter((rs) =>
-      isForenklet ? rs.type === 'forenklet' : rs.type === 'inngaaende'
+      isForenklet ? rs.type === 'forenklet' : rs.type === 'manuell'
     );
 
     const options: SingleSelectOption[] = testregelList
       .filter(
         (tr) =>
-          (isForenklet ? tr.type === 'forenklet' : tr.type === 'inngaaende') &&
+          (isForenklet ? tr.type === 'forenklet' : tr.type === 'manuell') &&
           !selection.find((s) => s.id === tr.id)
       )
       .map((tr) => ({
