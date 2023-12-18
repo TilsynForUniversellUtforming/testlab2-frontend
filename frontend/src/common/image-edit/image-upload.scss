@@ -52,29 +52,29 @@
     &.full-size {
       max-width: none;
       max-height: none;
-    }
 
-    &.draw {
-      cursor: crosshair;
-    }
-
-    &.text {
-      cursor: text;
-    }
-
-    &.move {
-      cursor: grab;
-      &:active {
-        cursor: grabbing;
+      &.draw {
+        cursor: crosshair;
       }
-    }
 
-    &.copy {
-      cursor: copy;
-    }
+      &.text {
+        cursor: text;
+      }
 
-    &.erase {
-      cursor: not-allowed;
+      &.move {
+        cursor: grab;
+        &:active {
+          cursor: grabbing;
+        }
+      }
+
+      &.copy {
+        cursor: copy;
+      }
+
+      &.erase {
+        cursor: not-allowed;
+      }
     }
   }
 

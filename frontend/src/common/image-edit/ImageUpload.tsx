@@ -55,16 +55,18 @@ const ImageUpload = () => {
   };
 
   const handleContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    event.preventDefault();
+    if (isEditMode) {
+      event.preventDefault();
 
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
 
-      setContextMenuPosition({ x, y });
-      setShowContextMenu(true);
+        setContextMenuPosition({ x, y });
+        setShowContextMenu(true);
+      }
     }
   };
 

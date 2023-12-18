@@ -105,6 +105,7 @@ const SakCreate = () => {
     const sakId = maalingFormState?.sakId;
     if (verksemdLoeysingRelation && sakId) {
       const sak: EditSak = {
+        id: sakId,
         virksomhet:
           verksemdLoeysingRelation?.verksemd?.orgnummer || '000000000',
         loeysingar: verksemdLoeysingRelation.loeysingList.map((l) => ({
