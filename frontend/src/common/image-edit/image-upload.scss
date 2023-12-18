@@ -53,6 +53,38 @@
       max-width: none;
       max-height: none;
     }
+
+    &.draw {
+      cursor: crosshair;
+    }
+
+    &.text {
+      cursor: text;
+    }
+
+    &.move {
+      cursor: grab;
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
+    &.copy {
+      cursor: copy;
+    }
+
+    &.erase {
+      cursor: not-allowed;
+    }
+  }
+
+  &-canvas-control {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--component-input-color-border-default);
+    border-radius: 12px;
+    padding: 0.5rem;
+    z-index: 1000;
   }
 
   &-user-actions {
