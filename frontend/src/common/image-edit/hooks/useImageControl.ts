@@ -1,19 +1,26 @@
-import { DrawMode, LineType } from '@common/image-edit/types';
+import { DrawMode, LineType, TextStyle } from '@common/image-edit/types';
 import { useCallback, useState } from 'react';
 
 const useImageControl = () => {
   const [lineType, setLineType] = useState<LineType>('rectangle');
   const [color, setColor] = useState<string>('#ff0000');
   const [drawMode, setDrawMode] = useState<DrawMode>('draw');
+  const [textStyle, setTextStyle] = useState<TextStyle>('filled');
+
+  const handleSetTextStyle = useCallback((value: string) => {
+    if (['filled', 'outline', 'none'].includes(value)) {
+      setTextStyle(value as TextStyle);
+    }
+  }, []);
 
   const handleSetLineType = useCallback((value: string) => {
-    if (['line', 'rectangle', 'arrow', 'circle', 'text'].includes(value)) {
+    if (['line', 'rectangle', 'arrow', 'circle'].includes(value)) {
       setLineType(value as LineType);
     }
   }, []);
 
   const handleSetDrawMode = useCallback((mode: string) => {
-    if (['draw', 'move', 'copy', 'erase'].includes(mode)) {
+    if (['draw', 'move', 'copy', 'erase', 'text'].includes(mode)) {
       setDrawMode(mode as DrawMode);
     }
   }, []);
@@ -37,6 +44,8 @@ const useImageControl = () => {
     setColor: handleChangeColor,
     drawMode,
     setDrawMode: handleSetDrawMode,
+    textStyle,
+    setTextStyle: handleSetTextStyle,
   };
 };
 

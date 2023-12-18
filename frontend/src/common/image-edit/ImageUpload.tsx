@@ -43,6 +43,8 @@ const ImageUpload = () => {
     color,
     setDrawMode,
     drawMode,
+    setTextStyle,
+    textStyle,
     clearStrokes,
     undo,
     emptyStrokes,
@@ -107,7 +109,6 @@ const ImageUpload = () => {
               hidden: !selectedFile,
               'full-size': isEditMode,
               [drawMode]: drawMode,
-              text: lineType === 'text',
             })}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
@@ -128,6 +129,8 @@ const ImageUpload = () => {
                 lineType={lineType}
                 setDrawMode={setDrawMode}
                 drawMode={drawMode}
+                setTextStyle={setTextStyle}
+                textStyle={textStyle}
                 ref={drawButtonRef}
               />
             </div>

@@ -1,7 +1,8 @@
 import ArrowIcon from '@common/icon/ArrowIcon';
 import CircleIcon from '@common/icon/CircleIcon';
 import SquareIcon from '@common/icon/SquareIcon';
-import { DrawMode, LineType } from '@common/image-edit/types';
+import TextStyleIcon from '@common/icon/TextStyleIcon';
+import { DrawMode, LineType, TextStyle } from '@common/image-edit/types';
 import { ToggleGroup } from '@digdir/design-system-react';
 import {
   EraserIcon,
@@ -18,10 +19,23 @@ interface Props {
   lineType: LineType;
   setDrawMode: (drawMode: string) => void;
   drawMode: DrawMode;
+  setTextStyle: (textStyle: string) => void;
+  textStyle: TextStyle;
 }
 
 const CanvasDrawingControls = forwardRef<HTMLButtonElement, Props>(
-  ({ show, setLineType, lineType, setDrawMode, drawMode }, drawButtonRef) => {
+  (
+    {
+      show,
+      setLineType,
+      lineType,
+      setDrawMode,
+      drawMode,
+      setTextStyle,
+      textStyle,
+    },
+    drawButtonRef
+  ) => {
     if (!show) {
       return null;
     }
@@ -35,6 +49,9 @@ const CanvasDrawingControls = forwardRef<HTMLButtonElement, Props>(
             title="Tekn"
             ref={drawButtonRef}
           />
+          <ToggleGroup.Item value="text" title="Tekstmodus">
+            Aa
+          </ToggleGroup.Item>
           <ToggleGroup.Item
             value="move"
             icon={<FingerButtonIcon />}
@@ -65,9 +82,25 @@ const CanvasDrawingControls = forwardRef<HTMLButtonElement, Props>(
               icon={<CircleIcon selected={lineType === 'circle'} />}
               title="Ellipse"
             />
-            <ToggleGroup.Item value="text" title="Tekstmodus">
-              Aa
-            </ToggleGroup.Item>
+          </ToggleGroup>
+        )}
+        {drawMode === 'text' && (
+          <ToggleGroup defaultValue={textStyle} onChange={setTextStyle}>
+            <ToggleGroup.Item
+              value="filled"
+              icon={<TextStyleIcon selected={textStyle === 'filled'} filled />}
+              title="Fylt"
+            />
+            <ToggleGroup.Item
+              value="outline"
+              icon={<TextStyleIcon selected={textStyle === 'outline'} />}
+              title="Omriss"
+            />
+            <ToggleGroup.Item
+              value="none"
+              icon={<TextStyleIcon selected={textStyle === 'none'} onlyText />}
+              title="Ingen"
+            />
           </ToggleGroup>
         )}
       </div>

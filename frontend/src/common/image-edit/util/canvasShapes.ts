@@ -1,4 +1,5 @@
 import { Shape } from '@common/image-edit/types';
+import { getTextParams } from '@common/image-edit/util/canvasDrawingUtils';
 
 export const lineWidth = 4;
 export const arrowHeadLength = 20;
@@ -74,41 +75,27 @@ export const drawRectangle = (ctx: CanvasRenderingContext2D, shape: Shape) => {
 };
 
 export const drawText = (ctx: CanvasRenderingContext2D, textShape: Shape) => {
-  const { startX, startY, color, text } = textShape;
-  if (!text) return;
-  // const textHeight = 24;
-  // const textWidth = ctx.measureText(text).width;
-  // const correctedTextWidth = textWidth <= textHeight ? textHeight : textWidth;
+  const { startX, startY, color, text, textStyle } = textShape;
+  if (!text || !textStyle) return;
 
-  // ctx.beginPath();
-  // ctx.fillStyle = 'white';
-  // ctx.fillRect(
-  //   startX,
-  //   startY - textHeight,
-  //   correctedTextWidth,
-  //   textHeight * 1.3
-  // );
+  const { paddedText, x, y, width, height } = getTextParams(ctx, textShape);
 
-  // ctx.strokeStyle = color;
-  // ctx.lineWidth = 2;
-  // ctx.strokeRect(
-  //   textPosition.x,
-  //   textPosition.y - textHeight,
-  //   correctedTextWidth,
-  //   textHeight * 1.3
-  // );
+  ctx.beginPath();
+  if (textStyle === 'filled') {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(x, y, width, height);
+  }
+
+  if (textStyle === 'filled' || textStyle === 'outline') {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, width, height);
+  }
 
   ctx.font = '24px Arial';
   ctx.fillStyle = color;
-  ctx.fillText(text, startX, startY);
+  ctx.fillText(paddedText, startX, startY);
   ctx.closePath();
-};
-
-export const drawTextIndicator = (
-  ctx: CanvasRenderingContext2D,
-  shape: Shape
-) => {
-  drawText(ctx, { ...shape, text: 'Skriv her...' });
 };
 
 export const placeholderTextId = 'placeholder-text';

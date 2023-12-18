@@ -56,9 +56,10 @@
 
     &.draw {
       cursor: crosshair;
-      &.text {
-        cursor: text;
-      }
+    }
+
+    &.text {
+      cursor: text;
     }
 
     &.move {

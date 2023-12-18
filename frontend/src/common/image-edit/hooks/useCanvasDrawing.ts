@@ -5,6 +5,7 @@ import {
   Point,
   Shape,
   ShapeStart,
+  TextStyle,
 } from '@common/image-edit/types';
 import {
   arrowHeadLength,
@@ -21,6 +22,7 @@ import {
   checkInsideCircle,
   checkInsideRectangle,
   checkInsideRotatedLine,
+  checkInsideText,
   generateShapeId,
 } from '../util/canvasDrawingUtils';
 
@@ -34,6 +36,8 @@ interface UseCanvasDrawingReturnType {
   color: string;
   setDrawMode: (drawMode: string) => void;
   drawMode: DrawMode;
+  setTextStyle: (textStyle: string) => void;
+  textStyle: TextStyle;
   clearStrokes: () => void;
   undo: () => void;
   emptyStrokes: boolean;
@@ -59,8 +63,16 @@ const useCanvasDrawing = (
   const [shapeStart, setShapeStart] = useState<ShapeStart | undefined>();
   const [shapeInProgress, setShapeInProgress] = useState<Shape | undefined>();
 
-  const { lineType, setLineType, color, setColor, drawMode, setDrawMode } =
-    useImageControl();
+  const {
+    lineType,
+    setLineType,
+    color,
+    setColor,
+    drawMode,
+    setDrawMode,
+    textStyle,
+    setTextStyle,
+  } = useImageControl();
 
   const getCanvasContext = () => {
     const canvas = canvasRef.current;
@@ -139,8 +151,14 @@ const useCanvasDrawing = (
         case 'circle':
           isInside = checkInsideCircle(shape, point);
           break;
-        case 'text':
-          return;
+        case 'text': {
+          const { ctx } = getCanvasContext();
+          if (ctx) {
+            isInside = checkInsideText(ctx, shape, point);
+            break;
+          }
+          break;
+        }
       }
 
       if (isInside) {
@@ -162,9 +180,24 @@ const useCanvasDrawing = (
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         const point: Point = { x, y };
+        setCursorClickPoint(point);
 
         if (drawMode === 'draw') {
-          if (lineType === 'text') {
+          setIsDrawing(true);
+          setShapeStart({
+            type: lineType,
+            startX: x,
+            startY: y,
+            color: color,
+          });
+        } else if (drawMode === 'text') {
+          const shape = findShapeInCoordinates(point);
+          if (shape && shape.type === 'text') {
+            removeShape(placeholderTextId);
+            setCurrentText(shape?.text || '');
+            setTextId(shape.id);
+            setCursorClickPoint({ x: shape.startX, y: shape.startY });
+          } else {
             setTextId(generateShapeId());
             const placeholderText: Shape = {
               id: placeholderTextId,
@@ -175,18 +208,11 @@ const useCanvasDrawing = (
               endY: x + 25,
               color: color,
               text: 'Skriv her...',
+              textStyle: textStyle,
             };
             removeShape(placeholderTextId);
             addShape(placeholderText);
             setCurrentText('');
-          } else {
-            setIsDrawing(true);
-            setShapeStart({
-              type: lineType,
-              startX: x,
-              startY: y,
-              color: color,
-            });
           }
         } else if (drawMode === 'move' || drawMode === 'copy') {
           setIsDragging(true);
@@ -203,7 +229,6 @@ const useCanvasDrawing = (
           setIsErasing(true);
           erase({ x, y });
         }
-        setCursorClickPoint(point);
       }
     },
     [
@@ -212,6 +237,7 @@ const useCanvasDrawing = (
       lineType,
       color,
       drawMode,
+      textStyle,
       shapeList,
       contextMenuOpen,
     ]
@@ -326,7 +352,7 @@ const useCanvasDrawing = (
   );
 
   useEffect(() => {
-    const isTextMode = lineType === 'text';
+    const isTextMode = drawMode === 'text';
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (currentText.length === 0) {
@@ -343,19 +369,20 @@ const useCanvasDrawing = (
 
         const { canvas, ctx } = getCanvasContext();
 
-        if (canvas && ctx) {
-          removeShape(textId);
+        removeShape(textId);
+        setCurrentText(nextText);
+        if (canvas && ctx && nextText.length > 0) {
           addShape({
             id: textId,
             type: 'text',
             startX: cursorClickPoint.x,
             startY: cursorClickPoint.y,
             endX: cursorClickPoint.x + nextText.length * 1.3,
-            endY: 24,
+            endY: cursorClickPoint.y * 1.3,
             color: color,
             text: nextText,
+            textStyle: textStyle,
           });
-          setCurrentText(nextText);
         }
       }
     };
@@ -367,7 +394,7 @@ const useCanvasDrawing = (
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lineType, currentText, cursorClickPoint, canvasRef, color]);
+  }, [drawMode, currentText, cursorClickPoint, canvasRef, color, textStyle]);
 
   const clearStrokes = useCallback(
     (redrawCallback?: () => void) => {
@@ -427,6 +454,8 @@ const useCanvasDrawing = (
     color,
     setDrawMode,
     drawMode,
+    setTextStyle,
+    textStyle,
     clearStrokes,
     undo: handleUndo,
     emptyStrokes,

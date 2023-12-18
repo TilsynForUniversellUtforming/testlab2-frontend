@@ -1,4 +1,4 @@
-import { Point, Shape } from '@common/image-edit/types';
+import { Point, Shape, TextParams } from '@common/image-edit/types';
 
 export const checkInsideRotatedLine = (
   line: Shape,
@@ -53,6 +53,41 @@ export const checkInsideCircle = (circle: Shape, point: Point) => {
   const dx = point.x - centerX;
   const dy = point.y - centerY;
   return (dx * dx) / (radiusX * radiusX) + (dy * dy) / (radiusY * radiusY) <= 1;
+};
+
+export const checkInsideText = (
+  ctx: CanvasRenderingContext2D,
+  textShape: Shape,
+  point: Point
+) => {
+  const { x, y, width, height } = getTextParams(ctx, textShape);
+
+  return (
+    point.x >= x &&
+    point.x <= x + width &&
+    point.y >= y &&
+    point.y <= y + height
+  );
+};
+
+export const getTextParams = (
+  ctx: CanvasRenderingContext2D,
+  textShape: Shape
+): TextParams => {
+  const { startX, startY, text } = textShape;
+
+  const paddedText = ` ${text} `;
+  const textHeight = 24;
+  const textWidth = ctx.measureText(paddedText).width;
+  const correctedTextWidth = textWidth <= textHeight ? textHeight : textWidth;
+
+  return {
+    paddedText: paddedText,
+    x: startX,
+    y: startY - textHeight,
+    width: correctedTextWidth,
+    height: textHeight * 1.3,
+  };
 };
 
 export const generateShapeId = (): string => Date.now().toString();
