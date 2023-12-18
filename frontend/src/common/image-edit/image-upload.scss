@@ -56,6 +56,9 @@
 
     &.draw {
       cursor: crosshair;
+      &.text {
+        cursor: text;
+      }
     }
 
     &.move {

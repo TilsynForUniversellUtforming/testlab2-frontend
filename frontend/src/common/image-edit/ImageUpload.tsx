@@ -67,9 +67,9 @@ const ImageUpload = () => {
   };
 
   const drawButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      e.preventDefault();
       if (
         !(
           drawButtonRef.current &&
@@ -107,6 +107,7 @@ const ImageUpload = () => {
               hidden: !selectedFile,
               'full-size': isEditMode,
               [drawMode]: drawMode,
+              text: lineType === 'text',
             })}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}

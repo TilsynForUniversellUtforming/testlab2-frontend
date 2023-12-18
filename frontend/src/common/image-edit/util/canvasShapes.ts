@@ -1,4 +1,4 @@
-import { Shape, TextShape } from '@common/image-edit/types';
+import { Shape } from '@common/image-edit/types';
 
 export const lineWidth = 4;
 export const arrowHeadLength = 20;
@@ -73,42 +73,21 @@ export const drawRectangle = (ctx: CanvasRenderingContext2D, shape: Shape) => {
   ctx.closePath();
 };
 
-export const drawTextIndicator = (
-  ctx: CanvasRenderingContext2D,
-  shape: Shape
-) => {
-  const { startX, startY, endX, endY, color } = shape;
-
-  ctx.beginPath();
-  ctx.rect(startX, startY, endX - startX, endY - startY);
-
-  ctx.setLineDash([5, 5]);
-  ctx.lineWidth = lineWidth;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  ctx.closePath();
-};
-
-export const drawText = (
-  ctx: CanvasRenderingContext2D,
-  textShape: TextShape
-) => {
+export const drawText = (ctx: CanvasRenderingContext2D, textShape: Shape) => {
   const { startX, startY, color, text } = textShape;
+  if (!text) return;
+  // const textHeight = 24;
+  // const textWidth = ctx.measureText(text).width;
+  // const correctedTextWidth = textWidth <= textHeight ? textHeight : textWidth;
 
-  const textHeight = 24;
-  const textWidth = ctx.measureText(text).width;
-  const correctedTextWidth = textWidth <= textHeight ? textHeight : textWidth;
-
-  ctx.beginPath();
-  ctx.fillStyle = 'white';
-  ctx.fillRect(
-    startX,
-    startY - textHeight,
-    correctedTextWidth,
-    textHeight * 1.3
-  );
+  // ctx.beginPath();
+  // ctx.fillStyle = 'white';
+  // ctx.fillRect(
+  //   startX,
+  //   startY - textHeight,
+  //   correctedTextWidth,
+  //   textHeight * 1.3
+  // );
 
   // ctx.strokeStyle = color;
   // ctx.lineWidth = 2;
@@ -124,3 +103,12 @@ export const drawText = (
   ctx.fillText(text, startX, startY);
   ctx.closePath();
 };
+
+export const drawTextIndicator = (
+  ctx: CanvasRenderingContext2D,
+  shape: Shape
+) => {
+  drawText(ctx, { ...shape, text: 'Skriv her...' });
+};
+
+export const placeholderTextId = 'placeholder-text';

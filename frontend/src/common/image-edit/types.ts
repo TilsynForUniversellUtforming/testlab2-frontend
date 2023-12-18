@@ -15,8 +15,5 @@ export type Shape = {
   id: string;
   endX: number;
   endY: number;
-} & ShapeStart;
-
-export type TextShape = {
-  text: string;
+  text?: string;
 } & ShapeStart;
