@@ -20,6 +20,7 @@ type SakLoesyingDTO = {
 };
 
 export type EditSak = {
+  id: number;
   virksomhet: string;
   loeysingar: SakLoesyingDTO[];
   testreglar: Testregel[];
