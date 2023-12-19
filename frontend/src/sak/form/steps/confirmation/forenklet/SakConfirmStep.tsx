@@ -14,7 +14,6 @@ const SakConfirmStep = ({
     defaultValues: sakFormState,
   });
 
-  // TODO - Gjør ordentlig
   let formStep = formStepState;
   if (sakFormState?.sakType !== 'Forenklet kontroll') {
     formStep = {
