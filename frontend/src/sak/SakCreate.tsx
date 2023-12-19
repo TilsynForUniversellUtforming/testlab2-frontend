@@ -76,25 +76,30 @@ const SakCreate = () => {
   ): Promise<number | undefined> => {
     setLoading(true);
     setError(undefined);
+    const sakType = maalingFormState?.sakType;
+    const verksemdOrgNr =
+      maalingFormState?.verksemdLoeysingRelation?.verksemd?.orgnummer ||
+      maalingFormState?.verksemdLoeysingRelation?.manualVerksemd?.orgnummer;
 
-    if (
-      maalingFormState?.sakType &&
-      maalingFormState?.sakType !== 'Forenklet kontroll'
-    ) {
-      const nySak: NySak = {
-        // TODO - Ordentlig sjekk
-        virksomhet:
-          maalingFormState?.verksemdLoeysingRelation?.verksemd?.orgnummer ||
-          '000000000',
-      };
-      try {
-        return await createSak(nySak);
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje oppdatere måling'));
-      }
+    if (!sakType || sakType === 'Forenklet kontroll') {
+      setError(new Error('Kan ikkje opprette sak, feil saktype'));
+      return;
+    } else if (!verksemdOrgNr) {
+      setError(
+        new Error('Kan ikkje opprette sak, manglar organiseringsnummer')
+      );
+      return;
     }
-    setError(new Error('Måling manglar parametre'));
-    return undefined;
+
+    const nySak: NySak = {
+      virksomhet: verksemdOrgNr,
+    };
+
+    try {
+      return await createSak(nySak);
+    } catch (e) {
+      setError(toError(e, 'Kunne ikkje oppdatere måling'));
+    }
   };
 
   const doUpdateSak = async (maalingFormState: SakFormState) => {
