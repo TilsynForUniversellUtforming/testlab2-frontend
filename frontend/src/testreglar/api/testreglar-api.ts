@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
 import {
@@ -45,9 +46,9 @@ export const listTestobjekt = async (): Promise<Testobjekt[]> =>
   );
 
 export const createTestregel = async (
-  testregel: TestregelInit
+  testregel: TestregelCreateRequest
 ): Promise<TestregelBase[]> =>
-  await fetch(`/api/v1/testreglar`, {
+  await fetchWrapper(`/api/v1/testreglar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -58,9 +59,9 @@ export const createTestregel = async (
   );
 
 export const updateTestregel = async (
-  testregel: TestregelInit
+  testregel: Testregel
 ): Promise<TestregelBase[]> =>
-  await fetch(`/api/v1/testreglar`, {
+  await fetchWrapper(`/api/v1/testreglar`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -72,8 +73,8 @@ export const updateTestregel = async (
 
 export const deleteTestregelList = async (
   testregelIdList: number[]
-): Promise<TestregelBase[]> =>
-  await fetch(`/api/v1/testreglar`, {
+): Promise<TestregelBase[]> => {
+  const response = await fetchWrapper(`/api/v1/testreglar`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
