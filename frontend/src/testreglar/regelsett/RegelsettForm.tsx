@@ -6,7 +6,7 @@ import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
-import { Option } from '@common/types';
+import { OptionType } from '@common/types';
 import { isDefined } from '@common/util/validationUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -61,7 +61,7 @@ const RegelsettForm = ({
     setValue('testregelList', rowSelection);
   }, []);
 
-  const typeOptions: Option[] = [
+  const typeOptions: OptionType[] = [
     {
       label: 'Manuell',
       value: 'manuell',

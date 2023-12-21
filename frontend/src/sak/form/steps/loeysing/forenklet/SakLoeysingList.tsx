@@ -1,14 +1,9 @@
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
-import { ButtonSize } from '@common/types';
+import { ButtonSize, OptionExtended } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
-import {
-  Button,
-  ErrorMessage,
-  Select,
-  SingleSelectOption,
-} from '@digdir/design-system-react';
+import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingVerksemdColumns } from '@sak/form/steps/loeysing/forenklet/LoeysingColumns';
 import { LoeysingVerksemd, SakContext, SakFormState } from '@sak/types';
@@ -132,14 +127,9 @@ const SakLoeysingList = () => {
     setRowSelection(selection);
   }, []);
 
-  const verksemdOptions: SingleSelectOption[] = verksemdList.map((l) => ({
+  const verksemdOptions: OptionExtended[] = verksemdList.map((l) => ({
     label: l.namn,
-    formattedLabel: (
-      <>
-        <b>{l.namn}</b>
-        <div>Organisasjonsnummer: {l.organisasjonsnummer}</div>
-      </>
-    ),
+    description: `Orgnr.: ${l.organisasjonsnummer}`,
     value: String(l.id),
   }));
 
@@ -164,13 +154,23 @@ const SakLoeysingList = () => {
           />
         </div>
         <div className="sak-loeysing__input-select">
-          <Select
-            options={verksemdOptions}
+          <Combobox
             label="Ansvarlig verksemd (i saka)"
-            onChange={setVerksemdId}
-            value={verksemdId}
+            onValueChange={(selection) => setVerksemdId(selection[0])}
+            value={[verksemdId || '']}
             error={!!listErrors}
-          />
+          >
+            <Combobox.Empty>Fann ingen løysing med det namet</Combobox.Empty>
+            {verksemdOptions.map(({ label, value, description }) => (
+              <Combobox.Option
+                value={value}
+                key={value}
+                description={description}
+              >
+                {label}
+              </Combobox.Option>
+            ))}
+          </Combobox>
         </div>
         <Button
           title="Legg til"
