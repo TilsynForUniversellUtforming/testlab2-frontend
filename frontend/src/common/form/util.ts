@@ -48,7 +48,6 @@ export const fetchWrapper = async (
   init?: RequestInit
 ): Promise<Response> => {
   if (init) {
-    // const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
     return await fetch(`/csrf`, { method: 'GET' }).then((response) => {
       return response.json().then(async (data) => {
         init.credentials = 'include';
@@ -56,7 +55,6 @@ export const fetchWrapper = async (
           'Content-Type': 'application/json',
           'X-XSRF-TOKEN': data.token,
         };
-
         return await fetch(input, init);
       });
     });
