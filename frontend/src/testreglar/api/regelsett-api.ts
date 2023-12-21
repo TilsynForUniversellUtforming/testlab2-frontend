@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import {
   Regelsett,
@@ -21,7 +22,7 @@ export const fetchRegelsettList = async (
 export const deleteRegelsettList = async (
   regelsettIdList: number[]
 ): Promise<Regelsett[]> => {
-  return await fetch(`/api/v1/regelsett`, {
+  return await fetchWrapper(`/api/v1/regelsett`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ export const deleteRegelsettList = async (
 export const createRegelsett = async (
   regelsettCreate: RegelsettCreate
 ): Promise<Regelsett[]> =>
-  await fetch(`/api/v1/regelsett`, {
+  await fetchWrapper(`/api/v1/regelsett`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ export const createRegelsett = async (
 export const updateRegelsett = async (
   regelsett: RegelsettEdit
 ): Promise<Regelsett[]> =>
-  await fetch(`/api/v1/regelsett`, {
+  await fetchWrapper(`/api/v1/regelsett`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

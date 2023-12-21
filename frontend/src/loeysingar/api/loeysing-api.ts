@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
 import { Loeysing, LoeysingInit } from './types';
@@ -33,7 +34,7 @@ export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   );
 
 export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
-  await fetch('/api/v1/loeysing', {
+  await fetchWrapper('/api/v1/loeysing', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -45,21 +46,20 @@ export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
 
 export const createLoeysing = async (
   loeysingInit: LoeysingInit
-): Promise<Loeysing[]> =>
-  await fetch('/api/v1/loeysing', {
+): Promise<Loeysing[]> => {
+  //const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+  return await fetchWrapper('/api/v1/loeysing', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(loeysingInit),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje opprette løysing')
   );
+};
 
 export const deleteLoeysingList = async (
   loeysingIdList: number[]
 ): Promise<Loeysing[]> => {
-  const response = await fetch(`/api/v1/loeysing`, {
+  const response = await fetchWrapper(`/api/v1/loeysing`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

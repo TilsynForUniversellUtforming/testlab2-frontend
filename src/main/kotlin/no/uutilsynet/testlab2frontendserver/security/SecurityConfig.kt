@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.security.web.csrf.*
 import org.springframework.util.StringUtils
@@ -35,13 +36,12 @@ class SecurityConfig {
     http {
       csrf {
         csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse()
-        csrfTokenRequestHandler = SpaCsrfTokenRequestHandler()
+        //    csrfTokenRequestHandler = SpaCsrfTokenRequestHandler()
+        sessionAuthenticationStrategy = NullAuthenticatedSessionStrategy()
       }
-      authorizeHttpRequests {
-        authorize("/actuator/**", permitAll)
-        authorize(anyRequest, hasAuthority("brukar subscriber"))
-      }
+      authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
+      cors { configurationSource = corsConfigurationSource() }
     }
     http.addFilterAfter(CsrfCookieFilter(), BasicAuthenticationFilter::class.java)
 
@@ -55,12 +55,20 @@ class SecurityConfig {
         listOf(
             "https://user.difi.no",
             "https://test-testlab.uutilsynet.no",
-            "https://beta-testlab.uutilsynet.no")
+            "https://beta-testlab.uutilsynet.no",
+            "http://localhost")
     configuration.allowCredentials = true
     val source = UrlBasedCorsConfigurationSource()
     source.registerCorsConfiguration("/**", configuration)
     return source
   }
+
+  //  @Value("\${spring.websecurity.debug:false}") var webSecurityDebug = true
+  //
+  //  @Bean
+  //  fun webSecurityCustomizer(): WebSecurityCustomizer? {
+  //    return WebSecurityCustomizer { web: WebSecurity -> web.debug(webSecurityDebug) }
+  //  }
 
   private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
       GrantedAuthoritiesMapper { authorities: Collection<GrantedAuthority> ->
@@ -101,6 +109,10 @@ class SpaCsrfTokenRequestHandler : CsrfTokenRequestAttributeHandler() {
      * the header value automatically, which was obtained via a cookie containing the
      * raw CsrfToken.
      */
+    println(request.headerNames.toList())
+    println(csrfToken.headerName)
+    println(csrfToken.token)
+    println(request.getHeader(csrfToken.headerName))
     return if (StringUtils.hasText(request.getHeader(csrfToken.headerName))) {
       super.resolveCsrfTokenValue(request, csrfToken)
     } else {
