@@ -1,4 +1,4 @@
-import { SingleSelectOption } from '@digdir/design-system-react';
+import { OptionType } from '@common/types';
 
 export type NettsidePropertyType =
   | 'forside'
@@ -11,7 +11,7 @@ export type NettsidePropertyType =
   | 'kapper'
   | 'egendefinert';
 
-export const nettsidePropertyOptions: SingleSelectOption[] = [
+export const nettsidePropertyOptions: OptionType[] = [
   { label: 'Forside', value: 'forside' },
   { label: 'Navigasjonsmeny', value: 'navigasjonsmeny' },
   { label: 'Bilder og video', value: 'bilder_og_video' },

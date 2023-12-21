@@ -1,7 +1,11 @@
 import { headingWithoutSorting } from '@common/table/util';
-import { Option } from '@common/types';
+import { OptionType } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Select, SortDirection, TableCell } from '@digdir/design-system-react';
+import {
+  Combobox,
+  SortDirection,
+  TableCell,
+} from '@digdir/design-system-react';
 import { flexRender, Header, Table } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 
@@ -26,7 +30,7 @@ const TableFilterSelect = <T extends object>({
   };
 
   const options = useMemo(() => {
-    const defaultOption: Option = {
+    const defaultOption: OptionType = {
       label: 'Alle',
       value: '',
     };
@@ -39,7 +43,7 @@ const TableFilterSelect = <T extends object>({
       ),
     ];
 
-    const computedOptions: Option[] = keysWithoutSortingNumbers
+    const computedOptions: OptionType[] = keysWithoutSortingNumbers
       .map((value) => ({
         label: sanitizeEnumLabel(value),
         value: value,
@@ -80,13 +84,19 @@ const TableFilterSelect = <T extends object>({
         </svg>
       </button>
       <div className="testlab-table__column-filter-select">
-        <Select
-          value={(columnFilterValue ?? '') as string}
-          onChange={(value) => search(value)}
-          options={options}
+        <Combobox
+          value={[String(columnFilterValue || '')]}
+          onValueChange={(selection) => search(selection[0])}
           label={`Velg ${column.id}`}
+          size="small"
           hideLabel
-        />
+        >
+          {options.map(({ label, value }) => (
+            <Combobox.Option value={value} key={value}>
+              {label}
+            </Combobox.Option>
+          ))}
+        </Combobox>
       </div>
     </TableCell>
   );

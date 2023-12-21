@@ -1,14 +1,10 @@
+import { TestlabFormLabel } from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
-import { ButtonSize } from '@common/types';
+import { ButtonSize, OptionType } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
-import {
-  Button,
-  ErrorMessage,
-  Select,
-  SingleSelectOption,
-} from '@digdir/design-system-react';
+import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';
@@ -63,7 +59,7 @@ const SakTestreglarStep = ({
       isForenklet ? rs.type === 'forenklet' : rs.type === 'manuell'
     );
 
-    const options: SingleSelectOption[] = testregelList
+    const options: OptionType[] = testregelList
       .filter(
         (tr) =>
           (isForenklet ? tr.type === 'forenklet' : tr.type === 'manuell') &&
@@ -190,20 +186,28 @@ const SakTestreglarStep = ({
       <div className="sak-testreglar">
         <div className="sak-testreglar__input-wrapper">
           <div className="sak-testreglar__input-select">
-            <label htmlFor="testregelId" className="testlab-form__input-label">
-              Testregel eller testregelsett
-              <div className="testlab-form__input-sub-label">
-                Vel enkelt testregel eller samling av testreglar (testregelsett)
-                du vil legge til.
-              </div>
-            </label>
-            <Select
-              inputId="testregelId"
-              onChange={setTestregelId}
-              options={testRegelOptions}
-              value={testregelId}
-              error={!!formError}
+            <TestlabFormLabel
+              htmlFor="testregelId"
+              label="Testregel eller testregelsett"
+              required
+              description="Vel enkelt testregel eller samling av testreglar (testregelsett)
+                du vil legge til."
             />
+            <Combobox
+              id="testregelId"
+              onValueChange={(selection) => setTestregelId(selection[0])}
+              value={[testregelId || '']}
+              error={!!formError}
+            >
+              <Combobox.Empty>
+                Fann ingen testregel med det namet
+              </Combobox.Empty>
+              {testRegelOptions.map(({ value, label }) => (
+                <Combobox.Option value={value} key={value}>
+                  {label}
+                </Combobox.Option>
+              ))}
+            </Combobox>
           </div>
           <Button
             title="Legg til"

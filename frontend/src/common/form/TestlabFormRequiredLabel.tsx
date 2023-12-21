@@ -5,6 +5,11 @@ export interface Props {
   required: boolean;
 }
 
+interface LabelProps extends Props {
+  htmlFor: string;
+  description?: ReactNode;
+}
+
 /**
  * Displays a label for an input field, it adds an asterisk next to the label if the field is marked as required.
  *
@@ -22,5 +27,19 @@ const TestlabFormRequiredLabel = ({ label, required }: Props): ReactNode => {
     </>
   );
 };
+
+export const TestlabFormLabel = ({
+  label,
+  description,
+  required,
+  htmlFor,
+}: LabelProps) => (
+  <label htmlFor={htmlFor} className="testlab-form__input-label">
+    <TestlabFormRequiredLabel label={label} required={required} />
+    {description && (
+      <div className="testlab-form__input-sub-label">{description}</div>
+    )}
+  </label>
+);
 
 export default TestlabFormRequiredLabel;

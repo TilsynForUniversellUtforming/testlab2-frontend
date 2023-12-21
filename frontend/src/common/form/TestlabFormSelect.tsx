@@ -1,16 +1,17 @@
-import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
+import TestlabFormRequiredLabel, {
+  TestlabFormLabel,
+} from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
-import { isDefined } from '@common/util/validationUtils';
-import { ErrorMessage, Radio, Select } from '@digdir/design-system-react';
+import { Combobox, Radio } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-import { Option } from '../types';
+import { OptionType } from '../types';
 import { TestlabInputBaseProps } from './TestlabFormInput';
 
 export interface TestlabInputSelectProps<T extends object>
   extends TestlabInputBaseProps<T> {
-  options: Option[];
+  options: OptionType[];
   radio?: boolean;
 }
 
@@ -21,7 +22,7 @@ export interface TestlabInputSelectProps<T extends object>
  * @param {TestlabInputSelectProps<T>} props - The props for the component.
  * @param {string} props.label - Label for the select input.
  * @param {string} [props.description] - Optional description for the select input.
- * @param {Option[]} props.options - An array of options for the select input.
+ * @param {OptionType[]} props.options - An array of options for the select input.
  * @param {string} props.name - The name of the input field, correlating to the property in form data.
  * @param {boolean} [props.required=false] - Indicates if the select input is required.
  * @param {boolean} [props.disabled] - Indicates if the select input is disabled.
@@ -77,26 +78,29 @@ const TestlabFormSelect = <T extends object>({
       control={control}
       render={({ field: { onChange, value } }) => (
         <div className="testlab-form__select">
-          <label htmlFor={name} className="testlab-form__input-label">
-            {label}
-            {required && <span className="asterisk-color">*</span>}
-            {description && (
-              <div className="testlab-form__input-sub-label">{description}</div>
-            )}
-          </label>
-          <Select
-            inputId={name}
+          <TestlabFormLabel
+            htmlFor={name}
+            label={label}
+            required={required}
+            description={description}
+          />
+          <Combobox
+            id={name}
+            name={name}
             value={value}
-            onChange={onChange}
-            options={options}
-            error={isDefined(errorMessage)}
+            onValueChange={onChange}
+            error={errorMessage}
             disabled={disabled}
             label={label}
+            size="small"
             hideLabel
-          />
-          {errorMessage && (
-            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-          )}
+          >
+            {options.map(({ label, value }) => (
+              <Combobox.Option value={value} key={value}>
+                {label}
+              </Combobox.Option>
+            ))}
+          </Combobox>
         </div>
       )}
     />

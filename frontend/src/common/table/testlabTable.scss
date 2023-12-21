@@ -70,7 +70,10 @@
         margin-right: 0.75rem;
       }
       .pagination-select {
-        min-width: 5rem;
+        min-width: 4rem;
+        input {
+          max-width: 1.5rem;
+        }
       }
     }
   }

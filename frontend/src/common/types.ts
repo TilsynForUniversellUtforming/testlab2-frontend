@@ -8,10 +8,14 @@ export interface AppContext {
 
 export type Size = 'xsmall' | 'small' | 'medium' | 'large';
 
-export type Option = {
+export type OptionType = {
   label: string;
   value: string;
 };
+
+export type OptionExtended = {
+  description: string;
+} & OptionType;
 
 export type Severity = 'info' | 'warning' | 'success' | 'danger';
 

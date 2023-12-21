@@ -2,7 +2,7 @@ import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
-import { Option } from '@common/types';
+import { OptionType } from '@common/types';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { isDefined } from '@common/util/validationUtils';
 import { Link } from '@digdir/design-system-react';
@@ -36,12 +36,12 @@ const TestregelForm = ({
 }: Props) => {
   const { id } = useParams();
 
-  const kravOptions: Option[] = krav.map((k) => ({
+  const kravOptions: OptionType[] = krav.map((k) => ({
     label: k,
     value: k,
   }));
 
-  const typeOptions: Option[] = [
+  const typeOptions: OptionType[] = [
     {
       label: 'Manuell',
       value: 'manuell',
