@@ -3,7 +3,11 @@ import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
 import { ButtonSize, OptionExtended } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
-import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
+import {
+  Button,
+  ErrorMessage,
+  LegacySelect,
+} from '@digdir/design-system-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingVerksemdColumns } from '@sak/form/steps/loeysing/forenklet/LoeysingColumns';
 import { LoeysingVerksemd, SakContext, SakFormState } from '@sak/types';
@@ -154,23 +158,13 @@ const SakLoeysingList = () => {
           />
         </div>
         <div className="sak-loeysing__input-select">
-          <Combobox
+          <LegacySelect
+            options={verksemdOptions}
             label="Ansvarlig verksemd (i saka)"
-            onValueChange={(selection) => setVerksemdId(selection[0])}
-            value={[verksemdId || '']}
+            onChange={setVerksemdId}
+            value={verksemdId}
             error={!!listErrors}
-          >
-            <Combobox.Empty>Fann ingen løysing med det namet</Combobox.Empty>
-            {verksemdOptions.map(({ label, value, description }) => (
-              <Combobox.Option
-                value={value}
-                key={value}
-                description={description}
-              >
-                {label}
-              </Combobox.Option>
-            ))}
-          </Combobox>
+          />
         </div>
         <Button
           title="Legg til"

@@ -1,8 +1,7 @@
-import TestlabFormRequiredLabel, {
-  TestlabFormLabel,
-} from '@common/form/TestlabFormRequiredLabel';
+import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
-import { Combobox, Radio } from '@digdir/design-system-react';
+import { isDefined } from '@common/util/validationUtils';
+import { ErrorMessage, LegacySelect, Radio } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -78,29 +77,26 @@ const TestlabFormSelect = <T extends object>({
       control={control}
       render={({ field: { onChange, value } }) => (
         <div className="testlab-form__select">
-          <TestlabFormLabel
-            htmlFor={name}
-            label={label}
-            required={required}
-            description={description}
-          />
-          <Combobox
-            id={name}
-            name={name}
+          <label htmlFor={name} className="testlab-form__input-label">
+            {label}
+            {required && <span className="asterisk-color">*</span>}
+            {description && (
+              <div className="testlab-form__input-sub-label">{description}</div>
+            )}
+          </label>
+          <LegacySelect
+            inputId={name}
             value={value}
-            onValueChange={onChange}
-            error={errorMessage}
+            onChange={onChange}
+            options={options}
+            error={isDefined(errorMessage)}
             disabled={disabled}
             label={label}
-            size="small"
             hideLabel
-          >
-            {options.map(({ label, value }) => (
-              <Combobox.Option value={value} key={value}>
-                {label}
-              </Combobox.Option>
-            ))}
-          </Combobox>
+          />
+          {errorMessage && (
+            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
+          )}
         </div>
       )}
     />

@@ -4,7 +4,11 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
 import { ButtonSize, OptionType } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
-import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
+import {
+  Button,
+  ErrorMessage,
+  LegacySelect,
+} from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';
@@ -193,21 +197,13 @@ const SakTestreglarStep = ({
               description="Vel enkelt testregel eller samling av testreglar (testregelsett)
                 du vil legge til."
             />
-            <Combobox
-              id="testregelId"
-              onValueChange={(selection) => setTestregelId(selection[0])}
-              value={[testregelId || '']}
+            <LegacySelect
+              inputId="testregelId"
+              onChange={setTestregelId}
+              options={testRegelOptions}
+              value={testregelId}
               error={!!formError}
-            >
-              <Combobox.Empty>
-                Fann ingen testregel med det namet
-              </Combobox.Empty>
-              {testRegelOptions.map(({ value, label }) => (
-                <Combobox.Option value={value} key={value}>
-                  {label}
-                </Combobox.Option>
-              ))}
-            </Combobox>
+            />
           </div>
           <Button
             title="Legg til"
