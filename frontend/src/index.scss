@@ -4,11 +4,14 @@
 $blaasvart: #1e2b3c;
 
 body {
-  font-family: 'Inter', sans-serif;
   color: $blaasvart;
-  p[class^='ErrorMessage-'] {
-    font-family: 'Inter', sans-serif !important;
-  }
+  font-family: 'Inter', sans-serif;
+
+  p,
+  a,
+  button,
+  input,
+  label,
   h1,
   h2,
   h3,

@@ -23,6 +23,7 @@ const PageSizeSelection = <T extends object>({
           hideLabel
           id={tableId}
           size="small"
+          htmlSize={1}
         >
           {['10', '25', '50', '100'].map((pageSize) => (
             <Combobox.Option value={pageSize} key={pageSize}>
