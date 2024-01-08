@@ -1,4 +1,4 @@
-import './test.scss';
+import '../test.scss';
 
 import { Spinner } from '@digdir/design-system-react';
 import { getTestregel } from '@testreglar/api/testreglar-api';
@@ -6,11 +6,11 @@ import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import TestForm from './testregel-form/TestForm';
-import { TestingStep } from './types';
-import { parseTestregel } from './util/testregelParser';
+import TestForm from '../testregel-form/TestForm';
+import { TestingStep } from '../types';
+import { parseTestregel } from '../util/testregelParser';
 
-const TestingApp = () => {
+const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
   const [error, setError] = useState<string | undefined>();
@@ -61,4 +61,4 @@ const TestingApp = () => {
   );
 };
 
-export default TestingApp;
+export default TestregelDemoApp;

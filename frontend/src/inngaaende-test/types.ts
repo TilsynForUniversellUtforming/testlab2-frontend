@@ -90,3 +90,26 @@ export type TestregelDTO = {
   kolonner: KolonneDTO[];
   steg: StegDTO[];
 };
+
+export type Svar = {
+  steg: string;
+  svar: string;
+};
+
+export type ManualTestResult = {
+  id: number;
+  sakId: number;
+  loeysingId: number;
+  testregelId: number;
+  nettsideId: number;
+  elementOmtale?: string;
+  elementResultat?: string;
+  elementUtfall?: string;
+  svar: Svar[];
+  testVartUtfoert?: string;
+};
+
+export type TestregelOverviewElement = {
+  id: number;
+  name: string;
+};

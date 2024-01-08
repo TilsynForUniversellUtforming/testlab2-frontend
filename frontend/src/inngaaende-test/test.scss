@@ -1,10 +1,47 @@
+.manual-test {
+  &-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .testregel-container {
+      display: flex;
+      flex-direction: row;
+      margin: 0 auto;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  }
+
+  &-buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background: #f2f7fb;
+    padding: 2rem;
+  }
+
+  &-heading {
+    padding-bottom: 2rem;
+    .tags {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+}
+
 .test-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   max-width: 48rem;
+  width: 100%;
   margin: auto;
-  padding-bottom: 3rem;
+  padding: 3rem;
 
   &-content {
     display: flex;

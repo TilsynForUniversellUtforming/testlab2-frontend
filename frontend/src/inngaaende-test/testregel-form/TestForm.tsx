@@ -17,6 +17,10 @@ const TestForm = ({ heading, steps, firstStepKey }: Props) => {
   ]);
   const ref = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setFormSteps([{ key: firstStepKey }]);
+  }, [steps]);
+
   const getNextSteps = (
     currentStep: TestFormStep,
     stepsMap: Map<string, TestingStep>
@@ -68,6 +72,8 @@ const TestForm = ({ heading, steps, firstStepKey }: Props) => {
           prevSteps.findIndex((step) => step.key === currentStepKey) + 1
         );
 
+        console.log(updatedSteps);
+
         if (selectionOutcome.action === 'gaaTil') {
           const newStep = { key: selectionOutcome.target };
           updatedSteps.push(newStep);
@@ -86,10 +92,14 @@ const TestForm = ({ heading, steps, firstStepKey }: Props) => {
           });
         }
 
-        return updatedSteps.filter(
+        const nextSteps = updatedSteps.filter(
           (step, index, self) =>
             index === self.findIndex((s) => s.key === step.key)
         );
+
+        console.log(nextSteps);
+
+        return nextSteps;
       });
     },
     [steps]

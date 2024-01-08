@@ -19,8 +19,7 @@ import { defaultSakFormState, SakContext, SakFormState } from './types';
 const SakCreate = () => {
   const navigate = useNavigate();
 
-  const { setMaaling, contextLoading, contextError }: SakContext =
-    useOutletContext();
+  const { contextLoading, contextError }: SakContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
@@ -56,7 +55,6 @@ const SakCreate = () => {
 
       try {
         const maaling = await createMaaling(maalingInit);
-        setMaaling(maaling);
         navigate(
           getFullPath(MAALING, {
             pathParam: idPath,

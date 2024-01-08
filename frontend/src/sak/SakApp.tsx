@@ -4,8 +4,8 @@ import { withErrorHandling } from '@common/util/apiUtils';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
-import { fetchMaaling } from '@maaling/api/maaling-api';
-import { Maaling } from '@maaling/api/types';
+import { getSak } from '@sak/api/sak-api';
+import { Sak } from '@sak/api/types';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { fetchTestreglarList } from '@testreglar/api/testreglar-api';
 import { Regelsett, Testregel } from '@testreglar/api/types';
@@ -23,7 +23,7 @@ const SakApp = () => {
 
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [maaling, setMaaling] = useState<Maaling | undefined>();
+  const [sak, setSak] = useState<Sak | undefined>();
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [utvalList, setUtvalList] = useState<Utval[]>([]);
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
@@ -34,20 +34,21 @@ const SakApp = () => {
   const handleFetchMaaling = async () => {
     if (id) {
       try {
-        const maaling = await fetchMaaling(Number(id));
-        setMaaling(maaling);
+        const sak = await getSak(Number(id));
+        // setSak(sak);
+        setSak(sak);
       } catch (e) {
         setError(toError(e, 'Kunne ikkje hente sak'));
       }
     }
   };
 
-  const handleSetMaaling = useCallback((maaling: Maaling) => {
-    setMaaling(maaling);
+  const handleSetSak = useCallback((sak: Sak) => {
+    setSak(sak);
   }, []);
 
   const handleError = useCallback((error: Error | undefined) => {
-    setMaaling(undefined);
+    setSak(undefined);
     setError(error);
   }, []);
 
@@ -161,8 +162,8 @@ const SakApp = () => {
     setContextError: handleError,
     contextLoading: loading,
     setContextLoading: handleLoading,
-    maaling: maaling,
-    setMaaling: handleSetMaaling,
+    sak: sak,
+    setSak: handleSetSak,
     refresh: doFetchData,
     loeysingList: loeysingList,
     utvalList: utvalList,

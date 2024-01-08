@@ -1,11 +1,11 @@
 import { AppContext } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import { Maaling } from '@maaling/api/types';
 import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { Regelsett, Testregel } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
 import { User } from '../user/api/types';
+import { Sak } from './api/types';
 import { FormStepState } from './hooks/useSakForm';
 
 export type LoeysingVerksemd = {
@@ -51,8 +51,8 @@ export interface SakContext extends AppContext {
   utvalList: Utval[];
   verksemdList: Verksemd[];
   advisors: User[];
-  maaling?: Maaling;
-  setMaaling: (maaling: Maaling) => void;
+  sak?: Sak;
+  setSak: (sak: Sak) => void;
   setContextLoading: (loading: boolean) => void;
   refreshLoeysing: () => void;
 }
