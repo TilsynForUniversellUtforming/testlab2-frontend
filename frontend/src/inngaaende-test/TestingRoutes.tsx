@@ -6,7 +6,7 @@ import TestregelDemoApp from './demo/TestregelDemoApp';
 import ManualTest from './ManualTest';
 
 export const TEST_ROOT: AppRoute = {
-  navn: 'Ny test',
+  navn: 'Tester',
   path: 'test',
   imgSrc: nyTestImg,
   disabled: true,

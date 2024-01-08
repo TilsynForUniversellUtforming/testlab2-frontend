@@ -1,4 +1,39 @@
 .manual-test {
+  &__loeysing-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 16rem;
+    min-width: 12rem;
+    background: white;
+    padding: 1rem;
+
+    &-tag {
+      display: flex;
+      justify-content: end;
+    }
+
+    &-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+
+  &-overview {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: #f2f7fb;
+    padding: 2rem;
+  }
+
   &-container {
     display: flex;
     flex-direction: column;

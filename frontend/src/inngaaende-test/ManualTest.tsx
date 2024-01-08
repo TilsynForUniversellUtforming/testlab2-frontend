@@ -53,6 +53,7 @@ const ManualTest = () => {
   if (error) {
     return <ErrorCard error={error} />;
   }
+
   return <TestOverview sakId={id} sak={sak} testResults={testResults} />;
 };
 
