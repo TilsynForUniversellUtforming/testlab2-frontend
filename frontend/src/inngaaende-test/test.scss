@@ -7,19 +7,27 @@
     min-height: 16rem;
     min-width: 12rem;
     background: white;
-    padding: 1rem;
 
-    &-tag {
+    .tag-wrapper {
       display: flex;
       justify-content: end;
+      background: #bcbdec;
+      padding: 0.5rem 0.5rem 2rem 2rem;
     }
 
-    &-content {
+    .content-wrapper {
       display: flex;
       flex-direction: column;
-      justify-content: start;
-      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
       text-align: center;
+      gap: 4rem;
+      padding: 0 4rem 2rem 4rem;
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
     }
   }
 
@@ -29,7 +37,7 @@
     margin: 0 auto;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
     background: #f2f7fb;
     padding: 2rem;
   }
@@ -44,7 +52,6 @@
       display: flex;
       flex-direction: row;
       margin: 0 auto;
-      justify-content: space-between;
       flex-wrap: wrap;
       gap: 1rem;
     }
