@@ -4,6 +4,7 @@ import { LoeysingNettsideRelation } from '@sak/types';
 import { Testregel } from '@testreglar/api/types';
 
 export type NySak = {
+  namn: string;
   virksomhet: string;
 };
 
@@ -21,6 +22,7 @@ type SakLoesyingDTO = {
 
 export type EditSak = {
   id: number;
+  namn: string;
   virksomhet: string;
   loeysingar: SakLoesyingDTO[];
   testreglar: Testregel[];
@@ -28,6 +30,7 @@ export type EditSak = {
 
 export type Sak = {
   id: number;
+  namn: string;
   verksemd: Loeysing;
   loeysingList: LoeysingNettsideRelation[];
   testreglar: Testregel[];
