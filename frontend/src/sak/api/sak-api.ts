@@ -1,5 +1,5 @@
 import { responseToJson } from '@common/util/apiUtils';
-import { EditSak, NySak, Sak } from '@sak/api/types';
+import { EditSak, NySak, Sak, SakListeElement } from '@sak/api/types';
 
 export const getSak = async (id: number): Promise<Sak> => {
   return await fetch(`/api/v1/saker/${id}`, {
@@ -26,3 +26,8 @@ export const updateSak = async (sakId: number, sak: EditSak): Promise<Sak> =>
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje oppdatere saker')
   );
+
+export async function fetchAlleSaker(): Promise<Array<SakListeElement>> {
+  const r = await fetch('/api/v1/saker');
+  return await r.json();
+}
