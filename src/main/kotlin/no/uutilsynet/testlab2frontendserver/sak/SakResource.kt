@@ -30,7 +30,7 @@ class SakResource(
   val sakUrl = "${testingApiProperties.url}/saker"
   val loeysingUrl = "${loeysingsregisterApiProperties.url}/v1/loeysing"
 
-  data class NySak(val virksomhet: String)
+  data class NySak(val namn: String, val virksomhet: String)
 
   val logger: Logger = LoggerFactory.getLogger(SakResource::class.java)
 

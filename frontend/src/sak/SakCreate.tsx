@@ -25,33 +25,27 @@ const SakCreate = () => {
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
 
-  const [maalingFormState, setMaalingFormState] =
+  const [sakFormState, setSakFormState] =
     useState<SakFormState>(defaultSakFormState);
 
-  const doCreateMaaling = async (maalingFormState: SakFormState) => {
+  const doCreateMaaling = async (sakFormState: SakFormState) => {
     setLoading(true);
     setError(undefined);
 
-    if (
-      maalingFormState.navn &&
-      maalingFormState.maxLenker &&
-      maalingFormState.talLenker
-    ) {
+    if (sakFormState.navn && sakFormState.maxLenker && sakFormState.talLenker) {
       const base = {
-        navn: maalingFormState.navn,
-        testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
+        navn: sakFormState.navn,
+        testregelIdList: sakFormState.testregelList.map((tr) => tr.id),
         crawlParameters: {
-          maxLenker: maalingFormState.maxLenker,
-          talLenker: maalingFormState.talLenker,
+          maxLenker: sakFormState.maxLenker,
+          talLenker: sakFormState.talLenker,
         },
       };
-      const maalingInit: MaalingInit = maalingFormState.utval
-        ? { ...base, utvalId: maalingFormState.utval.id }
+      const maalingInit: MaalingInit = sakFormState.utval
+        ? { ...base, utvalId: sakFormState.utval.id }
         : {
             ...base,
-            loeysingIdList: maalingFormState.loeysingList.map(
-              (l) => l.loeysing.id
-            ),
+            loeysingIdList: sakFormState.loeysingList.map((l) => l.loeysing.id),
           };
 
       try {
@@ -71,14 +65,17 @@ const SakCreate = () => {
   };
 
   const doCreateSak = async (
-    maalingFormState: SakFormState
+    sakFormState: SakFormState
   ): Promise<number | undefined> => {
     setLoading(true);
     setError(undefined);
-    const sakType = maalingFormState?.sakType;
+    const sakType = sakFormState?.sakType;
     const verksemdOrgNr =
-      maalingFormState?.verksemdLoeysingRelation?.verksemd?.orgnummer ||
-      maalingFormState?.verksemdLoeysingRelation?.manualVerksemd?.orgnummer;
+      sakFormState?.verksemdLoeysingRelation?.verksemd?.orgnummer ||
+      sakFormState?.verksemdLoeysingRelation?.manualVerksemd?.orgnummer;
+    const verksemdnamn =
+      sakFormState?.verksemdLoeysingRelation?.verksemd?.namn ||
+      sakFormState?.verksemdLoeysingRelation?.manualVerksemd?.namn;
 
     if (!sakType || sakType === 'Forenklet kontroll') {
       setError(new Error('Kan ikkje opprette sak, feil saktype'));
@@ -88,9 +85,13 @@ const SakCreate = () => {
         new Error('Kan ikkje opprette sak, manglar organiseringsnummer')
       );
       return;
+    } else if (!verksemdnamn) {
+      setError(new Error('Kan ikkje opprette sak, manglar namn på virksomhet'));
+      return;
     }
 
     const nySak: NySak = {
+      namn: verksemdnamn,
       virksomhet: verksemdOrgNr,
     };
 
@@ -101,15 +102,17 @@ const SakCreate = () => {
     }
   };
 
-  const doUpdateSak = async (maalingFormState: SakFormState) => {
+  const doUpdateSak = async (sakFormState: SakFormState) => {
     setLoading(true);
     setError(undefined);
 
-    const verksemdLoeysingRelation = maalingFormState?.verksemdLoeysingRelation;
-    const sakId = maalingFormState?.sakId;
-    if (verksemdLoeysingRelation && sakId) {
+    const verksemdLoeysingRelation = sakFormState?.verksemdLoeysingRelation;
+    const verksemdNamn = verksemdLoeysingRelation?.verksemd?.namn;
+    const sakId = sakFormState?.sakId;
+    if (verksemdLoeysingRelation && sakId && verksemdNamn) {
       const sak: EditSak = {
         id: sakId,
+        namn: verksemdNamn,
         virksomhet:
           verksemdLoeysingRelation?.verksemd?.orgnummer || '000000000',
         loeysingar: verksemdLoeysingRelation.loeysingList.map((l) => ({
@@ -121,13 +124,15 @@ const SakCreate = () => {
             begrunnelse: p.reason || '',
           })),
         })),
-        testreglar: maalingFormState?.testregelList,
+        testreglar: sakFormState?.testregelList,
       };
       try {
         await updateSak(sakId, sak);
       } catch (e) {
-        setError(toError(e, 'Kunne ikkje oppdatere måling'));
+        setError(toError(e, 'Kunne ikkje oppdatere sak'));
       }
+    } else {
+      setError(new Error('Kunne ikkje oppdatere sak'));
     }
   };
 
@@ -135,39 +140,39 @@ const SakCreate = () => {
   const { isLastStep, setNextStep, currentStepIdx } = formStepState;
 
   const handleSubmit = useCallback(
-    (maalingFormState: SakFormState) => {
-      setMaalingFormState((prevState) => ({
+    (sakFormState: SakFormState) => {
+      setSakFormState((prevState) => ({
         ...prevState,
-        ...maalingFormState,
+        ...sakFormState,
       }));
 
-      if (maalingFormState?.sakType === 'Forenklet kontroll') {
+      if (sakFormState?.sakType === 'Forenklet kontroll') {
         if (!isLastStep(currentStepIdx)) {
           return setNextStep();
         } else {
-          doCreateMaaling(maalingFormState).finally(() => {
+          doCreateMaaling(sakFormState).finally(() => {
             setLoading(false);
           });
         }
       } else {
         if (currentStepIdx === 0) {
-          doCreateSak(maalingFormState)
+          doCreateSak(sakFormState)
             .then((sakId) =>
-              setMaalingFormState((prevState) => ({
+              setSakFormState((prevState) => ({
                 ...prevState,
                 sakId: sakId,
               }))
             )
             .finally(() => setLoading(false));
-        } else if (isLastStep(currentStepIdx) && maalingFormState.sakId) {
+        } else if (isLastStep(currentStepIdx) && sakFormState.sakId) {
           navigate(
             getFullPath(TEST, {
-              id: String(maalingFormState.sakId),
+              id: String(sakFormState.sakId),
               pathParam: idPath,
             })
           );
         } else {
-          doUpdateSak(maalingFormState).finally(() => setLoading(false));
+          doUpdateSak(sakFormState).finally(() => setLoading(false));
         }
         return setNextStep();
       }
@@ -178,7 +183,7 @@ const SakCreate = () => {
   return (
     <SakForm
       formStepState={formStepState}
-      sakFormState={maalingFormState}
+      sakFormState={sakFormState}
       onSubmit={handleSubmit}
       loading={loading}
       error={error}
