@@ -48,12 +48,81 @@
     justify-content: center;
     align-items: center;
 
-    .testregel-container {
-      display: flex;
-      flex-direction: row;
-      margin: 0 auto;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .testregel {
+      &-container {
+        display: flex;
+        flex-direction: row;
+        margin: 0 auto;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      &-button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--fds-semantic-surface-neutral-default);
+        border: none;
+        box-shadow: 0 2px 4px rgba(188, 189, 236, 0.1);
+        border-radius: 10px;
+        cursor: pointer;
+        overflow: hidden;
+        padding: 0;
+        min-height: 6rem;
+        min-width: 12rem;
+        max-width: 18rem;
+
+        &.active {
+          background-color: var(--fds-semantic-surface-first-light);
+          .testregel-button-id {
+            background-color: var(--fds-semantic-surface-first-light-active);
+            position: relative;
+            z-index: 1;
+            &:after {
+              content: '';
+              position: absolute;
+              bottom: -20px;
+              left: 50%;
+              transform: translateX(-50%);
+              border-width: 10px;
+              border-style: solid;
+              border-color: var(--fds-semantic-surface-action-hover) transparent
+                transparent transparent;
+              z-index: 2;
+            }
+          }
+
+          &:hover {
+            background-color: var(--fds-semantic-surface-first-light);
+            .testregel-button-id {
+              background-color: var(--fds-semantic-surface-first-light-active);
+            }
+          }
+        }
+
+        &-id {
+          background-color: var(--fds-semantic-surface-action-default);
+          color: var(--fds-semantic-surface-neutral-default);
+          padding: 1rem;
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 6rem;
+          min-width: 3rem;
+        }
+
+        &:hover {
+          box-shadow: 0 0 2px var(--fds-semantic-border-focus-boxshadow);
+          background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+          .testregel-button-id {
+            background-color: var(--fds-semantic-surface-action-hover);
+          }
+        }
+
+        &-name {
+          padding: 1rem;
+        }
+      }
     }
   }
 

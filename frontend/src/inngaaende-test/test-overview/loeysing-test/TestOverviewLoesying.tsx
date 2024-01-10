@@ -13,6 +13,7 @@ import {
   TestregelOverviewElement,
 } from '@test/types';
 import { parseTestregel } from '@test/util/testregelParser';
+import { Testregel } from '@testreglar/api/types';
 import { useCallback, useState } from 'react';
 
 export interface Props {
@@ -23,7 +24,7 @@ export interface Props {
 }
 
 const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
-  const [testregelName, setTestregelName] = useState<string>();
+  const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
   const [alert, setAlert] = useAlert();
 
@@ -34,7 +35,7 @@ const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       setTestingSteps(undefined);
-      setTestregelName(undefined);
+      setActiveTestregel(undefined);
       const nextTestregel = sak.testreglar.find((tr) => tr.id === testregelId);
       if (!nextTestregel) {
         setAlert('danger', 'Det oppstod ein feil ved ending av testregel');
@@ -42,7 +43,7 @@ const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
         try {
           const parsedTestregel = parseTestregel(nextTestregel.testregelSchema);
           setTestingSteps(parsedTestregel);
-          setTestregelName(nextTestregel.name);
+          setActiveTestregel(nextTestregel);
           // TODO - bruk sakId til å finne steg fra testResults
         } catch (e) {
           setAlert('danger', 'Ugyldig testregel');
@@ -62,6 +63,7 @@ const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
         <div className="testregel-container">
           {testregelList.map((tr) => (
             <TestregelButton
+              isActive={tr.id === Number(activeTestregel?.id)}
               key={tr.id}
               testregel={tr}
               onChangeTestregel={onChangeTestregel}
@@ -69,11 +71,11 @@ const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
           ))}
         </div>
       </div>
-      {testingSteps && testregelName && (
+      {testingSteps && activeTestregel && (
         <>
           <TestlabDivider />
           <TestForm
-            heading={testregelName}
+            heading={activeTestregel.name}
             steps={testingSteps}
             firstStepKey={Array.from(testingSteps.keys())[0]}
           />
