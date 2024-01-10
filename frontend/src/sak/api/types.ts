@@ -27,7 +27,10 @@ export type EditSak = {
 };
 
 export type Sak = {
+  id: number;
   verksemd: Loeysing;
   loeysingList: LoeysingNettsideRelation[];
   testreglar: Testregel[];
 };
+
+export type SakListeElement = Pick<Sak, 'id' | 'verksemd'>;

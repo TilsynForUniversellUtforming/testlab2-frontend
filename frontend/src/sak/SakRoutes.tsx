@@ -4,6 +4,7 @@ import {
   editPath,
   idPath,
 } from '@common/util/routeUtils';
+import { fetchAlleSaker } from '@sak/api/sak-api';
 import SakList from '@sak/list/SakList';
 import SakApp from '@sak/SakApp';
 import SakCreate from '@sak/SakCreate';
@@ -44,6 +45,7 @@ export const SakRoutes: RouteObject = {
   children: [
     {
       index: true,
+      loader: fetchAlleSaker,
       element: <SakList />,
     },
     {
