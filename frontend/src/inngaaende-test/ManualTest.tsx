@@ -3,12 +3,11 @@ import toError from '@common/error/util';
 import { Spinner } from '@digdir/design-system-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
-import TestOverview from '@test/test-overview/TestOverview';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 
 import { getManuellKontrollResults } from './api/testing-api';
-import { ManualTestResult } from './types';
+import { ManualTestResult, TestContext } from './types';
 
 const ManualTest = () => {
   const { id } = useParams();
@@ -54,7 +53,12 @@ const ManualTest = () => {
     return <ErrorCard error={error} />;
   }
 
-  return <TestOverview sakId={id} sak={sak} testResults={testResults} />;
+  const testContext: TestContext = {
+    sak: sak,
+    testResults: testResults,
+  };
+
+  return <Outlet context={testContext} />;
 };
 
 export default ManualTest;

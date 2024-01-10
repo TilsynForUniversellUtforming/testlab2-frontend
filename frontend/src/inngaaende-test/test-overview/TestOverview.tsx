@@ -1,44 +1,33 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { Sak } from '@sak/api/types';
-import { LoeysingNettsideRelation } from '@sak/types';
-import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoesying';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
-import { ManualTestResult } from '@test/types';
-import { useState } from 'react';
+import { TEST_LOESYING } from '@test/TestingRoutes';
+import { TestContext } from '@test/types';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-export interface Props {
-  sakId: string;
-  sak: Sak;
-  testResults: ManualTestResult[];
-}
-
-const TestOverview = ({ sakId, sak, testResults }: Props) => {
-  const [currentLoeysing, setCurrentLoeysing] =
-    useState<LoeysingNettsideRelation>();
+const TestOverview = () => {
+  const { id } = useParams();
+  const { sak }: TestContext = useOutletContext();
+  const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
 
   const onChangeLoeysing = (loeysingId: number) => {
     const nextLoeysing = sak.loeysingList.find(
       (l) => l.loeysing.id === loeysingId
     );
-    if (!nextLoeysing) {
+    if (!nextLoeysing || !id) {
       setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
     } else {
-      setCurrentLoeysing(nextLoeysing);
+      navigate(
+        getFullPath(
+          TEST_LOESYING,
+          { pathParam: idPath, id: id },
+          { id: String(nextLoeysing.loeysing.id), pathParam: ':loeysingId' }
+        )
+      );
     }
   };
-
-  if (currentLoeysing) {
-    return (
-      <TestOverviewLoeysing
-        sakId={sakId}
-        sak={sak}
-        testResults={testResults}
-        onClickBack={() => setCurrentLoeysing(undefined)}
-      />
-    );
-  }
 
   return (
     <div className="manual-test-overview">

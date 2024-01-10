@@ -13,13 +13,13 @@ const TestHeading = ({ sakName, currentLoeysingName }: Props) => {
       </Heading>
       <Ingress spacing>{sakName}</Ingress>
       <div className="tags">
-        <Tag color="second" size="medium" variant="secondary">
+        <Tag color="second" size="small">
           Inngående kontroll
         </Tag>
-        <Tag color="second" size="medium" variant="secondary">
+        <Tag color="second" size="small">
           Nettside
         </Tag>
-        <Tag color="second" size="medium" variant="secondary">
+        <Tag color="second" size="small">
           {currentLoeysingName}
         </Tag>
       </div>

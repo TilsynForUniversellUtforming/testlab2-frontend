@@ -56,6 +56,33 @@
         flex-wrap: wrap;
         gap: 1rem;
       }
+
+      &-form-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+      }
+
+      &-form-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      &-button-wrapper {
+        position: relative;
+        &.active:after {
+          content: '';
+          position: absolute;
+          bottom: -25px;
+          left: 15%;
+          transform: translateX(-50%);
+          border-width: 15px;
+          border-style: solid;
+          border-color: var(--fds-semantic-surface-first-light-active)
+            transparent transparent transparent;
+        }
+      }
+
       &-button {
         display: flex;
         flex-direction: row;
@@ -75,20 +102,6 @@
           background-color: var(--fds-semantic-surface-first-light);
           .testregel-button-id {
             background-color: var(--fds-semantic-surface-first-light-active);
-            position: relative;
-            z-index: 1;
-            &:after {
-              content: '';
-              position: absolute;
-              bottom: -20px;
-              left: 50%;
-              transform: translateX(-50%);
-              border-width: 10px;
-              border-style: solid;
-              border-color: var(--fds-semantic-surface-action-hover) transparent
-                transparent transparent;
-              z-index: 2;
-            }
           }
 
           &:hover {
@@ -139,8 +152,10 @@
     .tags {
       display: flex;
       flex-direction: row;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
       padding-bottom: 1rem;
+      max-width: 16rem;
     }
   }
 }

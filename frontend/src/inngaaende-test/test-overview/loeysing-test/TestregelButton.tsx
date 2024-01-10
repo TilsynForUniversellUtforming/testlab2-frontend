@@ -8,15 +8,17 @@ export interface Props {
 }
 
 const TestregelButton = ({ onChangeTestregel, testregel, isActive }: Props) => (
-  <button
-    className={classnames('testregel-button', { active: isActive })}
-    onClick={() => {
-      onChangeTestregel(testregel.id);
-    }}
-  >
-    <div className="testregel-button-id">Nett-{testregel.id}</div>
-    <div className="testregel-button-name">{testregel.name}</div>
-  </button>
+  <div className={classnames('testregel-button-wrapper', { active: isActive })}>
+    <button
+      className={classnames('testregel-button', { active: isActive })}
+      onClick={() => {
+        onChangeTestregel(testregel.id);
+      }}
+    >
+      <div className="testregel-button-id">{testregel.krav}</div>
+      <div className="testregel-button-name">{testregel.name}</div>
+    </button>
+  </div>
 );
 
 export default TestregelButton;

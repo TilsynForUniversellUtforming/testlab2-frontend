@@ -9,7 +9,7 @@ const TestLoeysingButton = ({ name, onClick }: Props) => (
   <div className="manual-test__loeysing-button">
     <div className="tag-wrapper">
       <div>
-        <Tag color="first" size="small" variant="secondary">
+        <Tag color="first" size="small">
           Ikkje startet
         </Tag>
       </div>
@@ -19,10 +19,10 @@ const TestLoeysingButton = ({ name, onClick }: Props) => (
         <Heading size="medium" level={4} spacing>
           {name}
         </Heading>
-        <Tag color="second" size="small" variant="secondary">
+        <Tag color="second" size="small">
           Inngående kontroll
         </Tag>
-        <Tag color="info" size="small" variant="secondary">
+        <Tag color="info" size="small">
           Nettsted
         </Tag>
       </div>

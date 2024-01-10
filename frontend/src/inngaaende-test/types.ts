@@ -1,3 +1,5 @@
+import { Sak } from '@sak/api/types';
+
 export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
   | 'radio' // Multi radio
@@ -112,4 +114,10 @@ export type ManualTestResult = {
 export type TestregelOverviewElement = {
   id: number;
   name: string;
+  krav: string;
 };
+
+export interface TestContext {
+  sak: Sak;
+  testResults: ManualTestResult[];
+}

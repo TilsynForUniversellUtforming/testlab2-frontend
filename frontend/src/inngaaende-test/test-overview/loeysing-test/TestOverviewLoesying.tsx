@@ -9,12 +9,14 @@ import TestregelButton from '@test/test-overview/loeysing-test/TestregelButton';
 import TestForm from '@test/testregel-form/TestForm';
 import {
   ManualTestResult,
+  TestContext,
   TestingStep,
   TestregelOverviewElement,
 } from '@test/types';
 import { parseTestregel } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 import { useCallback, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
 export interface Props {
   sakId: string;
@@ -23,14 +25,24 @@ export interface Props {
   onClickBack: () => void;
 }
 
-const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
+const TestOverviewLoeysing = () => {
+  const { sak }: TestContext = useOutletContext();
+
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
   const [alert, setAlert] = useAlert();
 
   const testregelList: TestregelOverviewElement[] = sak.testreglar.map(
-    (tr) => ({ id: tr.id, name: tr.name })
+    (tr) => ({ id: tr.id, name: tr.name, krav: tr.krav })
   );
+
+  const onClickSave = () => {
+    setActiveTestregel(undefined);
+  };
+
+  const onClickBack = () => {
+    setActiveTestregel(undefined);
+  };
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
@@ -50,7 +62,7 @@ const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
         }
       }
     },
-    [testregelList, sakId]
+    [testregelList]
   );
 
   return (
@@ -72,18 +84,21 @@ const TestOverviewLoeysing = ({ sakId, sak, onClickBack }: Props) => {
         </div>
       </div>
       {testingSteps && activeTestregel && (
-        <>
-          <TestlabDivider />
+        <div className="testregel-form-wrapper">
           <TestForm
             heading={activeTestregel.name}
             steps={testingSteps}
             firstStepKey={Array.from(testingSteps.keys())[0]}
           />
-        </>
+          <TestlabDivider />
+          <div className="testregel-form-buttons">
+            <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
+              Tilbake
+            </Button>
+            <Button onClick={onClickSave}>Lagre og lukk</Button>
+          </div>
+        </div>
       )}
-      <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
-        Tilbake
-      </Button>
       {alert && (
         <AlertTimed
           severity={alert.severity}
