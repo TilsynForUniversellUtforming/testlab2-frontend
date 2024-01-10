@@ -8,6 +8,7 @@ import { createMaaling } from '@maaling/api/maaling-api';
 import { MaalingInit } from '@maaling/api/types';
 import { MAALING } from '@maaling/MaalingRoutes';
 import { createSak, updateSak } from '@sak/api/sak-api';
+import { TEST } from '@test/TestingRoutes';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -19,8 +20,7 @@ import { defaultSakFormState, SakContext, SakFormState } from './types';
 const SakCreate = () => {
   const navigate = useNavigate();
 
-  const { setMaaling, contextLoading, contextError }: SakContext =
-    useOutletContext();
+  const { contextLoading, contextError }: SakContext = useOutletContext();
 
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
@@ -56,7 +56,6 @@ const SakCreate = () => {
 
       try {
         const maaling = await createMaaling(maalingInit);
-        setMaaling(maaling);
         navigate(
           getFullPath(MAALING, {
             pathParam: idPath,
@@ -160,6 +159,13 @@ const SakCreate = () => {
               }))
             )
             .finally(() => setLoading(false));
+        } else if (isLastStep(currentStepIdx) && maalingFormState.sakId) {
+          navigate(
+            getFullPath(TEST, {
+              id: String(maalingFormState.sakId),
+              pathParam: idPath,
+            })
+          );
         } else {
           doUpdateSak(maalingFormState).finally(() => setLoading(false));
         }
