@@ -1,0 +1,24 @@
+import { TestregelOverviewElement } from '@test/types';
+import classnames from 'classnames';
+
+export interface Props {
+  testregel: TestregelOverviewElement;
+  isActive: boolean;
+  onChangeTestregel: (testregelId: number) => void;
+}
+
+const TestregelButton = ({ onChangeTestregel, testregel, isActive }: Props) => (
+  <div className={classnames('testregel-button-wrapper', { active: isActive })}>
+    <button
+      className={classnames('testregel-button', { active: isActive })}
+      onClick={() => {
+        onChangeTestregel(testregel.id);
+      }}
+    >
+      <div className="testregel-button-id">{testregel.krav}</div>
+      <div className="testregel-button-name">{testregel.name}</div>
+    </button>
+  </div>
+);
+
+export default TestregelButton;

@@ -1,10 +1,173 @@
+.manual-test {
+  &__loeysing-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 16rem;
+    min-width: 12rem;
+    background: white;
+
+    .tag-wrapper {
+      display: flex;
+      justify-content: end;
+      background: #bcbdec;
+      padding: 0.5rem 0.5rem 2rem 2rem;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      gap: 4rem;
+      padding: 0 4rem 2rem 4rem;
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+    }
+  }
+
+  &-overview {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    background: #f2f7fb;
+    padding: 2rem;
+  }
+
+  &-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .testregel {
+      &-container {
+        display: flex;
+        flex-direction: row;
+        margin: 0 auto;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      &-form-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+      }
+
+      &-form-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      &-button-wrapper {
+        position: relative;
+        &.active:after {
+          content: '';
+          position: absolute;
+          bottom: -25px;
+          left: 15%;
+          transform: translateX(-50%);
+          border-width: 15px;
+          border-style: solid;
+          border-color: var(--fds-semantic-surface-first-light-active)
+            transparent transparent transparent;
+        }
+      }
+
+      &-button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--fds-semantic-surface-neutral-default);
+        border: none;
+        box-shadow: 0 2px 4px rgba(188, 189, 236, 0.1);
+        border-radius: 10px;
+        cursor: pointer;
+        overflow: hidden;
+        padding: 0;
+        min-height: 6rem;
+        min-width: 12rem;
+        max-width: 18rem;
+
+        &.active {
+          background-color: var(--fds-semantic-surface-first-light);
+          .testregel-button-id {
+            background-color: var(--fds-semantic-surface-first-light-active);
+          }
+
+          &:hover {
+            background-color: var(--fds-semantic-surface-first-light);
+            .testregel-button-id {
+              background-color: var(--fds-semantic-surface-first-light-active);
+            }
+          }
+        }
+
+        &-id {
+          background-color: var(--fds-semantic-surface-action-default);
+          color: var(--fds-semantic-surface-neutral-default);
+          padding: 1rem;
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 6rem;
+          min-width: 3rem;
+        }
+
+        &:hover {
+          box-shadow: 0 0 2px var(--fds-semantic-border-focus-boxshadow);
+          background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+          .testregel-button-id {
+            background-color: var(--fds-semantic-surface-action-hover);
+          }
+        }
+
+        &-name {
+          padding: 1rem;
+        }
+      }
+    }
+  }
+
+  &-buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background: #f2f7fb;
+    padding: 2rem;
+  }
+
+  &-heading {
+    padding-bottom: 2rem;
+    .tags {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-bottom: 1rem;
+      max-width: 16rem;
+    }
+  }
+}
+
 .test-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   max-width: 48rem;
+  width: 100%;
   margin: auto;
-  padding-bottom: 3rem;
+  padding: 3rem;
 
   &-content {
     display: flex;

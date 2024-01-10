@@ -1,14 +1,29 @@
 import { AppRoute, idPath } from '@common/util/routeUtils';
+import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoesying';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
-import TestingApp from './TestingApp';
+import TestregelDemoApp from './demo/TestregelDemoApp';
+import ManualTest from './ManualTest';
+import TestOverview from './test-overview/TestOverview';
 
 export const TEST_ROOT: AppRoute = {
-  navn: 'Ny test',
+  navn: 'Tester',
   path: 'test',
   imgSrc: nyTestImg,
   disabled: true,
+};
+
+export const TEST: AppRoute = {
+  navn: 'Test',
+  path: idPath,
+  parentRoute: TEST_ROOT,
+};
+
+export const TEST_LOESYING: AppRoute = {
+  navn: 'Test løysing',
+  path: ':loeysingId',
+  parentRoute: TEST,
 };
 
 export const TESTREGEL_DEMO: AppRoute = {
@@ -23,8 +38,24 @@ export const TestingRoutes: RouteObject = {
   element: <Outlet />,
   children: [
     {
+      path: TEST.path,
+      element: <ManualTest />,
+      handle: { name: 'Test' },
+      children: [
+        {
+          index: true,
+          element: <TestOverview />,
+        },
+        {
+          path: TEST_LOESYING.path,
+          element: <TestOverviewLoeysing />,
+          handle: { name: TEST_LOESYING.navn },
+        },
+      ],
+    },
+    {
       path: TESTREGEL_DEMO.path,
-      element: <TestingApp />,
+      element: <TestregelDemoApp />,
       handle: { name: 'Demo' },
     },
   ],

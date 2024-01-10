@@ -56,7 +56,7 @@ export const TEST_CRAWLING_RESULT_LIST: AppRoute = {
 
 export const TEST_TESTING_LIST: AppRoute = {
   navn: 'Tester',
-  path: 'testing',
+  path: 'test-list',
   parentRoute: MAALING,
 };
 

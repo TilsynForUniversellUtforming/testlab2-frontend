@@ -21,6 +21,10 @@ const TestFormInputRadio = ({ testingStep, formStep, onAction }: Props) => {
     }
   }, [value]);
 
+  useEffect(() => {
+    setValue('ingen');
+  }, [formStep]);
+
   return (
     <Radio.Group
       legend={testingStep.heading}

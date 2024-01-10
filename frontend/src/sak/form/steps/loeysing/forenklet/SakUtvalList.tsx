@@ -32,6 +32,7 @@ const SakUtvalList = () => {
         value={String(getValues('utval')?.id)}
         onChange={handleChangeUtval}
         error={errorMessage}
+        legend="Utval"
       >
         {utvalList.map((u) => (
           <Radio value={String(u.id)} key={String(u.id)}>
