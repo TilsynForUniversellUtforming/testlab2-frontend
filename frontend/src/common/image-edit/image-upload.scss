@@ -22,11 +22,9 @@
   &-instructions {
     border: 0.125rem dotted var(--colors-blue-300);
     padding: 3rem;
-    width: 100%;
     text-align: center;
     max-width: 80vw;
     max-height: 80vh;
-    overflow: scroll;
 
     &.drag-over {
       background: var(--colors-blue-100);
@@ -35,6 +33,7 @@
     &.file {
       border: 1px solid var(--colors-blue-300);
       padding: 0;
+      overflow: auto;
     }
   }
 
@@ -96,6 +95,21 @@
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
+    &.image-control {
+      @media (max-width: 639px) {
+        flex-direction: column;
+      }
+      @media (min-width: 640px) {
+        justify-content: start;
+        flex-wrap: wrap;
+      }
+    }
+
+    .image-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
 
     .farge {
       -webkit-appearance: none;

@@ -173,6 +173,12 @@ const ImageUpload = () => {
           toggleImageSize={toggleEditMode}
           handleUndo={undo}
           setColor={setColor}
+          setLineType={setLineType}
+          lineType={lineType}
+          setDrawMode={setDrawMode}
+          drawMode={drawMode}
+          setTextStyle={setTextStyle}
+          textStyle={textStyle}
           color={color}
         />
       </div>
