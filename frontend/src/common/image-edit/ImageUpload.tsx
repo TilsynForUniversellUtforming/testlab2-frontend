@@ -22,6 +22,7 @@ const ImageUpload = () => {
   });
   const [showContextMenu, setShowContextMenu] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
 
   const {
     handleFileChange,
@@ -58,7 +59,7 @@ const ImageUpload = () => {
     if (isEditMode) {
       event.preventDefault();
 
-      const canvas = canvasRef.current;
+      const canvas = divRef.current;
       if (canvas) {
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
@@ -92,7 +93,27 @@ const ImageUpload = () => {
   }, [drawButtonRef]);
 
   return (
-    <div className="image-upload-container">
+    <div className="image-upload-container" ref={divRef}>
+      {showContextMenu && (
+        <div
+          className="image-upload-canvas-control"
+          style={{
+            top: `${contextMenuPosition.y}px`,
+            left: `${contextMenuPosition.x}px`,
+          }}
+        >
+          <CanvasDrawingControls
+            show={isEditMode}
+            setLineType={setLineType}
+            lineType={lineType}
+            setDrawMode={setDrawMode}
+            drawMode={drawMode}
+            setTextStyle={setTextStyle}
+            textStyle={textStyle}
+            ref={drawButtonRef}
+          />
+        </div>
+      )}
       <div
         className="image-upload"
         onDrop={handleDrop}
@@ -117,26 +138,6 @@ const ImageUpload = () => {
             onMouseUp={onMouseUp}
             onContextMenu={handleContextMenu}
           />
-          {showContextMenu && (
-            <div
-              className="image-upload-canvas-control"
-              style={{
-                top: `${contextMenuPosition.y}px`,
-                left: `${contextMenuPosition.x}px`,
-              }}
-            >
-              <CanvasDrawingControls
-                show={isEditMode}
-                setLineType={setLineType}
-                lineType={lineType}
-                setDrawMode={setDrawMode}
-                drawMode={drawMode}
-                setTextStyle={setTextStyle}
-                textStyle={textStyle}
-                ref={drawButtonRef}
-              />
-            </div>
-          )}
           {!selectedFile && (
             <>
               <UploadIcon title="Last opp" fontSize={42} />

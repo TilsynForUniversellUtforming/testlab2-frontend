@@ -30,13 +30,6 @@ const useFileUpload = ({ canvasRef, setAlert }: UseFileUploadProps) => {
           if (canvas) {
             const img = new Image();
             img.onload = () => {
-              const imageTooWide = img.width > window.screen.width * 0.8;
-              const imageTooTall = img.height > window.screen.height * 0.8;
-              if (imageTooWide || imageTooTall) {
-                setAlert('danger', 'Bilete er for stort');
-                setSelectedFile(null);
-                return;
-              }
               const canvasWidth = img.width;
               const canvasHeight = img.height;
 
