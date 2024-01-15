@@ -105,7 +105,7 @@ export type ManualElementResultat =
   | 'advarsel'
   | 'ikkjeTesta';
 
-export type TestStatus = ManualElementResultat & 'ikkjeStarta';
+export type TestStatus = 'done' | 'non-relevant' | 'pending';
 
 export type ManualTestResult = {
   id: number;

@@ -1,7 +1,7 @@
 import { isDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { NettsideProperties } from '@sak/types';
-import { ManualTestResult, PageType } from '@test/types';
+import { ManualTestResult, PageType, TestStatus } from '@test/types';
 
 export const testResultsForLoeysing = (
   testResults: ManualTestResult[],
@@ -69,7 +69,17 @@ export const getInitialPageType = (
 
 export const toTestregelStatus = (
   testResults: ManualTestResult[]
-): Map<number, string> =>
+): Map<number, TestStatus> =>
   new Map(
-    testResults.map((tr) => [tr.id, tr.elementResultat || 'ikkjeStarta'])
+    testResults.map((tr) => {
+      let status: TestStatus;
+      if (tr.elementResultat === undefined) {
+        status = 'pending';
+      } else if (tr.elementResultat === 'ikkjeForekomst') {
+        status = 'non-relevant';
+      } else {
+        status = 'done';
+      }
+      return [tr.id, status];
+    })
   );

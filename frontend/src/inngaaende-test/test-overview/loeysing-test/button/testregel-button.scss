@@ -18,7 +18,7 @@
   flex-direction: row;
   align-items: center;
   background-color: var(--fds-semantic-surface-neutral-default);
-  border: 1px solid;
+  border: 0;
   border-radius: 10px;
   cursor: pointer;
   overflow: hidden;
@@ -27,6 +27,34 @@
   min-width: 12rem;
   max-width: 18rem;
 
+  &.done {
+    background-color: var(--fds-semantic-surface-third-light-hover);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-third-dark);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-third-light-active);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-third-dark);
+      }
+    }
+  }
+
+  &.non-relevant {
+    background-color: var(--fds-semantic-surface-neutral-subtle);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-neutral-dark);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-neutral-dark-hover);
+      }
+    }
+  }
+
   &.active {
     background-color: var(--fds-semantic-surface-first-light);
     .testregel-button-id {
@@ -34,7 +62,7 @@
     }
 
     &:hover {
-      background-color: var(--fds-semantic-surface-first-light);
+      background-color: var(--fds-semantic-surface-first-light-hover);
       .testregel-button-id {
         background-color: var(--fds-semantic-surface-first-light-active);
       }
@@ -55,11 +83,18 @@
   }
 
   &:hover {
-    box-shadow: 0 0 2px var(--fds-semantic-border-focus-boxshadow);
+    box-shadow: 0 0 2px;
     background-color: var(--fds-semantic-surface-neutral-subtle-hover);
     .testregel-button-id {
       background-color: var(--fds-semantic-surface-action-hover);
     }
+  }
+
+  &:focus-visible {
+    outline: 3px solid #fadf4b;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px #1e2b3c;
+    border-radius: 3px;
   }
 
   &-name {
