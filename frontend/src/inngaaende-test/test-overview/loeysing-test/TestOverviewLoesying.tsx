@@ -3,12 +3,12 @@ import useAlert from '@common/alert/useAlert';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/design-system-react';
-import { Sak } from '@sak/api/types';
+import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
+import { NettsideProperties } from '@sak/types';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestregelButton from '@test/test-overview/loeysing-test/TestregelButton';
 import TestForm from '@test/testregel-form/TestForm';
 import {
-  ManualTestResult,
   TestContext,
   TestingStep,
   TestregelOverviewElement,
@@ -16,17 +16,20 @@ import {
 import { parseTestregel } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 import { useCallback, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-
-export interface Props {
-  sakId: string;
-  sak: Sak;
-  testResults: ManualTestResult[];
-  onClickBack: () => void;
-}
+import { useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
+  const { _, loeysingId } = useParams();
   const { sak }: TestContext = useOutletContext();
+  const sakProperties: NettsideProperties[] =
+    sak.loeysingList.find((l) => loeysingId === String(l.loeysing.id))
+      ?.properties || [];
+  const initialPageType =
+    sakProperties.length > 0 && sakProperties[0].type
+      ? sakProperties[0].type
+      : 'forside';
+  const [pageType, setPageType] =
+    useState<NettsidePropertyType>(initialPageType);
 
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
@@ -43,6 +46,12 @@ const TestOverviewLoeysing = () => {
   const onClickBack = () => {
     setActiveTestregel(undefined);
   };
+
+  const onChangePageType = useCallback((pageType?: NettsidePropertyType) => {
+    if (pageType) {
+      setPageType(pageType);
+    }
+  }, []);
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
@@ -70,6 +79,9 @@ const TestOverviewLoeysing = () => {
       <TestHeading
         sakName={sak.verksemd.namn}
         currentLoeysingName={sak.loeysingList[0].loeysing.namn}
+        sakProperties={sakProperties}
+        pageType={pageType}
+        onChangePageType={onChangePageType}
       />
       <div className="manual-test-buttons">
         <div className="testregel-container">
@@ -93,7 +105,7 @@ const TestOverviewLoeysing = () => {
           <TestlabDivider />
           <div className="testregel-form-buttons">
             <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
-              Tilbake
+              Legg til flere testelementer
             </Button>
             <Button onClick={onClickSave}>Lagre og lukk</Button>
           </div>

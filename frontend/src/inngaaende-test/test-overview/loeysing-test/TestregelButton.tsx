@@ -1,3 +1,4 @@
+import { Paragraph } from '@digdir/design-system-react';
 import { TestregelOverviewElement } from '@test/types';
 import classnames from 'classnames';
 
@@ -16,7 +17,9 @@ const TestregelButton = ({ onChangeTestregel, testregel, isActive }: Props) => (
       }}
     >
       <div className="testregel-button-id">{testregel.krav}</div>
-      <div className="testregel-button-name">{testregel.name}</div>
+      <div className="testregel-button-name">
+        <Paragraph size="xsmall">{testregel.name}</Paragraph>
+      </div>
     </button>
   </div>
 );
