@@ -1,3 +1,4 @@
+import { OptionType } from '@common/types';
 import { removeSpaces } from '@common/util/stringutils';
 
 /**
@@ -97,4 +98,15 @@ export const isOrgnummer = (s: string): boolean => {
   const rest = sum % 11;
   const kontrollsiffer = rest === 0 ? 0 : 11 - rest;
   return kontrollsiffer === sifferListe[8];
+};
+
+/**
+ * Filter function to make list of options typesafe when mapping to OptionType
+ * @Param {OptionType | undefined} option - The mapped option
+ * @return {OptionType} - Defined option
+ */
+export const isOption = (
+  option: OptionType | undefined
+): option is OptionType => {
+  return !!option;
 };

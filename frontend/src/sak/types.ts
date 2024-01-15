@@ -39,6 +39,7 @@ export type NettsideProperties = {
   url?: string;
   reason?: string;
   description?: string;
+  id?: number;
 };
 
 export type LoeysingSource = 'utval' | 'manuell';

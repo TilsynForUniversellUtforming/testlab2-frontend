@@ -4,11 +4,9 @@ data class NettsideDTO(
     val type: String,
     val url: String,
     val beskrivelse: String,
-    val begrunnelse: String
+    val begrunnelse: String,
+    val id: Int?,
 )
 
 fun NettsideDTO.toNettsideProperties() =
-    NettsideProperties(this.type, this.url, this.begrunnelse, this.beskrivelse)
-
-fun NettsideProperties.toNettsideDTO() =
-    NettsideDTO(this.type, this.url, this.description ?: "", this.reason)
+    NettsideProperties(this.type, this.url, this.begrunnelse, this.beskrivelse, this.id)

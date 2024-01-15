@@ -10,6 +10,7 @@ export interface Props {
   size?: Size;
   customText?: string;
   textPlacement?: 'left' | 'center';
+  labelPlacement?: 'top' | 'left' | 'right';
   ariaLabel: string;
   show?: boolean;
   severity?: TestlabSeverity;
@@ -37,6 +38,7 @@ const LoadingBar = ({
   size = 'xsmall',
   customText,
   textPlacement = 'center',
+  labelPlacement = 'top',
   show = true,
   ariaLabel,
   severity = 'info',
@@ -48,7 +50,10 @@ const LoadingBar = ({
   const style = { width: `${percentage}%` };
 
   return (
-    <div className={classnames('loading-bar', size)} title={ariaLabel}>
+    <div
+      className={classnames('loading-bar', size, labelPlacement)}
+      title={ariaLabel}
+    >
       <Label
         className={classnames('loading-bar__label', textPlacement)}
         size={size}
