@@ -12,7 +12,7 @@ interface Props {
 const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
   const [displayLoeysing, setDisplayLosying] = useState<Loeysing | undefined>();
 
-  const toggleDisplayLoesying = (loeysingId: number) => {
+  const toggleDisplayLoeysing = (loeysingId: number) => {
     if (displayLoeysing === undefined) {
       const loeysingNettsideRelation = loeysingNettsideRelationList.find(
         (l) => l.loeysing.id === loeysingId
@@ -25,7 +25,7 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
     setDisplayLosying(undefined);
   };
 
-  const loesyingIndexes = new Map(
+  const loeysingIndexes = new Map(
     loeysingNettsideRelationList.map((lnr, index) => [lnr.loeysing.id, index])
   );
 
@@ -44,7 +44,7 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
         {loeysingNettsideRelationList?.map((loeysingRelation) => (
           <Chip.Toggle
             key={loeysingRelation.loeysing.id}
-            onClick={() => toggleDisplayLoesying(loeysingRelation.loeysing.id)}
+            onClick={() => toggleDisplayLoeysing(loeysingRelation.loeysing.id)}
             selected={displayLoeysing?.id === loeysingRelation.loeysing.id}
             checkmark={false}
           >
@@ -55,7 +55,7 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
       {isDefined(displayLoeysing) && (
         <LoeysingNettsideForm
           heading={displayLoeysing?.namn}
-          loeysingIndex={loesyingIndexes.get(displayLoeysing?.id) || 0}
+          loeysingIndex={loeysingIndexes.get(displayLoeysing?.id) || 0}
           onClose={onCloseLoeysing}
         />
       )}

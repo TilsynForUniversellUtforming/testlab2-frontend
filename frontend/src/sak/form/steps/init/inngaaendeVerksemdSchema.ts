@@ -60,8 +60,8 @@ const verksemdLoeysingRelationSchema = z
     }
   )
   .refine(
-    (verksemdLoesying) =>
-      verksemdLoesying.loeysingList.some((l) => l?.useInTest || false),
+    (verksemdLoeysing) =>
+      verksemdLoeysing.loeysingList.some((l) => l?.useInTest || false),
     {
       message: 'Minst ei nettløysing må være med i testen',
       path: ['loeysingList'],

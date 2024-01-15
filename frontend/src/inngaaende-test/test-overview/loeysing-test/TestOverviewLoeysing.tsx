@@ -3,12 +3,13 @@ import useAlert from '@common/alert/useAlert';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/design-system-react';
-import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { NettsideProperties } from '@sak/types';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestregelButton from '@test/test-overview/loeysing-test/TestregelButton';
 import TestForm from '@test/testregel-form/TestForm';
 import {
+  InnhaldsType,
+  innhaldsType,
   TestContext,
   TestingStep,
   TestregelOverviewElement,
@@ -28,8 +29,11 @@ const TestOverviewLoeysing = () => {
     sakProperties.length > 0 && sakProperties[0].type
       ? sakProperties[0].type
       : 'forside';
-  const [pageType, setPageType] =
-    useState<NettsidePropertyType>(initialPageType);
+
+  const [pageType, setPageType] = useState<string>(initialPageType);
+
+  const [contentType, setContentType] =
+    useState<InnhaldsType>('Bilde og grafikk');
 
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
@@ -47,9 +51,15 @@ const TestOverviewLoeysing = () => {
     setActiveTestregel(undefined);
   };
 
-  const onChangePageType = useCallback((pageType?: NettsidePropertyType) => {
+  const onChangePageType = useCallback((pageType?: string) => {
     if (pageType) {
       setPageType(pageType);
+    }
+  }, []);
+
+  const onChangeContentType = useCallback((contentType?: string) => {
+    if (contentType && innhaldsType.includes(contentType)) {
+      setContentType(contentType as InnhaldsType);
     }
   }, []);
 
@@ -82,6 +92,8 @@ const TestOverviewLoeysing = () => {
         sakProperties={sakProperties}
         pageType={pageType}
         onChangePageType={onChangePageType}
+        contentType={contentType}
+        onChangeContentType={onChangeContentType}
       />
       <div className="manual-test-buttons">
         <div className="testregel-container">

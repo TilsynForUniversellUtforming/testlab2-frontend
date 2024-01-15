@@ -4,17 +4,14 @@ import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Button } from '@digdir/design-system-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
-import {
-  nettsidePropertyOptions,
-  NettsidePropertyType,
-} from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
+import { nettsidePropertyOptions } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { SakFormState } from '@sak/types';
 import { useEffect, useState } from 'react';
 import { Path, useFormContext, useWatch } from 'react-hook-form';
 
 interface Props {
   isWeb: boolean;
-  onClickAdd: (type: NettsidePropertyType) => void;
+  onClickAdd: (type: string) => void;
   onClickRemove: () => void;
   nameType: Path<SakFormState>;
   nameUrl: Path<SakFormState>;
@@ -37,7 +34,7 @@ const NettsidePropertiesFormInput = ({
   const type = useWatch<SakFormState>({
     control,
     name: nameType,
-  }) as NettsidePropertyType | undefined;
+  }) as string | undefined;
 
   useEffect(() => {
     setDisplayDescription(!!type && type === 'egendefinert');
