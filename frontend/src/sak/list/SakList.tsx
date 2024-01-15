@@ -16,8 +16,7 @@ const SakList = () => {
   const navigate = useNavigate();
 
   const columns: Array<ColumnDef<SakListeElement>> = [
-    { accessorKey: 'id', header: 'id' },
-    { accessorKey: 'virksomhet', header: 'Virksomhet' },
+    { accessorKey: 'namn', header: 'Saker' },
   ];
 
   return (
