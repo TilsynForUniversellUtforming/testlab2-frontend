@@ -20,11 +20,13 @@ const TestregelButton = ({
   <div
     className={classnames('testregel-button-wrapper', {
       active: isActive,
-      [status]: status,
     })}
   >
     <button
-      className={classnames('testregel-button', { active: isActive })}
+      className={classnames('testregel-button', {
+        active: isActive,
+        [status]: status,
+      })}
       onClick={() => {
         onChangeTestregel(testregel.id);
       }}

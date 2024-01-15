@@ -72,8 +72,6 @@ const TestForm = ({ heading, steps, firstStepKey }: Props) => {
           prevSteps.findIndex((step) => step.key === currentStepKey) + 1
         );
 
-        console.log(updatedSteps);
-
         if (selectionOutcome.action === 'gaaTil') {
           const newStep = { key: selectionOutcome.target };
           updatedSteps.push(newStep);
@@ -96,8 +94,6 @@ const TestForm = ({ heading, steps, firstStepKey }: Props) => {
           (step, index, self) =>
             index === self.findIndex((s) => s.key === step.key)
         );
-
-        console.log(nextSteps);
 
         return nextSteps;
       });
