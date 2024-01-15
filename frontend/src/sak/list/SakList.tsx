@@ -17,6 +17,12 @@ const SakList = () => {
 
   const columns: Array<ColumnDef<SakListeElement>> = [
     { accessorKey: 'namn', header: 'Saker' },
+    {
+      accessorFn: (originalRow) => {
+        return originalRow.ansvarleg ?? 'Ikkje tildelt';
+      },
+      header: 'Ansvarlig',
+    },
   ];
 
   return (

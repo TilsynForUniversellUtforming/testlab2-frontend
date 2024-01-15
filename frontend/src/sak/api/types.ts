@@ -30,9 +30,10 @@ export type EditSak = {
 export type Sak = {
   id: number;
   namn: string;
+  ansvarleg: string;
   verksemd: Loeysing;
   loeysingList: LoeysingNettsideRelation[];
   testreglar: Testregel[];
 };
 
-export type SakListeElement = Pick<Sak, 'id' | 'verksemd'>;
+export type SakListeElement = Pick<Sak, 'id' | 'namn' | 'ansvarleg'>;
