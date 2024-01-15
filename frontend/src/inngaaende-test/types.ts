@@ -121,3 +121,25 @@ export interface TestContext {
   sak: Sak;
   testResults: ManualTestResult[];
 }
+
+export const innhaldsType = [
+  'Bilde og grafikk',
+  'Captcha',
+  'Heile nettsida',
+  'Iframe',
+  'Innhald med tidsavgrensing',
+  'Innhald som blinkar og/eller oppdaterer automatisk',
+  'Kjeldekode',
+  'Lenke',
+  'Liste',
+  'Lyd og video',
+  'Overskrift',
+  'Sidetittel',
+  'Skjemaelement',
+  'Statusmelding',
+  'Tabell',
+  'Tastatur',
+  'Tekst',
+];
+
+export type InnhaldsType = (typeof innhaldsType)[number];

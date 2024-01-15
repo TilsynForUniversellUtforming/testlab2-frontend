@@ -14,6 +14,8 @@ const TestHeading = ({
   sakProperties,
   pageType,
   onChangePageType,
+  contentType,
+  onChangeContentType,
 }: Props) => {
   return (
     <div className="manual-test-heading">
@@ -36,6 +38,8 @@ const TestHeading = ({
         sakProperties={sakProperties}
         pageType={pageType}
         onChangePageType={onChangePageType}
+        contentType={contentType}
+        onChangeContentType={onChangeContentType}
       />
     </div>
   );

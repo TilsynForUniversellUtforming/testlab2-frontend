@@ -1,6 +1,5 @@
 import { AppContext } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { Regelsett, Testregel } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
@@ -36,7 +35,7 @@ export type SakVerksemdLoeysingRelation = {
 };
 
 export type NettsideProperties = {
-  type?: NettsidePropertyType;
+  type?: string;
   url?: string;
   reason?: string;
   description?: string;

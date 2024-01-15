@@ -1,5 +1,4 @@
 import { Loeysing } from '@loeysingar/api/types';
-import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { LoeysingNettsideRelation } from '@sak/types';
 import { Testregel } from '@testreglar/api/types';
 
@@ -9,13 +8,13 @@ export type NySak = {
 };
 
 type NettsideDTO = {
-  type: NettsidePropertyType;
+  type: string;
   url: string;
   beskrivelse: string;
   begrunnelse: string;
 };
 
-type SakLoesyingDTO = {
+type SakLoeysingDTO = {
   loeysingId: number;
   nettsider: NettsideDTO[];
 };
@@ -24,7 +23,7 @@ export type EditSak = {
   id: number;
   namn: string;
   virksomhet: string;
-  loeysingar: SakLoesyingDTO[];
+  loeysingar: SakLoeysingDTO[];
   testreglar: Testregel[];
 };
 

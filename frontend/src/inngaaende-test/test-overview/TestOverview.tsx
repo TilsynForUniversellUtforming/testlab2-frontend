@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
-import { TEST_LOESYING } from '@test/TestingRoutes';
+import { TEST_LOEYSING } from '@test/TestingRoutes';
 import { TestContext } from '@test/types';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const TestOverview = () => {
     } else {
       navigate(
         getFullPath(
-          TEST_LOESYING,
+          TEST_LOEYSING,
           { pathParam: idPath, id: id },
           { id: String(nextLoeysing.loeysing.id), pathParam: ':loeysingId' }
         )

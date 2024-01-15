@@ -1,30 +1,29 @@
 import { capitalize } from '@common/util/stringutils';
 import { Button, DropdownMenu } from '@digdir/design-system-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
-import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { NettsideProperties } from '@sak/types';
 import classnames from 'classnames';
 import { useRef, useState } from 'react';
 
 interface Props {
   title: string;
-  pageType: NettsidePropertyType;
-  onChangePageType: (pageType?: NettsidePropertyType) => void;
+  selectedType: string;
+  onChangeType: (type?: string) => void;
   sakProperties: NettsideProperties[];
 }
 
-const PageTypeDropdown = ({
+const TypeDropdown = ({
   title,
-  pageType,
-  onChangePageType,
+  selectedType,
+  onChangeType,
   sakProperties,
 }: Props) => {
   const anchorEl = useRef(null);
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (pageType?: NettsidePropertyType) => {
+  const handleButtonClick = (type?: string) => {
     setShow(false);
-    onChangePageType(pageType);
+    onChangeType(type);
   };
 
   return (
@@ -67,7 +66,7 @@ const PageTypeDropdown = ({
               <DropdownMenu.Item
                 key={type}
                 onClick={() => handleButtonClick(type)}
-                className={classnames({ active: type === pageType })}
+                className={classnames({ active: type === selectedType })}
               >
                 {capitalize(type)}
               </DropdownMenu.Item>
@@ -79,4 +78,4 @@ const PageTypeDropdown = ({
   );
 };
 
-export default PageTypeDropdown;
+export default TypeDropdown;

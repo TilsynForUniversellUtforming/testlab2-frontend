@@ -1,6 +1,6 @@
 import { OptionType } from '@common/types';
 
-export type NettsidePropertyType =
+export type string =
   | 'forside'
   | 'navigasjonsmeny'
   | 'bilder_og_video'
@@ -9,7 +9,7 @@ export type NettsidePropertyType =
   | 'skjema'
   | 'tabeller'
   | 'kapper'
-  | 'egendefinert';
+  | ('egendefinert' & string);
 
 export const nettsidePropertyOptions: OptionType[] = [
   { label: 'Forside', value: 'forside' },

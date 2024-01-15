@@ -1,5 +1,5 @@
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoesying';
+import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
@@ -20,7 +20,7 @@ export const TEST: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
-export const TEST_LOESYING: AppRoute = {
+export const TEST_LOEYSING: AppRoute = {
   navn: 'Test løysing',
   path: ':loeysingId',
   parentRoute: TEST,
@@ -47,9 +47,9 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverview />,
         },
         {
-          path: TEST_LOESYING.path,
+          path: TEST_LOEYSING.path,
           element: <TestOverviewLoeysing />,
-          handle: { name: TEST_LOESYING.navn },
+          handle: { name: TEST_LOEYSING.navn },
         },
       ],
     },

@@ -3,7 +3,6 @@ import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { Button, ErrorMessage } from '@digdir/design-system-react';
 import NettsidePropertiesFormInput from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/NettsidePropertiesFormInput';
-import { NettsidePropertyType } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
 import { NettsideProperties, SakFormState } from '@sak/types';
 import { Fragment, useMemo } from 'react';
 import { Path, useFieldArray, useFormContext } from 'react-hook-form';
@@ -28,7 +27,7 @@ const NettsidePropertiesFieldArray = ({ loeysingIndex, onClose }: Props) => {
     description: undefined,
   };
 
-  const onClickAdd = (type?: NettsidePropertyType) => {
+  const onClickAdd = (type?: string) => {
     append({
       ...defaultValues,
       type: type,
