@@ -1,7 +1,6 @@
-import { capitalize } from '@common/util/stringutils';
+import { OptionType } from '@common/types';
 import { Button, DropdownMenu } from '@digdir/design-system-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
-import { NettsideProperties } from '@sak/types';
 import classnames from 'classnames';
 import { useRef, useState } from 'react';
 
@@ -9,14 +8,14 @@ interface Props {
   title: string;
   selectedType: string;
   onChangeType: (type?: string) => void;
-  sakProperties: NettsideProperties[];
+  options: OptionType[];
 }
 
 const TypeDropdown = ({
   title,
   selectedType,
   onChangeType,
-  sakProperties,
+  options,
 }: Props) => {
   const anchorEl = useRef(null);
   const [show, setShow] = useState(false);
@@ -57,21 +56,15 @@ const TypeDropdown = ({
         size="small"
       >
         <DropdownMenu.Group>
-          {sakProperties.map(({ type }) => {
-            if (!type) {
-              return null;
-            }
-
-            return (
-              <DropdownMenu.Item
-                key={type}
-                onClick={() => handleButtonClick(type)}
-                className={classnames({ active: type === selectedType })}
-              >
-                {capitalize(type)}
-              </DropdownMenu.Item>
-            );
-          })}
+          {options.map(({ label, value }) => (
+            <DropdownMenu.Item
+              key={value}
+              onClick={() => handleButtonClick(value)}
+              className={classnames({ active: value === selectedType })}
+            >
+              {label}
+            </DropdownMenu.Item>
+          ))}
         </DropdownMenu.Group>
       </DropdownMenu>
     </div>

@@ -98,6 +98,15 @@ export type Svar = {
   svar: string;
 };
 
+export type ManualElementResultat =
+  | 'samsvar'
+  | 'ikkjeForekomst'
+  | 'brot'
+  | 'advarsel'
+  | 'ikkjeTesta';
+
+export type TestStatus = ManualElementResultat & 'ikkjeStarta';
+
 export type ManualTestResult = {
   id: number;
   sakId: number;
@@ -105,7 +114,7 @@ export type ManualTestResult = {
   testregelId: number;
   nettsideId: number;
   elementOmtale?: string;
-  elementResultat?: string;
+  elementResultat?: ManualElementResultat;
   elementUtfall?: string;
   svar: Svar[];
   testVartUtfoert?: string;
@@ -143,3 +152,8 @@ export const innhaldsType = [
 ];
 
 export type InnhaldsType = (typeof innhaldsType)[number];
+
+export type PageType = {
+  nettsideId: number;
+  pageType: string;
+};

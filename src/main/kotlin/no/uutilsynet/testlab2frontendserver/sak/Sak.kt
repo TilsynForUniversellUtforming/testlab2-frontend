@@ -19,4 +19,5 @@ data class NettsideProperties(
     val url: String,
     val reason: String,
     val description: String?,
+    val id: Int?,
 )

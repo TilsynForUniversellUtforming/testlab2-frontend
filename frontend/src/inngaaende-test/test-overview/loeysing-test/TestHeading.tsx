@@ -11,7 +11,7 @@ export interface Props extends PageTypeSelectorProps {
 const TestHeading = ({
   sakName,
   currentLoeysingName,
-  sakProperties,
+  nettsideProperties,
   pageType,
   onChangePageType,
   contentType,
@@ -35,7 +35,7 @@ const TestHeading = ({
         </Tag>
       </div>
       <PageTypeSelector
-        sakProperties={sakProperties}
+        nettsideProperties={nettsideProperties}
         pageType={pageType}
         onChangePageType={onChangePageType}
         contentType={contentType}

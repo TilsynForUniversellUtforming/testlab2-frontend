@@ -1,3 +1,5 @@
+import './testregel-button.scss';
+
 import { Paragraph } from '@digdir/design-system-react';
 import { TestregelOverviewElement } from '@test/types';
 import classnames from 'classnames';
@@ -6,10 +8,21 @@ export interface Props {
   testregel: TestregelOverviewElement;
   isActive: boolean;
   onChangeTestregel: (testregelId: number) => void;
+  status: string;
 }
 
-const TestregelButton = ({ onChangeTestregel, testregel, isActive }: Props) => (
-  <div className={classnames('testregel-button-wrapper', { active: isActive })}>
+const TestregelButton = ({
+  onChangeTestregel,
+  testregel,
+  isActive,
+  status,
+}: Props) => (
+  <div
+    className={classnames('testregel-button-wrapper', {
+      active: isActive,
+      [status]: status,
+    })}
+  >
     <button
       className={classnames('testregel-button', { active: isActive })}
       onClick={() => {
