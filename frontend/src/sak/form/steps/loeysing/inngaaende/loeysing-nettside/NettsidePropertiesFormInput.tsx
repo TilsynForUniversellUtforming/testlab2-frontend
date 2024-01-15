@@ -4,7 +4,7 @@ import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Button } from '@digdir/design-system-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
-import { nettsidePropertyOptions } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/types';
+import { nettsidePropertyOptions } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/types';
 import { SakFormState } from '@sak/types';
 import { useEffect, useState } from 'react';
 import { Path, useFormContext, useWatch } from 'react-hook-form';
