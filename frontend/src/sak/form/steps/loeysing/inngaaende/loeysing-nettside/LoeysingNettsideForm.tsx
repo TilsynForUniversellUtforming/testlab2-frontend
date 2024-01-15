@@ -1,5 +1,5 @@
 import { Chip, Heading, Ingress } from '@digdir/design-system-react';
-import NettsidePropertiesFieldArray from '@sak/form/steps/loeysing/inngaaende/loeysing-nettisde/NettsidePropertiesFieldArray';
+import NettsidePropertiesFieldArray from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/NettsidePropertiesFieldArray';
 
 interface Props {
   heading: string;
