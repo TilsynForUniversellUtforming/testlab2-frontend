@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForEntity
 
 @RestController
 @RequestMapping("api/v1/saker", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -53,8 +52,8 @@ class SakResource(
           }
 
   @GetMapping
-  fun getAlleSaker(): ResponseEntity<Any> {
-    return restTemplate.getForEntity<Any>(sakUrl)
+  fun getAlleSaker(): List<Sak.ListeElement> {
+    return restTemplate.getList<Sak.ListeElement>(sakUrl)
   }
 
   @GetMapping("/{id}")
