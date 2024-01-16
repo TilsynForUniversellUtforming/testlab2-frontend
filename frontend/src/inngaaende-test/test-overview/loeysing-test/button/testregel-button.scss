@@ -14,6 +14,7 @@
 }
 
 .testregel-button {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -23,9 +24,9 @@
   cursor: pointer;
   overflow: hidden;
   padding: 0;
-  height: 8rem;
-  min-width: 12rem;
-  max-width: 18rem;
+  height: 10rem;
+  min-width: 18rem;
+  max-width: 26rem;
 
   &.done {
     background-color: var(--fds-semantic-surface-third-light-hover);
@@ -70,16 +71,29 @@
   }
 
   &-id {
-    background-color: var(--fds-semantic-surface-action-default);
+    background-color: var(--fds-semantic-border-action-first-subtle-hover);
     color: var(--fds-semantic-surface-neutral-default);
     padding: 1rem;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 6rem;
-    width: 5rem;
+    min-height: 8rem;
+    width: 3rem;
     min-width: 5rem;
+    font: var(--fds-typography-paragraph-medium);
+    font-family: 'Inter', sans-serif;
+
+    .id-text-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      .status {
+        font: var(--fds-typography-paragraph-xsmall);
+        font-family: 'Inter', sans-serif;
+      }
+    }
   }
 
   &:hover {

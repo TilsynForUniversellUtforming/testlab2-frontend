@@ -1,8 +1,5 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import TestlabDivider from '@common/divider/TestlabDivider';
-import { ButtonVariant } from '@common/types';
-import { Button } from '@digdir/design-system-react';
 import { Sak } from '@sak/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
@@ -167,7 +164,7 @@ const TestOverviewLoeysing = () => {
               key={tr.id}
               testregel={tr}
               onChangeTestregel={onChangeTestregel}
-              status={testStatusMap.get(tr.id) || 'ikkjeStarta'}
+              status={testStatusMap.get(tr.id) || 'Ikkje starta'}
             />
           ))}
         </div>
@@ -178,14 +175,9 @@ const TestOverviewLoeysing = () => {
             heading={activeTestregel.name}
             steps={testingSteps}
             firstStepKey={Array.from(testingSteps.keys())[0]}
+            onClickBack={onClickBack}
+            onClickSave={onClickSave}
           />
-          <TestlabDivider />
-          <div className="testregel-form-buttons">
-            <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
-              Legg til flere testelementer
-            </Button>
-            <Button onClick={onClickSave}>Lagre og lukk</Button>
-          </div>
         </div>
       )}
       {alert && (

@@ -1,4 +1,6 @@
-import { Heading } from '@digdir/design-system-react';
+import TestlabDivider from '@common/divider/TestlabDivider';
+import { ButtonVariant } from '@common/types';
+import { Button, Heading } from '@digdir/design-system-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { SelectionOutcome, TestingStep } from '../types';
@@ -9,9 +11,17 @@ interface Props {
   heading: string;
   steps: Map<string, TestingStep>;
   firstStepKey: string;
+  onClickBack: () => void;
+  onClickSave: () => void;
 }
 
-const TestForm = ({ heading, steps, firstStepKey }: Props) => {
+const TestForm = ({
+  heading,
+  steps,
+  firstStepKey,
+  onClickBack,
+  onClickSave,
+}: Props) => {
   const [formSteps, setFormSteps] = useState<TestFormStep[]>([
     { key: firstStepKey },
   ]);
@@ -123,6 +133,13 @@ const TestForm = ({ heading, steps, firstStepKey }: Props) => {
             </div>
           );
         })}
+      </div>
+      <TestlabDivider />
+      <div className="testregel-form-buttons">
+        <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
+          Legg til flere testelementer
+        </Button>
+        <Button onClick={onClickSave}>Lagre og lukk</Button>
       </div>
     </div>
   );

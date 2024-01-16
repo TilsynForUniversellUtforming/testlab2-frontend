@@ -74,11 +74,11 @@ export const toTestregelStatus = (
     testResults.map((tr) => {
       let status: TestStatus;
       if (tr.elementResultat === undefined) {
-        status = 'pending';
+        status = 'Ikkje starta';
       } else if (tr.elementResultat === 'ikkjeForekomst') {
-        status = 'non-relevant';
+        status = 'Deaktivert';
       } else {
-        status = 'done';
+        status = 'Ferdig';
       }
       return [tr.id, status];
     })
