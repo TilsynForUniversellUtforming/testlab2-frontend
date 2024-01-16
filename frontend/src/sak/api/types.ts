@@ -27,10 +27,15 @@ export type EditSak = {
   testreglar: Testregel[];
 };
 
+export type Brukar = {
+  brukarnamn: string;
+  namn: string;
+};
+
 export type Sak = {
   id: number;
   namn: string;
-  ansvarleg: string;
+  ansvarleg: Brukar | null;
   verksemd: Loeysing;
   loeysingList: LoeysingNettsideRelation[];
   testreglar: Testregel[];
