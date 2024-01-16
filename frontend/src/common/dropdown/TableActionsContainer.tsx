@@ -4,10 +4,10 @@ import { ButtonSize } from '@common/types';
 import { Table } from '@tanstack/react-table';
 import React from 'react';
 
-import { TableRowAction } from '../table/types';
+import { LegacyTableRowAction } from '../table/types';
 
 interface Props<T extends object> {
-  actions: TableRowAction[];
+  actions: LegacyTableRowAction[];
   rowActionEnabled?: boolean;
   table: Table<T>;
 }
@@ -17,8 +17,8 @@ export const TableActionsContainer = <T extends object>({
   rowActionEnabled = true,
   table,
 }: Props<T>) => {
-  const onConfirm = (tableRowAction: TableRowAction) => {
-    tableRowAction.modalProps?.onConfirm();
+  const onConfirm = (LegacyTableRowAction: LegacyTableRowAction) => {
+    LegacyTableRowAction.modalProps?.onConfirm();
     table.resetRowSelection();
     table.setPageIndex(0);
   };

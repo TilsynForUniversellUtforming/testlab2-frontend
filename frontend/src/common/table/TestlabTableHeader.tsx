@@ -1,5 +1,8 @@
 import TableFilterSelect from '@common/table/control/filter/TableFilterSelect';
-import { SortDirection, TableCell } from '@digdir/design-system-react';
+import {
+  LegacySortDirection,
+  LegacyTableCell,
+} from '@digdir/design-system-react';
 import { flexRender, Header, Table } from '@tanstack/react-table';
 import React from 'react';
 
@@ -25,13 +28,13 @@ const TestlabTableHeader = <T extends object>({
     const width = size ? `${3 * size}rem` : 'auto';
 
     return (
-      <TableCell colSpan={header.colSpan} style={{ width: width }}>
+      <LegacyTableCell colSpan={header.colSpan} style={{ width: width }}>
         {flexRender(column.columnDef.header, header.getContext())}
-      </TableCell>
+      </LegacyTableCell>
     );
   }
 
-  let sortDirection: SortDirection = 'notActive';
+  let sortDirection: LegacySortDirection = 'notActive';
   if (header.column?.getIsSorted() === 'asc') {
     sortDirection = 'asc';
   }
@@ -51,14 +54,14 @@ const TestlabTableHeader = <T extends object>({
 
   return (
     <>
-      <TableCell
+      <LegacyTableCell
         onChange={header.column.getToggleSortingHandler()}
         sortDirection={sortDirection}
         disabled={loading}
         colSpan={header.colSpan}
       >
         {flexRender(header.column.columnDef.header, header.getContext())}
-      </TableCell>
+      </LegacyTableCell>
     </>
   );
 };

@@ -4,7 +4,7 @@ import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
 import useInterval from '@common/hooks/useInterval';
-import { TableRowAction } from '@common/table/types';
+import { LegacyTableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { joinStringsToList } from '@common/util/stringutils';
@@ -48,8 +48,8 @@ const TestingListApp = () => {
     [maaling?.status]
   );
 
-  const rowActions = useMemo<TableRowAction[]>(() => {
-    const actions: TableRowAction[] = [];
+  const rowActions = useMemo<LegacyTableRowAction[]>(() => {
+    const actions: LegacyTableRowAction[] = [];
     const failedTests = testResult.filter((tr) => tr.tilstand === 'feila');
 
     if (maaling?.status === 'testing_ferdig') {

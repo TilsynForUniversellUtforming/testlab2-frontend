@@ -3,8 +3,8 @@ import { OptionType } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import {
   Combobox,
-  SortDirection,
-  TableCell,
+  LegacySortDirection,
+  LegacyTableCell,
 } from '@digdir/design-system-react';
 import { flexRender, Header, Table } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
@@ -12,7 +12,7 @@ import React, { useMemo } from 'react';
 export interface Props<T extends object> {
   table: Table<T>;
   header: Header<T, unknown>;
-  sortDirection: SortDirection;
+  sortDirection: LegacySortDirection;
 }
 
 const TableFilterSelect = <T extends object>({
@@ -55,7 +55,7 @@ const TableFilterSelect = <T extends object>({
   }, [column.getFacetedUniqueValues().keys()]);
 
   return (
-    <TableCell className="testlab-table__column-filter">
+    <LegacyTableCell className="testlab-table__column-filter">
       <button
         className="testlab-table__column-filter-sort"
         onClick={column.getToggleSortingHandler()}
@@ -98,7 +98,7 @@ const TableFilterSelect = <T extends object>({
           ))}
         </Combobox>
       </div>
-    </TableCell>
+    </LegacyTableCell>
   );
 };
 

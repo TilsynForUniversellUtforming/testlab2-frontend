@@ -1,6 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
-import { TableRowAction } from '@common/table/types';
+import { LegacyTableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { extractDomain } from '@common/util/stringutils';
@@ -36,8 +36,8 @@ const TestResultList = () => {
     loeysingTestResult?.loeysing?.namn
   );
 
-  const rowActions = useMemo<TableRowAction[]>(() => {
-    const rowActionList: TableRowAction[] = [];
+  const rowActions = useMemo<LegacyTableRowAction[]>(() => {
+    const rowActionList: LegacyTableRowAction[] = [];
     if (maaling?.status === 'testing_ferdig') {
       rowActionList.push(
         {

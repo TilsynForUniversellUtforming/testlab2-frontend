@@ -3,13 +3,13 @@ import { Table } from '@tanstack/react-table';
 import React from 'react';
 
 import TableActionsContainer from '../../dropdown/TableActionsContainer';
-import { TableFilterPreference, TableRowAction } from '../types';
+import { LegacyTableRowAction, TableFilterPreference } from '../types';
 
 export interface Props<T extends object> {
   table: Table<T>;
   filterPreference: TableFilterPreference;
   onChangeFilter: (value: string) => void;
-  rowActions?: TableRowAction[];
+  rowActions?: LegacyTableRowAction[];
   rowActionEnabled: boolean;
   small?: boolean;
 }
