@@ -1,7 +1,13 @@
 import './testregel-button.scss';
 
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Paragraph } from '@digdir/design-system-react';
-import { ButtonStatus, TestregelOverviewElement } from '@test/types';
+import TestregelStatusDropdown from '@test/test-overview/loeysing-test/button/TestregelStatusDropdown';
+import {
+  ButtonStatus,
+  TestregelOverviewElement,
+  TestStatus,
+} from '@test/types';
 import classnames from 'classnames';
 
 export interface Props {
@@ -9,6 +15,7 @@ export interface Props {
   isActive: boolean;
   onChangeTestregel: (testregelId: number) => void;
   status: ButtonStatus;
+  onChangeStatus: (status: TestStatus, testregelId: number) => void;
 }
 
 const TestregelButton = ({
@@ -16,6 +23,7 @@ const TestregelButton = ({
   testregel,
   isActive,
   status,
+  onChangeStatus,
 }: Props) => (
   <div
     className={classnames('testregel-button-wrapper', {
@@ -34,8 +42,10 @@ const TestregelButton = ({
       <div className="testregel-button-id">
         <div className="id-text-wrapper">
           <div className="krav">{testregel.krav}</div>
-          {(status !== 'Ikkje starta' || isActive) && (
-            <div className="status">{isActive ? 'Aktiv' : status}</div>
+          {(status !== 'ikkje-starta' || isActive) && (
+            <div className="status">
+              {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
+            </div>
           )}
         </div>
       </div>
@@ -43,6 +53,10 @@ const TestregelButton = ({
         <Paragraph>{testregel.name}</Paragraph>
       </div>
     </button>
+    <TestregelStatusDropdown
+      onChangeStatus={onChangeStatus}
+      testregelId={testregel.id}
+    />
   </div>
 );
 

@@ -106,12 +106,12 @@ export type ManualElementResultat =
   | 'ikkjeTesta';
 
 export type TestStatus =
-  | 'Ferdig'
-  | 'Deaktivert'
-  | 'Under arbeid'
-  | 'Ikkje starta';
+  | 'ferdig'
+  | 'deaktivert'
+  | 'under-arbeid'
+  | 'ikkje-starta';
 
-export type ButtonStatus = TestStatus | 'Aktiv';
+export type ButtonStatus = TestStatus | 'aktiv';
 
 export type ManualTestResult = {
   id: number;
@@ -155,6 +155,7 @@ export const innhaldsType = [
   'Tabell',
   'Tastatur',
   'Tekst',
+  'Alle',
 ];
 
 export type InnhaldsType = (typeof innhaldsType)[number];

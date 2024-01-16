@@ -25,7 +25,7 @@ export const capitalize = (str: string): string =>
  * @returns {string} Sanitized label.
  */
 export const sanitizeEnumLabel = (label: string): string =>
-  capitalize(label.replaceAll('_', ' '));
+  capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
 
 /**
  * Extracts the domain from a given URL.

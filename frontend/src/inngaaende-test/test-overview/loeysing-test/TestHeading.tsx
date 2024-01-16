@@ -19,20 +19,14 @@ const TestHeading = ({
 }: Props) => {
   return (
     <div className="manual-test-heading">
-      <Heading spacing size="xlarge" level={3}>
+      <Heading spacing size="xlarge" level={2}>
         Gjennomfør test
       </Heading>
       <Ingress spacing>{sakName}</Ingress>
       <div className="tags">
-        <Tag color="second" size="small">
-          Inngående kontroll
-        </Tag>
-        <Tag color="second" size="small">
-          Nettside
-        </Tag>
-        <Tag color="second" size="small">
-          {currentLoeysingName}
-        </Tag>
+        <Tag color="second">Inngående kontroll</Tag>
+        <Tag color="second">Nettside</Tag>
+        <Tag color="second">{currentLoeysingName}</Tag>
       </div>
       <PageTypeSelector
         nettsideProperties={nettsideProperties}
