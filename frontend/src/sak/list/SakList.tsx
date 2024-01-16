@@ -19,7 +19,7 @@ const SakList = () => {
     { accessorKey: 'namn', header: 'Saker' },
     {
       accessorFn: (originalRow) => {
-        return originalRow.ansvarleg ?? 'Ikkje tildelt';
+        return originalRow.ansvarleg?.namn ?? 'Ikkje tildelt';
       },
       header: 'Ansvarlig',
     },
