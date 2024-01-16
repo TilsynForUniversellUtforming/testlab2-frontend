@@ -1,14 +1,14 @@
 import './testregel-button.scss';
 
 import { Paragraph } from '@digdir/design-system-react';
-import { TestregelOverviewElement } from '@test/types';
+import { ButtonStatus, TestregelOverviewElement } from '@test/types';
 import classnames from 'classnames';
 
 export interface Props {
   testregel: TestregelOverviewElement;
   isActive: boolean;
   onChangeTestregel: (testregelId: number) => void;
-  status: string;
+  status: ButtonStatus;
 }
 
 const TestregelButton = ({
@@ -31,9 +31,16 @@ const TestregelButton = ({
         onChangeTestregel(testregel.id);
       }}
     >
-      <div className="testregel-button-id">{testregel.krav}</div>
+      <div className="testregel-button-id">
+        <div className="id-text-wrapper">
+          <div className="krav">{testregel.krav}</div>
+          {(status !== 'Ikkje starta' || isActive) && (
+            <div className="status">{isActive ? 'Aktiv' : status}</div>
+          )}
+        </div>
+      </div>
       <div className="testregel-button-name">
-        <Paragraph size="xsmall">{testregel.name}</Paragraph>
+        <Paragraph>{testregel.name}</Paragraph>
       </div>
     </button>
   </div>

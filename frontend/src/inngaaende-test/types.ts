@@ -105,7 +105,13 @@ export type ManualElementResultat =
   | 'advarsel'
   | 'ikkjeTesta';
 
-export type TestStatus = 'done' | 'non-relevant' | 'pending';
+export type TestStatus =
+  | 'Ferdig'
+  | 'Deaktivert'
+  | 'Under arbeid'
+  | 'Ikkje starta';
+
+export type ButtonStatus = TestStatus | 'Aktiv';
 
 export type ManualTestResult = {
   id: number;

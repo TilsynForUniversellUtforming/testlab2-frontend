@@ -4,7 +4,7 @@ import { Spinner } from '@digdir/design-system-react';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
 import { TestingStep } from '../types';
@@ -16,6 +16,7 @@ const TestregelDemoApp = () => {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !error && id) {
@@ -57,6 +58,8 @@ const TestregelDemoApp = () => {
       heading={testregel.name}
       steps={testingSteps}
       firstStepKey={Array.from(testingSteps.keys())[0]}
+      onClickSave={() => navigate('..')}
+      onClickBack={() => navigate('..')}
     />
   );
 };
