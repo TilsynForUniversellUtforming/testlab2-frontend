@@ -7,7 +7,9 @@ data class Sak(
     val verksemd: Loeysing,
     val loeysingList: List<LoeysingNettsideRelation> = emptyList(),
     val testreglar: List<Testregel> = emptyList()
-)
+) {
+  data class ListeElement(val id: Int, val namn: String, val ansvarleg: Brukar?)
+}
 
 data class LoeysingNettsideRelation(
     val loeysing: Loeysing,
