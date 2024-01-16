@@ -1,8 +1,9 @@
+import { sakInitValidationSchema } from '@sak/form/steps/init/sakFormValidationSchema';
 import { z } from 'zod';
 
 import { loeysingSchema } from '../../init/inngaaendeVerksemdSchema';
 
-const loeysingSourceSchema = z.union([
+export const loeysingSourceSchema = z.union([
   z.literal('utval'),
   z.literal('manuell'),
 ]);
@@ -29,6 +30,7 @@ export const sakLoeysingValidationSchemaForenklet = z
     loeysingList: z.array(loeysingVerksemdSchema).optional(),
     utval: utvalSchema.optional(),
   })
+  .and(sakInitValidationSchema)
   .refine(
     (data) => {
       if (data.loeysingSource === 'utval' && !data.utval) {

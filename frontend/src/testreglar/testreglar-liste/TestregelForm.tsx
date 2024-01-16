@@ -1,7 +1,7 @@
 import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import TestlabForm from '@common/form/TestlabForm';
-import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
+import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { OptionType } from '@common/types';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { isDefined } from '@common/util/validationUtils';
@@ -88,8 +88,8 @@ const TestregelForm = ({
           size="small"
           disabled={isDefined(testregel?.type)}
         />
-        <TestlabFormInput label="Namn" name="name" required textarea />
-        <TestlabFormInput
+        <TestlabFormTextArea label="Namn" name="name" required />
+        <TestlabFormTextArea
           label={
             testregelType === 'manuell'
               ? 'WCAG testregel'
@@ -101,7 +101,6 @@ const TestregelForm = ({
               : ''
           }
           name="testregelSchema"
-          textarea={testregelType === 'manuell'}
           required
         />
         <TestlabFormSelect
