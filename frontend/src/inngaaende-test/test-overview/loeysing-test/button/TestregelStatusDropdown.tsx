@@ -1,51 +1,51 @@
-import { OptionType } from '@common/types';
+import { ButtonVariant } from '@common/types';
 import { Button, DropdownMenu } from '@digdir/design-system-react';
-import { ChevronDownIcon } from '@navikt/aksel-icons';
-import classnames from 'classnames';
+import { CogIcon } from '@navikt/aksel-icons';
+import { TestStatus } from '@test/types';
 import { useRef, useState } from 'react';
 
 interface Props {
-  title: string;
-  selectedType: string;
-  onChangeType: (type?: string) => void;
-  options: OptionType[];
+  onChangeStatus: (status: TestStatus, testregelId: number) => void;
+  testregelId: number;
 }
 
-const TypeDropdown = ({
-  title,
-  selectedType,
-  onChangeType,
-  options,
-}: Props) => {
+type StatusOption = {
+  label: string;
+  value: TestStatus;
+};
+
+const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
   const anchorEl = useRef(null);
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (type?: string) => {
+  const handleButtonClick = (status: TestStatus) => {
     setShow(false);
-    onChangeType(type);
+    onChangeStatus(status, testregelId);
   };
 
+  const options: StatusOption[] = [
+    { label: 'Ferdig', value: 'ferdig' },
+    { label: 'Under arbeid', value: 'under-arbeid' },
+    { label: 'Ikkje relevant', value: 'deaktivert' },
+  ];
+
   return (
-    <div className="page-selector__dropdown">
+    <div className="status-dropdown">
       <Button
-        icon={
-          <>
-            <ChevronDownIcon
-              className="chevron-icon"
-              style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            />
-          </>
-        }
-        iconPlacement="right"
+        icon={<CogIcon />}
+        iconPlacement="left"
         ref={anchorEl}
         aria-haspopup="true"
         aria-expanded={show}
-        id={title}
+        id="Oppgi status"
         onClick={() => {
           setShow((show) => !show);
         }}
+        size="small"
+        variant={ButtonVariant.Quiet}
+        className="button"
       >
-        {title}
+        Oppgi status
       </Button>
       <DropdownMenu
         anchorEl={anchorEl.current}
@@ -59,7 +59,6 @@ const TypeDropdown = ({
             <DropdownMenu.Item
               key={value}
               onClick={() => handleButtonClick(value)}
-              className={classnames({ active: value === selectedType })}
             >
               {label}
             </DropdownMenu.Item>
@@ -70,4 +69,4 @@ const TypeDropdown = ({
   );
 };
 
-export default TypeDropdown;
+export default TestregelStatusDropdown;

@@ -12,6 +12,7 @@ import {
   TestContext,
   TestingStep,
   TestregelOverviewElement,
+  TestStatus,
 } from '@test/types';
 import { parseTestregel } from '@test/util/testregelParser';
 import {
@@ -21,6 +22,7 @@ import {
   progressionForLoeysingNettside,
   testResultsForLoeysing,
   toPageType,
+  toTestregelOverviewElement,
   toTestregelStatus,
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
@@ -60,8 +62,13 @@ const TestOverviewLoeysing = () => {
       loeysingId
     )
   );
+
+  const testregelList: TestregelOverviewElement[] = sak.testreglar.map((tr) =>
+    toTestregelOverviewElement(tr)
+  );
+
   const [testStatusMap, setTestStatusMap] = useState(
-    toTestregelStatus(testResults)
+    toTestregelStatus(testregelList, testResults)
   );
 
   useEffect(() => {
@@ -83,12 +90,8 @@ const TestOverviewLoeysing = () => {
         loeysingId
       )
     );
-    setTestStatusMap(toTestregelStatus(filteredTestResults));
+    setTestStatusMap(toTestregelStatus(testregelList, filteredTestResults));
   }, [contextSak, contextTestResults, loeysingId]);
-
-  const testregelList: TestregelOverviewElement[] = sak.testreglar.map(
-    (tr) => ({ id: tr.id, name: tr.name, krav: tr.krav })
-  );
 
   const onClickSave = () => {
     setActiveTestregel(undefined);
@@ -113,9 +116,23 @@ const TestOverviewLoeysing = () => {
     }
   }, []);
 
-  const toggleAllNonRelevant = () => {
-    setAllNonRelevant((allNonRelevant) => !allNonRelevant); // TODO - TA BORT, oppdater testresulat i api
-  };
+  const toggleAllNonRelevant = useCallback(() => {
+    // TODO - TA BORT, oppdater testresulat i api
+    const nextToggle = !allNonRelevant;
+    setAllNonRelevant(nextToggle);
+    if (nextToggle) {
+      setTestStatusMap((currentMap) => {
+        const updatedMap = new Map(currentMap);
+
+        updatedMap.forEach((value, key) => {
+          updatedMap.set(key, 'deaktivert');
+        });
+
+        return updatedMap;
+      });
+    }
+    // TODO - TA BORT
+  }, [allNonRelevant]);
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
@@ -129,13 +146,26 @@ const TestOverviewLoeysing = () => {
           const parsedTestregel = parseTestregel(nextTestregel.testregelSchema);
           setTestingSteps(parsedTestregel);
           setActiveTestregel(nextTestregel);
-          // TODO - bruk sakId til å finne steg fra testResults
         } catch (e) {
           setAlert('danger', 'Ugyldig testregel');
         }
       }
     },
-    [testregelList]
+    [testregelList, testResults]
+  );
+
+  const onChangeStatus = useCallback(
+    (status: TestStatus, testregelId: number) => {
+      // TODO TA BORT - Switch for å gjøre api-kall for å endre status på de ulike testreglene
+      const updatedMap = new Map(testStatusMap);
+      updatedMap.set(testregelId, status);
+      setTestStatusMap(updatedMap);
+      setAllNonRelevant((prevAllRelevant) =>
+        prevAllRelevant ? false : prevAllRelevant
+      );
+      // TODO TA BORT
+    },
+    [testStatusMap]
   );
 
   return (
@@ -164,7 +194,8 @@ const TestOverviewLoeysing = () => {
               key={tr.id}
               testregel={tr}
               onChangeTestregel={onChangeTestregel}
-              status={testStatusMap.get(tr.id) || 'Ikkje starta'}
+              status={testStatusMap.get(tr.id) || 'ikkje-starta'}
+              onChangeStatus={onChangeStatus}
             />
           ))}
         </div>

@@ -3,13 +3,22 @@
   &.active:after {
     content: '';
     position: absolute;
-    bottom: -25px;
     left: 15%;
     transform: translateX(-50%);
     border-width: 15px;
     border-style: solid;
     border-color: var(--fds-semantic-surface-first-light-active) transparent
       transparent transparent;
+  }
+
+  .status-dropdown {
+    position: relative;
+    top: -2.5rem;
+    left: 7.5rem;
+    display: inline-block;
+    > button {
+      color: black;
+    }
   }
 }
 
@@ -25,10 +34,10 @@
   overflow: hidden;
   padding: 0;
   height: 10rem;
-  min-width: 18rem;
+  min-width: 26rem;
   max-width: 26rem;
 
-  &.done {
+  &.ferdig {
     background-color: var(--fds-semantic-surface-third-light-hover);
     .testregel-button-id {
       background-color: var(--fds-semantic-surface-third-dark);
@@ -42,7 +51,7 @@
     }
   }
 
-  &.non-relevant {
+  &.deaktivert {
     background-color: var(--fds-semantic-surface-neutral-subtle);
     .testregel-button-id {
       background-color: var(--fds-semantic-surface-neutral-dark);
@@ -52,6 +61,20 @@
       background-color: var(--fds-semantic-surface-neutral-subtle-hover);
       .testregel-button-id {
         background-color: var(--fds-semantic-surface-neutral-dark-hover);
+      }
+    }
+  }
+
+  &.under-arbeid {
+    background-color: var(--fds-semantic-surface-neutral-subtle);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-action-default);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-action-default);
       }
     }
   }
@@ -74,7 +97,6 @@
     background-color: var(--fds-semantic-border-action-first-subtle-hover);
     color: var(--fds-semantic-surface-neutral-default);
     padding: 1rem;
-    flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,5 +136,8 @@
   &-name {
     padding: 1rem;
     min-width: 8rem;
+    position: absolute;
+    left: 7rem;
+    text-align: left;
   }
 }

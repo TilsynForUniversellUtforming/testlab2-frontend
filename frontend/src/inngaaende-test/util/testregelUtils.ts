@@ -1,7 +1,13 @@
-import { isDefined } from '@common/util/validationUtils';
+import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { NettsideProperties } from '@sak/types';
-import { ManualTestResult, PageType, TestStatus } from '@test/types';
+import {
+  ManualTestResult,
+  PageType,
+  TestregelOverviewElement,
+  TestStatus,
+} from '@test/types';
+import { Testregel } from '@testreglar/api/types';
 
 export const testResultsForLoeysing = (
   testResults: ManualTestResult[],
@@ -68,18 +74,43 @@ export const getInitialPageType = (
 };
 
 export const toTestregelStatus = (
+  testregelList: TestregelOverviewElement[],
   testResults: ManualTestResult[]
 ): Map<number, TestStatus> =>
   new Map(
-    testResults.map((tr) => {
+    testregelList.map((testregel) => {
       let status: TestStatus;
-      if (tr.elementResultat === undefined) {
-        status = 'Ikkje starta';
-      } else if (tr.elementResultat === 'ikkjeForekomst') {
-        status = 'Deaktivert';
+      const tr = testResults.find(
+        (testResult) => testResult.testregelId === testregel.id
+      );
+      if (isNotDefined(tr)) {
+        status = 'ikkje-starta';
       } else {
-        status = 'Ferdig';
+        if (tr.svar.length > 0) {
+          status = 'under-arbeid';
+        } else if (tr.elementResultat === undefined) {
+          status = 'ikkje-starta';
+        } else if (tr.elementResultat === 'ikkjeForekomst') {
+          status = 'deaktivert';
+        } else {
+          status = 'ferdig';
+        }
       }
-      return [tr.id, status];
+
+      return [testregel.id, status];
     })
   );
+
+export const toTestregelOverviewElement = ({
+  id,
+  name,
+  krav,
+}: Testregel): TestregelOverviewElement => {
+  const regex = /^(\d+\.\d+\.\d+[a-zA-Z]?)\s+(.*)/;
+  const result = name.match(regex);
+  if (result && result.length === 3) {
+    return { id: id, name: result[2], krav: result[1] };
+  }
+
+  return { id: id, name: name, krav: krav };
+};
