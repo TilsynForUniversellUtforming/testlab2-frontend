@@ -54,7 +54,7 @@ export const parseNumberInput = (value: number | string): number => {
   if (!isNaN(numberValue)) {
     return numberValue;
   } else {
-    throw Error('Ugyldig type');
+    throw Error(`Ugyldig type: ${value}`);
   }
 };
 
