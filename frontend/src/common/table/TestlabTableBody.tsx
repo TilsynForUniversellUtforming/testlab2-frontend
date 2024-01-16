@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from '@digdir/design-system-react';
+import { LegacyTableCell, LegacyTableRow } from '@digdir/design-system-react';
 import { flexRender, Row } from '@tanstack/react-table';
 import React from 'react';
 
@@ -29,16 +29,16 @@ const TestlabTableBody = <T extends object>({
   return (
     <>
       {table.getRowModel().rows.map((row) => (
-        <TableRow key={row.id}>
+        <LegacyTableRow key={row.id}>
           {row.getVisibleCells().map((cell) => (
-            <TableCell
+            <LegacyTableCell
               key={cell.id}
               onClick={() => onRowClick(row, cell.id.includes(CellCheckboxId))}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </TableCell>
+            </LegacyTableCell>
           ))}
-        </TableRow>
+        </LegacyTableRow>
       ))}
     </>
   );

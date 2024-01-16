@@ -1,4 +1,4 @@
-import { TableRowAction } from '@common/table/types';
+import { LegacyTableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { joinStringsToList } from '@common/util/stringutils';
@@ -37,8 +37,8 @@ const CrawlingList = ({
     []
   );
 
-  const rowActions = useMemo<TableRowAction[]>(() => {
-    const actions: TableRowAction[] = [];
+  const rowActions = useMemo<LegacyTableRowAction[]>(() => {
+    const actions: LegacyTableRowAction[] = [];
     if (maalingStatus === 'kvalitetssikring') {
       const failedCrawlings = crawlList.filter((tr) => tr.type === 'feila');
       actions.push({

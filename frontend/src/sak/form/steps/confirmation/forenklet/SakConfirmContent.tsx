@@ -58,8 +58,9 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
             {
               id: 1,
               header: 'Namn',
-              text: `Kontroll ${verksemdLoeysingRelation?.verksemd
-                ?.namn} ${new Date().getFullYear()}`,
+              text: `Kontroll ${
+                verksemdLoeysingRelation?.verksemd?.namn
+              } ${new Date().getFullYear()}`,
             },
             {
               id: 2,
