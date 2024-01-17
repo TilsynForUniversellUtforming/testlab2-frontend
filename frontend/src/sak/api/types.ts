@@ -5,7 +5,7 @@ import { Testregel } from '@testreglar/api/types';
 export type NySak = {
   namn: string;
   virksomhet: string;
-  frist: Date;
+  frist: string;
 };
 
 type NettsideDTO = {

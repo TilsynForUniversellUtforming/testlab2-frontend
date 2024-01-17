@@ -76,6 +76,7 @@ const SakCreate = () => {
     const verksemdnamn =
       sakFormState?.verksemdLoeysingRelation?.verksemd?.namn ||
       sakFormState?.verksemdLoeysingRelation?.manualVerksemd?.namn;
+    const frist = sakFormState.frist;
 
     if (!sakType || sakType === 'Forenklet kontroll') {
       setError(new Error('Kan ikkje opprette sak, feil saktype'));
@@ -89,11 +90,15 @@ const SakCreate = () => {
       setError(new Error('Kan ikkje opprette sak, manglar namn på virksomhet'));
       return;
     }
+    if (!frist) {
+      setError(new Error('Kan ikkje opprette ei ny sak utan frist.'));
+      return;
+    }
 
     const nySak: NySak = {
       namn: verksemdnamn,
       virksomhet: verksemdOrgNr,
-      frist: new Date(`${sakFormState.frist}T23:59:59`),
+      frist,
     };
 
     try {
