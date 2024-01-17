@@ -32,7 +32,7 @@ const TestlabFormInput = <T extends object>({
   name,
   required = false,
   size = 'small',
-  inputMode,
+  type,
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
   const { control, formState } = useFormContext<T>();
@@ -59,7 +59,7 @@ const TestlabFormInput = <T extends object>({
             onChange={onChange}
             onBlur={onBlur}
             name={name}
-            inputMode={inputMode}
+            type={type}
             size={size}
           />
         </div>

@@ -71,6 +71,7 @@ export type SakFormState = {
   // Ny
   verksemdLoeysingRelation?: SakVerksemdLoeysingRelation;
   sakId?: number;
+  frist?: string; // t.d. 2024-01-01
 };
 
 export const defaultSakFormState: SakFormState = {
@@ -95,8 +96,8 @@ export const defaultSakFormState: SakFormState = {
     loeysingList: [],
   },
   sakId: undefined,
+  frist: undefined,
 };
-
 export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
 
 export type SakStepBase = {
