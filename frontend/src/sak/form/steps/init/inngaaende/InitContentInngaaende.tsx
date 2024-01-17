@@ -1,4 +1,5 @@
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
+import TestlabFormInput from '@common/form/TestlabFormInput';
 import { isDefined, isValidObject } from '@common/util/validationUtils';
 import { Loeysing } from '@loeysingar/api/types';
 import SakVerksemdResult from '@sak/form/steps/init/inngaaende/SakVerksemdResult';
@@ -103,6 +104,7 @@ const InitContentInngaaende = () => {
         required
         spacing
       />
+      <TestlabFormInput label="Frist" name="frist" type="date" required />
       <SakVerksemdResult
         verksemd={verksemdLoeysingRelation?.verksemd}
         showManualEntry={showManualEntry}

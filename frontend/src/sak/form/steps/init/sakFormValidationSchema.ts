@@ -3,6 +3,10 @@ import { z } from 'zod';
 
 import { inngaaendeVerksemdSchema } from './inngaaendeVerksemdSchema';
 
+const fristSchema = z
+  .string({ required_error: 'Alle saker må ha ein frist.' })
+  .regex(/\d{4}-\d{2}-\d{2}/);
+
 export const sakInitValidationSchema = z
   .discriminatedUnion('sakType', [
     z.object({
@@ -41,16 +45,19 @@ export const sakInitValidationSchema = z
 
     z.object({
       sakType: z.literal('Inngående kontroll'),
+      frist: fristSchema,
       verksemdLoeysingRelation: inngaaendeVerksemdSchema,
     }),
 
     z.object({
       sakType: z.literal('Tilsyn'),
+      frist: fristSchema,
       verksemdLoeysingRelation: inngaaendeVerksemdSchema,
     }),
 
     z.object({
       sakType: z.literal('Retest'),
+      frist: fristSchema,
       verksemdLoeysingRelation: inngaaendeVerksemdSchema,
     }),
   ])

@@ -93,6 +93,7 @@ const SakCreate = () => {
     const nySak: NySak = {
       namn: verksemdnamn,
       virksomhet: verksemdOrgNr,
+      frist: new Date(`${sakFormState.frist}T23:59:59`),
     };
 
     try {
