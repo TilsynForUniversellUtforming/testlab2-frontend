@@ -115,12 +115,15 @@ const SakCreate = () => {
     const verksemdLoeysingRelation = sakFormState?.verksemdLoeysingRelation;
     const verksemdNamn = verksemdLoeysingRelation?.verksemd?.namn;
     const sakId = sakFormState?.sakId;
-    if (verksemdLoeysingRelation && sakId && verksemdNamn) {
+    const frist = sakFormState.frist;
+
+    if (verksemdLoeysingRelation && sakId && verksemdNamn && frist) {
       const sak: EditSak = {
         id: sakId,
         namn: verksemdNamn,
         virksomhet:
           verksemdLoeysingRelation?.verksemd?.orgnummer || '000000000',
+        frist,
         loeysingar: verksemdLoeysingRelation.loeysingList.map((l) => ({
           loeysingId: l.loeysing.id,
           nettsider: l.properties.map((p) => ({

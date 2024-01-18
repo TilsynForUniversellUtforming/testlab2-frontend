@@ -24,6 +24,7 @@ export type EditSak = {
   id: number;
   namn: string;
   virksomhet: string;
+  frist: string;
   loeysingar: SakLoeysingDTO[];
   testreglar: Testregel[];
 };

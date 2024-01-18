@@ -1,4 +1,5 @@
 import { isNotDefined } from '@common/util/validationUtils';
+import { fristSchema } from '@sak/form/steps/init/sakFormValidationSchema';
 import { z } from 'zod';
 
 import { loeysingSchema } from '../../init/inngaaendeVerksemdSchema';
@@ -68,5 +69,6 @@ const verksemdLoeysingRelationSchema = z.object({
 
 export const sakLoeysingValidationSchemaInngaaende = z.object({
   sakId: z.number(),
+  frist: fristSchema,
   verksemdLoeysingRelation: verksemdLoeysingRelationSchema,
 });
