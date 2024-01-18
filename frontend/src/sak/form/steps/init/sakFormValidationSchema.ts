@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { inngaaendeVerksemdSchema } from './inngaaendeVerksemdSchema';
 
-const fristSchema = z
+export const fristSchema = z
   .string({ required_error: 'Alle saker må ha ein frist.' })
   .regex(/\d{4}-\d{2}-\d{2}/);
 
