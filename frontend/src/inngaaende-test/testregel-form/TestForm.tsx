@@ -3,13 +3,13 @@ import { ButtonVariant } from '@common/types';
 import { Button, Heading } from '@digdir/design-system-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { SelectionOutcome, TestingStep } from '../types';
+import { SelectionOutcome, TestStep } from '../types';
 import TestFormStepWrapper from './TestFormStepWrapper';
 import { TestFormStep } from './types';
 
 interface Props {
   heading: string;
-  steps: Map<string, TestingStep>;
+  steps: Map<string, TestStep>;
   firstStepKey: string;
   onClickBack: () => void;
   onClickSave: () => void;
@@ -25,6 +25,7 @@ const TestForm = ({
   const [formSteps, setFormSteps] = useState<TestFormStep[]>([
     { key: firstStepKey },
   ]);
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const TestForm = ({
 
   const getNextSteps = (
     currentStep: TestFormStep,
-    stepsMap: Map<string, TestingStep>
+    stepsMap: Map<string, TestStep>
   ) => {
     const nextSteps: TestFormStep[] = [];
     let nextStepKey = currentStep.key;
@@ -43,14 +44,15 @@ const TestForm = ({
       const currentStepData = stepsMap.get(nextStepKey);
       if (
         !currentStepData ||
-        currentStepData.input.inputType === 'radio' ||
-        currentStepData.input.inputType === 'jaNei' ||
-        currentStepData.input.inputSelectionOutcome.length > 1
+        currentStepData.step.input.inputType === 'radio' ||
+        currentStepData.step.input.inputType === 'jaNei' ||
+        currentStepData.step.input.inputSelectionOutcome.length > 1
       ) {
         break;
       }
 
-      const defaultOutcome = currentStepData.input.inputSelectionOutcome[0];
+      const defaultOutcome =
+        currentStepData.step.input.inputSelectionOutcome[0];
       const defaultOutcomeAction = defaultOutcome.action;
       if (defaultOutcomeAction === 'gaaTil') {
         nextStepKey = defaultOutcome.target;
@@ -75,7 +77,14 @@ const TestForm = ({
   };
 
   const updateSteps = useCallback(
-    (currentStepKey: string, selectionOutcome: SelectionOutcome) => {
+    (
+      currentStepKey: string,
+      answer: string,
+      selectionOutcome: SelectionOutcome
+    ) => {
+      // TODO - Lagre svar i apiet
+      console.log(answer);
+
       setFormSteps((prevSteps) => {
         let updatedSteps = prevSteps.slice(
           0,
@@ -128,7 +137,7 @@ const TestForm = ({
               <TestFormStepWrapper
                 testingStep={testingStep}
                 formStep={formStep}
-                onAction={updateSteps}
+                onRadioAction={updateSteps}
               />
             </div>
           );

@@ -46,11 +46,11 @@ const ManualTest = () => {
     };
   }, []);
 
-  if (loading || !id || !sak) {
+  if (loading || (!sak && !error)) {
     return <Spinner title="Hentar test" />;
   }
 
-  if (error) {
+  if (error || !sak) {
     return <ErrorCard error={error} />;
   }
 

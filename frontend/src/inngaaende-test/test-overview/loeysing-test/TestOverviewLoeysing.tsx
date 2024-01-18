@@ -10,11 +10,14 @@ import {
   innhaldsType,
   PageType,
   TestContext,
-  TestingStep,
   TestregelOverviewElement,
   TestStatus,
+  TestStep,
 } from '@test/types';
-import { parseTestregel } from '@test/util/testregelParser';
+import {
+  combineStepsAndAnswers,
+  parseTestregel,
+} from '@test/util/testregelParser';
 import {
   getInitialPageType,
   getNettsideProperties,
@@ -39,7 +42,7 @@ const TestOverviewLoeysing = () => {
     useState<InnhaldsType>('Bilde og grafikk');
 
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
-  const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
+  const [testingSteps, setTestingSteps] = useState<Map<string, TestStep>>();
   const [alert, setAlert] = useAlert();
   const [sak, setSak] = useState<Sak>(contextSak);
   const [testResults, setTestResults] = useState<ManualTestResultat[]>(
@@ -143,8 +146,16 @@ const TestOverviewLoeysing = () => {
         setAlert('danger', 'Det oppstod ein feil ved ending av testregel');
       } else {
         try {
-          const parsedTestregel = parseTestregel(nextTestregel.testregelSchema);
-          setTestingSteps(parsedTestregel);
+          const testregelSteps = parseTestregel(nextTestregel.testregelSchema);
+          const testResult = testResults.find(
+            (tr) => tr.nettsideId === pageType.nettsideId
+          );
+
+          const testingSteps = combineStepsAndAnswers(
+            testregelSteps,
+            testResult?.svar
+          );
+          setTestingSteps(testingSteps);
           setActiveTestregel(nextTestregel);
         } catch (e) {
           setAlert('danger', 'Ugyldig testregel');

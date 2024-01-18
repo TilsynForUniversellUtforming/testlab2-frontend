@@ -7,12 +7,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
-import { TestingStep } from '../types';
-import { parseTestregel } from '../util/testregelParser';
+import { TestStep } from '../types';
+import {
+  combineStepsAndAnswers,
+  parseTestregel,
+} from '../util/testregelParser';
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
-  const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
+  const [testingSteps, setTestingSteps] = useState<Map<string, TestStep>>();
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
@@ -34,7 +37,12 @@ const TestregelDemoApp = () => {
           if (testregel) {
             setTestregel(testregel);
             try {
-              setTestingSteps(parseTestregel(testregel.testregelSchema));
+              setTestingSteps(
+                combineStepsAndAnswers(
+                  parseTestregel(testregel.testregelSchema),
+                  undefined
+                )
+              );
             } catch (e) {
               setError('Kunne ikkje hente teststeg');
             }

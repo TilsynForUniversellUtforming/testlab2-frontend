@@ -1,6 +1,6 @@
 import { Sak } from '@sak/api/types';
 
-import { ManualTestResultat } from './api/types';
+import { ManualTestResultat, Svar } from './api/types';
 
 export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
@@ -43,10 +43,15 @@ type TestingStepInput = {
   required: boolean;
 };
 
-export type TestingStep = {
+export type TestingStepProperties = {
   heading: string;
   description: string;
   input: TestingStepInput;
+};
+
+export type TestStep = {
+  step: TestingStepProperties;
+  answer?: Svar;
 };
 
 type KolonneDTO = {
