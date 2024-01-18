@@ -1,6 +1,7 @@
 import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import TestlabTable from '@common/table/TestlabTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { formatDateString } from '@common/util/stringutils';
 import { Heading } from '@digdir/design-system-react';
 import { SakListeElement } from '@sak/api/types';
 import { SAK, SAK_CREATE } from '@sak/SakRoutes';
@@ -22,6 +23,10 @@ const SakList = () => {
         return originalRow.ansvarleg?.namn ?? 'Ikkje tildelt';
       },
       header: 'Ansvarlig',
+    },
+    {
+      accessorFn: (originalRow) => formatDateString(originalRow.frist),
+      header: 'Frist',
     },
   ];
 
