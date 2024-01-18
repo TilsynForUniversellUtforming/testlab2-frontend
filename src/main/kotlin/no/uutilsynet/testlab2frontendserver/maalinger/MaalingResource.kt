@@ -12,8 +12,9 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
@@ -205,6 +206,23 @@ class MaalingResource(
           .getOrElse {
             logger.error("Kunne ikkje starte $process(er) på nytt for måling $maalingId", it)
             ResponseEntity.internalServerError().body("Kunne ikkje starte $process(er) på nytt")
+          }
+
+  @GetMapping("{maalingId}/resultat")
+  fun getTestResultatList(
+      @PathVariable maalingId: Int,
+      @RequestParam(required = false) loeysingId: Int?
+  ): List<TestResultat> =
+      runCatching {
+            val url =
+                if (loeysingId != null) "$maalingUrl/$maalingId/testresultat?loeysingId=$loeysingId"
+                else "$maalingUrl/$maalingId/testresultat"
+            restTemplate.getList<TestResultat>(url)
+          }
+          .getOrElse {
+            logger.info(
+                "Kunne ikkje hente testresultat for måling med id $maalingId og løysing med id $loeysingId")
+            throw RuntimeException("Klarte ikkje å hente testresultat", it)
           }
 
   private fun getTestregelListForMaaling(maalingId: Int): List<Testregel> =

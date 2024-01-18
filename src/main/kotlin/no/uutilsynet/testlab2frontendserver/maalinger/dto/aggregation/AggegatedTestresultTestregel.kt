@@ -1,4 +1,4 @@
-package no.uutilsynet.testlab2frontendserver.testing.dto.aggregation
+package no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation
 
 data class AggegatedTestresultTestregel(
     val testregelId: String,

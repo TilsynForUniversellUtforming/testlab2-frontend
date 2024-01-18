@@ -1,10 +1,10 @@
-package no.uutilsynet.testlab2frontendserver.testing
+package no.uutilsynet.testlab2frontendserver.maaling
 
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.maalinger.MaalingResource
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,8 +46,8 @@ class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
                 CoreMatchers.containsString("v1/maalinger/1/testresultat")))
         .andRespond(MockRestResponseCreators.withSuccess(jsonSuccess, MediaType.APPLICATION_JSON))
 
-    val testResource = TestResource(restTemplate, TestingApiProperties("https://testing.api"))
-    val result = testResource.getTestResultatList(1, null)
+    val maalingResource = MaalingResource(restTemplate, TestingApiProperties("https://testing.api"))
+    val result = maalingResource.getTestResultatList(1, null)
     assertThat(result.size, equalTo(1))
   }
 }

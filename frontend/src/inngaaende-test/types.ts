@@ -1,5 +1,7 @@
 import { Sak } from '@sak/api/types';
 
+import { ManualTestResultat } from './api/types';
+
 export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
   | 'radio' // Multi radio
@@ -93,18 +95,6 @@ export type TestregelDTO = {
   steg: StegDTO[];
 };
 
-export type Svar = {
-  steg: string;
-  svar: string;
-};
-
-export type ManualElementResultat =
-  | 'samsvar'
-  | 'ikkjeForekomst'
-  | 'brot'
-  | 'advarsel'
-  | 'ikkjeTesta';
-
 export type TestStatus =
   | 'ferdig'
   | 'deaktivert'
@@ -112,19 +102,6 @@ export type TestStatus =
   | 'ikkje-starta';
 
 export type ButtonStatus = TestStatus | 'aktiv';
-
-export type ManualTestResult = {
-  id: number;
-  sakId: number;
-  loeysingId: number;
-  testregelId: number;
-  nettsideId: number;
-  elementOmtale?: string;
-  elementResultat?: ManualElementResultat;
-  elementUtfall?: string;
-  svar: Svar[];
-  testVartUtfoert?: string;
-};
 
 export type TestregelOverviewElement = {
   id: number;
@@ -134,7 +111,7 @@ export type TestregelOverviewElement = {
 
 export interface TestContext {
   sak: Sak;
-  testResults: ManualTestResult[];
+  testResults: ManualTestResultat[];
 }
 
 export const innhaldsType = [

@@ -3,11 +3,12 @@ import toError from '@common/error/util';
 import { Spinner } from '@digdir/design-system-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
+import { ManualTestResultat } from '@test/api/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
 import { getManuellKontrollResults } from './api/testing-api';
-import { ManualTestResult, TestContext } from './types';
+import { TestContext } from './types';
 
 const ManualTest = () => {
   const { id } = useParams();
@@ -15,7 +16,7 @@ const ManualTest = () => {
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [sak, setSak] = useState<Sak | undefined>();
-  const [testResults, setTestResults] = useState<ManualTestResult[]>([]);
+  const [testResults, setTestResults] = useState<ManualTestResultat[]>([]);
   const hasFetched = useRef(false);
 
   const doFetchData = useCallback(async () => {

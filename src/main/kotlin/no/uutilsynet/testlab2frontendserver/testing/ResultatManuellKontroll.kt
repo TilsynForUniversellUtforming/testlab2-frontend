@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
 import java.time.Instant
+import no.uutilsynet.testlab2frontendserver.sak.Brukar
 
 data class ResultatManuellKontroll(
     val id: Int,
@@ -8,11 +9,14 @@ data class ResultatManuellKontroll(
     val loeysingId: Int,
     val testregelId: Int,
     val nettsideId: Int,
+    val brukar: Brukar =
+        Brukar("testesen@digdir.no", "Test Testesen"),
     val elementOmtale: String?,
-    val elementResultat: String?,
+    val elementResultat: ElementResultat?,
     val elementUtfall: String?,
     val svar: List<Svar>,
-    val testVartUtfoert: Instant?
+    val testVartUtfoert: Instant?,
+    val ikkjeRelevant: Boolean = false,
 ) {
   data class Svar(val steg: String, val svar: String)
 }

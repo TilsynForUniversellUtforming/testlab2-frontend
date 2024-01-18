@@ -1,13 +1,13 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { Sak } from '@sak/api/types';
+import { ManualTestResultat } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
 import {
   InnhaldsType,
   innhaldsType,
-  ManualTestResult,
   PageType,
   TestContext,
   TestingStep,
@@ -42,7 +42,7 @@ const TestOverviewLoeysing = () => {
   const [testingSteps, setTestingSteps] = useState<Map<string, TestingStep>>();
   const [alert, setAlert] = useAlert();
   const [sak, setSak] = useState<Sak>(contextSak);
-  const [testResults, setTestResults] = useState<ManualTestResult[]>(
+  const [testResults, setTestResults] = useState<ManualTestResultat[]>(
     testResultsForLoeysing(contextTestResults)
   );
   const [allNonRelevant, setAllNonRelevant] = useState(
