@@ -19,7 +19,9 @@ describe('SakList', () => {
   }
 
   test('når ansvarleg=null, så skal vi vise "Ikkje tildelt"', async () => {
-    const saker = [{ id: 1, namn: 'Sak 1', ansvarleg: null }];
+    const saker = [
+      { id: 1, namn: 'Sak 1', ansvarleg: undefined, frist: '2025-01-01' },
+    ];
     await setup(saker);
 
     expect(screen.queryByText('Ikkje tildelt')).toBeInTheDocument();
@@ -31,6 +33,7 @@ describe('SakList', () => {
         id: 1,
         namn: 'Sak 1',
         ansvarleg: { brukarnamn: 'testesen@digdir.no', namn: 'Test Testesen' },
+        frist: '2025-01-01',
       },
     ];
     await setup(saker);
