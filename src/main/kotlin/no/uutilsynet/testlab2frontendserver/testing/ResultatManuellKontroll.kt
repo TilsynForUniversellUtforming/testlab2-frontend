@@ -9,14 +9,13 @@ data class ResultatManuellKontroll(
     val loeysingId: Int,
     val testregelId: Int,
     val nettsideId: Int,
-    val brukar: Brukar =
-        Brukar("testesen@digdir.no", "Test Testesen"),
+    val brukar: Brukar = Brukar("testesen@digdir.no", "Test Testesen"),
     val elementOmtale: String?,
     val elementResultat: ElementResultat?,
     val elementUtfall: String?,
     val svar: List<Svar>,
     val testVartUtfoert: Instant?,
-    val ikkjeRelevant: Boolean = false,
+    val ikkjeRelevant: Boolean? = false,
 ) {
   data class Svar(val steg: String, val svar: String)
 }

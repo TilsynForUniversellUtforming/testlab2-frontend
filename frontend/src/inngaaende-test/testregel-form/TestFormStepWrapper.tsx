@@ -10,17 +10,19 @@ import TestResultCard from './TestResultCard';
 interface FormStepProps {
   testingStep?: TestStep;
   formStep: TestFormStep;
-  onRadioAction: (
+  updateRadio: (
     stepKey: string,
     answer: string,
     selectionOutcome: SelectionOutcome
   ) => void;
+  updateText: (stepKey: string, answer: string) => void;
 }
 
 const TestFormStepWrapper = ({
   testingStep,
   formStep,
-  onRadioAction,
+  updateRadio,
+  updateText,
 }: FormStepProps) => {
   if (formStep.key === 'avslutt') {
     const isSamsvar = formStep.fasit?.toLowerCase() === 'ja';
@@ -53,6 +55,7 @@ const TestFormStepWrapper = ({
           testingStep={testingStep}
           formStep={formStep}
           multiline={inputType === 'multiline'}
+          updateText={updateText}
         />
       );
     case 'instruksjon':
@@ -63,7 +66,7 @@ const TestFormStepWrapper = ({
         <TestFormInputRadio
           testingStep={testingStep}
           formStep={formStep}
-          onRadioAction={onRadioAction}
+          updateRadio={updateRadio}
         />
       );
   }

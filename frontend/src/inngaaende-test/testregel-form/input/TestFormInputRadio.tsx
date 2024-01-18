@@ -6,18 +6,14 @@ import { useEffect, useState } from 'react';
 interface Props {
   testingStep: TestStep;
   formStep: TestFormStep;
-  onRadioAction: (
+  updateRadio: (
     stepKey: string,
     answer: string,
     selectionOutcome: SelectionOutcome
   ) => void;
 }
 
-const TestFormInputRadio = ({
-  testingStep,
-  formStep,
-  onRadioAction,
-}: Props) => {
+const TestFormInputRadio = ({ testingStep, formStep, updateRadio }: Props) => {
   const { step, answer } = testingStep;
   const [value, setValue] = useState<string>(answer?.svar || 'ingen');
 
@@ -26,7 +22,7 @@ const TestFormInputRadio = ({
       (iso) => iso.label === value
     );
     if (inputSelectionOutcome) {
-      onRadioAction(formStep.key, value, inputSelectionOutcome);
+      updateRadio(formStep.key, value, inputSelectionOutcome);
     }
   }, [value]);
 

@@ -34,6 +34,13 @@ const ManualTest = () => {
     }
   }, []);
 
+  const handleSetTestResults = useCallback(
+    (testResults: ManualTestResultat[]) => {
+      setTestResults(testResults);
+    },
+    []
+  );
+
   useEffect(() => {
     if (id && !sak && !hasFetched.current) {
       setLoading(true);
@@ -55,8 +62,9 @@ const ManualTest = () => {
   }
 
   const testContext: TestContext = {
-    sak: sak,
-    testResults: testResults,
+    contextSak: sak,
+    contextTestResults: testResults,
+    contextSetTestResults: handleSetTestResults,
   };
 
   return <Outlet context={testContext} />;

@@ -1,6 +1,8 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button, Heading } from '@digdir/design-system-react';
+import { ManualElementResultat, Svar } from '@test/api/types';
+import { convertToSvarArray } from '@test/util/testregelUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { SelectionOutcome, TestStep } from '../types';
@@ -13,6 +15,13 @@ interface Props {
   firstStepKey: string;
   onClickBack: () => void;
   onClickSave: () => void;
+  isEdit: boolean;
+  updateResult: (
+    answers: Svar[],
+    elementOmtale?: string,
+    elementResultat?: ManualElementResultat,
+    elementUtfall?: string
+  ) => void;
 }
 
 const TestForm = ({
@@ -21,6 +30,8 @@ const TestForm = ({
   firstStepKey,
   onClickBack,
   onClickSave,
+  isEdit,
+  updateResult,
 }: Props) => {
   const [formSteps, setFormSteps] = useState<TestFormStep[]>([
     { key: firstStepKey },
@@ -76,14 +87,58 @@ const TestForm = ({
     return nextSteps;
   };
 
-  const updateSteps = useCallback(
+  const updateAnswers = (
+    currentStepKey: string,
+    answer: string,
+    selectionOutcome?: SelectionOutcome
+  ) => {
+    if (isEdit) {
+      const answers: Svar[] = convertToSvarArray(steps);
+      answers.push({ steg: currentStepKey, svar: answer });
+
+      let elementResultat: ManualElementResultat | undefined = undefined;
+      let elementUtfall: string | undefined = undefined;
+      if (selectionOutcome) {
+        if (selectionOutcome.action === 'avslutt') {
+          elementUtfall = selectionOutcome.utfall;
+          // elementOmtale = findElementOmtaleStep(steps) // TODO impl. funksjon for dette, bruk "element": "x.x" i testregel-json
+          switch (selectionOutcome.fasit) {
+            case 'Ja':
+              elementResultat = 'samsvar';
+              break;
+            case 'Nei':
+              elementResultat = 'brot';
+              break;
+            case 'Ikkje testbart':
+              elementResultat = 'ikkjeTesta';
+              break;
+            case 'Ikkje forekomst':
+              elementResultat = 'ikkjeForekomst';
+              break;
+            default:
+              elementResultat = 'ikkjeTesta';
+              break;
+          }
+        } else if (selectionOutcome.action === 'ikkjeForekomst') {
+          elementUtfall = selectionOutcome.utfall;
+          elementResultat = 'ikkjeForekomst';
+        }
+      }
+      updateResult(answers, undefined, elementResultat, elementUtfall);
+    }
+  };
+
+  const updateText = useCallback((currentStepKey: string, answer: string) => {
+    updateAnswers(currentStepKey, answer);
+  }, []);
+
+  const updateRadio = useCallback(
     (
       currentStepKey: string,
       answer: string,
       selectionOutcome: SelectionOutcome
     ) => {
-      // TODO - Lagre svar i apiet
-      console.log(answer);
+      updateAnswers(currentStepKey, answer, selectionOutcome);
 
       setFormSteps((prevSteps) => {
         let updatedSteps = prevSteps.slice(
@@ -117,7 +172,7 @@ const TestForm = ({
         return nextSteps;
       });
     },
-    [steps]
+    [steps, isEdit]
   );
 
   useEffect(() => {
@@ -133,11 +188,12 @@ const TestForm = ({
         {formSteps.map((formStep) => {
           const testingStep = steps.get(formStep.key);
           return (
-            <div key={formStep.key}>
+            <div key={formStep.key} id={formStep.key}>
               <TestFormStepWrapper
                 testingStep={testingStep}
                 formStep={formStep}
-                onRadioAction={updateSteps}
+                updateRadio={updateRadio}
+                updateText={updateText}
               />
             </div>
           );

@@ -18,11 +18,11 @@ export type CreateTestResultat = {
   elementOmtale?: string;
   elementResultat?: ManualElementResultat;
   elementUtfall?: string;
-  svar: Svar[];
   testVartUtfoert?: string;
   ikkjeRelevant: boolean;
 };
 
 export type ManualTestResultat = {
   id: number;
+  svar: Svar[];
 } & CreateTestResultat;

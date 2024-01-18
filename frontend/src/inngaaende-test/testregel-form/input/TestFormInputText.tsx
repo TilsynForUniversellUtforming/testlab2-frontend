@@ -1,39 +1,47 @@
-import { Textarea, Textfield } from '@digdir/design-system-react';
+import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import { TestFormStep } from '@test/testregel-form/types';
-import { TestStep } from '@test/types';
-import { useState } from 'react';
+import { SelectionOutcome, TestStep } from '@test/types';
+import { useEffect, useState } from 'react';
 
 interface Props {
   testingStep: TestStep;
   formStep: TestFormStep;
   multiline: boolean;
+  updateText: (
+    stepKey: string,
+    answer: string,
+    selectionOutcome?: SelectionOutcome
+  ) => void;
 }
 
-const TestFormInputText = ({ testingStep, formStep, multiline }: Props) => {
+const TestFormInputText = ({
+  testingStep,
+  formStep,
+  multiline,
+  updateText,
+}: Props) => {
   const {
     step: { heading },
     answer,
   } = testingStep;
   const [value, setValue] = useState<string>(answer?.svar || '');
+  const [prevValue, setPrevValue] = useState(value);
 
-  if (multiline) {
-    return (
-      <Textarea
-        label={heading}
-        name={formStep.key}
-        value={String(value)}
-        onChange={(e) => setValue(e.target.value)}
-      />
-    );
-  }
+  useEffect(() => {
+    if (prevValue !== '' || value) {
+      setPrevValue(value);
+      updateText(formStep.key, value);
+    }
+  }, [value]);
 
   return (
-    <Textfield
+    <DebouncedInput
       label={heading}
       name={formStep.key}
       type="text"
       value={String(value)}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={setValue}
+      textArea={multiline}
     />
   );
 };

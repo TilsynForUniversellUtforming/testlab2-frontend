@@ -8,6 +8,13 @@ export type TestingStepInputDTO =
   | 'tekst' // Text input
   | 'instruksjon'; // Kun tekst til brukeren
 
+export type FasitType =
+  | 'Ja'
+  | 'Nei'
+  | 'Ikkje testbart'
+  | 'Ikkje forekomst'
+  | 'sjekkDelutfall';
+
 export type TestingStepInputType = TestingStepInputDTO | 'multiline';
 
 export type TestingRouteActionType = 'gaaTil' | 'avslutt' | 'ikkjeForekomst';
@@ -61,7 +68,7 @@ type KolonneDTO = {
 export type RuteDTO = {
   type: TestingRouteActionType;
   steg: TargetType;
-  fasit: string;
+  fasit: FasitType;
   utfall: string;
 };
 
@@ -115,8 +122,9 @@ export type TestregelOverviewElement = {
 };
 
 export interface TestContext {
-  sak: Sak;
-  testResults: ManualTestResultat[];
+  contextSak: Sak;
+  contextTestResults: ManualTestResultat[];
+  contextSetTestResults: (testResults: ManualTestResultat[]) => void;
 }
 
 export const innhaldsType = [

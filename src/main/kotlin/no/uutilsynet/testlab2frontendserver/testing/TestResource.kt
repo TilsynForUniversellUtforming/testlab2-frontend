@@ -1,8 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
-import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.sak.Brukar
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
 
 @RestController
 @RequestMapping("api/v1/testing")
@@ -28,9 +25,13 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       @PathVariable sakId: Int
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
-            val testResults: Map<String, List<ResultatManuellKontroll>> =
-                restTemplate.getForObject("$testresultUrl?sakId=$sakId")
-            ResponseEntity.ok(testResults.values.flatten())
+            val testResults: ResultatForSak? =
+                restTemplate.getForObject("$testresultUrl?sakId=$sakId", ResultatForSak::class.java)
+            if (testResults != null) {
+              return ResponseEntity.ok(testResults.resultat)
+            } else {
+              throw IllegalArgumentException("Feil ved henting av testresultat")
+            }
           }
           .getOrElse {
             logger.error("Kunne ikkje hente testresultat for sak $sakId")
@@ -59,11 +60,14 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       runCatching {
             logger.debug(
                 "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId}")
-            restTemplate.put(testresultUrl, resultatManuellKontroll)
+            restTemplate.put(
+                "$testresultUrl/${resultatManuellKontroll.id}", resultatManuellKontroll)
             getResultatManuellKontroll(resultatManuellKontroll.sakId)
           }
           .getOrElse {
             logger.error("Kunne ikkje oppdatere testresultat", it)
             throw it
           }
+
+  data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
 }

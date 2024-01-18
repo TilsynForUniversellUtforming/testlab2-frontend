@@ -8,12 +8,12 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverview = () => {
   const { id } = useParams();
-  const { sak }: TestContext = useOutletContext();
+  const { contextSak }: TestContext = useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
 
   const onChangeLoeysing = (loeysingId: number) => {
-    const nextLoeysing = sak.loeysingList.find(
+    const nextLoeysing = contextSak.loeysingList.find(
       (l) => l.loeysing.id === loeysingId
     );
     if (!nextLoeysing || !id) {
@@ -31,7 +31,7 @@ const TestOverview = () => {
 
   return (
     <div className="manual-test-overview">
-      {sak.loeysingList.map(({ loeysing }) => (
+      {contextSak.loeysingList.map(({ loeysing }) => (
         <TestLoeysingButton
           key={loeysing.id}
           name={loeysing.namn}

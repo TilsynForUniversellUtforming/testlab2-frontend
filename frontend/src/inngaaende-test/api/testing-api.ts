@@ -30,7 +30,7 @@ export const updateTestResultat = async (
   testResulat: ManualTestResultat
 ): Promise<ManualTestResultat[]> => {
   return await fetch(`/api/v1/testing`, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },

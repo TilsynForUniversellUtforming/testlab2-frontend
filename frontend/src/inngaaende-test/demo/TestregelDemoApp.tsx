@@ -1,6 +1,7 @@
 import '../test.scss';
 
 import { Spinner } from '@digdir/design-system-react';
+import { ManualElementResultat, Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
@@ -68,6 +69,24 @@ const TestregelDemoApp = () => {
       firstStepKey={Array.from(testingSteps.keys())[0]}
       onClickSave={() => navigate('..')}
       onClickBack={() => navigate('..')}
+      createResult={(answer: Svar) => {
+        console.info(answer);
+      }}
+      updateResult={(
+        testResultId: number,
+        answers: Svar[],
+        elementOmtale?: string,
+        elementResultat?: ManualElementResultat,
+        elementUtfall?: string
+      ) =>
+        console.info(
+          testResultId,
+          answers,
+          elementOmtale,
+          elementResultat,
+          elementUtfall
+        )
+      }
     />
   );
 };

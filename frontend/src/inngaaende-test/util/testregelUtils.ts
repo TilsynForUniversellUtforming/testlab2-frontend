@@ -1,13 +1,18 @@
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { NettsideProperties } from '@sak/types';
-import { ManualTestResultat } from '@test/api/types';
-import { PageType, TestregelOverviewElement, TestStatus } from '@test/types';
+import { ManualTestResultat, Svar } from '@test/api/types';
+import {
+  PageType,
+  TestregelOverviewElement,
+  TestStatus,
+  TestStep,
+} from '@test/types';
 import { Testregel } from '@testreglar/api/types';
 
-export const testResultsForLoeysing = (
+export const getTestResultsForLoeysing = (
   testResults: ManualTestResultat[],
-  loeysingId?: string
+  loeysingId: string | undefined
 ): ManualTestResultat[] =>
   testResults.filter((tr) => String(tr.loeysingId) === loeysingId);
 
@@ -21,7 +26,7 @@ export const progressionForLoeysingNettside = (
   sak: Sak,
   testResults: ManualTestResultat[],
   nettsideId: number,
-  loeysingId?: string
+  loeysingId: string | undefined
 ): number => {
   const numFinishedTestResults = testResults.filter(
     (tr) =>
@@ -37,7 +42,7 @@ export const progressionForLoeysingNettside = (
 
 export const getNettsideProperties = (
   sak: Sak,
-  loeysingId?: string
+  loeysingId: string | undefined
 ): NettsideProperties[] =>
   sak.loeysingList.find((l) => loeysingId === String(l.loeysing.id))
     ?.properties || [];
@@ -87,10 +92,10 @@ export const toTestregelStatus = (
           status = 'deaktivert';
         } else if (tr.svar.length > 0) {
           status = 'under-arbeid';
-        } else if (tr.elementResultat === undefined) {
-          status = 'ikkje-starta';
-        } else {
+        } else if (isDefined(tr.elementResultat)) {
           status = 'ferdig';
+        } else {
+          status = 'ikkje-starta';
         }
       }
 
@@ -111,4 +116,33 @@ export const toTestregelOverviewElement = ({
   }
 
   return { id: id, name: name, krav: krav };
+};
+
+export const findActiveTestResult = (
+  testResultsLoeysing: ManualTestResultat[],
+  nettsideId: number | undefined,
+  testregelId: number | undefined
+): ManualTestResultat | undefined => {
+  if (isNotDefined(nettsideId) || isNotDefined(testregelId)) {
+    return undefined;
+  }
+
+  return testResultsLoeysing.find(
+    (tr) => tr.nettsideId === nettsideId && tr.testregelId === testregelId
+  );
+};
+
+export const convertToSvarArray = (steps: Map<string, TestStep>): Svar[] => {
+  const answers: Svar[] = [];
+
+  steps.forEach((testStep, key) => {
+    if (testStep.answer) {
+      answers.push({
+        steg: key,
+        svar: testStep.answer.svar,
+      });
+    }
+  });
+
+  return answers;
 };
