@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.sak
 
 import java.lang.Integer.parseInt
+import java.time.LocalDate
 import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiProperties
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
@@ -29,14 +30,14 @@ class SakResource(
   val sakUrl = "${testingApiProperties.url}/saker"
   val loeysingUrl = "${loeysingsregisterApiProperties.url}/v1/loeysing"
 
-  data class NySak(val namn: String, val virksomhet: String)
+  data class NySak(val namn: String, val virksomhet: String, val frist: LocalDate)
 
   val logger: Logger = LoggerFactory.getLogger(SakResource::class.java)
 
   @PostMapping
   fun createSak(@RequestBody nySak: NySak): ResponseEntity<Int> =
       runCatching {
-            logger.debug("Lager ny sak med orgnrummer: ${nySak.virksomhet} fra $sakUrl")
+            logger.debug("Lager ny sak: {} fra {}", nySak, sakUrl)
             val location = restTemplate.postForLocation(sakUrl, nySak)
             if (location != null) {
 
