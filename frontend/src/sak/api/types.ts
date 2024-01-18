@@ -43,4 +43,9 @@ export type Sak = {
   testreglar: Testregel[];
 };
 
-export type SakListeElement = Pick<Sak, 'id' | 'namn' | 'ansvarleg'>;
+export type SakListeElement = {
+  id: number;
+  namn: string;
+  ansvarleg?: Brukar;
+  frist: string;
+};

@@ -2,13 +2,14 @@ package no.uutilsynet.testlab2frontendserver.sak
 
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import java.time.LocalDate
 
 data class Sak(
     val verksemd: Loeysing,
     val loeysingList: List<LoeysingNettsideRelation> = emptyList(),
     val testreglar: List<Testregel> = emptyList()
 ) {
-  data class ListeElement(val id: Int, val namn: String, val ansvarleg: Brukar?)
+    data class ListeElement(val id: Int, val namn: String, val ansvarleg: Brukar?, val frist: LocalDate)
 }
 
 data class LoeysingNettsideRelation(
