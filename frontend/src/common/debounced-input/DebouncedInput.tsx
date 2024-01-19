@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 
 export type Props = {
   value?: string;
-  onChange: (value: string) => void;
+  onChange: (value?: string) => void;
   debounce?: number;
   ariaLabel?: string;
   errorMessage?: string;
@@ -32,10 +32,10 @@ const DebouncedInput = ({
   type = 'text',
   textArea = false,
 }: Props & Omit<TextfieldProps, 'onChange'>) => {
-  const [value, setValue] = useState(initialValue || '');
+  const [value, setValue] = useState<string | undefined>(initialValue);
 
   useEffect(() => {
-    setValue(initialValue || '');
+    setValue(initialValue);
   }, [initialValue]);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const DebouncedInput = ({
           id={id}
           label={label}
           description={description}
-          value={String(value)}
+          value={value}
           onChange={(e) => setValue(e.target.value)}
           aria-label={ariaLabel}
           error={errorMessage}
@@ -72,7 +72,7 @@ const DebouncedInput = ({
         label={label}
         description={description}
         type={type}
-        value={String(value)}
+        value={value}
         onChange={(e) => setValue(e.target.value)}
         onFocus={onFocus}
         aria-label={ariaLabel}

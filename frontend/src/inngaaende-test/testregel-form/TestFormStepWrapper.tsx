@@ -1,4 +1,5 @@
 import { ErrorMessage } from '@digdir/design-system-react';
+import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';
 import TestFormInputText from '@test/testregel-form/input/TestFormInputText';
@@ -10,19 +11,13 @@ import TestResultCard from './TestResultCard';
 interface FormStepProps {
   testingStep?: TestStep;
   formStep: TestFormStep;
-  updateRadio: (
-    stepKey: string,
-    answer: string,
-    selectionOutcome: SelectionOutcome
-  ) => void;
-  updateText: (stepKey: string, answer: string) => void;
+  onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
 }
 
 const TestFormStepWrapper = ({
   testingStep,
   formStep,
-  updateRadio,
-  updateText,
+  onAnswer,
 }: FormStepProps) => {
   if (formStep.key === 'avslutt') {
     const isSamsvar = formStep.fasit?.toLowerCase() === 'ja';
@@ -55,7 +50,7 @@ const TestFormStepWrapper = ({
           testingStep={testingStep}
           formStep={formStep}
           multiline={inputType === 'multiline'}
-          updateText={updateText}
+          onAnswer={onAnswer}
         />
       );
     case 'instruksjon':
@@ -66,7 +61,7 @@ const TestFormStepWrapper = ({
         <TestFormInputRadio
           testingStep={testingStep}
           formStep={formStep}
-          updateRadio={updateRadio}
+          onAnswer={onAnswer}
         />
       );
   }

@@ -1,183 +1,72 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button, Heading } from '@digdir/design-system-react';
-import { ManualElementResultat, Svar } from '@test/api/types';
-import { convertToSvarArray } from '@test/util/testregelUtils';
+import { Svar } from '@test/api/types';
+import { getAnswersFromState, getNextSteps } from '@test/util/testregelUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { SelectionOutcome, TestStep } from '../types';
+import { SelectionOutcome, TestAnswers, TestStep } from '../types';
 import TestFormStepWrapper from './TestFormStepWrapper';
 import { TestFormStep } from './types';
 
 interface Props {
   heading: string;
   steps: Map<string, TestStep>;
-  firstStepKey: string;
+  initStepKey: string;
   onClickBack: () => void;
   onClickSave: () => void;
-  isEdit: boolean;
-  updateResult: (
-    answers: Svar[],
-    elementOmtale?: string,
-    elementResultat?: ManualElementResultat,
-    elementUtfall?: string
-  ) => void;
+  updateResult: (testAnswers: TestAnswers) => void;
 }
 
 const TestForm = ({
   heading,
   steps,
-  firstStepKey,
+  initStepKey,
   onClickBack,
   onClickSave,
-  isEdit,
   updateResult,
 }: Props) => {
-  const [formSteps, setFormSteps] = useState<TestFormStep[]>([
-    { key: firstStepKey },
-  ]);
-
+  const [displaySteps, setDisplaySteps] = useState<TestFormStep[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setFormSteps([{ key: firstStepKey }]);
-  }, [steps]);
+    const stepsToShow = getNextSteps(initStepKey, steps);
+    setDisplaySteps(stepsToShow);
+  }, [steps, initStepKey]);
 
-  const getNextSteps = (
-    currentStep: TestFormStep,
-    stepsMap: Map<string, TestStep>
-  ) => {
-    const nextSteps: TestFormStep[] = [];
-    let nextStepKey = currentStep.key;
+  const onAnswer = useCallback(
+    (answer: Svar, selectionOutcome?: SelectionOutcome) => {
+      // If the step has an selectionOutcome it changes the structure of the selection tree, and the
+      // previous steps has to be reset.
+      const updatedSteps = selectionOutcome
+        ? Array.from(steps.entries()).slice(
+            0,
+            Array.from(steps.entries()).findIndex(
+              ([key, _]) => key === answer.steg
+            ) + 1
+          )
+        : steps;
 
-    // Show all steps until there is a step with selection or multiple outcomes
-    while (nextStepKey) {
-      const currentStepData = stepsMap.get(nextStepKey);
-      if (
-        !currentStepData ||
-        currentStepData.step.input.inputType === 'radio' ||
-        currentStepData.step.input.inputType === 'jaNei' ||
-        currentStepData.step.input.inputSelectionOutcome.length > 1
-      ) {
-        break;
-      }
+      const updatedStepsMap = new Map(updatedSteps);
+      const currentStep = updatedStepsMap.get(answer.steg);
 
-      const defaultOutcome =
-        currentStepData.step.input.inputSelectionOutcome[0];
-      const defaultOutcomeAction = defaultOutcome.action;
-      if (defaultOutcomeAction === 'gaaTil') {
-        nextStepKey = defaultOutcome.target;
-        nextSteps.push({ key: nextStepKey });
-      } else if (defaultOutcomeAction === 'ikkjeForekomst') {
-        nextSteps.push({
-          key: defaultOutcomeAction,
-          utfall: defaultOutcome.utfall,
-        });
-        break;
-      } else if (defaultOutcomeAction === 'avslutt') {
-        nextSteps.push({
-          key: defaultOutcomeAction,
-          utfall: defaultOutcome.utfall,
-          fasit: defaultOutcome.fasit,
-        });
-        break;
-      }
-    }
+      if (currentStep) {
+        currentStep.answer = answer;
+        updatedStepsMap.set(answer.steg, currentStep);
 
-    return nextSteps;
-  };
-
-  const updateAnswers = (
-    currentStepKey: string,
-    answer: string,
-    selectionOutcome?: SelectionOutcome
-  ) => {
-    if (isEdit) {
-      const answers: Svar[] = convertToSvarArray(steps);
-      answers.push({ steg: currentStepKey, svar: answer });
-
-      let elementResultat: ManualElementResultat | undefined = undefined;
-      let elementUtfall: string | undefined = undefined;
-      if (selectionOutcome) {
-        if (selectionOutcome.action === 'avslutt') {
-          elementUtfall = selectionOutcome.utfall;
-          // elementOmtale = findElementOmtaleStep(steps) // TODO impl. funksjon for dette, bruk "element": "x.x" i testregel-json
-          switch (selectionOutcome.fasit) {
-            case 'Ja':
-              elementResultat = 'samsvar';
-              break;
-            case 'Nei':
-              elementResultat = 'brot';
-              break;
-            case 'Ikkje testbart':
-              elementResultat = 'ikkjeTesta';
-              break;
-            case 'Ikkje forekomst':
-              elementResultat = 'ikkjeForekomst';
-              break;
-            default:
-              elementResultat = 'ikkjeTesta';
-              break;
-          }
-        } else if (selectionOutcome.action === 'ikkjeForekomst') {
-          elementUtfall = selectionOutcome.utfall;
-          elementResultat = 'ikkjeForekomst';
-        }
-      }
-      updateResult(answers, undefined, elementResultat, elementUtfall);
-    }
-  };
-
-  const updateText = useCallback((currentStepKey: string, answer: string) => {
-    updateAnswers(currentStepKey, answer);
-  }, []);
-
-  const updateRadio = useCallback(
-    (
-      currentStepKey: string,
-      answer: string,
-      selectionOutcome: SelectionOutcome
-    ) => {
-      updateAnswers(currentStepKey, answer, selectionOutcome);
-
-      setFormSteps((prevSteps) => {
-        let updatedSteps = prevSteps.slice(
-          0,
-          prevSteps.findIndex((step) => step.key === currentStepKey) + 1
+        const testAnswers = getAnswersFromState(
+          updatedStepsMap,
+          selectionOutcome
         );
-
-        if (selectionOutcome.action === 'gaaTil') {
-          const newStep = { key: selectionOutcome.target };
-          updatedSteps.push(newStep);
-          const nextSteps = getNextSteps(newStep, steps);
-          updatedSteps = updatedSteps.concat(nextSteps);
-        } else if (selectionOutcome.action === 'ikkjeForekomst') {
-          updatedSteps.push({
-            key: selectionOutcome.action,
-            utfall: selectionOutcome.utfall,
-          });
-        } else if (selectionOutcome.action === 'avslutt') {
-          updatedSteps.push({
-            key: selectionOutcome.action,
-            utfall: selectionOutcome.utfall,
-            fasit: selectionOutcome.fasit,
-          });
-        }
-
-        const nextSteps = updatedSteps.filter(
-          (step, index, self) =>
-            index === self.findIndex((s) => s.key === step.key)
-        );
-
-        return nextSteps;
-      });
+        updateResult(testAnswers);
+      }
     },
-    [steps, isEdit]
+    [steps, updateResult]
   );
 
   useEffect(() => {
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [formSteps]);
+  }, [displaySteps]);
 
   return (
     <div className="test-form" ref={ref}>
@@ -185,15 +74,14 @@ const TestForm = ({
         {heading}
       </Heading>
       <div className="test-form-content">
-        {formSteps.map((formStep) => {
+        {displaySteps.map((formStep) => {
           const testingStep = steps.get(formStep.key);
           return (
-            <div key={formStep.key} id={formStep.key}>
+            <div key={formStep.key}>
               <TestFormStepWrapper
                 testingStep={testingStep}
                 formStep={formStep}
-                updateRadio={updateRadio}
-                updateText={updateText}
+                onAnswer={onAnswer}
               />
             </div>
           );

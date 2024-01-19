@@ -1,46 +1,45 @@
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
+import { Svar } from '@test/api/types';
 import { TestFormStep } from '@test/testregel-form/types';
-import { SelectionOutcome, TestStep } from '@test/types';
-import { useEffect, useState } from 'react';
+import { TestStep } from '@test/types';
+import { useCallback, useState } from 'react';
 
 interface Props {
   testingStep: TestStep;
   formStep: TestFormStep;
   multiline: boolean;
-  updateText: (
-    stepKey: string,
-    answer: string,
-    selectionOutcome?: SelectionOutcome
-  ) => void;
+  onAnswer: (answer: Svar) => void;
 }
 
 const TestFormInputText = ({
   testingStep,
   formStep,
   multiline,
-  updateText,
+  onAnswer,
 }: Props) => {
   const {
     step: { heading },
     answer,
   } = testingStep;
-  const [value, setValue] = useState<string>(answer?.svar || '');
-  const [prevValue, setPrevValue] = useState(value);
+  const [value, setValue] = useState(answer?.svar);
 
-  useEffect(() => {
-    if (prevValue !== '' || value) {
-      setPrevValue(value);
-      updateText(formStep.key, value);
-    }
-  }, [value]);
+  const handleValueChange = useCallback(
+    (newValue?: string) => {
+      setValue(newValue);
+      if (typeof newValue === 'string' && newValue !== answer?.svar) {
+        onAnswer({ steg: formStep.key, svar: newValue });
+      }
+    },
+    [answer?.svar, formStep.key]
+  );
 
   return (
     <DebouncedInput
       label={heading}
       name={formStep.key}
       type="text"
-      value={String(value)}
-      onChange={setValue}
+      value={value}
+      onChange={handleValueChange}
       textArea={multiline}
     />
   );

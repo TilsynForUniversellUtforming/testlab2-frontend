@@ -1,6 +1,6 @@
 import { Sak } from '@sak/api/types';
 
-import { ManualTestResultat, Svar } from './api/types';
+import { ManualElementResultat, ManualTestResultat, Svar } from './api/types';
 
 export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
@@ -153,4 +153,11 @@ export type InnhaldsType = (typeof innhaldsType)[number];
 export type PageType = {
   nettsideId: number;
   pageType: string;
+};
+
+export type TestAnswers = {
+  answers: Svar[];
+  elementOmtale?: string;
+  elementResultat?: ManualElementResultat;
+  elementUtfall?: string;
 };

@@ -1,14 +1,13 @@
 import '../test.scss';
 
 import { Spinner } from '@digdir/design-system-react';
-import { ManualElementResultat, Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
-import { TestStep } from '../types';
+import { TestAnswers, TestStep } from '../types';
 import {
   combineStepsAndAnswers,
   parseTestregel,
@@ -66,25 +65,15 @@ const TestregelDemoApp = () => {
     <TestForm
       heading={testregel.name}
       steps={testingSteps}
-      firstStepKey={Array.from(testingSteps.keys())[0]}
+      initStepKey={Array.from(testingSteps.keys())[0]}
       onClickSave={() => navigate('..')}
       onClickBack={() => navigate('..')}
-      createResult={(answer: Svar) => {
-        console.info(answer);
-      }}
-      updateResult={(
-        testResultId: number,
-        answers: Svar[],
-        elementOmtale?: string,
-        elementResultat?: ManualElementResultat,
-        elementUtfall?: string
-      ) =>
+      updateResult={(testAnswers: TestAnswers) =>
         console.info(
-          testResultId,
-          answers,
-          elementOmtale,
-          elementResultat,
-          elementUtfall
+          testAnswers.answers,
+          testAnswers.elementOmtale,
+          testAnswers.elementResultat,
+          testAnswers.elementUtfall
         )
       }
     />
