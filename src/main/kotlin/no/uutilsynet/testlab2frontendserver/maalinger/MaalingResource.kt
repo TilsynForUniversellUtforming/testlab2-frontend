@@ -174,11 +174,10 @@ class MaalingResource(
   ): List<AggregertResultatDTO> {
     logger.debug("Henter aggregering for måling med id $maalingId")
     val url = "$maalingUrl/$maalingId/testresultat/aggregering?aggregeringstype=$aggregeringstype"
-    val aggregatedType =
-        object : ParameterizedTypeReference<Map<String, List<AggregertResultatDTO>>>() {}
+    val aggregatedType = object : ParameterizedTypeReference<List<AggregertResultatDTO>>() {}
     return runCatching {
           val map = restTemplate.exchange(url, HttpMethod.GET, null, aggregatedType).body
-          map?.values?.flatten() ?: throw RuntimeException("Response body for aggregering er tom")
+          map ?: throw RuntimeException("Response body for aggregering er tom")
         }
         .getOrElse {
           logger.error("Kunne ikkje hente aggregering for måling med id $maalingId", it)
