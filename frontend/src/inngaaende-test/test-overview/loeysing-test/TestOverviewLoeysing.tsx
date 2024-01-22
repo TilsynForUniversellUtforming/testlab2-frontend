@@ -109,8 +109,8 @@ const TestOverviewLoeysing = () => {
     contextSak: Sak,
     contextTestResults: ManualTestResultat[],
     loeysingId: number,
-    activeTestregel: Testregel,
-    pageType: PageType
+    pageType: PageType,
+    activeTestregel?: Testregel
   ) => {
     const testregelList = sak.testreglar.map((tr) =>
       toTestregelOverviewElement(tr)
@@ -147,13 +147,17 @@ const TestOverviewLoeysing = () => {
         pageType.nettsideId
       )
     );
-    handleSetTestingSteps(
-      activeTestregel,
-      filteredTestResults,
-      Number(sakId),
-      loeysingId,
-      pageType.nettsideId
-    );
+
+    // Set the testing steps if there is an active testregel
+    if (isDefined(activeTestregel)) {
+      handleSetTestingSteps(
+        activeTestregel,
+        filteredTestResults,
+        Number(sakId),
+        loeysingId,
+        pageType.nettsideId
+      );
+    }
   };
 
   const onClickSave = () => {
@@ -168,10 +172,19 @@ const TestOverviewLoeysing = () => {
     (nettsideId?: string) => {
       const nettsideIdNumeric = Number(nettsideId);
       if (isDefined(nettsideIdNumeric)) {
-        setPageType(toPageType(nettsideProperties, nettsideIdNumeric));
+        const nextPageType = toPageType(nettsideProperties, nettsideIdNumeric);
+        setPageType(nextPageType);
+        processData(
+          contextSak,
+          contextTestResults,
+          Number(loeysingId),
+          nextPageType
+        );
+      } else {
+        setAlert('danger', 'Ugylig nettside');
       }
     },
-    [nettsideProperties]
+    [contextSak, contextTestResults, loeysingId, nettsideProperties]
   );
 
   const onChangeContentType = useCallback((contentType?: string) => {
@@ -230,8 +243,8 @@ const TestOverviewLoeysing = () => {
               contextSak,
               contextTestResults,
               Number(loeysingId),
-              nextTestregel,
-              pageType
+              pageType,
+              nextTestregel
             );
           }
 
@@ -309,8 +322,8 @@ const TestOverviewLoeysing = () => {
             contextSak,
             createdTestResults,
             loeysingId,
-            activeTestregel,
-            pageType
+            pageType,
+            activeTestregel
           );
         } catch (e) {
           setAlert('danger', 'Opprett testresultat feila');
@@ -362,8 +375,8 @@ const TestOverviewLoeysing = () => {
             contextSak,
             updatedTestResults,
             loeysingIdNumeric,
-            activeTestregel,
-            pageType
+            pageType,
+            activeTestregel
           );
         } catch (e) {
           setAlert('danger', 'Oppdatering av testresultat feila');
