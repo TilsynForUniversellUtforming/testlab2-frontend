@@ -1,6 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { isDefined } from '@common/util/validationUtils';
+import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
 import { CreateTestResultat, ManualTestResultat } from '@test/api/types';
@@ -29,6 +29,7 @@ import {
   toPageType,
   toTestregelOverviewElement,
   toTestregelStatus,
+  toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
 import { useCallback, useState } from 'react';
@@ -71,19 +72,29 @@ const TestOverviewLoeysing = () => {
     sak.testreglar.map((tr) => toTestregelOverviewElement(tr))
   );
   const [testStatusMap, setTestStatusMap] = useState(
-    toTestregelStatus(testregelList, testResultsLoeysing, pageType.nettsideId)
+    toTestregelStatus(
+      testregelList,
+      testResultsLoeysing,
+      contextSak.id,
+      Number(loeysingId),
+      pageType.nettsideId
+    )
   );
 
   const handleSetTestingSteps = (
     testregel: Testregel,
     testResultsLoeysing: ManualTestResultat[],
-    pageType: PageType
+    sakId: number,
+    loeysingId: number,
+    nettsideId: number
   ) => {
     const testregelSteps = parseTestregel(testregel.testregelSchema);
     const testResult = findActiveTestResult(
       testResultsLoeysing,
-      pageType.nettsideId,
-      testregel.id
+      sakId,
+      loeysingId,
+      testregel.id,
+      nettsideId
     );
 
     const testingSteps = combineStepsAndAnswers(
@@ -128,9 +139,21 @@ const TestOverviewLoeysing = () => {
       )
     );
     setTestStatusMap(
-      toTestregelStatus(testregelList, filteredTestResults, pageType.nettsideId)
+      toTestregelStatus(
+        testregelList,
+        filteredTestResults,
+        Number(sakId),
+        loeysingId,
+        pageType.nettsideId
+      )
     );
-    handleSetTestingSteps(activeTestregel, filteredTestResults, pageType);
+    handleSetTestingSteps(
+      activeTestregel,
+      filteredTestResults,
+      Number(sakId),
+      loeysingId,
+      pageType.nettsideId
+    );
   };
 
   const onClickSave = () => {
@@ -184,13 +207,21 @@ const TestOverviewLoeysing = () => {
         setAlert('danger', 'Det oppstod ein feil ved ending av testregel');
       } else {
         try {
-          setActiveTestregel(nextTestregel);
-          const testregelStatus = testStatusMap.get(nextTestregel.id);
+          const sakIdNumeric = Number(sakId);
+          const loeysingIdNumeric = Number(loeysingId);
+
+          const statusKey = toTestregelStatusKey(
+            sakIdNumeric,
+            loeysingIdNumeric,
+            nextTestregel.id,
+            pageType.nettsideId
+          );
+          const testregelStatus = testStatusMap.get(statusKey);
 
           if (testregelStatus && testregelStatus === 'ikkje-starta') {
             doCreateTestResult(
-              sakId,
-              loeysingId,
+              sakIdNumeric,
+              loeysingIdNumeric,
               nextTestregel,
               pageType.nettsideId
             );
@@ -203,6 +234,8 @@ const TestOverviewLoeysing = () => {
               pageType
             );
           }
+
+          setActiveTestregel(nextTestregel);
         } catch (e) {
           setAlert('danger', 'Ugyldig testregel');
         }
@@ -213,38 +246,58 @@ const TestOverviewLoeysing = () => {
 
   const onChangeStatus = useCallback(
     (status: TestStatus, testregelId: number) => {
-      // TODO TA BORT - Switch for å gjøre api-kall for å endre status på de ulike testreglene
-      const updatedMap = new Map(testStatusMap);
-      updatedMap.set(testregelId, status);
-      setTestStatusMap(updatedMap);
-      // setAllNonRelevant((prevAllRelevant) =>
-      //   prevAllRelevant ? false : prevAllRelevant
-      // );
-      // TODO TA BORT
+      const sakIdNumeric = Number(sak.id);
+      const loeysingIdNumeric = Number(loeysingId);
+
+      const testResult = findActiveTestResult(
+        testResultsLoeysing,
+        sakIdNumeric,
+        testregelId,
+        loeysingIdNumeric,
+        pageType.nettsideId
+      );
+      const statusKey = toTestregelStatusKey(
+        sakIdNumeric,
+        loeysingIdNumeric,
+        testregelId,
+        pageType.nettsideId
+      );
+      const testregel = sak.testreglar.find((tr) => tr.id === testregelId);
+
+      if (testStatusMap && testregel) {
+        if (status === 'under-arbeid' && isNotDefined(testResult)) {
+          doCreateTestResult(
+            sakIdNumeric,
+            loeysingIdNumeric,
+            testregel,
+            pageType.nettsideId
+          );
+        }
+
+        const updatedMap = new Map(testStatusMap);
+
+        updatedMap.set(statusKey, status);
+        setTestStatusMap(updatedMap);
+        // setAllNonRelevant((prevAllRelevant) =>
+        //   prevAllRelevant ? false : prevAllRelevant
+        // );
+      }
     },
-    [testStatusMap]
+    [sak, testStatusMap, loeysingId, testResultsLoeysing, pageType.nettsideId]
   );
 
   // Create test result when the block is opened
   const doCreateTestResult = useCallback(
     async (
-      sakId: string | undefined,
-      loeysingId: string | undefined,
+      sakId: number,
+      loeysingId: number,
       activeTestregel: Testregel,
       nettsideId: number | undefined
     ) => {
-      const sakIdNumeric = Number(sakId);
-      const loeysingIdNumeric = Number(loeysingId);
-
-      if (
-        isDefined(sakIdNumeric) &&
-        isDefined(loeysingIdNumeric) &&
-        activeTestregel &&
-        nettsideId
-      ) {
+      if (activeTestregel && nettsideId) {
         const testResult: CreateTestResultat = {
-          sakId: sakIdNumeric,
-          loeysingId: loeysingIdNumeric,
+          sakId: sakId,
+          loeysingId: loeysingId,
           testregelId: activeTestregel.id,
           nettsideId: nettsideId,
         };
@@ -255,7 +308,7 @@ const TestOverviewLoeysing = () => {
           processData(
             contextSak,
             createdTestResults,
-            loeysingIdNumeric,
+            loeysingId,
             activeTestregel,
             pageType
           );
@@ -271,24 +324,26 @@ const TestOverviewLoeysing = () => {
 
   const doUpdateTestResult = useCallback(
     async (testAnswers: TestAnswers) => {
-      const testResultId = findActiveTestResult(
-        testResultsLoeysing,
-        pageType.nettsideId,
-        activeTestregel?.id
-      );
-
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
+
+      const activeTestResult = findActiveTestResult(
+        testResultsLoeysing,
+        sakIdNumeric,
+        loeysingIdNumeric,
+        activeTestregel?.id,
+        pageType.nettsideId
+      );
 
       if (
         isDefined(sakIdNumeric) &&
         isDefined(loeysingIdNumeric) &&
         activeTestregel &&
         pageType.nettsideId &&
-        testResultId
+        activeTestResult
       ) {
         const testResult: ManualTestResultat = {
-          id: testResultId.id,
+          id: activeTestResult.id,
           sakId: Number(sakId),
           loeysingId: Number(loeysingId),
           testregelId: activeTestregel.id,
@@ -297,6 +352,7 @@ const TestOverviewLoeysing = () => {
           elementResultat: testAnswers.elementResultat,
           elementUtfall: testAnswers.elementUtfall,
           svar: testAnswers.answers,
+          ferdig: false,
         };
 
         try {
@@ -351,7 +407,16 @@ const TestOverviewLoeysing = () => {
               key={tr.id}
               testregel={tr}
               onClick={onChangeTestregel}
-              status={testStatusMap.get(tr.id) || 'ikkje-starta'}
+              status={
+                testStatusMap.get(
+                  toTestregelStatusKey(
+                    Number(sakId),
+                    Number(loeysingId),
+                    tr.id,
+                    pageType.nettsideId
+                  )
+                ) || 'ikkje-starta'
+              }
               onChangeStatus={onChangeStatus}
             />
           ))}

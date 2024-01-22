@@ -23,11 +23,11 @@ export const getTestResultsForLoeysing = (
 ): ManualTestResultat[] =>
   testResults.filter((tr) => tr.loeysingId === loeysingId);
 
-export const isAllNonRelevant = (testResults: ManualTestResultat[]) =>
-  testResults.length > 0 &&
-  testResults.every(
-    (tr) => tr.elementResultat && tr.elementResultat === 'ikkjeForekomst'
-  );
+// export const isAllNonRelevant = (testResults: ManualTestResultat[]) =>
+//   testResults.length > 0 &&
+//   testResults.every(
+//     (tr) => tr.elementResultat && tr.elementResultat === 'ikkjeForekomst'
+//   );
 
 export const progressionForLoeysingNettside = (
   sak: Sak,
@@ -37,14 +37,13 @@ export const progressionForLoeysingNettside = (
 ): number => {
   const numFinishedTestResults = testResults.filter(
     (tr) =>
-      tr.loeysingId === loeysingId &&
-      tr.nettsideId === nettsideId &&
-      tr.elementResultat
+      tr.loeysingId === loeysingId && tr.nettsideId === nettsideId && tr.ferdig
   ).length;
+
   // TODO - Filtrer på valgt contentType, f.eks. alle testreglar med "IFrame"
   const numContentTestregel = sak.testreglar.length;
 
-  return Math.round(numFinishedTestResults / numContentTestregel);
+  return Math.round((numFinishedTestResults / numContentTestregel) * 100);
 };
 
 export const getNettsideProperties = (
@@ -82,34 +81,44 @@ export const getInitialPageType = (
   }
 };
 
+export const toTestregelStatusKey = (
+  sakId: number,
+  loeysingId: number,
+  testregelId: number,
+  nettsideId: number
+) => [sakId, loeysingId, testregelId, nettsideId].join('_');
+
 export const toTestregelStatus = (
   testregelList: TestregelOverviewElement[],
   testResults: ManualTestResultat[],
+  sakId: number,
+  loeysingId: number,
   nettsideId: number
-): Map<number, TestStatus> =>
+): Map<string, TestStatus> =>
   new Map(
     testregelList.map((testregel) => {
       let status: TestStatus;
-      const tr = testResults.find(
-        (testResult) =>
-          testResult.testregelId === testregel.id &&
-          testResult.nettsideId === nettsideId
+      const tr = findActiveTestResult(
+        testResults,
+        sakId,
+        loeysingId,
+        testregel.id,
+        nettsideId
       );
       if (isNotDefined(tr)) {
         status = 'ikkje-starta';
       } else {
-        if (
-          isDefined(tr.elementResultat) &&
-          isDefined(tr.elementOmtale) &&
-          isDefined(tr.elementUtfall)
-        ) {
+        if (tr.ferdig) {
           status = 'ferdig';
         } else {
           status = 'under-arbeid';
         }
       }
 
-      return [testregel.id, status];
+      return [
+        toTestregelStatusKey(sakId, loeysingId, testregel.id, nettsideId),
+        status,
+      ];
     })
   );
 
@@ -130,15 +139,21 @@ export const toTestregelOverviewElement = ({
 
 export const findActiveTestResult = (
   testResultsLoeysing: ManualTestResultat[],
-  nettsideId: number | undefined,
-  testregelId: number | undefined
+  sakId: number | undefined,
+  loeysingId: number | undefined,
+  testregelId: number | undefined,
+  nettsideId: number | undefined
 ): ManualTestResultat | undefined => {
-  if (isNotDefined(nettsideId) || isNotDefined(testregelId)) {
-    return undefined;
+  if (!sakId || !loeysingId || !testregelId || !nettsideId) {
+    throw Error('Kan ikkje finne testresultat for sak');
   }
 
   return testResultsLoeysing.find(
-    (tr) => tr.nettsideId === nettsideId && tr.testregelId === testregelId
+    (tr) =>
+      tr.sakId === sakId &&
+      tr.loeysingId === loeysingId &&
+      tr.testregelId === testregelId &&
+      tr.nettsideId === nettsideId
   );
 };
 

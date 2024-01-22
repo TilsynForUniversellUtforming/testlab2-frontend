@@ -24,4 +24,5 @@ export type CreateTestResultat = {
 export type ManualTestResultat = {
   id: number;
   svar: Svar[];
+  ferdig: boolean;
 } & CreateTestResultat;

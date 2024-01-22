@@ -1,5 +1,6 @@
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
+import { isNotDefined } from '@common/util/validationUtils';
 import { Spinner } from '@digdir/design-system-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
@@ -20,12 +21,18 @@ const ManualTest = () => {
   const hasFetched = useRef(false);
 
   const doFetchData = useCallback(async () => {
+    const numericId = Number(id);
+    if (isNotDefined(numericId)) {
+      setError(new Error('Sak med id finnes ikkje'));
+      return;
+    }
+
     try {
       const [sakResponse, testResultsResponse] = await Promise.all([
         getSak(Number(id)),
         getManuellKontrollResults(Number(id)),
       ]);
-      setSak(sakResponse);
+      setSak({ ...sakResponse, id: numericId });
       setTestResults(testResultsResponse);
       setLoading(false);
     } catch (err) {
