@@ -1,10 +1,19 @@
 import { Sak } from '@sak/api/types';
 
+import { ManualElementResultat, ManualTestResultat, Svar } from './api/types';
+
 export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
   | 'radio' // Multi radio
   | 'tekst' // Text input
   | 'instruksjon'; // Kun tekst til brukeren
+
+export type FasitType =
+  | 'Ja'
+  | 'Nei'
+  | 'Ikkje testbart'
+  | 'Ikkje forekomst'
+  | 'sjekkDelutfall';
 
 export type TestingStepInputType = TestingStepInputDTO | 'multiline';
 
@@ -41,10 +50,15 @@ type TestingStepInput = {
   required: boolean;
 };
 
-export type TestingStep = {
+export type TestingStepProperties = {
   heading: string;
   description: string;
   input: TestingStepInput;
+};
+
+export type TestStep = {
+  step: TestingStepProperties;
+  answer?: Svar;
 };
 
 type KolonneDTO = {
@@ -54,7 +68,7 @@ type KolonneDTO = {
 export type RuteDTO = {
   type: TestingRouteActionType;
   steg: TargetType;
-  fasit: string;
+  fasit: FasitType;
   utfall: string;
 };
 
@@ -93,18 +107,6 @@ export type TestregelDTO = {
   steg: StegDTO[];
 };
 
-export type Svar = {
-  steg: string;
-  svar: string;
-};
-
-export type ManualElementResultat =
-  | 'samsvar'
-  | 'ikkjeForekomst'
-  | 'brot'
-  | 'advarsel'
-  | 'ikkjeTesta';
-
 export type TestStatus =
   | 'ferdig'
   | 'deaktivert'
@@ -113,19 +115,6 @@ export type TestStatus =
 
 export type ButtonStatus = TestStatus | 'aktiv';
 
-export type ManualTestResult = {
-  id: number;
-  sakId: number;
-  loeysingId: number;
-  testregelId: number;
-  nettsideId: number;
-  elementOmtale?: string;
-  elementResultat?: ManualElementResultat;
-  elementUtfall?: string;
-  svar: Svar[];
-  testVartUtfoert?: string;
-};
-
 export type TestregelOverviewElement = {
   id: number;
   name: string;
@@ -133,8 +122,9 @@ export type TestregelOverviewElement = {
 };
 
 export interface TestContext {
-  sak: Sak;
-  testResults: ManualTestResult[];
+  contextSak: Sak;
+  contextTestResults: ManualTestResultat[];
+  contextSetTestResults: (testResults: ManualTestResultat[]) => void;
 }
 
 export const innhaldsType = [
@@ -163,4 +153,11 @@ export type InnhaldsType = (typeof innhaldsType)[number];
 export type PageType = {
   nettsideId: number;
   pageType: string;
+};
+
+export type TestAnswers = {
+  answers: Svar[];
+  elementOmtale?: string;
+  elementResultat?: ManualElementResultat;
+  elementUtfall?: string;
 };

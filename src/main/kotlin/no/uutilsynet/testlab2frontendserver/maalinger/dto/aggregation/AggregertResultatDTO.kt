@@ -1,4 +1,4 @@
-package no.uutilsynet.testlab2frontendserver.testing.dto.aggregation
+package no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation
 
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 

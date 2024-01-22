@@ -13,13 +13,13 @@ import classnames from 'classnames';
 export interface Props {
   testregel: TestregelOverviewElement;
   isActive: boolean;
-  onChangeTestregel: (testregelId: number) => void;
+  onClick: (testregelId: number) => void;
   status: ButtonStatus;
   onChangeStatus: (status: TestStatus, testregelId: number) => void;
 }
 
 const TestregelButton = ({
-  onChangeTestregel,
+  onClick,
   testregel,
   isActive,
   status,
@@ -36,7 +36,7 @@ const TestregelButton = ({
         [status]: status,
       })}
       onClick={() => {
-        onChangeTestregel(testregel.id);
+        onClick(testregel.id);
       }}
     >
       <div className="testregel-button-id">

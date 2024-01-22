@@ -1,18 +1,21 @@
 import { Heading, Ingress, Paragraph } from '@digdir/design-system-react';
-import { TestingStep } from '@test/types';
+import { TestStep } from '@test/types';
 
 interface Props {
-  testingStep: TestingStep;
+  testingStep: TestStep;
 }
 
 const TestFormDescription = ({ testingStep }: Props) => {
+  const {
+    step: { heading, description },
+  } = testingStep;
   return (
     <>
       <Heading size="small" level={4} spacing>
         Instruksjon:
       </Heading>
-      <Ingress>{testingStep.heading}</Ingress>
-      <Paragraph size="small">{testingStep.description}</Paragraph>
+      <Ingress>{heading}</Ingress>
+      <Paragraph size="small">{description}</Paragraph>
     </>
   );
 };

@@ -1,43 +1,57 @@
 import { Radio } from '@digdir/design-system-react';
+import { Svar } from '@test/api/types';
 import { TestFormStep } from '@test/testregel-form/types';
-import { SelectionOutcome, TestingStep } from '@test/types';
-import { useEffect, useState } from 'react';
+import { SelectionOutcome, TestStep } from '@test/types';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
-  testingStep: TestingStep;
+  testingStep: TestStep;
   formStep: TestFormStep;
-  onAction: (stepKey: string, selectionOutcome: SelectionOutcome) => void;
+  onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
 }
 
-const TestFormInputRadio = ({ testingStep, formStep, onAction }: Props) => {
-  const [value, setValue] = useState<string>('ingen');
+const TestFormInputRadio = ({ testingStep, formStep, onAnswer }: Props) => {
+  const { step, answer } = testingStep;
+  const noAnswer = 'no_answer_radio';
+  const [value, setValue] = useState(noAnswer);
+
+  const handleValueChange = useCallback(
+    (newValue: string) => {
+      setValue(newValue);
+      if (newValue && newValue !== answer?.svar && newValue !== noAnswer) {
+        const inputSelectionOutcome = step.input.inputSelectionOutcome.find(
+          (iso) => iso.label === newValue
+        );
+        onAnswer({ steg: formStep.key, svar: newValue }, inputSelectionOutcome);
+      }
+    },
+    [answer?.svar, formStep.key]
+  );
 
   useEffect(() => {
-    const inputSelectionOutcome = testingStep.input.inputSelectionOutcome.find(
-      (iso) => iso.label === value
-    );
-    if (inputSelectionOutcome) {
-      onAction(formStep.key, inputSelectionOutcome);
+    if (answer?.svar && answer?.svar !== value) {
+      setValue(answer.svar);
+    } else if (!answer?.svar) {
+      setValue(noAnswer);
     }
-  }, [value]);
-
-  useEffect(() => {
-    setValue('ingen');
-  }, [formStep]);
+  }, [testingStep]);
 
   return (
-    <Radio.Group
-      legend={testingStep.heading}
-      value={value}
-      onChange={setValue}
-      name={formStep.key}
-    >
-      {testingStep.input.inputSelectionOutcome.map((u) => (
-        <Radio value={u.label || ''} key={u.label}>
-          {u.label}
-        </Radio>
-      ))}
-    </Radio.Group>
+    <div className="">
+      <Radio.Group
+        legend={step.heading}
+        value={value}
+        onChange={handleValueChange}
+        name={formStep.key}
+        description={step.description}
+      >
+        {step.input.inputSelectionOutcome.map((u) => (
+          <Radio value={u.label || ''} key={u.label}>
+            {u.label}
+          </Radio>
+        ))}
+      </Radio.Group>
+    </div>
   );
 };
 
