@@ -55,8 +55,9 @@
         margin: 0 auto;
         flex-wrap: wrap;
         gap: 1rem;
+        padding: 0 1rem;
 
-        @media (max-width: 911px) {
+        @media (max-width: 958px) {
           justify-content: center;
         }
       }
@@ -68,7 +69,7 @@
         background: var(--fds-semantic-background-default);
         padding: 0 2rem;
         border-radius: 10px;
-        @media (min-width: 912px) {
+        @media (min-width: 959px) {
           width: 100%;
         }
       }
@@ -127,10 +128,19 @@
   margin: auto;
   padding: 3rem 0;
 
+  div[class*='fds-textarea-description-'],
+  div[class*='fds-fieldset-description-'] {
+    font-size: 14px !important;
+  }
+
+  h3 {
+    margin-bottom: 2rem;
+  }
+
   &-content {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
   }
 
   &-entry {

@@ -1,5 +1,3 @@
-import './debounced-input.scss';
-
 import {
   Textarea,
   Textfield,

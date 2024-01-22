@@ -19,7 +19,6 @@ export type CreateTestResultat = {
   elementResultat?: ManualElementResultat;
   elementUtfall?: string;
   testVartUtfoert?: string;
-  ikkjeRelevant: boolean;
 };
 
 export type ManualTestResultat = {

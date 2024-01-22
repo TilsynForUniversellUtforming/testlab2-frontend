@@ -37,18 +37,21 @@ const TestFormInputRadio = ({ testingStep, formStep, onAnswer }: Props) => {
   }, [testingStep]);
 
   return (
-    <Radio.Group
-      legend={step.heading}
-      value={value}
-      onChange={handleValueChange}
-      name={formStep.key}
-    >
-      {step.input.inputSelectionOutcome.map((u) => (
-        <Radio value={u.label || ''} key={u.label}>
-          {u.label}
-        </Radio>
-      ))}
-    </Radio.Group>
+    <div className="">
+      <Radio.Group
+        legend={step.heading}
+        value={value}
+        onChange={handleValueChange}
+        name={formStep.key}
+        description={step.description}
+      >
+        {step.input.inputSelectionOutcome.map((u) => (
+          <Radio value={u.label || ''} key={u.label}>
+            {u.label}
+          </Radio>
+        ))}
+      </Radio.Group>
+    </div>
   );
 };
 

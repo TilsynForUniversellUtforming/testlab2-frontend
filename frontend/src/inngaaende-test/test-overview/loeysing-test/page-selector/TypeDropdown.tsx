@@ -6,23 +6,18 @@ import { useRef, useState } from 'react';
 
 interface Props {
   title: string;
-  selectedType: string;
-  onChangeType: (type?: string) => void;
+  typeId: string;
+  onChangeType: (typeId?: string) => void;
   options: OptionType[];
 }
 
-const TypeDropdown = ({
-  title,
-  selectedType,
-  onChangeType,
-  options,
-}: Props) => {
+const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   const anchorEl = useRef(null);
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (type?: string) => {
+  const handleButtonClick = (nettsideId?: string) => {
     setShow(false);
-    onChangeType(type);
+    onChangeType(nettsideId);
   };
 
   return (
@@ -59,7 +54,7 @@ const TypeDropdown = ({
             <DropdownMenu.Item
               key={value}
               onClick={() => handleButtonClick(value)}
-              className={classnames({ active: value === selectedType })}
+              className={classnames({ active: value === typeId })}
             >
               {label}
             </DropdownMenu.Item>

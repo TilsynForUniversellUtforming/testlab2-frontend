@@ -11,7 +11,7 @@ import { innhaldsType, PageType } from '@test/types';
 export interface PageTypeSelectorProps {
   nettsideProperties: NettsideProperties[];
   pageType: PageType;
-  onChangePageType: (pageType?: string) => void;
+  onChangePageType: (nettsideId?: string) => void;
   contentType: string;
   onChangeContentType: (contentType?: string) => void;
 }
@@ -29,9 +29,12 @@ const PageTypeSelector = ({
   }));
 
   const pageOptions = nettsideProperties
-    .map(({ type }) => {
+    .map(({ id, type }) => {
       if (isDefined(type)) {
-        const option: OptionType = { value: type, label: capitalize(type) };
+        const option: OptionType = {
+          value: String(id),
+          label: capitalize(type),
+        };
         return option;
       }
     })
@@ -45,13 +48,13 @@ const PageTypeSelector = ({
       <div className="page-selector-wrapper">
         <TypeDropdown
           title="Innhaldstypar"
-          selectedType={contentType}
+          typeId={contentType}
           onChangeType={onChangeContentType}
           options={contentOptions}
         />
         <TypeDropdown
           title="Sideutvalg"
-          selectedType={pageType.pageType}
+          typeId={String(pageType.nettsideId)}
           onChangeType={onChangePageType}
           options={pageOptions}
         />

@@ -15,7 +15,6 @@ data class ResultatManuellKontroll(
     val elementUtfall: String?,
     val svar: List<Svar>,
     val testVartUtfoert: Instant?,
-    val ikkjeRelevant: Boolean? = false,
 ) {
   data class Svar(val steg: String, val svar: String)
 }

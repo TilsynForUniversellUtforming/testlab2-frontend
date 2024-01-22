@@ -18,7 +18,7 @@ const TestFormInputText = ({
   onAnswer,
 }: Props) => {
   const {
-    step: { heading },
+    step: { heading, description },
     answer,
   } = testingStep;
   const [value, setValue] = useState(answer?.svar);
@@ -36,6 +36,7 @@ const TestFormInputText = ({
   return (
     <DebouncedInput
       label={heading}
+      description={description}
       name={formStep.key}
       type="text"
       value={value}

@@ -19,9 +19,9 @@ import { Testregel } from '@testreglar/api/types';
 
 export const getTestResultsForLoeysing = (
   testResults: ManualTestResultat[],
-  loeysingId: string | undefined
+  loeysingId: number | undefined
 ): ManualTestResultat[] =>
-  testResults.filter((tr) => String(tr.loeysingId) === loeysingId);
+  testResults.filter((tr) => tr.loeysingId === loeysingId);
 
 export const isAllNonRelevant = (testResults: ManualTestResultat[]) =>
   testResults.length > 0 &&
@@ -33,11 +33,11 @@ export const progressionForLoeysingNettside = (
   sak: Sak,
   testResults: ManualTestResultat[],
   nettsideId: number,
-  loeysingId: string | undefined
+  loeysingId: number | undefined
 ): number => {
   const numFinishedTestResults = testResults.filter(
     (tr) =>
-      String(tr.loeysingId) === loeysingId &&
+      tr.loeysingId === loeysingId &&
       tr.nettsideId === nettsideId &&
       tr.elementResultat
   ).length;
@@ -49,17 +49,17 @@ export const progressionForLoeysingNettside = (
 
 export const getNettsideProperties = (
   sak: Sak,
-  loeysingId: string | undefined
+  loeysingId: number | undefined
 ): NettsideProperties[] =>
-  sak.loeysingList.find((l) => loeysingId === String(l.loeysing.id))
-    ?.properties || [];
+  sak.loeysingList.find((l) => loeysingId === l.loeysing.id)?.properties || [];
 
 export const toPageType = (
   nettsideProperties: NettsideProperties[],
-  type: string
+  nettsideId: number
 ): PageType => {
   const property =
-    nettsideProperties.find((np) => np.type === type) || nettsideProperties[0];
+    nettsideProperties.find((np) => np.id === nettsideId) ||
+    nettsideProperties[0];
 
   if (isDefined(property?.id) && isDefined(property?.type)) {
     return { nettsideId: property.id, pageType: property.type };
@@ -84,20 +84,21 @@ export const getInitialPageType = (
 
 export const toTestregelStatus = (
   testregelList: TestregelOverviewElement[],
-  testResults: ManualTestResultat[]
+  testResults: ManualTestResultat[],
+  nettsideId: number
 ): Map<number, TestStatus> =>
   new Map(
     testregelList.map((testregel) => {
       let status: TestStatus;
       const tr = testResults.find(
-        (testResult) => testResult.testregelId === testregel.id
+        (testResult) =>
+          testResult.testregelId === testregel.id &&
+          testResult.nettsideId === nettsideId
       );
       if (isNotDefined(tr)) {
         status = 'ikkje-starta';
       } else {
-        if (tr.ikkjeRelevant) {
-          status = 'deaktivert';
-        } else if (
+        if (
           isDefined(tr.elementResultat) &&
           isDefined(tr.elementOmtale) &&
           isDefined(tr.elementUtfall)

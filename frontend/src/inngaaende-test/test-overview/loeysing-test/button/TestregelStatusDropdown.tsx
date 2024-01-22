@@ -26,7 +26,7 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
   const options: StatusOption[] = [
     { label: 'Ferdig', value: 'ferdig' },
     { label: 'Under arbeid', value: 'under-arbeid' },
-    { label: 'Ikkje relevant', value: 'deaktivert' },
+    // { label: 'Ikkje relevant', value: 'deaktivert' },
   ];
 
   return (

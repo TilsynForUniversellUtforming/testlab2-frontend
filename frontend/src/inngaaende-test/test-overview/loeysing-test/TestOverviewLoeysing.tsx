@@ -1,5 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
+import { isDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
 import { CreateTestResultat, ManualTestResultat } from '@test/api/types';
@@ -24,14 +25,13 @@ import {
   getInitialPageType,
   getNettsideProperties,
   getTestResultsForLoeysing,
-  isAllNonRelevant,
   progressionForLoeysingNettside,
   toPageType,
   toTestregelOverviewElement,
   toTestregelStatus,
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import TestRegelParamSelection from './TestRegelParamSelection';
@@ -49,12 +49,12 @@ const TestOverviewLoeysing = () => {
   const [sak, setSak] = useState<Sak>(contextSak);
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
     ManualTestResultat[]
-  >(getTestResultsForLoeysing(contextTestResults, loeysingId));
-  const [allNonRelevant, setAllNonRelevant] = useState(
-    isAllNonRelevant(testResultsLoeysing)
-  );
+  >(getTestResultsForLoeysing(contextTestResults, Number(loeysingId)));
+  // const [allNonRelevant, setAllNonRelevant] = useState(
+  //   isAllNonRelevant(testResultsLoeysing)
+  // );
   const [nettsideProperties, setNettsideProperties] = useState(
-    getNettsideProperties(contextSak, loeysingId)
+    getNettsideProperties(contextSak, Number(loeysingId))
   );
   const [pageType, setPageType] = useState<PageType>(
     getInitialPageType(nettsideProperties)
@@ -64,14 +64,14 @@ const TestOverviewLoeysing = () => {
       contextSak,
       contextTestResults,
       pageType.nettsideId,
-      loeysingId
+      Number(loeysingId)
     )
   );
   const [testregelList, setTestregelList] = useState(
     sak.testreglar.map((tr) => toTestregelOverviewElement(tr))
   );
   const [testStatusMap, setTestStatusMap] = useState(
-    toTestregelStatus(testregelList, testResultsLoeysing)
+    toTestregelStatus(testregelList, testResultsLoeysing, pageType.nettsideId)
   );
 
   const handleSetTestingSteps = (
@@ -94,7 +94,13 @@ const TestOverviewLoeysing = () => {
     setTestingSteps(testingSteps);
   };
 
-  useEffect(() => {
+  const processData = (
+    contextSak: Sak,
+    contextTestResults: ManualTestResultat[],
+    loeysingId: number,
+    activeTestregel: Testregel,
+    pageType: PageType
+  ) => {
     const testregelList = sak.testreglar.map((tr) =>
       toTestregelOverviewElement(tr)
     );
@@ -111,7 +117,7 @@ const TestOverviewLoeysing = () => {
     setSak(contextSak);
     setTestregelList(testregelList);
     setTestResultsLoeysing(filteredTestResults);
-    setAllNonRelevant(isAllNonRelevant(filteredTestResults));
+    // setAllNonRelevant(isAllNonRelevant(filteredTestResults));
     setNettsideProperties(filteredNettsideProperties);
     setProgressionPercent(
       progressionForLoeysingNettside(
@@ -121,11 +127,11 @@ const TestOverviewLoeysing = () => {
         loeysingId
       )
     );
-    setTestStatusMap(toTestregelStatus(testregelList, filteredTestResults));
-    if (activeTestregel) {
-      handleSetTestingSteps(activeTestregel, filteredTestResults, pageType);
-    }
-  }, [contextSak, contextTestResults, loeysingId, activeTestregel]);
+    setTestStatusMap(
+      toTestregelStatus(testregelList, filteredTestResults, pageType.nettsideId)
+    );
+    handleSetTestingSteps(activeTestregel, filteredTestResults, pageType);
+  };
 
   const onClickSave = () => {
     setActiveTestregel(undefined);
@@ -136,9 +142,10 @@ const TestOverviewLoeysing = () => {
   };
 
   const onChangePageType = useCallback(
-    (pageType?: string) => {
-      if (pageType) {
-        setPageType(toPageType(nettsideProperties, pageType));
+    (nettsideId?: string) => {
+      const nettsideIdNumeric = Number(nettsideId);
+      if (isDefined(nettsideIdNumeric)) {
+        setPageType(toPageType(nettsideProperties, nettsideIdNumeric));
       }
     },
     [nettsideProperties]
@@ -150,23 +157,23 @@ const TestOverviewLoeysing = () => {
     }
   }, []);
 
-  const toggleAllNonRelevant = useCallback(() => {
-    // TODO - TA BORT, oppdater testresulat i api
-    const nextToggle = !allNonRelevant;
-    setAllNonRelevant(nextToggle);
-    if (nextToggle) {
-      setTestStatusMap((currentMap) => {
-        const updatedMap = new Map(currentMap);
-
-        updatedMap.forEach((value, key) => {
-          updatedMap.set(key, 'deaktivert');
-        });
-
-        return updatedMap;
-      });
-    }
-    // TODO - TA BORT
-  }, [allNonRelevant]);
+  // const toggleAllNonRelevant = useCallback(() => {
+  //   // TODO - TA BORT, oppdater testresulat i api
+  //   const nextToggle = !allNonRelevant;
+  //   setAllNonRelevant(nextToggle);
+  //   if (nextToggle) {
+  //     setTestStatusMap((currentMap) => {
+  //       const updatedMap = new Map(currentMap);
+  //
+  //       updatedMap.forEach((value, key) => {
+  //         updatedMap.set(key, 'deaktivert');
+  //       });
+  //
+  //       return updatedMap;
+  //     });
+  //   }
+  //   // TODO - TA BORT
+  // }, [allNonRelevant]);
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
@@ -184,8 +191,16 @@ const TestOverviewLoeysing = () => {
             doCreateTestResult(
               sakId,
               loeysingId,
-              testregelId,
+              nextTestregel,
               pageType.nettsideId
+            );
+          } else {
+            processData(
+              contextSak,
+              contextTestResults,
+              Number(loeysingId),
+              nextTestregel,
+              pageType
             );
           }
         } catch (e) {
@@ -193,7 +208,7 @@ const TestOverviewLoeysing = () => {
         }
       }
     },
-    [sakId, loeysingId, testregelList, testResultsLoeysing, pageType.nettsideId]
+    [sakId, loeysingId, testregelList, contextTestResults, pageType.nettsideId]
   );
 
   const onChangeStatus = useCallback(
@@ -202,9 +217,9 @@ const TestOverviewLoeysing = () => {
       const updatedMap = new Map(testStatusMap);
       updatedMap.set(testregelId, status);
       setTestStatusMap(updatedMap);
-      setAllNonRelevant((prevAllRelevant) =>
-        prevAllRelevant ? false : prevAllRelevant
-      );
+      // setAllNonRelevant((prevAllRelevant) =>
+      //   prevAllRelevant ? false : prevAllRelevant
+      // );
       // TODO TA BORT
     },
     [testStatusMap]
@@ -215,26 +230,35 @@ const TestOverviewLoeysing = () => {
     async (
       sakId: string | undefined,
       loeysingId: string | undefined,
-      testregelId: number | undefined,
+      activeTestregel: Testregel,
       nettsideId: number | undefined
     ) => {
+      const sakIdNumeric = Number(sakId);
+      const loeysingIdNumeric = Number(loeysingId);
+
       if (
-        !isNaN(Number(sakId)) &&
-        !isNaN(Number(loeysingId)) &&
-        testregelId &&
+        isDefined(sakIdNumeric) &&
+        isDefined(loeysingIdNumeric) &&
+        activeTestregel &&
         nettsideId
       ) {
         const testResult: CreateTestResultat = {
-          sakId: Number(sakId),
-          loeysingId: Number(loeysingId),
-          testregelId: testregelId,
+          sakId: sakIdNumeric,
+          loeysingId: loeysingIdNumeric,
+          testregelId: activeTestregel.id,
           nettsideId: nettsideId,
-          ikkjeRelevant: false,
         };
 
         try {
           const createdTestResults = await createTestResultat(testResult);
           contextSetTestResults(createdTestResults);
+          processData(
+            contextSak,
+            createdTestResults,
+            loeysingIdNumeric,
+            activeTestregel,
+            pageType
+          );
         } catch (e) {
           setAlert('danger', 'Opprett testresultat feila');
         }
@@ -242,21 +266,23 @@ const TestOverviewLoeysing = () => {
         setAlert('danger', 'Ugyldig oppretting av testresultat');
       }
     },
-    []
+    [contextSak, loeysingId, activeTestregel, pageType]
   );
 
   const doUpdateTestResult = useCallback(
     async (testAnswers: TestAnswers) => {
-      console.log('INNE', testResultsLoeysing);
       const testResultId = findActiveTestResult(
         testResultsLoeysing,
         pageType.nettsideId,
         activeTestregel?.id
       );
 
+      const sakIdNumeric = Number(sakId);
+      const loeysingIdNumeric = Number(loeysingId);
+
       if (
-        !isNaN(Number(sakId)) &&
-        !isNaN(Number(loeysingId)) &&
+        isDefined(sakIdNumeric) &&
+        isDefined(loeysingIdNumeric) &&
         activeTestregel &&
         pageType.nettsideId &&
         testResultId
@@ -271,12 +297,18 @@ const TestOverviewLoeysing = () => {
           elementResultat: testAnswers.elementResultat,
           elementUtfall: testAnswers.elementUtfall,
           svar: testAnswers.answers,
-          ikkjeRelevant: false,
         };
 
         try {
-          const createdTestResults = await updateTestResultat(testResult);
-          contextSetTestResults(createdTestResults);
+          const updatedTestResults = await updateTestResultat(testResult);
+          contextSetTestResults(updatedTestResults);
+          processData(
+            contextSak,
+            updatedTestResults,
+            loeysingIdNumeric,
+            activeTestregel,
+            pageType
+          );
         } catch (e) {
           setAlert('danger', 'Oppdatering av testresultat feila');
         }
@@ -308,8 +340,8 @@ const TestOverviewLoeysing = () => {
         <TestRegelParamSelection
           pageType={pageType.pageType}
           contentType={contentType}
-          allNonRelevant={allNonRelevant}
-          toggleAllNonRelevant={toggleAllNonRelevant}
+          // allNonRelevant={allNonRelevant}
+          // toggleAllNonRelevant={toggleAllNonRelevant}
           progressionPercent={progressionPercent}
         />
         <div className="testregel-container">

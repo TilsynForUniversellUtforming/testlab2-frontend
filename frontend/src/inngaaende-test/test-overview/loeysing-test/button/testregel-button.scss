@@ -13,7 +13,7 @@
 
   .status-dropdown {
     position: relative;
-    top: -2.5rem;
+    top: -2.75rem;
     left: 7.5rem;
     display: inline-block;
     > button {
@@ -96,11 +96,11 @@
   &-id {
     background-color: var(--fds-semantic-border-action-first-subtle-hover);
     color: var(--fds-semantic-surface-neutral-default);
-    padding: 1rem;
+    padding: 2rem 1rem 1rem 1rem;
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: center;
-    min-height: 8rem;
+    min-height: 7rem;
     width: 3rem;
     min-width: 5rem;
     font: var(--fds-typography-paragraph-medium);
@@ -110,7 +110,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 1rem;
+      height: 7rem;
       .status {
         font: var(--fds-typography-paragraph-xsmall);
         font-family: 'Inter', sans-serif;
@@ -134,10 +134,11 @@
   }
 
   &-name {
-    padding: 1rem;
+    padding-top: 2rem;
     min-width: 8rem;
     position: absolute;
-    left: 7rem;
+    top: 0;
+    left: 8rem;
     text-align: left;
   }
 }

@@ -13,5 +13,4 @@ data class CreateTestResultat(
     val elementResultat: String? = null,
     val elementUtfall: String? = null,
     val testVartUtfoert: Instant? = null,
-    val ikkjeRelevant: Boolean = false,
 )
