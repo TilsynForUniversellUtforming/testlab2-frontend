@@ -3,7 +3,7 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dummy
 import kotlin.random.Random
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
 
 object AggregertResultatDTODummy {
   fun generateAggregertResultatDTODummyList(maaling: MaalingDTO): List<AggregertResultatDTO> {

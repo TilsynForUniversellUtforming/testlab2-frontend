@@ -1,5 +1,6 @@
 import { capitalize } from '@common/util/stringutils';
 import { isNotDefined } from '@common/util/validationUtils';
+import { Svar } from '@test/api/types';
 
 import {
   JaNeiType,
@@ -8,9 +9,10 @@ import {
   StegDTO,
   TargetType,
   TestingRouteActionType,
-  TestingStep,
   TestingStepInputType,
+  TestingStepProperties,
   TestregelDTO,
+  TestStep,
 } from '../types';
 
 const parseHtmlEntities = (text: string): string => {
@@ -107,8 +109,8 @@ const toInputSelectionOutcome = (
 
 const translateToTestingStep = (
   testregel: TestregelDTO
-): Map<string, TestingStep> => {
-  const stepMap = new Map<string, TestingStep>();
+): Map<string, TestingStepProperties> => {
+  const stepMap = new Map<string, TestingStepProperties>();
 
   const stepsWithoutFirst = testregel.steg.slice(1);
 
@@ -127,7 +129,7 @@ const translateToTestingStep = (
 
     const inputType: TestingStepInputType = multilinje ? 'multiline' : type;
 
-    const testingStep: TestingStep = {
+    const testingStep: TestingStepProperties = {
       heading: parseHtmlEntities(spm),
       description: parseHtmlEntities(ht),
       input: {
@@ -150,7 +152,7 @@ const translateToTestingStep = (
 
 export const parseTestregel = (
   jsonString: string
-): Map<string, TestingStep> => {
+): Map<string, TestingStepProperties> => {
   const jsonData = JSON.parse(jsonString);
 
   if (isNotDefined(jsonData.steg)) {
@@ -158,4 +160,24 @@ export const parseTestregel = (
   }
 
   return translateToTestingStep(jsonData);
+};
+
+export const combineStepsAndAnswers = (
+  testSteps: Map<string, TestingStepProperties>,
+  answers?: Svar[]
+): Map<string, TestStep> => {
+  const testStepsWithAnswers = new Map<string, TestStep>();
+
+  testSteps.forEach((testingStepProperties, key) => {
+    const answer = answers?.find((answer) => answer.steg === key);
+
+    const testStep: TestStep = {
+      step: testingStepProperties,
+      answer: answer,
+    };
+
+    testStepsWithAnswers.set(key, testStep);
+  });
+
+  return testStepsWithAnswers;
 };

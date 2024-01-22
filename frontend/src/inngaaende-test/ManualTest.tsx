@@ -1,13 +1,15 @@
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
+import { isNotDefined } from '@common/util/validationUtils';
 import { Spinner } from '@digdir/design-system-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
+import { ManualTestResultat } from '@test/api/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
 import { getManuellKontrollResults } from './api/testing-api';
-import { ManualTestResult, TestContext } from './types';
+import { TestContext } from './types';
 
 const ManualTest = () => {
   const { id } = useParams();
@@ -15,16 +17,22 @@ const ManualTest = () => {
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [sak, setSak] = useState<Sak | undefined>();
-  const [testResults, setTestResults] = useState<ManualTestResult[]>([]);
+  const [testResults, setTestResults] = useState<ManualTestResultat[]>([]);
   const hasFetched = useRef(false);
 
   const doFetchData = useCallback(async () => {
+    const numericId = Number(id);
+    if (isNotDefined(numericId)) {
+      setError(new Error('Sak med id finnes ikkje'));
+      return;
+    }
+
     try {
       const [sakResponse, testResultsResponse] = await Promise.all([
         getSak(Number(id)),
         getManuellKontrollResults(Number(id)),
       ]);
-      setSak(sakResponse);
+      setSak({ ...sakResponse, id: numericId });
       setTestResults(testResultsResponse);
       setLoading(false);
     } catch (err) {
@@ -32,6 +40,13 @@ const ManualTest = () => {
       setLoading(false);
     }
   }, []);
+
+  const handleSetTestResults = useCallback(
+    (testResults: ManualTestResultat[]) => {
+      setTestResults(testResults);
+    },
+    []
+  );
 
   useEffect(() => {
     if (id && !sak && !hasFetched.current) {
@@ -45,17 +60,18 @@ const ManualTest = () => {
     };
   }, []);
 
-  if (loading || !id || !sak) {
+  if (loading || (!sak && !error)) {
     return <Spinner title="Hentar test" />;
   }
 
-  if (error) {
+  if (error || !sak) {
     return <ErrorCard error={error} />;
   }
 
   const testContext: TestContext = {
-    sak: sak,
-    testResults: testResults,
+    contextSak: sak,
+    contextTestResults: testResults,
+    contextSetTestResults: handleSetTestResults,
   };
 
   return <Outlet context={testContext} />;

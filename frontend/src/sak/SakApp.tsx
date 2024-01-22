@@ -1,6 +1,7 @@
 import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/apiUtils';
+import { isDefined } from '@common/util/validationUtils';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
@@ -32,11 +33,12 @@ const SakApp = () => {
   const [advisorList, setAdvisorList] = useState<User[]>([]);
 
   const handleFetchMaaling = async () => {
-    if (id) {
+    const numericId = Number(id);
+
+    if (isDefined(numericId)) {
       try {
-        const sak = await getSak(Number(id));
-        // setSak(sak);
-        setSak(sak);
+        const sak = await getSak(numericId);
+        setSak({ ...sak, id: numericId });
       } catch (e) {
         setError(toError(e, 'Kunne ikkje hente sak'));
       }

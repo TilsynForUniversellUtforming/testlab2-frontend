@@ -1,22 +1,23 @@
 import { ErrorMessage } from '@digdir/design-system-react';
+import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';
 import TestFormInputText from '@test/testregel-form/input/TestFormInputText';
 import { TestFormStep } from '@test/testregel-form/types';
-import { SelectionOutcome, TestingStep } from '@test/types';
+import { SelectionOutcome, TestStep } from '@test/types';
 
 import TestResultCard from './TestResultCard';
 
 interface FormStepProps {
-  testingStep?: TestingStep;
+  testingStep?: TestStep;
   formStep: TestFormStep;
-  onAction: (stepKey: string, selectionOutcome: SelectionOutcome) => void;
+  onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
 }
 
 const TestFormStepWrapper = ({
   testingStep,
   formStep,
-  onAction,
+  onAnswer,
 }: FormStepProps) => {
   if (formStep.key === 'avslutt') {
     const isSamsvar = formStep.fasit?.toLowerCase() === 'ja';
@@ -39,7 +40,7 @@ const TestFormStepWrapper = ({
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
   }
 
-  const inputType = testingStep.input.inputType;
+  const inputType = testingStep.step.input.inputType;
 
   switch (inputType) {
     case 'tekst':
@@ -49,6 +50,7 @@ const TestFormStepWrapper = ({
           testingStep={testingStep}
           formStep={formStep}
           multiline={inputType === 'multiline'}
+          onAnswer={onAnswer}
         />
       );
     case 'instruksjon':
@@ -59,7 +61,7 @@ const TestFormStepWrapper = ({
         <TestFormInputRadio
           testingStep={testingStep}
           formStep={formStep}
-          onAction={onAction}
+          onAnswer={onAnswer}
         />
       );
   }

@@ -98,11 +98,12 @@ export const fetchLoeysingNettsider = async (
   );
 
 export const fetchTestResultatLoeysing = async (
-  id: number,
+  maalingId: number,
   loeysingId: number
 ): Promise<AutotesterResult[]> =>
-  await fetch(`/api/v1/testing/${id}/resultat?loeysingId=${loeysingId}`, {
-    method: 'GET',
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
-  );
+  await fetch(
+    `/api/v1/maalinger/${maalingId}/resultat?loeysingId=${loeysingId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) => responseToJson(response, 'Kunne ikkje hente løysingar'));

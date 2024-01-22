@@ -4,9 +4,9 @@ import java.time.LocalDate
 import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggegatedTestresultTestregel
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.AggregertResultatDTO
-import no.uutilsynet.testlab2frontendserver.testing.dto.aggregation.Testresult
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.Testresult
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 
 data class Maaling(

@@ -1,35 +1,47 @@
-import { Textarea, Textfield } from '@digdir/design-system-react';
+import DebouncedInput from '@common/debounced-input/DebouncedInput';
+import { Svar } from '@test/api/types';
 import { TestFormStep } from '@test/testregel-form/types';
-import { TestingStep } from '@test/types';
-import { useState } from 'react';
+import { TestStep } from '@test/types';
+import { useCallback, useState } from 'react';
 
 interface Props {
-  testingStep: TestingStep;
+  testingStep: TestStep;
   formStep: TestFormStep;
   multiline: boolean;
+  onAnswer: (answer: Svar) => void;
 }
 
-const TestFormInputText = ({ testingStep, formStep, multiline }: Props) => {
-  const [value, setValue] = useState<string>('');
+const TestFormInputText = ({
+  testingStep,
+  formStep,
+  multiline,
+  onAnswer,
+}: Props) => {
+  const {
+    step: { heading, description },
+    answer,
+  } = testingStep;
+  const [value, setValue] = useState(answer?.svar);
 
-  if (multiline) {
-    return (
-      <Textarea
-        label={testingStep.heading}
-        name={formStep.key}
-        value={String(value)}
-        onChange={(e) => setValue(e.target.value)}
-      />
-    );
-  }
+  const handleValueChange = useCallback(
+    (newValue?: string) => {
+      setValue(newValue);
+      if (typeof newValue === 'string' && newValue !== answer?.svar) {
+        onAnswer({ steg: formStep.key, svar: newValue });
+      }
+    },
+    [answer?.svar, formStep.key]
+  );
 
   return (
-    <Textfield
-      label={testingStep.heading}
+    <DebouncedInput
+      label={heading}
+      description={description}
       name={formStep.key}
       type="text"
-      value={String(value)}
-      onChange={(e) => setValue(e.target.value)}
+      value={value}
+      onChange={handleValueChange}
+      textArea={multiline}
     />
   );
 };
