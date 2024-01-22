@@ -90,6 +90,7 @@ const InitContentInngaaende = () => {
 
   return (
     <>
+      <TestlabFormInput label="Frist" name="frist" type="date" required />
       <TestlabFormAutocomplete<SakFormState, Loeysing>
         label="Navn på testobjekt"
         description="Søk etter virksomhetsnavn eller orgnr."
@@ -104,7 +105,6 @@ const InitContentInngaaende = () => {
         required
         spacing
       />
-      <TestlabFormInput label="Frist" name="frist" type="date" required />
       <SakVerksemdResult
         verksemd={verksemdLoeysingRelation?.verksemd}
         showManualEntry={showManualEntry}
