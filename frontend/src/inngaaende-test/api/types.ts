@@ -3,7 +3,7 @@ export type Svar = {
   svar: string;
 };
 
-export type ManualElementResultat =
+export type ElementResultat =
   | 'samsvar'
   | 'ikkjeForekomst'
   | 'brot'
@@ -16,12 +16,12 @@ export type CreateTestResultat = {
   testregelId: number;
   nettsideId: number;
   elementOmtale?: string;
-  elementResultat?: ManualElementResultat;
+  elementResultat?: ElementResultat;
   elementUtfall?: string;
   testVartUtfoert?: string;
 };
 
-export type ManualTestResultat = {
+export type ResultatManuellKontroll = {
   id: number;
   svar: Svar[];
   ferdig: boolean;

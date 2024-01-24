@@ -8,14 +8,14 @@ const json =
 
 describe('parseJSONAndValidateSteg', () => {
   it('should get the keys sorted order and correct length', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const keys = Array.from(resultMap.keys());
 
     expect(keys).toStrictEqual(['2.2', '2.3', '2.4', '3.1', '3.2', '3.4']);
   });
 
   it('should parse testregel with tekst', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const expected: TestingStepProperties = {
       heading: 'Beskriv det lenka bilde',
       description:
@@ -41,7 +41,7 @@ describe('parseJSONAndValidateSteg', () => {
   });
 
   it('should parse testregel with multiline', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const expected: TestingStepProperties = {
       heading: 'Beskriv det lenka bilde',
       description:
@@ -61,7 +61,7 @@ describe('parseJSONAndValidateSteg', () => {
   });
 
   it('should parse testregel - jaNei', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const expected: TestingStepProperties = {
       heading:
         'Finst det innhald på nettsida kor meiningsinnhaldet blir påvirka av rekkefølgjen som innhaldet blir presentert i?',
@@ -88,7 +88,7 @@ describe('parseJSONAndValidateSteg', () => {
   });
 
   it('should parse testregel - instruksjon', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const expected: TestingStepProperties = {
       heading:
         'Opne nettsida i eit nytt nettlesarvindauge og slå av stilarket (CSS).',
@@ -106,7 +106,7 @@ describe('parseJSONAndValidateSteg', () => {
   });
 
   it('should parse testregel - radio - alle', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const expected: TestingStepProperties = {
       heading: 'Kva type funksjonalitet er elementet ein del av?',
       description: 'Velg frå alternativa under.',
@@ -129,7 +129,7 @@ describe('parseJSONAndValidateSteg', () => {
   });
 
   it('should parse testregel - radio - alternatives', () => {
-    const resultMap = parseTestregel(json);
+    const { steps: resultMap } = parseTestregel(json);
     const expected: TestingStepProperties = {
       heading:
         'Må innhaldet vere i ei bestemt rekkefølgje for at du skal kunne forstå innhaldet?',
@@ -157,5 +157,12 @@ describe('parseJSONAndValidateSteg', () => {
     const result = resultMap.get('3.2');
 
     expect(result).toMatchObject(expected);
+  });
+
+  it('should get correct element', () => {
+    const { element } = parseTestregel(json);
+
+    const expected = '3.1';
+    expect(element).toMatchObject(expected);
   });
 });

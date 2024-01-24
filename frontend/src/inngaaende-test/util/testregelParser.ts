@@ -4,6 +4,7 @@ import { Svar } from '@test/api/types';
 
 import {
   JaNeiType,
+  ManualTestregel,
   RutingDTO,
   SelectionOutcome,
   StegDTO,
@@ -107,9 +108,7 @@ const toInputSelectionOutcome = (
   }
 };
 
-const translateToTestingStep = (
-  testregel: TestregelDTO
-): Map<string, TestingStepProperties> => {
+const translateToTestingStep = (testregel: TestregelDTO): ManualTestregel => {
   const stepMap = new Map<string, TestingStepProperties>();
 
   const stepsWithoutFirst = testregel.steg.slice(1);
@@ -147,12 +146,10 @@ const translateToTestingStep = (
     stepMap.set(stegnr, testingStep);
   });
 
-  return stepMap;
+  return { element: testregel.element, steps: stepMap };
 };
 
-export const parseTestregel = (
-  jsonString: string
-): Map<string, TestingStepProperties> => {
+export const parseTestregel = (jsonString: string): ManualTestregel => {
   const jsonData = JSON.parse(jsonString);
 
   if (isNotDefined(jsonData.steg)) {

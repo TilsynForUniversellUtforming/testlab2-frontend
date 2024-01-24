@@ -1,6 +1,6 @@
 import { Sak } from '@sak/api/types';
 
-import { ManualElementResultat, ManualTestResultat, Svar } from './api/types';
+import { ElementResultat, ResultatManuellKontroll, Svar } from './api/types';
 
 export type TestingStepInputDTO =
   | 'jaNei' // Ja nei radio
@@ -102,7 +102,7 @@ export type TestregelDTO = {
   spraak: string;
   kravTilSamsvar: string;
   side: string;
-  element: string;
+  element: TargetType;
   kolonner: KolonneDTO[];
   steg: StegDTO[];
 };
@@ -123,8 +123,8 @@ export type TestregelOverviewElement = {
 
 export interface TestContext {
   contextSak: Sak;
-  contextTestResults: ManualTestResultat[];
-  contextSetTestResults: (testResults: ManualTestResultat[]) => void;
+  contextTestResults: ResultatManuellKontroll[];
+  contextSetTestResults: (testResults: ResultatManuellKontroll[]) => void;
 }
 
 export const innhaldsType = [
@@ -158,6 +158,11 @@ export type PageType = {
 export type TestAnswers = {
   answers: Svar[];
   elementOmtale?: string;
-  elementResultat?: ManualElementResultat;
+  elementResultat?: ElementResultat;
   elementUtfall?: string;
+};
+
+export type ManualTestregel = {
+  element: TargetType;
+  steps: Map<string, TestingStepProperties>;
 };

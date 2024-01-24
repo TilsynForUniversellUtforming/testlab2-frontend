@@ -1,10 +1,10 @@
 import { responseToJson } from '@common/util/apiUtils';
 
-import { CreateTestResultat, ManualTestResultat } from './types';
+import { CreateTestResultat, ResultatManuellKontroll } from './types';
 
-export const getManuellKontrollResults = async (
+export const getTestResults = async (
   sakId: number
-): Promise<ManualTestResultat[]> => {
+): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`/api/v1/testing/${sakId}`, {
     method: 'GET',
   }).then((response) =>
@@ -14,7 +14,7 @@ export const getManuellKontrollResults = async (
 
 export const createTestResultat = async (
   testResulat: CreateTestResultat
-): Promise<ManualTestResultat[]> => {
+): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`/api/v1/testing`, {
     method: 'POST',
     headers: {
@@ -27,8 +27,8 @@ export const createTestResultat = async (
 };
 
 export const updateTestResultat = async (
-  testResulat: ManualTestResultat
-): Promise<ManualTestResultat[]> => {
+  testResulat: ResultatManuellKontroll
+): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`/api/v1/testing`, {
     method: 'PUT',
     headers: {

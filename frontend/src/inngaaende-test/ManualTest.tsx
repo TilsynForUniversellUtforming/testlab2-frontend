@@ -4,11 +4,11 @@ import { isNotDefined } from '@common/util/validationUtils';
 import { Spinner } from '@digdir/design-system-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
-import { ManualTestResultat } from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import { getManuellKontrollResults } from './api/testing-api';
+import { getTestResults } from './api/testing-api';
 import { TestContext } from './types';
 
 const ManualTest = () => {
@@ -17,7 +17,7 @@ const ManualTest = () => {
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [sak, setSak] = useState<Sak | undefined>();
-  const [testResults, setTestResults] = useState<ManualTestResultat[]>([]);
+  const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>([]);
   const hasFetched = useRef(false);
 
   const doFetchData = useCallback(async () => {
@@ -30,7 +30,7 @@ const ManualTest = () => {
     try {
       const [sakResponse, testResultsResponse] = await Promise.all([
         getSak(Number(id)),
-        getManuellKontrollResults(Number(id)),
+        getTestResults(Number(id)),
       ]);
       setSak({ ...sakResponse, id: numericId });
       setTestResults(testResultsResponse);
@@ -42,7 +42,7 @@ const ManualTest = () => {
   }, []);
 
   const handleSetTestResults = useCallback(
-    (testResults: ManualTestResultat[]) => {
+    (testResults: ResultatManuellKontroll[]) => {
       setTestResults(testResults);
     },
     []

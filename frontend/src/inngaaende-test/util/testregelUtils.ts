@@ -2,8 +2,8 @@ import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { NettsideProperties } from '@sak/types';
 import {
-  ManualElementResultat,
-  ManualTestResultat,
+  ElementResultat,
+  ResultatManuellKontroll,
   Svar,
 } from '@test/api/types';
 import { TestFormStep } from '@test/testregel-form/types';
@@ -18,9 +18,9 @@ import {
 import { Testregel } from '@testreglar/api/types';
 
 export const getTestResultsForLoeysing = (
-  testResults: ManualTestResultat[],
+  testResults: ResultatManuellKontroll[],
   loeysingId: number | undefined
-): ManualTestResultat[] =>
+): ResultatManuellKontroll[] =>
   testResults.filter((tr) => tr.loeysingId === loeysingId);
 
 // export const isAllNonRelevant = (testResults: ManualTestResultat[]) =>
@@ -31,7 +31,7 @@ export const getTestResultsForLoeysing = (
 
 export const progressionForLoeysingNettside = (
   sak: Sak,
-  testResults: ManualTestResultat[],
+  testResults: ResultatManuellKontroll[],
   nettsideId: number,
   loeysingId: number | undefined
 ): number => {
@@ -90,7 +90,7 @@ export const toTestregelStatusKey = (
 
 export const toTestregelStatus = (
   testregelList: TestregelOverviewElement[],
-  testResults: ManualTestResultat[],
+  testResults: ResultatManuellKontroll[],
   sakId: number,
   loeysingId: number,
   nettsideId: number
@@ -128,22 +128,25 @@ export const toTestregelOverviewElement = ({
   krav,
 }: Testregel): TestregelOverviewElement => {
   // TODO - Bruk testregelId som name
-  const regex = /^(\d+\.\d+\.\d+[a-zA-Z]?)\s+(.*)/;
+  const regex = /^((Nett-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/;
   const result = name.match(regex);
-  if (result && result.length === 3) {
-    return { id: id, name: result[2], krav: result[1] };
+
+  if (result && result.length > 3) {
+    const firstPart = result[1];
+    const secondPart = result[4];
+    return { id: id, name: secondPart, krav: firstPart };
   }
 
   return { id: id, name: name, krav: krav };
 };
 
 export const findActiveTestResult = (
-  testResultsLoeysing: ManualTestResultat[],
+  testResultsLoeysing: ResultatManuellKontroll[],
   sakId: number | undefined,
   loeysingId: number | undefined,
   testregelId: number | undefined,
   nettsideId: number | undefined
-): ManualTestResultat | undefined => {
+): ResultatManuellKontroll | undefined => {
   if (!sakId || !loeysingId || !testregelId || !nettsideId) {
     throw Error('Kan ikkje finne testresultat for sak');
   }
@@ -245,7 +248,7 @@ export const getAnswersFromState = (
 ): TestAnswers => {
   const answers: Svar[] = convertToSvarArray(steps);
 
-  let elementResultat: ManualElementResultat | undefined = undefined;
+  let elementResultat: ElementResultat | undefined = undefined;
   let elementUtfall: string | undefined = undefined;
   const elementOmtale: string | undefined = undefined;
 
