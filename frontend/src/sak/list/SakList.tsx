@@ -4,8 +4,9 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { formatDateString } from '@common/util/stringutils';
 import { Heading } from '@digdir/design-system-react';
 import { SakListeElement } from '@sak/api/types';
-import { SAK, SAK_CREATE } from '@sak/SakRoutes';
+import { SAK_CREATE } from '@sak/SakRoutes';
 import { ColumnDef } from '@tanstack/react-table';
+import { TEST } from '@test/TestingRoutes';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
@@ -40,7 +41,7 @@ const SakList = () => {
         filterPreference="none"
         onClickRow={(row) => {
           navigate(
-            getFullPath(SAK, {
+            getFullPath(TEST, {
               pathParam: idPath,
               id: String(row?.original.id),
             })

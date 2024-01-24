@@ -90,10 +90,16 @@ const InitContentInngaaende = () => {
 
   return (
     <>
-      <TestlabFormInput label="Frist" name="frist" type="date" required />
+      <TestlabFormInput
+        label="Frist"
+        description="Når skal testen vera gjennomført"
+        name="frist"
+        type="date"
+        required
+      />
       <TestlabFormAutocomplete<SakFormState, Loeysing>
-        label="Navn på testobjekt"
-        description="Søk etter virksomhetsnavn eller orgnr."
+        label="Namn på testobjekt"
+        description="Legg til virksomhetsnavn eller orgnr."
         resultList={verksemdAutocompleteList}
         resultLabelKey="namn"
         resultDescriptionKey="orgnummer"

@@ -19,23 +19,15 @@ const SakConfirmStep = ({
     defaultValues: sakFormState,
   });
 
-  let formStep = formStepState;
-  if (sakFormState?.sakType !== 'Forenklet kontroll') {
-    formStep = {
-      ...formStep,
-      buttonStep: { ...formStep?.buttonStep, customNextText: 'Start test' },
-    };
-  }
-
   return (
     <SakFormWrapper
-      formStepState={formStep}
+      formStepState={formStepState}
       onSubmit={onSubmit}
       formMethods={formMethods}
       heading={formStepState.currentStep.heading}
       description={formStepState.currentStep.description}
     >
-      <SakConfirmContent maalingFormState={sakFormState} error={error} />
+      <SakConfirmContent sakFormState={sakFormState} error={error} />
     </SakFormWrapper>
   );
 };

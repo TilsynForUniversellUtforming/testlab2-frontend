@@ -9,6 +9,7 @@ import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { fetchTestreglarList } from '@testreglar/api/testreglar-api';
 import { Regelsett, Testregel } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
+import getVerksemdList_dummy from '@verksemder/api/verksemd-api';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
@@ -170,7 +171,7 @@ const MaalingApp = () => {
           regelsett,
           testregelList,
           advisors,
-          // verksemdList,
+          verksemdList,
         ] = await Promise.all([
           fetchMaalingList(),
           fetchLoeysingList(),
@@ -178,7 +179,7 @@ const MaalingApp = () => {
           fetchRegelsettList(),
           fetchTestreglarList(),
           getAdvisors_dummy(),
-          // getVerksemdList_dummy(),
+          getVerksemdList_dummy(),
         ]);
 
         return {
@@ -188,7 +189,7 @@ const MaalingApp = () => {
           regelsett,
           testregelList,
           advisors,
-          verksemdList: loeysingList,
+          verksemdList,
         };
       },
       'Kan ikkje hente data',
@@ -220,10 +221,10 @@ const MaalingApp = () => {
             setError(new Error('Kunne ikkje hente regelsett'));
           }
 
-          if (data?.regelsett) {
-            setTestregelList(data.regelsett);
+          if (data?.testregelList) {
+            setTestregelList(data.testregelList);
           } else {
-            setError(new Error('Kunne ikkje hente regelsett'));
+            setError(new Error('Kunne ikkje hente testreglar'));
           }
 
           if (data?.advisors) {
