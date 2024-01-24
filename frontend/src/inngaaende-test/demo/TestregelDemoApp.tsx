@@ -39,7 +39,7 @@ const TestregelDemoApp = () => {
             try {
               setTestingSteps(
                 combineStepsAndAnswers(
-                  parseTestregel(testregel.testregelSchema),
+                  parseTestregel(testregel.testregelSchema).steps,
                   undefined
                 )
               );

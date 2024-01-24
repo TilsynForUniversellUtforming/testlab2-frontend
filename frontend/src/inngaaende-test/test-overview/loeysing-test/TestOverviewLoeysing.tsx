@@ -3,7 +3,7 @@ import useAlert from '@common/alert/useAlert';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
-import { CreateTestResultat, ManualTestResultat } from '@test/api/types';
+import { CreateTestResultat, ResultatManuellKontroll } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
@@ -49,7 +49,7 @@ const TestOverviewLoeysing = () => {
   const [alert, setAlert] = useAlert();
   const [sak, setSak] = useState<Sak>(contextSak);
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
-    ManualTestResultat[]
+    ResultatManuellKontroll[]
   >(getTestResultsForLoeysing(contextTestResults, Number(loeysingId)));
   // const [allNonRelevant, setAllNonRelevant] = useState(
   //   isAllNonRelevant(testResultsLoeysing)
@@ -83,12 +83,12 @@ const TestOverviewLoeysing = () => {
 
   const handleSetTestingSteps = (
     testregel: Testregel,
-    testResultsLoeysing: ManualTestResultat[],
+    testResultsLoeysing: ResultatManuellKontroll[],
     sakId: number,
     loeysingId: number,
     nettsideId: number
   ) => {
-    const testregelSteps = parseTestregel(testregel.testregelSchema);
+    const manualTestregel = parseTestregel(testregel.testregelSchema);
     const testResult = findActiveTestResult(
       testResultsLoeysing,
       sakId,
@@ -98,7 +98,7 @@ const TestOverviewLoeysing = () => {
     );
 
     const testingSteps = combineStepsAndAnswers(
-      testregelSteps,
+      manualTestregel.steps,
       testResult?.svar
     );
 
@@ -107,7 +107,7 @@ const TestOverviewLoeysing = () => {
 
   const processData = (
     contextSak: Sak,
-    contextTestResults: ManualTestResultat[],
+    contextTestResults: ResultatManuellKontroll[],
     loeysingId: number,
     pageType: PageType,
     activeTestregel?: Testregel
@@ -355,7 +355,7 @@ const TestOverviewLoeysing = () => {
         pageType.nettsideId &&
         activeTestResult
       ) {
-        const testResult: ManualTestResultat = {
+        const testResult: ResultatManuellKontroll = {
           id: activeTestResult.id,
           sakId: Number(sakId),
           loeysingId: Number(loeysingId),

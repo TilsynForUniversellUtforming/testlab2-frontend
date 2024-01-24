@@ -23,9 +23,9 @@
       "@verksemder/*": ["./verksemder/*"],
       "@sak/*": ["./sak/*"],
       "@testreglar/*": ["./testreglar/*"],
-      "@test/*": ["./inngaaende-test/*"]
-    }
+      "@test/*": ["./inngaaende-test/*"],
+    },
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
 }
