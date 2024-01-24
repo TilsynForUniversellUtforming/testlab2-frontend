@@ -19,7 +19,7 @@ export const createTestregel = async (
     },
     body: JSON.stringify(testregel),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke lage nytt testregel')
+    responseToJson(response, 'Kunne ikkje lage nytt testregel')
   );
 
 export const updateTestregel = async (

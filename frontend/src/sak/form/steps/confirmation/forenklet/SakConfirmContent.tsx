@@ -1,16 +1,23 @@
+import AlertTimed from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import { Accordion } from '@digdir/design-system-react';
 import { SakContext, SakFormState } from '@sak/types';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
   maalingFormState: SakFormState;
+  error: Error | undefined;
 }
 
-const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
+const SakConfirmContent = ({
+  maalingFormState,
+  error,
+}: SakConfirmContentProps) => {
   const { advisors }: SakContext = useOutletContext();
+  const [alert, setAlert] = useAlert();
 
   const {
     navn,
@@ -22,6 +29,12 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
     testregelList,
     verksemdLoeysingRelation,
   } = maalingFormState;
+
+  useEffect(() => {
+    if (error) {
+      setAlert('danger', error.message);
+    }
+  }, [error]);
 
   const [sakItems, loeysingListItems, utvalListItems, testregelItems] =
     useMemo(() => {
@@ -132,6 +145,13 @@ const SakConfirmContent = ({ maalingFormState }: SakConfirmContentProps) => {
           listItems={testregelItems}
         />
       </Accordion>
+      {alert && (
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
     </div>
   );
 };
