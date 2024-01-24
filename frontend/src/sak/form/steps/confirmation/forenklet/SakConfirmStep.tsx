@@ -5,11 +5,16 @@ import { useForm } from 'react-hook-form';
 import SakFormWrapper from '../../../SakFormWrapper';
 import SakConfirmContent from './SakConfirmContent';
 
+interface Props extends SakFormBaseProps {
+  error: Error | undefined;
+}
+
 const SakConfirmStep = ({
   formStepState,
   sakFormState,
   onSubmit,
-}: SakFormBaseProps) => {
+  error,
+}: Props) => {
   const formMethods = useForm<SakFormState>({
     defaultValues: sakFormState,
   });
@@ -30,7 +35,7 @@ const SakConfirmStep = ({
       heading={formStepState.currentStep.heading}
       description={formStepState.currentStep.description}
     >
-      <SakConfirmContent maalingFormState={sakFormState} />
+      <SakConfirmContent maalingFormState={sakFormState} error={error} />
     </SakFormWrapper>
   );
 };

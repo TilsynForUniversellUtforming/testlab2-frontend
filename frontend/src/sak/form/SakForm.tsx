@@ -58,6 +58,7 @@ const SakForm = ({
           formStepState={formStepState}
           sakFormState={sakFormState}
           onSubmit={onSubmit}
+          error={error}
         />
       );
     default:

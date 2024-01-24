@@ -18,7 +18,12 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maaling),
-  }).then((response) => responseToJson(response, 'Kunne ikke lage målingar'));
+  }).then((response) =>
+    responseToJson(
+      response,
+      'Kunne ikkje oppretta måling, ver vennleg og prøv igjen seinare'
+    )
+  );
 
 export const updateMaaling = async (
   maaling: MaalingEditParams
