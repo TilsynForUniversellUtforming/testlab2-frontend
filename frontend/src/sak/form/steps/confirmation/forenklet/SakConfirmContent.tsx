@@ -8,14 +8,11 @@ import { useOutletContext } from 'react-router-dom';
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 
 interface SakConfirmContentProps {
-  maalingFormState: SakFormState;
+  sakFormState: SakFormState;
   error: Error | undefined;
 }
 
-const SakConfirmContent = ({
-  maalingFormState,
-  error,
-}: SakConfirmContentProps) => {
+const SakConfirmContent = ({ sakFormState, error }: SakConfirmContentProps) => {
   const { advisors }: SakContext = useOutletContext();
   const [alert, setAlert] = useAlert();
 
@@ -28,7 +25,7 @@ const SakConfirmContent = ({
     utval,
     testregelList,
     verksemdLoeysingRelation,
-  } = maalingFormState;
+  } = sakFormState;
 
   useEffect(() => {
     if (error) {

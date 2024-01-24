@@ -18,7 +18,7 @@ interface Props {
   onChangeTabs: (tab: string) => void;
 }
 
-const SakEdit = ({ onChangeTabs }: Props) => {
+const MaalingEdit = ({ onChangeTabs }: Props) => {
   const {
     maaling,
     verksemdList,
@@ -115,4 +115,4 @@ const SakEdit = ({ onChangeTabs }: Props) => {
   );
 };
 
-export default SakEdit;
+export default MaalingEdit;

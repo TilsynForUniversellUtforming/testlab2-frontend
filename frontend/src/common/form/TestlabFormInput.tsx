@@ -1,5 +1,6 @@
 import { getErrorMessage } from '@common/form/util';
 import { Textfield, TextfieldProps } from '@digdir/design-system-react';
+import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 
@@ -43,7 +44,11 @@ const TestlabFormInput = <T extends object>({
       name={name}
       control={control}
       render={({ field: { onChange, onBlur, value } }) => (
-        <div className="testlab-form__input">
+        <div
+          className={classNames('testlab-form__input', {
+            date: type === 'date',
+          })}
+        >
           <label htmlFor={name} className="testlab-form__input-label">
             {label}
             {required && <span className="asterisk-color">*</span>}

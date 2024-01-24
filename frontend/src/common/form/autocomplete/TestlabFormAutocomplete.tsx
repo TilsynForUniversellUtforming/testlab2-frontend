@@ -2,10 +2,10 @@ import './testlab-form-autocomplete.scss';
 
 import TestlabFormAutocompleteList from '@common/form/autocomplete/TestlabFormAutocompleteList';
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
-import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
+import { TestlabFormLabel } from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Textfield } from '@digdir/design-system-react';
+import { Search } from '@digdir/design-system-react';
 import classnames from 'classnames';
 import React, {
   ReactNode,
@@ -83,7 +83,7 @@ const TestlabFormAutocomplete = <
   size = 'small',
   maxListLength,
   spacing = false,
-  hideLabel,
+  hideLabel = false,
   hideErrors = false,
   customError,
 }: AutoCompleteProps<FormDataType, ResultDataType>): ReactNode => {
@@ -171,9 +171,16 @@ const TestlabFormAutocomplete = <
         spacing: spacing,
       })}
     >
-      <Textfield
-        label={<TestlabFormRequiredLabel label={label} required={required} />}
-        description={description}
+      <Search
+        id="autocomplete"
+        label={
+          <TestlabFormLabel
+            htmlFor="autocomplete"
+            label={label}
+            required={required}
+            description={description}
+          />
+        }
         type="text"
         value={inputValueLabel}
         onChange={(e) => handleOnChange(e.target.value)}

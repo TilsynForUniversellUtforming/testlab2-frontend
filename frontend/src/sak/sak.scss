@@ -1,5 +1,6 @@
 .sak {
-  padding: 1rem 0;
+  display: flex;
+  justify-content: center;
 
   .testlab-table {
     max-width: 48rem;
@@ -7,11 +8,12 @@
 
   .testlab-form {
     display: flex;
+    flex-direction: column;
     justify-content: left;
+    width: 42rem;
 
-    &__select,
-    &__input {
-      max-width: 24rem;
+    &__header {
+      text-align: center;
     }
 
     &__navigation-buttons {
@@ -91,7 +93,6 @@
         flex-direction: column;
         gap: 0.75rem;
         padding-bottom: 2rem;
-        max-width: 24rem;
 
         .entry {
           display: flex;

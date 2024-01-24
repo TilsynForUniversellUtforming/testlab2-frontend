@@ -106,7 +106,7 @@ const useSakForm = (
       setButtonStep({
         stepType: 'Custom',
         customColor: 'success',
-        customNextText: 'Lagre og gå til måling',
+        customNextText: 'Lagre og gå til testing',
         onClickBack: setPreviousStep,
       });
     } else {
