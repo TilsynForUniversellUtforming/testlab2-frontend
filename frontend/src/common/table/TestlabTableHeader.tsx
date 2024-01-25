@@ -1,4 +1,5 @@
 import TableFilterSelect from '@common/table/control/filter/TableFilterSelect';
+import { CellCheckboxId } from '@common/table/types';
 import {
   LegacySortDirection,
   LegacyTableCell,
@@ -24,11 +25,21 @@ const TestlabTableHeader = <T extends object>({
   const column = header.column;
 
   if (!column.getCanSort() || loading) {
-    const size: number | undefined = column.columnDef.size;
-    const width = size ? `${3 * size}rem` : 'auto';
+    const isCheckbox = header.id === CellCheckboxId;
+    if (loading && isCheckbox) {
+      return (
+        <LegacyTableCell
+          colSpan={header.colSpan}
+          style={{ width: `3rem` }}
+        ></LegacyTableCell>
+      );
+    }
 
     return (
-      <LegacyTableCell colSpan={header.colSpan} style={{ width: width }}>
+      <LegacyTableCell
+        colSpan={header.colSpan}
+        style={{ width: isCheckbox ? `3rem` : 'auto' }}
+      >
         {flexRender(column.columnDef.header, header.getContext())}
       </LegacyTableCell>
     );
