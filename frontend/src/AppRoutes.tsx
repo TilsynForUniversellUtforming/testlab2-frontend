@@ -5,6 +5,8 @@ import { AppRoute } from '@common/util/routeUtils';
 import { LOEYSING_ROOT, LoeysingRoutes } from '@loeysingar/LoeysingRoutes';
 import { MAALING_ROOT, MaalingRoutes } from '@maaling/MaalingRoutes';
 import { SAK_ROOT, SakRoutes } from '@sak/SakRoutes';
+import { TestingRoutes } from '@test/TestingRoutes';
+import { TESTREGEL_ROOT, TestregelRoutes } from '@testreglar/TestregelRoutes';
 import { VERKSEMD_LIST, VerksemdRoutes } from '@verksemder/VerksemdRoutes';
 import { RouteObject } from 'react-router-dom';
 
@@ -15,10 +17,8 @@ import resultatImg from './assets/resultat.svg';
 import teknikkImg from './assets/teknikk.svg';
 import konkurranseImg from './assets/teknikk.svg';
 import tilsynImg from './assets/tilsyn.svg';
-import { TestingRoutes } from './inngaaende-test/TestingRoutes';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
-import { TESTREGEL_ROOT, TestregelRoutes } from './testreglar/TestregelRoutes';
 
 export const ROOT: AppRoute = {
   navn: 'uu',
