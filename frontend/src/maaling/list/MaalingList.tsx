@@ -1,7 +1,7 @@
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
-import StatusBadge from '@common/status-badge/StatusBadge';
+import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
@@ -83,12 +83,11 @@ const MaalingList = () => {
       accessorFn: (row) => row.status,
       id: 'Status',
       cell: (info) => (
-        <StatusBadge<MaalingStatus>
+        <TestlabStatusTag<MaalingStatus>
           status={String(info.getValue())}
-          levels={{
-            primary: ['testing', 'crawling'],
+          colorMapping={{
+            third: ['testing', 'crawling'],
             success: ['testing_ferdig'],
-            danger: [],
           }}
         />
       ),

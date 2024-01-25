@@ -1,5 +1,5 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
-import StatusBadge from '@common/status-badge/StatusBadge';
+import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
 import { isDefined } from '@common/util/validationUtils';
@@ -69,11 +69,11 @@ export const getTestingListColumns = (
       }
 
       return (
-        <StatusBadge<JobStatus>
+        <TestlabStatusTag<JobStatus>
           status={status}
           customLabel={label}
-          levels={{
-            primary: ['starta', 'ikkje_starta'],
+          colorMapping={{
+            third: ['starta', 'ikkje_starta'],
             danger: ['feila'],
             success: ['ferdig'],
           }}

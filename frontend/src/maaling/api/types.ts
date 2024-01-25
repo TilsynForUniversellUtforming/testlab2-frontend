@@ -40,16 +40,6 @@ export type MaalingStatus =
 
 export type JobStatus = 'ikkje_starta' | 'starta' | 'feila' | 'ferdig';
 
-export type Color =
-  | 'first'
-  | 'second'
-  | 'third'
-  | 'neutral'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'info';
-
 export type Framgang = {
   prosessert: number;
   maxLenker: number;

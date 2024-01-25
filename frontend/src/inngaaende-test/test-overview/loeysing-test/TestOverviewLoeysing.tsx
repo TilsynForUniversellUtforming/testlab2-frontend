@@ -10,10 +10,10 @@ import TestForm from '@test/testregel-form/TestForm';
 import {
   InnhaldsType,
   innhaldsType,
+  ManuellTestStatus,
   PageType,
   TestAnswers,
   TestContext,
-  TestStatus,
   TestStep,
 } from '@test/types';
 import {
@@ -258,7 +258,7 @@ const TestOverviewLoeysing = () => {
   );
 
   const onChangeStatus = useCallback(
-    (status: TestStatus, testregelId: number) => {
+    (status: ManuellTestStatus, testregelId: number) => {
       const sakIdNumeric = Number(sak.id);
       const loeysingIdNumeric = Number(loeysingId);
 

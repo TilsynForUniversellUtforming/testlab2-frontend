@@ -21,6 +21,8 @@ export type Severity = 'info' | 'warning' | 'success' | 'danger';
 
 export type TestlabSeverity = Severity | 'neutral';
 
+export type TestlabColor = TestlabSeverity | 'first' | 'second' | 'third';
+
 export const ButtonColor = {
   Primary: 'first',
   Secondary: 'second',

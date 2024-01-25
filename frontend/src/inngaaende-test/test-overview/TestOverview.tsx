@@ -31,13 +31,16 @@ const TestOverview = () => {
 
   return (
     <div className="manual-test-overview">
-      {contextSak.loeysingList.map(({ loeysing }) => (
-        <TestLoeysingButton
-          key={loeysing.id}
-          name={loeysing.namn}
-          onClick={() => onChangeLoeysing(loeysing.id)}
-        />
-      ))}
+      {contextSak.loeysingList.map(({ loeysing }) => {
+        return (
+          <TestLoeysingButton
+            key={loeysing.id}
+            name={loeysing.namn}
+            status={'ikkje-starta'}
+            onClick={() => onChangeLoeysing(loeysing.id)}
+          />
+        );
+      })}
       {alert && (
         <AlertTimed
           severity={alert.severity}
