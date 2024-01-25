@@ -5,8 +5,8 @@ import { Paragraph } from '@digdir/design-system-react';
 import TestregelStatusDropdown from '@test/test-overview/loeysing-test/button/TestregelStatusDropdown';
 import {
   ButtonStatus,
+  ManuellTestStatus,
   TestregelOverviewElement,
-  TestStatus,
 } from '@test/types';
 import classnames from 'classnames';
 
@@ -15,7 +15,7 @@ export interface Props {
   isActive: boolean;
   onClick: (testregelId: number) => void;
   status: ButtonStatus;
-  onChangeStatus: (status: TestStatus, testregelId: number) => void;
+  onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
 }
 
 const TestregelButton = ({

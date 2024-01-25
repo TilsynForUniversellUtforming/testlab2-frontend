@@ -107,13 +107,13 @@ export type TestregelDTO = {
   steg: StegDTO[];
 };
 
-export type TestStatus =
+export type ManuellTestStatus =
   | 'ferdig'
   | 'deaktivert'
   | 'under-arbeid'
   | 'ikkje-starta';
 
-export type ButtonStatus = TestStatus | 'aktiv';
+export type ButtonStatus = ManuellTestStatus | 'aktiv';
 
 export type TestregelOverviewElement = {
   id: number;

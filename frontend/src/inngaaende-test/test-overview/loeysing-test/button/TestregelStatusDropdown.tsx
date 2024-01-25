@@ -1,24 +1,24 @@
 import { ButtonVariant } from '@common/types';
 import { Button, DropdownMenu } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
-import { TestStatus } from '@test/types';
+import { ManuellTestStatus } from '@test/types';
 import { useRef, useState } from 'react';
 
 interface Props {
-  onChangeStatus: (status: TestStatus, testregelId: number) => void;
+  onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
   testregelId: number;
 }
 
 type StatusOption = {
   label: string;
-  value: TestStatus;
+  value: ManuellTestStatus;
 };
 
 const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
   const anchorEl = useRef(null);
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (status: TestStatus) => {
+  const handleButtonClick = (status: ManuellTestStatus) => {
     setShow(false);
     onChangeStatus(status, testregelId);
   };

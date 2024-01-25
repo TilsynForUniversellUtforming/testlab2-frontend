@@ -1,6 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import TestlabLoadingButton from '@common/button/TestlabLoadingButton';
-import StatusBadge from '@common/status-badge/StatusBadge';
+import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Spinner } from '@digdir/design-system-react';
 import { TEST_SIDEUTVAL_LIST, TEST_TESTING_LIST } from '@maaling/MaalingRoutes';
@@ -41,12 +41,11 @@ const MaalingStatusContainer = ({
           <div className="status__list-item">
             <div className="bold-text">Status</div>
             <div className="status__list-item-icon">
-              <StatusBadge<MaalingStatus>
+              <TestlabStatusTag<MaalingStatus>
                 status={maaling.status}
-                levels={{
-                  primary: pollingStatuses,
+                colorMapping={{
+                  third: pollingStatuses,
                   success: ['testing_ferdig'],
-                  danger: [],
                 }}
               />
               {pollingStatuses.includes(maaling.status) && (

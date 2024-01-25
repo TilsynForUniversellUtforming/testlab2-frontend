@@ -1,4 +1,4 @@
-import StatusBadge from '@common/status-badge/StatusBadge';
+import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import headingWithSorting from '@common/table/util';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
@@ -64,11 +64,11 @@ export const getCrawlColumns = (
       }
 
       return (
-        <StatusBadge<JobStatus>
+        <TestlabStatusTag<JobStatus>
           customLabel={label}
           status={status}
-          levels={{
-            primary: ['starta', 'ikkje_starta'],
+          colorMapping={{
+            third: ['starta', 'ikkje_starta'],
             danger: ['feila'],
             success: ['ferdig'],
           }}

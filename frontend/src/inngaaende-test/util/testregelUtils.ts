@@ -8,11 +8,11 @@ import {
 } from '@test/api/types';
 import { TestFormStep } from '@test/testregel-form/types';
 import {
+  ManuellTestStatus,
   PageType,
   SelectionOutcome,
   TestAnswers,
   TestregelOverviewElement,
-  TestStatus,
   TestStep,
 } from '@test/types';
 import { Testregel } from '@testreglar/api/types';
@@ -94,10 +94,9 @@ export const toTestregelStatus = (
   sakId: number,
   loeysingId: number,
   nettsideId: number
-): Map<string, TestStatus> =>
+): Map<string, ManuellTestStatus> =>
   new Map(
     testregelList.map((testregel) => {
-      let status: TestStatus;
       const tr = findActiveTestResult(
         testResults,
         sakId,
@@ -105,6 +104,9 @@ export const toTestregelStatus = (
         testregel.id,
         nettsideId
       );
+
+      // TODO - Slett når ResultatManuellKontroll har statusfelt
+      let status: ManuellTestStatus;
       if (isNotDefined(tr)) {
         status = 'ikkje-starta';
       } else {
@@ -114,6 +116,7 @@ export const toTestregelStatus = (
           status = 'under-arbeid';
         }
       }
+      // TODO - Slett
 
       return [
         toTestregelStatusKey(sakId, loeysingId, testregel.id, nettsideId),

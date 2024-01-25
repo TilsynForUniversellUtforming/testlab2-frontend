@@ -15,13 +15,12 @@ const SakStepFormSkeleton = ({ steps }: Props) => (
           return (
             <div className="sak-stepper__button" key={step.index}>
               <div className="wrapper">
-                <div className="text">
-                  <div className="title">{step.stepperTitle}</div>
-                  {step.stepperSubTitle}
-                </div>
+                <div className="text">{step.stepperTitle}</div>
                 <div className="icon">
                   <StepperIcon sakStepType={step.sakStepType} />
-                  <div className="icon__line"></div>
+                  {steps.length - 1 > step.index && (
+                    <div className="icon__line"></div>
+                  )}
                 </div>
               </div>
             </div>
