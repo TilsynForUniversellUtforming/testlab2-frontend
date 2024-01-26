@@ -174,6 +174,7 @@ const TestOverviewLoeysing = () => {
       if (isDefined(nettsideIdNumeric)) {
         const nextPageType = toPageType(nettsideProperties, nettsideIdNumeric);
         setPageType(nextPageType);
+        setActiveTestregel(undefined);
         processData(
           contextSak,
           contextTestResults,
@@ -190,6 +191,7 @@ const TestOverviewLoeysing = () => {
   const onChangeContentType = useCallback((contentType?: string) => {
     if (contentType && innhaldsType.includes(contentType)) {
       setContentType(contentType as InnhaldsType);
+      setActiveTestregel(undefined);
     }
   }, []);
 
