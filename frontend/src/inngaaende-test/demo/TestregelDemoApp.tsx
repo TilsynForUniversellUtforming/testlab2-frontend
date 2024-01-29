@@ -1,6 +1,7 @@
 import '../test.scss';
 
 import { Spinner } from '@digdir/design-system-react';
+import { combineStepsAndAnswers } from '@test/util/testregelUtils';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
@@ -8,10 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
 import { TestAnswers, TestStep } from '../types';
-import {
-  combineStepsAndAnswers,
-  parseTestregel,
-} from '../util/testregelParser';
+import { parseTestregel } from '../util/testregelParser';
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
@@ -57,6 +55,16 @@ const TestregelDemoApp = () => {
     }
   }, [id]);
 
+  const updateAnswers = (testAnswers: TestAnswers) => {
+    if (testregel) {
+      const formState = combineStepsAndAnswers(
+        parseTestregel(testregel.testregelSchema).steps,
+        testAnswers.answers
+      );
+      setTestingSteps(formState);
+    }
+  };
+
   if (!testingSteps || !testregel || loading) {
     return <Spinner title="Laster" />;
   }
@@ -68,14 +76,7 @@ const TestregelDemoApp = () => {
       initStepKey={Array.from(testingSteps.keys())[0]}
       onClickSave={() => navigate('..')}
       onClickBack={() => navigate('..')}
-      updateResult={(testAnswers: TestAnswers) =>
-        console.info(
-          testAnswers.answers,
-          testAnswers.elementOmtale,
-          testAnswers.elementResultat,
-          testAnswers.elementUtfall
-        )
-      }
+      updateResult={updateAnswers}
     />
   );
 };
