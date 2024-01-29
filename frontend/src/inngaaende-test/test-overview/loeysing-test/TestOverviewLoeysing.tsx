@@ -16,11 +16,9 @@ import {
   TestContext,
   TestStep,
 } from '@test/types';
+import { parseTestregel } from '@test/util/testregelParser';
 import {
   combineStepsAndAnswers,
-  parseTestregel,
-} from '@test/util/testregelParser';
-import {
   findActiveTestResult,
   getInitialPageType,
   getNettsideProperties,

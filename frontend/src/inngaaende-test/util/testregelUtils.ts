@@ -12,6 +12,7 @@ import {
   PageType,
   SelectionOutcome,
   TestAnswers,
+  TestingStepProperties,
   TestregelOverviewElement,
   TestStep,
 } from '@test/types';
@@ -288,4 +289,24 @@ export const getAnswersFromState = (
     elementResultat,
     elementUtfall,
   };
+};
+
+export const combineStepsAndAnswers = (
+  testSteps: Map<string, TestingStepProperties>,
+  answers?: Svar[]
+): Map<string, TestStep> => {
+  const testStepsWithAnswers = new Map<string, TestStep>();
+
+  testSteps.forEach((testingStepProperties, key) => {
+    const answer = answers?.find((answer) => answer.steg === key);
+
+    const testStep: TestStep = {
+      step: testingStepProperties,
+      answer: answer,
+    };
+
+    testStepsWithAnswers.set(key, testStep);
+  });
+
+  return testStepsWithAnswers;
 };

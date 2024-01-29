@@ -16,27 +16,25 @@ const TestHeading = ({
   onChangePageType,
   contentType,
   onChangeContentType,
-}: Props) => {
-  return (
-    <div className="manual-test-heading">
-      <Heading spacing size="xlarge" level={2}>
-        Gjennomfør test
-      </Heading>
-      <Ingress spacing>{sakName}</Ingress>
-      <div className="tags">
-        <Tag color="second">Inngående kontroll</Tag>
-        <Tag color="second">Nettside</Tag>
-        <Tag color="second">{currentLoeysingName}</Tag>
-      </div>
-      <PageTypeSelector
-        nettsideProperties={nettsideProperties}
-        pageType={pageType}
-        onChangePageType={onChangePageType}
-        contentType={contentType}
-        onChangeContentType={onChangeContentType}
-      />
+}: Props) => (
+  <div className="manual-test-heading">
+    <Heading spacing size="xlarge" level={2}>
+      Gjennomfør test
+    </Heading>
+    <Ingress spacing>{sakName}</Ingress>
+    <div className="tags">
+      <Tag color="second">Inngående kontroll</Tag>
+      <Tag color="second">Nettside</Tag>
+      <Tag color="second">{currentLoeysingName}</Tag>
     </div>
-  );
-};
+    <PageTypeSelector
+      nettsideProperties={nettsideProperties}
+      pageType={pageType}
+      onChangePageType={onChangePageType}
+      contentType={contentType}
+      onChangeContentType={onChangeContentType}
+    />
+  </div>
+);
 
 export default TestHeading;
