@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.common
 
 import java.io.IOException
 import java.time.Clock
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.client.ClientHttpRequestExecution
@@ -23,6 +24,8 @@ class BearerTokenInterceptor(
     val clientManager: OAuth2AuthorizedClientManager
 ) : ClientHttpRequestInterceptor {
 
+  val logger = LoggerFactory.getLogger(BearerTokenInterceptor::class.java)
+
   @Throws(IOException::class)
   override fun intercept(
       request: HttpRequest,
@@ -43,6 +46,10 @@ class BearerTokenInterceptor(
       if (hasTokenExpired(
           client!!
               .accessToken)) { // access_token expired - re-authorize to get a fresh access_token
+        logger.debug(
+            "Re-authorized {} with scopes {} token expired",
+            clientRegistrationId,
+            client!!.accessToken.scopes)
         client = reauthorize(oauthToken)
       }
       request.getHeaders().set("Authorization", "Bearer " + client!!.accessToken.tokenValue)
@@ -50,6 +57,10 @@ class BearerTokenInterceptor(
       if (HttpStatus.UNAUTHORIZED ==
           response.getStatusCode()) { // token might have been revoked - re-authorize and try again
         client = reauthorize(oauthToken)
+        logger.debug(
+            "Re-authorized {} with scopes {} unauthorized",
+            clientRegistrationId,
+            client!!.accessToken.scopes)
         request.getHeaders().set("Authorization", "Bearer " + client!!.accessToken.tokenValue)
         response = execution.execute(request, bytes)
       }
