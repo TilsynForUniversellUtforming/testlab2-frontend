@@ -49,6 +49,7 @@ class SecurityConfig {
             "https://test-testlab.uutilsynet.no",
             "https://beta-testlab.uutilsynet.no",
             "http://localhost")
+    configuration.allowedOriginPatterns = listOf("*.difi.no", "*.uutilsynet.no", "http://localhost")
     configuration.allowCredentials = true
     configuration.allowedMethods =
         listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
