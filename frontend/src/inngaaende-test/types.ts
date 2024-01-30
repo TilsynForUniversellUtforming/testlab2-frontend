@@ -17,7 +17,7 @@ export type FasitType =
 
 export type TestingStepInputType = TestingStepInputDTO | 'multiline';
 
-export type TestingRouteActionType = 'gaaTil' | 'avslutt' | 'ikkjeForekomst';
+export type RutingType = 'gaaTil' | 'avslutt' | 'ikkjeForekomst' | 'regler';
 
 type GaaTilAction = { action: 'gaaTil' };
 type AvsluttAction = { action: 'avslutt' };
@@ -60,39 +60,45 @@ export type TestStep = {
   step: TestingStepProperties;
   answer?: Svar;
 };
-
-type KolonneDTO = {
-  title: string;
+export type RuteDTO = {
+  type: RutingType;
+  steg?: TargetType;
+  fasit?: FasitType;
+  utfall?: string;
+  element?: string;
+  regler?: { [key: string]: Regel };
 };
 
-export type RuteDTO = {
-  type: TestingRouteActionType;
-  steg: TargetType;
-  fasit: FasitType;
-  utfall: string;
+export type Regel = {
+  sjekk: string;
+  type: 'lik' | 'ulik' | 'mellom' | 'talDersom';
+  verdi: string;
+  verdi2?: string;
+  handling: RuteDTO;
 };
 
 export type JaNeiType = 'ja' | 'nei';
 
-export type RutingDTO = {
+export type RutingDTO = Partial<{
   alle: RuteDTO;
   ja: RuteDTO;
   nei: RuteDTO;
   [key: `alt${number}`]: RuteDTO;
-};
+}>;
 
 export type StegDTO = {
   stegnr: string;
   spm: string;
-  ht: string;
   type: TestingStepInputDTO;
-  multilinje: boolean;
-  label: string;
-  datalist: string;
-  oblig: boolean;
-  kilde: string[];
-  svarArray: string[];
+  ht: string;
   ruting: RutingDTO;
+  filter?: string;
+  multilinje?: boolean;
+  label?: string;
+  datalist?: string;
+  oblig?: boolean;
+  kilde?: string[];
+  svarArray?: string[];
 };
 
 export type TestregelDTO = {
@@ -103,7 +109,6 @@ export type TestregelDTO = {
   kravTilSamsvar: string;
   side: string;
   element: TargetType;
-  kolonner: KolonneDTO[];
   steg: StegDTO[];
 };
 

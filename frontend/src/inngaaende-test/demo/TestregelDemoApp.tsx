@@ -1,19 +1,29 @@
 import '../test.scss';
 
+import { takeWhile } from '@common/util/arrayUtils';
 import { Spinner } from '@digdir/design-system-react';
-import { combineStepsAndAnswers } from '@test/util/testregelUtils';
+import { Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
-import { TestAnswers, TestStep } from '../types';
-import { parseTestregel } from '../util/testregelParser';
+import {
+  AlleSvar,
+  lagSkjemaModell,
+  SkjemaModell,
+} from '../util/testregelParser';
+
+type SkjemaOgSvar = { skjemamodell: SkjemaModell; svar: AlleSvar };
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
-  const [testingSteps, setTestingSteps] = useState<Map<string, TestStep>>();
+  const [skjemaOgSvar, setSkjemaOgSvar] = useState<SkjemaOgSvar>({
+    skjemamodell: { steg: [], delutfall: [] },
+    svar: [],
+  });
+
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
@@ -34,16 +44,13 @@ const TestregelDemoApp = () => {
         .then((testregel) => {
           if (testregel) {
             setTestregel(testregel);
-            try {
-              setTestingSteps(
-                combineStepsAndAnswers(
-                  parseTestregel(testregel.testregelSchema).steps,
-                  undefined
-                )
-              );
-            } catch (e) {
-              setError('Kunne ikkje hente teststeg');
-            }
+            setSkjemaOgSvar((prevState) => ({
+              ...prevState,
+              skjemamodell: lagSkjemaModell(
+                testregel.testregelSchema,
+                skjemaOgSvar.svar
+              ),
+            }));
           } else {
             setError('Fann ikkje testregel');
           }
@@ -55,25 +62,38 @@ const TestregelDemoApp = () => {
     }
   }, [id]);
 
-  const updateAnswers = (testAnswers: TestAnswers) => {
+  useEffect(() => {
+    console.log(`state updated: ${JSON.stringify(skjemaOgSvar, null, 2)}`);
+  }, [skjemaOgSvar]);
+
+  const updateAnswers = (nyttSvar: Svar) => {
     if (testregel) {
-      const formState = combineStepsAndAnswers(
-        parseTestregel(testregel.testregelSchema).steps,
-        testAnswers.answers
-      );
-      setTestingSteps(formState);
+      setSkjemaOgSvar((prevState) => {
+        const oppdaterteSvar = takeWhile(
+          prevState.svar,
+          (svar) => svar.steg !== nyttSvar.steg
+        ).concat([nyttSvar]);
+        return {
+          ...prevState,
+          skjemamodell: lagSkjemaModell(
+            testregel.testregelSchema,
+            oppdaterteSvar
+          ),
+          svar: oppdaterteSvar,
+        };
+      });
     }
   };
 
-  if (!testingSteps || !testregel || loading) {
+  if (!testregel || loading) {
     return <Spinner title="Laster" />;
   }
 
   return (
     <TestForm
       heading={testregel.name}
-      steps={testingSteps}
-      initStepKey={Array.from(testingSteps.keys())[0]}
+      skjemaModell={skjemaOgSvar.skjemamodell}
+      alleSvar={skjemaOgSvar.svar}
       onClickSave={() => navigate('..')}
       onClickBack={() => navigate('..')}
       updateResult={updateAnswers}

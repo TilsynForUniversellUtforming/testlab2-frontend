@@ -3,64 +3,63 @@ import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';
 import TestFormInputText from '@test/testregel-form/input/TestFormInputText';
-import { TestFormStep } from '@test/testregel-form/types';
-import { SelectionOutcome, TestStep } from '@test/types';
+import { SelectionOutcome } from '@test/types';
+import { Steg } from '@test/util/interface/Steg';
+import {
+  AlleSvar,
+  finnSvar,
+  parseHtmlEntities,
+  Resultat,
+} from '@test/util/testregelParser';
 
 import TestResultCard from './TestResultCard';
 
 interface FormStepProps {
-  testingStep?: TestStep;
-  formStep: TestFormStep;
+  steg: Steg | Resultat | undefined;
+  alleSvar: AlleSvar;
   onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
 }
 
-const TestFormStepWrapper = ({
-  testingStep,
-  formStep,
-  onAnswer,
-}: FormStepProps) => {
-  if (formStep.key === 'avslutt') {
-    const isSamsvar = formStep.fasit?.toLowerCase() === 'ja';
+const TestFormStepWrapper = ({ steg, alleSvar, onAnswer }: FormStepProps) => {
+  if (steg?.type === 'avslutt') {
+    const isSamsvar = steg.fasit.toLowerCase() === 'ja';
     return (
       <TestResultCard
         resultSeverity={isSamsvar ? 'success' : 'danger'}
         resultTitle={isSamsvar ? 'Samsvar' : 'Ikkje samsvar'}
-        resultDescription={formStep.utfall || 'Inget resultat'}
+        resultDescription={steg.utfall || 'Inget resultat'}
       />
     );
-  } else if (formStep.key === 'ikkjeForekomst') {
+  } else if (steg?.type === 'ikkjeForekomst') {
     return (
       <TestResultCard
         resultSeverity={'info'}
         resultTitle="Ikkje forekomst"
-        resultDescription={formStep.utfall || 'Inget resultat'}
+        resultDescription={steg.utfall || 'Inget resultat'}
       />
     );
-  } else if (!testingStep) {
+  } else if (!steg) {
+    // dette er enten en feil i parseren (klarer ikke å finne neste steg), eller en feil i testregelen.
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
   }
 
-  const inputType = testingStep.step.input.inputType;
+  steg = {
+    ...steg,
+    spm: parseHtmlEntities(steg.spm),
+    ht: parseHtmlEntities(steg.ht),
+  };
 
-  switch (inputType) {
+  switch (steg.type) {
     case 'tekst':
-    case 'multiline':
-      return (
-        <TestFormInputText
-          testingStep={testingStep}
-          formStep={formStep}
-          multiline={inputType === 'multiline'}
-          onAnswer={onAnswer}
-        />
-      );
+      return <TestFormInputText steg={steg} onAnswer={onAnswer} />;
     case 'instruksjon':
-      return <TestFormDescription testingStep={testingStep} />;
+      return <TestFormDescription steg={steg} />;
     case 'radio':
     case 'jaNei':
       return (
         <TestFormInputRadio
-          testingStep={testingStep}
-          formStep={formStep}
+          steg={steg}
+          svar={finnSvar(steg.stegnr, alleSvar)}
           onAnswer={onAnswer}
         />
       );
