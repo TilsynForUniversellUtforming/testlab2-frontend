@@ -6,4 +6,6 @@ export const fetchTestresultatAggregert = async (
 ): Promise<TestResult> =>
   fetch(`/api/v1/testresultat/aggregert/${id}`, {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikkje hente måling'));
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente for loeysing')
+  );

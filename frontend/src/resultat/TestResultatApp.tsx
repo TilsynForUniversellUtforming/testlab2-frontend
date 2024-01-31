@@ -1,8 +1,10 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
+import UserActionTable from '@common/table/UserActionTable';
 import { withErrorHandling } from '@common/util/apiUtils';
 import { AggregatedTestresult } from '@maaling/api/types';
-import React, { useCallback, useState } from 'react';
+import { getAggregatedResultColumns } from '@maaling/resultat/testing-list/test-result-list/TestResultColumns';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { fetchTestresultatAggregert } from './resultat-api';
@@ -12,6 +14,8 @@ const TestResultatApp = () => {
   const [testResultList, setTestResultList] = useState<AggregatedTestresult[]>(
     []
   );
+  const testResultatColumns = useMemo(() => getAggregatedResultColumns(), []);
+
   const [error, setError] = useState<Error | undefined>();
 
   useEffectOnce(() => {
@@ -28,7 +32,7 @@ const TestResultatApp = () => {
             Number(id)
           );
 
-          return testresultatAggregert.aggregatedResultList;
+          return testresultatAggregert;
         } else {
           throw new Error('Fant ikkje testresultat med id $id');
         }
@@ -50,13 +54,13 @@ const TestResultatApp = () => {
   }
 
   return (
-    <div>
-      <ul>
-        {testResultList.map((testResult) => (
-          <li key={testResult.testregelId}>{testResult.compliancePercent}</li>
-        ))}
-      </ul>
-    </div>
+    <UserActionTable<AggregatedTestresult>
+      heading={`Resultat test ${id}`}
+      tableProps={{
+        data: testResultList ?? [],
+        defaultColumns: testResultatColumns,
+      }}
+    />
   );
 };
 

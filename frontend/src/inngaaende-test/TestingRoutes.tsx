@@ -3,7 +3,6 @@ import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverview
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
-import TestResultatApp from '../resultat/TestResultatApp';
 import TestregelDemoApp from './demo/TestregelDemoApp';
 import ManualTest from './ManualTest';
 import TestOverview from './test-overview/TestOverview';
@@ -33,12 +32,6 @@ export const TESTREGEL_DEMO: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
-export const TESTRESULTAT: AppRoute = {
-  navn: 'Testresulat',
-  path: 'resultat/',
-  parentRoute: TEST,
-};
-
 export const TestingRoutes: RouteObject = {
   path: TEST_ROOT.path,
   handle: { name: TEST_ROOT.navn },
@@ -64,11 +57,6 @@ export const TestingRoutes: RouteObject = {
       path: TESTREGEL_DEMO.path,
       element: <TestregelDemoApp />,
       handle: { name: 'Demo' },
-    },
-    {
-      path: TESTRESULTAT.path,
-      element: <TestResultatApp />,
-      handle: { name: 'Testresulat' },
     },
   ],
 };
