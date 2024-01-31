@@ -69,13 +69,8 @@ fun mergeLists(
   return testKoeyringList.map { testKoeyring ->
     val aggregatedResultList =
         resultMap[testKoeyring.loeysing]?.map { result ->
-          val totalElements = result.talElementSamsvar + result.talElementBrot
           val compliancePercent =
-              if (totalElements > 0) {
-                ((result.talElementSamsvar.toDouble() / totalElements) * 100).roundToInt()
-              } else {
-                100
-              }
+              result.testregelGjennomsnittlegSideSamsvarProsent?.roundToInt() ?: 0
 
           AggegatedTestresultTestregel(
               testregelId = result.testregelId,

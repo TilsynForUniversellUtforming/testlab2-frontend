@@ -96,7 +96,9 @@ object AggregertResultatDTODummy {
               talSiderSamsvar = pagesSuccess,
               talSiderBrot = pagesCrawled - pagesSuccess,
               talSiderIkkjeForekomst = 0,
-              talElementBrot = Random.nextInt(0, 100))
+              talElementBrot = Random.nextInt(0, 100),
+              testregelGjennomsnittlegSideBrotProsent = Random.nextFloat(),
+              testregelGjennomsnittlegSideSamsvarProsent = Random.nextFloat())
         }
         .sortedWith(
             compareBy({ it.loeysing.id }, { it.testregelId.replace("QW-ACT-R", "").toInt() }))
