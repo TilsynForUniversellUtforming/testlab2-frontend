@@ -22,7 +22,9 @@ class ResultatResource(
   val testresultatUrl = "${testingApiProperties.url}/testresultat"
 
   @GetMapping("aggregert/{testgrunnlagId}")
-  fun getTestresultatAggregert(@PathVariable testgrunnlagId: Int): List<AggegatedTestresultTestregel> {
+  fun getTestresultatAggregert(
+      @PathVariable testgrunnlagId: Int
+  ): List<AggegatedTestresultTestregel> {
     logger.debug("henter aggregering frå sak/maaling med id: $testgrunnlagId")
     return restTemplate.getList<AggegatedTestresultTestregel>(
         "$testresultatUrl/aggregert/$testgrunnlagId")
