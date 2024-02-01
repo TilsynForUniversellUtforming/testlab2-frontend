@@ -13,7 +13,7 @@ import {
 } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
-  await fetch('/api/v1/maalinger', {
+  await fetchWrapper('/api/v1/maalinger', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const updateMaalingStatus = async (
   id: number,
   status: MaalingStatus
 ): Promise<Maaling> =>
-  await fetch(`/api/v1/maalinger/${id}`, {
+  await fetchWrapper(`/api/v1/maalinger/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
