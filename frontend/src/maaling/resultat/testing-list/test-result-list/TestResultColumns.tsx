@@ -69,8 +69,8 @@ export const getAggregatedResultColumns = (): Array<
   },
   {
     accessorFn: (row) => row.talElementIkkjeForekomst,
-    id: 'ikkjeIestbar',
+    id: 'ikkjetestbar',
     cell: ({ row }) => <>{row.original.talElementIkkjeForekomst}</>,
-    header: () => <>Tal ikkje-testbart</>,
+    header: () => <>Tal ikkje testbar</>,
   },
 ];
