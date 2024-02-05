@@ -48,13 +48,6 @@ export const MINE_TESTAR_ROOT: AppRoute = {
   disabled: true,
 };
 
-// export const RESULTAT_ROOT: AppRoute = {
-//   navn: 'Resultat',
-//   path: '/',
-//   parentRoute: ROOT,
-//   imgSrc: resultatImg,
-//   disabled: true,
-// };
 const TEKNIKK_ROOT: AppRoute = {
   navn: 'Teknikk',
   path: '/',

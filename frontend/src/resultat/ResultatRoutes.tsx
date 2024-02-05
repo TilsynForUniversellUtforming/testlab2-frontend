@@ -3,6 +3,7 @@ import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import resultatImg from '../assets/resultat.svg';
+import { fetchTestresultatAggregert } from './resultat-api';
 import TestResultatApp from './TestResultatApp';
 
 export const RESULTAT_ROOT: AppRoute = {
@@ -24,6 +25,9 @@ export const ResultRoutes: RouteObject = {
   children: [
     {
       path: TESTRESULTAT_TESTGRUNNLAG.path,
+      loader: ({ params }) => {
+        return fetchTestresultatAggregert(parseInt(params.id as string));
+      },
       element: <TestResultatApp />,
       handle: { name: TESTRESULTAT_TESTGRUNNLAG.navn },
     },
