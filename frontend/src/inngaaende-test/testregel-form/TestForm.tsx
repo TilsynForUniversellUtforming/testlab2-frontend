@@ -1,39 +1,81 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
+import { takeWhile } from '@common/util/arrayUtils';
 import { Button, Heading } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
-import { AlleSvar, SkjemaModell } from '@test/util/testregelParser';
-import { useEffect, useRef } from 'react';
+import { SkjemaOgSvar } from '@test/testregel-form/types';
+import {
+  AlleSvar,
+  finnSvar,
+  lagSkjemaModell,
+  Resultat,
+} from '@test/util/testregelParser';
+import { Testregel } from '@testreglar/api/types';
+import { useEffect, useRef, useState } from 'react';
 
 import TestFormStepWrapper from './TestFormStepWrapper';
 
 interface Props {
-  heading: string;
-  skjemaModell: SkjemaModell;
-  alleSvar: AlleSvar;
+  testregel: Testregel;
   onClickBack: () => void;
   onClickSave: () => void;
-  updateResult: (svar: Svar) => void;
+  onResultat: (
+    resultat: Resultat,
+    elementOmtale: string,
+    svar: AlleSvar
+  ) => void;
 }
 
 const TestForm = ({
-  heading,
-  skjemaModell,
-  alleSvar,
+  testregel,
   onClickBack,
   onClickSave,
-  updateResult,
+  onResultat,
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [skjemaOgSvar, setSkjemaOgSvar] = useState<SkjemaOgSvar>({
+    skjemaModell: lagSkjemaModell(testregel.testregelSchema, []),
+    alleSvar: [],
+  });
+
+  const { skjemaModell, alleSvar } = skjemaOgSvar;
+
+  function onAnswer(nyttSvar: Svar) {
+    setSkjemaOgSvar((prevState) => {
+      const oppdaterteSvar = takeWhile(
+        prevState.alleSvar,
+        (svar) => svar.steg !== nyttSvar.steg
+      ).concat([nyttSvar]);
+      const oppdatertSkjemaModell = lagSkjemaModell(
+        testregel.testregelSchema,
+        oppdaterteSvar
+      );
+      return {
+        ...prevState,
+        skjemaModell: oppdatertSkjemaModell,
+        alleSvar: oppdaterteSvar,
+      };
+    });
+  }
 
   useEffect(() => {
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [skjemaModell]);
 
+  useEffect(() => {
+    if (skjemaModell.resultat) {
+      const element = JSON.parse(testregel.testregelSchema).element;
+      const elementOmtale =
+        finnSvar(element, alleSvar) ?? 'Finn ikkje elementomtala';
+
+      onResultat(skjemaModell.resultat, elementOmtale, alleSvar);
+    }
+  }, [skjemaModell]);
+
   return (
     <div className="test-form" ref={ref}>
       <Heading size="medium" level={3}>
-        {heading}
+        {testregel.name}
       </Heading>
       <div className="test-form-content">
         {skjemaModell.steg.map((etSteg) => (
@@ -41,7 +83,7 @@ const TestForm = ({
             <TestFormStepWrapper
               steg={etSteg}
               alleSvar={alleSvar}
-              onAnswer={updateResult}
+              onAnswer={onAnswer}
             />
           </div>
         ))}
@@ -49,7 +91,7 @@ const TestForm = ({
           <TestFormStepWrapper
             steg={skjemaModell.resultat}
             alleSvar={alleSvar}
-            onAnswer={updateResult}
+            onAnswer={onAnswer}
           />
         )}
       </div>

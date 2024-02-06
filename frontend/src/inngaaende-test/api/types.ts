@@ -2,15 +2,6 @@ export type Svar = {
   steg: string;
   svar: string;
 };
-
-export function svarAsMap(svarArray: Svar[]): Map<string, string> {
-  const svarMap = new Map<string, string>();
-  svarArray.forEach((svar) => {
-    svarMap.set(svar.steg, svar.svar);
-  });
-  return svarMap;
-}
-
 export type ElementResultat =
   | 'samsvar'
   | 'ikkjeForekomst'
