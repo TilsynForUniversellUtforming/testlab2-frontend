@@ -1,6 +1,9 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { LoeysingNettsideRelation } from '@sak/types';
+import { createTestgrunnlag } from '@test/api/testing-api';
+import { CreateTestgrunnlag } from '@test/api/types';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
 import { TEST_LOEYSING } from '@test/TestingRoutes';
 import { TestContext } from '@test/types';
@@ -19,6 +22,7 @@ const TestOverview = () => {
     if (!nextLoeysing || !id) {
       setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
     } else {
+      opprettTestgrunnlag(nextLoeysing);
       navigate(
         getFullPath(
           TEST_LOEYSING,
@@ -27,6 +31,23 @@ const TestOverview = () => {
         )
       );
     }
+  };
+
+  const opprettTestgrunnlag = (loeysing: LoeysingNettsideRelation) => {
+    console.debug(
+      'Opprett testgrunnlag' +
+        JSON.stringify(loeysing) +
+        ' for sak ' +
+        JSON.stringify(contextSak.id)
+    );
+    const testgrunnlag: CreateTestgrunnlag = {
+      namn: `Test av ${loeysing.loeysing.namn} for sak ${contextSak.id}`,
+      parentId: contextSak.id,
+      loeysingNettsideRelation: loeysing,
+      testreglar: contextSak.testreglar.map((testregel) => testregel.id),
+      type: 'OPPRINNELEG_TEST',
+    };
+    createTestgrunnlag(testgrunnlag);
   };
 
   return (
