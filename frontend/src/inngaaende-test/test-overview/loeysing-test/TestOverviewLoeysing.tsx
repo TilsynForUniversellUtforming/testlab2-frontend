@@ -31,7 +31,7 @@ import {
   toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import TestRegelParamSelection from './TestRegelParamSelection';
@@ -218,6 +218,10 @@ const TestOverviewLoeysing = () => {
     },
     [sakId, loeysingId, testregelList, contextTestResults, pageType.nettsideId]
   );
+
+  useEffect(() => {
+    console.log('activeTestregel', activeTestregel);
+  }, [activeTestregel]);
 
   const onChangeStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {

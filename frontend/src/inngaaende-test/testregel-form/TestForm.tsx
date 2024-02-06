@@ -59,6 +59,13 @@ const TestForm = ({
   }
 
   useEffect(() => {
+    setSkjemaOgSvar({
+      skjemaModell: lagSkjemaModell(testregel.testregelSchema, []),
+      alleSvar: [],
+    });
+  }, [testregel]);
+
+  useEffect(() => {
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [skjemaModell]);
 
