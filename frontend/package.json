@@ -12,6 +12,7 @@
     "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore;prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "prepare": "cd .. && husky install frontend/.husky",
     "test": "vitest",
+    "test:ci": "vitest run",
     "coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
