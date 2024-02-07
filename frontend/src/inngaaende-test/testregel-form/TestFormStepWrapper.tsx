@@ -9,36 +9,16 @@ import {
   AlleSvar,
   finnSvar,
   parseHtmlEntities,
-  Resultat,
 } from '@test/util/testregelParser';
 
-import TestResultCard from './TestResultCard';
-
 interface FormStepProps {
-  steg: Steg | Resultat | undefined;
+  steg: Steg | undefined;
   alleSvar: AlleSvar;
   onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
 }
 
 const TestFormStepWrapper = ({ steg, alleSvar, onAnswer }: FormStepProps) => {
-  if (steg?.type === 'avslutt') {
-    const isSamsvar = steg.fasit.toLowerCase() === 'ja';
-    return (
-      <TestResultCard
-        resultSeverity={isSamsvar ? 'success' : 'danger'}
-        resultTitle={isSamsvar ? 'Samsvar' : 'Ikkje samsvar'}
-        resultDescription={steg.utfall || 'Inget resultat'}
-      />
-    );
-  } else if (steg?.type === 'ikkjeForekomst') {
-    return (
-      <TestResultCard
-        resultSeverity={'info'}
-        resultTitle="Ikkje forekomst"
-        resultDescription={steg.utfall || 'Inget resultat'}
-      />
-    );
-  } else if (!steg) {
+  if (!steg) {
     // dette er enten en feil i parseren (klarer ikke å finne neste steg), eller en feil i testregelen.
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
   }

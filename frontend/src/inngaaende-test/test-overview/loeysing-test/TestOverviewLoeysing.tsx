@@ -3,11 +3,7 @@ import useAlert from '@common/alert/useAlert';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
-import {
-  CreateTestResultat,
-  ElementResultat,
-  ResultatManuellKontroll,
-} from '@test/api/types';
+import { CreateTestResultat, ResultatManuellKontroll } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
@@ -18,7 +14,11 @@ import {
   PageType,
   TestContext,
 } from '@test/types';
-import { AlleSvar, Resultat } from '@test/util/testregelParser';
+import {
+  AlleSvar,
+  TestregelResultat,
+  toElementResultat,
+} from '@test/util/testregelParser';
 import {
   findActiveTestResult,
   getInitialPageType,
@@ -31,7 +31,7 @@ import {
   toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 import TestRegelParamSelection from './TestRegelParamSelection';
@@ -219,10 +219,6 @@ const TestOverviewLoeysing = () => {
     [sakId, loeysingId, testregelList, contextTestResults, pageType.nettsideId]
   );
 
-  useEffect(() => {
-    console.log('activeTestregel', activeTestregel);
-  }, [activeTestregel]);
-
   const onChangeStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
       const sakIdNumeric = Number(sak.id);
@@ -295,21 +291,12 @@ const TestOverviewLoeysing = () => {
     [contextSak, loeysingId, activeTestregel, pageType]
   );
 
-  function elementResultat(resultat: Resultat): ElementResultat {
-    switch (resultat.type) {
-      case 'avslutt':
-        if (resultat.fasit.toLowerCase() === 'ja') {
-          return 'samsvar';
-        } else {
-          return 'brot';
-        }
-      case 'ikkjeForekomst':
-        return 'ikkjeForekomst';
-    }
-  }
-
   const doUpdateTestResult = useCallback(
-    async (resultat: Resultat, elementOmtale: string, alleSvar: AlleSvar) => {
+    async (
+      resultat: TestregelResultat,
+      elementOmtale: string,
+      alleSvar: AlleSvar
+    ) => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
 
@@ -335,7 +322,7 @@ const TestOverviewLoeysing = () => {
           testregelId: activeTestregel.id,
           nettsideId: pageType.nettsideId,
           elementOmtale,
-          elementResultat: elementResultat(resultat),
+          elementResultat: toElementResultat(resultat),
           elementUtfall: resultat.utfall,
           svar: alleSvar,
           ferdig: false,

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
-import { AlleSvar, Resultat } from '../util/testregelParser';
+import { AlleSvar, TestregelResultat } from '../util/testregelParser';
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
@@ -43,7 +43,7 @@ const TestregelDemoApp = () => {
   }, [id]);
 
   const onResultat = (
-    resultat: Resultat,
+    resultat: TestregelResultat,
     elementOmtale: string,
     alleSvar: AlleSvar
   ) => {

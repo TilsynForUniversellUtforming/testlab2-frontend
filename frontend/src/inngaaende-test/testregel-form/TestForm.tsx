@@ -3,12 +3,13 @@ import { ButtonVariant } from '@common/types';
 import { takeWhile } from '@common/util/arrayUtils';
 import { Button, Heading } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
+import TestFormResultat from '@test/testregel-form/TestFormResultat';
 import { SkjemaOgSvar } from '@test/testregel-form/types';
 import {
   AlleSvar,
   finnSvar,
   lagSkjemaModell,
-  Resultat,
+  TestregelResultat,
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useRef, useState } from 'react';
@@ -20,7 +21,7 @@ interface Props {
   onClickBack: () => void;
   onClickSave: () => void;
   onResultat: (
-    resultat: Resultat,
+    resultat: TestregelResultat,
     elementOmtale: string,
     svar: AlleSvar
   ) => void;
@@ -95,11 +96,7 @@ const TestForm = ({
           </div>
         ))}
         {skjemaModell.resultat && (
-          <TestFormStepWrapper
-            steg={skjemaModell.resultat}
-            alleSvar={alleSvar}
-            onAnswer={onAnswer}
-          />
+          <TestFormResultat resultat={skjemaModell.resultat} />
         )}
       </div>
       <TestlabDivider />

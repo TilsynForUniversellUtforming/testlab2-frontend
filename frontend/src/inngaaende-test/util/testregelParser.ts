@@ -1,5 +1,5 @@
 import { drop, dropWhile, first, takeWhile } from '@common/util/arrayUtils';
-import { Svar } from '@test/api/types';
+import { ElementResultat, Svar } from '@test/api/types';
 import { Delutfall } from '@test/util/interface/Delutfall';
 import {
   Handling,
@@ -25,12 +25,27 @@ export type Avslutt = {
   utfall: string;
 };
 
-export type Resultat = Avslutt | HandlingikkjeForekomst;
+export type TestregelResultat = Avslutt | HandlingikkjeForekomst;
+
+export function toElementResultat(
+  resultat: TestregelResultat
+): ElementResultat {
+  switch (resultat.type) {
+    case 'avslutt':
+      if (resultat.fasit.toLowerCase() === 'ja') {
+        return 'samsvar';
+      } else {
+        return 'brot';
+      }
+    case 'ikkjeForekomst':
+      return 'ikkjeForekomst';
+  }
+}
 
 export type SkjemaModell = {
   steg: Steg[];
   delutfall: Delutfall[];
-  resultat?: Resultat;
+  resultat?: TestregelResultat;
 };
 
 export type AlleSvar = Svar[];
@@ -251,7 +266,7 @@ function loop(
       nesteHandling?.type === 'avslutt' ||
       nesteHandling?.type === 'ikkjeForekomst'
     ) {
-      const resultat: Resultat =
+      const resultat: TestregelResultat =
         nesteHandling?.type === 'ikkjeForekomst'
           ? nesteHandling
           : insertDelutfall(nesteHandling, skjemaModell.delutfall);
