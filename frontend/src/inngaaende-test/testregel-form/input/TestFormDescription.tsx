@@ -1,5 +1,5 @@
 import { Heading, Ingress, Paragraph } from '@digdir/design-system-react';
-import { Steg } from '@test/util/interface/Steg';
+import { Steg } from '@test/util/testregel-interface/Steg';
 
 interface Props {
   steg: Steg;

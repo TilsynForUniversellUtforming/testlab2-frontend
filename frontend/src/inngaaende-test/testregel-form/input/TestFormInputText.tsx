@@ -1,6 +1,6 @@
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import { Svar } from '@test/api/types';
-import { StegTekst } from '@test/util/interface/Steg';
+import { StegTekst } from '@test/util/testregel-interface/Steg';
 import React, { useCallback, useState } from 'react';
 
 interface Props {

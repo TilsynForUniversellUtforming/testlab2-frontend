@@ -1,13 +1,12 @@
 import { Radio } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
-import { SelectionOutcome } from '@test/types';
-import { StegJaNei, StegRadio } from '@test/util/interface/Steg';
+import { StegJaNei, StegRadio } from '@test/util/testregel-interface/Steg';
 import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   steg: StegJaNei | StegRadio;
   svar?: string;
-  onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
+  onAnswer: (svar: Svar) => void;
 }
 
 const TestFormInputRadio = ({ steg, svar, onAnswer }: Props) => {

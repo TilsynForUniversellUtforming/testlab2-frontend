@@ -1,4 +1,4 @@
-import { Testregel } from '@test/util/interface/Testregel';
+import { Testregel } from '@test/util/testregel-interface/Testregel';
 import { describe, expect, test } from 'vitest';
 
 import { lagSkjemaModell } from '../../util/testregelParser';

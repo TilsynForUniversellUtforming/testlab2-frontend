@@ -1,16 +1,16 @@
 import { drop, dropWhile, first, takeWhile } from '@common/util/arrayUtils';
 import { ElementResultat, Svar } from '@test/api/types';
-import { Delutfall } from '@test/util/interface/Delutfall';
+import { Delutfall } from '@test/util/testregel-interface/Delutfall';
 import {
   Handling,
   HandlingAvslutt,
   HandlingFasitTyper,
   HandlingikkjeForekomst,
   HandlingRegler,
-} from '@test/util/interface/Handling';
-import { Regel } from '@test/util/interface/Regel';
-import { Steg } from '@test/util/interface/Steg';
-import { Testregel } from '@test/util/interface/Testregel';
+} from '@test/util/testregel-interface/Handling';
+import { Regel } from '@test/util/testregel-interface/Regel';
+import { Steg } from '@test/util/testregel-interface/Steg';
+import { Testregel } from '@test/util/testregel-interface/Testregel';
 
 export const parseHtmlEntities = (text: string): string => {
   const parser = new DOMParser();
