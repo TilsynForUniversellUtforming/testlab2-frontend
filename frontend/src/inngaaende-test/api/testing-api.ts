@@ -107,7 +107,6 @@ export const deleteBilde = async (
 export const createTestgrunnlag = async (
   testgrunnlag: CreateTestgrunnlag
 ): Promise<Testgrunnlag> => {
-  console.log('Create testgrunnlag', JSON.stringify(testgrunnlag));
   return await fetch(`/api/v1/testgrunnlag`, {
     method: 'POST',
     headers: {

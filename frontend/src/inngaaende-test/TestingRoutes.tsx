@@ -26,6 +26,12 @@ export const TEST_LOEYSING: AppRoute = {
   parentRoute: TEST,
 };
 
+export const TEST_LOEYSING_TESTGRUNNLAG: AppRoute = {
+  navn: 'Test løysing testgrunnlag',
+  path: ':testgrunnlagId',
+  parentRoute: TEST_LOEYSING,
+};
+
 export const TESTREGEL_DEMO: AppRoute = {
   navn: 'Demo',
   path: `demo/${idPath}`,
@@ -50,6 +56,13 @@ export const TestingRoutes: RouteObject = {
           path: TEST_LOEYSING.path,
           element: <TestOverviewLoeysing />,
           handle: { name: TEST_LOEYSING.navn },
+          children: [
+            {
+              path: TEST_LOEYSING_TESTGRUNNLAG.path,
+              element: <TestOverviewLoeysing />,
+              handle: { name: TEST_LOEYSING_TESTGRUNNLAG.navn },
+            },
+          ],
         },
       ],
     },
