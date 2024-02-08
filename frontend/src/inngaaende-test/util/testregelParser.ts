@@ -160,7 +160,7 @@ function evaluateRutingRegler(
   } else if (regel.type === 'talDersom') {
     const svar = alleSvar.filter(
       ({ steg, svar }) =>
-        regel.sjekk.includes(steg) && parseInt(svar, 10) === regel.verdi
+        regel.sjekk.includes(steg) && svar.trim() === regel.verdi.trim()
     );
     if (svar.length >= regel.mellom1 && svar.length <= regel.mellom2) {
       return evaluateRutingType(regel.handling, alleSvar, delutfall);

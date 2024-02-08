@@ -690,53 +690,260 @@ describe('makeViewModel spec', () => {
           {
             stegnr: '2.1',
             spm: 'Kva side testar du på?',
-            ht: 'Oppgi URL eller side-ID.',
+            ht: 'Oppgi url eller side-ID.',
             type: 'tekst',
-            label: 'URL/Side:',
+            label: 'Url/Side:',
             datalist: 'Sideutvalg',
             ruting: {
               alle: {
                 type: 'gaaTil',
-                steg: '2.2',
+                steg: '3.1',
               },
             },
           },
           {
-            stegnr: '2.2',
-            spm: 'Har nettsida digitale/interaktive skjema/skjemaelement?',
-            ht: 'Gjennomgå nettsida og sjå etter digitale/interaktive skjema.',
-            type: 'tekst',
-            filter: 'tall',
-            kilde: [],
+            stegnr: '3.1',
+            spm: 'Har nettsida valideringsfeil?',
+            ht: '<p>For å sjekke sida for valideringsfeil kan du bruke <a href="https://validator.w3.org/" target="_blank" rel="noopener">W3C sin kodevalidator</a>.</p>\n<p>Sjekk om validatoren gir feil av type "Errors".</p>',
+            type: 'jaNei',
+            kilde: ['G134'],
             ruting: {
-              alle: {
+              ja: {
                 type: 'gaaTil',
-                steg: '2.3',
+                steg: '3.2',
+              },
+              nei: {
+                type: 'avslutt',
+                fasit: 'Ja',
+                utfall: 'Testsida har ikkje syntaksfeil.',
               },
             },
           },
           {
-            stegnr: '2.3',
-            spm: 'Beskriv skjemaet/prosessen',
-            ht: 'Legg inn overskrift, eller andre stikkord som er slik at skjemaet kan identifiserast.',
+            stegnr: '3.2',
+            spm: 'Kor mange tilfelle er det av feil nøsting av element?',
+            ht: '<p>Feilbeskrivinga vil innehalde noko av det følgjande:</p>\n<ul>\n<li>"Element [navn på element] not allowed…"</li>\n<li>"The element [navn på element] must not appear as a descendant of the [navn på element] element"</li>\n</ul>',
+            kilde: ['H74'],
             type: 'tekst',
-            filter: 'tall',
-            label: 'Skjema/prosess:',
-            multilinje: true,
+            label: 'Tal element',
             ruting: {
               alle: {
                 type: 'regler',
                 regler: {
                   '1': {
-                    sjekk: ['2.2', '2.3'],
-                    type: 'talDersom',
+                    sjekk: '3.2',
+                    type: 'mellom',
                     verdi: 0,
-                    mellom1: 2,
-                    mellom2: 2,
+                    verdi2: 0,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.3',
+                      delutfall: {
+                        nr: 0,
+                        tekst: '',
+                        fasit: 'Ja',
+                      },
+                    },
+                  },
+                  '2': {
+                    sjekk: '3.2',
+                    type: 'mellom',
+                    verdi: 1,
+                    verdi2: 2000000,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.3',
+                      delutfall: {
+                        nr: 0,
+                        tekst: '<br>- Element som ikkje er nøsta korrekt',
+                        fasit: 'Nei',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            stegnr: '3.3',
+            spm: 'Kor mange tilfelle er det av element som ikkje er avslutta korrekt?',
+            ht: '<p>Feilbeskrivinga vil innehalde noko av det følgjande:</p><ul><li>"Unclosed element [navn på element]".</li><li>"End tag for [navn på element] omitted".</li><li>"End tag for [navn på element] which is not finished".</li></ul>',
+            kilde: ['H74', 'F70'],
+            type: 'tekst',
+            filter: 'tal',
+            label: 'Tal element',
+            multilinje: false,
+            ruting: {
+              alle: {
+                type: 'regler',
+                regler: {
+                  '1': {
+                    sjekk: '3.3',
+                    type: 'mellom',
+                    verdi: 0,
+                    verdi2: 0,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.4',
+                      delutfall: {
+                        nr: 1,
+                        tekst: '',
+                        fasit: 'Ja',
+                      },
+                    },
+                  },
+                  '2': {
+                    sjekk: '3.3',
+                    type: 'mellom',
+                    verdi: 1,
+                    verdi2: 2000000,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.4',
+                      delutfall: {
+                        nr: 1,
+                        tekst: '<br>- Element som ikkje er avslutta korrekt',
+                        fasit: 'Nei',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            stegnr: '3.4',
+            spm: 'Kor mange tilfelle er det av element som har same attributt fleire gonger?',
+            ht: '<p>Feilbeskrivinga vil innehalde noko av det følgjande:</p><ul><li>"Duplicate attribute [navn på attributt]".</li><li>"Duplicate specification of attribute [navn på attributt]".</li></ul>',
+            type: 'tekst',
+            filter: 'tal',
+            kilde: ['H94'],
+            label: 'Tal element',
+            multilinje: false,
+            ruting: {
+              alle: {
+                type: 'regler',
+                regler: {
+                  '1': {
+                    sjekk: '3.4',
+                    type: 'mellom',
+                    verdi: 0,
+                    verdi2: 0,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.5',
+                      delutfall: {
+                        nr: 2,
+                        tekst: '',
+                        fasit: 'Ja',
+                      },
+                    },
+                  },
+                  '2': {
+                    sjekk: '3.4',
+                    type: 'mellom',
+                    verdi: 1,
+                    verdi2: 2000000,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.5',
+                      delutfall: {
+                        nr: 2,
+                        tekst:
+                          '<br>- Element som har same attributt fleire gonger',
+                        fasit: 'Nei',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            stegnr: '3.5',
+            spm: 'Kor mange tilfelle er det av element som har ID-ar som ikkje er unike?',
+            ht: '<p>Feilbeskrivinga vil innehalde noko av det følgjande:</p><ul><li>"Duplicate ID [navn på ID]".</li><li>"ID [navn på element] already defined".</li></ul>',
+            type: 'tekst',
+            filter: 'tal',
+            kilde: ['H93', 'F77'],
+            label: 'Tal element',
+            multilinje: false,
+            ruting: {
+              alle: {
+                type: 'regler',
+                regler: {
+                  '1': {
+                    sjekk: '3.5',
+                    type: 'mellom',
+                    verdi: 0,
+                    verdi2: 0,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.6',
+                      delutfall: {
+                        nr: 3,
+                        tekst: '',
+                        fasit: 'Ja',
+                      },
+                    },
+                  },
+                  '2': {
+                    sjekk: '3.5',
+                    type: 'mellom',
+                    verdi: 1,
+                    verdi2: 2000000,
+                    handling: {
+                      type: 'gaaTil',
+                      steg: '3.6',
+                      delutfall: {
+                        nr: 3,
+                        tekst: '<br>- Element som har ID-ar som ikkje er unike',
+                        fasit: 'Nei',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            stegnr: '3.6',
+            spm: 'Får du ein "Fatal Error" ved validering av nettsida?',
+            ht: '<p>Ein "Fatal Error" gjer at validatoren stoppar opp og ikkje får til å validere resten av koden på nettsida. "Fatal Error" kan for eksempel oppstå på grunn av script.</p><p>Det kan hende at det ligg fleire syntaksfeil etter ein "Fatal Error", men dei er ikkje mogleg å oppdage.</p>',
+            type: 'jaNei',
+            kilde: ['G134'],
+            ruting: {
+              ja: {
+                type: 'avslutt',
+                fasit: 'Nei',
+                utfall: 'Testside med valideringsfeilen "Fatal Error".',
+              },
+              nei: {
+                type: 'regler',
+                regler: {
+                  '1': {
+                    type: 'talDersom',
+                    sjekk: ['3.2', '3.3', '3.4', '3.5'],
+                    verdi: '0',
+                    mellom1: 4,
+                    mellom2: 4,
                     handling: {
                       type: 'avslutt',
                       fasit: 'Ja',
-                      utfall: '2.2 og 2.3 har svar 0',
+                      utfall: 'Testsida har ikkje syntaksfeil.',
+                    },
+                  },
+                  '2': {
+                    type: 'talDersom',
+                    sjekk: ['3.2', '3.3', '3.4', '3.5'],
+                    verdi: '0',
+                    mellom1: 0,
+                    mellom2: 3,
+                    handling: {
+                      type: 'avslutt',
+                      fasit: 'Nei',
+                      utfall:
+                        'Testside med syntaksfeil av typen #delutfall(0)#delutfall(1)#delutfall(2)#delutfall(3).',
                     },
                   },
                 },
@@ -747,13 +954,35 @@ describe('makeViewModel spec', () => {
       };
 
       const model = lagSkjemaModell(testregel, [
-        { steg: '2.2', svar: '0' },
-        { steg: '2.3', svar: '0' },
+        {
+          steg: '3.1',
+          svar: 'Ja',
+        },
+        {
+          steg: '3.2',
+          svar: '0',
+        },
+        {
+          steg: '3.3',
+          svar: '0',
+        },
+        {
+          steg: '3.4',
+          svar: '0',
+        },
+        {
+          steg: '3.5',
+          svar: '0',
+        },
+        {
+          steg: '3.6',
+          svar: 'Nei',
+        },
       ]);
       expect(model.resultat).toMatchObject({
         type: 'avslutt',
         fasit: 'Ja',
-        utfall: '2.2 og 2.3 har svar 0',
+        utfall: 'Testsida har ikkje syntaksfeil.',
       });
     });
 

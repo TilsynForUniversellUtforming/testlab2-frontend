@@ -56,7 +56,7 @@ export interface RegelTalDersom {
   /** Matrise med referansar stegid-ar som som skal sjekkast  */
   sjekk: Array<string>;
   /** Verdi som svar skal vere lik for å teljast med. */
-  verdi: number;
+  verdi: string;
   /** Den lågaste verdien av tal svar som skal utløyse regelen. */
   mellom1: number;
   /** Den høgaste verdien av tal svar som ska utløyse regelen. */
