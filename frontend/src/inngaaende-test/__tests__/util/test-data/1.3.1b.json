@@ -1,0 +1,394 @@
+{
+	"namn": "1.3.1b Tabellar og overskriftsceller er rett koda",
+	"id": "1.3.1b",
+	"testlabId": 243,
+	"versjon": "1.1",
+	"type": "Nett",
+	"spraak": "nn",
+	"kravTilSamsvar": "<p>Følgande innhald i tabellar er koda semantisk rett:</p>\r\n<ul>\r\n<li>Tabelltittel.</li>\r\n<li>Overskriftsceller.</li>\r\n<li>Tabellar med overskrift i berre ei rad eller kolonne.</li>\r\n<li>Overskriftsceller i tabellar med overskrifter både på kolonne og rad.</li>\r\n<li>Overskriftsceller i tabellar med overskrifter på fleire rader og/eller kolonnar inne i tabellen.</li>\r\n</ul>",
+	"side": "2.1",
+	"element": "3.1",
+	"steg": [
+		{
+			"stegnr": "2.1",
+			"spm": "Kva side testar du på?",
+			"ht": "<p>Oppgi URL eller side-ID</p>",
+			"type": "tekst",
+			"label": "URL/Side:",
+			"datalist": "Sideutvalg",
+			"oblig": true,
+			"ruting": {
+				"alle": {
+					"type": "gaaTil",
+					"steg": "2.2"
+				}
+			}
+		},
+		{
+			"stegnr": "2.2",
+			"spm": "Har nettsida tabellar?",
+			"ht": "Informasjon er tabular når det er logiske relasjonar mellom tekst, tall og anna data i to dimensjonar (vannrett og loddrett). ",
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.1"
+				},
+				"nei": {
+					"type": "ikkjeForekomst",
+					"utfall": "Testside har ikkje tabellar."
+				}
+			}
+		},
+		{
+			"stegnr": "3.1",
+			"spm": "Beskriv tabellen som skal vurderast.",
+			"ht": "Legg inn overskrift, eller andre stikkord som er slik at innhaldet kan identifiserast.",
+			"type": "tekst",
+			"label": "Tabell",
+			"multilinje": true,
+			"oblig": true,
+			"ruting": {
+				"alle": {
+					"type": "gaaTil",
+					"steg": "3.2"
+				}
+			}
+		},
+		{
+			"stegnr": "3.2",
+			"spm": "Er tabellen koda med &#x3C;table&#x3E;-elementet?",
+			"ht": "<p>Du kan nytte kodeverktøyet i nettlesaren til å sjekke dette.</p><p>Sjekk om tabellen er koda med<code>&#x3C;table&#x3E;</code>-elementet.</p>",
+			"kilde": [
+				"G115",
+				"H51",
+				"F34",
+				"F48"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.3"
+				},
+				"nei": {
+					"type": "avslutt",
+					"fasit": "Nei",
+					"utfall": "Tabell er ikkje koda med &#x3C;table&#x3E;."
+				}
+			}
+		},
+		{
+			"stegnr": "3.3",
+			"spm": "Har tabellen overskriftsceller?",
+			"ht": "<p>I ein tabell er det vanleg med overskrifter på rader og kolonner.</p><p>Dette kan framgå med visuell markering og utfrå innhaldet i tabellen. Ei celle fungerer som overskrift viss den beskriv innhaldet som ligg i same rad eller kolonne.</p><p>Merk at overskriftscellene kan ligge på fleire nivå.</p>",
+			"type": "jaNei",
+			"kilde": [],
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.4"
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell er koda med &#x3C;table&#x3E;.",
+						"fasit": "Ja"
+					}
+				}
+			}
+		},
+		{
+			"stegnr": "3.4",
+			"spm": "Er alle overskriftscellene koda med elementet &#x3C;th&#x3E;?",
+			"ht": "Du kan bruke kodeverktøyet i nettlesaren til å sjekke dette. Du skal sjekke kodinga på alle overskriftscellene.",
+			"kilde": [
+				"H51",
+				"H63",
+				"F91"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.5"
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell har overskriftsceller som ikkje er koda med &#x3C;th&#x3E;.",
+						"fasit": "Nei"
+					}
+				}
+			}
+		},
+		{
+			"stegnr": "3.5",
+			"spm": "Har tabellen overskriftsceller i meir enn berre første rad eller berre første kolonne?",
+			"ht": "Fleire nivå betyr at det kan ligge overskriftsceller i fleire rader, fleire kolonner eller både i rad og kolonne.",
+			"kilde": [
+				"H63"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.6"
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell har overskriftsceller som er koda med &#x3C;th&#x3E;.",
+						"fasit": "Ja"
+					}
+				}
+			}
+		},
+		{
+			"stegnr": "3.6",
+			"spm": "Har tabellen visuelle overskriftsceller som ligg mellom datacellene?",
+			"ht": "Ein tabell med overskriftsceller som ligg mellom datacellene har overskrifter på fleire nivå. Det kan for eksempel vere overskriftsceller som startar ei ny kategorisering inne i tabellen.",
+			"type": "jaNei",
+			"kilde": [],
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.10"
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.7"
+				}
+			}
+		},
+		{
+			"stegnr": "3.7",
+			"spm": "Er alle overskriftscellene koda med attributtet scope?",
+			"ht": "Du kan bruke kodeverktøyet i nettlesaren til å sjekke dette.",
+			"kilde": [
+				"H63",
+				"F91"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.8"
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.10"
+				}
+			}
+		},
+		{
+			"stegnr": "3.8",
+			"spm": "Er alle overskriftscellene på kolonnene koda med attributtet scope=\"col\" eller scope=\"colgroup\"?",
+			"ht": "<p>Verdien i attributtet scope brukast på følgjande måte:</p><ul><li>col når overskriftscella er overskrift for ei kolonne</li><li>colgroup når overskriftscella er overskrift for fleire kolonner</li></ul>",
+			"kilde": [
+				"H63"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.9"
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.10"
+				}
+			}
+		},
+		{
+			"stegnr": "3.9",
+			"spm": "Er alle overskriftscellene på radene koda med attributtet scope=\"row\" eller scope=\"rowgroup\"?",
+			"ht": "<p>Verdien i attributtet scope brukast på følgjande måte:</p>\n<ul>\n<li>row når overskriftscella er overskrift for ei rad</li>\n<li>rowgroup når overskriftscella er overskrift for fleire rader</li>\n</ul>",
+			"type": "jaNei",
+			"kilde": [
+				"H40",
+				"H48"
+			],
+			"ruting": {
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.10"
+				},
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell er koda slik at alle dataceller er korrekt kopla til overskriftceller.",
+						"fasit": "Ja"
+					}
+				}
+			}
+		},
+		{
+			"stegnr": "3.10",
+			"spm": "Er alle overskriftscellene koda med attributtet id?",
+			"ht": "Du kan bruke kodeverktøyet i nettlesaren til å sjekke dette.",
+			"kilde": [
+				"H43",
+				"F90"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell har dataceller som ikkje er korrekt kopla til overskriftceller.",
+						"fasit": "Nei"
+					}
+				},
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.11"
+				}
+			}
+		},
+		{
+			"stegnr": "3.11",
+			"spm": "Er alle datacellene koda med attributtet headers?",
+			"ht": "Du kan bruke kodeverktøyet i nettlesaren til å sjekke dette.",
+			"kilde": [
+				"H43",
+				"F90"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell har dataceller som ikkje er korrekt kopla til overskriftceller.",
+						"fasit": "Nei"
+					}
+				},
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.12"
+				}
+			}
+		},
+		{
+			"stegnr": "3.12",
+			"spm": "Er alle datacellene kopla til rett overskriftsceller i koden?",
+			"ht": "Headers-attributtet i datacellene viser til id-ane i overskriftscellene. Dersom datacella viser til fleire id-ar, er id-ane skilt med mellomrom.",
+			"kilde": [
+				"H43",
+				"F90"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell er koda slik at alle dataceller er korrekt kopla til overskriftceller.",
+						"fasit": "Ja"
+					}
+				},
+				"nei": {
+					"type": "gaaTil",
+					"steg": "3.13",
+					"delutfall": {
+						"nr": 0,
+						"tekst": "Tabell har dataceller som ikkje er korrekt kopla til overskriftceller.",
+						"fasit": "Nei"
+					}
+				}
+			}
+		},
+		{
+			"stegnr": "3.13",
+			"spm": "Har tabellen en synleg tittel?",
+			"ht": "<p>Tittelen, eller tabelloverskrifta, ligg rett før sjølve tabellen, utan tekst mellom tittel og tabell.</p><p><strong>Merk:</strong> Dette er ikkje det same som overskrifter i teksten på nettsida og overskriftsceller i tabellen.</p>",
+			"kilde": [],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.14"
+				},
+				"nei": {
+					"type": "avslutt",
+					"fasit": "sjekkDelutfall",
+					"utfall": "#delutfall(0)"
+				}
+			}
+		},
+		{
+			"stegnr": "3.14",
+			"spm": "Er tabelltittelen koda med &#x3C;caption&#x3E;-elementet?",
+			"ht": "Du kan bruke kodeverktøyet i nettlesaren til å sjekke dette.",
+			"kilde": [
+				"H39"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "gaaTil",
+					"steg": "3.15"
+				},
+				"nei": {
+					"type": "avslutt",
+					"utfall": "Visuell tabelltittel er ikkje koda med &#x3C;caption&#x3E;. #delutfall(0,Nei)",
+					"fasit": "Nei"
+				}
+			}
+		},
+		{
+			"stegnr": "3.15",
+			"spm": "Identifiserer tabelltittelen innhaldet i tabellen?",
+			"ht": "Du kan bruke kodeverktøyet i nettlesaren til å sjekke dette.",
+			"kilde": [
+				"H39"
+			],
+			"type": "jaNei",
+			"ruting": {
+				"ja": {
+					"type": "regler",
+					"regler": {
+						"1": {
+							"type": "vurderDelutfall",
+							"id": 0,
+							"verdi": "Nei",
+							"handling": {
+								"type": "avslutt",
+								"fasit": "Nei",
+								"utfall": "#delutfall(0)"
+							}
+						},
+						"2": {
+							"type": "vurderDelutfall",
+							"id": 0,
+							"verdi": "Ja",
+							"handling": {
+								"type": "avslutt",
+								"fasit": "Ja",
+								"utfall": "Tabelltittel identifiserer innhaldet i tabellen. #delutfall(0)"
+							}
+						}
+					}
+				},
+				"nei": {
+					"type": "avslutt",
+					"fasit": "Nei",
+					"utfall": "Tabelltittel identifiserer ikkje innhaldet i tabellen. #delutfall(0,Nei)"
+				}
+			}
+		}
+	]
+}
