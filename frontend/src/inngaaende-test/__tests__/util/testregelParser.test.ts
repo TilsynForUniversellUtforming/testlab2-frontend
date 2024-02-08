@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { describe, expect, test } from 'vitest';
 
-import { lagSkjemaModell } from '../../util/testregelParser';
+import { evaluateTestregel } from '../../util/testregelParser';
 
 describe('makeViewModel spec', () => {
   function getTestregel(navn: string): Testregel {
@@ -15,7 +15,7 @@ describe('makeViewModel spec', () => {
 
   test('når ingen svar er gitt, så skal modellen bare inneholde første steg', () => {
     const testregel = getTestregel('1.3.3a');
-    const model = lagSkjemaModell(testregel, []);
+    const model = evaluateTestregel(testregel, []);
 
     expect(model.steg).toHaveLength(1);
     const first = model.steg[0];
@@ -31,7 +31,7 @@ describe('makeViewModel spec', () => {
 
   test('når testregelen inneholder en instruksjon, så skal vi hoppe videre til neste steg som har en beslutning', () => {
     const testregel = getTestregel('1.4.4a');
-    const modell = lagSkjemaModell(testregel, [
+    const modell = evaluateTestregel(testregel, [
       { steg: '2.2', svar: 'Ja' },
       { steg: '3.3', svar: 'Ja' },
     ]);
@@ -52,7 +52,7 @@ describe('makeViewModel spec', () => {
 
   test('gitt at det er ja/nei-ruting, når et svar er gitt, så skal modellen inneholde neste steg', () => {
     const testregel = getTestregel('1.3.3a');
-    const model = lagSkjemaModell(testregel, [{ steg: '2.2', svar: 'Ja' }]);
+    const model = evaluateTestregel(testregel, [{ steg: '2.2', svar: 'Ja' }]);
 
     expect(model.steg.map((s) => s.stegnr)).toStrictEqual([
       '2.2',
@@ -70,15 +70,15 @@ describe('makeViewModel spec', () => {
       { steg: '3.2', svar: 'Ja' },
     ];
 
-    const modelJa = lagSkjemaModell(testregel, [
+    const modelJa = evaluateTestregel(testregel, [
       ...fellesSvar,
       { steg: '3.3', svar: 'Ja' },
     ]);
-    const modelNei = lagSkjemaModell(testregel, [
+    const modelNei = evaluateTestregel(testregel, [
       ...fellesSvar,
       { steg: '3.3', svar: 'Nei' },
     ]);
-    const modelIkkjeMogleg = lagSkjemaModell(testregel, [
+    const modelIkkjeMogleg = evaluateTestregel(testregel, [
       ...fellesSvar,
       {
         steg: '3.3',
@@ -114,7 +114,7 @@ describe('makeViewModel spec', () => {
 
   test('når et svar er gitt, så skal vi ta med alle de neste stegene helt til vi kommer til en beslutning', () => {
     const testregel: Testregel = getTestregel('1.4.5a');
-    const model = lagSkjemaModell(testregel, [
+    const model = evaluateTestregel(testregel, [
       { steg: '2.2', svar: 'Ja' },
       { steg: '2.3', svar: 'Ja' },
     ]);
@@ -129,7 +129,7 @@ describe('makeViewModel spec', () => {
 
   test('når et steg har delutfall, så skal det lagres i modellen', () => {
     const testregel = getTestregel('nett-1.4.12a');
-    const model = lagSkjemaModell(testregel, [
+    const model = evaluateTestregel(testregel, [
       { steg: '2.2', svar: 'Ja' },
       { steg: '2.3', svar: 'Ja' },
       { steg: '2.4', svar: 'Ja' },
@@ -149,7 +149,7 @@ describe('makeViewModel spec', () => {
   describe('regler', () => {
     test('lik', () => {
       const testregel = getTestregel('1.3.3a');
-      const model = lagSkjemaModell(testregel, [
+      const model = evaluateTestregel(testregel, [
         { steg: '2.2', svar: 'Ja' },
         { steg: '2.3', svar: 'bla bla' },
         { steg: '2.4', svar: 'Ja' },
@@ -167,7 +167,7 @@ describe('makeViewModel spec', () => {
           'Tekstlege instruksjon utan tilvising til sensoriske eigenskapar.',
       });
 
-      const model2 = lagSkjemaModell(testregel, [
+      const model2 = evaluateTestregel(testregel, [
         { steg: '2.2', svar: 'Ja' },
         { steg: '2.3', svar: 'bla bla' },
         { steg: '2.4', svar: 'Ja' },
@@ -196,7 +196,7 @@ describe('makeViewModel spec', () => {
 
     test('ulik', () => {
       const testregel = getTestregel('3.1.1a');
-      const model = lagSkjemaModell(testregel, [
+      const model = evaluateTestregel(testregel, [
         { steg: '3.1', svar: 'Ja' },
         { steg: '3.4', svar: 'Ja' },
         { steg: '3.7', svar: 'Ja' },
@@ -219,7 +219,7 @@ describe('makeViewModel spec', () => {
         { steg: '3.1', svar: 'Ja' },
         { steg: '3.2', svar: '0' },
       ];
-      const model = lagSkjemaModell(testregel, alleSvar);
+      const model = evaluateTestregel(testregel, alleSvar);
 
       expect(model.steg.map((m) => m.stegnr)).toStrictEqual([
         '3.1',
@@ -234,7 +234,7 @@ describe('makeViewModel spec', () => {
         },
       ]);
 
-      const model2 = lagSkjemaModell(testregel, [
+      const model2 = evaluateTestregel(testregel, [
         { steg: '3.1', svar: 'Ja' },
         { steg: '3.2', svar: '10' },
       ]);
@@ -255,7 +255,7 @@ describe('makeViewModel spec', () => {
 
     test('talDersom', () => {
       const testregel = getTestregel('4.1.1a');
-      const model = lagSkjemaModell(testregel, [
+      const model = evaluateTestregel(testregel, [
         {
           steg: '3.1',
           svar: 'Ja',
@@ -290,7 +290,7 @@ describe('makeViewModel spec', () => {
 
     test('vurderDelutfall', () => {
       const testregel = getTestregel('1.3.1b');
-      const model = lagSkjemaModell(testregel, [
+      const model = evaluateTestregel(testregel, [
         { steg: '2.2', svar: 'Ja' },
         { steg: '3.1', svar: 'bla bla' },
         { steg: '3.2', svar: 'Ja' },

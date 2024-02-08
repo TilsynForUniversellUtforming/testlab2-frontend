@@ -1,6 +1,6 @@
+import { parseHtmlEntities } from '@common/util/stringutils';
 import TestResultCard from '@test/testregel-form/TestResultCard';
 import {
-  parseHtmlEntities,
   TestregelResultat,
   toElementResultat,
 } from '@test/util/testregelParser';

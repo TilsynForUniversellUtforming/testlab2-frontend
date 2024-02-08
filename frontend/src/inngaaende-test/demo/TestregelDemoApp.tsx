@@ -1,13 +1,14 @@
 import '../test.scss';
 
 import { Spinner } from '@digdir/design-system-react';
+import { Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
-import { AlleSvar, TestregelResultat } from '../util/testregelParser';
+import { TestregelResultat } from '../util/testregelParser';
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
@@ -45,7 +46,7 @@ const TestregelDemoApp = () => {
   const onResultat = (
     resultat: TestregelResultat,
     elementOmtale: string,
-    alleSvar: AlleSvar
+    alleSvar: Svar[]
   ) => {
     console.log(
       `Resultat: ${JSON.stringify({ resultat, elementOmtale, alleSvar }, null, 2)}`

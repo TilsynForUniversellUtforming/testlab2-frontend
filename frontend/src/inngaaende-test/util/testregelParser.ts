@@ -12,20 +12,19 @@ import { Regel } from '@test/util/testregel-interface/Regel';
 import { Steg } from '@test/util/testregel-interface/Steg';
 import { Testregel } from '@test/util/testregel-interface/Testregel';
 
-export const parseHtmlEntities = (text: string): string => {
-  const parser = new DOMParser();
-  return (
-    parser.parseFromString(text, 'text/html').body.textContent || text
-  ).replace(/([,.!?:])(?=\S)(?!$)/g, '$1 '); // Add spacing after punctiation if missing
+export type TestregelSkjema = {
+  steg: Steg[];
+  delutfall: Delutfall[];
+  resultat?: TestregelResultat;
 };
+
+export type TestregelResultat = Avslutt | HandlingikkjeForekomst;
 
 export type Avslutt = {
   type: 'avslutt';
   fasit: Exclude<HandlingFasitTyper, 'sjekkDelutfall'>;
   utfall: string;
 };
-
-export type TestregelResultat = Avslutt | HandlingikkjeForekomst;
 
 export function toElementResultat(
   resultat: TestregelResultat
@@ -42,25 +41,14 @@ export function toElementResultat(
   }
 }
 
-export type SkjemaModell = {
-  steg: Steg[];
-  delutfall: Delutfall[];
-  resultat?: TestregelResultat;
-};
-
-export type AlleSvar = Svar[];
-
-export function finnSvar(
-  stegnr: string,
-  alleSvar: AlleSvar
-): string | undefined {
+export function finnSvar(stegnr: string, alleSvar: Svar[]): string | undefined {
   return alleSvar.find((svar) => svar.steg === stegnr)?.svar;
 }
 
-export function lagSkjemaModell(
+export function evaluateTestregel(
   testregel: Testregel | string,
-  alleSvar: AlleSvar
-): SkjemaModell {
+  alleSvar: Svar[]
+): TestregelSkjema {
   const parsedTestregel: Testregel =
     typeof testregel === 'string' ? JSON.parse(testregel) : testregel;
   const stepsWithoutFirst = parsedTestregel.steg.slice(1);
@@ -68,9 +56,81 @@ export function lagSkjemaModell(
   return loop({ steg: [], delutfall: [] }, stepsWithoutFirst, alleSvar);
 }
 
+function loop(
+  testregelSkjema: TestregelSkjema,
+  resterendeSteg: Steg[],
+  alleSvar: Svar[]
+): TestregelSkjema {
+  if (resterendeSteg.length === 0) {
+    return testregelSkjema;
+  }
+
+  const [steg, ...resten] = resterendeSteg;
+  if (steg.type === 'instruksjon') {
+    const acc_ = { ...testregelSkjema, steg: [...testregelSkjema.steg, steg] };
+    return loop(acc_, resten, alleSvar);
+  }
+
+  const stegSvar = finnSvar(steg.stegnr, alleSvar);
+  if (!stegSvar) {
+    const rutingAlleGaaTil = takeWhile(resterendeSteg, (step) => {
+      const tekst = step.type === 'tekst';
+      const alleGaaTil = step.ruting?.alle?.type === 'gaaTil';
+      return tekst && alleGaaTil;
+    });
+    const nextStep = first(drop(resterendeSteg, rutingAlleGaaTil.length));
+    if (!nextStep) {
+      return testregelSkjema;
+    }
+    const steg = [...rutingAlleGaaTil, nextStep];
+    return { ...testregelSkjema, steg: [...testregelSkjema.steg, ...steg] };
+  } else {
+    const nesteHandling = finnNesteHandling(
+      steg,
+      alleSvar,
+      testregelSkjema.delutfall
+    );
+    if (nesteHandling?.type === 'gaaTil') {
+      const gjenvaerendeSteg = dropWhile(
+        resten,
+        (step) => step.stegnr !== nesteHandling.steg
+      );
+      const oppdaterteDelutfall = [...testregelSkjema.delutfall];
+      if (nesteHandling.delutfall) {
+        oppdaterteDelutfall[nesteHandling.delutfall.nr] =
+          nesteHandling.delutfall;
+      }
+      return loop(
+        {
+          ...testregelSkjema,
+          steg: [...testregelSkjema.steg, steg],
+          delutfall: oppdaterteDelutfall,
+        },
+        gjenvaerendeSteg,
+        alleSvar
+      );
+    } else if (
+      nesteHandling?.type === 'avslutt' ||
+      nesteHandling?.type === 'ikkjeForekomst'
+    ) {
+      const resultat: TestregelResultat =
+        nesteHandling?.type === 'ikkjeForekomst'
+          ? nesteHandling
+          : insertDelutfall(nesteHandling, testregelSkjema.delutfall);
+      return {
+        ...testregelSkjema,
+        steg: [...testregelSkjema.steg, steg],
+        resultat: resultat,
+      };
+    } else {
+      return testregelSkjema;
+    }
+  }
+}
+
 function finnNesteHandling(
   step: Steg,
-  alleSvar: AlleSvar,
+  alleSvar: Svar[],
   delutfall: Delutfall[]
 ): Exclude<Handling, HandlingRegler> | undefined {
   const ruting = step.ruting;
@@ -106,7 +166,7 @@ function finnNesteHandling(
 
 function evaluateRutingType(
   handling: Handling,
-  alleSvar: AlleSvar,
+  alleSvar: Svar[],
   delutfall: Delutfall[]
 ): Exclude<Handling, HandlingRegler> | undefined {
   switch (handling.type) {
@@ -121,7 +181,7 @@ function evaluateRutingType(
 
 function evaluateRutingRegler(
   regler: { [p: string]: Regel },
-  alleSvar: AlleSvar,
+  alleSvar: Svar[],
   delutfall: Delutfall[]
 ): Exclude<Handling, HandlingRegler> | undefined {
   if (Object.keys(regler).length === 0) {
@@ -207,76 +267,4 @@ function insertDelutfall(
     );
   }, utfall);
   return { ...resultat, fasit, utfall: utfallMedDelutfall };
-}
-
-function loop(
-  skjemaModell: SkjemaModell,
-  alleSteg: Steg[],
-  alleSvar: AlleSvar
-): SkjemaModell {
-  if (alleSteg.length === 0) {
-    return skjemaModell;
-  }
-
-  const [steg, ...resten] = alleSteg;
-  if (steg.type === 'instruksjon') {
-    const acc_ = { ...skjemaModell, steg: [...skjemaModell.steg, steg] };
-    return loop(acc_, resten, alleSvar);
-  }
-
-  const stegSvar = finnSvar(steg.stegnr, alleSvar);
-  if (!stegSvar) {
-    const rutingAlleGaaTil = takeWhile(alleSteg, (step) => {
-      const tekst = step.type === 'tekst';
-      const alleGaaTil = step.ruting?.alle?.type === 'gaaTil';
-      return tekst && alleGaaTil;
-    });
-    const nextStep = first(drop(alleSteg, rutingAlleGaaTil.length));
-    if (!nextStep) {
-      return skjemaModell;
-    }
-    const steg = [...rutingAlleGaaTil, nextStep];
-    return { ...skjemaModell, steg: [...skjemaModell.steg, ...steg] };
-  } else {
-    const nesteHandling = finnNesteHandling(
-      steg,
-      alleSvar,
-      skjemaModell.delutfall
-    );
-    if (nesteHandling?.type === 'gaaTil') {
-      const gjenvaerendeSteg = dropWhile(
-        resten,
-        (step) => step.stegnr !== nesteHandling.steg
-      );
-      const oppdaterteDelutfall = [...skjemaModell.delutfall];
-      if (nesteHandling.delutfall) {
-        oppdaterteDelutfall[nesteHandling.delutfall.nr] =
-          nesteHandling.delutfall;
-      }
-      return loop(
-        {
-          ...skjemaModell,
-          steg: [...skjemaModell.steg, steg],
-          delutfall: oppdaterteDelutfall,
-        },
-        gjenvaerendeSteg,
-        alleSvar
-      );
-    } else if (
-      nesteHandling?.type === 'avslutt' ||
-      nesteHandling?.type === 'ikkjeForekomst'
-    ) {
-      const resultat: TestregelResultat =
-        nesteHandling?.type === 'ikkjeForekomst'
-          ? nesteHandling
-          : insertDelutfall(nesteHandling, skjemaModell.delutfall);
-      return {
-        ...skjemaModell,
-        steg: [...skjemaModell.steg, steg],
-        resultat: resultat,
-      };
-    } else {
-      return skjemaModell;
-    }
-  }
 }

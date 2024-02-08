@@ -6,9 +6,8 @@ import { Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
 import { SkjemaOgSvar } from '@test/testregel-form/types';
 import {
-  AlleSvar,
+  evaluateTestregel,
   finnSvar,
-  lagSkjemaModell,
   TestregelResultat,
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
@@ -23,7 +22,7 @@ interface Props {
   onResultat: (
     resultat: TestregelResultat,
     elementOmtale: string,
-    svar: AlleSvar
+    svar: Svar[]
   ) => void;
 }
 
@@ -35,7 +34,7 @@ const TestForm = ({
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const [skjemaOgSvar, setSkjemaOgSvar] = useState<SkjemaOgSvar>({
-    skjemaModell: lagSkjemaModell(testregel.testregelSchema, []),
+    skjemaModell: evaluateTestregel(testregel.testregelSchema, []),
     alleSvar: [],
   });
 
@@ -47,7 +46,7 @@ const TestForm = ({
         prevState.alleSvar,
         (svar) => svar.steg !== nyttSvar.steg
       ).concat([nyttSvar]);
-      const oppdatertSkjemaModell = lagSkjemaModell(
+      const oppdatertSkjemaModell = evaluateTestregel(
         testregel.testregelSchema,
         oppdaterteSvar
       );
@@ -61,7 +60,7 @@ const TestForm = ({
 
   useEffect(() => {
     setSkjemaOgSvar({
-      skjemaModell: lagSkjemaModell(testregel.testregelSchema, []),
+      skjemaModell: evaluateTestregel(testregel.testregelSchema, []),
       alleSvar: [],
     });
   }, [testregel]);

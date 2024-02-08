@@ -3,7 +3,11 @@ import useAlert from '@common/alert/useAlert';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
-import { CreateTestResultat, ResultatManuellKontroll } from '@test/api/types';
+import {
+  CreateTestResultat,
+  ResultatManuellKontroll,
+  Svar,
+} from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
@@ -15,7 +19,6 @@ import {
   TestContext,
 } from '@test/types';
 import {
-  AlleSvar,
   TestregelResultat,
   toElementResultat,
 } from '@test/util/testregelParser';
@@ -295,7 +298,7 @@ const TestOverviewLoeysing = () => {
     async (
       resultat: TestregelResultat,
       elementOmtale: string,
-      alleSvar: AlleSvar
+      alleSvar: Svar[]
     ) => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);

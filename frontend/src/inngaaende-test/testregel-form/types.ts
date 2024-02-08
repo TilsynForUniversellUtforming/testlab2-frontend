@@ -1,4 +1,5 @@
-import { AlleSvar, SkjemaModell } from '@test/util/testregelParser';
+import { Svar } from '@test/api/types';
+import { TestregelSkjema } from '@test/util/testregelParser';
 
 export type TestFormStep = {
   key: string;
@@ -7,6 +8,6 @@ export type TestFormStep = {
 };
 
 export type SkjemaOgSvar = {
-  skjemaModell: SkjemaModell;
-  alleSvar: AlleSvar;
+  skjemaModell: TestregelSkjema;
+  alleSvar: Svar[];
 };

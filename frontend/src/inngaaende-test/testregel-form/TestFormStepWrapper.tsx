@@ -1,18 +1,15 @@
+import { parseHtmlEntities } from '@common/util/stringutils';
 import { ErrorMessage } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';
 import TestFormInputText from '@test/testregel-form/input/TestFormInputText';
 import { Steg } from '@test/util/testregel-interface/Steg';
-import {
-  AlleSvar,
-  finnSvar,
-  parseHtmlEntities,
-} from '@test/util/testregelParser';
+import { finnSvar } from '@test/util/testregelParser';
 
 interface FormStepProps {
   steg: Steg | undefined;
-  alleSvar: AlleSvar;
+  alleSvar: Svar[];
   onAnswer: (answer: Svar) => void;
 }
 
