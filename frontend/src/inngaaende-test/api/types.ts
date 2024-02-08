@@ -15,7 +15,7 @@ export type ElementResultat =
   | 'ikkjeTesta';
 
 export type CreateTestResultat = {
-  sakId: number;
+  testgrunnlagId: number;
   loeysingId: number;
   testregelId: number;
   nettsideId: number;

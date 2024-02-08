@@ -205,7 +205,7 @@ export function findActiveTestResults(
 ): ResultatManuellKontroll[] {
   return testResults.filter(
     (tr) =>
-      tr.sakId === sakId &&
+      tr.testgrunnlagId === sakId &&
       tr.loeysingId === loeysingId &&
       tr.testregelId === testregelId &&
       tr.nettsideId === nettsideId
