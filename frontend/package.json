@@ -12,6 +12,7 @@
     "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore;prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "prepare": "cd .. && husky install frontend/.husky",
     "test": "vitest",
+    "test:ci": "vitest run --pool=forks",
     "coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
@@ -40,8 +41,8 @@
     "@typescript-eslint/parser": "^6.19.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^8.56.0",
-    "@vitest/coverage-v8": "^1.2.1",
-    "@vitest/ui": "^1.2.1",
+    "@vitest/coverage-v8": "^1.2.2",
+    "@vitest/ui": "^1.2.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
@@ -56,7 +57,7 @@
     "sass": "^1.70.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
-    "vitest": "^1.2.1"
+    "vitest": "^1.2.2"
   },
   "husky": {
     "hooks": {

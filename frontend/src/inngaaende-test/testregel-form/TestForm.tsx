@@ -1,91 +1,102 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
+import { takeWhile } from '@common/util/arrayUtils';
 import { Button, Heading } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
-import { getAnswersFromState, getNextSteps } from '@test/util/testregelUtils';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import TestFormResultat from '@test/testregel-form/TestFormResultat';
+import { SkjemaOgSvar } from '@test/testregel-form/types';
+import {
+  evaluateTestregel,
+  finnSvar,
+  TestregelResultat,
+} from '@test/util/testregelParser';
+import { Testregel } from '@testreglar/api/types';
+import { useEffect, useRef, useState } from 'react';
 
-import { SelectionOutcome, TestAnswers, TestStep } from '../types';
 import TestFormStepWrapper from './TestFormStepWrapper';
-import { TestFormStep } from './types';
 
 interface Props {
-  heading: string;
-  steps: Map<string, TestStep>;
-  initStepKey: string;
+  testregel: Testregel;
   onClickBack: () => void;
   onClickSave: () => void;
-  updateResult: (testAnswers: TestAnswers) => void;
+  onResultat: (
+    resultat: TestregelResultat,
+    elementOmtale: string,
+    svar: Svar[]
+  ) => void;
 }
 
 const TestForm = ({
-  heading,
-  steps,
-  initStepKey,
+  testregel,
   onClickBack,
   onClickSave,
-  updateResult,
+  onResultat,
 }: Props) => {
-  const [displaySteps, setDisplaySteps] = useState<TestFormStep[]>([]);
   const ref = useRef<HTMLDivElement>(null);
+  const [skjemaOgSvar, setSkjemaOgSvar] = useState<SkjemaOgSvar>({
+    skjemaModell: evaluateTestregel(testregel.testregelSchema, []),
+    alleSvar: [],
+  });
+
+  const { skjemaModell, alleSvar } = skjemaOgSvar;
+
+  function onAnswer(nyttSvar: Svar) {
+    setSkjemaOgSvar((prevState) => {
+      const oppdaterteSvar = takeWhile(
+        prevState.alleSvar,
+        (svar) => svar.steg !== nyttSvar.steg
+      ).concat([nyttSvar]);
+      const oppdatertSkjemaModell = evaluateTestregel(
+        testregel.testregelSchema,
+        oppdaterteSvar
+      );
+      return {
+        ...prevState,
+        skjemaModell: oppdatertSkjemaModell,
+        alleSvar: oppdaterteSvar,
+      };
+    });
+  }
 
   useEffect(() => {
-    const stepsToShow = getNextSteps(initStepKey, steps);
-    setDisplaySteps(stepsToShow);
-  }, [steps, initStepKey]);
-
-  const onAnswer = useCallback(
-    (answer: Svar, selectionOutcome?: SelectionOutcome) => {
-      // If the step has an selectionOutcome it changes the structure of the selection tree, and the
-      // previous steps has to be reset.
-      const updatedSteps = selectionOutcome
-        ? Array.from(steps.entries()).slice(
-            0,
-            Array.from(steps.entries()).findIndex(
-              ([key, _]) => key === answer.steg
-            ) + 1
-          )
-        : steps;
-
-      const updatedStepsMap = new Map(updatedSteps);
-      const currentStep = updatedStepsMap.get(answer.steg);
-
-      if (currentStep) {
-        currentStep.answer = answer;
-        updatedStepsMap.set(answer.steg, currentStep);
-
-        const testAnswers = getAnswersFromState(
-          updatedStepsMap,
-          selectionOutcome
-        );
-        updateResult(testAnswers);
-      }
-    },
-    [steps, updateResult]
-  );
+    setSkjemaOgSvar({
+      skjemaModell: evaluateTestregel(testregel.testregelSchema, []),
+      alleSvar: [],
+    });
+  }, [testregel]);
 
   useEffect(() => {
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [displaySteps]);
+  }, [skjemaModell]);
+
+  useEffect(() => {
+    if (skjemaModell.resultat) {
+      const element = JSON.parse(testregel.testregelSchema).element;
+      const elementOmtale =
+        finnSvar(element, alleSvar) ?? 'Finn ikkje elementomtala';
+
+      onResultat(skjemaModell.resultat, elementOmtale, alleSvar);
+    }
+  }, [skjemaModell]);
 
   return (
     <div className="test-form" ref={ref}>
       <Heading size="medium" level={3}>
-        {heading}
+        {testregel.name}
       </Heading>
       <div className="test-form-content">
-        {displaySteps.map((formStep) => {
-          const testingStep = steps.get(formStep.key);
-          return (
-            <div key={formStep.key}>
-              <TestFormStepWrapper
-                testingStep={testingStep}
-                formStep={formStep}
-                onAnswer={onAnswer}
-              />
-            </div>
-          );
-        })}
+        {skjemaModell.steg.map((etSteg) => (
+          <div key={etSteg.stegnr}>
+            <TestFormStepWrapper
+              steg={etSteg}
+              alleSvar={alleSvar}
+              onAnswer={onAnswer}
+            />
+          </div>
+        ))}
+        {skjemaModell.resultat && (
+          <TestFormResultat resultat={skjemaModell.resultat} />
+        )}
       </div>
       <TestlabDivider />
       <div className="testregel-form-buttons">

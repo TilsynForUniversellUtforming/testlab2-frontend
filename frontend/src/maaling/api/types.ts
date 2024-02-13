@@ -1,6 +1,5 @@
 import { Loeysing } from '@loeysingar/api/types';
-
-import { Testregel } from '../../testreglar/api/types';
+import { Testregel } from '@testreglar/api/types';
 
 export type CrawlParameters = {
   maxLenker: number;
