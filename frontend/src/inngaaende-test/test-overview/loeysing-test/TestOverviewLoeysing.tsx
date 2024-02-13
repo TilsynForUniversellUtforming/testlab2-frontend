@@ -3,7 +3,11 @@ import useAlert from '@common/alert/useAlert';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
-import { CreateTestResultat, ResultatManuellKontroll } from '@test/api/types';
+import {
+  CreateTestResultat,
+  ResultatManuellKontroll,
+  Svar,
+} from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
@@ -12,13 +16,13 @@ import {
   innhaldsType,
   ManuellTestStatus,
   PageType,
-  TestAnswers,
   TestContext,
-  TestStep,
 } from '@test/types';
-import { parseTestregel } from '@test/util/testregelParser';
 import {
-  combineStepsAndAnswers,
+  TestregelResultat,
+  toElementResultat,
+} from '@test/util/testregelParser';
+import {
   findActiveTestResult,
   getInitialPageType,
   getNettsideProperties,
@@ -43,7 +47,6 @@ const TestOverviewLoeysing = () => {
     useState<InnhaldsType>('Bilde og grafikk');
 
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
-  const [testingSteps, setTestingSteps] = useState<Map<string, TestStep>>();
   const [alert, setAlert] = useAlert();
   const [sak, setSak] = useState<Sak>(contextSak);
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
@@ -79,36 +82,11 @@ const TestOverviewLoeysing = () => {
     )
   );
 
-  const handleSetTestingSteps = (
-    testregel: Testregel,
-    testResultsLoeysing: ResultatManuellKontroll[],
-    sakId: number,
-    loeysingId: number,
-    nettsideId: number
-  ) => {
-    const manualTestregel = parseTestregel(testregel.testregelSchema);
-    const testResult = findActiveTestResult(
-      testResultsLoeysing,
-      sakId,
-      loeysingId,
-      testregel.id,
-      nettsideId
-    );
-
-    const testingSteps = combineStepsAndAnswers(
-      manualTestregel.steps,
-      testResult?.svar
-    );
-
-    setTestingSteps(testingSteps);
-  };
-
   const processData = (
     contextSak: Sak,
     contextTestResults: ResultatManuellKontroll[],
     loeysingId: number,
-    pageType: PageType,
-    activeTestregel?: Testregel
+    pageType: PageType
   ) => {
     const testregelList = sak.testreglar.map((tr) =>
       toTestregelOverviewElement(tr)
@@ -145,17 +123,6 @@ const TestOverviewLoeysing = () => {
         pageType.nettsideId
       )
     );
-
-    // Set the testing steps if there is an active testregel
-    if (isDefined(activeTestregel)) {
-      handleSetTestingSteps(
-        activeTestregel,
-        filteredTestResults,
-        Number(sakId),
-        loeysingId,
-        pageType.nettsideId
-      );
-    }
   };
 
   const onClickSave = () => {
@@ -213,7 +180,6 @@ const TestOverviewLoeysing = () => {
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
-      setTestingSteps(undefined);
       setActiveTestregel(undefined);
       const nextTestregel = sak.testreglar.find((tr) => tr.id === testregelId);
       if (!nextTestregel) {
@@ -243,8 +209,7 @@ const TestOverviewLoeysing = () => {
               contextSak,
               contextTestResults,
               Number(loeysingId),
-              pageType,
-              nextTestregel
+              pageType
             );
           }
 
@@ -318,13 +283,7 @@ const TestOverviewLoeysing = () => {
         try {
           const createdTestResults = await createTestResultat(testResult);
           contextSetTestResults(createdTestResults);
-          processData(
-            contextSak,
-            createdTestResults,
-            loeysingId,
-            pageType,
-            activeTestregel
-          );
+          processData(contextSak, createdTestResults, loeysingId, pageType);
         } catch (e) {
           setAlert('danger', 'Opprett testresultat feila');
         }
@@ -336,7 +295,11 @@ const TestOverviewLoeysing = () => {
   );
 
   const doUpdateTestResult = useCallback(
-    async (testAnswers: TestAnswers) => {
+    async (
+      resultat: TestregelResultat,
+      elementOmtale: string,
+      alleSvar: Svar[]
+    ) => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
 
@@ -361,10 +324,10 @@ const TestOverviewLoeysing = () => {
           loeysingId: Number(loeysingId),
           testregelId: activeTestregel.id,
           nettsideId: pageType.nettsideId,
-          elementOmtale: testAnswers.elementOmtale,
-          elementResultat: testAnswers.elementResultat,
-          elementUtfall: testAnswers.elementUtfall,
-          svar: testAnswers.answers,
+          elementOmtale,
+          elementResultat: toElementResultat(resultat),
+          elementUtfall: resultat.utfall,
+          svar: alleSvar,
           ferdig: false,
         };
 
@@ -375,8 +338,7 @@ const TestOverviewLoeysing = () => {
             contextSak,
             updatedTestResults,
             loeysingIdNumeric,
-            pageType,
-            activeTestregel
+            pageType
           );
         } catch (e) {
           setAlert('danger', 'Oppdatering av testresultat feila');
@@ -434,15 +396,13 @@ const TestOverviewLoeysing = () => {
             />
           ))}
         </div>
-        {testingSteps && activeTestregel && (
+        {activeTestregel && (
           <div className="testregel-form-wrapper">
             <TestForm
-              heading={activeTestregel.name}
-              steps={testingSteps}
-              initStepKey={Array.from(testingSteps.keys())[0]}
+              testregel={activeTestregel}
               onClickBack={onClickBack}
               onClickSave={onClickSave}
-              updateResult={doUpdateTestResult}
+              onResultat={doUpdateTestResult}
             />
           </div>
         )}

@@ -1,0 +1,139 @@
+{
+  "namn": "1.4.5a Bilde av tekst er ikkje brukt unødvendig",
+  "id": "1.4.5a",
+  "testlabId": 152,
+  "versjon": "1.0",
+  "type": "Nett",
+  "spraak": "nn",
+  "kravTilSamsvar": "<p>Kravet kan oppfyllast på fleire måtar. </p>\r\n<ul>\r\n<li>Bilde av tekst er ikkje i bruk med mindre:\r\n<ul>\r\n<li>bilde av tekst kan tilpassast brukaren sine krav eller</li>\r\n<li>bilde av tekst er nødvendig for å presentere informasjon</li>\r\n</ul>\r\n</li>\r\n</ul>",
+  "side": "2.1",
+  "element": "3.1",
+  "steg": [
+    {
+      "stegnr": "2.1",
+      "spm": "Kva side testar du på?",
+      "ht": "Oppgi URL eller side-ID.",
+      "type": "tekst",
+      "label": "URL/Side:",
+      "datalist": "Sideutvalg",
+      "oblig": true,
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "2.2"
+        }
+      }
+    },
+    {
+      "stegnr": "2.2",
+      "spm": "Inneheld nettsida tekst?",
+      "ht": "Du skal sjå etter alle forekomstar av tekst, både tekst som er koda som tekst og bilde av tekst.",
+      "type": "jaNei",
+      "kilde": [],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "2.3"
+        },
+        "nei": {
+          "type": "ikkjeForekomst",
+          "utfall": "Testside har ikkje tekst."
+        }
+      }
+    },
+    {
+      "stegnr": "2.3",
+      "spm": "Inneheld nettsida bilde av tekst?",
+      "ht": "<p>Du kan finne finn ut dette på fleire måtar: </p><ul><li>Sjå på sida om du finn bilde av tekst, prøv å marker deler av teksten i bilde separat frå andre deler av bilde.</li><li>Slå av CSS/stilark. I internet Explorer kan du bruke WAT, i Chrome og i Firefox kan du bruke Web Deleveloper Toolbar.</li></ul>",
+      "type": "jaNei",
+      "kilde": [],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.1"
+        },
+        "nei": {
+          "type": "ikkjeForekomst",
+          "utfall": "Testside har ikkje bilde av tekst."
+        }
+      }
+    },
+    {
+      "stegnr": "3.1",
+      "spm": "Beskriv bilde med tekst du testar.",
+      "ht": "<p>Legg inn overskrift, plassering eller andre stikkord som er slik at bilde kan identifiserast.</p><p>Dersom det er fleire bilde av tekst må du gjenta prosedyren for kvart enkelt bilde.</p>",
+      "type": "tekst",
+      "label": "Bilde med tekst:",
+      "multilinje": true,
+      "oblig": true,
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.2"
+        }
+      }
+    },
+    {
+      "stegnr": "3.2",
+      "spm": "Er det noko av teksten i biletet som IKKJE fell inn under følgjande kategoriar:<ul><li>Logo, varemerke eller bilde av eit produkt.</li><li>Tekst i grafiske element, for eksempel diagram og grafar.</li></ul>",
+      "ht": "Siktemålet er å finne fram til heile eller deler av bilde av tekst, som ikkje er unnateke kravet og som dermed skal vurderast vidare.",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.3"
+        },
+        "nei": {
+          "type": "ikkjeForekomst",
+          "utfall": "Bilde av tekst, som er unnateke frå kravet."
+        }
+      }
+    },
+    {
+      "stegnr": "3.3",
+      "spm": "Er det mogleg å tilpasse bilde av tekst til brukaren sine behov?",
+      "ht": "<p>Her tester vi teksten (i bilde) som ikkje er logo eller tekst i grafiske element.</p><p><strong>MERK:</strong> Her har vi ikkje noko eksakt prosedyre for verifikasjon, difor er svaralternativet \"Ikkje mogleg  å verifisere\" lagt inn.</p><p>Du skal undersøke om det er mogleg å endre:</p><ol><li>skrifttype</li><li>skriftstørrelse</li><li>farge på tekst</li><li>bakgrunn</li></ol><p>Merk at alle 4 punkta over skal vere oppfylte.</p><p>Denne funksjonaliteten kan vere tilgjengeleg via ein mekanisme/knapp på sida.</p>",
+      "type": "radio",
+      "svarArray": [
+        "Ja",
+        "Nei",
+        "Ikkje mogleg å verifisere"
+      ],
+      "kilde": [
+        "SK"
+      ],
+      "ruting": {
+        "alt0": {
+          "type": "ikkjeForekomst",
+          "utfall": "Bilde av tekst, som let seg tilpasse."
+        },
+        "alt1": {
+          "type": "gaaTil",
+          "steg": "3.4"
+        },
+        "alt2": {
+          "type": "gaaTil",
+          "steg": "3.4"
+        }
+      }
+    },
+    {
+      "stegnr": "3.4",
+      "spm": "Går informasjon/funksjonalitet i presentasjonen tapt viss bilde av tekst kodast om til tekst?",
+      "ht": "<p>Eksempel på situasjonar der bruk av bilde av tekst er nødvendig: </p>\n<ul>\n<li>Det ikkje er mogleg å formatere teksten for å oppnå same effekt. </li>\n<li>Det ikkje er mogleg å presentere effekten i dei vanlegaste nettleserane.</li>\n<li>Presentasjonen krev bruk av teknikkar/teknologi som ikkje oppfyller WCAG.</li>\n</ul>",
+      "kilde": [],
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "ikkjeForekomst",
+          "utfall": "Bilde av tekst, der nødvendig informasjon/funksjonalitet i presentasjonen går tapt, viss bilde vert koda som tekst."
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Bilde av tekst er brukt unødvendig, fordi innhaldet kan kodast som tekst utan at vesentleg informasjon eller funksjonalitet går tapt."
+        }
+      }
+    }
+  ]
+}

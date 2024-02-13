@@ -1,66 +1,41 @@
+import { parseHtmlEntities } from '@common/util/stringutils';
 import { ErrorMessage } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';
 import TestFormInputText from '@test/testregel-form/input/TestFormInputText';
-import { TestFormStep } from '@test/testregel-form/types';
-import { SelectionOutcome, TestStep } from '@test/types';
-
-import TestResultCard from './TestResultCard';
+import { Steg } from '@test/util/testregel-interface/Steg';
+import { finnSvar } from '@test/util/testregelParser';
 
 interface FormStepProps {
-  testingStep?: TestStep;
-  formStep: TestFormStep;
-  onAnswer: (answer: Svar, selectionOutcome?: SelectionOutcome) => void;
+  steg: Steg | undefined;
+  alleSvar: Svar[];
+  onAnswer: (answer: Svar) => void;
 }
 
-const TestFormStepWrapper = ({
-  testingStep,
-  formStep,
-  onAnswer,
-}: FormStepProps) => {
-  if (formStep.key === 'avslutt') {
-    const isSamsvar = formStep.fasit?.toLowerCase() === 'ja';
-    return (
-      <TestResultCard
-        resultSeverity={isSamsvar ? 'success' : 'danger'}
-        resultTitle={isSamsvar ? 'Samsvar' : 'Ikkje samsvar'}
-        resultDescription={formStep.utfall || 'Inget resultat'}
-      />
-    );
-  } else if (formStep.key === 'ikkjeForekomst') {
-    return (
-      <TestResultCard
-        resultSeverity={'info'}
-        resultTitle="Ikkje forekomst"
-        resultDescription={formStep.utfall || 'Inget resultat'}
-      />
-    );
-  } else if (!testingStep) {
+const TestFormStepWrapper = ({ steg, alleSvar, onAnswer }: FormStepProps) => {
+  if (!steg) {
+    // dette er enten en feil i parseren (klarer ikke å finne neste steg), eller en feil i testregelen.
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
   }
 
-  const inputType = testingStep.step.input.inputType;
+  steg = {
+    ...steg,
+    spm: parseHtmlEntities(steg.spm),
+    ht: parseHtmlEntities(steg.ht),
+  };
 
-  switch (inputType) {
+  switch (steg.type) {
     case 'tekst':
-    case 'multiline':
-      return (
-        <TestFormInputText
-          testingStep={testingStep}
-          formStep={formStep}
-          multiline={inputType === 'multiline'}
-          onAnswer={onAnswer}
-        />
-      );
+      return <TestFormInputText steg={steg} onAnswer={onAnswer} />;
     case 'instruksjon':
-      return <TestFormDescription testingStep={testingStep} />;
+      return <TestFormDescription steg={steg} />;
     case 'radio':
     case 'jaNei':
       return (
         <TestFormInputRadio
-          testingStep={testingStep}
-          formStep={formStep}
+          steg={steg}
+          svar={finnSvar(steg.stegnr, alleSvar)}
           onAnswer={onAnswer}
         />
       );

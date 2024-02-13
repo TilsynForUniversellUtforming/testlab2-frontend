@@ -1,20 +1,11 @@
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { NettsideProperties } from '@sak/types';
-import {
-  ElementResultat,
-  ResultatManuellKontroll,
-  Svar,
-} from '@test/api/types';
-import { TestFormStep } from '@test/testregel-form/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import {
   ManuellTestStatus,
   PageType,
-  SelectionOutcome,
-  TestAnswers,
-  TestingStepProperties,
   TestregelOverviewElement,
-  TestStep,
 } from '@test/types';
 import { Testregel } from '@testreglar/api/types';
 
@@ -23,12 +14,6 @@ export const getTestResultsForLoeysing = (
   loeysingId: number | undefined
 ): ResultatManuellKontroll[] =>
   testResults.filter((tr) => tr.loeysingId === loeysingId);
-
-// export const isAllNonRelevant = (testResults: ManualTestResultat[]) =>
-//   testResults.length > 0 &&
-//   testResults.every(
-//     (tr) => tr.elementResultat && tr.elementResultat === 'ikkjeForekomst'
-//   );
 
 export const progressionForLoeysingNettside = (
   sak: Sak,
@@ -162,151 +147,4 @@ export const findActiveTestResult = (
       tr.testregelId === testregelId &&
       tr.nettsideId === nettsideId
   );
-};
-
-export const convertToSvarArray = (steps: Map<string, TestStep>): Svar[] => {
-  const answers: Svar[] = [];
-
-  steps.forEach((testStep, key) => {
-    if (testStep.answer) {
-      answers.push({
-        steg: key,
-        svar: testStep.answer.svar,
-      });
-    }
-  });
-
-  return answers;
-};
-
-export const getNextSteps = (
-  initStepKey: string,
-  stepsMap: Map<string, TestStep>
-): TestFormStep[] => {
-  const nextSteps: TestFormStep[] = [{ key: initStepKey }];
-  let nextStepKey: string = initStepKey;
-
-  while (nextStepKey) {
-    const currentStepData = stepsMap.get(nextStepKey);
-
-    if (!currentStepData) {
-      break;
-    }
-
-    const input = currentStepData.step.input;
-    if (
-      currentStepData.answer &&
-      (input.inputType === 'radio' ||
-        input.inputType === 'jaNei' ||
-        input.inputSelectionOutcome.length > 1)
-    ) {
-      const answeredOutcome = input.inputSelectionOutcome.find(
-        (outcome) => outcome.label === currentStepData.answer?.svar
-      );
-      if (!answeredOutcome) {
-        break;
-      }
-      const nextStep = handleOutcome(answeredOutcome);
-      nextSteps.push(nextStep);
-      nextStepKey = nextStep.key;
-    } else if (
-      input.inputType === 'radio' ||
-      input.inputType === 'jaNei' ||
-      input.inputSelectionOutcome.length > 1
-    ) {
-      break;
-    } else {
-      const defaultStep = input.inputSelectionOutcome[0];
-      const nextStep = handleOutcome(defaultStep);
-      nextSteps.push(nextStep);
-      nextStepKey = nextStep.key;
-    }
-  }
-
-  return nextSteps;
-};
-
-const handleOutcome = (outcome: SelectionOutcome): TestFormStep => {
-  switch (outcome.action) {
-    case 'gaaTil':
-      return { key: outcome.target };
-    case 'ikkjeForekomst':
-      return {
-        key: outcome.action,
-        utfall: outcome.utfall,
-      };
-    case 'avslutt':
-      return {
-        key: outcome.action,
-        utfall: outcome.utfall,
-        fasit: outcome.fasit,
-      };
-    default:
-      throw Error('Ukjent type');
-  }
-};
-
-export const getAnswersFromState = (
-  steps: Map<string, TestStep>,
-  selectionOutcome?: SelectionOutcome
-): TestAnswers => {
-  const answers: Svar[] = convertToSvarArray(steps);
-
-  let elementResultat: ElementResultat | undefined = undefined;
-  let elementUtfall: string | undefined = undefined;
-  const elementOmtale: string | undefined = undefined;
-
-  if (selectionOutcome) {
-    if (selectionOutcome.action === 'avslutt') {
-      elementUtfall = selectionOutcome.utfall;
-      // elementOmtale = findElementOmtaleStep(steps) // TODO impl. funksjon for dette, bruk "element": "x.x" i testregel-json
-      switch (selectionOutcome.fasit) {
-        case 'Ja':
-          elementResultat = 'samsvar';
-          break;
-        case 'Nei':
-          elementResultat = 'brot';
-          break;
-        case 'Ikkje testbart':
-          elementResultat = 'ikkjeTesta';
-          break;
-        case 'Ikkje forekomst':
-          elementResultat = 'ikkjeForekomst';
-          break;
-        default:
-          elementResultat = 'ikkjeTesta';
-          break;
-      }
-    } else if (selectionOutcome.action === 'ikkjeForekomst') {
-      elementUtfall = selectionOutcome.utfall;
-      elementResultat = 'ikkjeForekomst';
-    }
-  }
-
-  return {
-    answers,
-    elementOmtale,
-    elementResultat,
-    elementUtfall,
-  };
-};
-
-export const combineStepsAndAnswers = (
-  testSteps: Map<string, TestingStepProperties>,
-  answers?: Svar[]
-): Map<string, TestStep> => {
-  const testStepsWithAnswers = new Map<string, TestStep>();
-
-  testSteps.forEach((testingStepProperties, key) => {
-    const answer = answers?.find((answer) => answer.steg === key);
-
-    const testStep: TestStep = {
-      step: testingStepProperties,
-      answer: answer,
-    };
-
-    testStepsWithAnswers.set(key, testStep);
-  });
-
-  return testStepsWithAnswers;
 };

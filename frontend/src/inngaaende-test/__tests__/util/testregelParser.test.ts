@@ -1,168 +1,318 @@
-import { describe, expect, it } from 'vitest';
+import { Svar } from '@test/api/types';
+import { Testregel } from '@test/util/testregel-interface/Testregel';
+import * as fs from 'fs';
+import * as path from 'path';
+import { describe, expect, test } from 'vitest';
 
-import { TestingStepProperties } from '../../types';
-import { parseTestregel } from '../../util/testregelParser';
+import { evaluateTestregel } from '../../util/testregelParser';
 
-const json =
-  '{"namn":"1.3.2a Meiningsfylt leserekkefølge er ivareteken i koden.","id":"1.3.2a","testlabId":235,"versjon":"1.0","type":"Nett","spraak":"nn","kravTilSamsvar":"<p>Kravet kan oppfyllast på fleire måtar.</p>\\r\\n<ul>\\r\\n<li>Leserekkefølge på innhaldet i visning med CSS slått av, samanlikna med vanleg visning, er anten:\\r\\n<ul>\\r\\n<li>Den same, eller</li>\\r\\n<li>ei leserekkefølge som på annan måte presenterer det same meiningsinnhaldet.</li>\\r\\n</ul>\\r\\n</li>\\r\\n</ul>","side":"2.1","element":"3.1","kolonner":[{"title":"2.2"},{"title":"2.4"},{"title":"3.2"},{"title":"3.3"},{"title":"3.4"}],"steg":[{"stegnr":"2.1","spm":"Kva side testar du på?","ht":"Oppgi URL eller side-ID.","type":"tekst","label":"URL/Side:","datalist":"Sideutvalg","oblig":true,"ruting":{"alle":{"type":"gaaTil","steg":"2.2"}}},{"stegnr":"2.2","spm":"Finst det innhald på nettsida kor meiningsinnhaldet blir påvirka av rekkefølgjen som innhaldet blir presentert i?","ht":"<p>Ei rekkefølgje er meiningsfull dersom rekkefølga på innhaldet ikkje kan endrast utan å endre meiningsinnhaldet. </p><p>Eksempel på innhald som står i ei meiningsfylt rekkefølgje er tekst, tabellar og nummererte lister.</p><p>Unummererte lister er ikkje i ei meiningsfylt rekkefølgje.</p>","type":"jaNei","kilde":[],"ruting":{"ja":{"type":"gaaTil","steg":"2.3"},"nei":{"type":"ikkjeForekomst","utfall":"Testside har ikkje innhald der meiningsinnhaldet blir påvirka av rekkefølgja som innhaldet blir presentert i."}}},{"stegnr":"2.3","spm":"Opne nettsida i eit nytt nettlesarvindauge og slå av stilarket (CSS).","ht":"<p>Korleis du slår av CSS, avheng av kva nettlesar du brukar.</p>","type":"instruksjon","kilde":["C6"],"ruting":{"alle":{"type":"gaaTil","steg":"2.4"}}},{"stegnr":"2.4","spm":"Beskriv det lenka bilde","ht":"Du kan for eksempel beskrive motiv, plassering på sida, element som er i nærleiken.","type":"tekst","label":"Bilde:","multilinje":true,"oblig":true,"ruting":{"alle":{"type":"gaaTil","steg":"3.1"}}},{"stegnr":"3.1","spm":"Kva type funksjonalitet er elementet ein del av?","ht":"Velg frå alternativa under.","type":"radio","svarArray":["Skjema","Mediaspelar","Meny","Modalvindauge","Anna"],"ruting":{"alle":{"type":"gaaTil","steg":"3.2"}}},{"stegnr":"3.2","spm":"Må innhaldet vere i ei bestemt rekkefølgje for at du skal kunne forstå innhaldet?","ht":"<p>Meiningsinnhaldet skal ikkje vere endra, sjølv om rekkefølgja er ulik.</p><p>Merk at det kan vere fleire rekkefølgjer som gir same mening.</p>","type":"radio","svarArray":["Ja","Nei","Ikkje mogleg å verifisere"],"kilde":["SK"],"ruting":{"alt0":{"type":"ikkjeForekomst","utfall":"Bilde av tekst, som let seg tilpasse."},"alt1":{"type":"gaaTil","steg":"3.4"},"alt2":{"type":"gaaTil","steg":"3.4"}}},{"stegnr":"3.4","spm":"Beskriv det lenka bilde","ht":"Du kan for eksempel beskrive motiv, plassering på sida, element som er i nærleiken.","type":"tekst","label":"Bilde:","oblig":true,"ruting":{"alle":{"type":"avslutt","fasit":"Ja","utfall":"Nettside har mekanisme for forstørring til 200 %, utan tap av innhald eller funksjonalitet."}}}]}';
+describe('makeViewModel spec', () => {
+  function getTestregel(navn: string): Testregel {
+    const filePath = path.resolve(__dirname, `test-data/${navn}.json`);
+    const buffer = fs.readFileSync(filePath);
+    return JSON.parse(buffer.toString());
+  }
 
-describe('parseJSONAndValidateSteg', () => {
-  it('should get the keys sorted order and correct length', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const keys = Array.from(resultMap.keys());
+  test('når ingen svar er gitt, så skal modellen bare inneholde første steg', () => {
+    const testregel = getTestregel('1.3.3a');
+    const model = evaluateTestregel(testregel, []);
 
-    expect(keys).toStrictEqual(['2.2', '2.3', '2.4', '3.1', '3.2', '3.4']);
+    expect(model.steg).toHaveLength(1);
+    const first = model.steg[0];
+    expect(first.stegnr).toBe('2.2');
+    expect(first.spm).toBe(
+      'Har nettsida digitale/interaktive skjema/skjemaelement?'
+    );
+    expect(first.ht).toBe(
+      'Gjennomgå nettsida og sjå etter digitale/interaktive skjema.'
+    );
+    expect(first.type).toBe('jaNei');
   });
 
-  it('should parse testregel with tekst', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const expected: TestingStepProperties = {
-      heading: 'Beskriv det lenka bilde',
-      description:
-        'Du kan for eksempel beskrive motiv, plassering på sida, element som er i nærleiken.',
-      input: {
-        inputType: 'tekst',
-        inputSelectionOutcome: [
-          {
-            label: 'Bilde:',
-            action: 'avslutt',
-            fasit: 'Ja',
-            utfall:
-              'Nettside har mekanisme for forstørring til 200 %, utan tap av innhald eller funksjonalitet.',
-          },
-        ],
-        required: true,
+  test('når testregelen inneholder en instruksjon, så skal vi hoppe videre til neste steg som har en beslutning', () => {
+    const testregel = getTestregel('1.4.4a');
+    const modell = evaluateTestregel(testregel, [
+      { steg: '2.2', svar: 'Ja' },
+      { steg: '3.3', svar: 'Ja' },
+    ]);
+
+    expect(modell.steg.map((s) => s.stegnr)).toMatchObject([
+      '2.2',
+      '2.3',
+      '3.2',
+      '3.3',
+    ]);
+    expect(modell.resultat).toMatchObject({
+      type: 'avslutt',
+      fasit: 'Ja',
+      utfall:
+        'Tekst kan forstørrast til minst 200 %, utan tap av innhald eller funksjonalitet.',
+    });
+  });
+
+  test('gitt at det er ja/nei-ruting, når et svar er gitt, så skal modellen inneholde neste steg', () => {
+    const testregel = getTestregel('1.3.3a');
+    const model = evaluateTestregel(testregel, [{ steg: '2.2', svar: 'Ja' }]);
+
+    expect(model.steg.map((s) => s.stegnr)).toStrictEqual([
+      '2.2',
+      '2.3',
+      '2.4',
+    ]);
+  });
+
+  test('når det er ruting med radioboks, så skal vi få det resultatet som hører til den valgte radioboksen', () => {
+    const testregel: Testregel = getTestregel('1.4.5a');
+    const fellesSvar: Svar[] = [
+      { steg: '2.2', svar: 'Ja' },
+      { steg: '2.3', svar: 'Ja' },
+      { steg: '3.1', svar: 'det øverste bildet' },
+      { steg: '3.2', svar: 'Ja' },
+    ];
+
+    const modelJa = evaluateTestregel(testregel, [
+      ...fellesSvar,
+      { steg: '3.3', svar: 'Ja' },
+    ]);
+    const modelNei = evaluateTestregel(testregel, [
+      ...fellesSvar,
+      { steg: '3.3', svar: 'Nei' },
+    ]);
+    const modelIkkjeMogleg = evaluateTestregel(testregel, [
+      ...fellesSvar,
+      {
+        steg: '3.3',
+        svar: 'Ikkje mogleg å verifisere',
       },
-    };
+    ]);
 
-    const result = resultMap.get('3.4');
+    expect(modelJa.resultat).toMatchObject({
+      type: 'ikkjeForekomst',
+      utfall: 'Bilde av tekst, som let seg tilpasse.',
+    });
 
-    expect(result).toMatchObject(expected);
+    expect(modelNei.steg.map((s) => s.stegnr)).toStrictEqual([
+      '2.2',
+      '2.3',
+      '3.1',
+      '3.2',
+      '3.3',
+      '3.4',
+    ]);
+    expect(modelNei.resultat).toBeUndefined();
+
+    expect(modelIkkjeMogleg.steg.map((s) => s.stegnr)).toStrictEqual([
+      '2.2',
+      '2.3',
+      '3.1',
+      '3.2',
+      '3.3',
+      '3.4',
+    ]);
+    expect(modelIkkjeMogleg.resultat).toBeUndefined();
   });
 
-  it('should parse testregel with multiline', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const expected: TestingStepProperties = {
-      heading: 'Beskriv det lenka bilde',
-      description:
-        'Du kan for eksempel beskrive motiv, plassering på sida, element som er i nærleiken.',
-      input: {
-        inputType: 'multiline',
-        inputSelectionOutcome: [
-          { label: 'Bilde:', action: 'gaaTil', target: '3.1' },
-        ],
-        required: true,
-      },
-    };
+  test('når et svar er gitt, så skal vi ta med alle de neste stegene helt til vi kommer til en beslutning', () => {
+    const testregel: Testregel = getTestregel('1.4.5a');
+    const model = evaluateTestregel(testregel, [
+      { steg: '2.2', svar: 'Ja' },
+      { steg: '2.3', svar: 'Ja' },
+    ]);
 
-    const result = resultMap.get('2.4');
-
-    expect(result).toMatchObject(expected);
+    expect(model.steg.map((m) => m.stegnr)).toStrictEqual([
+      '2.2',
+      '2.3',
+      '3.1',
+      '3.2',
+    ]);
   });
 
-  it('should parse testregel - jaNei', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const expected: TestingStepProperties = {
-      heading:
-        'Finst det innhald på nettsida kor meiningsinnhaldet blir påvirka av rekkefølgjen som innhaldet blir presentert i?',
-      description:
-        'Ei rekkefølgje er meiningsfull dersom rekkefølga på innhaldet ikkje kan endrast utan å endre meiningsinnhaldet. Eksempel på innhald som står i ei meiningsfylt rekkefølgje er tekst, tabellar og nummererte lister. Unummererte lister er ikkje i ei meiningsfylt rekkefølgje.',
-      input: {
-        inputType: 'jaNei',
-        inputSelectionOutcome: [
-          { label: 'Ja', action: 'gaaTil', target: '2.3' },
-          {
-            label: 'Nei',
-            action: 'ikkjeForekomst',
-            utfall:
-              'Testside har ikkje innhald der meiningsinnhaldet blir påvirka av rekkefølgja som innhaldet blir presentert i.',
-          },
-        ],
-        required: false,
-      },
-    };
+  test('når et steg har delutfall, så skal det lagres i modellen', () => {
+    const testregel = getTestregel('nett-1.4.12a');
+    const model = evaluateTestregel(testregel, [
+      { steg: '2.2', svar: 'Ja' },
+      { steg: '2.3', svar: 'Ja' },
+      { steg: '2.4', svar: 'Ja' },
+      { steg: '3.1', svar: 'bla bla' },
+      { steg: '3.2', svar: 'Meny' },
+      { steg: '3.3', svar: 'Ja' },
+    ]);
 
-    const result = resultMap.get('2.2');
-
-    expect(result).toMatchObject(expected);
+    expect(model.delutfall[0]).toMatchObject({
+      fasit: 'Ja',
+      nr: 0,
+      tekst:
+        'Det er mulig å justere tekstegenskaper, uten tap av innhold eller funksjonalitet,',
+    });
   });
 
-  it('should parse testregel - instruksjon', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const expected: TestingStepProperties = {
-      heading:
-        'Opne nettsida i eit nytt nettlesarvindauge og slå av stilarket (CSS).',
-      description: 'Korleis du slår av CSS, avheng av kva nettlesar du brukar.',
-      input: {
-        inputType: 'instruksjon',
-        inputSelectionOutcome: [{ label: '', action: 'gaaTil', target: '2.4' }],
-        required: false,
-      },
-    };
+  describe('regler', () => {
+    test('lik', () => {
+      const testregel = getTestregel('1.3.3a');
+      const model = evaluateTestregel(testregel, [
+        { steg: '2.2', svar: 'Ja' },
+        { steg: '2.3', svar: 'bla bla' },
+        { steg: '2.4', svar: 'Ja' },
+        { steg: '3.1', svar: 'bla bla' },
+        { steg: '3.2', svar: 'Ja' },
+        { steg: '3.3', svar: 'Nei' },
+        { steg: '3.4', svar: 'Nei' },
+        { steg: '3.5', svar: 'Nei' },
+        { steg: '3.6', svar: 'Nei' },
+        { steg: '3.7', svar: 'Nei' },
+      ]);
+      expect(model.resultat).toMatchObject({
+        type: 'ikkjeForekomst',
+        utfall:
+          'Tekstlege instruksjon utan tilvising til sensoriske eigenskapar.',
+      });
 
-    const result = resultMap.get('2.3');
+      const model2 = evaluateTestregel(testregel, [
+        { steg: '2.2', svar: 'Ja' },
+        { steg: '2.3', svar: 'bla bla' },
+        { steg: '2.4', svar: 'Ja' },
+        { steg: '3.1', svar: 'bla bla' },
+        { steg: '3.2', svar: 'Ja' },
+        { steg: '3.3', svar: 'Nei' },
+        { steg: '3.4', svar: 'Nei' },
+        { steg: '3.5', svar: 'Nei' },
+        { steg: '3.6', svar: 'Nei' },
+        { steg: '3.7', svar: 'Ja' },
+      ]);
+      expect(model2.steg.map((m) => m.stegnr)).toStrictEqual([
+        '2.2',
+        '2.3',
+        '2.4',
+        '3.1',
+        '3.2',
+        '3.3',
+        '3.4',
+        '3.5',
+        '3.6',
+        '3.7',
+        '3.8',
+      ]);
+    });
 
-    expect(result).toMatchObject(expected);
-  });
+    test('ulik', () => {
+      const testregel = getTestregel('3.1.1a');
+      const model = evaluateTestregel(testregel, [
+        { steg: '3.1', svar: 'Ja' },
+        { steg: '3.4', svar: 'Ja' },
+        { steg: '3.7', svar: 'Ja' },
+        { steg: '3.8', svar: 'nb' },
+        { steg: '3.9', svar: 'Nynorsk' },
+      ]);
+      expect(model.steg.map((m) => m.stegnr)).toStrictEqual([
+        '3.1',
+        '3.4',
+        '3.7',
+        '3.8',
+        '3.9',
+        '3.11',
+      ]);
+    });
 
-  it('should parse testregel - radio - alle', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const expected: TestingStepProperties = {
-      heading: 'Kva type funksjonalitet er elementet ein del av?',
-      description: 'Velg frå alternativa under.',
-      input: {
-        inputType: 'radio',
-        inputSelectionOutcome: [
-          { label: 'Skjema', action: 'gaaTil', target: '3.2' },
-          { label: 'Mediaspelar', action: 'gaaTil', target: '3.2' },
-          { label: 'Meny', action: 'gaaTil', target: '3.2' },
-          { label: 'Modalvindauge', action: 'gaaTil', target: '3.2' },
-          { label: 'Anna', action: 'gaaTil', target: '3.2' },
-        ],
-        required: false,
-      },
-    };
+    test('mellom', () => {
+      const testregel = getTestregel('4.1.1a');
+      const alleSvar = [
+        { steg: '3.1', svar: 'Ja' },
+        { steg: '3.2', svar: '0' },
+      ];
+      const model = evaluateTestregel(testregel, alleSvar);
 
-    const result = resultMap.get('3.1');
+      expect(model.steg.map((m) => m.stegnr)).toStrictEqual([
+        '3.1',
+        '3.2',
+        '3.3',
+      ]);
+      expect(model.delutfall).toMatchObject([
+        {
+          nr: 0,
+          tekst: '',
+          fasit: 'Ja',
+        },
+      ]);
 
-    expect(result).toMatchObject(expected);
-  });
+      const model2 = evaluateTestregel(testregel, [
+        { steg: '3.1', svar: 'Ja' },
+        { steg: '3.2', svar: '10' },
+      ]);
 
-  it('should parse testregel - radio - alternatives', () => {
-    const { steps: resultMap } = parseTestregel(json);
-    const expected: TestingStepProperties = {
-      heading:
-        'Må innhaldet vere i ei bestemt rekkefølgje for at du skal kunne forstå innhaldet?',
-      description:
-        'Meiningsinnhaldet skal ikkje vere endra, sjølv om rekkefølgja er ulik. Merk at det kan vere fleire rekkefølgjer som gir same mening.',
-      input: {
-        inputType: 'radio',
-        inputSelectionOutcome: [
-          {
-            label: 'Ja',
-            action: 'ikkjeForekomst',
-            utfall: 'Bilde av tekst, som let seg tilpasse.',
-          },
-          { label: 'Nei', action: 'gaaTil', target: '3.4' },
-          {
-            label: 'Ikkje mogleg å verifisere',
-            action: 'gaaTil',
-            target: '3.4',
-          },
-        ],
-        required: false,
-      },
-    };
+      expect(model2.steg.map((m) => m.stegnr)).toStrictEqual([
+        '3.1',
+        '3.2',
+        '3.3',
+      ]);
+      expect(model2.delutfall).toMatchObject([
+        {
+          nr: 0,
+          tekst: '<br>- Element som ikkje er nøsta korrekt',
+          fasit: 'Nei',
+        },
+      ]);
+    });
 
-    const result = resultMap.get('3.2');
+    test('talDersom', () => {
+      const testregel = getTestregel('4.1.1a');
+      const model = evaluateTestregel(testregel, [
+        {
+          steg: '3.1',
+          svar: 'Ja',
+        },
+        {
+          steg: '3.2',
+          svar: '0',
+        },
+        {
+          steg: '3.3',
+          svar: '0',
+        },
+        {
+          steg: '3.4',
+          svar: '0',
+        },
+        {
+          steg: '3.5',
+          svar: '0',
+        },
+        {
+          steg: '3.6',
+          svar: 'Nei',
+        },
+      ]);
+      expect(model.resultat).toMatchObject({
+        type: 'avslutt',
+        fasit: 'Ja',
+        utfall: 'Testsida har ikkje syntaksfeil.',
+      });
+    });
 
-    expect(result).toMatchObject(expected);
-  });
+    test('vurderDelutfall', () => {
+      const testregel = getTestregel('1.3.1b');
+      const model = evaluateTestregel(testregel, [
+        { steg: '2.2', svar: 'Ja' },
+        { steg: '3.1', svar: 'bla bla' },
+        { steg: '3.2', svar: 'Ja' },
+        { steg: '3.3', svar: 'Nei' },
+        { steg: '3.13', svar: 'Ja' },
+        { steg: '3.14', svar: 'Ja' },
+        { steg: '3.15', svar: 'Ja' },
+      ]);
 
-  it('should get correct element', () => {
-    const { element } = parseTestregel(json);
-
-    const expected = '3.1';
-    expect(element).toMatchObject(expected);
+      expect(model.delutfall).toMatchObject([
+        {
+          nr: 0,
+          tekst: 'Tabell er koda med &#x3C;table&#x3E;.',
+          fasit: 'Ja',
+        },
+      ]);
+      expect(model.resultat).toMatchObject({
+        type: 'avslutt',
+        fasit: 'Ja',
+        utfall:
+          'Tabelltittel identifiserer innhaldet i tabellen. Tabell er koda med &#x3C;table&#x3E;.',
+      });
+    });
   });
 });

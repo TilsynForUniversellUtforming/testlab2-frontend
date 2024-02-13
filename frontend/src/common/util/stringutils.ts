@@ -84,3 +84,15 @@ export const formatDateString = (dateString: string): string => {
  * @returns {string} String without spaces.
  */
 export const removeSpaces = (s: string): string => s.replace(/\s/g, '');
+
+/**
+ * Parses an HTML string and returns the text content, removing any HTML entities.
+ * @param htmlString
+ */
+export const parseHtmlEntities = (htmlString: string): string => {
+  const parser = new DOMParser();
+  return (
+    parser.parseFromString(htmlString, 'text/html').body.textContent ||
+    htmlString
+  ).replace(/([,.!?:])(?=\S)(?!$)/g, '$1 '); // Add spacing after punctiation if missing
+};
