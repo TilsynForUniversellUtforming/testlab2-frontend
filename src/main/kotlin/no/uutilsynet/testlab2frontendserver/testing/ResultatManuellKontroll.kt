@@ -15,6 +15,14 @@ data class ResultatManuellKontroll(
     val elementUtfall: String?,
     val svar: List<Svar>,
     val testVartUtfoert: Instant?,
+    val status: Status = Status.IkkjePaabegynt
 ) {
   data class Svar(val steg: String, val svar: String)
+
+  enum class Status {
+    IkkjePaabegynt,
+    UnderArbeid,
+    Ferdig,
+    Deaktivert
+  }
 }

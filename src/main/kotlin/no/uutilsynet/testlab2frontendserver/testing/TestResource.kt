@@ -58,8 +58,9 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       @RequestBody resultatManuellKontroll: ResultatManuellKontroll
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
+            logger.debug("Payload " + resultatManuellKontroll.toString())
             logger.debug(
-                "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId}")
+                "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId} + status: ${resultatManuellKontroll.status}")
             restTemplate.put(
                 "$testresultUrl/${resultatManuellKontroll.id}", resultatManuellKontroll)
             getResultatManuellKontroll(resultatManuellKontroll.sakId)
