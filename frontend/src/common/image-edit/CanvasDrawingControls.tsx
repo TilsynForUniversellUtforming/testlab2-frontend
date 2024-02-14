@@ -45,62 +45,52 @@ const CanvasDrawingControls = forwardRef<HTMLButtonElement, Props>(
         <ToggleGroup defaultValue={drawMode} onChange={setDrawMode}>
           <ToggleGroup.Item
             value="draw"
-            icon={<PencilIcon />}
+            icon={true}
             title="Tekn"
             ref={drawButtonRef}
-          />
+          >
+            <PencilIcon />
+          </ToggleGroup.Item>
           <ToggleGroup.Item value="text" title="Tekstmodus">
             Aa
           </ToggleGroup.Item>
-          <ToggleGroup.Item
-            value="move"
-            icon={<FingerButtonIcon />}
-            title="Flytt"
-          />
-          <ToggleGroup.Item value="copy" icon={<TabsIcon />} title="Kopier" />
-          <ToggleGroup.Item
-            value="erase"
-            icon={<EraserIcon />}
-            title="Visk ut"
-          />
+          <ToggleGroup.Item value="move" icon={true} title="Flytt">
+            <FingerButtonIcon />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item value="copy" icon={true} title="Kopier">
+            <TabsIcon />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item value="erase" icon={true} title="Visk ut">
+            <EraserIcon />
+          </ToggleGroup.Item>
         </ToggleGroup>
         {drawMode === 'draw' && (
           <ToggleGroup defaultValue={lineType} onChange={setLineType}>
-            <ToggleGroup.Item value="line" icon={<MinusIcon />} title="Linje" />
-            <ToggleGroup.Item
-              value="arrow"
-              icon={<ArrowIcon selected={lineType === 'arrow'} />}
-              title="Pil"
-            />
-            <ToggleGroup.Item
-              value="rectangle"
-              icon={<SquareIcon selected={lineType === 'rectangle'} />}
-              title="Rektangel"
-            />
-            <ToggleGroup.Item
-              value="circle"
-              icon={<CircleIcon selected={lineType === 'circle'} />}
-              title="Ellipse"
-            />
+            <ToggleGroup.Item value="line" icon={true} title="Linje">
+              <MinusIcon />
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="arrow" icon={true} title="Pil">
+              <ArrowIcon selected={lineType === 'arrow'} />
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="rectangle" icon={true} title="Rektangel">
+              <SquareIcon selected={lineType === 'rectangle'} />
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="circle" icon={true} title="Ellipse">
+              <CircleIcon selected={lineType === 'circle'} />
+            </ToggleGroup.Item>
           </ToggleGroup>
         )}
         {drawMode === 'text' && (
           <ToggleGroup defaultValue={textStyle} onChange={setTextStyle}>
-            <ToggleGroup.Item
-              value="filled"
-              icon={<TextStyleIcon selected={textStyle === 'filled'} filled />}
-              title="Fylt"
-            />
-            <ToggleGroup.Item
-              value="outline"
-              icon={<TextStyleIcon selected={textStyle === 'outline'} />}
-              title="Omriss"
-            />
-            <ToggleGroup.Item
-              value="none"
-              icon={<TextStyleIcon selected={textStyle === 'none'} onlyText />}
-              title="Ingen"
-            />
+            <ToggleGroup.Item value="filled" icon={true} title="Fylt">
+              <TextStyleIcon selected={textStyle === 'filled'} filled />
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="outline" icon={true} title="Omriss">
+              <TextStyleIcon selected={textStyle === 'outline'} />
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="none" icon={true} title="Ingen">
+              <TextStyleIcon selected={textStyle === 'none'} onlyText />
+            </ToggleGroup.Item>
           </ToggleGroup>
         )}
       </div>

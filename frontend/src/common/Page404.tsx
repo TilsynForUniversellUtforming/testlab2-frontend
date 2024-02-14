@@ -7,7 +7,9 @@ import TestlabLinkButton from './button/TestlabLinkButton';
 const Page404 = () => (
   <div className="not-found">
     <AppTitle heading="Ikke funnet" />
-    <TestlabLinkButton title="Gå til hovedsiden" route={ROOT} />
+    <TestlabLinkButton title="Gå til hovedsiden" route={ROOT}>
+      Gå til hovedsiden
+    </TestlabLinkButton>
   </div>
 );
 

@@ -71,8 +71,8 @@ const NettsidePropertiesFormInput = ({
         variant={ButtonVariant.Quiet}
         type="button"
         onClick={onClickRemove}
-        icon={<MinusCircleIcon />}
       >
+        <MinusCircleIcon />
         Fjern side
       </Button>
       {type && (
@@ -81,8 +81,8 @@ const NettsidePropertiesFormInput = ({
           variant={ButtonVariant.Quiet}
           type="button"
           onClick={() => onClickAdd(type)}
-          icon={<PlusCircleIcon />}
         >
+          <PlusCircleIcon />
           Legg til fleire sider innan {sanitizeEnumLabel(type)}
         </Button>
       )}

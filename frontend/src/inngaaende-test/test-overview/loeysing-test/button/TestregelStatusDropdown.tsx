@@ -32,8 +32,6 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
   return (
     <div className="status-dropdown">
       <Button
-        icon={<CogIcon />}
-        iconPlacement="left"
         ref={anchorEl}
         aria-haspopup="true"
         aria-expanded={show}
@@ -45,6 +43,7 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
         variant={ButtonVariant.Quiet}
         className="button"
       >
+        <CogIcon />
         Oppgi status
       </Button>
       <DropdownMenu
