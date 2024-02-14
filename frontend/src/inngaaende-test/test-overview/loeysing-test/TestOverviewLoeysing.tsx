@@ -7,6 +7,7 @@ import {
   CreateTestResultat,
   ResultatManuellKontroll,
   ResultatStatus,
+  Svar,
 } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
@@ -343,8 +344,8 @@ const TestOverviewLoeysing = () => {
           elementOmtale,
           elementResultat: toElementResultat(resultat),
           elementUtfall: resultat.utfall,
-          svar: alleSvar, 
-          status: mapStatus('under-arbeid')
+          svar: alleSvar,
+          status: mapStatus('under-arbeid'),
         };
 
         try {
@@ -381,7 +382,7 @@ const TestOverviewLoeysing = () => {
           contextSak,
           updatedTestResults,
           Number(loeysingId),
-          pageType,
+          pageType
         );
       } catch (e) {
         setAlert('danger', 'Oppdatering av testresultat feila');
