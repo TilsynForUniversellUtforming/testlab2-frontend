@@ -401,8 +401,6 @@ const TestOverviewLoeysing = () => {
         return 'UnderArbeid';
       case 'ikkje-starta':
         return 'IkkjePaabegynt';
-      default:
-        return 'IkkjePaabegynt';
     }
   };
 
