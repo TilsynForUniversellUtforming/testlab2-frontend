@@ -20,15 +20,13 @@ const HamburgerMenu = ({ open, onClick }: Props) => {
       aria-expanded={open}
       title="Meny for verktøy"
       aria-label="Meny for verktøy"
-      icon={
-        <>
-          <div className="icon-container">
-            <MenuHamburgerIcon className="menu-icon" />
-            <XMarkIcon className="x-icon" />
-          </div>
-        </>
-      }
-    />
+      icon={true}
+    >
+      <div className="icon-container">
+        <MenuHamburgerIcon className="menu-icon" />
+        <XMarkIcon className="x-icon" />
+      </div>
+    </Button>
   );
 };
 

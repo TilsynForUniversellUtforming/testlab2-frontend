@@ -26,12 +26,14 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             route={route}
             title={route.navn}
             variant={ButtonVariant.Outline}
-            icon={<img src={route.imgSrc} alt={''} />}
             size="large"
             color="second"
             fullWidth={true}
             disabled={route.disabled}
-          />
+          >
+            <img src={route.imgSrc} alt={''} />
+            {route.navn}
+          </TestlabLinkButton>
         </div>
       ))}
     </div>
@@ -50,35 +52,35 @@ const Oversikt = () => {
             route={SAK_CREATE}
             title={SAK_CREATE.navn}
             variant={ButtonVariant.Outline}
-            icon={
-              <img
-                className="lenker__img"
-                src={SAK_CREATE.imgSrc}
-                alt={SAK_CREATE.navn}
-              />
-            }
             size="large"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
-          />
+          >
+            <img
+              className="lenker__img"
+              src={SAK_CREATE.imgSrc}
+              alt={SAK_CREATE.navn}
+            />
+            {SAK_CREATE.navn}
+          </TestlabLinkButton>
           <TestlabLinkButton
             route={TEST_ROOT}
             title={TEST_ROOT.navn}
             variant={ButtonVariant.Outline}
-            icon={
-              <img
-                className="lenker__img"
-                src={TEST_ROOT.imgSrc}
-                alt={TEST_ROOT.navn}
-              />
-            }
             size="large"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
             disabled={TEST_ROOT.disabled}
-          />
+          >
+            <img
+              className="lenker__img"
+              src={TEST_ROOT.imgSrc}
+              alt={TEST_ROOT.navn}
+            />
+            {TEST_ROOT.navn}
+          </TestlabLinkButton>
         </div>
       </div>
       <div className="oversikt__links">

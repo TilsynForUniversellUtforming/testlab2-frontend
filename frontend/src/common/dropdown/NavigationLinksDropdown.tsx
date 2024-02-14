@@ -34,12 +34,6 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
         onClick={() => {
           setShow((show) => !show);
         }}
-        icon={
-          <>
-            <ChevronDownIcon className="chevron-icon" />
-          </>
-        }
-        iconPlacement="right"
         variant={ButtonVariant.Quiet}
         color={ButtonColor.Inverted}
         ref={anchorEl}
@@ -48,36 +42,38 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
         id={navn}
       >
         {navn}
+        <ChevronDownIcon className="chevron-icon" />
       </Button>
-      <DropdownMenu
-        className={classNames('dropdown-content links', { show: show })}
-        anchorEl={anchorEl.current}
-        open={show}
-        onClose={() => setShow(false)}
-        size={ButtonSize.Small}
-        placement="bottom"
-      >
-        <DropdownMenu.Group>
-          {routes.map((route) => {
-            if (route.disabled) {
+      <div className={classNames('dropdown-content links', { show })}>
+        <DropdownMenu
+          anchorEl={anchorEl.current}
+          open={show}
+          onClose={() => setShow(false)}
+          size={ButtonSize.Small}
+          placement="bottom"
+        >
+          <DropdownMenu.Group>
+            {routes.map((route) => {
+              if (route.disabled) {
+                return (
+                  <DropdownMenu.Item key={route.navn} disabled>
+                    {route.navn}
+                  </DropdownMenu.Item>
+                );
+              }
+
               return (
-                <DropdownMenu.Item key={route.navn} disabled>
+                <DropdownMenu.Item
+                  key={route.navn}
+                  onClick={() => handleButtonClick(route)}
+                >
                   {route.navn}
                 </DropdownMenu.Item>
               );
-            }
-
-            return (
-              <DropdownMenu.Item
-                key={route.navn}
-                onClick={() => handleButtonClick(route)}
-              >
-                {route.navn}
-              </DropdownMenu.Item>
-            );
-          })}
-        </DropdownMenu.Group>
-      </DropdownMenu>
+            })}
+          </DropdownMenu.Group>
+        </DropdownMenu>
+      </div>
     </div>
   );
 };

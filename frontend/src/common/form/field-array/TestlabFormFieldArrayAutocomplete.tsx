@@ -142,9 +142,9 @@ const TestlabFormFieldArrayAutocomplete = <
               variant={ButtonVariant.Quiet}
               type="button"
               onClick={() => onClickRemove(idx)}
-              icon={<MinusCircleIcon />}
               className="testlab-form__field-array-entry__button-add"
             >
+              <MinusCircleIcon />
               {buttonRemoveText}
             </Button>
           </div>
@@ -155,9 +155,9 @@ const TestlabFormFieldArrayAutocomplete = <
         variant={ButtonVariant.Quiet}
         type="button"
         onClick={onClickAdd}
-        icon={<PlusCircleIcon />}
         disabled={isDefined(defaultValueIdx)}
       >
+        <PlusCircleIcon />
         {buttonAddText}
       </Button>
       {errorMessage &&
