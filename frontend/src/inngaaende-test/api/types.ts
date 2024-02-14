@@ -2,6 +2,7 @@ export type Svar = {
   steg: string;
   svar: string;
 };
+
 export type ElementResultat =
   | 'samsvar'
   | 'ikkjeForekomst'
