@@ -29,15 +29,17 @@ export type Avslutt = {
 export function toElementResultat(
   resultat: TestregelResultat
 ): ElementResultat {
-  switch (resultat.type) {
-    case 'avslutt':
-      if (resultat.fasit.toLowerCase() === 'ja') {
+  if (resultat.type === 'avslutt') {
+    switch (resultat.fasit) {
+      case 'Ja':
         return 'samsvar';
-      } else {
+      case 'Nei':
         return 'brot';
-      }
-    case 'ikkjeForekomst':
-      return 'ikkjeForekomst';
+      case 'Ikkje testbart':
+        return 'ikkjeTesta';
+    }
+  } else {
+    return 'ikkjeForekomst';
   }
 }
 

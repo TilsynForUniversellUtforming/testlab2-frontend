@@ -1,38 +1,44 @@
+import { TestlabSeverity } from '@common/types';
 import { parseHtmlEntities } from '@common/util/stringutils';
 import TestResultCard from '@test/testregel-form/TestResultCard';
-import {
-  TestregelResultat,
-  toElementResultat,
-} from '@test/util/testregelParser';
+import { TestregelResultat } from '@test/util/testregelParser';
 
 interface Props {
   resultat: TestregelResultat;
 }
 
 const TestFormResultat = ({ resultat }: Props) => {
-  if (resultat?.type === 'avslutt') {
-    const elementResultat = toElementResultat(resultat);
-    const isSamsvar = elementResultat === 'samsvar';
-    return (
-      <TestResultCard
-        resultSeverity={isSamsvar ? 'success' : 'danger'}
-        resultTitle={isSamsvar ? 'Samsvar' : 'Ikkje samsvar'}
-        resultDescription={
-          parseHtmlEntities(resultat.utfall) || 'Inget resultat'
-        }
-      />
-    );
-  } else if (resultat?.type === 'ikkjeForekomst') {
-    return (
-      <TestResultCard
-        resultSeverity={'info'}
-        resultTitle="Ikkje forekomst"
-        resultDescription={
-          parseHtmlEntities(resultat.utfall) || 'Inget resultat'
-        }
-      />
-    );
+  let severity: TestlabSeverity;
+  let title: string;
+
+  switch (resultat?.type) {
+    case 'avslutt':
+      switch (resultat.fasit) {
+        case 'Ja':
+          severity = 'success';
+          title = 'Samsvar';
+          break;
+        case 'Nei':
+          severity = 'danger';
+          title = 'Brot';
+          break;
+        case 'Ikkje testbart':
+          severity = 'info';
+          title = 'Ikkje testbart';
+      }
+      break;
+    case 'ikkjeForekomst':
+      severity = 'info';
+      title = 'Ikkje forekomst';
+      break;
   }
+  return (
+    <TestResultCard
+      resultTitle={title}
+      resultDescription={parseHtmlEntities(resultat.utfall) || 'Inget resultat'}
+      resultSeverity={severity}
+    />
+  );
 };
 
 export default TestFormResultat;
