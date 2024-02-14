@@ -35,7 +35,9 @@ const TableActionButton = ({
         variant={variant}
         size={size}
         disabled={disabled}
-      />
+      >
+        Legg til
+      </TestlabLinkButton>
     );
   }
 
@@ -46,7 +48,9 @@ const TableActionButton = ({
         route={route}
         size={size}
         disabled={disabled}
-      />
+      >
+        Lagre
+      </TestlabLinkButton>
     );
   }
 

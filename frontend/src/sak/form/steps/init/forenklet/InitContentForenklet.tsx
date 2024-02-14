@@ -43,11 +43,11 @@ når saka berre gjeld éi løysing/verksemd. Eksempel: Tilsyn 2023 Andeby."
       />
       <Button
         title="Avanserte instillinger"
-        icon={<CogIcon />}
         variant={ButtonVariant.Quiet}
         iconPlacement={'right'}
         onClick={toggleAdvancedDisplay}
       >
+        <CogIcon />
         Avansert
       </Button>
       <SakCrawlParameters displayAdvanced={displayAdvanced} />

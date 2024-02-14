@@ -23,15 +23,6 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   return (
     <div className="page-selector__dropdown">
       <Button
-        icon={
-          <>
-            <ChevronDownIcon
-              className="chevron-icon"
-              style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            />
-          </>
-        }
-        iconPlacement="right"
         ref={anchorEl}
         aria-haspopup="true"
         aria-expanded={show}
@@ -41,6 +32,10 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
         }}
       >
         {title}
+        <ChevronDownIcon
+          className="chevron-icon"
+          style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
       </Button>
       <DropdownMenu
         anchorEl={anchorEl.current}

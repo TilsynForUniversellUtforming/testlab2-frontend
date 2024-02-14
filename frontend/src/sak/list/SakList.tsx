@@ -34,7 +34,9 @@ const SakList = () => {
   return (
     <div className="sak-list">
       <Heading level={1}>Alle saker</Heading>
-      <TestlabLinkButton route={SAK_CREATE} title="Opprett ny" />
+      <TestlabLinkButton route={SAK_CREATE} title="Opprett ny">
+        Opprett ny
+      </TestlabLinkButton>
       <TestlabTable
         data={saker}
         defaultColumns={columns}

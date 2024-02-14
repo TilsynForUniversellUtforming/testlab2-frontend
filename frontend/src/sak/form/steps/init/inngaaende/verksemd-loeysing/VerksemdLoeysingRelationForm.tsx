@@ -63,7 +63,9 @@ const VerksemdLoeysingRelationForm = () => {
           route={LOEYSING_CREATE}
           redirectExternal
           size="small"
-        />
+        >
+          Legg inn løysing (ekstern)
+        </TestlabLinkButton>
       )}
     </>
   );

@@ -31,15 +31,15 @@ const Navigation = () => {
     <div className="navigation" ref={navRef}>
       <div className="home">
         <TestlabLinkButton
+          title=""
           route={ROOT}
           className="link"
-          title={''}
+          icon={true}
           variant={ButtonVariant.Quiet}
           color={ButtonColor.Inverted}
-          icon={
-            <img src={ROOT.imgSrc} alt={'Heim'} style={{ width: '100%' }} />
-          }
-        />
+        >
+          <img src={ROOT.imgSrc} alt={'Heim'} style={{ width: '100%' }} />
+        </TestlabLinkButton>
         <HamburgerMenu open={open} onClick={() => setOpen((open) => !open)} />
       </div>
       <div className={classNames('navigation__list', { open: open })}>

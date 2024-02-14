@@ -1,7 +1,6 @@
 import './link-button.scss';
 
 import { Button, ButtonProps } from '@digdir/design-system-react';
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { AppRoute, getFullPath, IdReplacement } from '../util/routeUtils';
@@ -26,6 +25,7 @@ const TestlabLinkButton = ({
   fullWidth,
   redirectExternal = false,
   onClick,
+  children,
 }: Props) => (
   <div className="link-button-wrapper">
     <Link
@@ -36,13 +36,13 @@ const TestlabLinkButton = ({
         variant={variant}
         color={color}
         title={title}
-        icon={icon}
         size={size}
+        icon={icon}
         fullWidth={fullWidth}
         disabled={disabled}
         onClick={onClick}
       >
-        {title}
+        {children}
       </Button>
     </Link>
   </div>

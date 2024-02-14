@@ -47,11 +47,12 @@ const ConfirmModalButton = ({
         disabled={disabled}
         className={className}
         color={color}
-        icon={icon}
+        icon={iconOnly}
         size={size}
         variant={variant}
         title={iconOnly ? title : undefined}
       >
+        {icon}
         {iconOnly ? null : title}
       </Button>
       <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
