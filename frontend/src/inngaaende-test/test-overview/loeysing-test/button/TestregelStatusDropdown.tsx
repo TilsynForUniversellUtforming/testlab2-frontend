@@ -2,7 +2,7 @@ import { ButtonVariant } from '@common/types';
 import { Button, DropdownMenu } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import { ManuellTestStatus } from '@test/types';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 interface Props {
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
@@ -15,7 +15,6 @@ type StatusOption = {
 };
 
 const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
-  const anchorEl = useRef(null);
   const [show, setShow] = useState(false);
 
   const handleButtonClick = (status: ManuellTestStatus) => {
@@ -31,38 +30,40 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
 
   return (
     <div className="status-dropdown">
-      <Button
-        ref={anchorEl}
-        aria-haspopup="true"
-        aria-expanded={show}
-        id="Oppgi status"
-        onClick={() => {
-          setShow((show) => !show);
-        }}
-        size="small"
-        variant={ButtonVariant.Quiet}
-        className="button"
-      >
-        <CogIcon />
-        Oppgi status
-      </Button>
       <DropdownMenu
-        anchorEl={anchorEl.current}
         open={show}
         onClose={() => setShow(false)}
         placement="bottom-start"
         size="small"
       >
-        <DropdownMenu.Group>
-          {options.map(({ label, value }) => (
-            <DropdownMenu.Item
-              key={value}
-              onClick={() => handleButtonClick(value)}
-            >
-              {label}
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Group>
+        <DropdownMenu.Trigger asChild={true}>
+          <Button
+            aria-haspopup="true"
+            aria-expanded={show}
+            id="Oppgi status"
+            onClick={() => {
+              setShow((show) => !show);
+            }}
+            size="small"
+            variant={ButtonVariant.Quiet}
+            className="button"
+          >
+            <CogIcon />
+            Oppgi status
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Group>
+            {options.map(({ label, value }) => (
+              <DropdownMenu.Item
+                key={value}
+                onClick={() => handleButtonClick(value)}
+              >
+                {label}
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Group>
+        </DropdownMenu.Content>
       </DropdownMenu>
     </div>
   );
