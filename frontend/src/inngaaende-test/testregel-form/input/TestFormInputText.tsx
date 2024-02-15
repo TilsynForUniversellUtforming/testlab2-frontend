@@ -23,12 +23,14 @@ const TestFormInputText = ({ steg, svar, onAnswer }: Props) => {
     [svar, stegnr]
   );
 
+  const textFieldType = steg.filter === 'tal' ? 'number' : 'text';
+
   return (
     <DebouncedInput
       label={spm}
       description={ht}
       name={stegnr}
-      type="text"
+      type={textFieldType}
       value={value}
       onChange={handleValueChange}
       textArea={steg.multilinje}
