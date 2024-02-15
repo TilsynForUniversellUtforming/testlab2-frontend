@@ -263,10 +263,13 @@ function insertDelutfall(
         ? resultat.utfall.ja ?? ''
         : resultat.utfall.nei ?? '';
   const utfallMedDelutfall = delutfall.reduce((endeligUtfall, etDelutfall) => {
-    return endeligUtfall.replace(
-      `#delutfall(${etDelutfall.nr})`,
-      etDelutfall.tekst
-    );
+    return endeligUtfall
+      .replace(`#delutfall(${etDelutfall.nr})`, etDelutfall.tekst)
+      .replace(
+        `#delutfall(${etDelutfall.nr},${etDelutfall.fasit})`,
+        etDelutfall.tekst
+      )
+      .replace(new RegExp(`#delutfall\\(${etDelutfall.nr},.+\\)`, 'g'), '');
   }, utfall);
   return { ...resultat, fasit, utfall: utfallMedDelutfall };
 }

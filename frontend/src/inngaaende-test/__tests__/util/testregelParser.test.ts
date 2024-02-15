@@ -315,4 +315,48 @@ describe('makeViewModel spec', () => {
       });
     });
   });
+
+  describe('delutfall med to parametere', () => {
+    test('når delutfall er satt, og fasit stemmer med malen, så skal vi sette in teksten fra delutfallet', () => {
+      const testregel = getTestregel('1.3.1b');
+      const svar = [
+        // vi trenger å havne på 3.14 med delutfall 0 = Nei
+        { steg: '2.2', svar: 'Ja' },
+        { steg: '3.1', svar: 'bla bla' },
+        { steg: '3.2', svar: 'Ja' },
+        { steg: '3.3', svar: 'Ja' },
+        { steg: '3.4', svar: 'Nei' }, // dette steget gir delutfall 0 = Nei
+        { steg: '3.13', svar: 'Ja' },
+        { steg: '3.14', svar: 'Nei' },
+      ];
+      const model = evaluateTestregel(testregel, svar);
+
+      expect(model.resultat).toMatchObject({
+        type: 'avslutt',
+        utfall:
+          'Visuell tabelltittel er ikkje koda med &#x3C;caption&#x3E;. Tabell har overskriftsceller som ikkje er koda med &#x3C;th&#x3E;.',
+        fasit: 'Nei',
+      });
+    });
+
+    test('når delutfall er satt, og fasit ikke stemmer med malen, så skal vi ikke sette in teksten fra delutfallet', () => {
+      const testregel = getTestregel('1.3.1b');
+      const svar = [
+        // vi trenger å havne på 3.14 med delutfall 0 = Ja
+        { steg: '2.2', svar: 'Ja' },
+        { steg: '3.1', svar: 'bla bla' },
+        { steg: '3.2', svar: 'Ja' },
+        { steg: '3.3', svar: 'Nei' }, // dette gir delutfall 0 = Ja
+        { steg: '3.13', svar: 'Ja' },
+        { steg: '3.14', svar: 'Nei' },
+      ];
+      const model = evaluateTestregel(testregel, svar);
+
+      expect(model.resultat).toMatchObject({
+        type: 'avslutt',
+        utfall: 'Visuell tabelltittel er ikkje koda med &#x3C;caption&#x3E;. ',
+        fasit: 'Nei',
+      });
+    });
+  });
 });
