@@ -23,7 +23,9 @@ export const progressionForLoeysingNettside = (
 ): number => {
   const numFinishedTestResults = testResults.filter(
     (tr) =>
-      tr.loeysingId === loeysingId && tr.nettsideId === nettsideId && tr.ferdig
+      tr.loeysingId === loeysingId &&
+      tr.nettsideId === nettsideId &&
+      tr.status === 'Ferdig'
   ).length;
 
   // TODO - Filtrer på valgt contentType, f.eks. alle testreglar med "IFrame"
@@ -96,7 +98,7 @@ export const toTestregelStatus = (
       if (isNotDefined(tr)) {
         status = 'ikkje-starta';
       } else {
-        if (tr.ferdig) {
+        if (tr.status === 'Ferdig') {
           status = 'ferdig';
         } else {
           status = 'under-arbeid';
