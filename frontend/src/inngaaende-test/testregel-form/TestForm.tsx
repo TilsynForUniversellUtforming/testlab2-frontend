@@ -2,7 +2,7 @@ import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { takeWhile } from '@common/util/arrayUtils';
 import { Button, Heading } from '@digdir/design-system-react';
-import { Svar } from '@test/api/types';
+import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
 import { SkjemaOgSvar } from '@test/testregel-form/types';
 import {
@@ -17,6 +17,7 @@ import TestFormStepWrapper from './TestFormStepWrapper';
 
 interface Props {
   testregel: Testregel;
+  resultat?: ResultatManuellKontroll;
   onClickBack: () => void;
   onClickSave: () => void;
   onResultat: (
@@ -28,17 +29,19 @@ interface Props {
 
 const TestForm = ({
   testregel,
+  resultat,
   onClickBack,
   onClickSave,
   onResultat,
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const [skjemaOgSvar, setSkjemaOgSvar] = useState<SkjemaOgSvar>({
-    skjemaModell: evaluateTestregel(testregel.testregelSchema, []),
-    alleSvar: [],
+    skjemaModell: evaluateTestregel(
+      testregel.testregelSchema,
+      resultat?.svar ?? []
+    ),
+    alleSvar: resultat?.svar ?? [],
   });
-
-  const { skjemaModell, alleSvar } = skjemaOgSvar;
 
   function onAnswer(nyttSvar: Svar) {
     setSkjemaOgSvar((prevState) => {
@@ -59,25 +62,40 @@ const TestForm = ({
   }
 
   useEffect(() => {
+    const svar = resultat?.svar ?? [];
     setSkjemaOgSvar({
-      skjemaModell: evaluateTestregel(testregel.testregelSchema, []),
-      alleSvar: [],
+      skjemaModell: evaluateTestregel(testregel.testregelSchema, svar),
+      alleSvar: svar,
     });
-  }, [testregel]);
+  }, [testregel, resultat]);
 
   useEffect(() => {
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [skjemaModell]);
+  }, [skjemaOgSvar.alleSvar]);
+
+  function isNewResult(
+    nyttResultat: TestregelResultat,
+    gammeltResultat?: ResultatManuellKontroll | undefined
+  ): boolean {
+    if (!gammeltResultat && !nyttResultat) {
+      return false;
+    } else if (!gammeltResultat && nyttResultat) {
+      return true;
+    } else {
+      return gammeltResultat?.elementUtfall !== nyttResultat?.utfall;
+    }
+  }
 
   useEffect(() => {
-    if (skjemaModell.resultat) {
+    const { skjemaModell, alleSvar } = skjemaOgSvar;
+    if (skjemaModell.resultat && isNewResult(skjemaModell.resultat, resultat)) {
       const element = JSON.parse(testregel.testregelSchema).element;
       const elementOmtale =
         finnSvar(element, alleSvar) ?? 'Finn ikkje elementomtala';
 
       onResultat(skjemaModell.resultat, elementOmtale, alleSvar);
     }
-  }, [skjemaModell]);
+  }, [skjemaOgSvar]);
 
   return (
     <div className="test-form" ref={ref}>
@@ -85,17 +103,17 @@ const TestForm = ({
         {testregel.name}
       </Heading>
       <div className="test-form-content">
-        {skjemaModell.steg.map((etSteg) => (
+        {skjemaOgSvar.skjemaModell.steg.map((etSteg) => (
           <div key={etSteg.stegnr}>
             <TestFormStepWrapper
               steg={etSteg}
-              alleSvar={alleSvar}
+              alleSvar={skjemaOgSvar.alleSvar}
               onAnswer={onAnswer}
             />
           </div>
         ))}
-        {skjemaModell.resultat && (
-          <TestFormResultat resultat={skjemaModell.resultat} />
+        {skjemaOgSvar.skjemaModell.resultat && (
+          <TestFormResultat resultat={skjemaOgSvar.skjemaModell.resultat} />
         )}
       </div>
       <TestlabDivider />
