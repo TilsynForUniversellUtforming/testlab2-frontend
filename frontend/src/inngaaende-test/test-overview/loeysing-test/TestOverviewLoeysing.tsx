@@ -53,9 +53,7 @@ const TestOverviewLoeysing = () => {
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
     ResultatManuellKontroll[]
   >(getTestResultsForLoeysing(contextTestResults, Number(loeysingId)));
-  // const [allNonRelevant, setAllNonRelevant] = useState(
-  //   isAllNonRelevant(testResultsLoeysing)
-  // );
+
   const [nettsideProperties, setNettsideProperties] = useState(
     getNettsideProperties(contextSak, Number(loeysingId))
   );
@@ -105,7 +103,7 @@ const TestOverviewLoeysing = () => {
     setSak(contextSak);
     setTestregelList(testregelList);
     setTestResultsLoeysing(filteredTestResults);
-    // setAllNonRelevant(isAllNonRelevant(filteredTestResults));
+
     setNettsideProperties(filteredNettsideProperties);
     setProgressionPercent(
       progressionForLoeysingNettside(
@@ -160,24 +158,6 @@ const TestOverviewLoeysing = () => {
       setActiveTestregel(undefined);
     }
   }, []);
-
-  // const toggleAllNonRelevant = useCallback(() => {
-  //   // TODO - TA BORT, oppdater testresulat i api
-  //   const nextToggle = !allNonRelevant;
-  //   setAllNonRelevant(nextToggle);
-  //   if (nextToggle) {
-  //     setTestStatusMap((currentMap) => {
-  //       const updatedMap = new Map(currentMap);
-  //
-  //       updatedMap.forEach((value, key) => {
-  //         updatedMap.set(key, 'deaktivert');
-  //       });
-  //
-  //       return updatedMap;
-  //     });
-  //   }
-  //   // TODO - TA BORT
-  // }, [allNonRelevant]);
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
@@ -273,9 +253,6 @@ const TestOverviewLoeysing = () => {
 
         updatedMap.set(statusKey, status);
         setTestStatusMap(updatedMap);
-        // setAllNonRelevant((prevAllRelevant) =>
-        //   prevAllRelevant ? false : prevAllRelevant
-        // );
       }
     },
     [sak, testStatusMap, loeysingId, testResultsLoeysing, pageType.nettsideId]
@@ -419,8 +396,6 @@ const TestOverviewLoeysing = () => {
         <TestRegelParamSelection
           pageType={pageType.pageType}
           contentType={contentType}
-          // allNonRelevant={allNonRelevant}
-          // toggleAllNonRelevant={toggleAllNonRelevant}
           progressionPercent={progressionPercent}
         />
         <div className="testregel-container">
@@ -448,6 +423,13 @@ const TestOverviewLoeysing = () => {
           <div className="testregel-form-wrapper">
             <TestForm
               testregel={activeTestregel}
+              resultat={findActiveTestResult(
+                testResultsLoeysing,
+                Number(sakId),
+                Number(loeysingId),
+                activeTestregel.id,
+                pageType.nettsideId
+              )}
               onClickBack={onClickBack}
               onClickSave={onClickSave}
               onResultat={doUpdateTestResult}
