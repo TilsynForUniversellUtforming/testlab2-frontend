@@ -24,5 +24,11 @@ export type CreateTestResultat = {
 export type ResultatManuellKontroll = {
   id: number;
   svar: Svar[];
-  ferdig: boolean;
+  status: ResultatStatus;
 } & CreateTestResultat;
+
+export type ResultatStatus =
+  | 'Ferdig'
+  | 'Deaktivert'
+  | 'UnderArbeid'
+  | 'IkkjePaabegynt';

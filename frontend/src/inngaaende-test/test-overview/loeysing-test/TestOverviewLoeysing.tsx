@@ -6,6 +6,7 @@ import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
 import {
   CreateTestResultat,
   ResultatManuellKontroll,
+  ResultatStatus,
   Svar,
 } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
@@ -230,8 +231,8 @@ const TestOverviewLoeysing = () => {
       const testResult = findActiveTestResult(
         testResultsLoeysing,
         sakIdNumeric,
-        testregelId,
         loeysingIdNumeric,
+        testregelId,
         pageType.nettsideId
       );
       const statusKey = toTestregelStatusKey(
@@ -250,6 +251,22 @@ const TestOverviewLoeysing = () => {
             testregel,
             pageType.nettsideId
           );
+        } else if (isDefined(testResult)) {
+          const updatedtestResult: ResultatManuellKontroll = {
+            id: testResult.id,
+            sakId: sakIdNumeric,
+            loeysingId: loeysingIdNumeric,
+            testregelId: testregelId,
+            nettsideId: testResult.nettsideId,
+            elementOmtale: testResult.elementOmtale,
+            elementResultat: testResult.elementResultat,
+            elementUtfall: testResult.elementUtfall,
+            testVartUtfoert: testResult.testVartUtfoert,
+            svar: testResult.svar,
+            status: mapStatus(status),
+          };
+
+          doUpdateTestResultStatus(updatedtestResult);
         }
 
         const updatedMap = new Map(testStatusMap);
@@ -328,7 +345,7 @@ const TestOverviewLoeysing = () => {
           elementResultat: toElementResultat(resultat),
           elementUtfall: resultat.utfall,
           svar: alleSvar,
-          ferdig: false,
+          status: mapStatus('under-arbeid'),
         };
 
         try {
@@ -355,6 +372,37 @@ const TestOverviewLoeysing = () => {
       pageType.nettsideId,
     ]
   );
+
+  const doUpdateTestResultStatus = useCallback(
+    async (testResultat: ResultatManuellKontroll) => {
+      try {
+        const updatedTestResults = await updateTestResultat(testResultat);
+        contextSetTestResults(updatedTestResults);
+        processData(
+          contextSak,
+          updatedTestResults,
+          Number(loeysingId),
+          pageType
+        );
+      } catch (e) {
+        setAlert('danger', 'Oppdatering av testresultat feila');
+      }
+    },
+    [contextSak, loeysingId, activeTestregel, pageType]
+  );
+
+  const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
+    switch (frontendState) {
+      case 'ferdig':
+        return 'Ferdig';
+      case 'deaktivert':
+        return 'Deaktivert';
+      case 'under-arbeid':
+        return 'UnderArbeid';
+      case 'ikkje-starta':
+        return 'IkkjePaabegynt';
+    }
+  };
 
   return (
     <div className="manual-test-container">
