@@ -13,12 +13,12 @@ import { RouteObject } from 'react-router-dom';
 import diskusjonImg from './assets/diskusjon.svg';
 import mineSakerImg from './assets/mine-saker.svg';
 import mineTestarImg from './assets/mine-testar.svg';
-import resultatImg from './assets/resultat.svg';
 import teknikkImg from './assets/teknikk.svg';
 import konkurranseImg from './assets/teknikk.svg';
 import tilsynImg from './assets/tilsyn.svg';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
+import { RESULTAT_ROOT, ResultRoutes } from './resultat/ResultatRoutes';
 
 export const ROOT: AppRoute = {
   navn: 'uu',
@@ -48,13 +48,6 @@ export const MINE_TESTAR_ROOT: AppRoute = {
   disabled: true,
 };
 
-export const RESULTAT_ROOT: AppRoute = {
-  navn: 'Resultat',
-  path: '/',
-  parentRoute: ROOT,
-  imgSrc: resultatImg,
-  disabled: true,
-};
 const TEKNIKK_ROOT: AppRoute = {
   navn: 'Teknikk',
   path: '/',
@@ -105,6 +98,7 @@ export const AppRoutes: RouteObject = {
     VerksemdRoutes,
     KravRoutes,
     TestingRoutes,
+    ResultRoutes,
     {
       path: '*',
       element: <Page404 />,

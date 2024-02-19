@@ -64,6 +64,7 @@ export type AggregatedTestresult = {
   talElementSamsvar: number;
   talElementBrot: number;
   talElementVarsel: number;
+  talElementIkkjeForekomst: number;
   compliancePercent?: number;
 };
 
