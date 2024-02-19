@@ -65,6 +65,12 @@ export const getAggregatedResultColumns = (): Array<
     accessorFn: (row) => row.talElementVarsel,
     id: 'varsel',
     cell: ({ row }) => <>{row.original.talElementVarsel}</>,
-    header: () => <>Tal ikkje-testbart</>,
+    header: () => <>Tal varsel</>,
+  },
+  {
+    accessorFn: (row) => row.talElementIkkjeForekomst,
+    id: 'ikkjetestbar',
+    cell: ({ row }) => <>{row.original.talElementIkkjeForekomst}</>,
+    header: () => <>Tal ikkje testbar</>,
   },
 ];
