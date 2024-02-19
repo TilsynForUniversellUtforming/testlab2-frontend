@@ -11,6 +11,7 @@ import {
   Svar,
 } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
+import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
 import {
@@ -51,6 +52,7 @@ const TestOverviewLoeysing = () => {
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [alert, setAlert] = useAlert();
   const [sak, setSak] = useState<Sak>(contextSak);
+  const [testFerdig, setTestFerdig] = useState(false);
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
     ResultatManuellKontroll[]
   >(getTestResultsForLoeysing(contextTestResults, Number(loeysingId)));
@@ -224,6 +226,8 @@ const TestOverviewLoeysing = () => {
       );
       const testregel = sak.testreglar.find((tr) => tr.id === testregelId);
 
+      console.log(JSON.stringify(testResult));
+
       if (testStatusMap && testregel) {
         if (status === 'under-arbeid' && isNotDefined(testResult)) {
           doCreateTestResult(
@@ -248,6 +252,11 @@ const TestOverviewLoeysing = () => {
           };
 
           doUpdateTestResultStatus(updatedtestResult);
+          doCheckFinished(
+            testResultsLoeysing,
+            testResult.id,
+            mapStatus(status)
+          );
         }
 
         const updatedMap = new Map(testStatusMap);
@@ -369,6 +378,29 @@ const TestOverviewLoeysing = () => {
     [contextSak, loeysingId, activeTestregel, pageType]
   );
 
+  const doCheckFinished = useCallback(
+    (
+      testResultsLoeysing: ResultatManuellKontroll[],
+      updatedResultId: number,
+      status: ResultatStatus
+    ) => {
+      testResultsLoeysing.forEach((tr) => {
+        if (tr.id === updatedResultId) {
+          tr.status = status;
+        }
+      });
+
+      const finished = testResultsLoeysing.every(
+        (tr) => tr.status === 'Ferdig'
+      );
+      if (finished) {
+        setTestFerdig(true);
+        console.log('success', 'Alle testar er ferdige');
+      }
+    },
+    [testResultsLoeysing]
+  );
+
   const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
     switch (frontendState) {
       case 'ferdig':
@@ -440,6 +472,7 @@ const TestOverviewLoeysing = () => {
           </div>
         )}
       </div>
+      {testFerdig && <TestFerdig statusFerdig={testFerdig} />}
       {alert && (
         <AlertTimed
           severity={alert.severity}
