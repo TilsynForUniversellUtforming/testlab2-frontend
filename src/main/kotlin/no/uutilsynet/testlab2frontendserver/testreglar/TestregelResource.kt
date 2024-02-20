@@ -71,8 +71,8 @@ class TestregelResource(
   fun createTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
         logger.debug("Lagrer ny testregel med navn: ${testregel.namn} fra $testregelUrl")
-        val testregelList = restTemplate.getList<Testregel>("$testregelUrl?includeMetadata=true")
-        if (testregelList.filter { it.testregelSchema == testregel.testregelSchema }.isNotEmpty()) {
+        val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
+        if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
           throw IllegalArgumentException("Duplikat skjema for testregel")
         }
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
@@ -89,10 +89,10 @@ class TestregelResource(
   fun updateTestregel(@RequestBody testregel: Testregel): List<TestregelBase> =
       try {
         logger.debug("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
-        val testregelList = restTemplate.getList<Testregel>("$testregelUrl?includeMetadata=true")
-        if (testregelList
-            .filter { it.testregelSchema == testregel.testregelSchema && it.id != testregel.id }
-            .isNotEmpty()) {
+        val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
+        if (testregelList.any {
+          it.testregelSchema == testregel.testregelSchema && it.id != testregel.id
+        }) {
           throw IllegalArgumentException("Duplikat skjema for testregel")
         }
         restTemplate.put(testregelUrl, testregel, Testregel::class.java)
