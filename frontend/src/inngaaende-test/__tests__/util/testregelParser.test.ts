@@ -54,11 +54,7 @@ describe('makeViewModel spec', () => {
     const testregel = getTestregel('1.3.3a');
     const model = evaluateTestregel(testregel, [{ steg: '2.2', svar: 'Ja' }]);
 
-    expect(model.steg.map((s) => s.stegnr)).toStrictEqual([
-      '2.2',
-      '2.3',
-      '2.4',
-    ]);
+    expect(model.steg.map((s) => s.stegnr)).toStrictEqual(['2.2', '2.3']);
   });
 
   test('når det er ruting med radioboks, så skal vi få det resultatet som hører til den valgte radioboksen', () => {
@@ -112,7 +108,7 @@ describe('makeViewModel spec', () => {
     expect(modelIkkjeMogleg.resultat).toBeUndefined();
   });
 
-  test('når et svar er gitt, så skal vi ta med alle de neste stegene helt til vi kommer til en beslutning', () => {
+  test('når et svar er gitt, så skal vi gå videre til neste input', () => {
     const testregel: Testregel = getTestregel('1.4.5a');
     const model = evaluateTestregel(testregel, [
       { steg: '2.2', svar: 'Ja' },
@@ -123,7 +119,6 @@ describe('makeViewModel spec', () => {
       '2.2',
       '2.3',
       '3.1',
-      '3.2',
     ]);
   });
 

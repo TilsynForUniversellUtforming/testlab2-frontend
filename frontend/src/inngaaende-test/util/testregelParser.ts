@@ -1,4 +1,4 @@
-import { drop, dropWhile, first, takeWhile } from '@common/util/arrayUtils';
+import { dropWhile, first } from '@common/util/arrayUtils';
 import { ElementResultat, Svar } from '@test/api/types';
 import { Delutfall } from '@test/util/testregel-interface/Delutfall';
 import {
@@ -75,16 +75,11 @@ function loop(
 
   const stegSvar = finnSvar(steg.stegnr, alleSvar);
   if (!stegSvar) {
-    const rutingAlleGaaTil = takeWhile(resterendeSteg, (step) => {
-      const tekst = step.type === 'tekst';
-      const alleGaaTil = step.ruting?.alle?.type === 'gaaTil';
-      return tekst && alleGaaTil;
-    });
-    const nextStep = first(drop(resterendeSteg, rutingAlleGaaTil.length));
+    const nextStep = first(resterendeSteg);
     if (!nextStep) {
       return testregelSkjema;
     }
-    const steg = [...rutingAlleGaaTil, nextStep];
+    const steg = [nextStep];
     return { ...testregelSkjema, steg: [...testregelSkjema.steg, ...steg] };
   } else {
     const nesteHandling = finnNesteHandling(
