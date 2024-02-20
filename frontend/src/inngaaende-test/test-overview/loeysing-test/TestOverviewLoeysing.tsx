@@ -1,5 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
+import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { asList } from '@common/util/arrayUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
@@ -38,8 +39,10 @@ import {
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
 import { useCallback, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
+import { getTestresultatAggregert } from '../../../resultat/resultat-api';
+import { TESTRESULTAT_TESTGRUNNLAG } from '../../../resultat/ResultatRoutes';
 import TestRegelParamSelection from './TestRegelParamSelection';
 
 const TestOverviewLoeysing = () => {
@@ -48,6 +51,7 @@ const TestOverviewLoeysing = () => {
     useOutletContext();
   const [contentType, setContentType] =
     useState<InnhaldsType>('Bilde og grafikk');
+  const navigate = useNavigate();
 
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [alert, setAlert] = useAlert();
@@ -298,6 +302,16 @@ const TestOverviewLoeysing = () => {
     [contextSak, loeysingId, activeTestregel, pageType]
   );
 
+  const onFerdigTest = useCallback(async () => {
+    await getTestresultatAggregert(Number(sakId));
+    navigate(
+      getFullPath(TESTRESULTAT_TESTGRUNNLAG, {
+        pathParam: idPath,
+        id: sakId,
+      } as IdReplacement)
+    );
+  }, [sakId]);
+
   const doUpdateTestResult = useCallback(
     async (
       resultat: TestregelResultat,
@@ -472,7 +486,13 @@ const TestOverviewLoeysing = () => {
           </div>
         )}
       </div>
-      {testFerdig && <TestFerdig statusFerdig={testFerdig} />}
+      {testFerdig && (
+        <TestFerdig
+          statusFerdig={testFerdig}
+          loeysing={sak.loeysingList[0].loeysing.namn}
+          onClickResultat={onFerdigTest}
+        />
+      )}
       {alert && (
         <AlertTimed
           severity={alert.severity}
