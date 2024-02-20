@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push]
+on: [ push ]
 
 permissions:
   contents: read
@@ -54,14 +54,14 @@ jobs:
 
     steps:
       - name: Azure Login
-        uses: azure/login@v1
+        uses: Azure/login@v1.6.1
         with:
           client-id: ${{ secrets.CLIENT_ID }}
           tenant-id: ${{ secrets.TENANT_ID }}
           allow-no-subscriptions: true
 
-      - name: Deploy to containerapp
-        uses: azure/CLI@v1
+      - name: Azure CLI Action
+        uses: Azure/cli@v1.0.9
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
