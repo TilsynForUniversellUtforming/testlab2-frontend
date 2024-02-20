@@ -80,7 +80,8 @@ fun mergeLists(
               talElementBrot = result.talElementBrot,
               talElementVarsel = result.talElementVarsel,
               compliancePercent = compliancePercent)
-        } ?: emptyList()
+        }
+            ?: emptyList()
 
     val compliancePercent =
         if (aggregatedResultList.isEmpty()) 0
