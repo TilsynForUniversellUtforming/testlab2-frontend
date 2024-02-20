@@ -1,49 +1,81 @@
-export enum TestType {
-  Web = 'Web',
-  App = 'App',
-  Automat = 'Automat',
-}
+import { TestlabLocale } from '@common/types';
 
-export enum TestStatus {
-  'Publisert' = 'Publisert',
-  'Ferdig testa' = 'Ferdig testa',
-  'Treng avklaring' = 'Treng avklaring',
-  'Utgår' = 'Utgår',
-  'Klar for testing' = 'Klar for testing',
-  'Ikkje starta' = 'Ikkje starta',
-  'Under arbeid' = 'Under arbeid',
-  'Klar for kvalitetssikring' = 'Klar for kvalitetssikring',
-  'Gjennomgått workshop' = 'Gjennomgått workshop',
-}
+export type TestregelModus = 'forenklet' | 'manuell';
 
-export type TestregelType = 'forenklet' | 'manuell';
-
-export type Testregel = {
+export type TestregelBase = {
   id: number;
-  name: string;
+  namn: string;
   krav: string;
-  testregelSchema: string;
-  type: TestregelType;
+  modus: TestregelModus;
 };
 
-export type TestregelCreateRequest = {
-  krav: string;
+export type TestregelStatus =
+  | 'ikkje_starta'
+  | 'under_arbeid'
+  | 'gjennomgaatt_workshop'
+  | 'klar_for_testing'
+  | 'treng_avklaring'
+  | 'ferdig_testa'
+  | 'klar_for_kvalitetssikring'
+  | 'publisert'
+  | 'utgaar';
+
+export type Tema = {
+  id: number;
+  tema: string;
+};
+
+export type Testobjekt = {
+  id: number;
+  testobjekt: string;
+};
+
+export type InnhaldstypeTesting = {
+  id: number;
+  innhaldstype: string;
+};
+
+export type TestregelInnholdstype = 'app' | 'automat' | 'dokument' | 'nett';
+
+export type Testregel = TestregelBase & {
+  testregelId: string;
+  versjon: number;
+  status: TestregelStatus;
+  datoSistEndra: string;
+  type: TestregelInnholdstype;
+  spraak: TestlabLocale;
+  tema?: Tema;
+  testobjekt?: Testobjekt;
+  kravTilSamsvar?: string;
   testregelSchema: string;
-  name: string;
-  type: TestregelType;
+  innhaldstypeTesting?: InnhaldstypeTesting;
+};
+
+export type TestregelInit = Omit<TestregelBase, 'id'> & {
+  testregelId: string;
+  versjon: number;
+  status: TestregelStatus;
+  datoSistEndra: string;
+  type: TestregelInnholdstype;
+  spraak: TestlabLocale;
+  tema?: Tema;
+  testobjekt?: Testobjekt;
+  kravTilSamsvar?: string;
+  testregelSchema: string;
+  innhaldstypeTesting?: InnhaldstypeTesting;
 };
 
 export type Regelsett = {
   id: number;
   namn: string;
-  type: TestregelType;
+  modus: TestregelModus;
   standard: boolean;
-  testregelList: Testregel[];
+  testregelList: TestregelBase[];
 };
 
 export type RegelsettCreate = {
   namn: string;
-  type: TestregelType;
+  modus: TestregelModus;
   standard: boolean;
   testregelIdList: number[];
 };
@@ -51,7 +83,7 @@ export type RegelsettCreate = {
 export type RegelsettEdit = {
   id: number;
   namn: string;
-  type: TestregelType;
+  modus: TestregelModus;
   standard: boolean;
   testregelIdList: number[];
 };

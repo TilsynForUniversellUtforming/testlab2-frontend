@@ -7,7 +7,7 @@ import {
   PageType,
   TestregelOverviewElement,
 } from '@test/types';
-import { Testregel } from '@testreglar/api/types';
+import { TestregelBase } from '@testreglar/api/types';
 
 export const getTestResultsForLoeysing = (
   testResults: ResultatManuellKontroll[],
@@ -115,12 +115,12 @@ export const toTestregelStatus = (
 
 export const toTestregelOverviewElement = ({
   id,
-  name,
+  namn,
   krav,
-}: Testregel): TestregelOverviewElement => {
+}: TestregelBase): TestregelOverviewElement => {
   // TODO - Bruk testregelId som name
   const regex = /^((Nett-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/;
-  const result = name.match(regex);
+  const result = namn.match(regex);
 
   if (result && result.length > 3) {
     const firstPart = result[1];
@@ -128,7 +128,7 @@ export const toTestregelOverviewElement = ({
     return { id: id, name: secondPart, krav: firstPart };
   }
 
-  return { id: id, name: name, krav: krav };
+  return { id: id, name: namn, krav: krav };
 };
 
 export const findActiveTestResult = (

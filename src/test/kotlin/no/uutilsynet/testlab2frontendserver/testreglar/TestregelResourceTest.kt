@@ -3,10 +3,16 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.CreateTestregelDTO
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelType
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInnholdstype
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
@@ -71,8 +77,20 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
     val result =
         testregelResource.createTestregel(
-            CreateTestregelDTO(
-                "2.4.2 Sidetitler", "QW-ACT-R1", "HTML Page has a title", TestregelType.forenklet))
+            TestregelInit(
+                testregelId = "QW-ACT-R1",
+                namn = "test_skal_slettes_1",
+                krav = "1.1.1",
+                versjon = 1,
+                status = TestregelStatus.publisert,
+                type = TestregelInnholdstype.nett,
+                modus = TestregelModus.forenklet,
+                spraak = TestlabLocale.nb,
+                testregelSchema = "",
+                innhaldstypeTestingId = 1,
+                temaId = 1,
+                testobjektId = 1,
+                kravTilSamsvar = ""))
 
     assertThat(result).isEqualTo(testregelList)
   }
@@ -123,11 +141,35 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
   private val testregelList =
       listOf(
           Testregel(
-              1, "HTML Page has a title", "QW-ACT-R1", "2.4.2 Sidetitler", TestregelType.forenklet),
+              1,
+              "QW-ACT-R1",
+              1,
+              "QW-ACT-R1 HTML Page has a title",
+              "2.4.2 Sidetitler",
+              TestregelStatus.publisert,
+              "2025-01-01T10:00:00Z",
+              TestregelInnholdstype.nett,
+              TestregelModus.forenklet,
+              TestlabLocale.nb,
+              Tema(1, ""),
+              Testobjekt(1, ""),
+              "HTML Page has a title",
+              "QW-ACT-R1",
+              InnhaldstypeTesting(1, "")),
           Testregel(
               2,
-              "Link has accessible name",
-              "QW-ACT-R12",
-              "4.1.2 Navn, rolle, verdi",
-              TestregelType.forenklet))
+              "QW-ACT-R2",
+              1,
+              "QW-ACT-R2 HTML page has lang attribute",
+              "3.1.1 Språk på siden",
+              TestregelStatus.publisert,
+              "2025-01-01T10:00:00Z",
+              TestregelInnholdstype.nett,
+              TestregelModus.forenklet,
+              TestlabLocale.nb,
+              Tema(1, ""),
+              Testobjekt(1, ""),
+              "Språk på siden",
+              "QW-ACT-R2",
+              InnhaldstypeTesting(1, "")))
 }

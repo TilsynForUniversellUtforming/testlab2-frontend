@@ -1,5 +1,5 @@
 import { Loeysing } from '@loeysingar/api/types';
-import { Testregel } from '@testreglar/api/types';
+import { TestregelBase } from '@testreglar/api/types';
 
 export type CrawlParameters = {
   maxLenker: number;
@@ -83,7 +83,7 @@ export type Maaling = {
   navn: string;
   datoStart: string;
   loeysingList: Loeysing[];
-  testregelList: Testregel[];
+  testregelList: TestregelBase[];
   status: MaalingStatus;
   crawlResultat: CrawlResultat[];
   crawlStatistics: JobStatistics;

@@ -106,7 +106,7 @@ const SakConfirmContent = ({ sakFormState, error }: SakConfirmContentProps) => {
       const testregelItems =
         testregelList.map((tr) => ({
           id: tr.id,
-          header: tr.name,
+          header: tr.namn,
           text: tr.krav,
         })) ?? [];
 

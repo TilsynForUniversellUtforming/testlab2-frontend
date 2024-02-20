@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 import { createTestregel } from '../api/testreglar-api';
-import { Testregel, TestregelCreateRequest } from '../api/types';
+import { TestregelInit } from '../api/types';
 import { TestregelContext } from '../types';
 import TestregelFormSkeleton from './skeleton/TestregelFormSkeleton';
 import TestregelForm from './TestregelForm';
@@ -15,37 +15,21 @@ const TestregelCreate = () => {
     testregelList,
     setTestregelList,
     setContextLoading,
-    setContextError,
+    innhaldstypeList,
+    temaList,
+    testobjektList,
   }: TestregelContext = useOutletContext();
   const [alert, setAlert] = useAlert();
 
-  const onSubmit = useCallback((testregelInit: Testregel) => {
-    const testregel: TestregelCreateRequest = {
-      krav: testregelInit.krav,
-      testregelSchema: testregelInit.testregelSchema,
-      name: testregelInit.name,
-      type: testregelInit.type,
-    };
-
-    const existingTestregel = testregelList.find(
-      (tr) => tr.testregelSchema === testregel.testregelSchema
-    );
-    if (existingTestregel) {
-      setAlert(
-        'danger',
-        `Testregel med testregel-id ${testregel.testregelSchema} finst allereie`
-      );
-      return;
-    }
-
+  const onSubmit = useCallback((testregel: TestregelInit) => {
     const create = async () => {
       try {
         setContextLoading(true);
         const data = await createTestregel(testregel);
         setTestregelList(data);
-        setAlert('success', `${testregel.name} er oppretta`);
+        setAlert('success', `${testregel.namn} er oppretta`);
       } catch (e) {
-        setContextError(toError(e, 'Kunne ikkje lage testregel'));
+        setAlert('danger', toError(e, 'Kunne ikkje lagre testregel').message);
       }
     };
 
@@ -75,6 +59,9 @@ const TestregelCreate = () => {
       heading="Lag ny testregel"
       description="Her kan du opprette ein ny testregel"
       onSubmit={onSubmit}
+      innhaldstypeList={innhaldstypeList}
+      temaList={temaList}
+      testobjektList={testobjektList}
       krav={krav}
       kravDisabled={false}
       alert={alert}

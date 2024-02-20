@@ -57,9 +57,7 @@
       "spm": "Zoom teksten til 200 % med zoom-funksjonen i nettlesaren.",
       "ht": "<p>Bruk zoomfunksjonen i nettlesaren og velg eller skriv inn verdien 200 %.</p>\n<p><strong>Merk</strong>: Du kan zoome i dei fleste nettlesarar ved å trykke Ctrl og + på tastaturet.</p>",
       "type": "instruksjon",
-      "kilde": [
-        "G142"
-      ],
+      "kilde": ["G142"],
       "ruting": {
         "alle": {
           "type": "gaaTil",
@@ -72,10 +70,7 @@
       "spm": "Har testsida same tekstleg innhald og funksjonalitet i 200 % visning, som i 100 % visning?",
       "ht": "<p><strong>Tips: </strong>Du kan opne nettsida i to faner for å gjere det lettare å samanlikne. </p>\n<ul>\n<li>det er ok om du får tilgang til innhald/funksjonalitet ved å scrolle</li>\n<li>plassering av element på nettstaden treng ikkje vera likt</li>\n<li>trunkering er ok, så lenge du får tilgang til alt innhald eller funksjonalitet når innhaldet får fokus eller ved aktivering, for eksempel via hamburger-meny.</li>\n</ul>\n<p>Eksempel på at innhald eller funksjonalitet går tapt: </p>\n<ul>\n<li>tekst blir kutta av eller skjult</li>\n<li>tekst legg seg over annan tekst</li>\n<li>tekst ligg utanfor presentasjonsramma, og det er ikkje mogleg å scrolle for å få tak i innhaldet</li>\n<li>du får ikkje tilgang til ledetekstar, verktøytips eller skjemaelement</li>\n<li>du får ikkje tilgang til tekst eller funksjonalitet som er trunkert, når innhaldet får fokus eller blir aktivert </li>\n</ul>",
       "type": "jaNei",
-      "kilde": [
-        "G142",
-        "G146"
-      ],
+      "kilde": ["G142", "G146"],
       "ruting": {
         "ja": {
           "type": "avslutt",
@@ -108,9 +103,7 @@
       "spm": "Har testsida ein mekanisme som lar brukaren forstørre teksten?",
       "ht": "<p>Mekanismen kan for eksempel vere lenke, knapp eller lenka bilde med alternativ tekst.</p>",
       "type": "jaNei",
-      "kilde": [
-        "G178"
-      ],
+      "kilde": ["G178"],
       "ruting": {
         "ja": {
           "type": "gaaTil",
@@ -128,9 +121,7 @@
       "spm": "Er mekanismen for forstørring lett å finne på testsida?",
       "ht": "<p>Lett å finne betyr at mekanismen er markert med større skrift, høg kontrast, anna farge eller liknande.</p>",
       "type": "jaNei",
-      "kilde": [
-        "G178"
-      ],
+      "kilde": ["G178"],
       "ruting": {
         "ja": {
           "type": "gaaTil",
@@ -148,9 +139,7 @@
       "spm": "Blir all teksten på nettsida forstørra når du aktiverer mekanismen?",
       "ht": "<p>Aktiver mekanismen for å forstørre teksten på nettsida.</p>\n<p><strong>Tips</strong>: Du kan opne nettsida i to faner for å gjere det lettare å samanlikne. </p>\n<p>All teksten på nettsida skal bli forstørra.</p>",
       "type": "jaNei",
-      "kilde": [
-        "G178"
-      ],
+      "kilde": ["G178"],
       "ruting": {
         "ja": {
           "type": "gaaTil",
@@ -168,9 +157,7 @@
       "spm": "Får du tilgang til alt tekstleg innhald og funksjonalitet?",
       "ht": "<p><strong>Tips</strong>: Du kan opne nettsida i to faner for å gjere det lettare å samanlikne. </p>\n<ul>\n<li>det er ok om du får tilgang til innhald/funksjonalitet ved å scrolle</li>\n<li>plassering av element på nettstaden treng ikkje vera likt</li>\n<li>trunkering er ok, så lenge du får tilgang til alt innhald eller funksjonalitet når innhaldet får fokus eller ved aktivering, for eksempel via</li>\n<li>hamburger-meny.</li>\n</ul>\n<p>Eksempel på at innhald eller funksjonalitet går tapt: </p>\n<ul>\n<li>tekst blir kutta av eller skjult</li>\n<li>tekst legg seg over annan tekst</li>\n<li>tekst ligg utanfor presentasjonsramma, og det er ikkje mogleg å scrolle for å få tak i innhaldet</li>\n<li>du får ikkje tilgang til ledetekstar, verktøytips eller skjemaelement</li>\n<li>du får ikkje tilgang til tekst eller funksjonalitet som er trunkert, når innhaldet får fokus eller blir aktivert</li>\n</ul>",
       "type": "jaNei",
-      "kilde": [
-        "G178"
-      ],
+      "kilde": ["G178"],
       "ruting": {
         "ja": {
           "type": "avslutt",

@@ -1,9 +1,11 @@
 import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import TestlabForm from '@common/form/TestlabForm';
+import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { OptionType } from '@common/types';
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import { Link } from '@digdir/design-system-react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +14,15 @@ import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { Testregel, TestregelType } from '../api/types';
+import {
+  InnhaldstypeTesting,
+  Tema,
+  Testobjekt,
+  Testregel,
+  TestregelInnholdstype,
+  TestregelModus,
+  TestregelStatus,
+} from '../api/types';
 import { testreglarValidationSchema } from './testreglarValidationSchema';
 
 export interface Props {
@@ -20,6 +30,9 @@ export interface Props {
   description: string;
   onSubmit: (testregel: Testregel) => void;
   testregel?: Testregel;
+  innhaldstypeList: InnhaldstypeTesting[];
+  temaList: Tema[];
+  testobjektList: Testobjekt[];
   krav: string[];
   kravDisabled: boolean;
   alert?: AlertProps;
@@ -30,35 +43,69 @@ const TestregelForm = ({
   description,
   onSubmit,
   testregel,
+  innhaldstypeList,
+  temaList,
+  testobjektList,
   krav,
   kravDisabled,
   alert,
 }: Props) => {
   const { id } = useParams();
-
   const kravOptions: OptionType[] = krav.map((k) => ({
     label: k,
     value: k,
   }));
 
-  const typeOptions: OptionType[] = [
-    {
-      label: 'Manuell',
-      value: 'manuell',
-    },
-    {
-      label: 'Forenklet',
-      value: 'forenklet',
-    },
+  const modusOptions: OptionType[] = createOptionsFromLiteral<TestregelModus>([
+    'forenklet',
+    'manuell',
+  ]);
+  const spraakOptions: OptionType[] = [
+    { value: 'nn', label: 'Norsk nynorsk' },
+    { value: 'nb', label: 'Norsk bokmål' },
+    { value: 'en', label: 'Engelsk' },
   ];
+  const testregelStatusOptions: OptionType[] =
+    createOptionsFromLiteral<TestregelStatus>([
+      'ikkje_starta',
+      'under_arbeid',
+      'gjennomgaatt_workshop',
+      'klar_for_testing',
+      'treng_avklaring',
+      'ferdig_testa',
+      'klar_for_kvalitetssikring',
+      'publisert',
+      'utgaar',
+    ]);
+  const typeOptions = createOptionsFromLiteral<TestregelInnholdstype>([
+    'app',
+    'nett',
+    'automat',
+    'dokument',
+  ]);
+
+  const innhaldsTypeOptions: OptionType[] = innhaldstypeList.map((it) => ({
+    label: it.innhaldstype,
+    value: String(it.id),
+  }));
+
+  const temaOptions: OptionType[] = temaList.map((it) => ({
+    label: it.tema,
+    value: String(it.id),
+  }));
+
+  const testobjektOptions: OptionType[] = testobjektList.map((it) => ({
+    label: it.testobjekt,
+    value: String(it.id),
+  }));
 
   const formMethods = useForm<Testregel>({
     defaultValues: {
       id: testregel?.id,
       testregelSchema: testregel?.testregelSchema ?? '',
-      name: testregel?.name ?? '',
+      namn: testregel?.namn ?? '',
       krav: testregel?.krav,
-      type: testregel?.type || 'manuell',
+      modus: testregel?.modus || 'manuell',
     },
     resolver: zodResolver(testreglarValidationSchema),
   });
@@ -67,10 +114,10 @@ const TestregelForm = ({
 
   const testregelType = useWatch({
     control,
-    name: 'type',
-  }) as TestregelType;
+    name: 'modus',
+  }) as TestregelModus;
 
-  const showDemoLink = testregel && testregel.type === 'manuell' && id;
+  const showDemoLink = testregel && testregel.modus === 'manuell' && id;
 
   return (
     <div className="testregel-form">
@@ -82,13 +129,15 @@ const TestregelForm = ({
       >
         <TestlabFormSelect
           radio
-          name="type"
-          options={typeOptions}
+          name="modus"
+          options={modusOptions}
           label="Hvilken type testregel"
           size="small"
-          disabled={isDefined(testregel?.type)}
+          disabled={isDefined(testregel?.modus)}
+          required
         />
-        <TestlabFormTextArea label="Namn" name="name" required />
+        <TestlabFormTextArea label="Namn" name="namn" required />
+        <TestlabFormInput label="Testregel-id" name="testregelId" required />
         <TestlabFormTextArea
           label={
             testregelType === 'manuell'
@@ -110,11 +159,38 @@ const TestregelForm = ({
           disabled={kravDisabled}
           required
         />
+        <TestlabFormSelect
+          options={innhaldsTypeOptions}
+          label="Innhaldstype"
+          name="innhaldstypeTesting"
+        />
+        <TestlabFormSelect options={temaOptions} label="Tema" name="tema" />
+        <TestlabFormSelect
+          options={testobjektOptions}
+          label="Testobjekt"
+          name="testobjekt"
+        />
+        <TestlabFormSelect
+          options={spraakOptions}
+          label="Språk"
+          name="spraak"
+        />
+        <TestlabFormSelect
+          options={testregelStatusOptions}
+          label="Status"
+          name="status"
+        />
+        <TestlabFormSelect
+          options={typeOptions}
+          label="Innhaldstype"
+          name="type"
+        />
+        <TestlabFormTextArea label="Krav til samsvar" name="kravTilSamsvar" />
         {showDemoLink && (
           <Link
             href={getFullPath(TESTREGEL_DEMO, { id: id, pathParam: idPath })}
           >
-            Demo {testregel?.name}
+            Demo {testregel?.namn}
           </Link>
         )}
         <TestlabForm.FormButtons />

@@ -15,7 +15,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
@@ -224,10 +224,10 @@ class MaalingResource(
             throw RuntimeException("Klarte ikkje å hente testresultat", it)
           }
 
-  private fun getTestregelListForMaaling(maalingId: Int): List<Testregel> =
+  private fun getTestregelListForMaaling(maalingId: Int): List<TestregelBase> =
       runCatching {
             logger.debug("Henter testreglar for måling $maalingId")
-            restTemplate.getList<Testregel>("$testregelUrl?maalingId=$maalingId")
+            restTemplate.getList<TestregelBase>("$testregelUrl?maalingId=$maalingId")
           }
           .getOrElse {
             logger.error("Feila ved henting av testreglar for måling $maalingId", it)

@@ -1,6 +1,6 @@
 import { AppContext } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import { Regelsett, Testregel } from '@testreglar/api/types';
+import { Regelsett, TestregelBase } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
 import { User } from '../user/api/types';
@@ -46,7 +46,7 @@ export type LoeysingSource = 'utval' | 'manuell';
 
 export interface SakContext extends AppContext {
   regelsettList: Regelsett[];
-  testregelList: Testregel[];
+  testregelList: TestregelBase[];
   loeysingList: Loeysing[];
   utvalList: Utval[];
   verksemdList: Verksemd[];
@@ -67,7 +67,7 @@ export type SakFormState = {
   loeysingSource: LoeysingSource;
   loeysingList: LoeysingVerksemd[];
   utval?: Utval;
-  testregelList: Testregel[];
+  testregelList: TestregelBase[];
   // Ny
   verksemdLoeysingRelation?: SakVerksemdLoeysingRelation;
   sakId?: number;

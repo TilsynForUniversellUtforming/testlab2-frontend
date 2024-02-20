@@ -1,248 +1,237 @@
 {
-	"namn": "3.1.1a Hovudspråket på nettsida er rett koda",
-	"id": "3.1.1a",
-	"testlabId": 251,
-	"versjon": "1.0",
-	"type": "Nett",
-	"spraak": "nn",
-	"kravTilSamsvar": "<ul>\r\n<li>Nettsida har ein gyldig språkkode i HTML koden.</li>\r\n<li>Språkkoden samsvarar med hovudspråket på nettsida.</li>\r\n</ul>",
-	"side": "2.1",
-	"element": "Side",
-	"steg": [
-		{
-			"stegnr": "2.1",
-			"spm": "Kva side testar du på?",
-			"ht": "Oppgi URL eller side-ID.",
-			"type": "tekst",
-			"label": "URL/Side:",
-			"datalist": "Sideutvalg",
-			"oblig": true,
-			"ruting": {
-				"alle": {
-					"type": "gaaTil",
-					"steg": "3.1"
-				}
-			}
-		},
-		{
-			"stegnr": "3.1",
-			"spm": "Er nettsida koda i HTML 4 eller HTML 5?",
-			"ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p><p>Dette finn du i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet, som er det første elementet i koden.</p><ul><li>HTML5 er koda som  <code>&#x3C;!DOCTYPE html&#x3E;</code></li><li>Viss nettsida er koda i HTML 4, er det mogleg å lese \"HTML 4.01\" ein stad i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet.</li></ul><p><strong>Merk:</strong> HTML-elementet kan innehalde annan tekst før avsluttande &#x3E; i elementet &#x3C;DOCTYPE&#x3E;.</p>",
-			"type": "jaNei",
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.4"
-				},
-				"nei": {
-					"type": "gaaTil",
-					"steg": "3.2"
-				}
-			}
-		},
-		{
-			"stegnr": "3.2",
-			"spm": "Er nettsida koda i XHTML 1.0?",
-			"ht": "<p>Dette finn du i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet, som er det første elementet i koden.</p><ul><li>Viss nettsida er koda i XHTML 1.0, er det mogleg å lese \"XHTML 1.0\" ein stad i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet.</li></ul><p><strong>Merk:</strong> HTML-elementet kan innehalde annan tekst før avsluttande &#x3E; i elementet &#x3C;DOCTYPE&#x3E;.</p>",
-			"type": "jaNei",
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.5"
-				},
-				"nei": {
-					"type": "gaaTil",
-					"steg": "3.3"
-				}
-			}
-		},
-		{
-			"stegnr": "3.3",
-			"spm": "Er nettsida koda i XHTML 1.1?",
-			"ht": "<p>Dette finn du i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet, som er det første elementet i koden.</p><ul><li>Viss nettsida er koda i XHTML 1.0, er det mogleg å lese \"XHTML 1.0\" eller \"XHTML Basic 1.1\" ein stad i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet.</li></ul><p><strong>Merk:</strong> HTML-elementet kan innehalde annan tekst før avsluttande &#x3E; i elementet &#x3C;DOCTYPE&#x3E;.</p>",
-			"type": "jaNei",
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.6"
-				},
-				"nei": {
-					"type": "gaaTil",
-					"steg": "3.6"
-				}
-			}
-		},
-		{
-			"stegnr": "3.4",
-			"spm": "Har &lt;html&gt;-elementet attributtet lang?",
-			"ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p>",
-			"type": "jaNei",
-			"kilde": [
-				"H57"
-			],
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.7"
-				},
-				"nei": {
-					"type": "avslutt",
-					"fasit": "Nei",
-					"utfall": "Språkdeklarering er koda feil."
-				}
-			}
-		},
-		{
-			"stegnr": "3.5",
-			"spm": "Har &lt;html&gt;-elementet attributtet xml:lang?",
-			"ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p>",
-			"type": "jaNei",
-			"kilde": [
-				"H57"
-			],
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.7"
-				},
-				"nei": {
-					"type": "avslutt",
-					"fasit": "Nei",
-					"utfall": "Språkdeklarering er koda feil."
-				}
-			}
-		},
-		{
-			"stegnr": "3.6",
-			"spm": "Har &lt;html&gt;-elementet attributtet lang eller xml:lang?",
-			"ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p>",
-			"type": "jaNei",
-			"kilde": [
-				"H57"
-			],
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.7"
-				},
-				"nei": {
-					"type": "avslutt",
-					"fasit": "Nei",
-					"utfall": "Språkdeklarering er koda feil."
-				}
-			}
-		},
-		{
-			"stegnr": "3.7",
-			"spm": "Er språket koda med ein gyldig språkkode?",
-			"ht": "<p>Sjå på lang-attributtet. Språkkoden består av to bokstavar. Viss språkkoden har ein sekundær språkkode, for eksempel på formen no-nb, skal du berre sjå på koden som ligg før bindestreken.</p><p>Eksempel på gyldige språkkodar er:</p><ul><li>norsk: no, nb, nn</li><li>samisk: smi, se, sma, smj</li><li>engelsk: en</li></ul><p>For andre språkkodar, sjå <a target=\"_blank\" href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">iana-lista (opnar i nytt vindauge)</a>.</p>",
-			"type": "jaNei",
-			"kilde": [
-				"H57",
-				"IANA"
-			],
-			"ruting": {
-				"ja": {
-					"type": "gaaTil",
-					"steg": "3.8"
-				},
-				"nei": {
-					"type": "avslutt",
-					"fasit": "Nei",
-					"utfall": "Gyldig språkkode manglar."
-				}
-			}
-		},
-		{
-			"stegnr": "3.8",
-			"spm": "Kva er språkkoden?",
-			"ht": "<p>Skriv inn språkkoden som ligg i lang-attributtet. Viss språkkoden har ein sekundær språkkode, for eksempel på formen no-nb, skal du berre skrive inn koden som ligg før bindestreken.</p><p><strong>Merk:</strong> Bruk små bokstavar.</p>",
-			"type": "tekst",
-			"label": "Språkkode:",
-			"kilde": [],
-			"ruting": {
-				"alle": {
-					"type": "gaaTil",
-					"steg": "3.9"
-				}
-			}
-		},
-		{
-			"stegnr": "3.9",
-			"spm": "Kva er hovudspråket på sida?",
-			"ht": "<p>Vel namnet på språket som alt eller størsteparten av innhaldet på nettsida er skrive i. Dersom det er vanskeleg å avgjere kva språk som er mest brukt, reknast hovudspråket som det språket som er brukt først.</p><p>Dersom språket ikkje finst i lista, vel du alternativet  \"anna\" og går vidare.</p>",
-			"type": "radio",
-			"svarArray": [
-				"Bokmål",
-				"Nynorsk",
-				"Nordsamisk",
-				"Sørsamisk",
-				"Lulesamisk",
-				"Engelsk",
-				"Anna"
-			],
-			"label": "Språkkode:",
-			"kilde": [],
-			"ruting": {
-				"alle": {
-					"type": "regler",
-					"regler": {
-						"1": {
-							"sjekk": "3.9",
-							"type": "lik",
-							"verdi": "Anna",
-							"handling": {
-								"type": "gaaTil",
-								"steg": "3.10"
-							}
-						},
-						"2": {
-							"sjekk": "3.9",
-							"type": "ulik",
-							"verdi": "Anna",
-							"handling": {
-								"type": "gaaTil",
-								"steg": "3.11"
-							}
-						}
-					}
-				}
-			}
-		},
-		{
-			"stegnr": "3.10",
-			"spm": "Skriv inn namnet på hovudspråket på sida.",
-			"ht": "Skriv inn namnet på språket på norsk. Bruk små bokstavar.",
-			"type": "tekst",
-			"label": "Hovudspråket på sida:",
-			"kilde": [],
-			"ruting": {
-				"alle": {
-					"type": "gaaTil",
-					"steg": "3.11"
-				}
-			}
-		},
-		{
-			"stegnr": "3.11",
-			"spm": "Samsvarer språkkoden med hovudspråket på nettsida?",
-			"ht": "<p>Samanlikn språket på sida med språkkoden du fann (Steg 3.8).</p><p>Språkkoden skal stemme over ens med hovudspråket på sida. Bruk av generell språkkode er tilstrekkeleg:</p><ul><li>no for både bokmål og nynorsk</li><li>smi for både nordsamisk, sørsamisk og lulesamisk</li><li>en for både britisk og amerikansk engelsk</li></ul><p>Bruk av for eksempel nynorsk språkkode på ei nettside med bokmål som hovudspråk, er ikkje tilstrekkeleg.</p>",
-			"type": "jaNei",
-			"kilde": [
-				"H57"
-			],
-			"ruting": {
-				"ja": {
-					"type": "avslutt",
-					"fasit": "Ja",
-					"utfall": "Språkkode samsvarar med hovudspråket på nettsida."
-				},
-				"nei": {
-					"type": "avslutt",
-					"fasit": "Nei",
-					"utfall": "Språkkode samsvarar ikkje med hovudspråket på nettsida."
-				}
-			}
-		}
-	]
+  "namn": "3.1.1a Hovudspråket på nettsida er rett koda",
+  "id": "3.1.1a",
+  "testlabId": 251,
+  "versjon": "1.0",
+  "type": "Nett",
+  "spraak": "nn",
+  "kravTilSamsvar": "<ul>\r\n<li>Nettsida har ein gyldig språkkode i HTML koden.</li>\r\n<li>Språkkoden samsvarar med hovudspråket på nettsida.</li>\r\n</ul>",
+  "side": "2.1",
+  "element": "Side",
+  "steg": [
+    {
+      "stegnr": "2.1",
+      "spm": "Kva side testar du på?",
+      "ht": "Oppgi URL eller side-ID.",
+      "type": "tekst",
+      "label": "URL/Side:",
+      "datalist": "Sideutvalg",
+      "oblig": true,
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.1"
+        }
+      }
+    },
+    {
+      "stegnr": "3.1",
+      "spm": "Er nettsida koda i HTML 4 eller HTML 5?",
+      "ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p><p>Dette finn du i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet, som er det første elementet i koden.</p><ul><li>HTML5 er koda som  <code>&#x3C;!DOCTYPE html&#x3E;</code></li><li>Viss nettsida er koda i HTML 4, er det mogleg å lese \"HTML 4.01\" ein stad i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet.</li></ul><p><strong>Merk:</strong> HTML-elementet kan innehalde annan tekst før avsluttande &#x3E; i elementet &#x3C;DOCTYPE&#x3E;.</p>",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.4"
+        },
+        "nei": {
+          "type": "gaaTil",
+          "steg": "3.2"
+        }
+      }
+    },
+    {
+      "stegnr": "3.2",
+      "spm": "Er nettsida koda i XHTML 1.0?",
+      "ht": "<p>Dette finn du i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet, som er det første elementet i koden.</p><ul><li>Viss nettsida er koda i XHTML 1.0, er det mogleg å lese \"XHTML 1.0\" ein stad i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet.</li></ul><p><strong>Merk:</strong> HTML-elementet kan innehalde annan tekst før avsluttande &#x3E; i elementet &#x3C;DOCTYPE&#x3E;.</p>",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.5"
+        },
+        "nei": {
+          "type": "gaaTil",
+          "steg": "3.3"
+        }
+      }
+    },
+    {
+      "stegnr": "3.3",
+      "spm": "Er nettsida koda i XHTML 1.1?",
+      "ht": "<p>Dette finn du i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet, som er det første elementet i koden.</p><ul><li>Viss nettsida er koda i XHTML 1.0, er det mogleg å lese \"XHTML 1.0\" eller \"XHTML Basic 1.1\" ein stad i <code>&#x3C;!DOCTYPE&#x3E;</code>-elementet.</li></ul><p><strong>Merk:</strong> HTML-elementet kan innehalde annan tekst før avsluttande &#x3E; i elementet &#x3C;DOCTYPE&#x3E;.</p>",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.6"
+        },
+        "nei": {
+          "type": "gaaTil",
+          "steg": "3.6"
+        }
+      }
+    },
+    {
+      "stegnr": "3.4",
+      "spm": "Har &lt;html&gt;-elementet attributtet lang?",
+      "ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p>",
+      "type": "jaNei",
+      "kilde": ["H57"],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.7"
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Språkdeklarering er koda feil."
+        }
+      }
+    },
+    {
+      "stegnr": "3.5",
+      "spm": "Har &lt;html&gt;-elementet attributtet xml:lang?",
+      "ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p>",
+      "type": "jaNei",
+      "kilde": ["H57"],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.7"
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Språkdeklarering er koda feil."
+        }
+      }
+    },
+    {
+      "stegnr": "3.6",
+      "spm": "Har &lt;html&gt;-elementet attributtet lang eller xml:lang?",
+      "ht": "<p>Du kan bruke kodeverktøyet i nettlesaren for å sjekke dette.</p>",
+      "type": "jaNei",
+      "kilde": ["H57"],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.7"
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Språkdeklarering er koda feil."
+        }
+      }
+    },
+    {
+      "stegnr": "3.7",
+      "spm": "Er språket koda med ein gyldig språkkode?",
+      "ht": "<p>Sjå på lang-attributtet. Språkkoden består av to bokstavar. Viss språkkoden har ein sekundær språkkode, for eksempel på formen no-nb, skal du berre sjå på koden som ligg før bindestreken.</p><p>Eksempel på gyldige språkkodar er:</p><ul><li>norsk: no, nb, nn</li><li>samisk: smi, se, sma, smj</li><li>engelsk: en</li></ul><p>For andre språkkodar, sjå <a target=\"_blank\" href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">iana-lista (opnar i nytt vindauge)</a>.</p>",
+      "type": "jaNei",
+      "kilde": ["H57", "IANA"],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.8"
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Gyldig språkkode manglar."
+        }
+      }
+    },
+    {
+      "stegnr": "3.8",
+      "spm": "Kva er språkkoden?",
+      "ht": "<p>Skriv inn språkkoden som ligg i lang-attributtet. Viss språkkoden har ein sekundær språkkode, for eksempel på formen no-nb, skal du berre skrive inn koden som ligg før bindestreken.</p><p><strong>Merk:</strong> Bruk små bokstavar.</p>",
+      "type": "tekst",
+      "label": "Språkkode:",
+      "kilde": [],
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.9"
+        }
+      }
+    },
+    {
+      "stegnr": "3.9",
+      "spm": "Kva er hovudspråket på sida?",
+      "ht": "<p>Vel namnet på språket som alt eller størsteparten av innhaldet på nettsida er skrive i. Dersom det er vanskeleg å avgjere kva språk som er mest brukt, reknast hovudspråket som det språket som er brukt først.</p><p>Dersom språket ikkje finst i lista, vel du alternativet  \"anna\" og går vidare.</p>",
+      "type": "radio",
+      "svarArray": [
+        "Bokmål",
+        "Nynorsk",
+        "Nordsamisk",
+        "Sørsamisk",
+        "Lulesamisk",
+        "Engelsk",
+        "Anna"
+      ],
+      "label": "Språkkode:",
+      "kilde": [],
+      "ruting": {
+        "alle": {
+          "type": "regler",
+          "regler": {
+            "1": {
+              "sjekk": "3.9",
+              "type": "lik",
+              "verdi": "Anna",
+              "handling": {
+                "type": "gaaTil",
+                "steg": "3.10"
+              }
+            },
+            "2": {
+              "sjekk": "3.9",
+              "type": "ulik",
+              "verdi": "Anna",
+              "handling": {
+                "type": "gaaTil",
+                "steg": "3.11"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "stegnr": "3.10",
+      "spm": "Skriv inn namnet på hovudspråket på sida.",
+      "ht": "Skriv inn namnet på språket på norsk. Bruk små bokstavar.",
+      "type": "tekst",
+      "label": "Hovudspråket på sida:",
+      "kilde": [],
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.11"
+        }
+      }
+    },
+    {
+      "stegnr": "3.11",
+      "spm": "Samsvarer språkkoden med hovudspråket på nettsida?",
+      "ht": "<p>Samanlikn språket på sida med språkkoden du fann (Steg 3.8).</p><p>Språkkoden skal stemme over ens med hovudspråket på sida. Bruk av generell språkkode er tilstrekkeleg:</p><ul><li>no for både bokmål og nynorsk</li><li>smi for både nordsamisk, sørsamisk og lulesamisk</li><li>en for både britisk og amerikansk engelsk</li></ul><p>Bruk av for eksempel nynorsk språkkode på ei nettside med bokmål som hovudspråk, er ikkje tilstrekkeleg.</p>",
+      "type": "jaNei",
+      "kilde": ["H57"],
+      "ruting": {
+        "ja": {
+          "type": "avslutt",
+          "fasit": "Ja",
+          "utfall": "Språkkode samsvarar med hovudspråket på nettsida."
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Språkkode samsvarar ikkje med hovudspråket på nettsida."
+        }
+      }
+    }
+  ]
 }

@@ -9,7 +9,7 @@ import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { MAALING } from '@maaling/MaalingRoutes';
 import MaalingEdit from '@sak/MaalingEdit';
-import { Testregel } from '@testreglar/api/types';
+import { TestregelBase } from '@testreglar/api/types';
 import { TESTREGEL_EDIT } from '@testreglar/TestregelRoutes';
 import { getTestregelColumnsReadOnly } from '@testreglar/testreglar-liste/TestregelColumns';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -77,7 +77,7 @@ const MaalingOverviewWrapper = () => {
           />
         </Tabs.Content>
         <Tabs.Content value="testreglar">
-          <TestlabTable<Testregel>
+          <TestlabTable<TestregelBase>
             defaultColumns={testregelColumns}
             data={maaling?.testregelList ?? []}
             loading={loading}

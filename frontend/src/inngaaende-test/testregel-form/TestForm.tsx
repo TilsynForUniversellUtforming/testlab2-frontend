@@ -100,7 +100,7 @@ const TestForm = ({
   return (
     <div className="test-form" ref={ref}>
       <Heading size="medium" level={3}>
-        {testregel.name}
+        {testregel.namn}
       </Heading>
       <div className="test-form-content">
         {skjemaOgSvar.skjemaModell.steg.map((etSteg) => (

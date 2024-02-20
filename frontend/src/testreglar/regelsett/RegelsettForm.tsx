@@ -15,7 +15,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { Regelsett, Testregel, TestregelType } from '../api/types';
+import { Regelsett, TestregelBase, TestregelModus } from '../api/types';
 import { TestregelContext } from '../types';
 
 export interface Props {
@@ -38,7 +38,7 @@ const RegelsettForm = ({
       id: regelsett?.id,
       namn: regelsett?.namn || '',
       standard: regelsett?.standard || false,
-      type: regelsett?.type || 'manuell',
+      modus: regelsett?.modus || 'manuell',
       testregelList: regelsett?.testregelList || [],
     },
     resolver: zodResolver(regelsettValidationSchema),
@@ -54,10 +54,10 @@ const RegelsettForm = ({
 
   const regelsettType = useWatch({
     control,
-    name: 'type',
-  }) as TestregelType;
+    name: 'modus',
+  }) as TestregelModus;
 
-  const onChangeRows = useCallback((rowSelection: Testregel[]) => {
+  const onChangeRows = useCallback((rowSelection: TestregelBase[]) => {
     setValue('testregelList', rowSelection);
   }, []);
 
@@ -73,7 +73,7 @@ const RegelsettForm = ({
   ];
 
   const selectableTestreglar = testregelList.filter(
-    (tr) => tr.type === regelsettType
+    (tr) => tr.modus === regelsettType
   );
 
   const selectedRows = useMemo(() => {
@@ -91,14 +91,14 @@ const RegelsettForm = ({
     return rowArray;
   }, [selectableTestreglar, regelsett?.testregelList]);
 
-  const testRegelColumns = useMemo<ColumnDef<Testregel>[]>(
+  const testRegelColumns = useMemo<ColumnDef<TestregelBase>[]>(
     () => [
       getCheckboxColumn(
-        (row: Row<Testregel>) => `Velg ${row.original.name}`,
+        (row: Row<TestregelBase>) => `Velg ${row.original.namn}`,
         true
       ),
       {
-        accessorFn: (row) => row.name,
+        accessorFn: (row) => row.namn,
         id: 'Namn',
         cell: (info) => info.getValue(),
         header: () => <>Namn</>,
@@ -133,7 +133,7 @@ const RegelsettForm = ({
           options={typeOptions}
           label="Type"
           description="Bestemmer om regelsettet for forenkla eller inngåande kontrollar"
-          disabled={isDefined(regelsett?.type)}
+          disabled={isDefined(regelsett?.modus)}
           required
         />
         <TestlabFormCheckbox
@@ -142,7 +142,7 @@ const RegelsettForm = ({
           checkboxLabel="Standard regelsett"
           name="standard"
         />
-        <TestlabTable<Testregel>
+        <TestlabTable<TestregelBase>
           data={selectableTestreglar}
           defaultColumns={testRegelColumns}
           displayError={{ error: contextError }}

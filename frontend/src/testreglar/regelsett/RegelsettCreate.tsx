@@ -25,7 +25,7 @@ const RegelsettCreate = () => {
   const onSubmit = useCallback((regelsettInit: Regelsett) => {
     const regelsett: RegelsettCreate = {
       namn: regelsettInit.namn,
-      type: regelsettInit.type,
+      modus: regelsettInit.modus,
       standard: regelsettInit.standard,
       testregelIdList: regelsettInit.testregelList.map((tr) => tr.id),
     };

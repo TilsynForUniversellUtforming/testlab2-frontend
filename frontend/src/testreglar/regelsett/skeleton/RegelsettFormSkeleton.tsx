@@ -27,11 +27,10 @@ const RegelsettFormSkeleton = ({ heading, description }: Props) => (
       />
       <TestlabFormFieldSkeleton<Regelsett>
         label="Type"
-        name="type"
+        name="modus"
         width={35}
         required
       />
-      <TestlabFormFieldSkeleton<Regelsett> label="" name="type" width={35} />
       <TestlabFormFieldSkeleton<Regelsett>
         label="Standard"
         description="Bestemmer om regelsettet skal komma opp som det standard regelsettet ein bruker i samband med å opprett saker"
