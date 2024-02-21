@@ -1,5 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
+import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { asList } from '@common/util/arrayUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
@@ -11,6 +12,7 @@ import {
   Svar,
 } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
+import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import TestHeading from '@test/test-overview/loeysing-test/TestHeading';
 import TestForm from '@test/testregel-form/TestForm';
 import {
@@ -37,8 +39,10 @@ import {
 } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
 import { useCallback, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
+import { getTestresultatAggregert } from '../../../resultat/resultat-api';
+import { TESTRESULTAT_TESTGRUNNLAG } from '../../../resultat/ResultatRoutes';
 import TestRegelParamSelection from './TestRegelParamSelection';
 
 const TestOverviewLoeysing = () => {
@@ -47,10 +51,12 @@ const TestOverviewLoeysing = () => {
     useOutletContext();
   const [contentType, setContentType] =
     useState<InnhaldsType>('Bilde og grafikk');
+  const navigate = useNavigate();
 
   const [activeTestregel, setActiveTestregel] = useState<Testregel>();
   const [alert, setAlert] = useAlert();
   const [sak, setSak] = useState<Sak>(contextSak);
+  const [testFerdig, setTestFerdig] = useState(false);
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
     ResultatManuellKontroll[]
   >(getTestResultsForLoeysing(contextTestResults, Number(loeysingId)));
@@ -248,6 +254,11 @@ const TestOverviewLoeysing = () => {
           };
 
           doUpdateTestResultStatus(updatedtestResult);
+          doCheckFinished(
+            testResultsLoeysing,
+            testResult.id,
+            mapStatus(status)
+          );
         }
 
         const updatedMap = new Map(testStatusMap);
@@ -288,6 +299,16 @@ const TestOverviewLoeysing = () => {
     },
     [contextSak, loeysingId, activeTestregel, pageType]
   );
+
+  const onFerdigTest = useCallback(async () => {
+    await getTestresultatAggregert(Number(sakId));
+    navigate(
+      getFullPath(TESTRESULTAT_TESTGRUNNLAG, {
+        pathParam: idPath,
+        id: sakId,
+      } as IdReplacement)
+    );
+  }, [sakId]);
 
   const doUpdateTestResult = useCallback(
     async (
@@ -369,6 +390,28 @@ const TestOverviewLoeysing = () => {
     [contextSak, loeysingId, activeTestregel, pageType]
   );
 
+  const doCheckFinished = useCallback(
+    (
+      testResultsLoeysing: ResultatManuellKontroll[],
+      updatedResultId: number,
+      status: ResultatStatus
+    ) => {
+      testResultsLoeysing.forEach((tr) => {
+        if (tr.id === updatedResultId) {
+          tr.status = status;
+        }
+      });
+
+      const finished = testResultsLoeysing.every(
+        (tr) => tr.status === 'Ferdig'
+      );
+      if (finished) {
+        setTestFerdig(true);
+      }
+    },
+    [testResultsLoeysing]
+  );
+
   const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
     switch (frontendState) {
       case 'ferdig':
@@ -394,33 +437,37 @@ const TestOverviewLoeysing = () => {
         onChangeContentType={onChangeContentType}
       />
       <div className="manual-test-buttons">
-        <TestRegelParamSelection
-          pageType={pageType.pageType}
-          contentType={contentType}
-          progressionPercent={progressionPercent}
-        />
-        <div className="testregel-container">
-          {testregelList.map((tr) => (
-            <TestregelButton
-              isActive={tr.id === Number(activeTestregel?.id)}
-              key={tr.id}
-              testregel={tr}
-              onClick={onChangeTestregel}
-              status={
-                testStatusMap.get(
-                  toTestregelStatusKey(
-                    Number(sakId),
-                    Number(loeysingId),
-                    tr.id,
-                    pageType.nettsideId
-                  )
-                ) || 'ikkje-starta'
-              }
-              onChangeStatus={onChangeStatus}
-            />
-          ))}
-        </div>
-        {activeTestregel && (
+        {!testFerdig && (
+          <TestRegelParamSelection
+            pageType={pageType.pageType}
+            contentType={contentType}
+            progressionPercent={progressionPercent}
+          />
+        )}
+        {!testFerdig && (
+          <div className="testregel-container">
+            {testregelList.map((tr) => (
+              <TestregelButton
+                isActive={tr.id === Number(activeTestregel?.id)}
+                key={tr.id}
+                testregel={tr}
+                onClick={onChangeTestregel}
+                status={
+                  testStatusMap.get(
+                    toTestregelStatusKey(
+                      Number(sakId),
+                      Number(loeysingId),
+                      tr.id,
+                      pageType.nettsideId
+                    )
+                  ) || 'ikkje-starta'
+                }
+                onChangeStatus={onChangeStatus}
+              />
+            ))}
+          </div>
+        )}
+        {activeTestregel && !testFerdig && (
           <div className="testregel-form-wrapper">
             <TestForm
               testregel={activeTestregel}
@@ -438,6 +485,13 @@ const TestOverviewLoeysing = () => {
               onResultat={doUpdateTestResult}
             />
           </div>
+        )}
+        {testFerdig && (
+          <TestFerdig
+            statusFerdig={testFerdig}
+            loeysing={sak.loeysingList[0].loeysing.namn}
+            onClickResultat={onFerdigTest}
+          />
         )}
       </div>
       {alert && (
