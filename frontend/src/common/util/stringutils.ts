@@ -1,3 +1,5 @@
+import { OptionType } from '@common/types';
+
 /**
  * Joins an array of strings into a single readable string.
  * @param {string[]} list - Array of strings to join.
@@ -95,4 +97,19 @@ export const parseHtmlEntities = (htmlString: string): string => {
     parser.parseFromString(htmlString, 'text/html').body.textContent ||
     htmlString
   ).replace(/([,.!?:])(?=\S)(?!$)/g, '$1 '); // Add spacing after punctiation if missing
+};
+
+/**
+ * Creates a list of OptionType from a string literal type
+ * * @param literals - An array of string literals from which to create the OptionType objects.
+ *  @returns An array of OptionType objects with `value` and `label` properties.
+ * */
+
+export const createOptionsFromLiteral = <T extends string>(
+  literals: T[]
+): OptionType[] => {
+  return literals.map((literal) => ({
+    value: literal,
+    label: sanitizeEnumLabel(literal),
+  }));
 };

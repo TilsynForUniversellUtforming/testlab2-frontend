@@ -1,6 +1,6 @@
 import { Loeysing } from '@loeysingar/api/types';
 import { LoeysingNettsideRelation } from '@sak/types';
-import { Testregel } from '@testreglar/api/types';
+import { Testregel, TestregelBase } from '@testreglar/api/types';
 
 export type NySak = {
   namn: string;
@@ -26,7 +26,7 @@ export type EditSak = {
   virksomhet: string;
   frist: string;
   loeysingar: SakLoeysingDTO[];
-  testreglar: Testregel[];
+  testreglar: TestregelBase[];
 };
 
 export type Brukar = {

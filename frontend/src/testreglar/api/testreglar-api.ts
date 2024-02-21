@@ -1,17 +1,52 @@
 import { responseToJson } from '@common/util/apiUtils';
 
-import { Testregel, TestregelCreateRequest } from './types';
+import {
+  InnhaldstypeTesting,
+  Tema,
+  Testobjekt,
+  Testregel,
+  TestregelBase,
+  TestregelInit,
+} from './types';
 
-export const fetchTestreglarList = async (): Promise<Testregel[]> =>
+export const listTestreglar = async (): Promise<TestregelBase[]> =>
   await fetch(`/api/v1/testreglar`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke hente testreglar')
   );
 
+export const getTestregel = async (id: number): Promise<Testregel> =>
+  await fetch(`/api/v1/testreglar/${id}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente testregel')
+  );
+
+export const listInnhaldstype = async (): Promise<InnhaldstypeTesting[]> =>
+  await fetch(`/api/v1/testreglar/innhaldstypeForTesting`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente testregel')
+  );
+
+export const listTema = async (): Promise<Tema[]> =>
+  await fetch(`/api/v1/testreglar/temaForTestreglar`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente testregel')
+  );
+
+export const listTestobjekt = async (): Promise<Testobjekt[]> =>
+  await fetch(`/api/v1/testreglar/testobjektForTestreglar`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente testregel')
+  );
+
 export const createTestregel = async (
-  testregel: TestregelCreateRequest
-): Promise<Testregel[]> =>
+  testregel: TestregelInit
+): Promise<TestregelBase[]> =>
   await fetch(`/api/v1/testreglar`, {
     method: 'POST',
     headers: {
@@ -19,12 +54,12 @@ export const createTestregel = async (
     },
     body: JSON.stringify(testregel),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje lage nytt testregel')
+    responseToJson(response, 'Kunne ikkje lagre testregel')
   );
 
 export const updateTestregel = async (
-  testregel: Testregel
-): Promise<Testregel[]> =>
+  testregel: TestregelInit
+): Promise<TestregelBase[]> =>
   await fetch(`/api/v1/testreglar`, {
     method: 'PUT',
     headers: {
@@ -37,7 +72,7 @@ export const updateTestregel = async (
 
 export const deleteTestregelList = async (
   testregelIdList: number[]
-): Promise<Testregel[]> => {
+): Promise<TestregelBase[]> => {
   const response = await fetch(`/api/v1/testreglar`, {
     method: 'DELETE',
     headers: {
@@ -53,10 +88,3 @@ export const deleteTestregelList = async (
     throw Error(message);
   }
 };
-
-export const getTestregel = async (id: number): Promise<Testregel> =>
-  await fetch(`/api/v1/testreglar/${id}`, {
-    method: 'GET',
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikke hente testreglar')
-  );

@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import { deleteTestregelList } from '../api/testreglar-api';
-import { Testregel } from '../api/types';
+import { TestregelBase } from '../api/types';
 import { TESTREGEL_CREATE, TESTREGEL_EDIT } from '../TestregelRoutes';
 import { TestregelContext } from '../types';
 import { getTestregelColumns } from './TestregelColumns';
@@ -23,7 +23,7 @@ const TestregelList = () => {
 
   const [deleteMessage, setDeleteMessage] = useState<string>('');
   const [testregelRowSelection, setTestregelRowSelection] = useState<
-    Testregel[]
+    TestregelBase[]
   >([]);
 
   const [error, setError] = useState(contextError);
@@ -64,7 +64,7 @@ const TestregelList = () => {
     });
   }, [testregelRowSelection]);
 
-  const onSelectRows = useCallback((rowSelection: Testregel[]) => {
+  const onSelectRows = useCallback((rowSelection: TestregelBase[]) => {
     setTestregelRowSelection(rowSelection);
 
     if (rowSelection.length === 0) {
@@ -72,7 +72,7 @@ const TestregelList = () => {
     } else {
       setDeleteMessage(
         `Vil du sletta ${joinStringsToList(
-          rowSelection.map((tr) => `${tr.name}`)
+          rowSelection.map((tr) => `${tr.namn}`)
         )}? Dette kan ikkje angrast`
       );
     }
@@ -87,7 +87,7 @@ const TestregelList = () => {
   }, []);
 
   return (
-    <UserActionTable<Testregel>
+    <UserActionTable<TestregelBase>
       heading="Testreglar"
       subHeading="Liste over alle testreglar"
       tableProps={{

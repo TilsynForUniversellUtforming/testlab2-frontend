@@ -3,17 +3,17 @@ import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 
-import { Testregel } from '../api/types';
+import { TestregelBase } from '../api/types';
 
 /**
  * getTestregelColumns function returns an array of column definitions for Testregel.
  *
- * @returns {Array<ColumnDef<Testregel>>} An array of column definitions.
+ * @returns {Array<ColumnDef<TestregelBase>>} An array of column definitions.
  */
-export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
-  getCheckboxColumn((row: Row<Testregel>) => `Velg ${row.original.name}`),
+export const getTestregelColumns = (): Array<ColumnDef<TestregelBase>> => [
+  getCheckboxColumn((row: Row<TestregelBase>) => `Velg ${row.original.namn}`),
   {
-    accessorFn: (row) => row.name,
+    accessorFn: (row) => row.namn,
     id: 'testregel-namn',
     cell: (info) => info.getValue(),
     header: () => <>Namn</>,
@@ -28,10 +28,10 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
     },
   },
   {
-    accessorFn: (row) => row.type,
-    id: 'type',
+    accessorFn: (row) => row.modus,
+    id: 'modus',
     cell: (info) => sanitizeEnumLabel(String(info.getValue())),
-    header: () => <>Type</>,
+    header: () => <>Modus</>,
     meta: {
       select: true,
     },
@@ -41,17 +41,13 @@ export const getTestregelColumns = (): Array<ColumnDef<Testregel>> => [
 /**
  * getTestregelColumnsReadOnly function returns an array of column definitions for Testregel, without user action.
  *
- * @returns {Array<ColumnDef<Testregel>>} An array of column definitions.
+ * @returns {Array<ColumnDef<TestregelBase>>} An array of column definitions.
  */
-export const getTestregelColumnsReadOnly = (): Array<ColumnDef<Testregel>> => [
+export const getTestregelColumnsReadOnly = (): Array<
+  ColumnDef<TestregelBase>
+> => [
   {
-    accessorFn: (row) => row.testregelSchema,
-    id: 'testregel',
-    cell: (info) => info.getValue(),
-    header: () => <>Testregel</>,
-  },
-  {
-    accessorFn: (row) => row.name,
+    accessorFn: (row) => row.namn,
     id: 'testregel namn',
     cell: ({ getValue }) => getValue(),
     header: () => <>Namn</>,

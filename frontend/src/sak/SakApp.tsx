@@ -8,7 +8,7 @@ import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { fetchTestreglarList } from '@testreglar/api/testreglar-api';
+import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Regelsett, Testregel } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 import getVerksemdList_dummy from '@verksemder/api/verksemd-api';
@@ -81,7 +81,7 @@ const SakApp = () => {
           fetchLoeysingList(),
           fetchUtvalList(),
           fetchRegelsettList(true),
-          fetchTestreglarList(),
+          listTestreglar(),
           getAdvisors_dummy(),
           getVerksemdList_dummy(),
         ]);

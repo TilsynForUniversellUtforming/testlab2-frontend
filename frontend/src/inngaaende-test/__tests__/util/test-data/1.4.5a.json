@@ -94,14 +94,8 @@
       "spm": "Er det mogleg å tilpasse bilde av tekst til brukaren sine behov?",
       "ht": "<p>Her tester vi teksten (i bilde) som ikkje er logo eller tekst i grafiske element.</p><p><strong>MERK:</strong> Her har vi ikkje noko eksakt prosedyre for verifikasjon, difor er svaralternativet \"Ikkje mogleg  å verifisere\" lagt inn.</p><p>Du skal undersøke om det er mogleg å endre:</p><ol><li>skrifttype</li><li>skriftstørrelse</li><li>farge på tekst</li><li>bakgrunn</li></ol><p>Merk at alle 4 punkta over skal vere oppfylte.</p><p>Denne funksjonaliteten kan vere tilgjengeleg via ein mekanisme/knapp på sida.</p>",
       "type": "radio",
-      "svarArray": [
-        "Ja",
-        "Nei",
-        "Ikkje mogleg å verifisere"
-      ],
-      "kilde": [
-        "SK"
-      ],
+      "svarArray": ["Ja", "Nei", "Ikkje mogleg å verifisere"],
+      "kilde": ["SK"],
       "ruting": {
         "alt0": {
           "type": "ikkjeForekomst",

@@ -86,7 +86,7 @@ const TestlabFormSelect = <T extends object>({
           </label>
           <LegacySelect
             inputId={name}
-            value={value}
+            value={String(value)}
             onChange={onChange}
             options={options}
             error={isDefined(errorMessage)}

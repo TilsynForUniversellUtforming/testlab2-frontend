@@ -1,21 +1,49 @@
 import './testreglar.scss';
 
 import ErrorCard from '@common/error/ErrorCard';
-import toError from '@common/error/util';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
+import { withErrorHandling } from '@common/util/apiUtils';
 import { Tabs } from '@digdir/design-system-react';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
+import { Krav } from 'krav/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { fetchTestreglarList } from './api/testreglar-api';
-import { Regelsett, Testregel } from './api/types';
+import { listKrav } from '../krav/api/krav-api';
+import {
+  listInnhaldstype,
+  listTema,
+  listTestobjekt,
+  listTestreglar,
+} from './api/testreglar-api';
+import {
+  InnhaldstypeTesting,
+  Regelsett,
+  Tema,
+  Testobjekt,
+  TestregelBase,
+} from './api/types';
 import { REGELSETT_ROOT } from './TestregelRoutes';
 import { TestregelContext } from './types';
 
+type FetchType = {
+  testreglar: TestregelBase[];
+  regelsett: Regelsett[];
+  innhaldsTypeList: InnhaldstypeTesting[];
+  temaList: Tema[];
+  testobjektList: Testobjekt[];
+  kravList: Krav[];
+};
+
 const TestreglarApp = () => {
-  const [testreglar, setTestreglar] = useState<Testregel[]>([]);
+  const [testreglar, setTestreglar] = useState<TestregelBase[]>([]);
   const [regelsett, setRegelsett] = useState<Regelsett[]>([]);
+  const [innhaldsTypeList, setInnhaldsTypeList] = useState<
+    InnhaldstypeTesting[]
+  >([]);
+  const [temaList, setTemaList] = useState<Tema[]>([]);
+  const [testobjektList, setTestobjektList] = useState<Testobjekt[]>([]);
+  const [kravList, setKravList] = useState<Krav[]>([]);
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showTestreglar, setShowTestreglar] = useState(false);
@@ -34,7 +62,7 @@ const TestreglarApp = () => {
     );
   }, [location.pathname]);
 
-  const handleTestreglar = useCallback((testregelList: Testregel[]) => {
+  const handleTestreglar = useCallback((testregelList: TestregelBase[]) => {
     setTestreglar(testregelList);
   }, []);
 
@@ -50,28 +78,88 @@ const TestreglarApp = () => {
     setError(error);
   }, []);
 
-  const doFetchData = useCallback(() => {
-    setError(undefined);
-    setLoading(true);
+  const doFetchData = useCallback(
+    withErrorHandling<FetchType>(
+      async () => {
+        const [
+          testreglar,
+          regelsett,
+          innhaldsTypeList,
+          temaList,
+          testobjektList,
+          kravList,
+        ] = await Promise.all([
+          listTestreglar(),
+          fetchRegelsettList(true),
+          listInnhaldstype(),
+          listTema(),
+          listTestobjekt(),
+          listKrav(),
+        ]);
 
-    const fetchData = async () => {
-      try {
-        const testreglar = await fetchTestreglarList();
-        const regelsett = await fetchRegelsettList(true);
-        setTestreglar(testreglar);
-        setRegelsett(regelsett);
-        setLoading(false);
-        setError(undefined);
-      } catch (e) {
-        setError(toError(e, 'Kunne ikkje hente testreglar'));
-      }
-    };
-
-    fetchData().finally(() => setLoading(false));
-  }, []);
+        return {
+          testreglar,
+          regelsett,
+          innhaldsTypeList,
+          temaList,
+          testobjektList,
+          kravList,
+        };
+      },
+      'Kan ikkje hente testregeldata',
+      setError
+    ),
+    []
+  );
 
   const fetchTestreglar = useCallback(() => {
-    doFetchData();
+    setLoading(true);
+    doFetchData().then((data: FetchType) => {
+      if (data) {
+        const {
+          testreglar,
+          regelsett,
+          innhaldsTypeList,
+          temaList,
+          testobjektList,
+          kravList,
+        } = data;
+
+        if (testreglar) {
+          setTestreglar(testreglar);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med testreglar'));
+        }
+        if (regelsett) {
+          setRegelsett(regelsett);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med regelsett'));
+        }
+        if (innhaldsTypeList) {
+          setInnhaldsTypeList(innhaldsTypeList);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med innhaldstyper'));
+        }
+        if (temaList) {
+          setTemaList(temaList);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med tema'));
+        }
+        if (testobjektList) {
+          setTestobjektList(testobjektList);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med innhaldstyper'));
+        }
+        if (kravList) {
+          setKravList(kravList);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med krav'));
+        }
+      } else {
+        setError(new Error('Kunne ikkje hente data'));
+      }
+      setLoading(false);
+    });
     setShowTestreglar(true);
   }, []);
 
@@ -84,6 +172,10 @@ const TestreglarApp = () => {
     contextLoading: loading,
     testregelList: testreglar,
     regelsettList: regelsett,
+    innhaldstypeList: innhaldsTypeList,
+    temaList: temaList,
+    testobjektList: testobjektList,
+    kravList: kravList,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
     setContextError: handleError,

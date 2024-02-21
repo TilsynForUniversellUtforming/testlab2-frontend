@@ -38,12 +38,12 @@ export type AsyncFunc<T = any> = (...args: any[]) => Promise<T>;
  * @return {Promise<any>} The result of the async function or undefined if an error occurs.
  */
 export const withErrorHandling =
-  (
+  <T extends object>(
     asyncFunc: AsyncFunc,
     errorMessage: string,
     setError: (e: Error | undefined) => void
     // eslint-disable-next-line
-  ): ((...args: any[]) => Promise<any>) =>
+  ): ((...args: any[]) => Promise<T | any>) =>
   // eslint-disable-next-line
   async (...args: any[]) => {
     setError(undefined);

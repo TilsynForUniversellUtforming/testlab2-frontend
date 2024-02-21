@@ -6,6 +6,10 @@ import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiPropertie
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -29,6 +33,7 @@ class SakResource(
 
   val sakUrl = "${testingApiProperties.url}/saker"
   val loeysingUrl = "${loeysingsregisterApiProperties.url}/v1/loeysing"
+  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
 
   data class NySak(val namn: String, val virksomhet: String, val frist: LocalDate)
 
@@ -83,7 +88,17 @@ class SakResource(
               loeysingDTO.nettsider.map { it.toNettsideProperties() })
         }
 
-    return ResponseEntity.ok(Sak(verksemd = verksemd, loeysingNettsideRelation, sakDTO.testreglar))
+    val temaList = restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
+    val testobjektList = restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+    val innhaldstypeForTestingList =
+        restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
+
+    val testreglar =
+        sakDTO.testreglar.map {
+          it.toTestregel(temaList, testobjektList, innhaldstypeForTestingList)
+        }
+
+    return ResponseEntity.ok(Sak(verksemd = verksemd, loeysingNettsideRelation, testreglar))
   }
 
   @PutMapping("/{id}")
