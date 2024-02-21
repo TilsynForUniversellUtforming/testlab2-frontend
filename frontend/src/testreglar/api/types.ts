@@ -51,18 +51,18 @@ export type Testregel = TestregelBase & {
   innhaldstypeTesting?: InnhaldstypeTesting;
 };
 
-export type TestregelInit = Omit<TestregelBase, 'id'> & {
+export type TestregelInit = TestregelBase & {
   testregelId: string;
   versjon: number;
   status: TestregelStatus;
   datoSistEndra: string;
   type: TestregelInnholdstype;
   spraak: TestlabLocale;
-  tema?: Tema;
-  testobjekt?: Testobjekt;
+  tema?: number;
+  testobjekt?: number;
   kravTilSamsvar?: string;
   testregelSchema: string;
-  innhaldstypeTesting?: InnhaldstypeTesting;
+  innhaldstypeTesting?: number;
 };
 
 export type Regelsett = {

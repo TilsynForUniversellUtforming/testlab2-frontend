@@ -4,6 +4,7 @@ import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 
 data class TestregelInit(
+    val id: Number? = null,
     val testregelId: String,
     val versjon: Int,
     val namn: String,
@@ -13,9 +14,9 @@ data class TestregelInit(
     val type: TestregelInnholdstype,
     val modus: TestregelModus,
     val spraak: TestlabLocale,
-    val temaId: Int?,
-    val testobjektId: Int?,
+    val tema: Int?,
+    val testobjekt: Int?,
     val kravTilSamsvar: String?,
     val testregelSchema: String,
-    val innhaldstypeTestingId: Int?
+    val innhaldstypeTesting: Int?
 )

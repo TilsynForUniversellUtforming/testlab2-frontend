@@ -5,9 +5,11 @@ import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/apiUtils';
 import { Tabs } from '@digdir/design-system-react';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
+import { Krav } from 'krav/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import { listKrav } from '../krav/api/krav-api';
 import {
   listInnhaldstype,
   listTema,
@@ -30,6 +32,7 @@ type FetchType = {
   innhaldsTypeList: InnhaldstypeTesting[];
   temaList: Tema[];
   testobjektList: Testobjekt[];
+  kravList: Krav[];
 };
 
 const TestreglarApp = () => {
@@ -40,6 +43,7 @@ const TestreglarApp = () => {
   >([]);
   const [temaList, setTemaList] = useState<Tema[]>([]);
   const [testobjektList, setTestobjektList] = useState<Testobjekt[]>([]);
+  const [kravList, setKravList] = useState<Krav[]>([]);
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showTestreglar, setShowTestreglar] = useState(false);
@@ -83,12 +87,14 @@ const TestreglarApp = () => {
           innhaldsTypeList,
           temaList,
           testobjektList,
+          kravList,
         ] = await Promise.all([
           listTestreglar(),
           fetchRegelsettList(true),
           listInnhaldstype(),
           listTema(),
           listTestobjekt(),
+          listKrav(),
         ]);
 
         return {
@@ -97,6 +103,7 @@ const TestreglarApp = () => {
           innhaldsTypeList,
           temaList,
           testobjektList,
+          kravList,
         };
       },
       'Kan ikkje hente testregeldata',
@@ -115,6 +122,7 @@ const TestreglarApp = () => {
           innhaldsTypeList,
           temaList,
           testobjektList,
+          kravList,
         } = data;
 
         if (testreglar) {
@@ -135,19 +143,22 @@ const TestreglarApp = () => {
         if (temaList) {
           setTemaList(temaList);
         } else {
-          setError(new Error('Kunne ikkje hente liste med innhaldstyper'));
+          setError(new Error('Kunne ikkje hente liste med tema'));
         }
         if (testobjektList) {
           setTestobjektList(testobjektList);
         } else {
           setError(new Error('Kunne ikkje hente liste med innhaldstyper'));
         }
-
-        setLoading(false);
+        if (kravList) {
+          setKravList(kravList);
+        } else {
+          setError(new Error('Kunne ikkje hente liste med krav'));
+        }
       } else {
         setError(new Error('Kunne ikkje hente data'));
-        setLoading(false);
       }
+      setLoading(false);
     });
     setShowTestreglar(true);
   }, []);
@@ -164,6 +175,7 @@ const TestreglarApp = () => {
     innhaldstypeList: innhaldsTypeList,
     temaList: temaList,
     testobjektList: testobjektList,
+    kravList: kravList,
     setTestregelList: handleTestreglar,
     setRegelsettList: handleRegelsett,
     setContextError: handleError,

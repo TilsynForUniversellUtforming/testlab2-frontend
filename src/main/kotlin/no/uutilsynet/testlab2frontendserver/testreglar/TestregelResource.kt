@@ -86,7 +86,7 @@ class TestregelResource(
       }
 
   @PutMapping
-  fun updateTestregel(@RequestBody testregel: Testregel): List<TestregelBase> =
+  fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
         logger.debug("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
         val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")

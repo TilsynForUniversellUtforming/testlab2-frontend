@@ -12,12 +12,12 @@ import TestregelForm from './TestregelForm';
 const TestregelCreate = () => {
   const {
     contextLoading,
-    testregelList,
     setTestregelList,
     setContextLoading,
     innhaldstypeList,
     temaList,
     testobjektList,
+    kravList,
   }: TestregelContext = useOutletContext();
   const [alert, setAlert] = useAlert();
 
@@ -38,13 +38,6 @@ const TestregelCreate = () => {
     });
   }, []);
 
-  const krav = testregelList
-    .map((tr) => tr.krav)
-    .sort()
-    .filter(
-      (value, index, current_value) => current_value.indexOf(value) === index
-    );
-
   if (contextLoading) {
     return (
       <TestregelFormSkeleton
@@ -62,8 +55,7 @@ const TestregelCreate = () => {
       innhaldstypeList={innhaldstypeList}
       temaList={temaList}
       testobjektList={testobjektList}
-      krav={krav}
-      kravDisabled={false}
+      kravList={kravList}
       alert={alert}
     />
   );

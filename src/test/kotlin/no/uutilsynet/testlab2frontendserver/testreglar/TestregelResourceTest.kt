@@ -68,9 +68,9 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
             "modus" to TestregelModus.forenklet.value,
             "spraak" to TestlabLocale.nb.value,
             "testregelSchema" to "QW-ACT-R1",
-            "innhaldstypeTestingId" to 1,
-            "temaId" to 1,
-            "testobjektId" to 1,
+            "innhaldstypeTesting" to 1,
+            "tema" to 1,
+            "testobjekt" to 1,
             "kravTilSamsvar" to "")
 
     server
@@ -110,9 +110,9 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
                 modus = TestregelModus.forenklet,
                 spraak = TestlabLocale.nb,
                 testregelSchema = "QW-ACT-R1",
-                innhaldstypeTestingId = 1,
-                temaId = 1,
-                testobjektId = 1,
+                innhaldstypeTesting = 1,
+                tema = 1,
+                testobjekt = 1,
                 kravTilSamsvar = ""))
 
     assertThat(result).isEqualTo(testregelList)
@@ -142,9 +142,9 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               modus = TestregelModus.forenklet,
               spraak = TestlabLocale.nb,
               testregelSchema = "QW-ACT-R1",
-              innhaldstypeTestingId = 1,
-              temaId = 1,
-              testobjektId = 1,
+              innhaldstypeTesting = 1,
+              tema = 1,
+              testobjekt = 1,
               kravTilSamsvar = ""))
     }
   }

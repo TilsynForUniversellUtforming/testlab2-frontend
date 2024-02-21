@@ -1,4 +1,3 @@
-import { deferedType } from '@common/hooks/useLoaderFetch';
 import {
   AppRoute,
   createPath,
@@ -6,7 +5,7 @@ import {
   listPath,
 } from '@common/util/routeUtils';
 import { getTestregel } from '@testreglar/api/testreglar-api';
-import { RouteObject } from 'react-router-dom';
+import { defer, RouteObject } from 'react-router-dom';
 
 import testingImg from '../assets/testreglar.svg';
 import RegelsettApp from './regelsett/RegelsettApp';
@@ -81,7 +80,7 @@ export const TestregelRoutes: RouteObject = {
       path: idPath,
       element: <TestregelEdit />,
       loader: async ({ params }) =>
-        deferedType(getTestregel(Number(params?.id))),
+        defer(await getTestregel(Number(params?.id))),
       handle: { name: TESTREGEL_EDIT.navn },
     },
     {

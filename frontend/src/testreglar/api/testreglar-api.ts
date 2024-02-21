@@ -16,13 +16,6 @@ export const listTestreglar = async (): Promise<TestregelBase[]> =>
     responseToJson(response, 'Kunne ikke hente testreglar')
   );
 
-export const listTestreglarMetadata = async (): Promise<Testregel[]> =>
-  await fetch(`/api/v1/testreglar?includeMetadata=true`, {
-    method: 'GET',
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikke hente testreglar')
-  );
-
 export const getTestregel = async (id: number): Promise<Testregel> =>
   await fetch(`/api/v1/testreglar/${id}`, {
     method: 'GET',
@@ -61,11 +54,11 @@ export const createTestregel = async (
     },
     body: JSON.stringify(testregel),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje lage nytt testregel')
+    responseToJson(response, 'Kunne ikkje lagre testregel')
   );
 
 export const updateTestregel = async (
-  testregel: TestregelBase
+  testregel: TestregelInit
 ): Promise<TestregelBase[]> =>
   await fetch(`/api/v1/testreglar`, {
     method: 'PUT',

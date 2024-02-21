@@ -1,4 +1,5 @@
 import { AppContext } from '@common/types';
+import { Krav } from 'krav/types';
 
 import {
   InnhaldstypeTesting,
@@ -16,6 +17,7 @@ export interface TestregelContext extends AppContext {
   innhaldstypeList: InnhaldstypeTesting[];
   temaList: Tema[];
   testobjektList: Testobjekt[];
+  kravList: Krav[];
 }
 
 export type Evne = {

@@ -1,19 +1,23 @@
 import useAlert from '@common/alert/useAlert';
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
-import useLoaderFetch from '@common/hooks/useLoaderFetch';
 import React, { Suspense, useCallback } from 'react';
-import { Await, useOutletContext, useParams } from 'react-router-dom';
+import {
+  Await,
+  useLoaderData,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 import { getTestregel, updateTestregel } from '../api/testreglar-api';
-import { Testregel } from '../api/types';
+import { Testregel, TestregelInit } from '../api/types';
 import { TestregelContext } from '../types';
 import TestregelFormSkeleton from './skeleton/TestregelFormSkeleton';
 import TestregelForm from './TestregelForm';
 
 const TestregelEdit = () => {
   const {
-    testregelList,
+    kravList,
     setTestregelList,
     setContextLoading,
     setContextError,
@@ -22,15 +26,10 @@ const TestregelEdit = () => {
     testobjektList,
   }: TestregelContext = useOutletContext();
   const { id } = useParams();
-  const { data: testregel } = useLoaderFetch<Testregel>();
+  const testregel = useLoaderData() as Promise<Testregel>;
   const [alert, setAlert] = useAlert();
 
-  const krav = testregelList
-    .map((tr) => tr.krav)
-    .sort()
-    .filter((value, index, current) => current.indexOf(value) === index);
-
-  const onSubmit = useCallback((testregel: Testregel) => {
+  const onSubmit = useCallback((testregel: TestregelInit) => {
     const update = async () => {
       try {
         setContextLoading(true);
@@ -79,8 +78,7 @@ const TestregelEdit = () => {
             innhaldstypeList={innhaldstypeList}
             temaList={temaList}
             testobjektList={testobjektList}
-            krav={krav}
-            kravDisabled
+            kravList={kravList}
             alert={alert}
           />
         )}
