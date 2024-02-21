@@ -1,7 +1,7 @@
 import '../test.scss';
 
 import { Spinner } from '@digdir/design-system-react';
-import { Svar } from '@test/api/types';
+import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
@@ -60,6 +60,7 @@ const TestregelDemoApp = () => {
   return (
     <TestForm
       testregel={testregel}
+      resultater={[createResultat(testregel)]}
       onClickSave={() => navigate('..')}
       onClickBack={() => navigate('..')}
       onResultat={onResultat}
@@ -68,3 +69,15 @@ const TestregelDemoApp = () => {
 };
 
 export default TestregelDemoApp;
+
+function createResultat(testregel: Testregel): ResultatManuellKontroll {
+  return {
+    id: 1,
+    svar: [],
+    status: 'UnderArbeid',
+    sakId: 1,
+    loeysingId: 1,
+    testregelId: testregel.id,
+    nettsideId: 1,
+  };
+}
