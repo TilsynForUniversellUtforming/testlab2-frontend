@@ -42,7 +42,7 @@ const RegelsettEdit = () => {
         const regelsettEdit: RegelsettEdit = {
           id: numericId,
           namn: regelsett.namn,
-          type: regelsett.type,
+          modus: regelsett.modus,
           standard: regelsett.standard,
           testregelIdList: regelsett.testregelList.map((tr) => tr.id),
         };

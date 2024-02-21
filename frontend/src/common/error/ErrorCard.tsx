@@ -3,7 +3,11 @@ import './error-card.scss';
 import { ButtonColor, ButtonVariant } from '@common/types';
 import { Alert, Button, Heading } from '@digdir/design-system-react';
 import React from 'react';
-import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import {
+  isRouteErrorResponse,
+  useAsyncError,
+  useRouteError,
+} from 'react-router-dom';
 
 interface ErrorContentProps {
   onClick?: () => void;
@@ -53,9 +57,14 @@ const ErrorCard = ({
   error,
 }: TestlabError) => {
   const routeError = useRouteError();
+  const asyncError = useAsyncError() as Error | undefined;
   const isRouteError = isRouteErrorResponse(routeError);
 
-  if (typeof error === 'undefined' && !isRouteError) {
+  if (
+    typeof error === 'undefined' &&
+    typeof asyncError === 'undefined' &&
+    !isRouteError
+  ) {
     return null;
   }
 
@@ -84,6 +93,15 @@ const ErrorCard = ({
       <ErrorContent
         errorHeader={routeError.statusText}
         errorText={routeError.data?.message ?? 'Ingen melding fra systemet'}
+        onClick={onClick}
+        buttonText={buttonText}
+      />
+    );
+  } else if (asyncError) {
+    return (
+      <ErrorContent
+        errorHeader={errorHeader ?? 'Uventa feil'}
+        errorText={asyncError.message}
         onClick={onClick}
         buttonText={buttonText}
       />

@@ -105,7 +105,7 @@ const TestForm = ({
   return skjemaerMedSvar.map((skjemaMedSvar, index) => (
     <div key={index} className="test-form" ref={ref}>
       <Heading size="medium" level={3}>
-        {testregel.name}
+        {testregel.namn}
       </Heading>
       <div className="test-form-content">
         {skjemaMedSvar.skjema.steg.map((etSteg) => (

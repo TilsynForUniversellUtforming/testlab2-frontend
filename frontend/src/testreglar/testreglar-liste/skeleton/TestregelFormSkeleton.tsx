@@ -19,13 +19,34 @@ const TestregelFormSkeleton = ({ heading, subHeading }: Props) => (
       <Paragraph spacing size="small">
         Felter markert med stjerne er obligatoriske
       </Paragraph>
-      <TestlabFormFieldSkeleton<Testregel> label="Namn" name="name" required />
+      <TestlabFormFieldSkeleton<Testregel> label="Namn" name="namn" required />
       <TestlabFormFieldSkeleton<Testregel>
-        label="Testregel test-id (unik)"
+        label="Testregel-id"
+        name="testregelId"
+        required
+      />
+      <TestlabFormFieldSkeleton<Testregel>
+        label="QualWeb regel-id (unik)"
         name="testregelSchema"
         required
       />
       <TestlabFormFieldSkeleton<Testregel> label="Krav" name="krav" required />
+      <TestlabFormFieldSkeleton<Testregel>
+        label="Innhaldstype"
+        name="innhaldstypeTesting"
+      />
+      <TestlabFormFieldSkeleton<Testregel> label="Tema" name="tema" />
+      <TestlabFormFieldSkeleton<Testregel>
+        label="Testobjekt"
+        name="testobjekt"
+      />
+      <TestlabFormFieldSkeleton<Testregel> label="Språk" name="spraak" />
+      <TestlabFormFieldSkeleton<Testregel> label="Status" name="status" />
+      <TestlabFormFieldSkeleton<Testregel> label="Innhaldstype" name="type" />
+      <TestlabFormFieldSkeleton<Testregel>
+        label="Krav til samsvar"
+        name="kravTilSamsvar"
+      />
       <div className="loeysing-form__submit">
         <TestlabForm.FormButtons loading />
       </div>

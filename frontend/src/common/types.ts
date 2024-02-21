@@ -1,3 +1,5 @@
+export type TestlabLocale = 'nn' | 'nb' | 'en';
+
 export interface AppContext {
   contextError?: Error;
   contextLoading: boolean;

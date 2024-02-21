@@ -6,8 +6,8 @@ import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { fetchTestreglarList } from '@testreglar/api/testreglar-api';
-import { Regelsett, Testregel } from '@testreglar/api/types';
+import { listTestreglar } from '@testreglar/api/testreglar-api';
+import { Regelsett, TestregelBase } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 import getVerksemdList_dummy from '@verksemder/api/verksemd-api';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -36,7 +36,7 @@ const MaalingApp = () => {
   const [loeysingList, setLoeysingList] = useState<Loeysing[]>([]);
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);
   const [regelsettList, setRegelsettList] = useState<Regelsett[]>([]);
-  const [testregelList, setTestregelList] = useState<Testregel[]>([]);
+  const [testregelList, setTestregelList] = useState<TestregelBase[]>([]);
   const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [utvalList, setUtvalList] = useState<Utval[]>([]);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
@@ -177,7 +177,7 @@ const MaalingApp = () => {
           fetchLoeysingList(),
           fetchUtvalList(),
           fetchRegelsettList(),
-          fetchTestreglarList(),
+          listTestreglar(),
           getAdvisors_dummy(),
           getVerksemdList_dummy(),
         ]);

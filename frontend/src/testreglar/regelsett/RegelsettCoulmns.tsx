@@ -17,9 +17,9 @@ export const getRegelsettColumns = (): Array<ColumnDef<Regelsett>> => [
     cell: (info) => info.getValue(),
   },
   {
-    header: () => <>Type</>,
-    accessorFn: (row) => row.type,
-    id: 'type',
+    header: () => <>Modus</>,
+    accessorFn: (row) => row.modus,
+    id: 'modus',
     cell: (info) => sanitizeEnumLabel(String(info.getValue())),
     meta: {
       select: true,

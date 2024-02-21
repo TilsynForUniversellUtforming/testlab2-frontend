@@ -7,7 +7,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.to
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.Testresult
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 
 data class Maaling(
     val id: Int,
@@ -15,7 +15,7 @@ data class Maaling(
     val datoStart: LocalDate,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>,
-    val testregelList: List<Testregel>,
+    val testregelList: List<TestregelBase>,
     val crawlResultat: List<CrawlResultat>,
     val crawlStatistics: JobStatistics,
     val testResult: List<Testresult>,
@@ -26,7 +26,7 @@ data class Maaling(
 fun MaalingDTO.toMaaling() = this.toMaaling(emptyList(), emptyList())
 
 fun MaalingDTO.toMaaling(
-    testregelList: List<Testregel>,
+    testregelList: List<TestregelBase>,
     aggregatedResult: List<AggregertResultatDTO>
 ): Maaling {
   val maalingTestKoeyringDTOList: List<TestKoeyringDTO> = this.testKoeyringar ?: emptyList()

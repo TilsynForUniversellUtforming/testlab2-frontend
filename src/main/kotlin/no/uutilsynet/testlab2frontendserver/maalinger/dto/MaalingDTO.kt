@@ -2,7 +2,7 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDate
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class MaalingDTO(
@@ -11,7 +11,7 @@ data class MaalingDTO(
     val datoStart: LocalDate,
     val status: MaalingStatus,
     val loeysingList: List<Loeysing>?,
-    val testregelList: List<Testregel>?,
+    val testregelList: List<TestregelBase>?,
     val crawlResultat: List<CrawlResultatDTO>?,
     val testKoeyringar: List<TestKoeyringDTO>?,
     val crawlParameters: CrawlParameters?,

@@ -4,7 +4,8 @@ import {
   idPath,
   listPath,
 } from '@common/util/routeUtils';
-import { RouteObject } from 'react-router-dom';
+import { getTestregel } from '@testreglar/api/testreglar-api';
+import { defer, RouteObject } from 'react-router-dom';
 
 import testingImg from '../assets/testreglar.svg';
 import RegelsettApp from './regelsett/RegelsettApp';
@@ -78,6 +79,8 @@ export const TestregelRoutes: RouteObject = {
     {
       path: idPath,
       element: <TestregelEdit />,
+      loader: async ({ params }) =>
+        defer(await getTestregel(Number(params?.id))),
       handle: { name: TESTREGEL_EDIT.navn },
     },
     {

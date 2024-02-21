@@ -265,10 +265,7 @@
       "spm": "Gir instruksjonen den same informasjonen utan tilvising til sensoriske eigenskapar?",
       "ht": "<p>Sjå på teksten i instruksjonen og utelat referansar til sensoriske eigenskapar ved elementet. </p><p>Eksempel 1:</p><ul><li>Instruksjonen seier \"Trykk på den store runde knappen for å sende inn skjemaet\".</li><li>Dersom ein tek vekk referansen til dei sensoriske eigenskapane ved knappen, (her: \"stor\"/størrelse og \"rund\"/form) vil intruksjonen seie \"Trykk på knappen\".</li></ul><p>Eksempel 2:</p><ul><li>Teksten til elementet det blir vist til, blir gjenteke i instruksjonen.</li></ul><p><strong>Merk:</strong> Teksten i instruksjonen treng ikkje å vere identisk med teksten til elementet</p>",
       "type": "jaNei",
-      "kilde": [
-        "G96",
-        "F14"
-      ],
+      "kilde": ["G96", "F14"],
       "ruting": {
         "ja": {
           "type": "avslutt",

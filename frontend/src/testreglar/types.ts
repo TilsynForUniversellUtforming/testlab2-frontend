@@ -1,12 +1,23 @@
 import { AppContext } from '@common/types';
+import { Krav } from 'krav/types';
 
-import { Regelsett, Testregel } from './api/types';
+import {
+  InnhaldstypeTesting,
+  Regelsett,
+  Tema,
+  Testobjekt,
+  TestregelBase,
+} from './api/types';
 
 export interface TestregelContext extends AppContext {
-  testregelList: Testregel[];
+  testregelList: TestregelBase[];
   regelsettList: Regelsett[];
-  setTestregelList: (testRegelList: Testregel[]) => void;
+  setTestregelList: (testRegelList: TestregelBase[]) => void;
   setRegelsettList: (regelsettList: Regelsett[]) => void;
+  innhaldstypeList: InnhaldstypeTesting[];
+  temaList: Tema[];
+  testobjektList: Testobjekt[];
+  kravList: Krav[];
 }
 
 export type Evne = {

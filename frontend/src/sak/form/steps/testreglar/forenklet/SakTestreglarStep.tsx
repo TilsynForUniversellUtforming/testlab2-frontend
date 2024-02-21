@@ -15,7 +15,7 @@ import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testregl
 import { sakTestreglarValidationSchemaInngaaende } from '@sak/form/steps/testreglar/inngaaende/sakTestreglarValidationSchemaInngaaende';
 import { SakContext, SakFormBaseProps, SakFormState } from '@sak/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { Testregel } from '@testreglar/api/types';
+import { TestregelBase } from '@testreglar/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
@@ -45,7 +45,7 @@ const SakTestreglarStep = ({
   });
 
   const regelsettPrefix = 'regelsett';
-  const [rowSelection, setRowSelection] = useState<Testregel[]>([]);
+  const [rowSelection, setRowSelection] = useState<TestregelBase[]>([]);
   const [testregelId, setTestregelId] = useState<string | undefined>(undefined);
 
   const { control, setValue, getValues, setError, formState, clearErrors } =
@@ -54,23 +54,23 @@ const SakTestreglarStep = ({
   const selection = useWatch<SakFormState>({
     control,
     name: 'testregelList',
-  }) as Testregel[];
+  }) as TestregelBase[];
 
   const testRegelOptions = useMemo(() => {
     const isForenklet = sakFormState.sakType === 'Forenklet kontroll';
 
     const filteredRegelsettList = regelsettList.filter((rs) =>
-      isForenklet ? rs.type === 'forenklet' : rs.type === 'manuell'
+      isForenklet ? rs.modus === 'forenklet' : rs.modus === 'manuell'
     );
 
     const options: OptionType[] = testregelList
       .filter(
         (tr) =>
-          (isForenklet ? tr.type === 'forenklet' : tr.type === 'manuell') &&
+          (isForenklet ? tr.modus === 'forenklet' : tr.modus === 'manuell') &&
           !selection.find((s) => s.id === tr.id)
       )
       .map((tr) => ({
-        label: tr.name,
+        label: tr.namn,
         value: String(tr.id),
       }));
 
@@ -84,22 +84,16 @@ const SakTestreglarStep = ({
     return options;
   }, [selection]);
 
-  const handleSelectRow = useCallback((selection: Testregel[]) => {
+  const handleSelectRow = useCallback((selection: TestregelBase[]) => {
     setRowSelection(selection);
   }, []);
 
-  const testregelColumns = useMemo<ColumnDef<Testregel>[]>(
+  const testregelColumns = useMemo<ColumnDef<TestregelBase>[]>(
     () => [
       getCheckboxColumn(
-        (row: Row<Testregel>) => `Velg ${row.original.name}`,
+        (row: Row<TestregelBase>) => `Velg ${row.original.namn}`,
         true
       ),
-      {
-        accessorFn: (row) => row.testregelSchema,
-        id: 'TestregelId',
-        cell: ({ row }) => row.original.name,
-        header: () => <>Testregel</>,
-      },
       {
         accessorFn: (row) => row.krav,
         id: 'Krav',
@@ -114,7 +108,7 @@ const SakTestreglarStep = ({
     clearErrors();
 
     if (testregelId) {
-      const selectedTestregelList: Testregel[] = [];
+      const selectedTestregelList: TestregelBase[] = [];
       if (testregelId.includes(regelsettPrefix)) {
         const regelsettId = testregelId.replace(regelsettPrefix, '');
         const regelsettTestregelList = regelsettList.find(
@@ -214,7 +208,7 @@ const SakTestreglarStep = ({
             Legg til
           </Button>
         </div>
-        <TestlabTable<Testregel>
+        <TestlabTable<TestregelBase>
           data={selection}
           defaultColumns={testregelColumns}
           displayError={{ error }}
@@ -230,7 +224,7 @@ const SakTestreglarStep = ({
                 title: 'Fjern testregel',
                 disabled: rowSelection.length === 0,
                 message: `Vil du fjerne ${joinStringsToList(
-                  rowSelection.map((rs) => rs.testregelSchema)
+                  rowSelection.map((rs) => rs.namn)
                 )} frå saka? Dette kan ikkje angrast`,
                 onConfirm: onClickRemove,
               },

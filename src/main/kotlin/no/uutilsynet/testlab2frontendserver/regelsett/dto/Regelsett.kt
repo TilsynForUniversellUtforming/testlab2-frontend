@@ -1,18 +1,18 @@
 package no.uutilsynet.testlab2frontendserver.regelsett.dto
 
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelType
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 
 data class Regelsett(
     override val id: Int,
     override val namn: String,
-    override val type: TestregelType,
+    override val modus: TestregelModus,
     override val standard: Boolean,
-    val testregelList: List<Testregel>,
+    val testregelList: List<TestregelBase>,
 ) :
     RegelsettBase(
         id,
         namn,
-        type,
+        modus,
         standard,
     )
