@@ -4,7 +4,7 @@ import { takeWhile } from '@common/util/arrayUtils';
 import { Button, Heading } from '@digdir/design-system-react';
 import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
-import { SkjemaMedSvar } from '@test/testregel-form/types';
+import { SkjemaOgSvar } from '@test/testregel-form/types';
 import {
   evaluateTestregel,
   finnSvar,
@@ -17,7 +17,7 @@ import TestFormStepWrapper from './TestFormStepWrapper';
 
 interface Props {
   testregel: Testregel;
-  resultater: ResultatManuellKontroll[];
+  resultat?: ResultatManuellKontroll;
   onClickBack: () => void;
   onClickSave: () => void;
   onResultat: (
@@ -29,65 +29,49 @@ interface Props {
 
 const TestForm = ({
   testregel,
-  resultater,
+  resultat,
   onClickBack,
   onClickSave,
   onResultat,
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [skjemaOgSvar, setSkjemaOgSvar] = useState<SkjemaOgSvar>({
+    skjemaModell: evaluateTestregel(
+      testregel.testregelSchema,
+      resultat?.svar ?? []
+    ),
+    alleSvar: resultat?.svar ?? [],
+  });
 
-  function initializeState() {
-    return resultater.map((resultat) => {
-      return {
-        skjema: evaluateTestregel(testregel.testregelSchema, resultat.svar),
-        svar: resultat.svar,
-      };
-    });
-  }
-
-  const [skjemaerMedSvar, setSkjemaerMedSvar] =
-    useState<SkjemaMedSvar[]>(initializeState());
-
-  function onAnswer(nyttSvar: Svar, index: number) {
-    setSkjemaerMedSvar((prevState) => {
-      const current = prevState[index];
+  function onAnswer(nyttSvar: Svar) {
+    setSkjemaOgSvar((prevState) => {
       const oppdaterteSvar = takeWhile(
-        current.svar,
+        prevState.alleSvar,
         (svar) => svar.steg !== nyttSvar.steg
       ).concat([nyttSvar]);
       const oppdatertSkjemaModell = evaluateTestregel(
         testregel.testregelSchema,
         oppdaterteSvar
       );
-      const newState = [...prevState];
-      newState[index] = {
-        ...current,
-        skjema: oppdatertSkjemaModell,
-        svar: oppdaterteSvar,
+      return {
+        ...prevState,
+        skjemaModell: oppdatertSkjemaModell,
+        alleSvar: oppdaterteSvar,
       };
-      return newState;
     });
   }
 
   useEffect(() => {
-    initializeState();
-  }, [testregel, resultater]);
+    const svar = resultat?.svar ?? [];
+    setSkjemaOgSvar({
+      skjemaModell: evaluateTestregel(testregel.testregelSchema, svar),
+      alleSvar: svar,
+    });
+  }, [testregel, resultat]);
 
   useEffect(() => {
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
-    skjemaerMedSvar.forEach((skjemaMedSvar, index) => {
-      const { skjema, svar } = skjemaMedSvar;
-      const resultat = resultater[index];
-      if (skjema.resultat && isNewResult(skjema.resultat, resultat)) {
-        const element = JSON.parse(testregel.testregelSchema).element;
-        const elementOmtale =
-          finnSvar(element, svar) ?? 'Finn ikkje elementomtala';
-
-        onResultat(skjema.resultat, elementOmtale, svar);
-      }
-    });
-  }, [skjemaerMedSvar]);
+  }, [skjemaOgSvar.alleSvar]);
 
   function isNewResult(
     nyttResultat: TestregelResultat,
@@ -102,23 +86,34 @@ const TestForm = ({
     }
   }
 
-  return skjemaerMedSvar.map((skjemaMedSvar, index) => (
-    <div key={index} className="test-form" ref={ref}>
+  useEffect(() => {
+    const { skjemaModell, alleSvar } = skjemaOgSvar;
+    if (skjemaModell.resultat && isNewResult(skjemaModell.resultat, resultat)) {
+      const element = JSON.parse(testregel.testregelSchema).element;
+      const elementOmtale =
+        finnSvar(element, alleSvar) ?? 'Finn ikkje elementomtala';
+
+      onResultat(skjemaModell.resultat, elementOmtale, alleSvar);
+    }
+  }, [skjemaOgSvar]);
+
+  return (
+    <div className="test-form" ref={ref}>
       <Heading size="medium" level={3}>
         {testregel.namn}
       </Heading>
       <div className="test-form-content">
-        {skjemaMedSvar.skjema.steg.map((etSteg) => (
+        {skjemaOgSvar.skjemaModell.steg.map((etSteg) => (
           <div key={etSteg.stegnr}>
             <TestFormStepWrapper
               steg={etSteg}
-              alleSvar={skjemaMedSvar.svar}
-              onAnswer={(svar) => onAnswer(svar, index)}
+              alleSvar={skjemaOgSvar.alleSvar}
+              onAnswer={onAnswer}
             />
           </div>
         ))}
-        {skjemaMedSvar.skjema.resultat && (
-          <TestFormResultat resultat={skjemaMedSvar.skjema.resultat} />
+        {skjemaOgSvar.skjemaModell.resultat && (
+          <TestFormResultat resultat={skjemaOgSvar.skjemaModell.resultat} />
         )}
       </div>
       <TestlabDivider />
@@ -129,7 +124,7 @@ const TestForm = ({
         <Button onClick={onClickSave}>Lagre og lukk</Button>
       </div>
     </div>
-  ));
+  );
 };
 
 export default TestForm;

@@ -29,7 +29,3 @@ export function dropWhile<T>(array: T[], predicate: (t: T) => boolean): T[] {
   }
   return result;
 }
-
-export function asList<T>(value: T | undefined): T[] {
-  return value ? [value] : [];
-}
