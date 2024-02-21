@@ -8,7 +8,7 @@ import TestResultatApp from './TestResultatApp';
 
 export const RESULTAT_ROOT: AppRoute = {
   navn: 'Resultat',
-  path: 'resultat/',
+  path: 'resultat',
   imgSrc: resultatImg,
 };
 

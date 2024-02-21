@@ -6,6 +6,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedT
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
@@ -28,5 +29,11 @@ class ResultatResource(
     logger.debug("henter aggregering frå sak/maaling med id: $testgrunnlagId")
     return restTemplate.getList<AggegatedTestresultTestregel>(
         "$testresultatUrl/aggregert/$testgrunnlagId")
+  }
+
+  @PostMapping("aggregert/{testgrunnlagId}")
+  fun createTestresultatAggregert(@PathVariable testgrunnlagId: Int) {
+    logger.debug("genererar aggregering frå sak/maaling med id: $testgrunnlagId")
+    restTemplate.postForLocation("$testresultatUrl/aggregert/$testgrunnlagId", testgrunnlagId)
   }
 }
