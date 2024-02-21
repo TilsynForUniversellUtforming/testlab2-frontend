@@ -1,6 +1,5 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { asList } from '@common/util/arrayUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
@@ -424,14 +423,12 @@ const TestOverviewLoeysing = () => {
           <div className="testregel-form-wrapper">
             <TestForm
               testregel={activeTestregel}
-              resultater={asList(
-                findActiveTestResult(
-                  testResultsLoeysing,
-                  Number(sakId),
-                  Number(loeysingId),
-                  activeTestregel.id,
-                  pageType.nettsideId
-                )
+              resultat={findActiveTestResult(
+                testResultsLoeysing,
+                Number(sakId),
+                Number(loeysingId),
+                activeTestregel.id,
+                pageType.nettsideId
               )}
               onClickBack={onClickBack}
               onClickSave={onClickSave}

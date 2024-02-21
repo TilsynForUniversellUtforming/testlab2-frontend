@@ -60,7 +60,6 @@ const TestregelDemoApp = () => {
   return (
     <TestForm
       testregel={testregel}
-      resultater={[]}
       onClickSave={() => navigate('..')}
       onClickBack={() => navigate('..')}
       onResultat={onResultat}
