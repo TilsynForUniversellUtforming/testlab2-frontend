@@ -1,4 +1,5 @@
-import { Button } from '@digdir/design-system-react';
+import { ButtonVariant } from '@common/types';
+import { Button, Heading, Tag } from '@digdir/design-system-react';
 
 const TestFerdig = ({
   statusFerdig,
@@ -11,11 +12,21 @@ const TestFerdig = ({
 }) => {
   if (statusFerdig) {
     return (
-      <div>
+      <div className="statusFerdig">
         <div className={'test-param-selection'}>
+          <Heading size="small" level={6}>
+            Ferdig testa
+          </Heading>
+          <Tag color="success" size="medium">
+            {loeysing}
+          </Tag>
           Du har no testa alle innholdstypar og alle sideutval for {loeysing}.
         </div>
-        <Button onClick={onClickResultat}>Sjå resultat</Button>
+        <div className={'teststatus-buttons'}>
+          <Button variant={ButtonVariant.Outline} onClick={onClickResultat}>
+            Sjå resultat
+          </Button>
+        </div>
       </div>
     );
   }

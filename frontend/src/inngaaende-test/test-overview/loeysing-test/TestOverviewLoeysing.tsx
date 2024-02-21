@@ -230,8 +230,6 @@ const TestOverviewLoeysing = () => {
       );
       const testregel = sak.testreglar.find((tr) => tr.id === testregelId);
 
-      console.log(JSON.stringify(testResult));
-
       if (testStatusMap && testregel) {
         if (status === 'under-arbeid' && isNotDefined(testResult)) {
           doCreateTestResult(
@@ -409,7 +407,6 @@ const TestOverviewLoeysing = () => {
       );
       if (finished) {
         setTestFerdig(true);
-        console.log('success', 'Alle testar er ferdige');
       }
     },
     [testResultsLoeysing]
@@ -440,33 +437,37 @@ const TestOverviewLoeysing = () => {
         onChangeContentType={onChangeContentType}
       />
       <div className="manual-test-buttons">
-        <TestRegelParamSelection
-          pageType={pageType.pageType}
-          contentType={contentType}
-          progressionPercent={progressionPercent}
-        />
-        <div className="testregel-container">
-          {testregelList.map((tr) => (
-            <TestregelButton
-              isActive={tr.id === Number(activeTestregel?.id)}
-              key={tr.id}
-              testregel={tr}
-              onClick={onChangeTestregel}
-              status={
-                testStatusMap.get(
-                  toTestregelStatusKey(
-                    Number(sakId),
-                    Number(loeysingId),
-                    tr.id,
-                    pageType.nettsideId
-                  )
-                ) || 'ikkje-starta'
-              }
-              onChangeStatus={onChangeStatus}
-            />
-          ))}
-        </div>
-        {activeTestregel && (
+        {!testFerdig && (
+          <TestRegelParamSelection
+            pageType={pageType.pageType}
+            contentType={contentType}
+            progressionPercent={progressionPercent}
+          />
+        )}
+        {!testFerdig && (
+          <div className="testregel-container">
+            {testregelList.map((tr) => (
+              <TestregelButton
+                isActive={tr.id === Number(activeTestregel?.id)}
+                key={tr.id}
+                testregel={tr}
+                onClick={onChangeTestregel}
+                status={
+                  testStatusMap.get(
+                    toTestregelStatusKey(
+                      Number(sakId),
+                      Number(loeysingId),
+                      tr.id,
+                      pageType.nettsideId
+                    )
+                  ) || 'ikkje-starta'
+                }
+                onChangeStatus={onChangeStatus}
+              />
+            ))}
+          </div>
+        )}
+        {activeTestregel && !testFerdig && (
           <div className="testregel-form-wrapper">
             <TestForm
               testregel={activeTestregel}
@@ -485,14 +486,14 @@ const TestOverviewLoeysing = () => {
             />
           </div>
         )}
+        {testFerdig && (
+          <TestFerdig
+            statusFerdig={testFerdig}
+            loeysing={sak.loeysingList[0].loeysing.namn}
+            onClickResultat={onFerdigTest}
+          />
+        )}
       </div>
-      {testFerdig && (
-        <TestFerdig
-          statusFerdig={testFerdig}
-          loeysing={sak.loeysingList[0].loeysing.namn}
-          onClickResultat={onFerdigTest}
-        />
-      )}
       {alert && (
         <AlertTimed
           severity={alert.severity}
