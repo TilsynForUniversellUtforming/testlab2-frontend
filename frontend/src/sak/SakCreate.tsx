@@ -124,15 +124,17 @@ const SakCreate = () => {
         virksomhet:
           verksemdLoeysingRelation?.verksemd?.orgnummer || '000000000',
         frist,
-        loeysingar: verksemdLoeysingRelation.loeysingList.map((l) => ({
-          loeysingId: l.loeysing.id,
-          nettsider: l.properties.map((p) => ({
-            type: p.type || 'egendefinert',
-            url: p.url || '',
-            beskrivelse: p.description || '',
-            begrunnelse: p.reason || '',
+        loeysingar: verksemdLoeysingRelation.loeysingList
+          .filter((l) => l.useInTest)
+          .map((l) => ({
+            loeysingId: l.loeysing.id,
+            nettsider: l.properties.map((p) => ({
+              type: p.type || 'egendefinert',
+              url: p.url || '',
+              beskrivelse: p.description || '',
+              begrunnelse: p.reason || '',
+            })),
           })),
-        })),
         testreglar: sakFormState?.testregelList,
       };
       try {

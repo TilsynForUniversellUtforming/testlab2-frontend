@@ -9,6 +9,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -88,14 +89,18 @@ class SakResource(
               loeysingDTO.nettsider.map { it.toNettsideProperties() })
         }
 
+    val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
     val temaList = restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
     val testobjektList = restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
     val innhaldstypeForTestingList =
         restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
 
     val testreglar =
-        sakDTO.testreglar.map {
-          it.toTestregel(temaList, testobjektList, innhaldstypeForTestingList)
+        sakDTO.testreglar.map { sakTr ->
+          testregelList
+              .find { it.id == sakTr.id }
+              ?.toTestregel(temaList, testobjektList, innhaldstypeForTestingList)
+              ?: throw IllegalArgumentException("Sak har testregel som ikkje finns")
         }
 
     return ResponseEntity.ok(Sak(verksemd = verksemd, loeysingNettsideRelation, testreglar))

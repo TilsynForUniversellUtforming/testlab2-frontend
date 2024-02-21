@@ -1,4 +1,4 @@
-import { testregelSchema } from '@testreglar/testreglar-liste/testreglarValidationSchema';
+import { testregelBaseScehma } from '@testreglar/testreglar-liste/testreglarValidationSchema';
 import { z } from 'zod';
 
 export const regelsettValidationSchema = z.object({
@@ -6,6 +6,6 @@ export const regelsettValidationSchema = z.object({
   standard: z.boolean(),
   type: z.union([z.literal('forenklet'), z.literal('manuell')]),
   testregelList: z
-    .array(testregelSchema.and(z.object({ id: z.number() })))
+    .array(testregelBaseScehma)
     .min(1, 'Må velja minst ein testregel'),
 });
