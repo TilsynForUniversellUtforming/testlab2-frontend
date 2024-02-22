@@ -72,19 +72,13 @@ export const updateTestregel = async (
 
 export const deleteTestregelList = async (
   testregelIdList: number[]
-): Promise<TestregelBase[]> => {
-  const response = await fetch(`/api/v1/testreglar`, {
+): Promise<TestregelBase[]> =>
+  await fetch(`/api/v1/testreglar`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ idList: testregelIdList }),
-  });
-
-  if (response.ok) {
-    return response.json();
-  } else {
-    const message = await response.text();
-    throw Error(message);
-  }
-};
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke slette testregel')
+  );
