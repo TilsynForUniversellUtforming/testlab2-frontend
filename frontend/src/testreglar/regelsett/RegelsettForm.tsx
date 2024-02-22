@@ -129,9 +129,9 @@ const RegelsettForm = ({
         <TestlabFormInput label="Namn" name="namn" required />
         <TestlabFormSelect
           radio
-          name="type"
+          name="modus"
           options={typeOptions}
-          label="Type"
+          label="Modus"
           description="Bestemmer om regelsettet for forenkla eller inngåande kontrollar"
           disabled={isDefined(regelsett?.modus)}
           required
