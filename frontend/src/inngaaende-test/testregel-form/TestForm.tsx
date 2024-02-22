@@ -1,13 +1,12 @@
-import { ButtonVariant } from '@common/types';
 import { takeWhile } from '@common/util/arrayUtils';
-import { Button, Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/design-system-react';
 import {
   findElementOmtale,
   ResultatManuellKontroll,
   Svar,
 } from '@test/api/types';
 import { TestFormAccordion } from '@test/testregel-form/TestFormAccordion';
-import { SkjemaMedSvar } from '@test/testregel-form/types';
+import { initSkjemaMedSvar, SkjemaMedSvar } from '@test/testregel-form/types';
 import {
   evaluateTestregel,
   TestregelResultat,
@@ -27,27 +26,12 @@ interface Props {
   ) => void;
 }
 
-const TestForm = ({
-  testregel,
-  resultater,
-  onClickBack,
-  onClickSave,
-  onResultat,
-}: Props) => {
+const TestForm = ({ testregel, resultater, onResultat }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  function initializeState() {
-    return resultater.map((resultat) => {
-      return {
-        resultatId: resultat.id,
-        skjema: evaluateTestregel(testregel.testregelSchema, resultat.svar),
-        svar: resultat.svar,
-      };
-    });
-  }
-
-  const [skjemaerMedSvar, setSkjemaerMedSvar] =
-    useState<SkjemaMedSvar[]>(initializeState());
+  const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
+    initSkjemaMedSvar(resultater, testregel)
+  );
 
   function onAnswer(nyttSvar: Svar, index: number) {
     setSkjemaerMedSvar((prevState) => {
@@ -71,7 +55,7 @@ const TestForm = ({
   }
 
   useEffect(() => {
-    setSkjemaerMedSvar(initializeState());
+    setSkjemaerMedSvar(initSkjemaMedSvar(resultater, testregel));
   }, [testregel, resultater]);
 
   useEffect(() => {
@@ -112,12 +96,6 @@ const TestForm = ({
         skjemaerMedSvar={skjemaerMedSvar}
         onAnswer={onAnswer}
       />
-      <div className="testregel-form-buttons">
-        <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
-          Legg til flere testelementer
-        </Button>
-        <Button onClick={onClickSave}>Lagre og lukk</Button>
-      </div>
     </div>
   );
 };

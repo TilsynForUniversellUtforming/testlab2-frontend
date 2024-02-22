@@ -1,8 +1,10 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
+import { ButtonVariant } from '@common/types';
 import { asList } from '@common/util/arrayUtils';
 import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
+import { Button } from '@digdir/design-system-react';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
 import {
@@ -482,6 +484,12 @@ const TestOverviewLoeysing = () => {
               onClickSave={onClickSave}
               onResultat={doUpdateTestResult}
             />
+            <div className="testregel-form-buttons">
+              <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
+                Legg til flere testelementer
+              </Button>
+              <Button onClick={onClickSave}>Lagre og lukk</Button>
+            </div>
           </div>
         )}
         {testFerdig && (
