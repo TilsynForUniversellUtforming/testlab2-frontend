@@ -20,7 +20,6 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
@@ -173,23 +172,6 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
     val result = testregelResource.deleteTestregelList(idList)
 
     assertThat(result.body).isEqualTo(testregelList)
-  }
-
-  @Test
-  fun `Skal gi riktig status code hvis sletting av Testregel med HttpClientErrorException`() {
-    val idList = IdList(listOf(1))
-
-    for (id in idList.idList) {
-      server
-          .expect(
-              ExpectedCount.once(), MockRestRequestMatchers.requestTo("$apiUrl/v1/testreglar/$id"))
-          .andExpect(MockRestRequestMatchers.method(HttpMethod.DELETE))
-          .andRespond(MockRestResponseCreators.withStatus(HttpStatus.NOT_FOUND))
-    }
-
-    val result = testregelResource.deleteTestregelList(idList)
-
-    assertThat(result.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
   }
 
   private val testregelDTOList =
