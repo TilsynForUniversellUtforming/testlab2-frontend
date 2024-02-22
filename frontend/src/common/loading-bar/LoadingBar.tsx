@@ -64,6 +64,7 @@ const LoadingBar = ({
         value={percentage}
         max="100"
         aria-label={ariaLabel}
+        aria-valuenow={percentage}
       />
     </div>
   );
