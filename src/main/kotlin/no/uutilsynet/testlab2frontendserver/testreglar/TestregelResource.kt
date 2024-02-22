@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 
 @RestController
@@ -99,7 +98,7 @@ class TestregelResource(
         listTestreglar()
       } catch (e: IllegalArgumentException) {
         logger.error("Duplikat skjema for testregel", e)
-        throw e
+        throw Error("Duplikat skjema for testregel")
       } catch (e: Error) {
         logger.error("Klarte ikke å oppdatere testregel", e)
         throw Error("Klarte ikke å oppdatere testregel")
@@ -111,11 +110,7 @@ class TestregelResource(
       runCatching { restTemplate.delete("$testregelUrl/$id") }
           .getOrElse {
             logger.error("Kunne ikkje slette testregel med id $id", it)
-            return when (it) {
-              is HttpClientErrorException ->
-                  ResponseEntity.status(it.statusCode).body(it.responseBodyAsString)
-              else -> ResponseEntity.internalServerError().body(it.message)
-            }
+            throw Error("Kunne ikkje slette testregel")
           }
     }
     return ResponseEntity.ok().body(listTestreglar())
