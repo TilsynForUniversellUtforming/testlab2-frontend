@@ -1,19 +1,19 @@
-import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { takeWhile } from '@common/util/arrayUtils';
 import { Button, Heading } from '@digdir/design-system-react';
-import { ResultatManuellKontroll, Svar } from '@test/api/types';
-import TestFormResultat from '@test/testregel-form/TestFormResultat';
+import {
+  findElementOmtale,
+  ResultatManuellKontroll,
+  Svar,
+} from '@test/api/types';
+import { TestFormAccordion } from '@test/testregel-form/TestFormAccordion';
 import { SkjemaMedSvar } from '@test/testregel-form/types';
 import {
   evaluateTestregel,
-  finnSvar,
   TestregelResultat,
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useRef, useState } from 'react';
-
-import TestFormStepWrapper from './TestFormStepWrapper';
 
 interface Props {
   testregel: Testregel;
@@ -39,6 +39,7 @@ const TestForm = ({
   function initializeState() {
     return resultater.map((resultat) => {
       return {
+        resultatId: resultat.id,
         skjema: evaluateTestregel(testregel.testregelSchema, resultat.svar),
         svar: resultat.svar,
       };
@@ -70,7 +71,7 @@ const TestForm = ({
   }
 
   useEffect(() => {
-    initializeState();
+    setSkjemaerMedSvar(initializeState());
   }, [testregel, resultater]);
 
   useEffect(() => {
@@ -80,9 +81,8 @@ const TestForm = ({
       const { skjema, svar } = skjemaMedSvar;
       const resultat = resultater[index];
       if (skjema.resultat && isNewResult(skjema.resultat, resultat)) {
-        const element = JSON.parse(testregel.testregelSchema).element;
         const elementOmtale =
-          finnSvar(element, svar) ?? 'Finn ikkje elementomtala';
+          findElementOmtale(testregel, svar) ?? 'Finn ikkje elementomtala';
 
         onResultat(skjema.resultat, elementOmtale, svar);
       }
@@ -102,26 +102,16 @@ const TestForm = ({
     }
   }
 
-  return skjemaerMedSvar.map((skjemaMedSvar, index) => (
-    <div key={index} className="test-form" ref={ref}>
+  return (
+    <div className="test-form" ref={ref}>
       <Heading size="medium" level={3}>
         {testregel.namn}
       </Heading>
-      <div className="test-form-content">
-        {skjemaMedSvar.skjema.steg.map((etSteg) => (
-          <div key={etSteg.stegnr}>
-            <TestFormStepWrapper
-              steg={etSteg}
-              alleSvar={skjemaMedSvar.svar}
-              onAnswer={(svar) => onAnswer(svar, index)}
-            />
-          </div>
-        ))}
-        {skjemaMedSvar.skjema.resultat && (
-          <TestFormResultat resultat={skjemaMedSvar.skjema.resultat} />
-        )}
-      </div>
-      <TestlabDivider />
+      <TestFormAccordion
+        testregel={testregel}
+        skjemaerMedSvar={skjemaerMedSvar}
+        onAnswer={onAnswer}
+      />
       <div className="testregel-form-buttons">
         <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
           Legg til flere testelementer
@@ -129,7 +119,7 @@ const TestForm = ({
         <Button onClick={onClickSave}>Lagre og lukk</Button>
       </div>
     </div>
-  ));
+  );
 };
 
 export default TestForm;

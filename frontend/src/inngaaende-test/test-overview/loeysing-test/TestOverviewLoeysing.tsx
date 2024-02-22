@@ -1,7 +1,7 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { asList } from '@common/util/arrayUtils';
+import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
@@ -10,6 +10,7 @@ import {
   ResultatManuellKontroll,
   ResultatStatus,
   Svar,
+  toElementResultat,
 } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
@@ -22,10 +23,7 @@ import {
   PageType,
   TestContext,
 } from '@test/types';
-import {
-  TestregelResultat,
-  toElementResultat,
-} from '@test/util/testregelParser';
+import { TestregelResultat } from '@test/util/testregelParser';
 import {
   findActiveTestResult,
   getInitialPageType,

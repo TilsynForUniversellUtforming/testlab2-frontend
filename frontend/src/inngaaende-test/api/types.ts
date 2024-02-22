@@ -1,3 +1,6 @@
+import { finnSvar, TestregelResultat } from '@test/util/testregelParser';
+import { Testregel } from '@testreglar/api/types';
+
 export type Svar = {
   steg: string;
   svar: string;
@@ -32,3 +35,28 @@ export type ResultatStatus =
   | 'Deaktivert'
   | 'UnderArbeid'
   | 'IkkjePaabegynt';
+
+export function toElementResultat(
+  resultat: TestregelResultat
+): ElementResultat {
+  if (resultat.type === 'avslutt') {
+    switch (resultat.fasit) {
+      case 'Ja':
+        return 'samsvar';
+      case 'Nei':
+        return 'brot';
+      case 'Ikkje testbart':
+        return 'ikkjeTesta';
+    }
+  } else {
+    return 'ikkjeForekomst';
+  }
+}
+
+export function findElementOmtale(
+  testregel: Testregel,
+  svar: Svar[]
+): string | undefined {
+  const element = JSON.parse(testregel.testregelSchema).element;
+  return finnSvar(element, svar);
+}

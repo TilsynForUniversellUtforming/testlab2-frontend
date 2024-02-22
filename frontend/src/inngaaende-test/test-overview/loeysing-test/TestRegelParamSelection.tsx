@@ -31,7 +31,7 @@ const TestRegelParamSelection = ({
       {/*</Switch>*/}
       <LoadingBar
         ariaLabel={`${progressionPercent}% ferdig`}
-        customText="Progressjon"
+        customText="Progresjon"
         dynamicSeverity={false}
         labelPlacement="right"
         percentage={progressionPercent}
