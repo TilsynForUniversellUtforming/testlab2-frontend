@@ -12,13 +12,11 @@ import {
   TestregelResultat,
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Props {
   testregel: Testregel;
   resultater: ResultatManuellKontroll[];
-  onClickBack: () => void;
-  onClickSave: () => void;
   onResultat: (
     resultat: TestregelResultat,
     elementOmtale: string,
@@ -27,8 +25,6 @@ interface Props {
 }
 
 const TestForm = ({ testregel, resultater, onResultat }: Props) => {
-  const ref = useRef<HTMLDivElement>(null);
-
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
   );
@@ -59,8 +55,6 @@ const TestForm = ({ testregel, resultater, onResultat }: Props) => {
   }, [testregel, resultater]);
 
   useEffect(() => {
-    ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
     skjemaerMedSvar.forEach((skjemaMedSvar, index) => {
       const { skjema, svar } = skjemaMedSvar;
       const resultat = resultater[index];
@@ -87,7 +81,7 @@ const TestForm = ({ testregel, resultater, onResultat }: Props) => {
   }
 
   return (
-    <div className="test-form" ref={ref}>
+    <div className="test-form">
       <Heading size="medium" level={3}>
         {testregel.namn}
       </Heading>

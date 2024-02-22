@@ -47,7 +47,6 @@ const LoadingBar = ({
   if (percentage === undefined || !show) return null;
 
   const color = dynamicSeverity ? getSeverity(percentage) : severity;
-  const style = { width: `${percentage}%` };
 
   return (
     <div
@@ -60,17 +59,12 @@ const LoadingBar = ({
       >
         {customText ? customText : `${percentage}%`}
       </Label>
-      <div className="loading-bar__wrapper">
-        <div
-          className={classnames('loading-bar__percentage', color)}
-          style={style}
-          aria-valuenow={percentage}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={ariaLabel}
-          role="progressbar"
-        />
-      </div>
+      <progress
+        className={classnames('loading-bar__progress', color)}
+        value={percentage}
+        max="100"
+        aria-label={ariaLabel}
+      />
     </div>
   );
 };

@@ -5,19 +5,25 @@ import { Spinner } from '@digdir/design-system-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
+import { innhaldstypeAlle } from '@test/util/testregelUtils';
+import { listInnhaldstype } from '@testreglar/api/testreglar-api';
+import { InnhaldstypeTesting } from '@testreglar/api/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
 import { getTestResults } from './api/testing-api';
 import { TestContext } from './types';
 
-const ManualTest = () => {
+const InngaaendeTestApp = () => {
   const { id } = useParams();
 
   const [error, setError] = useState<Error | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const [sak, setSak] = useState<Sak | undefined>();
   const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>([]);
+  const [innhaldstypeTestingList, setInnhaldstypeTestingList] = useState<
+    InnhaldstypeTesting[]
+  >([]);
   const hasFetched = useRef(false);
 
   const doFetchData = useCallback(async () => {
@@ -28,12 +34,18 @@ const ManualTest = () => {
     }
 
     try {
-      const [sakResponse, testResultsResponse] = await Promise.all([
-        getSak(Number(id)),
-        getTestResults(Number(id)),
-      ]);
+      const [sakResponse, testResultsResponse, innhaldstypeTestingList] =
+        await Promise.all([
+          getSak(Number(id)),
+          getTestResults(Number(id)),
+          listInnhaldstype(),
+        ]);
       setSak({ ...sakResponse, id: numericId });
       setTestResults(testResultsResponse);
+      setInnhaldstypeTestingList([
+        ...innhaldstypeTestingList,
+        innhaldstypeAlle,
+      ]);
       setLoading(false);
     } catch (err) {
       setError(toError(err, 'Fann ikkje sak'));
@@ -72,9 +84,10 @@ const ManualTest = () => {
     contextSak: sak,
     contextTestResults: testResults,
     contextSetTestResults: handleSetTestResults,
+    innhaldstypeList: innhaldstypeTestingList,
   };
 
   return <Outlet context={testContext} />;
 };
 
-export default ManualTest;
+export default InngaaendeTestApp;

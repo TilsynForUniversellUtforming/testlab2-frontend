@@ -50,17 +50,15 @@
     align-items: center;
 
     .testregel {
+      &-row {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+      }
       &-container {
         display: flex;
-        flex-direction: row;
-        margin: 0 auto;
-        flex-wrap: wrap;
+        justify-content: center;
         gap: 1rem;
-        padding: 0 1rem;
-
-        @media (max-width: 958px) {
-          justify-content: center;
-        }
       }
 
       &-form-wrapper {
@@ -69,10 +67,10 @@
         align-items: center;
         background: var(--fds-semantic-background-default);
         padding: 2rem;
-        border-radius: 10px;
-        @media (min-width: 959px) {
-          width: 100%;
-        }
+        margin-bottom: 2rem;
+        //@media (min-width: 959px) {
+        //  width: 100%;
+        //}
       }
 
       &-form-buttons {
@@ -136,6 +134,7 @@
   justify-content: center;
   max-width: 48rem;
   width: 100%;
+  padding-bottom: 2rem;
 
   div[class*='fds-textarea-description-'],
   div[class*='fds-fieldset-description-'] {
