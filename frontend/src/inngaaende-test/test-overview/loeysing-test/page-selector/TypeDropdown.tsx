@@ -7,14 +7,14 @@ import { useState } from 'react';
 interface Props {
   title: string;
   typeId: string;
-  onChangeType: (typeId?: string) => void;
+  onChangeType: (typeId: string) => void;
   options: OptionType[];
 }
 
 const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (nettsideId?: string) => {
+  const handleButtonClick = (nettsideId: string) => {
     setShow(false);
     onChangeType(nettsideId);
   };

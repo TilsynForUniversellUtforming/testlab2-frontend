@@ -4,7 +4,7 @@ import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import TestregelDemoApp from './demo/TestregelDemoApp';
-import ManualTest from './ManualTest';
+import InngaaendeTestApp from './InngaaendeTestApp';
 import TestOverview from './test-overview/TestOverview';
 
 export const TEST_ROOT: AppRoute = {
@@ -39,7 +39,7 @@ export const TestingRoutes: RouteObject = {
   children: [
     {
       path: TEST.path,
-      element: <ManualTest />,
+      element: <InngaaendeTestApp />,
       handle: { name: 'Test' },
       children: [
         {

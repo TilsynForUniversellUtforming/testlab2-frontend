@@ -5,7 +5,7 @@ import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
 import { TestregelResultat } from '../util/testregelParser';
@@ -15,7 +15,6 @@ const TestregelDemoApp = () => {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !error && id) {
@@ -48,7 +47,7 @@ const TestregelDemoApp = () => {
     elementOmtale: string,
     alleSvar: Svar[]
   ) => {
-    console.log(
+    console.info(
       `Resultat: ${JSON.stringify({ resultat, elementOmtale, alleSvar }, null, 2)}`
     );
   };
@@ -61,8 +60,6 @@ const TestregelDemoApp = () => {
     <TestForm
       testregel={testregel}
       resultater={[createResultat(testregel)]}
-      onClickSave={() => navigate('..')}
-      onClickBack={() => navigate('..')}
       onResultat={onResultat}
     />
   );
