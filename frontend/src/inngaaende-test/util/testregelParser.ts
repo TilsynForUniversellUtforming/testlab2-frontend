@@ -1,5 +1,5 @@
 import { dropWhile, first } from '@common/util/arrayUtils';
-import { ElementResultat, Svar } from '@test/api/types';
+import { Svar } from '@test/api/types';
 import { Delutfall } from '@test/util/testregel-interface/Delutfall';
 import {
   Handling,
@@ -25,23 +25,6 @@ export type Avslutt = {
   fasit: Exclude<HandlingFasitTyper, 'sjekkDelutfall'>;
   utfall: string;
 };
-
-export function toElementResultat(
-  resultat: TestregelResultat
-): ElementResultat {
-  if (resultat.type === 'avslutt') {
-    switch (resultat.fasit) {
-      case 'Ja':
-        return 'samsvar';
-      case 'Nei':
-        return 'brot';
-      case 'Ikkje testbart':
-        return 'ikkjeTesta';
-    }
-  } else {
-    return 'ikkjeForekomst';
-  }
-}
 
 export function finnSvar(stegnr: string, alleSvar: Svar[]): string | undefined {
   return alleSvar.find((svar) => svar.steg === stegnr)?.svar;

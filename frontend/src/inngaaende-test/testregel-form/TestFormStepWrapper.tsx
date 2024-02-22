@@ -27,7 +27,13 @@ const TestFormStepWrapper = ({ steg, alleSvar, onAnswer }: FormStepProps) => {
 
   switch (steg.type) {
     case 'tekst':
-      return <TestFormInputText steg={steg} onAnswer={onAnswer} />;
+      return (
+        <TestFormInputText
+          steg={steg}
+          svar={finnSvar(steg.stegnr, alleSvar)}
+          onAnswer={onAnswer}
+        />
+      );
     case 'instruksjon':
       return <TestFormDescription steg={steg} />;
     case 'radio':
