@@ -1,4 +1,5 @@
 import { Sak } from '@sak/api/types';
+import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { ResultatManuellKontroll } from './api/types';
 
@@ -20,32 +21,15 @@ export interface TestContext {
   contextSak: Sak;
   contextTestResults: ResultatManuellKontroll[];
   contextSetTestResults: (testResults: ResultatManuellKontroll[]) => void;
+  innhaldstypeList: InnhaldstypeTesting[];
 }
-
-export const innhaldsType = [
-  'Bilde og grafikk',
-  'Captcha',
-  'Heile nettsida',
-  'Iframe',
-  'Innhald med tidsavgrensing',
-  'Innhald som blinkar og/eller oppdaterer automatisk',
-  'Kjeldekode',
-  'Lenke',
-  'Liste',
-  'Lyd og video',
-  'Overskrift',
-  'Sidetittel',
-  'Skjemaelement',
-  'Statusmelding',
-  'Tabell',
-  'Tastatur',
-  'Tekst',
-  'Alle',
-];
-
-export type InnhaldsType = (typeof innhaldsType)[number];
 
 export type PageType = {
   nettsideId: number;
   pageType: string;
+};
+
+export type ActiveTest = {
+  testregel: Testregel;
+  testResultList: ResultatManuellKontroll[];
 };

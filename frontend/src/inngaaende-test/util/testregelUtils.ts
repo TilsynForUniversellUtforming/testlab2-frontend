@@ -7,7 +7,12 @@ import {
   PageType,
   TestregelOverviewElement,
 } from '@test/types';
-import { TestregelBase } from '@testreglar/api/types';
+import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
+
+export const innhaldstypeAlle: InnhaldstypeTesting = {
+  id: 0,
+  innhaldstype: 'Alle',
+};
 
 export const getTestResultsForLoeysing = (
   testResults: ResultatManuellKontroll[],
@@ -19,19 +24,30 @@ export const progressionForLoeysingNettside = (
   sak: Sak,
   testResults: ResultatManuellKontroll[],
   nettsideId: number,
+  innhaldstype: InnhaldstypeTesting,
   loeysingId: number | undefined
 ): number => {
+  const testregelIdList = filterTestregelByInnhaldstype(
+    sak.testreglar,
+    innhaldstype
+  ).map((tr) => tr.id);
+
   const numFinishedTestResults = testResults.filter(
     (tr) =>
+      testregelIdList.includes(tr.testregelId) &&
       tr.loeysingId === loeysingId &&
       tr.nettsideId === nettsideId &&
       tr.status === 'Ferdig'
   ).length;
 
-  // TODO - Filtrer på valgt contentType, f.eks. alle testreglar med "IFrame"
-  const numContentTestregel = sak.testreglar.length;
+  const numContentTestregel = testregelIdList.length;
 
-  return Math.round((numFinishedTestResults / numContentTestregel) * 100);
+  if (numContentTestregel > 0) {
+    return Math.round((numFinishedTestResults / numContentTestregel) * 100);
+  }
+
+  // No testregel with current innhaldstype
+  return 0;
 };
 
 export const getNettsideProperties = (
@@ -113,14 +129,13 @@ export const toTestregelStatus = (
     })
   );
 
-export const toTestregelOverviewElement = ({
+const toTestregelOverviewElement = ({
   id,
-  namn,
+  testregelId,
   krav,
-}: TestregelBase): TestregelOverviewElement => {
-  // TODO - Bruk testregelId som name
-  const regex = /^((Nett-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/;
-  const result = namn.match(regex);
+}: Testregel): TestregelOverviewElement => {
+  const regex = /^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/;
+  const result = testregelId.match(regex);
 
   if (result && result.length > 3) {
     const firstPart = result[1];
@@ -128,8 +143,26 @@ export const toTestregelOverviewElement = ({
     return { id: id, name: secondPart, krav: firstPart };
   }
 
-  return { id: id, name: namn, krav: krav };
+  return { id: id, name: testregelId, krav: krav };
 };
+
+const filterTestregelByInnhaldstype = (
+  testregelList: Testregel[],
+  innhaldstype: InnhaldstypeTesting
+) =>
+  testregelList.filter(
+    (tr) =>
+      innhaldstype.innhaldstype === 'Alle' ||
+      tr.innhaldstypeTesting?.id === innhaldstype.id
+  );
+
+export const mapTestregelOverviewElements = (
+  testregelList: Testregel[],
+  innhaldstype: InnhaldstypeTesting
+) =>
+  filterTestregelByInnhaldstype(testregelList, innhaldstype).map((tr) =>
+    toTestregelOverviewElement(tr)
+  );
 
 export const findActiveTestResult = (
   testResultsLoeysing: ResultatManuellKontroll[],

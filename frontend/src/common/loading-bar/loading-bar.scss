@@ -1,12 +1,11 @@
 .loading-bar {
-  max-width: 12rem;
-  height: 2rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 
   &.large {
     min-height: 2rem;
-    max-width: inherit;
   }
 
   &.right,
@@ -14,10 +13,6 @@
     align-items: center;
     height: 1rem;
     gap: 0.5rem;
-
-    .loading-bar__wrapper {
-      min-width: 6rem;
-    }
   }
 
   &.right {
@@ -28,31 +23,63 @@
     flex-direction: row;
   }
 
-  &__wrapper {
-    height: 100%;
-    border-radius: 10px;
-    background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+  &__progress {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    min-width: 6rem;
+    height: 1rem;
+    border: 0;
+    overflow: hidden;
+    border-radius: 15px;
+
+    &.info &::-webkit-progress-value,
+    &::-moz-progress-bar {
+      background: var(--fds-semantic-surface-third-light-active);
+    }
+
+    &.danger {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-danger-no_fill-active);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-danger-no_fill-active);
+      }
+    }
+
+    &.warning {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-warning-default);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-warning-default);
+      }
+    }
+
+    &.success {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-success-default);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-success-default);
+      }
+    }
+
+    &.neutral {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-neutral-dark);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-neutral-dark);
+      }
+    }
+
+    &::-webkit-progress-bar {
+      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      border-radius: 10px;
+    }
   }
 
-  &__percentage {
-    height: 100%;
-    border-radius: 10px;
-    &.info {
-      background-color: var(--fds-semantic-surface-third-light-active);
-    }
-    &.danger {
-      background-color: var(--fds-semantic-surface-danger-no_fill-active);
-    }
-    &.warning {
-      background-color: var(--fds-semantic-surface-warning-default);
-    }
-    &.success {
-      background-color: var(--fds-semantic-surface-success-default);
-    }
-    &.neutral {
-      background-color: var(--fds-semantic-surface-neutral-dark);
-    }
-  }
   &__label {
     &.center {
       text-align: center;

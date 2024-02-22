@@ -2,20 +2,23 @@ import { Heading, Ingress, Tag } from '@digdir/design-system-react';
 import PageTypeSelector, {
   PageTypeSelectorProps,
 } from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
+import { InnhaldstypeTesting } from '@testreglar/api/types';
 
 export interface Props extends PageTypeSelectorProps {
   sakName: string;
   currentLoeysingName: string;
+  innhaldstypeList: InnhaldstypeTesting[];
 }
 
-const TestHeading = ({
+const LoeysingTestHeading = ({
   sakName,
   currentLoeysingName,
   nettsideProperties,
   pageType,
   onChangePageType,
-  contentType,
-  onChangeContentType,
+  innhaldstype,
+  onChangeInnhaldstype,
+  innhaldstypeList,
 }: Props) => (
   <div className="manual-test-heading">
     <Heading spacing size="xlarge" level={2}>
@@ -31,10 +34,11 @@ const TestHeading = ({
       nettsideProperties={nettsideProperties}
       pageType={pageType}
       onChangePageType={onChangePageType}
-      contentType={contentType}
-      onChangeContentType={onChangeContentType}
+      innhaldstypeList={innhaldstypeList}
+      innhaldstype={innhaldstype}
+      onChangeInnhaldstype={onChangeInnhaldstype}
     />
   </div>
 );
 
-export default TestHeading;
+export default LoeysingTestHeading;
