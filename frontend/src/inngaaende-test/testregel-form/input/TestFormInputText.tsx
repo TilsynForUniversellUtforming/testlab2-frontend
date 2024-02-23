@@ -11,11 +11,11 @@ interface Props {
 
 const TestFormInputText = ({ steg, svar, onAnswer }: Props) => {
   const { spm, ht, stegnr } = steg;
-  const [value, setValue] = useState(svar);
+  const [value, setValue] = useState<string>(svar ?? '');
 
   const handleValueChange = useCallback(
     (newValue?: string) => {
-      setValue(newValue);
+      setValue(newValue ?? '');
       if (typeof newValue === 'string' && newValue !== svar) {
         onAnswer({ steg: stegnr, svar: newValue });
       }

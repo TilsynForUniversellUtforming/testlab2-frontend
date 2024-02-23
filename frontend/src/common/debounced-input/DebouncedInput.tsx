@@ -30,10 +30,10 @@ const DebouncedInput = ({
   type = 'text',
   textArea = false,
 }: Props & Omit<TextfieldProps, 'onChange'>) => {
-  const [value, setValue] = useState<string | undefined>(initialValue);
+  const [value, setValue] = useState<string>(initialValue ?? '');
 
   useEffect(() => {
-    setValue(initialValue);
+    setValue(initialValue ?? '');
   }, [initialValue]);
 
   useEffect(() => {

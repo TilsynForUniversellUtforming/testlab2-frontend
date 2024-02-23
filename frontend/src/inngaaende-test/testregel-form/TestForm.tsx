@@ -19,6 +19,7 @@ interface Props {
   resultater: ResultatManuellKontroll[];
   showHelpText: boolean;
   onResultat: (
+    resultatId: number,
     resultat: TestregelResultat,
     elementOmtale: string,
     svar: Svar[]
@@ -61,14 +62,16 @@ const TestForm = ({
   }, [testregel, resultater]);
 
   useEffect(() => {
-    skjemaerMedSvar.forEach((skjemaMedSvar, index) => {
-      const { skjema, svar } = skjemaMedSvar;
-      const resultat = resultater[index];
+    skjemaerMedSvar.forEach((skjemaMedSvar) => {
+      const { skjema, svar, resultatId } = skjemaMedSvar;
+      const resultat = resultater.find(
+        (resultat) => resultat.id === resultatId
+      );
       if (skjema.resultat && isNewResult(skjema.resultat, resultat)) {
         const elementOmtale =
           findElementOmtale(testregel, svar) ?? 'Finn ikkje elementomtala';
 
-        onResultat(skjema.resultat, elementOmtale, svar);
+        onResultat(resultatId, skjema.resultat, elementOmtale, svar);
       }
     });
   }, [skjemaerMedSvar]);
@@ -77,13 +80,7 @@ const TestForm = ({
     nyttResultat: TestregelResultat,
     gammeltResultat?: ResultatManuellKontroll | undefined
   ): boolean {
-    if (!gammeltResultat && !nyttResultat) {
-      return false;
-    } else if (!gammeltResultat && nyttResultat) {
-      return true;
-    } else {
-      return gammeltResultat?.elementUtfall !== nyttResultat?.utfall;
-    }
+    return gammeltResultat?.elementUtfall !== nyttResultat?.utfall;
   }
 
   return (
