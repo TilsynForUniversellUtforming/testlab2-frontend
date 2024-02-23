@@ -183,3 +183,19 @@ export const findActiveTestResult = (
       tr.nettsideId === nettsideId
   );
 };
+
+export function findActiveTestResults(
+  testResults: ResultatManuellKontroll[],
+  sakId: number,
+  loeysingId: number,
+  testregelId: number,
+  nettsideId: number
+): ResultatManuellKontroll[] {
+  return testResults.filter(
+    (tr) =>
+      tr.sakId === sakId &&
+      tr.loeysingId === loeysingId &&
+      tr.testregelId === testregelId &&
+      tr.nettsideId === nettsideId
+  );
+}

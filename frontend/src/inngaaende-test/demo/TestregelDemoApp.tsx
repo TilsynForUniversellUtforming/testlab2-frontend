@@ -43,6 +43,7 @@ const TestregelDemoApp = () => {
   }, [id]);
 
   const onResultat = (
+    _resultatId: number,
     resultat: TestregelResultat,
     elementOmtale: string,
     alleSvar: Svar[]
