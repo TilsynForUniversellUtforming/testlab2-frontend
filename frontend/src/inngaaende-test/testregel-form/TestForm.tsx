@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 interface Props {
   testregel: Testregel;
   resultater: ResultatManuellKontroll[];
+  showHelpText: boolean;
   onResultat: (
     resultat: TestregelResultat,
     elementOmtale: string,
@@ -24,7 +25,12 @@ interface Props {
   ) => void;
 }
 
-const TestForm = ({ testregel, resultater, onResultat }: Props) => {
+const TestForm = ({
+  testregel,
+  resultater,
+  showHelpText,
+  onResultat,
+}: Props) => {
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
   );
@@ -85,10 +91,14 @@ const TestForm = ({ testregel, resultater, onResultat }: Props) => {
       <Heading size="medium" level={3}>
         {testregel.namn}
       </Heading>
+      {testregel.kravTilSamsvar && showHelpText && (
+        <div className="test-form-description">{testregel.kravTilSamsvar}</div>
+      )}
       <TestFormAccordion
         testregel={testregel}
         skjemaerMedSvar={skjemaerMedSvar}
         onAnswer={onAnswer}
+        showHelpText={showHelpText}
       />
     </div>
   );

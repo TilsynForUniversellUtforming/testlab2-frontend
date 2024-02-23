@@ -11,9 +11,15 @@ interface FormStepProps {
   steg: Steg | undefined;
   alleSvar: Svar[];
   onAnswer: (answer: Svar) => void;
+  showHelpText: boolean;
 }
 
-const TestFormStepWrapper = ({ steg, alleSvar, onAnswer }: FormStepProps) => {
+const TestFormStepWrapper = ({
+  steg,
+  alleSvar,
+  onAnswer,
+  showHelpText,
+}: FormStepProps) => {
   if (!steg) {
     // dette er enten en feil i parseren (klarer ikke å finne neste steg), eller en feil i testregelen.
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
@@ -22,7 +28,7 @@ const TestFormStepWrapper = ({ steg, alleSvar, onAnswer }: FormStepProps) => {
   steg = {
     ...steg,
     spm: parseHtmlEntities(steg.spm),
-    ht: parseHtmlEntities(steg.ht),
+    ht: showHelpText ? parseHtmlEntities(steg.ht) : '',
   };
 
   switch (steg.type) {

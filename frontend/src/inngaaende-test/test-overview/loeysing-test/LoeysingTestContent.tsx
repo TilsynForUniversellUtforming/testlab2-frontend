@@ -33,6 +33,8 @@ interface Props {
     alleSvar: Svar[]
   ) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
+  showHelpText: boolean;
+  toggleShowHelpText: () => void;
 }
 
 const chunkArray = <T extends object>(array: T[], size: number) => {
@@ -67,6 +69,8 @@ const LoeysingTestContent = ({
   testStatusMap,
   doUpdateTestResult,
   onChangeStatus,
+  showHelpText,
+  toggleShowHelpText,
 }: Props) => {
   const { id: sakId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
@@ -106,6 +110,8 @@ const LoeysingTestContent = ({
         pageType={pageType.pageType}
         innhaldstype={innhaldstype.innhaldstype}
         progressionPercent={progressionPercent}
+        toggleShowHelpText={toggleShowHelpText}
+        showHelpText={showHelpText}
       />
       {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
         <div className="testregel-row" key={rowIndex}>
@@ -137,6 +143,7 @@ const LoeysingTestContent = ({
                   testregel={activeTest.testregel}
                   resultater={activeTest.testResultList}
                   onResultat={doUpdateTestResult}
+                  showHelpText={showHelpText}
                 />
                 <div className="testregel-form-buttons">
                   <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
