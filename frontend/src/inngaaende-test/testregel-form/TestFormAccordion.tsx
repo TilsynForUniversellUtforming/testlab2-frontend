@@ -17,8 +17,12 @@ export function TestFormAccordion({
   skjemaerMedSvar,
   onAnswer,
   showHelpText,
-}: Props) {
-  function renderForm(resultatId: number, skjemaMedSvar: SkjemaMedSvar) {
+}: Readonly<Props>) {
+  function renderForm(
+    resultatId: number,
+    skjemaMedSvar: SkjemaMedSvar,
+    index: number
+  ) {
     return (
       <div key={resultatId} className="test-form-content">
         {skjemaMedSvar.skjema.steg.map((etSteg) => (
@@ -26,7 +30,8 @@ export function TestFormAccordion({
             <TestFormStepWrapper
               steg={etSteg}
               alleSvar={skjemaMedSvar.svar}
-              onAnswer={(svar) => onAnswer(svar, 0)}
+              index={index}
+              onAnswer={(svar) => onAnswer(svar, index)}
               showHelpText={showHelpText}
             />
           </div>
@@ -41,7 +46,7 @@ export function TestFormAccordion({
   if (skjemaerMedSvar.length === 1) {
     const skjemaMedSvar = skjemaerMedSvar[0];
     const resultatId = skjemaMedSvar.resultatId;
-    return renderForm(resultatId, skjemaMedSvar);
+    return renderForm(resultatId, skjemaMedSvar, 0);
   } else {
     return (
       <Accordion>
@@ -51,14 +56,15 @@ export function TestFormAccordion({
             skjemaMedSvar.svar
           );
           const resultatId = skjemaMedSvar.resultatId;
+          const isLast = index === skjemaerMedSvar.length - 1;
           return (
-            <Accordion.Item key={skjemaMedSvar.resultatId} defaultOpen={true}>
+            <Accordion.Item key={skjemaMedSvar.resultatId} defaultOpen={isLast}>
               <Accordion.Header>
                 {index + 1}
                 {elementOmtale && ': ' + elementOmtale}
               </Accordion.Header>
               <Accordion.Content>
-                {renderForm(resultatId, skjemaMedSvar)}
+                {renderForm(resultatId, skjemaMedSvar, index)}
               </Accordion.Content>
             </Accordion.Item>
           );

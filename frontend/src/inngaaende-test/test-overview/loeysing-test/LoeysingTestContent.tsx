@@ -27,7 +27,9 @@ interface Props {
   activeTest: ActiveTest | undefined;
   clearActiveTestregel: () => void;
   onChangeTestregel: (testregelId: number) => void;
+  createNewTestResult: (activeTest: ActiveTest) => void;
   doUpdateTestResult: (
+    resultatId: number,
     resultat: TestregelResultat,
     elementOmtale: string,
     alleSvar: Svar[]
@@ -66,6 +68,7 @@ const LoeysingTestContent = ({
   activeTest,
   clearActiveTestregel,
   onChangeTestregel,
+  createNewTestResult,
   testStatusMap,
   doUpdateTestResult,
   onChangeStatus,
@@ -77,10 +80,6 @@ const LoeysingTestContent = ({
   const formRef = useRef<HTMLDivElement>(null);
 
   const onClickSave = () => {
-    clearActiveTestregel();
-  };
-
-  const onClickBack = () => {
     clearActiveTestregel();
   };
 
@@ -146,7 +145,10 @@ const LoeysingTestContent = ({
                   showHelpText={showHelpText}
                 />
                 <div className="testregel-form-buttons">
-                  <Button variant={ButtonVariant.Outline} onClick={onClickBack}>
+                  <Button
+                    variant={ButtonVariant.Outline}
+                    onClick={() => createNewTestResult(activeTest)}
+                  >
                     Legg til flere testelementer
                   </Button>
                   <Button onClick={onClickSave}>Lagre og lukk</Button>

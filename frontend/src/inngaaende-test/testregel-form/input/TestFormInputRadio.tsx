@@ -1,36 +1,20 @@
 import { Radio } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
 import { StegJaNei, StegRadio } from '@test/util/testregel-interface/Steg';
-import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   steg: StegJaNei | StegRadio;
   svar?: string;
+  index: number;
   onAnswer: (svar: Svar) => void;
 }
 
-const TestFormInputRadio = ({ steg, svar, onAnswer }: Props) => {
+const TestFormInputRadio = ({ steg, svar, index, onAnswer }: Props) => {
   const { spm, ht, stegnr } = steg;
-  const noAnswer = 'no_answer_radio';
-  const [value, setValue] = useState(noAnswer);
 
-  const handleValueChange = useCallback(
-    (newValue: string) => {
-      setValue(newValue);
-      if (newValue && newValue !== svar && newValue !== noAnswer) {
-        onAnswer({ steg: stegnr, svar: newValue });
-      }
-    },
-    [svar, stegnr]
-  );
-
-  useEffect(() => {
-    if (svar && svar !== value) {
-      setValue(svar);
-    } else if (!svar) {
-      setValue(noAnswer);
-    }
-  }, [svar]);
+  const handleValueChange = (newValue: string) => {
+    onAnswer({ steg: stegnr, svar: newValue });
+  };
 
   const options = steg.type === 'jaNei' ? ['Ja', 'Nei'] : steg.svarArray;
 
@@ -38,9 +22,9 @@ const TestFormInputRadio = ({ steg, svar, onAnswer }: Props) => {
     <div className="">
       <Radio.Group
         legend={spm}
-        value={value}
+        value={svar ?? 'ikke_svart'} // default må være noe annet enn tom streng, pga. en bug i designsystemet
         onChange={handleValueChange}
-        name={stegnr}
+        name={`${stegnr}-${index}`}
         description={ht}
       >
         {options.map((svaralternativ) => (

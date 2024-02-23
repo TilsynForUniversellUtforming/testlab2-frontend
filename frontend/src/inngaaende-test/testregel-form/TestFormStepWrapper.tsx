@@ -10,6 +10,7 @@ import { finnSvar } from '@test/util/testregelParser';
 interface FormStepProps {
   steg: Steg | undefined;
   alleSvar: Svar[];
+  index: number;
   onAnswer: (answer: Svar) => void;
   showHelpText: boolean;
 }
@@ -17,6 +18,7 @@ interface FormStepProps {
 const TestFormStepWrapper = ({
   steg,
   alleSvar,
+  index,
   onAnswer,
   showHelpText,
 }: FormStepProps) => {
@@ -48,6 +50,7 @@ const TestFormStepWrapper = ({
         <TestFormInputRadio
           steg={steg}
           svar={finnSvar(steg.stegnr, alleSvar)}
+          index={index}
           onAnswer={onAnswer}
         />
       );

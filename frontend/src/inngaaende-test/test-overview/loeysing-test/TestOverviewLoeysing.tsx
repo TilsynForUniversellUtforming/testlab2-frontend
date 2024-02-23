@@ -1,6 +1,5 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { asList } from '@common/util/arrayUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
@@ -22,6 +21,7 @@ import {
 import { TestregelResultat } from '@test/util/testregelParser';
 import {
   findActiveTestResult,
+  findActiveTestResults,
   getInitialPageType,
   getNettsideProperties,
   getTestResultsForLoeysing,
@@ -140,17 +140,33 @@ const TestOverviewLoeysing = () => {
     if (activeTestregel) {
       setActiveTest({
         testregel: activeTestregel,
-        testResultList: asList(
-          findActiveTestResult(
-            filteredTestResults,
-            Number(sakId),
-            Number(loeysingId),
-            activeTestregel.id,
-            pageType.nettsideId
-          )
+        testResultList: findActiveTestResults(
+          testResultsLoeysing,
+          Number(sakId),
+          loeysingId,
+          activeTestregel.id,
+          pageType.nettsideId
         ),
       });
     }
+  };
+
+  const createNewTestResult = async (activeTest: ActiveTest) => {
+    const nyttTestresultat: CreateTestResultat = {
+      sakId: Number(sakId),
+      loeysingId: Number(loeysingId),
+      testregelId: activeTest.testregel.id,
+      nettsideId: pageType.nettsideId,
+    };
+    const alleResultater = await createTestResultat(nyttTestresultat);
+    const resultater = findActiveTestResults(
+      alleResultater,
+      Number(sakId),
+      Number(loeysingId),
+      activeTest.testregel.id,
+      pageType.nettsideId
+    );
+    setActiveTest({ ...activeTest, testResultList: resultater });
   };
 
   const onChangePageType = useCallback(
@@ -343,6 +359,7 @@ const TestOverviewLoeysing = () => {
 
   const doUpdateTestResult = useCallback(
     async (
+      resultatId: number,
       resultat: TestregelResultat,
       elementOmtale: string,
       alleSvar: Svar[]
@@ -350,12 +367,8 @@ const TestOverviewLoeysing = () => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
 
-      const activeTestResult = findActiveTestResult(
-        testResultsLoeysing,
-        sakIdNumeric,
-        loeysingIdNumeric,
-        activeTest?.testregel?.id,
-        pageType.nettsideId
+      const activeTestResult = testResultsLoeysing.find(
+        (testResult) => testResult.id === resultatId
       );
 
       if (
@@ -482,6 +495,7 @@ const TestOverviewLoeysing = () => {
           activeTest={activeTest}
           clearActiveTestregel={handleSetInactiveTest}
           onChangeTestregel={onChangeTestregel}
+          createNewTestResult={createNewTestResult}
           doUpdateTestResult={doUpdateTestResult}
           onChangeStatus={onChangeStatus}
           toggleShowHelpText={toggleShowHelpText}
