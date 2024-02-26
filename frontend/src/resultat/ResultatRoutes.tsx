@@ -25,9 +25,8 @@ export const ResultRoutes: RouteObject = {
   children: [
     {
       path: TESTRESULTAT_TESTGRUNNLAG.path,
-      loader: ({ params }) => {
-        return fetchTestresultatAggregert(parseInt(params.id as string));
-      },
+      loader: ({ params }) =>
+        fetchTestresultatAggregert(parseInt(params.id as string)),
       element: <TestResultatApp />,
       handle: { name: TESTRESULTAT_TESTGRUNNLAG.navn },
     },
