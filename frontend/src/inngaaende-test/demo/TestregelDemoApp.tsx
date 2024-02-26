@@ -61,6 +61,7 @@ const TestregelDemoApp = () => {
       testregel={testregel}
       resultater={[createResultat(testregel)]}
       onResultat={onResultat}
+      showHelpText={true}
     />
   );
 };

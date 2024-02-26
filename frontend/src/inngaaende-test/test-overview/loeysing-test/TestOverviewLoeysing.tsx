@@ -81,6 +81,11 @@ const TestOverviewLoeysing = () => {
       pageType.nettsideId
     )
   );
+  const [showHelpText, setShowHelpText] = useState(true);
+
+  const toggleShowHelpText = () => {
+    setShowHelpText((showHelpText) => !showHelpText);
+  };
 
   const handleSetInactiveTest = useCallback(() => {
     setActiveTest(undefined);
@@ -479,6 +484,8 @@ const TestOverviewLoeysing = () => {
           onChangeTestregel={onChangeTestregel}
           doUpdateTestResult={doUpdateTestResult}
           onChangeStatus={onChangeStatus}
+          toggleShowHelpText={toggleShowHelpText}
+          showHelpText={showHelpText}
         />
       </div>
       {alert && (
