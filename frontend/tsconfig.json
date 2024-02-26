@@ -23,7 +23,8 @@
       "@verksemder/*": ["./verksemder/*"],
       "@sak/*": ["./sak/*"],
       "@testreglar/*": ["./testreglar/*"],
-      "@test/*": ["./inngaaende-test/*"]
+      "@test/*": ["./inngaaende-test/*"],
+      "@resultat/*": ["./resultat/*"]
     }
   },
   "include": ["src"],

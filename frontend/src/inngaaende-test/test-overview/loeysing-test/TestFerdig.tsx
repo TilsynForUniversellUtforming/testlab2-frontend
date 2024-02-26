@@ -1,37 +1,44 @@
+import AlertTimed from '@common/alert/AlertTimed';
+import useAlert from '@common/alert/useAlert';
 import { ButtonVariant } from '@common/types';
 import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { Button, Heading, Tag } from '@digdir/design-system-react';
-import { SakContext } from '@sak/types';
+import { createTestresultatAggregert } from '@resultat/resultat-api';
+import { TESTRESULTAT_TESTGRUNNLAG } from '@resultat/ResultatRoutes';
+import { TestContext } from '@test/types';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
-import { getTestresultatAggregert } from '../../../resultat/resultat-api';
-import { TESTRESULTAT_TESTGRUNNLAG } from '../../../resultat/ResultatRoutes';
-
 const TestFerdig = () => {
-  const { sak }: SakContext = useOutletContext();
-  const { sakId, loeysingId } = useParams();
+  const { contextSak }: TestContext = useOutletContext();
+  const { id: sakId, loeysingId } = useParams();
   const navigate = useNavigate();
   const [loeysingNamn, setLoeysingNamn] = useState<string>('');
+  const [alert, setAlert] = useAlert();
 
   const onFerdigTest = useCallback(async () => {
-    await getTestresultatAggregert(Number(sakId));
-    navigate(
-      getFullPath(TESTRESULTAT_TESTGRUNNLAG, {
-        pathParam: idPath,
-        id: sakId,
-      } as IdReplacement)
-    );
+    await createTestresultatAggregert(Number(sakId))
+      .then(() => {
+        navigate(
+          getFullPath(TESTRESULTAT_TESTGRUNNLAG, {
+            pathParam: idPath,
+            id: sakId,
+          } as IdReplacement)
+        );
+      })
+      .catch(() => {
+        setAlert('danger', 'Kunne ikke lagre aggregert testresultat');
+      });
   }, [sakId]);
 
   useEffect(() => {
-    const foundLoeysing = sak?.loeysingList.find(
+    const foundLoeysing = contextSak?.loeysingList.find(
       (l) => l.loeysing.id === Number(loeysingId)
     );
     if (foundLoeysing) {
       setLoeysingNamn(foundLoeysing.loeysing.namn);
     }
-  }, [loeysingId, sak?.loeysingList]);
+  }, [loeysingId, contextSak?.loeysingList]);
 
   return (
     <div className="statusFerdig">
@@ -49,6 +56,13 @@ const TestFerdig = () => {
           Sjå resultat
         </Button>
       </div>
+      {alert && (
+        <AlertTimed
+          severity={alert.severity}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
     </div>
   );
 };

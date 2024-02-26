@@ -8,8 +8,7 @@ export const fetchTestresultatAggregert = async (
     responseToJson(response, 'Kunne ikkje hente for loeysing')
   );
 
-export const getTestresultatAggregert = async (id: number) => {
+export const createTestresultatAggregert = async (id: number) =>
   fetch(`/api/v1/testresultat/aggregert/${id}`, { method: 'POST' }).then(
     (response) => responseToJson(response, 'Kunne ikkje hente for loeysing')
   );
-};
