@@ -9,12 +9,14 @@ type Props = {
   testregel: Testregel;
   skjemaerMedSvar: SkjemaMedSvar[];
   onAnswer: (svar: Svar, index: number) => void;
+  showHelpText: boolean;
 };
 
 export function TestFormAccordion({
   testregel,
   skjemaerMedSvar,
   onAnswer,
+  showHelpText,
 }: Props) {
   function renderForm(resultatId: number, skjemaMedSvar: SkjemaMedSvar) {
     return (
@@ -25,6 +27,7 @@ export function TestFormAccordion({
               steg={etSteg}
               alleSvar={skjemaMedSvar.svar}
               onAnswer={(svar) => onAnswer(svar, 0)}
+              showHelpText={showHelpText}
             />
           </div>
         ))}
