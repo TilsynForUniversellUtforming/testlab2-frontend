@@ -14,7 +14,7 @@ import {
 import { TestregelResultat } from '@test/util/testregelParser';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props {
@@ -77,7 +77,6 @@ const LoeysingTestContent = ({
 }: Props) => {
   const { id: sakId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
-  const formRef = useRef<HTMLDivElement>(null);
 
   const onClickSave = () => {
     clearActiveTestregel();
@@ -94,10 +93,6 @@ const LoeysingTestContent = ({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    formRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [activeTest]);
 
   if (testFerdig) {
     return <TestFerdig />;
@@ -137,7 +132,7 @@ const LoeysingTestContent = ({
           </div>
           {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
             activeTest && (
-              <div className="testregel-form-wrapper" ref={formRef}>
+              <div className="testregel-form-wrapper">
                 <TestForm
                   testregel={activeTest.testregel}
                   resultater={activeTest.testResultList}
