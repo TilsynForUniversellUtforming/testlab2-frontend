@@ -32,4 +32,9 @@ export default defineConfig({
       '@resultat': '/src/resultat',
     },
   },
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
 });
