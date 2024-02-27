@@ -53,7 +53,7 @@ const TestregelForm = ({
   const { id } = useParams();
   const kravOptions: OptionType[] = kravList.map((k) => ({
     label: k.tittel,
-    value: k.tittel,
+    value: String(k.id),
   }));
 
   const modusOptions: OptionType[] = createOptionsFromLiteral<TestregelModus>([
@@ -164,7 +164,7 @@ const TestregelForm = ({
         <TestlabFormSelect
           label="Krav"
           options={kravOptions}
-          name="krav"
+          name="krav.id"
           required
         />
         <TestlabFormSelect

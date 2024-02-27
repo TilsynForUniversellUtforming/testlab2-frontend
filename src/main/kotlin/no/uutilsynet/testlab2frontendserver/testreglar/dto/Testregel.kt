@@ -2,37 +2,39 @@ package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
+import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Testregel(
-    val id: Int,
+    override val id: Int,
     val testregelId: String,
     val versjon: Int,
-    val namn: String,
-    val krav: String,
+    override val namn: String,
+    override val krav: Krav,
     val status: TestregelStatus,
     val datoSistEndra: String,
     val type: TestregelInnholdstype,
-    val modus: TestregelModus,
+    override val modus: TestregelModus,
     val spraak: TestlabLocale,
     val tema: Tema?,
     val testobjekt: Testobjekt?,
     val kravTilSamsvar: String?,
     val testregelSchema: String,
     val innhaldstypeTesting: InnhaldstypeTesting?
-)
+) : TestregelBase(id, namn, krav, modus)
 
 fun TestregelDTO.toTestregel(
     temaList: List<Tema>,
     testobjektList: List<Testobjekt>,
-    innhaldstypeTestingList: List<InnhaldstypeTesting>
+    innhaldstypeTestingList: List<InnhaldstypeTesting>,
+    krav: Krav
 ): Testregel =
     Testregel(
         id = this.id,
         testregelId = this.testregelId,
         versjon = this.versjon,
         namn = this.namn,
-        krav = this.krav,
+        krav = krav,
         status = this.status,
         datoSistEndra = this.datoSistEndra.toString(),
         type = this.type,

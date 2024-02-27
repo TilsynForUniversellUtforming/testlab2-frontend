@@ -1,11 +1,13 @@
 import { TestlabLocale } from '@common/types';
 
+import { Krav } from '../../krav/types';
+
 export type TestregelModus = 'forenklet' | 'manuell';
 
 export type TestregelBase = {
   id: number;
   namn: string;
-  krav: string;
+  krav: Krav;
   modus: TestregelModus;
 };
 
@@ -52,6 +54,7 @@ export type Testregel = TestregelBase & {
 };
 
 export type TestregelInit = TestregelBase & {
+  kravId: number;
   testregelId: string;
   versjon: number;
   status: TestregelStatus;

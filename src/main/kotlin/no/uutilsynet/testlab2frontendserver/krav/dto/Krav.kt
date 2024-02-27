@@ -5,8 +5,12 @@ data class Krav(
     val tittel: String,
     val status: String,
     val innhald: String?,
-    val gjeldautomat: Boolean,
-    val gjeldnettsider: Boolean,
-    val gjeldapp: Boolean,
-    val urlrettleiing: String?
+    val gjeldAutomat: Boolean,
+    val gjeldNettsider: Boolean,
+    val gjeldApp: Boolean,
+    val urlRettleiing: String?,
+    val prinsipp: String,
+    val retningslinje: String,
+    val suksesskriterium: String,
+    val samsvarsnivaa: WcagSamsvarsnivaa
 )
