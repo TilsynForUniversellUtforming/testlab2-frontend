@@ -3,8 +3,8 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import java.time.Instant
+import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
