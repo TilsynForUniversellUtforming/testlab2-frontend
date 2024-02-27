@@ -1,0 +1,43 @@
+.skjemaer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.button {
+  background-color: var(--fds-semantic-surface-action-subtle);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.arrow {
+  position: relative;
+  bottom: 2px;
+  transition: transform 0.3s;
+}
+
+.arrow-rotated {
+  transform: rotate(180deg);
+}
+
+.label-number {
+  font-weight: 700;
+}
+
+.form-content {
+  margin-top: 4rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
