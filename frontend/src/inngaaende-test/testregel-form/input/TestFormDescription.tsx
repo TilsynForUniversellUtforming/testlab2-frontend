@@ -1,5 +1,6 @@
 import { Heading, Ingress, Paragraph } from '@digdir/design-system-react';
 import { Steg } from '@test/util/testregel-interface/Steg';
+import DOMPurify from 'dompurify';
 
 interface Props {
   steg: Steg;
@@ -7,13 +8,15 @@ interface Props {
 
 const TestFormDescription = ({ steg }: Props) => {
   const { spm, ht } = steg;
+  const spmHTML = { __html: DOMPurify.sanitize(spm) };
+  const htHTML = { __html: DOMPurify.sanitize(ht) };
   return (
     <>
       <Heading size="small" level={4} spacing>
         Instruksjon:
       </Heading>
-      <Ingress>{spm}</Ingress>
-      <Paragraph size="small">{ht}</Paragraph>
+      <Ingress dangerouslySetInnerHTML={spmHTML}></Ingress>
+      <Paragraph size="small" dangerouslySetInnerHTML={htHTML}></Paragraph>
     </>
   );
 };

@@ -27,14 +27,13 @@ const TestFormStepWrapper = ({
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
   }
 
-  steg = {
-    ...steg,
-    spm: parseHtmlEntities(steg.spm),
-    ht: showHelpText ? parseHtmlEntities(steg.ht) : '',
-  };
-
   switch (steg.type) {
     case 'tekst':
+      steg = {
+        ...steg,
+        spm: parseHtmlEntities(steg.spm),
+        ht: showHelpText ? parseHtmlEntities(steg.ht) : '',
+      };
       return (
         <TestFormInputText
           steg={steg}
@@ -46,6 +45,11 @@ const TestFormStepWrapper = ({
       return <TestFormDescription steg={steg} />;
     case 'radio':
     case 'jaNei':
+      steg = {
+        ...steg,
+        spm: parseHtmlEntities(steg.spm),
+        ht: showHelpText ? parseHtmlEntities(steg.ht) : '',
+      };
       return (
         <TestFormInputRadio
           steg={steg}
