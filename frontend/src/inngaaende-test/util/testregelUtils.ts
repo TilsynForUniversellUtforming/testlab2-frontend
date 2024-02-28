@@ -143,7 +143,7 @@ const toTestregelOverviewElement = ({
     return { id: id, name: secondPart, krav: firstPart };
   }
 
-  return { id: id, name: testregelId, krav: krav };
+  return { id: id, name: testregelId, krav: krav.suksesskriterium };
 };
 
 const filterTestregelByInnhaldstype = (

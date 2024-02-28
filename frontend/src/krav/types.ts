@@ -3,8 +3,14 @@ export type Krav = {
   tittel: string;
   status: string;
   innhald?: string;
-  gjeldautomat: boolean;
-  gjeldnettsider: boolean;
-  gjeldapp: boolean;
-  urlrettleiing?: string;
+  gjeldAutomat: boolean;
+  gjeldNettsider: boolean;
+  gjeldApp: boolean;
+  urlRettleiing?: string;
+  prinsipp: string;
+  retningslinje: string;
+  suksesskriterium: string;
+  samsvarsnivaa: Samsvarsnivaa;
 };
+
+export type Samsvarsnivaa = 'A' | 'AA' | 'AAA';

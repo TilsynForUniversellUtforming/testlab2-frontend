@@ -6,6 +6,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
+import no.uutilsynet.testlab2frontendserver.krav.dto.WcagSamsvarsnivaa
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
@@ -31,8 +34,12 @@ import org.springframework.web.client.RestTemplate
 class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Autowired private lateinit var server: MockRestServiceServer
-  private val apiUrl = "https://api.url"
-  private val testregelResource = TestregelResource(restTemplate, TestingApiProperties(apiUrl))
+  private val testregelApiUrl = "https://api.url/testregel"
+  private val kravApiUrl = "https://api.url/krav"
+
+  private val testregelResource =
+      TestregelResource(
+          restTemplate, TestingApiProperties(testregelApiUrl), KravApiProperties(kravApiUrl))
   private val mapper =
       jacksonObjectMapper()
           .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -40,27 +47,40 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Test
   fun `skal kunne hente liste med Testregel`() {
-    val json = mapper.writeValueAsString(testregelList)
+    val testregelDTOListJson = mapper.writeValueAsString(testregelDTOList)
+    val kravListJson = mapper.writeValueAsString(listOf(krav))
+
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(kravApiUrl)))
         .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
-        .andRespond(MockRestResponseCreators.withSuccess(json, MediaType.APPLICATION_JSON))
+        .andRespond(MockRestResponseCreators.withSuccess(kravListJson, MediaType.APPLICATION_JSON))
+
+    server
+        .expect(
+            ExpectedCount.once(),
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(testregelApiUrl)))
+        .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+        .andRespond(
+            MockRestResponseCreators.withSuccess(testregelDTOListJson, MediaType.APPLICATION_JSON))
+
     val result = testregelResource.listTestreglar()
-    assertThat(result).isEqualTo(testregelList)
+    assertThat(result).usingRecursiveComparison().isEqualTo(testregelList)
   }
 
   @Test
   fun `skal kunne lage en Testregel`() {
     val testregelList = testregelList
-    val testregelListJson = mapper.writeValueAsString(testregelList)
-    val testregelDTOListJson = mapper.writeValueAsString(listOf(testregelDTOList[1]))
+    val testregelDTOListJsonBefore = mapper.writeValueAsString(listOf(testregelDTOList[1]))
+    val testregelDTOListJsonAfter = mapper.writeValueAsString(testregelDTOList)
+    val kravListJson = mapper.writeValueAsString(listOf(krav))
+
     val expectedRequestData =
         mapOf(
             "testregelId" to "QW-ACT-R1",
             "namn" to "QW-ACT-R1 HTML Page has a title",
-            "krav" to "1.1.1",
+            "kravId" to 1,
             "versjon" to 1,
             "status" to TestregelStatus.publisert.value,
             "type" to TestregelInnholdstype.nett.value,
@@ -75,15 +95,16 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(testregelApiUrl)))
         .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
         .andRespond(
-            MockRestResponseCreators.withSuccess(testregelDTOListJson, MediaType.APPLICATION_JSON))
+            MockRestResponseCreators.withSuccess(
+                testregelDTOListJsonBefore, MediaType.APPLICATION_JSON))
 
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(testregelApiUrl)))
         .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
         .andExpect(
             MockRestRequestMatchers.content().json(mapper.writeValueAsString(expectedRequestData)))
@@ -92,17 +113,25 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(kravApiUrl)))
+        .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+        .andRespond(MockRestResponseCreators.withSuccess(kravListJson, MediaType.APPLICATION_JSON))
+
+    server
+        .expect(
+            ExpectedCount.once(),
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(testregelApiUrl)))
         .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
         .andRespond(
-            MockRestResponseCreators.withSuccess(testregelListJson, MediaType.APPLICATION_JSON))
+            MockRestResponseCreators.withSuccess(
+                testregelDTOListJsonAfter, MediaType.APPLICATION_JSON))
 
     val result =
         testregelResource.createTestregel(
             TestregelInit(
                 testregelId = "QW-ACT-R1",
                 namn = "QW-ACT-R1 HTML Page has a title",
-                krav = "1.1.1",
+                kravId = 1,
                 versjon = 1,
                 status = TestregelStatus.publisert,
                 type = TestregelInnholdstype.nett,
@@ -114,7 +143,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
                 testobjekt = 1,
                 kravTilSamsvar = ""))
 
-    assertThat(result).isEqualTo(testregelList)
+    assertThat(result).usingRecursiveComparison().isEqualTo(testregelList)
   }
 
   @Test
@@ -124,7 +153,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(testregelApiUrl)))
         .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
         .andRespond(
             MockRestResponseCreators.withSuccess(testregelDTOListJson, MediaType.APPLICATION_JSON))
@@ -134,7 +163,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
           TestregelInit(
               testregelId = "QW-ACT-R1",
               namn = "QW-ACT-R1 HTML Page has a title",
-              krav = "1.1.1",
+              kravId = 1,
               versjon = 1,
               status = TestregelStatus.publisert,
               type = TestregelInnholdstype.nett,
@@ -150,14 +179,16 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Test
   fun `skal kunne slette en Testregel`() {
-    val testregelList = testregelList
-    val json = mapper.writeValueAsString(testregelList)
+    val json = mapper.writeValueAsString(testregelDTOList)
+    val kravListJson = mapper.writeValueAsString(listOf(krav))
+
     val idList = IdList(listOf(1))
 
     for (id in idList.idList) {
       server
           .expect(
-              ExpectedCount.once(), MockRestRequestMatchers.requestTo("$apiUrl/v1/testreglar/$id"))
+              ExpectedCount.once(),
+              MockRestRequestMatchers.requestTo("$testregelApiUrl/v1/testreglar/$id"))
           .andExpect(MockRestRequestMatchers.method(HttpMethod.DELETE))
           .andRespond(MockRestResponseCreators.withSuccess())
     }
@@ -165,13 +196,20 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(apiUrl)))
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(kravApiUrl)))
+        .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
+        .andRespond(MockRestResponseCreators.withSuccess(kravListJson, MediaType.APPLICATION_JSON))
+
+    server
+        .expect(
+            ExpectedCount.once(),
+            MockRestRequestMatchers.requestTo(CoreMatchers.startsWith(testregelApiUrl)))
         .andExpect(MockRestRequestMatchers.method(HttpMethod.GET))
         .andRespond(MockRestResponseCreators.withSuccess(json, MediaType.APPLICATION_JSON))
 
     val result = testregelResource.deleteTestregelList(idList)
 
-    assertThat(result.body).isEqualTo(testregelList)
+    assertThat(result.body).usingRecursiveComparison().isEqualTo(testregelList)
   }
 
   private val testregelDTOList =
@@ -181,7 +219,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               "QW-ACT-R1",
               1,
               "QW-ACT-R1 HTML Page has a title",
-              "2.4.2 Sidetitler",
+              1,
               TestregelStatus.publisert,
               Instant.now(),
               TestregelInnholdstype.nett,
@@ -197,7 +235,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               "QW-ACT-R2",
               1,
               "QW-ACT-R2 HTML page has lang attribute",
-              "3.1.1 Språk på siden",
+              1,
               TestregelStatus.publisert,
               Instant.now(),
               TestregelInnholdstype.nett,
@@ -209,17 +247,29 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               "QW-ACT-R2",
               1))
 
+  private val krav =
+      Krav(
+          1,
+          "1.1.1 Ikke-tekstlig innhold,Gjeldande",
+          "I bruk",
+          "Innhald",
+          false,
+          false,
+          false,
+          "https://www.uutilsynet.no/wcag-standarden/111-ikke-tekstlig-innhold-niva/87",
+          "1. Mulig å oppfatte",
+          "1.2 Tidsbasert media",
+          "1.1.1",
+          WcagSamsvarsnivaa.A)
+
   private val testregelList =
       listOf(
           TestregelBase(
               1,
               "QW-ACT-R1 HTML Page has a title",
-              "2.4.2 Sidetitler",
+              krav,
               TestregelModus.forenklet,
           ),
           TestregelBase(
-              2,
-              "QW-ACT-R2 HTML page has lang attribute",
-              "3.1.1 Språk på siden",
-              TestregelModus.forenklet))
+              2, "QW-ACT-R2 HTML page has lang attribute", krav, TestregelModus.forenklet))
 }
