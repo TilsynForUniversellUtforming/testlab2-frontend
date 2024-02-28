@@ -85,8 +85,10 @@ export function TestFormAccordion({
                     [classes.arrowRotated]: showForm[resultatId],
                   })}
                 />
-                <span className={classes.labelNumber}>{index + 1}</span>
-                {elementOmtale && ': ' + elementOmtale}
+                <span className={classes.labelNumber}>
+                  {elementOmtale ? index + 1 + ': ' : index + 1}
+                </span>
+                {elementOmtale}
               </button>
               {showForm[resultatId] && (
                 <div className={classes.formContent}>
@@ -104,27 +106,6 @@ export function TestFormAccordion({
           );
         })}
       </div>
-      // <Accordion>
-      //   {skjemaerMedSvar.map((skjemaMedSvar, index) => {
-      //     const elementOmtale = findElementOmtale(
-      //       testregel,
-      //       skjemaMedSvar.svar
-      //     );
-      //     const resultatId = skjemaMedSvar.resultatId;
-      //     const isLast = index === skjemaerMedSvar.length - 1;
-      //     return (
-      //       <Accordion.Item key={skjemaMedSvar.resultatId} defaultOpen={isLast}>
-      //         <Accordion.Header>
-      //           {index + 1}
-      //           {elementOmtale && ': ' + elementOmtale}
-      //         </Accordion.Header>
-      //         <Accordion.Content>
-      //           {renderForm(resultatId, skjemaMedSvar, index)}
-      //         </Accordion.Content>
-      //       </Accordion.Item>
-      //     );
-      //   })}
-      // </Accordion>
     );
   }
 }
