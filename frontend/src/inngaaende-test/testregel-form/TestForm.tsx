@@ -12,6 +12,7 @@ import {
   TestregelResultat,
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
+import DOMPurify from 'dompurify';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -83,13 +84,21 @@ const TestForm = ({
     return gammeltResultat?.elementUtfall !== nyttResultat?.utfall;
   }
 
+  const cleanHTML = DOMPurify.sanitize(testregel.kravTilSamsvar ?? '', {
+    USE_PROFILES: { html: true },
+  });
+  const kravTilSamsvar = { __html: cleanHTML };
+
   return (
     <div className="test-form">
       <Heading size="medium" level={3}>
         {testregel.namn}
       </Heading>
       {testregel.kravTilSamsvar && showHelpText && (
-        <div className="test-form-description">{testregel.kravTilSamsvar}</div>
+        <div
+          className="test-form-description"
+          dangerouslySetInnerHTML={kravTilSamsvar}
+        ></div>
       )}
       <TestFormAccordion
         testregel={testregel}

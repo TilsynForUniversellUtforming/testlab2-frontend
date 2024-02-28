@@ -2,6 +2,7 @@ import TestlabDivider from '@common/divider/TestlabDivider';
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestlabSeverity } from '@common/types';
 import { Heading, Paragraph, Tag, Textarea } from '@digdir/design-system-react';
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
 
 const TestResultCard = ({
@@ -14,6 +15,7 @@ const TestResultCard = ({
   resultSeverity: TestlabSeverity;
 }) => {
   const [resultComment, setResultComment] = useState<string>('');
+  const cleanHTML = { __html: DOMPurify.sanitize(resultDescription) };
 
   return (
     <div className="test-form__result-card">
@@ -30,7 +32,7 @@ const TestResultCard = ({
         <Tag color={resultSeverity} size="large">
           {resultTitle}
         </Tag>
-        <Paragraph>{resultDescription}</Paragraph>
+        <Paragraph dangerouslySetInnerHTML={cleanHTML}></Paragraph>
       </div>
       <Textarea
         label="Frivillig kommentar til resultatet"

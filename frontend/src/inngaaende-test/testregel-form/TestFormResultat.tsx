@@ -1,5 +1,4 @@
 import { TestlabSeverity } from '@common/types';
-import { parseHtmlEntities } from '@common/util/stringutils';
 import TestResultCard from '@test/testregel-form/TestResultCard';
 import { TestregelResultat } from '@test/util/testregelParser';
 
@@ -35,7 +34,7 @@ const TestFormResultat = ({ resultat }: Props) => {
   return (
     <TestResultCard
       resultTitle={title}
-      resultDescription={parseHtmlEntities(resultat.utfall) || 'Inget resultat'}
+      resultDescription={resultat.utfall || 'Inget resultat'}
       resultSeverity={severity}
     />
   );
