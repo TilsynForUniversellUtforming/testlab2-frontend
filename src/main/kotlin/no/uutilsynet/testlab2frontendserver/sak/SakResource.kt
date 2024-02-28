@@ -5,6 +5,8 @@ import java.time.LocalDate
 import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiProperties
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
@@ -29,12 +31,14 @@ import org.springframework.web.client.RestTemplate
 class SakResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
-    loeysingsregisterApiProperties: LoeysingsregisterApiProperties
+    loeysingsregisterApiProperties: LoeysingsregisterApiProperties,
+    kravApiProperties: KravApiProperties
 ) {
 
   val sakUrl = "${testingApiProperties.url}/saker"
   val loeysingUrl = "${loeysingsregisterApiProperties.url}/v1/loeysing"
   val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
+  val kravUrl = "${kravApiProperties.url}/v1/krav"
 
   data class NySak(val namn: String, val virksomhet: String, val frist: LocalDate)
 
@@ -94,13 +98,19 @@ class SakResource(
     val testobjektList = restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
     val innhaldstypeForTestingList =
         restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
+    val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
 
     val testreglar =
         sakDTO.testreglar.map { sakTr ->
           testregelList
               .find { it.id == sakTr.id }
-              ?.toTestregel(temaList, testobjektList, innhaldstypeForTestingList)
-              ?: throw IllegalArgumentException("Sak har testregel som ikkje finns")
+              ?.toTestregel(
+                  temaList,
+                  testobjektList,
+                  innhaldstypeForTestingList,
+                  krav.find { krav -> krav.id == sakTr.kravId }
+                      ?: throw RuntimeException("Testregel har krav som ikkje finns"))
+              ?: throw RuntimeException("Sak har testregel som ikkje finns")
         }
 
     return ResponseEntity.ok(Sak(verksemd = verksemd, loeysingNettsideRelation, testreglar))

@@ -8,7 +8,7 @@ data class TestregelInit(
     val testregelId: String,
     val versjon: Int,
     val namn: String,
-    val krav: String,
+    val kravId: Int,
     val status: TestregelStatus,
     val datoSistEndra: Instant = Instant.now(),
     val type: TestregelInnholdstype,

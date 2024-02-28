@@ -2,15 +2,19 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelBase
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -24,16 +28,19 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 
 @RestController
 @RequestMapping("api/v1/testreglar", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TestregelResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
+    kravApiProperties: KravApiProperties,
 ) {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
   val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
+  val kravUrl = "${kravApiProperties.url}/v1/krav"
 
   @GetMapping("{id}")
   fun getTestregel(@PathVariable id: Int): ResponseEntity<Testregel> =
@@ -45,8 +52,11 @@ class TestregelResource(
                 restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
             val innhaldstypeForTestingList =
                 restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
+            val krav = restTemplate.getForObject<Krav>("$kravUrl/wcag2krav/${testregelDTO?.kravId}")
+
             ResponseEntity.ok(
-                testregelDTO?.toTestregel(temaList, testobjektList, innhaldstypeForTestingList))
+                testregelDTO?.toTestregel(
+                    temaList, testobjektList, innhaldstypeForTestingList, krav))
           }
           .getOrElse {
             logger.error("Kunne ikkje hente testregel", it)
@@ -60,7 +70,12 @@ class TestregelResource(
       try {
         logger.debug("Henter testreglar fra $testregelUrl")
         val url = if (includeMetadata) "$testregelUrl?includeMetadata=true" else testregelUrl
-        restTemplate.getList<TestregelBase>(url)
+        val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
+        restTemplate.getList<TestregelBaseDTO>(url).map {
+          it.toTestregelBase(
+              krav.find { k -> k.id == it.kravId }
+                  ?: throw IllegalStateException("Krav for testregel finns ikkje"))
+        }
       } catch (e: Error) {
         logger.error("klarte ikke å hente testreglar", e)
         throw Error("Klarte ikke å hente testreglar")
