@@ -104,7 +104,7 @@ const TestregelForm = ({
       id: testregel?.id,
       testregelSchema: testregel?.testregelSchema || '',
       namn: testregel?.namn || '',
-      krav: testregel?.krav,
+      kravId: testregel?.krav.id,
       modus: testregel?.modus || 'manuell',
       testregelId: testregel?.testregelId || '',
       versjon: testregel?.versjon || 1,
@@ -164,7 +164,7 @@ const TestregelForm = ({
         <TestlabFormSelect
           label="Krav"
           options={kravOptions}
-          name="krav.id"
+          name="kravId"
           required
         />
         <TestlabFormSelect
