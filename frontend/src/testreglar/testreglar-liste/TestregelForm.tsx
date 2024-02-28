@@ -187,7 +187,7 @@ const TestregelForm = ({
         />
         <TestlabFormSelect
           options={typeOptions}
-          label="Innhaldstype"
+          label="Type"
           name="type"
           required
         />
