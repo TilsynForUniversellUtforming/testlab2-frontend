@@ -3,13 +3,7 @@ import { z } from 'zod';
 export const testregelBaseScehma = z.object({
   id: z.number().optional(),
   namn: z.string().min(1, 'Namn kan ikkje vera tomt'),
-  krav: z
-    .string()
-    .optional()
-    .refine(
-      (value) => value !== undefined && value !== '',
-      'Krav sak må vejast'
-    ),
+  kravId: z.number().min(1, 'Krav må veljast'),
   modus: z.union([z.literal('forenklet'), z.literal('manuell')]),
 });
 
