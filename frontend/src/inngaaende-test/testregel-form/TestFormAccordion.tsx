@@ -23,6 +23,14 @@ export function TestFormAccordion({
   onAnswer,
   showHelpText,
 }: Readonly<Props>) {
+  const [showForm, setShowForm] = useState<Record<number, boolean>>(() => {
+    const lastElement = skjemaerMedSvar[skjemaerMedSvar.length - 1];
+    return skjemaerMedSvar.reduce(
+      (acc, value) => ({ ...acc, [value.resultatId]: value === lastElement }),
+      {}
+    );
+  });
+
   function renderForm(
     resultatId: number,
     skjemaMedSvar: SkjemaMedSvar,
@@ -52,18 +60,70 @@ export function TestFormAccordion({
     onAnswer(kilde.svar, index);
   }
 
+  function dropdownMenu(index: number) {
+    return (
+      <DropdownMenu placement="bottom-start" size="small">
+        <DropdownMenu.Trigger asChild={true}>
+          <Button size="small" className={classes.copyButton}>
+            Kopier svar fra tidligere test
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          {skjemaerMedSvar.map((kilde, i) => {
+            if (i === index) return null;
+
+            const elementOmtale = findElementOmtale(testregel, kilde.svar);
+            if (!elementOmtale) return null;
+
+            return (
+              <DropdownMenu.Item
+                key={kilde.resultatId}
+                onClick={() => kopierSvar(kilde, index)}
+              >
+                {elementOmtale}
+              </DropdownMenu.Item>
+            );
+          })}
+        </DropdownMenu.Content>
+      </DropdownMenu>
+    );
+  }
+
+  function accordionButton(
+    skjemaMedSvar: SkjemaMedSvar,
+    resultatId: number,
+    elementOmtale: string | undefined,
+    index: number
+  ) {
+    return (
+      <button
+        key={skjemaMedSvar.resultatId}
+        className={classes.accordionButton}
+        onClick={() =>
+          setShowForm({
+            ...showForm,
+            [resultatId]: !showForm[resultatId],
+          })
+        }
+      >
+        <ArrowDownIcon
+          className={classNames(classes.arrow, {
+            [classes.arrowRotated]: showForm[resultatId],
+          })}
+        />
+        <span className={classes.labelNumber}>
+          {elementOmtale ? index + 1 + ': ' : index + 1}
+        </span>
+        {elementOmtale}
+      </button>
+    );
+  }
+
   if (skjemaerMedSvar.length === 1) {
     const skjemaMedSvar = skjemaerMedSvar[0];
     const resultatId = skjemaMedSvar.resultatId;
     return renderForm(resultatId, skjemaMedSvar, 0);
   } else {
-    const [showForm, setShowForm] = useState<Record<number, boolean>>(() => {
-      const lastElement = skjemaerMedSvar[skjemaerMedSvar.length - 1];
-      return skjemaerMedSvar.reduce(
-        (acc, value) => ({ ...acc, [value.resultatId]: value === lastElement }),
-        {}
-      );
-    });
     return (
       <div className={classes.skjemaer}>
         {skjemaerMedSvar.map((skjemaMedSvar, index) => {
@@ -74,26 +134,7 @@ export function TestFormAccordion({
           const resultatId = skjemaMedSvar.resultatId;
           return (
             <div key={skjemaMedSvar.resultatId}>
-              <button
-                key={skjemaMedSvar.resultatId}
-                className={classes.accordionButton}
-                onClick={() =>
-                  setShowForm({
-                    ...showForm,
-                    [resultatId]: !showForm[resultatId],
-                  })
-                }
-              >
-                <ArrowDownIcon
-                  className={classNames(classes.arrow, {
-                    [classes.arrowRotated]: showForm[resultatId],
-                  })}
-                />
-                <span className={classes.labelNumber}>
-                  {elementOmtale ? index + 1 + ': ' : index + 1}
-                </span>
-                {elementOmtale}
-              </button>
+              {accordionButton(skjemaMedSvar, resultatId, elementOmtale, index)}
               {showForm[resultatId] && (
                 <div className={classes.formContent}>
                   <Heading
@@ -104,33 +145,7 @@ export function TestFormAccordion({
                     Test {index + 1}
                   </Heading>
 
-                  <DropdownMenu placement="bottom-start" size="small">
-                    <DropdownMenu.Trigger asChild={true}>
-                      <Button size="small" className={classes.copyButton}>
-                        Kopier svar fra tidligere test
-                      </Button>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content>
-                      {skjemaerMedSvar.map((kilde, i) => {
-                        if (i === index) return null;
-
-                        const elementOmtale = findElementOmtale(
-                          testregel,
-                          kilde.svar
-                        );
-                        if (!elementOmtale) return null;
-
-                        return (
-                          <DropdownMenu.Item
-                            key={kilde.resultatId}
-                            onClick={() => kopierSvar(kilde, index)}
-                          >
-                            {elementOmtale}
-                          </DropdownMenu.Item>
-                        );
-                      })}
-                    </DropdownMenu.Content>
-                  </DropdownMenu>
+                  {dropdownMenu(index)}
 
                   {renderForm(resultatId, skjemaMedSvar, index)}
                 </div>
