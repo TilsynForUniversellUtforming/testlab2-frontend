@@ -17,7 +17,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@digdir/design-system-react": "^0.51.1",
+    "@digdir/design-system-react": "^0.50.0",
     "@digdir/design-system-tokens": "^0.13.0",
     "@hookform/resolvers": "^3.3.4",
     "@navikt/aksel-icons": "^6.1.0",
