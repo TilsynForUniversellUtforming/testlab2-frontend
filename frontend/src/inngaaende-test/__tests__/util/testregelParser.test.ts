@@ -221,13 +221,11 @@ describe('makeViewModel spec', () => {
         '3.2',
         '3.3',
       ]);
-      expect(model.delutfall).toMatchObject([
-        {
-          nr: 0,
-          tekst: '',
-          fasit: 'Ja',
-        },
-      ]);
+      expect(model.delutfall[0]).toMatchObject({
+        nr: 0,
+        tekst: '',
+        fasit: 'Ja',
+      });
 
       const model2 = evaluateTestregel(testregel, [
         { steg: '3.1', svar: 'Ja' },
@@ -239,13 +237,11 @@ describe('makeViewModel spec', () => {
         '3.2',
         '3.3',
       ]);
-      expect(model2.delutfall).toMatchObject([
-        {
-          nr: 0,
-          tekst: '<br>- Element som ikkje er nøsta korrekt',
-          fasit: 'Nei',
-        },
-      ]);
+      expect(model2.delutfall[0]).toMatchObject({
+        nr: 0,
+        tekst: '<br>- Element som ikkje er nøsta korrekt',
+        fasit: 'Nei',
+      });
     });
 
     test('talDersom', () => {
@@ -295,13 +291,11 @@ describe('makeViewModel spec', () => {
         { steg: '3.15', svar: 'Ja' },
       ]);
 
-      expect(model.delutfall).toMatchObject([
-        {
-          nr: 0,
-          tekst: 'Tabell er koda med &#x3C;table&#x3E;.',
-          fasit: 'Ja',
-        },
-      ]);
+      expect(model.delutfall[0]).toMatchObject({
+        nr: 0,
+        tekst: 'Tabell er koda med &#x3C;table&#x3E;.',
+        fasit: 'Ja',
+      });
       expect(model.resultat).toMatchObject({
         type: 'avslutt',
         fasit: 'Ja',
@@ -352,6 +346,27 @@ describe('makeViewModel spec', () => {
         utfall: 'Visuell tabelltittel er ikkje koda med &#x3C;caption&#x3E;. ',
         fasit: 'Nei',
       });
+    });
+  });
+
+  test('når delutfall begynner med nr 1, så skal vi fortsatt kunne hente ut delutfall', () => {
+    const testregel = getTestregel('nett-3.3.4b');
+    const svar = [
+      { steg: '2.2', svar: 'Ja' },
+      { steg: '2.3', svar: 'Ja' },
+      { steg: '3.1', svar: 'bla bla' },
+      { steg: '3.3', svar: 'Ja' },
+      { steg: '3.4', svar: 'Nei' },
+      { steg: '3.7', svar: 'Ja' },
+      { steg: '3.9', svar: 'Nei' },
+    ];
+    const model = evaluateTestregel(testregel, svar);
+
+    expect(model.resultat).toMatchObject({
+      type: 'avslutt',
+      fasit: 'Nei',
+      utfall:
+        'Testsiden har funksjonalitet for sletting av brukerstyrt data:<br>- Testsiden har en mekanisme for å bekrefte sletting av brukterstyrt data. Mekanismen er ikke separat fra funksjonaliteten for å fullføre sletting.<br>- Det er ikke mulig å angre slettingen.',
     });
   });
 });

@@ -1,0 +1,225 @@
+{
+  "namn": "Nett-3.3.4b Brukeren kan bekrefte eller angre sletting av lagret informasjon 2023",
+  "id": "nett-3.3.4b",
+  "testlabId": 492,
+  "versjon": "1.0",
+  "type": "Nett",
+  "spraak": "nb",
+  "kravTilSamsvar": "<p>For nettsider som sletter brukerstyrte data i datalagringssystemer, gjelder minst ett av følgende alternativer:</p>\r\n<ul>\r\n<li>Før innsending har nettsiden en mekanisme som lar brukeren bekrefte sletting, mekanismen er separat fra innsending og den er et obligatorisk skjemaelement eller</li>\r\n<li>Etter innsending får brukeren informasjon om hvordan en kan angre sletting, og sletting blir angret</li>\r\n</ul>",
+  "side": "2.1",
+  "element": "3.1",
+  "steg": [
+    {
+      "stegnr": "2.1",
+      "spm": "Hvilken side tester du?",
+      "ht": "<p>Angi URL eller side-ID.</p>",
+      "type": "tekst",
+      "label": "URL/Side:",
+      "datalist": "Sideutvalg",
+      "oblig": true,
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "2.2"
+        }
+      }
+    },
+    {
+      "stegnr": "2.2",
+      "spm": "Har testsiden brukerstyrte data?",
+      "ht": "<p>Brukerstyrte data er data som er synlig for brukeren, og som brukeren kan endre og/eller slette med en bevisst handling. Eksempler er på brukerstyrte data er</p>\n<ul>\n<li>informasjon i et skjema</li>\n<li>oversikt over tidligere fakturaer</li>\n<li>eksamensbesvarelse</li>\n<li>profil på sosiale medier</li>\n</ul>\n<p><strong>Merk:</strong> Data som faller utenfor er for eksempel internett-logger eller metadata som en søkemotor samler inn, som brukeren ikke kan se eller samhandle.</p>",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "2.3"
+        },
+        "nei": {
+          "type": "ikkjeForekomst",
+          "utfall": "Testsiden har ikke brukerstyrte data."
+        }
+      }
+    },
+    {
+      "stegnr": "2.3",
+      "spm": "Er det mulig å slette brukerstyrt data?",
+      "ht": "<p>Slik tester du:</p>\n<ul>\n<li>Gjør en visuell inspeksjon</li>\n<li>Sjekk om testsiden har funksjonalitet for sletting av brukerstyrte data.</li>\n</ul>\n<p><strong>Merk: </strong>Hensikten med denne delen av kravet, er å forhindre tap/sletting av store datamengder. Eksempler er at brukeren kan slette:</p>\n<ul>\n<li>oversikt over fakturaer</li>\n<li>en hel fil</li>\n<li>eksamensbesvarelse</li>\n<li>Facebook-profil</li>\n</ul>",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.1"
+        },
+        "nei": {
+          "type": "ikkjeForekomst",
+          "utfall": "Testsiden har ikke funksjonalitet for å slette brukarstyrte data."
+        }
+      }
+    },
+    {
+      "stegnr": "3.1",
+      "spm": "Hvilken brukerstyrt data tester du?",
+      "ht": "<p>Beskriv dataen, slik at det er mulig å identifisere den i ettertid. Hvis det gjelder flere data, registrerer du en og en.</p>",
+      "type": "tekst",
+      "label": "Data:",
+      "multilinje": true,
+      "oblig": true,
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.2"
+        }
+      }
+    },
+    {
+      "stegnr": "3.2",
+      "spm": "Prøv å slette brukerstyrt data.",
+      "ht": "<p>Slett lagret, brukerstyrt data.</p>\n<p><strong>Merk: </strong>Dersom det ikke er data på nettsiden fra før, må du registrere og lagre data før du kan gjennomføre testing.</p>",
+      "type": "instruksjon",
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.3"
+        }
+      }
+    },
+    {
+      "stegnr": "3.3",
+      "spm": "Har testsiden en mekanisme for å bekrefte at du har til hensikt å slette dataen?",
+      "ht": "<p>Mekanismen for å bekrefte, skal informere brukeren om handlingen (slettingen) du er i ferd med å gjennomføre og hvilke konsekvenser det får.</p>\n<p>Mekanismen kan for eksempel være:</p>\n<ul>\n<li>En avkryssingsboks, knapp eller lignende for å bekrefte eller avbryte sletting</li>\n<li>Ledeteksten til mekanismen kan for eksempel være \"Jeg bekrefter sletting\", \"Sikker på at du vil slette informasjonen?\" eller \"Bekreft sletting\"</li>\n</ul>",
+      "type": "jaNei",
+      "kilde": [
+        "G155",
+        "G168"
+      ],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.4"
+        },
+        "nei": {
+          "type": "gaaTil",
+          "steg": "3.6",
+          "delutfall": {
+            "nr": 1,
+            "fasit": "Nei",
+            "tekst": "Testsiden har ikke en mekanisme for å bekrefte sletting av brykerstyrte data."
+          }
+        }
+      }
+    },
+    {
+      "stegnr": "3.4",
+      "spm": "Er mekanismen for å bekrefte sletting, separat frå funksjonaliteten for å fullføre sletting?",
+      "ht": "<p>Mekanismen for å bekrefte og funksjonaliteten for å fullføre sletting, skal være to separate skjemaelement.</p>\n<p>Slik tester du:</p>\n<ul>\n<li>Sjekk at mekanismen for å bekrefte sletting, er separat fra funksjonen for å fullføre sletting.</li>\n</ul>\n<p><strong>Merk:</strong> En kombinasjon av mekanisme og funksjonen for å fullføre sletting, er ikke godkjent. Eksempelvis er en knapp «Bekreft og slett» er ikke tilstrekkelig.</p>",
+      "type": "jaNei",
+      "kilde": [
+        "G155"
+      ],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.5"
+        },
+        "nei": {
+          "type": "gaaTil",
+          "steg": "3.6",
+          "nr": 1,
+          "delutfall": {
+            "nr": 1,
+            "fasit": "Nei",
+            "tekst": "Testsiden har en mekanisme for å bekrefte sletting av brukterstyrt data. Mekanismen er ikke separat fra funksjonaliteten for å fullføre sletting."
+          }
+        }
+      }
+    },
+    {
+      "stegnr": "3.5",
+      "spm": "Er mekanismen for å bekrefte sletting av data obligatorisk?",
+      "ht": "<p>Mekanismen for å bekrefte sletting av data, skal være et obligatorisk skjemaelement.</p>\n<p>Slik tester du:</p>\n<ul>\n<li>Prøv å slette data, uten å bruke mekanismen for å bekrefte.</li>\n<li><strong>Merk:</strong> Hvis du ikke får slettet data, uten å krysse av eller tilsvarende, betyr det at mekanismen fungerer som den skal (er obligatorisk).</li>\n</ul>",
+      "type": "jaNei",
+      "kilde": [
+        "G155"
+      ],
+      "ruting": {
+        "nei": {
+          "type": "gaaTil",
+          "steg": "3.6",
+          "nr": 1,
+          "delutfall": {
+            "nr": 1,
+            "fasit": "Nei",
+            "tekst": "Testsiden har en mekanisme for å bekrefte sletting av brukterstyrt data. Mekanismen er separat fra funksjonaliteten for å fullføre sletting, men den er ikke obligatorisk."
+          }
+        },
+        "ja": {
+          "type": "avslutt",
+          "fasit": "Ja",
+          "utfall": "Testsiden har en mekanisme for å bekrefte sletting av brukterstyrt data. Mekanismen er separat fra funksjonaliteten for å fullføre sletting, og den er obligatorisk."
+        }
+      }
+    },
+    {
+      "stegnr": "3.6",
+      "spm": "Fullfør sletting av dataen.",
+      "ht": "<p>Nå skal du fullføre sletting, for deretter å sjekke om det er mulig å angre (reversere).</p>\n<ul>\n<li>Fullfør sletting av dataen</li>\n</ul>",
+      "type": "instruksjon",
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.7"
+        }
+      }
+    },
+    {
+      "stegnr": "3.7",
+      "spm": "Kan du angre (reversere) slettingen?",
+      "ht": "<p>Mekanismen kan for eksempel være for en knapp for å angre sletting.</p>\n<p>Slik tester du:</p>\n<ul>\n<li>Gjør en visuell inspeksjon, og sjekk om du finner funksjonalitet eller informasjon for å angre sletting</li>\n<li>Det kan for eksempel være en knapp, lenke med Angre sletting, Gjenopprett eller lignende</li>\n</ul>",
+      "type": "jaNei",
+      "kilde": [
+        "G99"
+      ],
+      "ruting": {
+        "ja": {
+          "type": "gaaTil",
+          "steg": "3.8"
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Testsiden har funksjonalitet for sletting av brukerstyrt data:<br>- #delutfall(1)<br>- Det er ikke mulig å angre slettingen."
+        }
+      }
+    },
+    {
+      "stegnr": "3.8",
+      "spm": "Angre sletting.",
+      "ht": "<p>Bruk mekanismen for å angre, eller følg ei eventuell annen informasjon for å angre sletting/gjenopprette data.</p>",
+      "type": "instruksjon",
+      "ruting": {
+        "alle": {
+          "type": "gaaTil",
+          "steg": "3.9"
+        }
+      }
+    },
+    {
+      "stegnr": "3.9",
+      "spm": "Får du til å angre (reversere) sletting av dataen?",
+      "ht": "<p>Slik tester du:</p>\n<ul>\n<li>Sjekk at du faktisk får angret (reversert) sletting av data, dvs. dataen har blitt gjenopprettet.</li>\n</ul>",
+      "type": "jaNei",
+      "ruting": {
+        "ja": {
+          "type": "avslutt",
+          "fasit": "Ja",
+          "utfall": "Testsiden har funksjonalitet for sletting av brukerstyrt data. Det er mulig å angre slettingen."
+        },
+        "nei": {
+          "type": "avslutt",
+          "fasit": "Nei",
+          "utfall": "Testsiden har funksjonalitet for sletting av brukerstyrt data:<br>- #delutfall(1)<br>- Det er ikke mulig å angre slettingen."
+        }
+      }
+    }
+  ]
+}
