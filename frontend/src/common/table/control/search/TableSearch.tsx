@@ -4,9 +4,14 @@ import { ChangeEvent, useEffect, useState } from 'react';
 interface Props {
   showSearch: boolean;
   onChangeFilter: (search: string) => void;
+  resetPagination: () => void;
 }
 
-const TableSearch = ({ showSearch, onChangeFilter }: Props) => {
+const TableSearch = ({
+  showSearch,
+  onChangeFilter,
+  resetPagination,
+}: Props) => {
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
@@ -19,6 +24,7 @@ const TableSearch = ({ showSearch, onChangeFilter }: Props) => {
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
+    resetPagination();
   };
 
   const onClear = () => {
