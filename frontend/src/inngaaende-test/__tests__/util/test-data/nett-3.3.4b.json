@@ -88,10 +88,7 @@
       "spm": "Har testsiden en mekanisme for å bekrefte at du har til hensikt å slette dataen?",
       "ht": "<p>Mekanismen for å bekrefte, skal informere brukeren om handlingen (slettingen) du er i ferd med å gjennomføre og hvilke konsekvenser det får.</p>\n<p>Mekanismen kan for eksempel være:</p>\n<ul>\n<li>En avkryssingsboks, knapp eller lignende for å bekrefte eller avbryte sletting</li>\n<li>Ledeteksten til mekanismen kan for eksempel være \"Jeg bekrefter sletting\", \"Sikker på at du vil slette informasjonen?\" eller \"Bekreft sletting\"</li>\n</ul>",
       "type": "jaNei",
-      "kilde": [
-        "G155",
-        "G168"
-      ],
+      "kilde": ["G155", "G168"],
       "ruting": {
         "ja": {
           "type": "gaaTil",
@@ -113,9 +110,7 @@
       "spm": "Er mekanismen for å bekrefte sletting, separat frå funksjonaliteten for å fullføre sletting?",
       "ht": "<p>Mekanismen for å bekrefte og funksjonaliteten for å fullføre sletting, skal være to separate skjemaelement.</p>\n<p>Slik tester du:</p>\n<ul>\n<li>Sjekk at mekanismen for å bekrefte sletting, er separat fra funksjonen for å fullføre sletting.</li>\n</ul>\n<p><strong>Merk:</strong> En kombinasjon av mekanisme og funksjonen for å fullføre sletting, er ikke godkjent. Eksempelvis er en knapp «Bekreft og slett» er ikke tilstrekkelig.</p>",
       "type": "jaNei",
-      "kilde": [
-        "G155"
-      ],
+      "kilde": ["G155"],
       "ruting": {
         "ja": {
           "type": "gaaTil",
@@ -138,9 +133,7 @@
       "spm": "Er mekanismen for å bekrefte sletting av data obligatorisk?",
       "ht": "<p>Mekanismen for å bekrefte sletting av data, skal være et obligatorisk skjemaelement.</p>\n<p>Slik tester du:</p>\n<ul>\n<li>Prøv å slette data, uten å bruke mekanismen for å bekrefte.</li>\n<li><strong>Merk:</strong> Hvis du ikke får slettet data, uten å krysse av eller tilsvarende, betyr det at mekanismen fungerer som den skal (er obligatorisk).</li>\n</ul>",
       "type": "jaNei",
-      "kilde": [
-        "G155"
-      ],
+      "kilde": ["G155"],
       "ruting": {
         "nei": {
           "type": "gaaTil",
@@ -176,9 +169,7 @@
       "spm": "Kan du angre (reversere) slettingen?",
       "ht": "<p>Mekanismen kan for eksempel være for en knapp for å angre sletting.</p>\n<p>Slik tester du:</p>\n<ul>\n<li>Gjør en visuell inspeksjon, og sjekk om du finner funksjonalitet eller informasjon for å angre sletting</li>\n<li>Det kan for eksempel være en knapp, lenke med Angre sletting, Gjenopprett eller lignende</li>\n</ul>",
       "type": "jaNei",
-      "kilde": [
-        "G99"
-      ],
+      "kilde": ["G99"],
       "ruting": {
         "ja": {
           "type": "gaaTil",

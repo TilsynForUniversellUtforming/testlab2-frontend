@@ -1,5 +1,7 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
-import { Heading, Switch } from '@digdir/design-system-react';
+import { isUrl } from '@common/util/validationUtils';
+import { Heading, Link, Switch } from '@digdir/design-system-react';
+import { ExternalLinkIcon } from '@navikt/aksel-icons';
 
 interface Props {
   pageType: string;
@@ -7,6 +9,7 @@ interface Props {
   progressionPercent: number;
   showHelpText: boolean;
   toggleShowHelpText: () => void;
+  url: string;
 }
 
 const TestRegelParamSelection = ({
@@ -15,30 +18,38 @@ const TestRegelParamSelection = ({
   progressionPercent,
   showHelpText,
   toggleShowHelpText,
-}: Props) => {
-  return (
-    <div className="test-param-selection">
-      <Heading size="small" level={6}>
-        {innhaldstype} og {pageType}
-      </Heading>
-      <LoadingBar
-        ariaLabel={`${progressionPercent}% ferdig`}
-        customText="Progresjon"
-        dynamicSeverity={false}
-        severity="success"
-        labelPlacement="right"
-        percentage={progressionPercent}
-      />
-      <Switch
-        position="left"
-        size="small"
-        checked={showHelpText}
-        onChange={toggleShowHelpText}
-      >
-        Hjelpetekster
-      </Switch>
-    </div>
-  );
-};
+  url,
+}: Props) => (
+  <div className="test-param-selection">
+    <Heading size="small" level={6}>
+      {isUrl(url) ? (
+        <Link href={url} target="_blank" title={`Gå til ${url}`}>
+          {innhaldstype} og {pageType}
+          <ExternalLinkIcon aria-hidden />
+        </Link>
+      ) : (
+        <>
+          {innhaldstype} og {pageType}
+        </>
+      )}
+    </Heading>
+    <LoadingBar
+      ariaLabel={`${progressionPercent}% ferdig`}
+      customText="Progresjon"
+      dynamicSeverity={false}
+      severity="success"
+      labelPlacement="right"
+      percentage={progressionPercent}
+    />
+    <Switch
+      position="left"
+      size="small"
+      checked={showHelpText}
+      onChange={toggleShowHelpText}
+    >
+      Hjelpetekster
+    </Switch>
+  </div>
+);
 
 export default TestRegelParamSelection;
