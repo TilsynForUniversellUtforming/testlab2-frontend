@@ -9,5 +9,11 @@ open class TestregelBase(
     open val modus: TestregelModus,
 )
 
-fun TestregelBaseDTO.toTestregelBase(krav: Krav) =
-    TestregelBase(this.id, this.namn, krav, this.modus)
+fun List<TestregelBaseDTO>.toTestregelBase(kravMap: Map<Int, Krav>) =
+    this.map {
+      TestregelBase(
+          it.id,
+          it.namn,
+          kravMap[it.kravId] ?: throw IllegalStateException("Krav for testregel finns ikkje"),
+          it.modus)
+    }

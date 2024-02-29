@@ -95,7 +95,13 @@ const SakTestreglarStep = ({
         true
       ),
       {
-        accessorFn: (row) => row.krav,
+        accessorFn: (row) => row.namn,
+        id: 'namn',
+        cell: (info) => info.getValue(),
+        header: () => <>Namn</>,
+      },
+      {
+        accessorFn: (row) => row.krav.tittel,
         id: 'Krav',
         cell: (info) => info.getValue(),
         header: () => <>Krav</>,
