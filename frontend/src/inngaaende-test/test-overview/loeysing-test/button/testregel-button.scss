@@ -134,11 +134,16 @@
   }
 
   &-name {
-    padding-top: 2rem;
+    padding: 1.5rem 1.5rem 0 0;
     min-width: 8rem;
     position: absolute;
     top: 0;
     left: 8rem;
     text-align: left;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 }

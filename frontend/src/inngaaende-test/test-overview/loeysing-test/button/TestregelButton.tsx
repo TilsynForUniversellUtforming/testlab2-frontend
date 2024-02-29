@@ -38,6 +38,7 @@ const TestregelButton = ({
       onClick={() => {
         onClick(testregel.id);
       }}
+      title={`${testregel.krav} ${testregel.name}`}
     >
       <div className="testregel-button-id">
         <div className="id-text-wrapper">
@@ -49,9 +50,7 @@ const TestregelButton = ({
           )}
         </div>
       </div>
-      <div className="testregel-button-name">
-        <Paragraph>{testregel.name}</Paragraph>
-      </div>
+      <Paragraph className="testregel-button-name">{testregel.name}</Paragraph>
     </button>
     <TestregelStatusDropdown
       onChangeStatus={onChangeStatus}

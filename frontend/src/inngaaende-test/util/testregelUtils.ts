@@ -1,3 +1,4 @@
+import { capitalize } from '@common/util/stringutils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import { NettsideProperties } from '@sak/types';
@@ -131,19 +132,18 @@ export const toTestregelStatus = (
 
 const toTestregelOverviewElement = ({
   id,
+  namn,
   testregelId,
-  krav,
 }: Testregel): TestregelOverviewElement => {
   const regex = /^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/;
-  const result = testregelId.match(regex);
+  const result = namn.match(regex);
 
   if (result && result.length > 3) {
-    const firstPart = result[1];
     const secondPart = result[4];
-    return { id: id, name: secondPart, krav: firstPart };
+    return { id: id, name: secondPart, krav: capitalize(testregelId) };
   }
 
-  return { id: id, name: testregelId, krav: krav.suksesskriterium };
+  return { id: id, name: namn, krav: capitalize(testregelId) };
 };
 
 const filterTestregelByInnhaldstype = (
