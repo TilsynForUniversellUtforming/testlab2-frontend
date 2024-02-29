@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-export const testregelBaseScehma = z.object({
+export const testregelBaseSchema = z.object({
   id: z.number().optional(),
   namn: z.string().min(1, 'Namn kan ikkje vera tomt'),
   kravId: z.number().min(1, 'Krav må veljast'),
   modus: z.union([z.literal('forenklet'), z.literal('manuell')]),
 });
 
-export const testregelSchema = testregelBaseScehma.and(
+export const testregelSchema = testregelBaseSchema.and(
   z.object({
     testregelSchema: z.string().min(1, 'Testregel test-id kan ikkje vera tom'),
     testregelId: z.string().min(1, 'Testregel-id kan ikkje vera tom'),

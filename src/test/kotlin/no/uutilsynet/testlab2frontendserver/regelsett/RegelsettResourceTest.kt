@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import org.assertj.core.api.Assertions.assertThat
@@ -26,7 +27,9 @@ class RegelsettResourceTest(@Autowired val restTemplate: RestTemplate) {
       jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
   private val apiUrl = "https://api.url"
-  private val regelsettResource = RegelsettResource(restTemplate, TestingApiProperties(apiUrl))
+  private val regelsettResource =
+      RegelsettResource(
+          restTemplate, TestingApiProperties(apiUrl), KravApiProperties("$apiUrl/krav"))
 
   @Test
   fun `skal kunne hente liste med Regelsett`() {

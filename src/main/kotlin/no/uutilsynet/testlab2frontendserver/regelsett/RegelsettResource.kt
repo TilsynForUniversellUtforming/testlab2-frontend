@@ -2,11 +2,15 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettCreate
+import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettDTO
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettEdit
+import no.uutilsynet.testlab2frontendserver.regelsett.dto.toRegelsett
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -26,11 +30,13 @@ import org.springframework.web.client.RestTemplate
 class RegelsettResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
+    kravApiProperties: KravApiProperties,
 ) {
 
   val logger = LoggerFactory.getLogger(RegelsettResource::class.java)
 
   val regelsettUrl = "${testingApiProperties.url}/v1/regelsett"
+  val kravUrl = "${kravApiProperties.url}/v1/krav"
 
   @PostMapping
   fun createRegelsett(@RequestBody regelsett: RegelsettCreate): List<RegelsettBase> =
@@ -51,8 +57,12 @@ class RegelsettResource(
   ): List<RegelsettBase> =
       runCatching {
             if (includeTestreglar) {
-              restTemplate.getList<Regelsett>(
-                  "$regelsettUrl?includeInactive=${includeInactive}&includeTestreglar=${includeTestreglar}")
+              val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
+
+              restTemplate
+                  .getList<RegelsettDTO>(
+                      "$regelsettUrl?includeInactive=${includeInactive}&includeTestreglar=${includeTestreglar}")
+                  .map { it.toRegelsett(krav) }
             } else {
               restTemplate.getList<RegelsettBase>(
                   "$regelsettUrl?includeInactive=${includeInactive}")
@@ -68,8 +78,12 @@ class RegelsettResource(
       @RequestParam(required = false, defaultValue = "false") includeInactive: Boolean
   ): List<Regelsett> =
       runCatching {
-            restTemplate.getList<Regelsett>(
-                "$regelsettUrl/testreglar?includeInactive=${includeInactive}")
+            val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
+
+            restTemplate
+                .getList<RegelsettDTO>(
+                    "$regelsettUrl/testreglar?includeInactive=${includeInactive}")
+                .map { it.toRegelsett(krav) }
           }
           .getOrElse {
             logger.error("klarte ikke å hente målingar", it)
@@ -80,14 +94,15 @@ class RegelsettResource(
   fun getRegelsett(@PathVariable id: Int): ResponseEntity<Regelsett> {
     logger.debug("hentar regelsett med id: $id fra $regelsettUrl")
 
-    val regelsett = restTemplate.getForObject("$regelsettUrl/$id", Regelsett::class.java)
+    val regelsett = restTemplate.getForObject("$regelsettUrl/$id", RegelsettDTO::class.java)
 
     if (regelsett == null) {
       logger.error("Kunne ikkje hente regelsett med id $id frå server")
       throw RuntimeException("Klarte ikkje å hente regelsett")
     }
+    val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
 
-    return ResponseEntity.ok(regelsett)
+    return ResponseEntity.ok(regelsett.toRegelsett(krav))
   }
 
   @PutMapping

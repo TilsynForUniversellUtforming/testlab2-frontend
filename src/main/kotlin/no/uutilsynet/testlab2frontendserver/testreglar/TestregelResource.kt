@@ -70,12 +70,8 @@ class TestregelResource(
       try {
         logger.debug("Henter testreglar fra $testregelUrl")
         val url = if (includeMetadata) "$testregelUrl?includeMetadata=true" else testregelUrl
-        val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
-        restTemplate.getList<TestregelBaseDTO>(url).map {
-          it.toTestregelBase(
-              krav.find { k -> k.id == it.kravId }
-                  ?: throw IllegalStateException("Krav for testregel finns ikkje"))
-        }
+        val kravMap = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
+        restTemplate.getList<TestregelBaseDTO>(url).toTestregelBase(kravMap)
       } catch (e: Error) {
         logger.error("klarte ikke å hente testreglar", e)
         throw Error("Klarte ikke å hente testreglar")
