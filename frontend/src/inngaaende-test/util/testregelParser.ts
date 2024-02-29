@@ -14,7 +14,7 @@ import { Testregel } from '@test/util/testregel-interface/Testregel';
 
 export type TestregelSkjema = {
   steg: Steg[];
-  delutfall: Delutfall[];
+  delutfall: Record<number, Delutfall>;
   resultat?: TestregelResultat;
 };
 
@@ -75,7 +75,7 @@ function loop(
         resten,
         (step) => step.stegnr !== nesteHandling.steg
       );
-      const oppdaterteDelutfall = [...testregelSkjema.delutfall];
+      const oppdaterteDelutfall = { ...testregelSkjema.delutfall };
       if (nesteHandling.delutfall) {
         oppdaterteDelutfall[nesteHandling.delutfall.nr] =
           nesteHandling.delutfall;
@@ -111,7 +111,7 @@ function loop(
 function finnNesteHandling(
   step: Steg,
   alleSvar: Svar[],
-  delutfall: Delutfall[]
+  delutfall: Record<number, Delutfall>
 ): Exclude<Handling, HandlingRegler> | undefined {
   const ruting = step.ruting;
   if (ruting.alle) {
@@ -147,7 +147,7 @@ function finnNesteHandling(
 function evaluateRutingType(
   handling: Handling,
   alleSvar: Svar[],
-  delutfall: Delutfall[]
+  delutfall: Record<number, Delutfall>
 ): Exclude<Handling, HandlingRegler> | undefined {
   switch (handling.type) {
     case 'avslutt':
@@ -162,7 +162,7 @@ function evaluateRutingType(
 function evaluateRutingRegler(
   regler: { [p: string]: Regel },
   alleSvar: Svar[],
-  delutfall: Delutfall[]
+  delutfall: Record<number, Delutfall>
 ): Exclude<Handling, HandlingRegler> | undefined {
   if (Object.keys(regler).length === 0) {
     return;
@@ -222,10 +222,10 @@ function evaluateRutingRegler(
 
 function insertDelutfall(
   resultat: HandlingAvslutt,
-  delutfall: Delutfall[]
+  delutfall: Record<number, Delutfall>
 ): Avslutt {
-  const delutfallFasit = delutfall
-    .map((d) => d.fasit)
+  const delutfallFasit = Object.entries(delutfall)
+    .map(([_nr, d]) => d.fasit)
     .filter((fasit) => fasit === 'Ja' || fasit === 'Nei')
     .reduce(
       (acc: HandlingFasitTyper, delfasit) =>
@@ -240,14 +240,17 @@ function insertDelutfall(
       : fasit === 'Ja'
         ? resultat.utfall.ja ?? ''
         : resultat.utfall.nei ?? '';
-  const utfallMedDelutfall = delutfall.reduce((endeligUtfall, etDelutfall) => {
-    return endeligUtfall
-      .replace(`#delutfall(${etDelutfall.nr})`, etDelutfall.tekst)
-      .replace(
-        `#delutfall(${etDelutfall.nr},${etDelutfall.fasit})`,
-        etDelutfall.tekst
-      )
-      .replace(new RegExp(`#delutfall\\(${etDelutfall.nr},.+\\)`, 'g'), '');
-  }, utfall);
+  const utfallMedDelutfall = Object.entries(delutfall).reduce(
+    (endeligUtfall, [_nr, etDelutfall]) => {
+      return endeligUtfall
+        .replace(`#delutfall(${etDelutfall.nr})`, etDelutfall.tekst)
+        .replace(
+          `#delutfall(${etDelutfall.nr},${etDelutfall.fasit})`,
+          etDelutfall.tekst
+        )
+        .replace(new RegExp(`#delutfall\\(${etDelutfall.nr},.+\\)`, 'g'), '');
+    },
+    utfall
+  );
   return { ...resultat, fasit, utfall: utfallMedDelutfall };
 }
