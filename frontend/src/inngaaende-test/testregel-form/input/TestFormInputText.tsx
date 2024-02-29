@@ -1,7 +1,7 @@
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import { Svar } from '@test/api/types';
 import { StegTekst } from '@test/util/testregel-interface/Steg';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 interface Props {
   steg: StegTekst;
@@ -11,11 +11,9 @@ interface Props {
 
 const TestFormInputText = ({ steg, svar, onAnswer }: Props) => {
   const { spm, ht, stegnr } = steg;
-  const [value, setValue] = useState<string>(svar ?? '');
 
   const handleValueChange = useCallback(
     (newValue?: string) => {
-      setValue(newValue ?? '');
       if (typeof newValue === 'string' && newValue !== svar) {
         onAnswer({ steg: stegnr, svar: newValue });
       }
@@ -31,7 +29,7 @@ const TestFormInputText = ({ steg, svar, onAnswer }: Props) => {
       description={ht}
       name={stegnr}
       type={textFieldType}
-      value={value}
+      value={svar ?? ''}
       onChange={handleValueChange}
       textArea={steg.multilinje}
     />

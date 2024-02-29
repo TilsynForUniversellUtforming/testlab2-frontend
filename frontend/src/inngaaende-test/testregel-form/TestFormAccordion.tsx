@@ -1,4 +1,4 @@
-import { Heading } from '@digdir/design-system-react';
+import { Button, DropdownMenu, Heading } from '@digdir/design-system-react';
 import { ArrowDownIcon } from '@navikt/aksel-icons';
 import { findElementOmtale, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
@@ -13,7 +13,7 @@ import classes from './test-form-accordion.module.css';
 type Props = {
   testregel: Testregel;
   skjemaerMedSvar: SkjemaMedSvar[];
-  onAnswer: (svar: Svar, index: number) => void;
+  onAnswer: (svar: Svar[], index: number) => void;
   showHelpText: boolean;
 };
 
@@ -36,7 +36,7 @@ export function TestFormAccordion({
               steg={etSteg}
               alleSvar={skjemaMedSvar.svar}
               index={index}
-              onAnswer={(svar) => onAnswer(svar, index)}
+              onAnswer={(svar) => onAnswer([svar], index)}
               showHelpText={showHelpText}
             />
           </div>
@@ -46,6 +46,10 @@ export function TestFormAccordion({
         )}
       </div>
     );
+  }
+
+  function kopierSvar(kilde: SkjemaMedSvar, index: number) {
+    onAnswer(kilde.svar, index);
   }
 
   if (skjemaerMedSvar.length === 1) {
@@ -72,7 +76,7 @@ export function TestFormAccordion({
             <div key={skjemaMedSvar.resultatId}>
               <button
                 key={skjemaMedSvar.resultatId}
-                className={classes.button}
+                className={classes.accordionButton}
                 onClick={() =>
                   setShowForm({
                     ...showForm,
@@ -99,6 +103,35 @@ export function TestFormAccordion({
                   >
                     Test {index + 1}
                   </Heading>
+
+                  <DropdownMenu placement="bottom-start" size="small">
+                    <DropdownMenu.Trigger asChild={true}>
+                      <Button size="small" className={classes.copyButton}>
+                        Kopier svar fra tidligere test
+                      </Button>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Content>
+                      {skjemaerMedSvar.map((kilde, i) => {
+                        if (i === index) return null;
+
+                        const elementOmtale = findElementOmtale(
+                          testregel,
+                          kilde.svar
+                        );
+                        if (!elementOmtale) return null;
+
+                        return (
+                          <DropdownMenu.Item
+                            key={kilde.resultatId}
+                            onClick={() => kopierSvar(kilde, index)}
+                          >
+                            {elementOmtale}
+                          </DropdownMenu.Item>
+                        );
+                      })}
+                    </DropdownMenu.Content>
+                  </DropdownMenu>
+
                   {renderForm(resultatId, skjemaMedSvar, index)}
                 </div>
               )}

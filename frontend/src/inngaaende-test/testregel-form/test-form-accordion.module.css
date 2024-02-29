@@ -4,7 +4,7 @@
   gap: 0.5rem;
 }
 
-.button {
+.accordion-button {
   background-color: var(--fds-semantic-surface-action-subtle);
   display: flex;
   align-items: center;
@@ -33,6 +33,10 @@
 
 .form-content {
   margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
 .form {
@@ -40,4 +44,7 @@
   flex-direction: column;
   gap: 2rem;
   margin-top: 1rem;
+}
+
+.copy-button {
 }

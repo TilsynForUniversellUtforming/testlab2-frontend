@@ -37,13 +37,18 @@ const TestForm = ({
     initSkjemaMedSvar(resultater, testregel)
   );
 
-  function onAnswer(nyttSvar: Svar, index: number) {
+  function onAnswer(nyeSvar: Svar[], index: number) {
+    if (nyeSvar.length === 0) {
+      return;
+    }
+
     setSkjemaerMedSvar((prevState) => {
       const current = prevState[index];
+      const firstNewSvar = nyeSvar[0];
       const oppdaterteSvar = takeWhile(
         current.svar,
-        (svar) => svar.steg !== nyttSvar.steg
-      ).concat([nyttSvar]);
+        (svar) => svar.steg !== firstNewSvar.steg
+      ).concat(nyeSvar);
       const oppdatertSkjemaModell = evaluateTestregel(
         testregel.testregelSchema,
         oppdaterteSvar
@@ -54,6 +59,7 @@ const TestForm = ({
         skjema: oppdatertSkjemaModell,
         svar: oppdaterteSvar,
       };
+      console.log(newState);
       return newState;
     });
   }
