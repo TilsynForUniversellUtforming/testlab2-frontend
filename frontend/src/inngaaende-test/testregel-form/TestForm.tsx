@@ -22,9 +22,9 @@ interface Props {
   showHelpText: boolean;
   onResultat: (
     resultatId: number,
-    resultat: TestregelResultat,
-    elementOmtale: string,
-    svar: Svar[]
+    svar: Svar[],
+    resultat?: TestregelResultat,
+    elementOmtale?: string
   ) => void;
 }
 
@@ -101,10 +101,9 @@ const TestForm = ({
         (resultat) => resultat.id === resultatId
       );
       if (skjema.resultat && isNewResult(skjema.resultat, resultat)) {
-        const elementOmtale =
-          findElementOmtale(testregel, svar) ?? 'Finn ikkje elementomtala';
+        const elementOmtale = findElementOmtale(testregel, svar);
 
-        onResultat(resultatId, skjema.resultat, elementOmtale, svar);
+        onResultat(resultatId, svar, skjema.resultat, elementOmtale);
       }
     });
   }, [skjemaerMedSvar]);

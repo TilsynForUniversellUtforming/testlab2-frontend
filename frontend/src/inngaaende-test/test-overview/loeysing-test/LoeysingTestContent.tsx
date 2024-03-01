@@ -30,9 +30,9 @@ interface Props {
   createNewTestResult: (activeTest: ActiveTest) => void;
   doUpdateTestResult: (
     resultatId: number,
-    resultat: TestregelResultat,
-    elementOmtale: string,
-    alleSvar: Svar[]
+    alleSvar: Svar[],
+    resultat?: TestregelResultat,
+    elementOmtale?: string
   ) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
   showHelpText: boolean;
