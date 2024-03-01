@@ -65,8 +65,10 @@ export const toPageType = (
     nettsideProperties.find((np) => np.id === nettsideId) ||
     nettsideProperties[0];
 
-  if (isDefined(property?.id) && isDefined(property?.type)) {
-    return { nettsideId: property.id, pageType: property.type };
+  const { id, type, url } = property;
+
+  if (isDefined(id) && isDefined(type) && isDefined(url)) {
+    return { nettsideId: id, pageType: type, url: url };
   } else {
     throw Error('Sidetype finnes ikkje');
   }
@@ -79,8 +81,10 @@ export const getInitialPageType = (
     nettsideProperties.find((np) => np.type === 'forside') ||
     nettsideProperties[0];
 
-  if (isDefined(property?.id) && isDefined(property?.type)) {
-    return { nettsideId: property.id, pageType: property.type };
+  const { id, type, url } = property;
+
+  if (isDefined(id) && isDefined(type) && isDefined(url)) {
+    return { nettsideId: id, pageType: type, url: url };
   } else {
     throw Error('Sidetype finnes ikkje');
   }

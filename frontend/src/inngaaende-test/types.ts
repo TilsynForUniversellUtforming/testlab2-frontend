@@ -27,6 +27,7 @@ export interface TestContext {
 export type PageType = {
   nettsideId: number;
   pageType: string;
+  url: string;
 };
 
 export type ActiveTest = {
