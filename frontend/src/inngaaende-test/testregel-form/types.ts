@@ -1,10 +1,10 @@
 import { ResultatManuellKontroll, Svar } from '@test/api/types';
-import { evaluateTestregel, TestregelSkjema } from '@test/util/testregelParser';
+import { evaluateTestregel, TestregelForm } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 
 export type SkjemaMedSvar = {
   resultatId: number;
-  skjema: TestregelSkjema;
+  skjema: TestregelForm;
   svar: Svar[];
 };
 

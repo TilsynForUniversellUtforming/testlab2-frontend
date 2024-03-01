@@ -10,9 +10,9 @@ import {
 } from '@test/util/testregel-interface/Handling';
 import { Regel } from '@test/util/testregel-interface/Regel';
 import { Steg } from '@test/util/testregel-interface/Steg';
-import { Testregel } from '@test/util/testregel-interface/Testregel';
+import { TestregelSchema } from '@test/util/testregel-interface/TestregelSchema';
 
-export type TestregelSkjema = {
+export type TestregelForm = {
   steg: Steg[];
   delutfall: Record<number, Delutfall>;
   resultat?: TestregelResultat;
@@ -31,10 +31,10 @@ export function finnSvar(stegnr: string, alleSvar: Svar[]): string | undefined {
 }
 
 export function evaluateTestregel(
-  testregel: Testregel | string,
+  testregel: TestregelSchema | string,
   alleSvar: Svar[]
-): TestregelSkjema {
-  const parsedTestregel: Testregel =
+): TestregelForm {
+  const parsedTestregel: TestregelSchema =
     typeof testregel === 'string' ? JSON.parse(testregel) : testregel;
   const stepsWithoutFirst = parsedTestregel.steg.slice(1);
 
@@ -42,10 +42,10 @@ export function evaluateTestregel(
 }
 
 function loop(
-  testregelSkjema: TestregelSkjema,
+  testregelSkjema: TestregelForm,
   resterendeSteg: Steg[],
   alleSvar: Svar[]
-): TestregelSkjema {
+): TestregelForm {
   if (resterendeSteg.length === 0) {
     return testregelSkjema;
   }
