@@ -106,6 +106,7 @@ const LoeysingTestContent = ({
         progressionPercent={progressionPercent}
         toggleShowHelpText={toggleShowHelpText}
         showHelpText={showHelpText}
+        url={pageType.url}
       />
       {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
         <div className="testregel-row" key={rowIndex}>
