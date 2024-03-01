@@ -3,7 +3,7 @@ import { Steg } from './Steg';
 /**
  * Testregel
  */
-export interface Testregel {
+export interface TestregelSchema {
   /**  Namn på testreglen */
   namn: string;
   /** Id på testreglen */

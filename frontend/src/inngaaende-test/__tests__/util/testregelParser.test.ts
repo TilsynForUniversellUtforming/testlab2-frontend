@@ -1,5 +1,5 @@
 import { Svar } from '@test/api/types';
-import { Testregel } from '@test/util/testregel-interface/Testregel';
+import { TestregelSchema } from '@test/util/testregel-interface/TestregelSchema';
 import * as fs from 'fs';
 import * as path from 'path';
 import { describe, expect, test } from 'vitest';
@@ -7,7 +7,7 @@ import { describe, expect, test } from 'vitest';
 import { evaluateTestregel } from '../../util/testregelParser';
 
 describe('makeViewModel spec', () => {
-  function getTestregel(navn: string): Testregel {
+  function getTestregel(navn: string): TestregelSchema {
     const filePath = path.resolve(__dirname, `test-data/${navn}.json`);
     const buffer = fs.readFileSync(filePath);
     return JSON.parse(buffer.toString());
@@ -58,7 +58,7 @@ describe('makeViewModel spec', () => {
   });
 
   test('når det er ruting med radioboks, så skal vi få det resultatet som hører til den valgte radioboksen', () => {
-    const testregel: Testregel = getTestregel('1.4.5a');
+    const testregel: TestregelSchema = getTestregel('1.4.5a');
     const fellesSvar: Svar[] = [
       { steg: '2.2', svar: 'Ja' },
       { steg: '2.3', svar: 'Ja' },
@@ -109,7 +109,7 @@ describe('makeViewModel spec', () => {
   });
 
   test('når et svar er gitt, så skal vi gå videre til neste input', () => {
-    const testregel: Testregel = getTestregel('1.4.5a');
+    const testregel: TestregelSchema = getTestregel('1.4.5a');
     const model = evaluateTestregel(testregel, [
       { steg: '2.2', svar: 'Ja' },
       { steg: '2.3', svar: 'Ja' },
