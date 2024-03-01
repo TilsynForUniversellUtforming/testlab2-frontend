@@ -104,7 +104,7 @@ const TestOverviewLoeysing = () => {
       innhaldstype
     );
 
-    const filteredTestResults = getTestResultsForLoeysing(
+    const testResultsLoeysing = getTestResultsForLoeysing(
       contextTestResults,
       loeysingId
     );
@@ -115,13 +115,13 @@ const TestOverviewLoeysing = () => {
 
     setSak(contextSak);
     setTestregelList(testregelList);
-    setTestResultsLoeysing(filteredTestResults);
+    setTestResultsLoeysing(testResultsLoeysing);
 
     setNettsideProperties(filteredNettsideProperties);
     setProgressionPercent(
       progressionForLoeysingNettside(
         contextSak,
-        filteredTestResults,
+        testResultsLoeysing,
         pageType.nettsideId,
         innhaldstype,
         loeysingId
@@ -130,7 +130,7 @@ const TestOverviewLoeysing = () => {
     setTestStatusMap(
       toTestregelStatus(
         testregelList,
-        filteredTestResults,
+        testResultsLoeysing,
         Number(sakId),
         loeysingId,
         pageType.nettsideId
