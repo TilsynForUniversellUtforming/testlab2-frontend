@@ -1,4 +1,4 @@
-import { isEmpty, takeWhile } from '@common/util/arrayUtils';
+import { hasSameItems, isEmpty, takeWhile } from '@common/util/arrayUtils';
 import { Heading } from '@digdir/design-system-react';
 import {
   findElementOmtale,
@@ -26,6 +26,10 @@ interface Props {
     resultat?: TestregelResultat,
     elementOmtale?: string
   ) => void;
+}
+
+function isEqual(a: Svar, b: Svar) {
+  return a.steg === b.steg && a.svar === b.svar;
 }
 
 const TestForm = ({
@@ -100,20 +104,13 @@ const TestForm = ({
       const resultat = resultater.find(
         (resultat) => resultat.id === resultatId
       );
-      if (skjema.resultat && isNewResult(skjema.resultat, resultat)) {
-        const elementOmtale = findElementOmtale(testregel, svar);
+      const elementOmtale = findElementOmtale(testregel, svar);
 
+      if (!hasSameItems(resultat?.svar ?? [], svar, isEqual)) {
         onResultat(resultatId, svar, skjema.resultat, elementOmtale);
       }
     });
   }, [skjemaerMedSvar]);
-
-  function isNewResult(
-    nyttResultat: TestregelResultat,
-    gammeltResultat?: ResultatManuellKontroll | undefined
-  ): boolean {
-    return gammeltResultat?.elementUtfall !== nyttResultat?.utfall;
-  }
 
   const cleanHTML = DOMPurify.sanitize(testregel.kravTilSamsvar ?? '', {
     USE_PROFILES: { html: true },

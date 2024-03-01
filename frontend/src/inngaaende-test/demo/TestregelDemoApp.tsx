@@ -44,9 +44,9 @@ const TestregelDemoApp = () => {
 
   const onResultat = (
     _resultatId: number,
-    resultat: TestregelResultat,
-    elementOmtale: string,
-    alleSvar: Svar[]
+    alleSvar: Svar[],
+    resultat?: TestregelResultat,
+    elementOmtale?: string
   ) => {
     console.info(
       `Resultat: ${JSON.stringify({ resultat, elementOmtale, alleSvar }, null, 2)}`
