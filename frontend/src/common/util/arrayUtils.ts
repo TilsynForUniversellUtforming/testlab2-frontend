@@ -33,3 +33,13 @@ export function dropWhile<T>(array: T[], predicate: (t: T) => boolean): T[] {
 export function isEmpty<T>(array: T[]): boolean {
   return array.length === 0;
 }
+
+export function hasSameItems<T>(
+  as: T[],
+  bs: T[],
+  isEqual: (a: T, b: T) => boolean
+): boolean {
+  return (
+    as.length === bs.length && as.every((a) => bs.some((b) => isEqual(a, b)))
+  );
+}
