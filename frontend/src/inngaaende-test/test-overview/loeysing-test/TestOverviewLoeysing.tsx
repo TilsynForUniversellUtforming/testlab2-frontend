@@ -360,9 +360,9 @@ const TestOverviewLoeysing = () => {
   const doUpdateTestResult = useCallback(
     async (
       resultatId: number,
-      resultat: TestregelResultat,
-      elementOmtale: string,
-      alleSvar: Svar[]
+      alleSvar: Svar[],
+      resultat?: TestregelResultat,
+      elementOmtale?: string
     ) => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
@@ -385,8 +385,8 @@ const TestOverviewLoeysing = () => {
           testregelId: activeTest.testregel?.id,
           nettsideId: pageType.nettsideId,
           elementOmtale,
-          elementResultat: toElementResultat(resultat),
-          elementUtfall: resultat.utfall,
+          elementResultat: resultat && toElementResultat(resultat),
+          elementUtfall: resultat?.utfall,
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
         };
