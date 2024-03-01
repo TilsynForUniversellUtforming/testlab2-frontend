@@ -1,4 +1,4 @@
-import { takeWhile } from '@common/util/arrayUtils';
+import { isEmpty, takeWhile } from '@common/util/arrayUtils';
 import { Heading } from '@digdir/design-system-react';
 import {
   findElementOmtale,
@@ -7,6 +7,7 @@ import {
 } from '@test/api/types';
 import { TestFormAccordion } from '@test/testregel-form/TestFormAccordion';
 import { initSkjemaMedSvar, SkjemaMedSvar } from '@test/testregel-form/types';
+import { Steg } from '@test/util/testregel-interface/Steg';
 import {
   evaluateTestregel,
   TestregelResultat,
@@ -37,20 +38,46 @@ const TestForm = ({
     initSkjemaMedSvar(resultater, testregel)
   );
 
+  const testregelSchema = JSON.parse(testregel.testregelSchema);
+
   function onAnswer(nyeSvar: Svar[], index: number) {
     if (nyeSvar.length === 0) {
       return;
     }
 
+    function getOppdaterteSvar(gamleSvar: Svar[], nyeSvar: Svar[]) {
+      if (isEmpty(nyeSvar)) {
+        return gamleSvar;
+      } else {
+        const [nyttSvar, ...resten] = nyeSvar;
+        const steg = testregelSchema.steg.find(
+          (s: Steg) => s.stegnr === nyttSvar.steg
+        );
+        const gammeltSvar = gamleSvar.find((s) => s.steg === nyttSvar.steg);
+        if (
+          gammeltSvar &&
+          steg?.type === 'tekst' &&
+          steg?.ruting?.alle?.type === 'gaaTil'
+        ) {
+          const oppdatert = gamleSvar.map((s) =>
+            s.steg === nyttSvar.steg ? nyttSvar : s
+          );
+          return getOppdaterteSvar(oppdatert, resten);
+        } else {
+          const oppdatert = takeWhile(
+            gamleSvar,
+            (s) => s.steg !== nyttSvar.steg
+          ).concat([nyttSvar]);
+          return getOppdaterteSvar(oppdatert, resten);
+        }
+      }
+    }
+
     setSkjemaerMedSvar((prevState) => {
       const current = prevState[index];
-      const firstNewSvar = nyeSvar[0];
-      const oppdaterteSvar = takeWhile(
-        current.svar,
-        (svar) => svar.steg !== firstNewSvar.steg
-      ).concat(nyeSvar);
+      const oppdaterteSvar = getOppdaterteSvar(current.svar, nyeSvar);
       const oppdatertSkjemaModell = evaluateTestregel(
-        testregel.testregelSchema,
+        testregelSchema,
         oppdaterteSvar
       );
       const newState = [...prevState];
@@ -59,7 +86,6 @@ const TestForm = ({
         skjema: oppdatertSkjemaModell,
         svar: oppdaterteSvar,
       };
-      console.log(newState);
       return newState;
     });
   }

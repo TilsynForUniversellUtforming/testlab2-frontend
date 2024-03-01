@@ -1,6 +1,6 @@
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestForm from '@test/testregel-form/TestForm';
-import { Testregel as TestregelSchema } from '@test/util/testregel-interface/Testregel';
+import { TestregelSchema } from '@test/util/testregel-interface/TestregelSchema';
 import { render, screen } from '@testing-library/react';
 import { Testregel } from '@testreglar/api/types';
 import * as fs from 'fs';
