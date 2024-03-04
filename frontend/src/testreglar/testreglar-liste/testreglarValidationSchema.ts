@@ -3,7 +3,9 @@ import { z } from 'zod';
 export const testregelBaseSchema = z.object({
   id: z.number().optional(),
   namn: z.string().min(1, 'Namn kan ikkje vera tomt'),
-  kravId: z.number().min(1, 'Krav må veljast'),
+  kravId: z
+    .union([z.number(), z.string()])
+    .refine((data) => !isNaN(Number(data)), 'Krav må veljast'),
   modus: z.union([
     z.literal('automatisk'),
     z.literal('manuell'),
