@@ -59,9 +59,14 @@ const TestlabFormSelect = <T extends object>({
               size={size}
               disabled={disabled}
             >
-              {options.map((option) => (
-                <Radio key={option.value} value={option.value}>
-                  {option.label}
+              {options.map(({ label, value, title, disabled }) => (
+                <Radio
+                  key={value}
+                  value={value}
+                  title={title}
+                  disabled={disabled}
+                >
+                  {label}
                 </Radio>
               ))}
             </Radio.Group>

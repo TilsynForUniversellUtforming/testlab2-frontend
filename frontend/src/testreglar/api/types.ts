@@ -2,7 +2,7 @@ import { TestlabLocale } from '@common/types';
 
 import { Krav } from '../../krav/types';
 
-export type TestregelModus = 'forenklet' | 'manuell';
+export type TestregelModus = 'automatisk' | 'manuell' | 'semi-automatisk';
 
 export type TestregelBase = {
   id: number;
