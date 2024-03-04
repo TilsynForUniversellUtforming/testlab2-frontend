@@ -57,9 +57,15 @@ const TestregelForm = ({
   }));
 
   const modusOptions: OptionType[] = createOptionsFromLiteral<TestregelModus>([
-    'forenklet',
     'manuell',
-  ]);
+    'automatisk',
+  ]).concat({
+    label: 'Semi-automatisk',
+    value: 'semi-automatisk',
+    title: 'Semi-automatiske testreglar er ikkje støtta ennå',
+    disabled: true,
+  });
+
   const spraakOptions: OptionType[] = [
     { value: 'nn', label: 'Norsk nynorsk' },
     { value: 'nb', label: 'Norsk bokmål' },
