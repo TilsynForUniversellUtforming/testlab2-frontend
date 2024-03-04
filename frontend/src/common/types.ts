@@ -13,6 +13,8 @@ export type Size = 'xsmall' | 'small' | 'medium' | 'large';
 export type OptionType = {
   label: string;
   value: string;
+  title?: string;
+  disabled?: boolean;
 };
 
 export type OptionExtended = {

@@ -67,8 +67,12 @@ const RegelsettForm = ({
       value: 'manuell',
     },
     {
-      label: 'Forenklet',
-      value: 'forenklet',
+      label: 'Automatisk',
+      value: 'automatisk',
+    },
+    {
+      label: 'Semi-automatisk',
+      value: 'semi-automatisk',
     },
   ];
 

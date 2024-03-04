@@ -1,6 +1,8 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
 enum class TestregelModus(val value: String) {
-  forenklet("forenklet"),
-  manuell("manuell")
+  automatisk("automatisk"),
+  semiAutomatisk("semi-automatisk"),
+  manuell("manuell"),
+  forenklet("forenklet")
 }

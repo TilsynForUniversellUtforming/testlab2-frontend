@@ -1,4 +1,4 @@
-import { Button, DropdownMenu, Heading } from '@digdir/design-system-react';
+import { DropdownMenu, Heading } from '@digdir/design-system-react';
 import { ArrowDownIcon } from '@navikt/aksel-icons';
 import { findElementOmtale, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
@@ -6,7 +6,7 @@ import TestFormStepWrapper from '@test/testregel-form/TestFormStepWrapper';
 import { SkjemaMedSvar } from '@test/testregel-form/types';
 import { Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import classes from './test-form-accordion.module.css';
 
@@ -23,13 +23,25 @@ export function TestFormAccordion({
   onAnswer,
   showHelpText,
 }: Readonly<Props>) {
-  const [showForm, setShowForm] = useState<Record<number, boolean>>(() => {
+  function initState() {
     const lastElement = skjemaerMedSvar[skjemaerMedSvar.length - 1];
     return skjemaerMedSvar.reduce(
       (acc, value) => ({ ...acc, [value.resultatId]: value === lastElement }),
       {}
     );
-  });
+  }
+
+  const [showForm, setShowForm] = useState<Record<number, boolean>>(initState);
+
+  useEffect(() => {
+    setShowForm((prevState) => {
+      if (Object.entries(prevState).length !== skjemaerMedSvar.length) {
+        return initState();
+      } else {
+        return prevState;
+      }
+    });
+  }, [skjemaerMedSvar]);
 
   function renderForm(
     resultatId: number,
@@ -63,10 +75,8 @@ export function TestFormAccordion({
   function dropdownMenu(index: number) {
     return (
       <DropdownMenu placement="bottom-start" size="small">
-        <DropdownMenu.Trigger asChild={true}>
-          <Button size="small" className={classes.copyButton}>
-            Kopier svar fra tidligere test
-          </Button>
+        <DropdownMenu.Trigger size="small" className={classes.copyButton}>
+          Kopier svar fra tidligere test
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           {skjemaerMedSvar.map((kilde, i) => {

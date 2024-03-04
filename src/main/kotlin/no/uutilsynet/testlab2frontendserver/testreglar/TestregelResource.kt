@@ -13,6 +13,7 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelBase
 import org.slf4j.LoggerFactory
@@ -84,6 +85,9 @@ class TestregelResource(
         val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
         if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
           throw IllegalArgumentException("Duplikat skjema for testregel")
+        }
+        if (testregel.modus == TestregelModus.semiAutomatisk) {
+          throw IllegalArgumentException("Det er ikkje støtte for semi-automatiske testreglar")
         }
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()

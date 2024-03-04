@@ -1,5 +1,5 @@
 import { OptionType } from '@common/types';
-import { Button, DropdownMenu } from '@digdir/design-system-react';
+import { DropdownMenu } from '@digdir/design-system-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import { useState } from 'react';
@@ -27,21 +27,19 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
         placement="bottom-start"
         size="small"
       >
-        <DropdownMenu.Trigger asChild={true}>
-          <Button
-            aria-haspopup="true"
-            aria-expanded={show}
-            id={title}
-            onClick={() => {
-              setShow((show) => !show);
-            }}
-          >
-            {title}
-            <ChevronDownIcon
-              className="chevron-icon"
-              style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            />
-          </Button>
+        <DropdownMenu.Trigger
+          aria-haspopup="true"
+          aria-expanded={show}
+          id={title}
+          onClick={() => {
+            setShow((show) => !show);
+          }}
+        >
+          {title}
+          <ChevronDownIcon
+            className="chevron-icon"
+            style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          />
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Group>

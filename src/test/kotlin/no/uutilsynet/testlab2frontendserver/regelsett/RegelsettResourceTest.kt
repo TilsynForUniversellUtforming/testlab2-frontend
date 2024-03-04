@@ -49,7 +49,7 @@ class RegelsettResourceTest(@Autowired val restTemplate: RestTemplate) {
           RegelsettBase(
               id = 1,
               namn = "Standard regelsett",
-              modus = TestregelModus.forenklet,
+              modus = TestregelModus.automatisk,
               standard = false,
           ))
 }
