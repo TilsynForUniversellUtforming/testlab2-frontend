@@ -3,8 +3,14 @@ import { z } from 'zod';
 export const testregelBaseSchema = z.object({
   id: z.number().optional(),
   namn: z.string().min(1, 'Namn kan ikkje vera tomt'),
-  kravId: z.number().min(1, 'Krav må veljast'),
-  modus: z.union([z.literal('forenklet'), z.literal('manuell')]),
+  kravId: z
+    .union([z.number(), z.string()])
+    .refine((data) => !isNaN(Number(data)), 'Krav må veljast'),
+  modus: z.union([
+    z.literal('automatisk'),
+    z.literal('manuell'),
+    z.literal('semi-automatisk'),
+  ]),
 });
 
 export const testregelSchema = testregelBaseSchema.and(
@@ -44,7 +50,7 @@ export const testregelSchema = testregelBaseSchema.and(
 export const testreglarValidationSchema = testregelSchema
   .refine(
     (data) => {
-      if (data.modus === 'forenklet') {
+      if (data.modus === 'automatisk') {
         return /^(QW-ACT-R)[0-9]{1,2}$/i.test(data.testregelSchema);
       }
       return true;
