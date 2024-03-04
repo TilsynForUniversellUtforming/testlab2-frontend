@@ -39,3 +39,17 @@ export const updateTestResultat = async (
     responseToJson(response, 'Kunne ikkje oppdatere testresultat')
   );
 };
+
+export const updateTestResultatMany = async (
+  testResulatList: ResultatManuellKontroll[]
+): Promise<ResultatManuellKontroll[]> => {
+  return await fetch(`/api/v1/testing/many`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(testResulatList),
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje oppdatere testresultat')
+  );
+};

@@ -70,5 +70,26 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             throw it
           }
 
+  @PutMapping("many")
+  fun updateResultatManuellKontrollMany(
+      @RequestBody resultatManuellKontrollList: List<ResultatManuellKontroll>
+  ): ResponseEntity<List<ResultatManuellKontroll>> =
+      runCatching {
+            logger.debug("Payload " + resultatManuellKontrollList.toString())
+
+            resultatManuellKontrollList.forEach { resultatManuellKontroll ->
+              logger.debug(
+                  "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId} + status: ${resultatManuellKontroll.status}")
+              restTemplate.put(
+                  "$testresultUrl/${resultatManuellKontroll.id}", resultatManuellKontroll)
+            }
+
+            getResultatManuellKontroll(resultatManuellKontrollList.first().sakId)
+          }
+          .getOrElse {
+            logger.error("Kunne ikkje oppdatere testresultat", it)
+            throw it
+          }
+
   data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
 }

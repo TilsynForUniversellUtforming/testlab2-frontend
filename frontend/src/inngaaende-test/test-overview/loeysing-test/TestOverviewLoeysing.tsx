@@ -1,8 +1,12 @@
-import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
+import { Alert, Modal } from '@digdir/design-system-react';
 import { Sak } from '@sak/api/types';
-import { createTestResultat, updateTestResultat } from '@test/api/testing-api';
+import {
+  createTestResultat,
+  updateTestResultat,
+  updateTestResultatMany,
+} from '@test/api/testing-api';
 import {
   CreateTestResultat,
   ResultatManuellKontroll,
@@ -20,7 +24,6 @@ import {
 } from '@test/types';
 import { TestregelResultat } from '@test/util/testregelParser';
 import {
-  findActiveTestResult,
   findActiveTestResults,
   getInitialPageType,
   getNettsideProperties,
@@ -33,7 +36,7 @@ import {
   toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
@@ -44,6 +47,7 @@ const TestOverviewLoeysing = () => {
     contextSetTestResults,
     innhaldstypeList,
   }: TestContext = useOutletContext();
+  const modalRef = useRef<HTMLDialogElement>(null);
   const [innhaldstype, setInnhaldstype] =
     useState<InnhaldstypeTesting>(innhaldstypeAlle);
   const [activeTest, setActiveTest] = useState<ActiveTest>();
@@ -108,6 +112,7 @@ const TestOverviewLoeysing = () => {
       contextTestResults,
       loeysingId
     );
+
     const filteredNettsideProperties = getNettsideProperties(
       contextSak,
       loeysingId
@@ -137,6 +142,12 @@ const TestOverviewLoeysing = () => {
       )
     );
 
+    const finished = testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
+
+    if (finished) {
+      setTestFerdig(true);
+    }
+
     if (activeTestregel) {
       setActiveTest({
         testregel: activeTestregel,
@@ -152,21 +163,23 @@ const TestOverviewLoeysing = () => {
   };
 
   const createNewTestResult = async (activeTest: ActiveTest) => {
+    const numericLoeysingId = Number(loeysingId);
+
     const nyttTestresultat: CreateTestResultat = {
       sakId: Number(sakId),
-      loeysingId: Number(loeysingId),
+      loeysingId: numericLoeysingId,
       testregelId: activeTest.testregel.id,
       nettsideId: pageType.nettsideId,
     };
     const alleResultater = await createTestResultat(nyttTestresultat);
-    const resultater = findActiveTestResults(
+    processData(
+      contextSak,
       alleResultater,
-      Number(sakId),
-      Number(loeysingId),
-      activeTest.testregel.id,
-      pageType.nettsideId
+      numericLoeysingId,
+      pageType,
+      innhaldstype,
+      activeTest.testregel
     );
-    setActiveTest({ ...activeTest, testResultList: resultater });
   };
 
   const onChangePageType = useCallback(
@@ -260,61 +273,57 @@ const TestOverviewLoeysing = () => {
     [sakId, loeysingId, testregelList, contextTestResults, pageType.nettsideId]
   );
 
-  const onChangeStatus = useCallback(
+  const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
       const sakIdNumeric = Number(sak.id);
       const loeysingIdNumeric = Number(loeysingId);
 
-      const testResult = findActiveTestResult(
+      const testResults = findActiveTestResults(
         testResultsLoeysing,
         sakIdNumeric,
         loeysingIdNumeric,
         testregelId,
         pageType.nettsideId
       );
-      const statusKey = toTestregelStatusKey(
-        sakIdNumeric,
-        loeysingIdNumeric,
-        testregelId,
-        pageType.nettsideId
-      );
       const testregel = sak.testreglar.find((tr) => tr.id === testregelId);
+      const newStatus = mapStatus(status);
 
       if (testStatusMap && testregel) {
-        if (status === 'under-arbeid' && isNotDefined(testResult)) {
+        if (status === 'under-arbeid' && isNotDefined(testResults)) {
           doCreateTestResult(
             sakIdNumeric,
             loeysingIdNumeric,
             testregel,
             pageType.nettsideId
           );
-        } else if (isDefined(testResult)) {
-          const updatedtestResult: ResultatManuellKontroll = {
-            id: testResult.id,
-            sakId: sakIdNumeric,
-            loeysingId: loeysingIdNumeric,
-            testregelId: testregelId,
-            nettsideId: testResult.nettsideId,
-            elementOmtale: testResult.elementOmtale,
-            elementResultat: testResult.elementResultat,
-            elementUtfall: testResult.elementUtfall,
-            testVartUtfoert: testResult.testVartUtfoert,
-            svar: testResult.svar,
-            status: mapStatus(status),
-          };
-
-          doUpdateTestResultStatus(updatedtestResult);
-          doCheckFinished(
-            testResultsLoeysing,
-            testResult.id,
-            mapStatus(status)
+        } else {
+          const notFinished = testResults.filter((tr) =>
+            isNotDefined(tr.elementResultat)
           );
+          if (status === 'ferdig' && notFinished.length > 0) {
+            setAlert(
+              'warning',
+              `${notFinished.length} testar er ikkje ferdig i "${testregel.namn}"`
+            );
+          } else {
+            const updatedtestResults: ResultatManuellKontroll[] =
+              testResults.map((testResult) => ({
+                id: testResult.id,
+                sakId: sakIdNumeric,
+                loeysingId: loeysingIdNumeric,
+                testregelId: testregelId,
+                nettsideId: testResult.nettsideId,
+                elementOmtale: testResult.elementOmtale,
+                elementResultat: testResult.elementResultat,
+                elementUtfall: testResult.elementUtfall,
+                testVartUtfoert: testResult.testVartUtfoert,
+                svar: testResult.svar,
+                status: newStatus,
+              }));
+
+            doUpdateTestResultStatus(updatedtestResults);
+          }
         }
-
-        const updatedMap = new Map(testStatusMap);
-
-        updatedMap.set(statusKey, status);
-        setTestStatusMap(updatedMap);
       }
     },
     [sak, testStatusMap, loeysingId, testResultsLoeysing, pageType.nettsideId]
@@ -419,9 +428,9 @@ const TestOverviewLoeysing = () => {
   );
 
   const doUpdateTestResultStatus = useCallback(
-    async (testResultat: ResultatManuellKontroll) => {
+    async (testResultat: ResultatManuellKontroll[]) => {
       try {
-        const updatedTestResults = await updateTestResultat(testResultat);
+        const updatedTestResults = await updateTestResultatMany(testResultat);
         contextSetTestResults(updatedTestResults);
         processData(
           contextSak,
@@ -437,28 +446,6 @@ const TestOverviewLoeysing = () => {
     [contextSak, loeysingId, activeTest, pageType, innhaldstype]
   );
 
-  const doCheckFinished = useCallback(
-    (
-      testResultsLoeysing: ResultatManuellKontroll[],
-      updatedResultId: number,
-      status: ResultatStatus
-    ) => {
-      testResultsLoeysing.forEach((tr) => {
-        if (tr.id === updatedResultId) {
-          tr.status = status;
-        }
-      });
-
-      const finished = testResultsLoeysing.every(
-        (tr) => tr.status === 'Ferdig'
-      );
-      if (finished) {
-        setTestFerdig(true);
-      }
-    },
-    [testResultsLoeysing]
-  );
-
   const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
     switch (frontendState) {
       case 'ferdig':
@@ -471,6 +458,12 @@ const TestOverviewLoeysing = () => {
         return 'IkkjePaabegynt';
     }
   };
+
+  useEffect(() => {
+    if (alert) {
+      modalRef.current?.showModal();
+    }
+  }, [alert]);
 
   return (
     <div className="manual-test-container">
@@ -497,18 +490,23 @@ const TestOverviewLoeysing = () => {
           onChangeTestregel={onChangeTestregel}
           createNewTestResult={createNewTestResult}
           doUpdateTestResult={doUpdateTestResult}
-          onChangeStatus={onChangeStatus}
+          onChangeStatus={onChangeTestregelStatus}
           toggleShowHelpText={toggleShowHelpText}
           showHelpText={showHelpText}
         />
       </div>
-      {alert && (
-        <AlertTimed
-          severity={alert.severity}
-          message={alert.message}
-          clearMessage={alert.clearMessage}
-        />
-      )}
+      <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
+        <Modal.Header>Noko har skjedd</Modal.Header>
+        <Modal.Content>
+          <Alert
+            severity={alert?.severity}
+            role={alert?.severity === 'success' ? 'status' : undefined}
+          >
+            {alert?.message}
+          </Alert>
+          <br />
+        </Modal.Content>
+      </Modal>
     </div>
   );
 };

@@ -7,14 +7,21 @@ import { useState } from 'react';
 interface Props {
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
   testregelId: number;
+  isStarted: boolean;
 }
 
 type StatusOption = {
   label: string;
   value: ManuellTestStatus;
+  title: string;
+  disabled?: boolean;
 };
 
-const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
+const TestregelStatusDropdown = ({
+  onChangeStatus,
+  testregelId,
+  isStarted,
+}: Props) => {
   const [show, setShow] = useState(false);
 
   const handleButtonClick = (status: ManuellTestStatus) => {
@@ -23,9 +30,17 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
   };
 
   const options: StatusOption[] = [
-    { label: 'Ferdig', value: 'ferdig' },
-    { label: 'Under arbeid', value: 'under-arbeid' },
-    // { label: 'Ikkje relevant', value: 'deaktivert' },
+    {
+      label: 'Ferdig',
+      value: 'ferdig',
+      title: isStarted ? 'Sett status ferdig' : 'Test ikkje starta',
+      disabled: !isStarted,
+    },
+    {
+      label: 'Under arbeid',
+      value: 'under-arbeid',
+      title: 'Sett status under arbeid',
+    },
   ];
 
   return (
@@ -54,10 +69,12 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Group>
-            {options.map(({ label, value }) => (
+            {options.map(({ label, value, title, disabled }) => (
               <DropdownMenu.Item
                 key={value}
                 onClick={() => handleButtonClick(value)}
+                disabled={disabled}
+                title={title}
               >
                 {label}
               </DropdownMenu.Item>
