@@ -1,7 +1,7 @@
 import './dropdown.scss';
 
 import { ButtonColor, ButtonSize, ButtonVariant } from '@common/types';
-import { Button, DropdownMenu } from '@digdir/design-system-react';
+import { DropdownMenu } from '@digdir/design-system-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React, { useState } from 'react';
@@ -34,21 +34,19 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
         size={ButtonSize.Small}
         placement="bottom-start"
       >
-        <DropdownMenu.Trigger asChild={true}>
-          <Button
-            className={classNames('dropdown__button', { show: show })}
-            onClick={() => {
-              setShow((show) => !show);
-            }}
-            variant={ButtonVariant.Quiet}
-            color={ButtonColor.Inverted}
-            aria-haspopup="true"
-            aria-expanded={show}
-            id={navn}
-          >
-            {navn}
-            <ChevronDownIcon className="chevron-icon" />
-          </Button>
+        <DropdownMenu.Trigger
+          className={classNames('dropdown__button', { show: show })}
+          onClick={() => {
+            setShow((show) => !show);
+          }}
+          variant={ButtonVariant.Quiet}
+          color={ButtonColor.Inverted}
+          aria-haspopup="true"
+          aria-expanded={show}
+          id={navn}
+        >
+          {navn}
+          <ChevronDownIcon className="chevron-icon" />
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Group>

@@ -1,4 +1,4 @@
-import { Button, DropdownMenu, Heading } from '@digdir/design-system-react';
+import { DropdownMenu, Heading } from '@digdir/design-system-react';
 import { ArrowDownIcon } from '@navikt/aksel-icons';
 import { findElementOmtale, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
@@ -75,10 +75,8 @@ export function TestFormAccordion({
   function dropdownMenu(index: number) {
     return (
       <DropdownMenu placement="bottom-start" size="small">
-        <DropdownMenu.Trigger asChild={true}>
-          <Button size="small" className={classes.copyButton}>
-            Kopier svar fra tidligere test
-          </Button>
+        <DropdownMenu.Trigger size="small" className={classes.copyButton}>
+          Kopier svar fra tidligere test
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           {skjemaerMedSvar.map((kilde, i) => {
