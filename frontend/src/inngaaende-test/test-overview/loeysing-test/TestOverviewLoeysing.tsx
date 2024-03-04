@@ -1,6 +1,6 @@
-import useAlert from '@common/alert/useAlert';
+import AlertModal from '@common/alert/AlertModal';
+import useAlertModal from '@common/alert/useAlertModal';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
-import { Alert, Modal } from '@digdir/design-system-react';
 import { Sak } from '@sak/api/types';
 import {
   createTestResultat,
@@ -36,7 +36,7 @@ import {
   toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
@@ -47,11 +47,10 @@ const TestOverviewLoeysing = () => {
     contextSetTestResults,
     innhaldstypeList,
   }: TestContext = useOutletContext();
-  const modalRef = useRef<HTMLDialogElement>(null);
   const [innhaldstype, setInnhaldstype] =
     useState<InnhaldstypeTesting>(innhaldstypeAlle);
   const [activeTest, setActiveTest] = useState<ActiveTest>();
-  const [alert, setAlert] = useAlert();
+  const [alert, setAlert, modalRef] = useAlertModal();
   const [sak, setSak] = useState<Sak>(contextSak);
   const [testFerdig, setTestFerdig] = useState(false);
   const [testResultsLoeysing, setTestResultsLoeysing] = useState<
@@ -143,10 +142,7 @@ const TestOverviewLoeysing = () => {
     );
 
     const finished = testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
-
-    if (finished) {
-      setTestFerdig(true);
-    }
+    setTestFerdig(finished);
 
     if (activeTestregel) {
       setActiveTest({
@@ -197,7 +193,7 @@ const TestOverviewLoeysing = () => {
           innhaldstype
         );
       } else {
-        setAlert('danger', 'Ugylig nettside');
+        setAlert('danger', 'Kan ikkje byta side', 'Ugylig nettside');
       }
     },
     [
@@ -234,39 +230,39 @@ const TestOverviewLoeysing = () => {
       setActiveTest(undefined);
       const nextTestregel = sak.testreglar.find((tr) => tr.id === testregelId);
       if (!nextTestregel) {
-        setAlert('danger', 'Det oppstod ein feil ved ending av testregel');
+        setAlert(
+          'danger',
+          'Kan ikkje byta testregel',
+          'Det oppstod ein feil ved byting av testregel'
+        );
       } else {
-        try {
-          const sakIdNumeric = Number(sakId);
-          const loeysingIdNumeric = Number(loeysingId);
+        const sakIdNumeric = Number(sakId);
+        const loeysingIdNumeric = Number(loeysingId);
 
-          const statusKey = toTestregelStatusKey(
+        const statusKey = toTestregelStatusKey(
+          sakIdNumeric,
+          loeysingIdNumeric,
+          nextTestregel.id,
+          pageType.nettsideId
+        );
+        const testregelStatus = testStatusMap.get(statusKey);
+
+        if (testregelStatus && testregelStatus === 'ikkje-starta') {
+          doCreateTestResult(
             sakIdNumeric,
             loeysingIdNumeric,
-            nextTestregel.id,
+            nextTestregel,
             pageType.nettsideId
           );
-          const testregelStatus = testStatusMap.get(statusKey);
-
-          if (testregelStatus && testregelStatus === 'ikkje-starta') {
-            doCreateTestResult(
-              sakIdNumeric,
-              loeysingIdNumeric,
-              nextTestregel,
-              pageType.nettsideId
-            );
-          } else {
-            processData(
-              contextSak,
-              contextTestResults,
-              Number(loeysingId),
-              pageType,
-              innhaldstype,
-              nextTestregel
-            );
-          }
-        } catch (e) {
-          setAlert('danger', 'Ugyldig testregel');
+        } else {
+          processData(
+            contextSak,
+            contextTestResults,
+            Number(loeysingId),
+            pageType,
+            innhaldstype,
+            nextTestregel
+          );
         }
       }
     },
@@ -303,6 +299,7 @@ const TestOverviewLoeysing = () => {
           if (status === 'ferdig' && notFinished.length > 0) {
             setAlert(
               'warning',
+              `Kan ikkje sette status ${status}`,
               `${notFinished.length} testar er ikkje ferdig i "${testregel.namn}"`
             );
           } else {
@@ -357,10 +354,14 @@ const TestOverviewLoeysing = () => {
             activeTestregel
           );
         } catch (e) {
-          setAlert('danger', 'Opprett testresultat feila');
+          setAlert('danger', 'Kunne ikkje lagre', 'Opprett testresultat feila');
         }
       } else {
-        setAlert('danger', 'Ugyldig oppretting av testresultat');
+        setAlert(
+          'danger',
+          'Kunne ikkje lagre',
+          'Ugyldig oppretting av testresultat'
+        );
       }
     },
     [contextSak, loeysingId, activeTest, pageType, innhaldstype]
@@ -389,8 +390,8 @@ const TestOverviewLoeysing = () => {
       ) {
         const testResult: ResultatManuellKontroll = {
           id: activeTestResult.id,
-          sakId: Number(sakId),
-          loeysingId: Number(loeysingId),
+          sakId: sakIdNumeric,
+          loeysingId: loeysingIdNumeric,
           testregelId: activeTest.testregel?.id,
           nettsideId: pageType.nettsideId,
           elementOmtale,
@@ -411,10 +412,18 @@ const TestOverviewLoeysing = () => {
             innhaldstype
           );
         } catch (e) {
-          setAlert('danger', 'Oppdatering av testresultat feila');
+          setAlert(
+            'danger',
+            'Kunne ikkje lagre',
+            'Oppdatering av testresultat feila'
+          );
         }
       } else {
-        setAlert('danger', 'Ugyldig oppdatering av testresultat');
+        setAlert(
+          'danger',
+          'Kunne ikkje lagre',
+          'Ugyldig oppdatering av testresultat'
+        );
       }
     },
     [
@@ -440,7 +449,11 @@ const TestOverviewLoeysing = () => {
           innhaldstype
         );
       } catch (e) {
-        setAlert('danger', 'Oppdatering av testresultat feila');
+        setAlert(
+          'danger',
+          'Kunne endre status',
+          'Oppdatering av status for testresultat feila'
+        );
       }
     },
     [contextSak, loeysingId, activeTest, pageType, innhaldstype]
@@ -495,18 +508,15 @@ const TestOverviewLoeysing = () => {
           showHelpText={showHelpText}
         />
       </div>
-      <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
-        <Modal.Header>Noko har skjedd</Modal.Header>
-        <Modal.Content>
-          <Alert
-            severity={alert?.severity}
-            role={alert?.severity === 'success' ? 'status' : undefined}
-          >
-            {alert?.message}
-          </Alert>
-          <br />
-        </Modal.Content>
-      </Modal>
+      {alert && (
+        <AlertModal
+          ref={modalRef}
+          severity={alert.severity}
+          title={alert.title}
+          message={alert.message}
+          clearMessage={alert.clearMessage}
+        />
+      )}
     </div>
   );
 };
