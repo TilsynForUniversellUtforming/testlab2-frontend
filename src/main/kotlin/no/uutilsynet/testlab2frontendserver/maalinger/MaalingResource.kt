@@ -39,12 +39,13 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("api/v1/maalinger")
 class MaalingResource(
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties
+    final val testingApiProperties: TestingApiProperties
 ) {
   val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
   val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
+  val resultatUrl = "${testingApiProperties.url}/resultat"
 
   @GetMapping
   fun listMaaling(): List<Maaling> {
@@ -214,8 +215,8 @@ class MaalingResource(
   ): List<TestResultat> =
       runCatching {
             val url =
-                if (loeysingId != null) "$maalingUrl/$maalingId/testresultat?loeysingId=$loeysingId"
-                else "$maalingUrl/$maalingId/testresultat"
+                if (loeysingId != null) "${resultatUrl}?maalingId=$maalingId&loeysingId=$loeysingId"
+                else "${resultatUrl}?maalingId=$maalingId"
             restTemplate.getList<TestResultat>(url)
           }
           .getOrElse {
