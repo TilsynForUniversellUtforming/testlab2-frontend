@@ -141,7 +141,9 @@ const TestOverviewLoeysing = () => {
       )
     );
 
-    const finished = testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
+    const finished =
+      testResultsLoeysing.length === contextSak.testreglar.length &&
+      testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
     setTestFerdig(finished);
 
     if (activeTestregel) {
