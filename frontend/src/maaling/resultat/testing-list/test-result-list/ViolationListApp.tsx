@@ -64,7 +64,7 @@ const ViolationListApp = () => {
             Number(loeysingId)
           );
           const filteredResult = resultat.filter(
-            (r) => r.testregelId === testregelId
+            (r) => r.testregelNoekkel === testregelId
           );
           setTestresult(filteredResult);
         } else {

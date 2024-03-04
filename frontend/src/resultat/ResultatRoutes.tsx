@@ -1,9 +1,13 @@
 import { AppRoute, idPath } from '@common/util/routeUtils';
+import ViolationsList from '@resultat/ViolationsList';
 import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import resultatImg from '../assets/resultat.svg';
-import { fetchTestresultatAggregert } from './resultat-api';
+import {
+  fetchDetaljertResultat,
+  fetchTestresultatAggregert,
+} from './resultat-api';
 import TestResultatApp from './TestResultatApp';
 
 export const RESULTAT_ROOT: AppRoute = {
@@ -18,6 +22,12 @@ export const TESTRESULTAT_TESTGRUNNLAG: AppRoute = {
   parentRoute: RESULTAT_ROOT,
 };
 
+export const VIOLATION_LIST: AppRoute = {
+  navn: 'Resultat testregel',
+  path: ':testregelId',
+  parentRoute: TESTRESULTAT_TESTGRUNNLAG,
+};
+
 export const ResultRoutes: RouteObject = {
   path: RESULTAT_ROOT.path,
   element: <Outlet />,
@@ -25,10 +35,26 @@ export const ResultRoutes: RouteObject = {
   children: [
     {
       path: TESTRESULTAT_TESTGRUNNLAG.path,
-      loader: ({ params }) =>
-        fetchTestresultatAggregert(parseInt(params.id as string)),
-      element: <TestResultatApp />,
+      element: <Outlet />,
       handle: { name: TESTRESULTAT_TESTGRUNNLAG.navn },
+      children: [
+        {
+          index: true,
+          loader: ({ params }) =>
+            fetchTestresultatAggregert(parseInt(params.id as string)),
+          element: <TestResultatApp />,
+        },
+        {
+          path: VIOLATION_LIST.path,
+          loader: ({ params }) =>
+            fetchDetaljertResultat(
+              parseInt(params.id as string),
+              params.testregelId as string
+            ),
+          element: <ViolationsList />,
+          handle: { name: VIOLATION_LIST.navn },
+        },
+      ],
     },
   ],
 };

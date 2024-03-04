@@ -112,7 +112,8 @@ export type ACTElement = {
 export type AutotesterResult = {
   suksesskriterium: string[];
   side: string;
-  testregelId: string;
+  testregelId: number;
+  testregelNoekkel: string;
   sideNivaa: number;
   testVartUtfoert: Date;
   elementUtfall: string;
