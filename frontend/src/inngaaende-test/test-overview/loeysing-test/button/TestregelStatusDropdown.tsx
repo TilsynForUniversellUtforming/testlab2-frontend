@@ -1,5 +1,5 @@
 import { ButtonVariant } from '@common/types';
-import { Button, DropdownMenu } from '@digdir/design-system-react';
+import { DropdownMenu } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import { ManuellTestStatus } from '@test/types';
 import { useState } from 'react';
@@ -36,21 +36,19 @@ const TestregelStatusDropdown = ({ onChangeStatus, testregelId }: Props) => {
         placement="bottom-start"
         size="small"
       >
-        <DropdownMenu.Trigger asChild={true}>
-          <Button
-            aria-haspopup="true"
-            aria-expanded={show}
-            id="Oppgi status"
-            onClick={() => {
-              setShow((show) => !show);
-            }}
-            size="small"
-            variant={ButtonVariant.Quiet}
-            className="button"
-          >
-            <CogIcon />
-            Oppgi status
-          </Button>
+        <DropdownMenu.Trigger
+          aria-haspopup="true"
+          aria-expanded={show}
+          id="Oppgi status"
+          onClick={() => {
+            setShow((show) => !show);
+          }}
+          size="small"
+          variant={ButtonVariant.Quiet}
+          className="button"
+        >
+          <CogIcon />
+          Oppgi status
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           <DropdownMenu.Group>
