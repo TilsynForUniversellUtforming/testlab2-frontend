@@ -1,4 +1,4 @@
-import { DropdownMenu, Heading } from '@digdir/design-system-react';
+import { Button, DropdownMenu, Heading } from '@digdir/design-system-react';
 import { ArrowDownIcon } from '@navikt/aksel-icons';
 import { findElementOmtale, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
@@ -14,6 +14,7 @@ type Props = {
   testregel: Testregel;
   skjemaerMedSvar: SkjemaMedSvar[];
   onAnswer: (svar: Svar[], index: number) => void;
+  slettTestelement: (resultatId: number) => void;
   showHelpText: boolean;
 };
 
@@ -21,6 +22,7 @@ export function TestFormAccordion({
   testregel,
   skjemaerMedSvar,
   onAnswer,
+  slettTestelement,
   showHelpText,
 }: Readonly<Props>) {
   function initState() {
@@ -99,6 +101,18 @@ export function TestFormAccordion({
     );
   }
 
+  function removeElement(resultatId: number) {
+    return (
+      <Button
+        variant="secondary"
+        size="small"
+        onClick={() => slettTestelement(resultatId)}
+      >
+        Slett dette testelementet
+      </Button>
+    );
+  }
+
   function accordionButton(
     skjemaMedSvar: SkjemaMedSvar,
     resultatId: number,
@@ -156,6 +170,7 @@ export function TestFormAccordion({
                   </Heading>
 
                   {dropdownMenu(index)}
+                  {removeElement(resultatId)}
 
                   {renderForm(resultatId, skjemaMedSvar, index)}
                 </div>

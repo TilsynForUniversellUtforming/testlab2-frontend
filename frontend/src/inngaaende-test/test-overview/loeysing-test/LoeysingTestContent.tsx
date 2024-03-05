@@ -34,6 +34,7 @@ interface Props {
     resultat?: TestregelResultat,
     elementOmtale?: string
   ) => void;
+  slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
   showHelpText: boolean;
   toggleShowHelpText: () => void;
@@ -71,6 +72,7 @@ const LoeysingTestContent = ({
   createNewTestResult,
   testStatusMap,
   doUpdateTestResult,
+  slettTestelement,
   onChangeStatus,
   showHelpText,
   toggleShowHelpText,
@@ -139,6 +141,9 @@ const LoeysingTestContent = ({
                   resultater={activeTest.testResultList}
                   onResultat={doUpdateTestResult}
                   showHelpText={showHelpText}
+                  slettTestelement={(resultatId) =>
+                    slettTestelement(activeTest, resultatId)
+                  }
                 />
                 <div className="testregel-form-buttons">
                   <Button

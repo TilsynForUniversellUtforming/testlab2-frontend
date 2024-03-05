@@ -73,6 +73,7 @@ describe('TestForm', () => {
           resultater={results}
           showHelpText={showHelpText}
           onResultat={vi.fn()}
+          slettTestelement={vi.fn()}
         />
       );
 
