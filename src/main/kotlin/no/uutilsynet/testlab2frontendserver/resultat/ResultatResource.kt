@@ -1,10 +1,12 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
+import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -34,9 +36,22 @@ class ResultatResource(
   }
 
   @PostMapping("aggregert/{testgrunnlagId}")
-  fun createTestresultatAggregert(@PathVariable testgrunnlagId: Int) {
+  fun createTestresultatAggregert(@PathVariable testgrunnlagId: Int): ResponseEntity<Any> {
     logger.debug("genererar aggregering frå sak/maaling med id: $testgrunnlagId")
-    restTemplate.postForLocation("$testresultatUrl/aggregert/$testgrunnlagId", testgrunnlagId)
+    return runCatching {
+          val location =
+              restTemplate.postForLocation(
+                  "$testresultatUrl/aggregert/$testgrunnlagId", testgrunnlagId)
+                  ?: throw RuntimeException(
+                      "Feil ved oppretting av aggregert resultat for testgrunnlagId: $testgrunnlagId")
+          return ResponseEntity.created(
+                  URI.create("/api/v1/testresultat/aggregert/${testgrunnlagId}"))
+              .body(location)
+        }
+        .getOrElse {
+          logger.error(it.message)
+          ResponseEntity.internalServerError().body(it.message)
+        }
   }
 
   @GetMapping("resultat")
