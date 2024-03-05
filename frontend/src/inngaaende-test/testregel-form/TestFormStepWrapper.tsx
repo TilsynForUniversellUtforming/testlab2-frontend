@@ -1,4 +1,3 @@
-import { parseHtmlEntities } from '@common/util/stringutils';
 import { ErrorMessage } from '@digdir/design-system-react';
 import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
@@ -27,13 +26,13 @@ const TestFormStepWrapper = ({
     return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
   }
 
+  steg = {
+    ...steg,
+    ht: showHelpText ? steg.ht : '',
+  };
+
   switch (steg.type) {
     case 'tekst':
-      steg = {
-        ...steg,
-        spm: parseHtmlEntities(steg.spm),
-        ht: showHelpText ? parseHtmlEntities(steg.ht) : '',
-      };
       return (
         <TestFormInputText
           steg={steg}
@@ -45,11 +44,6 @@ const TestFormStepWrapper = ({
       return <TestFormDescription steg={steg} />;
     case 'radio':
     case 'jaNei':
-      steg = {
-        ...steg,
-        spm: parseHtmlEntities(steg.spm),
-        ht: showHelpText ? parseHtmlEntities(steg.ht) : '',
-      };
       return (
         <TestFormInputRadio
           steg={steg}
