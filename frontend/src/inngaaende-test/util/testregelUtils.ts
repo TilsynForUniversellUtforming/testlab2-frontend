@@ -33,13 +33,17 @@ export const progressionForLoeysingNettside = (
     innhaldstype
   ).map((tr) => tr.id);
 
-  const numFinishedTestResults = testResults.filter(
-    (tr) =>
-      testregelIdList.includes(tr.testregelId) &&
-      tr.loeysingId === loeysingId &&
-      tr.nettsideId === nettsideId &&
-      tr.status === 'Ferdig'
-  ).length;
+  const finishedTestIdentifierArray = testResults
+    .filter(
+      (tr) =>
+        testregelIdList.includes(tr.testregelId) &&
+        tr.loeysingId === loeysingId &&
+        tr.nettsideId === nettsideId &&
+        tr.status === 'Ferdig'
+    )
+    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId}`);
+
+  const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
 
   const numContentTestregel = testregelIdList.length;
 

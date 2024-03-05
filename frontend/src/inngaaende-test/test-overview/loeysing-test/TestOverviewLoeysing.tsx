@@ -84,6 +84,7 @@ const TestOverviewLoeysing = () => {
       pageType.nettsideId
     )
   );
+
   const [showHelpText, setShowHelpText] = useState(true);
 
   const toggleShowHelpText = () => {
@@ -131,6 +132,7 @@ const TestOverviewLoeysing = () => {
         loeysingId
       )
     );
+
     setTestStatusMap(
       toTestregelStatus(
         testregelList,
@@ -224,13 +226,15 @@ const TestOverviewLoeysing = () => {
         );
       }
     },
-    [contextSak, pageType]
+    [contextSak, contextTestResults, loeysingId, nettsideProperties, pageType]
   );
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       setActiveTest(undefined);
-      const nextTestregel = sak.testreglar.find((tr) => tr.id === testregelId);
+      const nextTestregel = contextSak.testreglar.find(
+        (tr) => tr.id === testregelId
+      );
       if (!nextTestregel) {
         setAlert(
           'danger',
@@ -268,7 +272,7 @@ const TestOverviewLoeysing = () => {
         }
       }
     },
-    [sakId, loeysingId, testregelList, contextTestResults, pageType.nettsideId]
+    [sakId, loeysingId, contextSak, contextTestResults, pageType, innhaldstype]
   );
 
   const onChangeTestregelStatus = useCallback(
