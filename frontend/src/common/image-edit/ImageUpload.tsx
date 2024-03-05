@@ -8,8 +8,9 @@ import useCanvasDrawing from '@common/image-edit/hooks/useCanvasDrawing';
 import useFileUpload from '@common/image-edit/hooks/useFileUpload';
 import { Paragraph } from '@digdir/design-system-react';
 import { UploadIcon } from '@navikt/aksel-icons';
+import { uploadBilde } from '@test/api/testing-api';
 import classnames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Point } from './types';
 
@@ -25,11 +26,11 @@ const ImageUpload = () => {
   const divRef = useRef<HTMLDivElement>(null);
 
   const {
+    selectedFile,
     handleFileChange,
     handleDrop,
     handleDragOver,
     handleDragLeave,
-    selectedFile,
     isDragOver,
     handleClearFile,
   } = useFileUpload({ canvasRef, setAlert });
@@ -50,6 +51,22 @@ const ImageUpload = () => {
     undo,
     emptyStrokes,
   } = useCanvasDrawing(canvasRef, isEditMode, selectedFile, showContextMenu);
+
+  const onClickSave = useCallback(async () => {
+    if (!selectedFile || !canvasRef.current) return;
+
+    try {
+      const canvas = canvasRef.current;
+      const dataUrl = canvas.toDataURL('image/png');
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const file = new File([blob], 'bilde.png', { type: 'image/png' });
+
+      await uploadBilde(file);
+    } catch (error) {
+      setAlert('danger', 'Noko gjekk gale med opplasting av biletet');
+    }
+  }, [selectedFile, canvasRef]);
 
   const toggleEditMode = () => {
     setIsEditMode((prev) => !prev);
@@ -141,7 +158,7 @@ const ImageUpload = () => {
           {!selectedFile && (
             <>
               <UploadIcon title="Last opp" fontSize={42} />
-              <Paragraph>
+              <div>
                 Dra og slepp eller&nbsp;
                 <label
                   htmlFor="file-upload"
@@ -156,8 +173,8 @@ const ImageUpload = () => {
                   accept=".jpg,.png,.bmp"
                   className="image-upload-manual-input"
                 />
-              </Paragraph>
-              <Paragraph>Filformater: .jpg og .png, og .bmp</Paragraph>
+              </div>
+              <div>Filformater: .jpg og .png, og .bmp</div>
             </>
           )}
         </div>
@@ -170,7 +187,8 @@ const ImageUpload = () => {
           emptyStrokes={emptyStrokes}
           handleClearCanvas={handleClearFile}
           handleClearStrokes={clearStrokes}
-          toggleImageSize={toggleEditMode}
+          onClickSave={onClickSave}
+          toggleEditMode={toggleEditMode}
           handleUndo={undo}
           setColor={setColor}
           setLineType={setLineType}

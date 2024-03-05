@@ -25,7 +25,8 @@ interface Props {
   emptyStrokes: boolean;
   handleClearCanvas: () => void;
   handleClearStrokes: () => void;
-  toggleImageSize: () => void;
+  onClickSave: () => void;
+  toggleEditMode: () => void;
   handleUndo: () => void;
   setColor: (event: React.ChangeEvent<HTMLInputElement>) => void;
   color: string;
@@ -43,7 +44,8 @@ const ImageControl = ({
   emptyStrokes,
   handleClearCanvas,
   handleClearStrokes,
-  toggleImageSize,
+  onClickSave,
+  toggleEditMode,
   handleUndo,
   setColor,
   color,
@@ -69,12 +71,20 @@ const ImageControl = ({
           iconOnly={true}
           variant={ButtonVariant.Quiet}
         />
+        <ConfirmModalButton
+          title="Lagre"
+          message="Vil du lagre biletet?"
+          icon={<FloppydiskIcon />}
+          onConfirm={onClickSave}
+          iconOnly={true}
+          variant={ButtonVariant.Quiet}
+        />
         <Button
-          onClick={toggleImageSize}
-          title={isEditMode ? 'Lagre' : 'Rediger'}
+          onClick={toggleEditMode}
+          title="Rediger"
           variant={ButtonVariant.Quiet}
         >
-          {isEditMode ? <FloppydiskIcon /> : <DocPencilIcon />}
+          <DocPencilIcon />
         </Button>
         {isEditMode && (
           <>

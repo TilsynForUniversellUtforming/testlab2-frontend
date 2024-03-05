@@ -5,7 +5,7 @@ const useImageControl = () => {
   const [lineType, setLineType] = useState<LineType>('rectangle');
   const [color, setColor] = useState<string>('#ff0000');
   const [drawMode, setDrawMode] = useState<DrawMode>('draw');
-  const [textStyle, setTextStyle] = useState<TextStyle>('filled');
+  const [textStyle, setTextStyle] = useState<TextStyle>('none');
 
   const handleSetTextStyle = useCallback((value: string) => {
     if (['filled', 'outline', 'none'].includes(value)) {
