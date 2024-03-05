@@ -1,4 +1,5 @@
 import { OptionType } from '@common/types';
+import DOMPurify from 'dompurify';
 
 /**
  * Joins an array of strings into a single readable string.
@@ -113,3 +114,11 @@ export const createOptionsFromLiteral = <T extends string>(
     label: sanitizeEnumLabel(literal),
   }));
 };
+
+/**
+ * Converts a string of HTML to a ReactNode.
+ */
+export function htmlToReactNode(s: string) {
+  const safeHTML = DOMPurify.sanitize(s);
+  return <div dangerouslySetInnerHTML={{ __html: safeHTML }} />;
+}
