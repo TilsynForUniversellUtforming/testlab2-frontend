@@ -34,7 +34,7 @@ export const updateTestResultat = async (
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(testResultat),
+    body: JSON.stringify([testResultat]),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje oppdatere testresultat')
   );
