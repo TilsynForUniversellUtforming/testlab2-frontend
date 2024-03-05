@@ -106,7 +106,7 @@ export const toTestregelStatus = (
 ): Map<string, ManuellTestStatus> =>
   new Map(
     testregelList.map((testregel) => {
-      const tr = findActiveTestResult(
+      const testresults = findActiveTestResults(
         testResults,
         sakId,
         loeysingId,
@@ -116,10 +116,13 @@ export const toTestregelStatus = (
 
       // TODO - Slett når ResultatManuellKontroll har statusfelt
       let status: ManuellTestStatus;
-      if (isNotDefined(tr)) {
+      if (isNotDefined(testresults)) {
         status = 'ikkje-starta';
       } else {
-        if (tr.status === 'Ferdig') {
+        if (
+          testresults.filter((tr) => tr.status === 'Ferdig').length ===
+          testresults.length
+        ) {
           status = 'ferdig';
         } else {
           status = 'under-arbeid';
@@ -167,26 +170,6 @@ export const mapTestregelOverviewElements = (
   filterTestregelByInnhaldstype(testregelList, innhaldstype).map((tr) =>
     toTestregelOverviewElement(tr)
   );
-
-export const findActiveTestResult = (
-  testResultsLoeysing: ResultatManuellKontroll[],
-  sakId: number | undefined,
-  loeysingId: number | undefined,
-  testregelId: number | undefined,
-  nettsideId: number | undefined
-): ResultatManuellKontroll | undefined => {
-  if (!sakId || !loeysingId || !testregelId || !nettsideId) {
-    throw Error('Kan ikkje finne testresultat for sak');
-  }
-
-  return testResultsLoeysing.find(
-    (tr) =>
-      tr.sakId === sakId &&
-      tr.loeysingId === loeysingId &&
-      tr.testregelId === testregelId &&
-      tr.nettsideId === nettsideId
-  );
-};
 
 export function findActiveTestResults(
   testResults: ResultatManuellKontroll[],
