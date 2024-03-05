@@ -1,4 +1,5 @@
 import DebouncedInput from '@common/debounced-input/DebouncedInput';
+import { htmlToReactNode } from '@common/util/stringutils';
 import { Svar } from '@test/api/types';
 import { StegTekst } from '@test/util/testregel-interface/Steg';
 import React, { useCallback } from 'react';
@@ -25,8 +26,8 @@ const TestFormInputText = ({ steg, svar, onAnswer }: Props) => {
 
   return (
     <DebouncedInput
-      label={spm}
-      description={ht}
+      label={htmlToReactNode(spm)}
+      description={htmlToReactNode(ht)}
       name={stegnr}
       type={textFieldType}
       value={svar ?? ''}
