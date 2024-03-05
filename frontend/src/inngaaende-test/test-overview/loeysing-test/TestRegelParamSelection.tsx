@@ -21,16 +21,12 @@ const TestRegelParamSelection = ({
   url,
 }: Props) => (
   <div className="test-param-selection">
-    <Heading size="small" level={6}>
-      {isUrl(url) ? (
+    <Heading size="small" level={6} className="test-param-selection__header">
+      {innhaldstype} og {pageType}
+      {isUrl(url) && (
         <Link href={url} target="_blank" title={`Gå til ${url}`}>
-          {innhaldstype} og {pageType}
           <ExternalLinkIcon aria-hidden />
         </Link>
-      ) : (
-        <>
-          {innhaldstype} og {pageType}
-        </>
       )}
     </Heading>
     <LoadingBar

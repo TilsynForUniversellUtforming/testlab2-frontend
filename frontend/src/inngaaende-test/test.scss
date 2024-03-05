@@ -99,6 +99,11 @@
       margin-bottom: 2rem;
       background-color: var(--fds-semantic-background-default);
       border-radius: 10px;
+
+      &__header {
+        display: flex;
+        justify-content: center;
+      }
     }
 
     .statusFerdig {
