@@ -56,9 +56,8 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             resultatManuellKontrollList.forEach { resultatManuellKontroll ->
               logger.debug(
                   "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId} + status: ${resultatManuellKontroll.status}")
-                val resultatCopy = resultatManuellKontroll.copy(testVartUtfoert = Instant.now())
-              restTemplate.put(
-                  "$testresultUrl/${resultatManuellKontroll.id}", resultatCopy)
+              val resultatCopy = resultatManuellKontroll.copy(testVartUtfoert = Instant.now())
+              restTemplate.put("$testresultUrl/${resultatManuellKontroll.id}", resultatCopy)
             }
 
             getResultatManuellKontroll(resultatManuellKontrollList.first().sakId)
