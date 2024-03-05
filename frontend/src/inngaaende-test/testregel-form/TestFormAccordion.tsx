@@ -104,6 +104,7 @@ export function TestFormAccordion({
   function removeElement(resultatId: number) {
     return (
       <Button
+        className={classes.removeButton}
         variant="secondary"
         size="small"
         onClick={() => slettTestelement(resultatId)}
