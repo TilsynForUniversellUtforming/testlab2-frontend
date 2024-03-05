@@ -27,14 +27,14 @@ export const createTestResultat = async (
 };
 
 export const updateTestResultat = async (
-  testResulat: ResultatManuellKontroll
+  testResultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`/api/v1/testing`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify([testResulat]),
+    body: JSON.stringify(testResultat),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje oppdatere testresultat')
   );
@@ -51,5 +51,19 @@ export const updateTestResultatMany = async (
     body: JSON.stringify(testResulatList),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje oppdatere testresultat')
+  );
+};
+
+export const deleteTestResultat = async (
+  resultat: ResultatManuellKontroll
+): Promise<ResultatManuellKontroll[]> => {
+  return await fetch(`/api/v1/testing`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(resultat),
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje slette testresultat')
   );
 };
