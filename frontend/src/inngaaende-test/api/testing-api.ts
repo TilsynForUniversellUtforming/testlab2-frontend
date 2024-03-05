@@ -13,14 +13,14 @@ export const getTestResults = async (
 };
 
 export const createTestResultat = async (
-  testResulat: CreateTestResultat
+  testResultat: CreateTestResultat
 ): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`/api/v1/testing`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(testResulat),
+    body: JSON.stringify(testResultat),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje opprette testresultat')
   );
@@ -41,14 +41,14 @@ export const updateTestResultat = async (
 };
 
 export const updateTestResultatMany = async (
-  testResulatList: ResultatManuellKontroll[]
+  testResultatList: ResultatManuellKontroll[]
 ): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`/api/v1/testing`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(testResulatList),
+    body: JSON.stringify(testResultatList),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje oppdatere testresultat')
   );
