@@ -4,6 +4,7 @@ import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Sak } from '@sak/api/types';
 import {
   createTestResultat,
+  deleteTestResultat,
   updateTestResultat,
   updateTestResultatMany,
 } from '@test/api/testing-api';
@@ -442,6 +443,30 @@ const TestOverviewLoeysing = () => {
     ]
   );
 
+  const slettTestelement = async (
+    activeTest: ActiveTest,
+    resultatId: number
+  ) => {
+    const resultat = testResultsLoeysing.find((tr) => tr.id === resultatId);
+    if (!resultat) {
+      setAlert(
+        'danger',
+        'Resultatet finnes ikkje',
+        `Vi prøvde å slette resultatet med id ${resultatId}, men det eksisterer ikkje.`
+      );
+      return;
+    }
+    const alleResultater = await deleteTestResultat(resultat);
+    processData(
+      contextSak,
+      alleResultater,
+      Number(loeysingId),
+      pageType,
+      innhaldstype,
+      activeTest.testregel
+    );
+  };
+
   const doUpdateTestResultStatus = useCallback(
     async (testResultat: ResultatManuellKontroll[]) => {
       try {
@@ -509,6 +534,7 @@ const TestOverviewLoeysing = () => {
           onChangeTestregel={onChangeTestregel}
           createNewTestResult={createNewTestResult}
           doUpdateTestResult={doUpdateTestResult}
+          slettTestelement={slettTestelement}
           onChangeStatus={onChangeTestregelStatus}
           toggleShowHelpText={toggleShowHelpText}
           showHelpText={showHelpText}

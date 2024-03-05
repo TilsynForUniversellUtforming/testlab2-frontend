@@ -57,11 +57,16 @@ const TestregelDemoApp = () => {
     return <Spinner title="Laster" />;
   }
 
+  function slettTestelement() {
+    console.info('Du kan ikke slette testelementer i demo appen.');
+  }
+
   return (
     <TestForm
       testregel={testregel}
       resultater={[createResultat(testregel)]}
       onResultat={onResultat}
+      slettTestelement={slettTestelement}
       showHelpText={true}
     />
   );

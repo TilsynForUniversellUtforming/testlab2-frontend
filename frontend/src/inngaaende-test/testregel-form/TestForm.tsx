@@ -26,6 +26,7 @@ interface Props {
     resultat?: TestregelResultat,
     elementOmtale?: string
   ) => void;
+  slettTestelement: (resultatId: number) => void;
 }
 
 function isEqual(a: Svar, b: Svar) {
@@ -37,6 +38,7 @@ const TestForm = ({
   resultater,
   showHelpText,
   onResultat,
+  slettTestelement,
 }: Props) => {
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
@@ -132,6 +134,7 @@ const TestForm = ({
         testregel={testregel}
         skjemaerMedSvar={skjemaerMedSvar}
         onAnswer={onAnswer}
+        slettTestelement={slettTestelement}
         showHelpText={showHelpText}
       />
     </div>
