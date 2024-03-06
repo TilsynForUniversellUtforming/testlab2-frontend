@@ -42,7 +42,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
-  const { id: testgrunnlagId, loeysingId } = useParams();
+  const { testgrunnlagId: testgrunnlagId, loeysingId } = useParams();
   const {
     contextSak,
     contextTestResults,
@@ -81,7 +81,7 @@ const TestOverviewLoeysing = () => {
     toTestregelStatus(
       testregelList,
       testResultsLoeysing,
-      contextSak.id,
+      Number(testgrunnlagId),
       Number(loeysingId),
       pageType.nettsideId
     )
@@ -154,7 +154,7 @@ const TestOverviewLoeysing = () => {
         testregel: activeTestregel,
         testResultList: findActiveTestResults(
           testResultsLoeysing,
-          Number(sakId),
+          Number(testgrunnlagId),
           loeysingId,
           activeTestregel.id,
           pageType.nettsideId
@@ -167,7 +167,7 @@ const TestOverviewLoeysing = () => {
     const numericLoeysingId = Number(loeysingId);
 
     const nyttTestresultat: CreateTestResultat = {
-      sakId: Number(sakId),
+      testgrunnlagId: Number(testgrunnlagId),
       loeysingId: numericLoeysingId,
       testregelId: activeTest.testregel.id,
       nettsideId: pageType.nettsideId,
@@ -292,7 +292,7 @@ const TestOverviewLoeysing = () => {
 
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
-      const sakIdNumeric = Number(sak.id);
+      const sakIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
       const testResults = findActiveTestResults(
@@ -302,6 +302,7 @@ const TestOverviewLoeysing = () => {
         testregelId,
         pageType.nettsideId
       );
+
       const testregel = sak.testreglar.find((tr) => tr.id === testregelId);
       const newStatus = mapStatus(status);
 
