@@ -10,7 +10,7 @@ import { Loeysing } from '../api/types';
  * @returns {Array<ColumnDef<Loeysing>>} An array of column definitions.
  */
 export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
-  getCheckboxColumn((row: Row<Loeysing>) => `Velg ${row.original.namn}`, true),
+  getCheckboxColumn((row: Row<Loeysing>) => `Velg ${row.original.namn}`),
   {
     accessorFn: (row) => row.namn,
     id: 'løsying namn',
