@@ -9,7 +9,6 @@ interface Props {
 const TestFormResultat = ({ resultat }: Props) => {
   let severity: TestlabSeverity;
   let title: string;
-  let isBrot: boolean = false;
 
   switch (resultat?.type) {
     case 'avslutt':
@@ -21,7 +20,6 @@ const TestFormResultat = ({ resultat }: Props) => {
         case 'Nei':
           severity = 'danger';
           title = 'Brot';
-          isBrot = true;
           break;
         case 'Ikkje testbart':
           severity = 'info';
@@ -38,7 +36,6 @@ const TestFormResultat = ({ resultat }: Props) => {
       resultTitle={title}
       resultDescription={resultat.utfall || 'Inget resultat'}
       resultSeverity={severity}
-      showImageUpload={isBrot}
     />
   );
 };

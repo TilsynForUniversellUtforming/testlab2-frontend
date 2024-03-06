@@ -9,12 +9,10 @@ const TestResultCard = ({
   resultTitle,
   resultDescription,
   resultSeverity,
-  showImageUpload,
 }: {
   resultTitle: string;
   resultDescription: string;
   resultSeverity: TestlabSeverity;
-  showImageUpload: boolean;
 }) => {
   const [resultComment, setResultComment] = useState<string>('');
   const cleanHTML = { __html: DOMPurify.sanitize(resultDescription) };
@@ -41,7 +39,7 @@ const TestResultCard = ({
         value={String(resultComment)}
         onChange={(e) => setResultComment(e.target.value)}
       />
-      {showImageUpload && <ImageUpload />}
+      <ImageUpload />
     </div>
   );
 };
