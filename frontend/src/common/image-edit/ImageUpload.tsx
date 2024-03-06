@@ -14,7 +14,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Point } from './types';
 
-const ImageUpload = () => {
+const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   const [isEditMode, setIsEditMode] = useState(true);
   const [alert, setAlert] = useAlert();
   const [contextMenuPosition, setContextMenuPosition] = useState<Point>({
@@ -62,7 +62,7 @@ const ImageUpload = () => {
       const blob = await response.blob();
       const file = new File([blob], 'bilde.png', { type: 'image/png' });
 
-      await uploadBilde(file);
+      await uploadBilde(file, resultatId);
     } catch (error) {
       setAlert('danger', 'Noko gjekk gale med opplasting av biletet');
     }

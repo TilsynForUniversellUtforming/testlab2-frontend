@@ -70,9 +70,13 @@ export const deleteTestResultat = async (
   );
 };
 
-export const uploadBilde = async (bilde: File): Promise<void> => {
+export const uploadBilde = async (
+  bilde: File,
+  resultatId: number
+): Promise<void> => {
   const formData = new FormData();
   formData.append('bilde', bilde);
+  formData.append('resultatId', String(resultatId));
 
   await fetch(`${testingApiBaseUrl}/bilder`, {
     method: 'POST',

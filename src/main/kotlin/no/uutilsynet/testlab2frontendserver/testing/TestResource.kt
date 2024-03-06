@@ -98,15 +98,21 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
           }
 
   @PostMapping("/bilder", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-  fun createBilde(@RequestParam("bilde") bilde: MultipartFile) {
+  fun createBilde(
+      @RequestParam("bilde") bilde: MultipartFile,
+      @RequestParam("resultatId") resultatId: String,
+  ) {
     val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
+
+    val fileExtension = bilde.originalFilename?.substringAfterLast('.', "") ?: ""
+    val filename = "${resultatId}_0.$fileExtension"
 
     val body: MultiValueMap<String, Any> =
         LinkedMultiValueMap<String, Any>().apply {
           add(
               "bilde",
               object : ByteArrayResource(bilde.bytes) {
-                override fun getFilename(): String? = bilde.originalFilename
+                override fun getFilename(): String = filename
               })
         }
 

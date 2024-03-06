@@ -64,7 +64,10 @@ export function TestFormAccordion({
           </div>
         ))}
         {skjemaMedSvar.skjema.resultat && (
-          <TestFormResultat resultat={skjemaMedSvar.skjema.resultat} />
+          <TestFormResultat
+            resultat={skjemaMedSvar.skjema.resultat}
+            resultatId={resultatId}
+          />
         )}
       </div>
     );
