@@ -92,7 +92,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       runCatching {
             logger.debug("Sletter testresultat med id: ${resultatManuellKontroll.id}")
             restTemplate.delete("$testresultUrl/${resultatManuellKontroll.id}")
-            getResultatManuellKontroll(resultatManuellKontroll.sakId)
+            getResultatManuellKontroll(resultatManuellKontroll.testgrunnlagId)
           }
           .getOrElse {
             logger.error("Kunne ikkje slette testresultat", it)
