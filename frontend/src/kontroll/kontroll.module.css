@@ -1,0 +1,67 @@
+.bygg-kontroll {
+  margin: 0 auto;
+  width: 800px;
+}
+
+.stepper ol {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 6rem 0;
+  padding: 0;
+  position: relative;
+}
+
+.stepper ol::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  width: 100%;
+  background-color: var(--fds-semantic-surface-first-dark);
+}
+
+.stepper ol li {
+  list-style: none;
+  padding: 0.5rem 1rem;
+  background-color: var(--fds-semantic-surface-first-light);
+  border-radius: 10px;
+}
+
+.stepper ol li:first-of-type {
+  background-color: var(--fds-semantic-surface-first-light-active);
+  color: white;
+}
+
+.ingress {
+  font-size: 1.5rem;
+}
+
+.skjema {
+  background-color: var(--fds-semantic-surface-third-light);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 3rem 4rem;
+}
+
+.skjema h2 {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--fds-semantic-surface-success-active);
+  margin-bottom: 2rem;
+}
+
+.combo-box,
+.tittel,
+.saksbehandler {
+  width: 50%;
+}
+
+.arkivreferanse {
+  width: 25%;
+}
+
+.opprettResten {
+  align-self: flex-start;
+}
