@@ -145,7 +145,8 @@ const TestOverviewLoeysing = () => {
     );
 
     const finished =
-      testResultsLoeysing.length === contextSak.testreglar.length &&
+      new Set(testResultsLoeysing.map((value) => value.testregelId)).size ===
+        contextSak.testreglar.length &&
       testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
     setTestFerdig(finished);
 
