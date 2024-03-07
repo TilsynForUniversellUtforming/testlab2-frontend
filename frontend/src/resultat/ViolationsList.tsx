@@ -7,13 +7,9 @@ import { useLoaderData, useParams } from 'react-router-dom';
 const ViolationsList = () => {
   const { id, testregelId } = useParams();
 
-  console.log('id: ', id);
-
   const testResults: AutotesterResult[] = useLoaderData() as AutotesterResult[];
 
   const testResultatColumns = useMemo(() => getTestresultatColumns(), []);
-
-  console.log('testResults: ', testResults);
 
   return (
     <UserActionTable<AutotesterResult>

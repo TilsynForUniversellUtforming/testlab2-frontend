@@ -20,7 +20,7 @@ const getSelectedLoeysing = (
   maaling?.testResult.find((tr) => tr.loeysing.id === Number(loeysingId));
 
 const ViolationListApp = () => {
-  const { id, loeysingId, testregelId } = useParams();
+  const { id, loeysingId, testregelNoekkel } = useParams();
 
   const { contextError, contextLoading, maaling }: TestResultContext =
     useOutletContext();
@@ -58,13 +58,13 @@ const ViolationListApp = () => {
 
     const doFetchTestresultat = async () => {
       try {
-        if (id && loeysingId && testregelId) {
+        if (id && loeysingId && testregelNoekkel) {
           const resultat = await fetchTestResultatLoeysing(
             Number(id),
             Number(loeysingId)
           );
           const filteredResult = resultat.filter(
-            (r) => r.testregelNoekkel === testregelId
+            (r) => r.testregelNoekkel === testregelNoekkel
           );
           setTestresult(filteredResult);
         } else {
@@ -88,7 +88,7 @@ const ViolationListApp = () => {
     <>
       <UserActionTable<AutotesterResult>
         heading={`Brot ${extractDomain(selectedLoeysing?.loeysing?.url)}`}
-        subHeading={`Testregel ${testregelId}`}
+        subHeading={`Testregel ${testregelNoekkel}`}
         tableProps={{
           data: testResult,
           defaultColumns: testResultatColumns,
