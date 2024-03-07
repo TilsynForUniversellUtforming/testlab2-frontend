@@ -17,11 +17,13 @@ export const fetchDetaljertResultat = async (
   id: number,
   testregelNoekkel: string
 ): Promise<AutotesterResult[]> => {
-  console.log('Fetch detaljertresultat Id ' + id);
   return fetch(
     `/api/v1/testresultat/resultat?sakId=${id}&testregelNoekkel=${testregelNoekkel}`,
     {}
   ).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente for loeysing')
+    responseToJson(
+      response,
+      'Kunne ikkje hente for sakId ' + id + ' og testregel ' + testregelNoekkel
+    )
   );
 };
