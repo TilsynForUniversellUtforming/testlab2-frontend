@@ -9,4 +9,6 @@ export const fetchTestresultatAggregert = async (
   );
 
 export const createTestresultatAggregert = async (id: number) =>
-  fetch(`/api/v1/testresultat/aggregert/${id}`, { method: 'POST' });
+  fetch(`/api/v1/testresultat/aggregert/${id}`, { method: 'POST' }).then(
+    (response) => responseToJson(response, 'Kunne ikkje hente for loeysing')
+  );
