@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate
 class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Autowired private lateinit var server: MockRestServiceServer
+  @MockBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
   private val testregelApiUrl = "https://api.url/testregel"
   private val kravApiUrl = "https://api.url/krav"
 

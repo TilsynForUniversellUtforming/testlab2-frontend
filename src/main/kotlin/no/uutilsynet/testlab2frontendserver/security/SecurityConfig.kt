@@ -4,6 +4,7 @@ import java.util.stream.Collectors
 import no.uutilsynet.testlab2securitylib.RoleExtractor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
@@ -23,6 +24,7 @@ class SecurityConfig {
   val rolesExtractor = RoleExtractor()
 
   @Bean
+  @Profile("security")
   open fun filterChain(http: HttpSecurity): SecurityFilterChain {
     http {
       csrf { csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse() }
@@ -32,6 +34,16 @@ class SecurityConfig {
       sessionManagement { sessionCreationPolicy = SessionCreationPolicy.ALWAYS }
     }
 
+    return http.build()
+  }
+
+  @Bean
+  @Profile("!security")
+  fun openFilterChain(http: HttpSecurity): SecurityFilterChain {
+    http {
+      authorizeHttpRequests { authorize(anyRequest, permitAll) }
+      cors {}
+    }
     return http.build()
   }
 
