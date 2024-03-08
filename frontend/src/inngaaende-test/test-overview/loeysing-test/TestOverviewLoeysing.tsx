@@ -30,7 +30,6 @@ import {
   getNettsideProperties,
   getTestResultsForLoeysing,
   innhaldstypeAlle,
-  isTestFinished,
   mapTestregelOverviewElements,
   progressionForLoeysingNettside,
   toPageType,
@@ -115,12 +114,16 @@ const TestOverviewLoeysing = () => {
       loeysingId
     );
 
-    const nettsideProperties = getNettsideProperties(contextSak, loeysingId);
+    const filteredNettsideProperties = getNettsideProperties(
+      contextSak,
+      loeysingId
+    );
 
     setSak(contextSak);
     setTestregelList(testregelList);
     setTestResultsLoeysing(testResultsLoeysing);
-    setNettsideProperties(nettsideProperties);
+
+    setNettsideProperties(filteredNettsideProperties);
     setProgressionPercent(
       progressionForLoeysingNettside(
         contextSak,
@@ -141,12 +144,9 @@ const TestOverviewLoeysing = () => {
       )
     );
 
-    const finished = isTestFinished(
-      testResultsLoeysing,
-      sak.testreglar.map((tr) => tr.id),
-      loeysingId,
-      nettsideProperties
-    );
+    const finished =
+      testResultsLoeysing.length === contextSak.testreglar.length &&
+      testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
     setTestFerdig(finished);
 
     if (activeTestregel) {
@@ -173,7 +173,6 @@ const TestOverviewLoeysing = () => {
       nettsideId: pageType.nettsideId,
     };
     const alleResultater = await createTestResultat(nyttTestresultat);
-    contextSetTestResults(alleResultater);
     processData(
       contextSak,
       alleResultater,
