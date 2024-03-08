@@ -228,10 +228,4 @@ class MaalingResource(
             logger.error("Feila ved henting av testreglar for måling $maalingId", it)
             throw RuntimeException("Klarte ikkje å hente testreglar")
           }
-
-  @GetMapping("/testHeaders")
-  fun appheaders(@RequestHeader allHeaders: Map<String, String>): String {
-    println("Headers " + allHeaders)
-    return allHeaders.toString()
-  }
 }
