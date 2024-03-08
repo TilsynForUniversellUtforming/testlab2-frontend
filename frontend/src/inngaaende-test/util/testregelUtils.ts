@@ -21,12 +21,33 @@ export const getTestResultsForLoeysing = (
 ): ResultatManuellKontroll[] =>
   testResults.filter((tr) => tr.loeysingId === loeysingId);
 
+export const isTestFinished = (
+  testResults: ResultatManuellKontroll[],
+  testregelIdList: number[],
+  loeysingId: number,
+  nettsideProperties: NettsideProperties[]
+): boolean => {
+  const finishedTestIdentifierArray = testResults
+    .filter(
+      (tr) =>
+        testregelIdList.includes(tr.testregelId) &&
+        tr.loeysingId === loeysingId &&
+        tr.status === 'Ferdig'
+    )
+    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId}`);
+
+  const numNettside = nettsideProperties.length;
+  const totalTestregelToTest = testregelIdList.length * numNettside;
+
+  return new Set(finishedTestIdentifierArray).size === totalTestregelToTest;
+};
+
 export const progressionForLoeysingNettside = (
   sak: Sak,
   testResults: ResultatManuellKontroll[],
   nettsideId: number,
   innhaldstype: InnhaldstypeTesting,
-  loeysingId: number | undefined
+  loeysingId: number
 ): number => {
   const testregelIdList = filterTestregelByInnhaldstype(
     sak.testreglar,
