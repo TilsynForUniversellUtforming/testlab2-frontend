@@ -144,10 +144,10 @@ const TestOverviewLoeysing = () => {
       )
     );
 
-    const finished =
-      testResultsLoeysing.length === contextSak.testreglar.length &&
-      testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
-    setTestFerdig(finished);
+    // const finished =
+    //   testResultsLoeysing.length === contextSak.testreglar.length &&
+    //   testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
+    setTestFerdig(false);
 
     if (activeTestregel) {
       setActiveTest({
