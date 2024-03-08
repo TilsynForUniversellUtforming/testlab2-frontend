@@ -19,10 +19,10 @@ jobs:
           java-version: "21"
           distribution: "adopt"
           cache: maven
-      - name: Set up node v20
+      - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: lts/*
       - name: Log in to registry
         uses: docker/login-action@v3
         with:
@@ -66,3 +66,28 @@ jobs:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             az containerapp update -n ca-ddt-testlab2-test-frontend -g RG-DDT-Testlab --image acrddtprod.azurecr.io/testlab2-frontend:${{ github.sha }} --subscription ${{ secrets.SUBSCRIPTION_ID }}
+
+  acceptance_tests:
+    needs: deploy
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Install Playwright Browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        working-directory: frontend
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
