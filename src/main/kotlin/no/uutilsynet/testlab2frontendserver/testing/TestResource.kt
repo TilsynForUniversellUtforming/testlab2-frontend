@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
@@ -101,11 +102,16 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   fun createBilde(
       @RequestParam("bilde") bilde: MultipartFile,
       @RequestParam("resultatId") resultatId: String,
-  ) {
+  ): ResponseEntity<Any> {
     val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
 
     val fileExtension = bilde.originalFilename?.substringAfterLast('.', "") ?: ""
     val filename = "${resultatId}_0.$fileExtension"
+
+    if (!allowedMIMETypes.contains(fileExtension)) {
+      return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+          .body("Kun ${allowedMIMETypes.joinToString(",")} er lovelge typar")
+    }
 
     val body: MultiValueMap<String, Any> =
         LinkedMultiValueMap<String, Any>().apply {
@@ -119,7 +125,11 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
     val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
 
     restTemplate.postForEntity("$testresultUrl/bilder", requestEntity, String::class.java)
+
+    return ResponseEntity.noContent().build()
   }
 
   data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
+
+  val allowedMIMETypes = listOf("jpg", "jepg", "png", "bmp")
 }
