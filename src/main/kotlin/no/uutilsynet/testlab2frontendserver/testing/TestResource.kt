@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -99,37 +100,53 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
           }
 
   @PostMapping("/bilder", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-  fun createBilde(
+  fun createBilder(
       @RequestParam("bilde") bilde: MultipartFile,
       @RequestParam("resultatId") resultatId: String,
   ): ResponseEntity<Any> {
-    val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
 
     val fileExtension = bilde.originalFilename?.substringAfterLast('.', "") ?: ""
-    val filename = "${resultatId}_0.$fileExtension"
 
     if (!allowedMIMETypes.contains(fileExtension)) {
       return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
           .body("Kun ${allowedMIMETypes.joinToString(",")} er lovelge typar")
     }
 
+    // TODO - Hent indeks på bilde
+    val bilder = listOf(bilde)
+
     val body: MultiValueMap<String, Any> =
         LinkedMultiValueMap<String, Any>().apply {
-          add(
-              "bilde",
-              object : ByteArrayResource(bilde.bytes) {
-                override fun getFilename(): String = filename
-              })
+          bilder.forEach { image ->
+            add(
+                "bilder",
+                object : ByteArrayResource(image.bytes) {
+                  override fun getFilename(): String = "${resultatId}_${0}.$fileExtension"
+                })
+          }
         }
 
+    val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
     val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
 
-    restTemplate.postForEntity("$testresultUrl/bilder", requestEntity, String::class.java)
+    restTemplate.postForEntity(
+        "$testresultUrl/bilder/${resultatId}", requestEntity, String::class.java)
 
     return ResponseEntity.noContent().build()
   }
 
+  @GetMapping("/bilder/{resultatId}")
+  fun getBilder(
+      @PathVariable("resultatId") resultatId: Int,
+      @RequestParam(required = false) thumbnail: Boolean?
+  ): ResponseEntity<ByteArray> {
+    val img =
+        restTemplate.getForObject<ByteArray>(
+            "$testresultUrl/bilder/$resultatId?thumbnail=${thumbnail ?: false}")
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(img)
+  }
+
   data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
 
-  val allowedMIMETypes = listOf("jpg", "jepg", "png", "bmp")
+  val allowedMIMETypes = listOf("jpg", "jpeg", "png", "bmp")
 }

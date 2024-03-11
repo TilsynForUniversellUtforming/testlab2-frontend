@@ -65,20 +65,22 @@ const ImageControl = ({
       <div className="image-actions">
         <ConfirmModalButton
           title="Slett"
-          message="Vil du ta slette biletet? Dette kan ikkje angrast"
+          message="Vil du ta slette bildet? Dette kan ikkje angrast"
           icon={<TrashIcon />}
           onConfirm={handleClearCanvas}
           iconOnly={true}
           variant={ButtonVariant.Quiet}
         />
-        <ConfirmModalButton
-          title="Lagre"
-          message="Vil du lagre biletet?"
-          icon={<FloppydiskIcon />}
-          onConfirm={onClickSave}
-          iconOnly={true}
-          variant={ButtonVariant.Quiet}
-        />
+        {isEditMode && (
+          <ConfirmModalButton
+            title="Lagre"
+            message="Vil du lagre bildet?"
+            icon={<FloppydiskIcon />}
+            onConfirm={onClickSave}
+            iconOnly={true}
+            variant={ButtonVariant.Quiet}
+          />
+        )}
         <Button
           onClick={toggleEditMode}
           title="Rediger"
