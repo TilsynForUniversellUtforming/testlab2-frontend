@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Combobox,
   Heading,
@@ -94,6 +95,7 @@ export default function Kontroll() {
         <Button type="submit" className={classes.opprettResten}>
           Opprett resten av kontrollen
         </Button>
+        {errors?.server && <Alert severity="danger">{errors.server}</Alert>}
       </Form>
     </section>
   );
