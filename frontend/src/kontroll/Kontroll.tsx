@@ -16,7 +16,7 @@ import {
 import classes from './kontroll.module.css';
 
 export default function Kontroll() {
-  const errors = useActionData() as Record<string, string>;
+  const errors = useActionData() as Errors;
   return (
     <section className={classes.byggKontroll}>
       <nav className={classes.stepper}>
@@ -99,6 +99,15 @@ export default function Kontroll() {
   );
 }
 
+type Errors = {
+  kontrolltype?: string;
+  tittel?: string;
+  saksbehandler?: string;
+  sakstype?: string;
+  arkivreferanse?: string;
+  server?: string;
+};
+
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const kontrolltype = formData.get('kontrolltype');
@@ -106,7 +115,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const saksbehandler = formData.get('saksbehandler');
   const sakstype = formData.get('sakstype');
   const arkivreferanse = formData.get('arkivreferanse');
-  const errors: Record<string, string> = {};
+  const errors: Errors = {};
 
   if (kontrolltype !== 'manuell-kontroll') {
     errors.kontrolltype = 'Kontrolltype må være manuell kontroll';
