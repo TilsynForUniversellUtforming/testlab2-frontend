@@ -43,6 +43,7 @@ class SecurityConfig {
     http {
       authorizeHttpRequests { authorize(anyRequest, permitAll) }
       cors {}
+      csrf { disable() }
     }
     return http.build()
   }
