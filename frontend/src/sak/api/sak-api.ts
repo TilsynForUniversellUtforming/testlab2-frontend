@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { EditSak, NySak, Sak, SakListeElement } from '@sak/api/types';
 
@@ -8,7 +9,7 @@ export const getSak = async (id: number): Promise<Sak> => {
 };
 
 export const createSak = async (nySak: NySak): Promise<number> =>
-  await fetch(`/api/v1/saker`, {
+  await fetchWrapper(`/api/v1/saker`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,7 +18,7 @@ export const createSak = async (nySak: NySak): Promise<number> =>
   }).then((response) => responseToJson(response, 'Kunne ikkje lage nytt sak'));
 
 export const updateSak = async (sakId: number, sak: EditSak): Promise<Sak> =>
-  await fetch(`/api/v1/saker/${sakId}`, {
+  await fetchWrapper(`/api/v1/saker/${sakId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
