@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
 import { CreateTestResultat, ResultatManuellKontroll } from './types';
@@ -15,7 +16,7 @@ export const getTestResults = async (
 export const createTestResultat = async (
   testResultat: CreateTestResultat
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`/api/v1/testing`, {
+  return await fetchWrapper(`/api/v1/testing`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -29,7 +30,7 @@ export const createTestResultat = async (
 export const updateTestResultat = async (
   testResultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`/api/v1/testing`, {
+  return await fetchWrapper(`/api/v1/testing`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +44,7 @@ export const updateTestResultat = async (
 export const updateTestResultatMany = async (
   testResultatList: ResultatManuellKontroll[]
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`/api/v1/testing`, {
+  return await fetchWrapper(`/api/v1/testing`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ export const updateTestResultatMany = async (
 export const deleteTestResultat = async (
   resultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`/api/v1/testing`, {
+  return await fetchWrapper(`/api/v1/testing`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
