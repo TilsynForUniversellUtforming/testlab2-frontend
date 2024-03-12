@@ -46,7 +46,7 @@
   padding: 0 3rem 4rem;
 }
 
-.skjema h2 {
+.skjema-overskrift {
   padding: 2rem 0;
   border-bottom: 1px solid var(--fds-semantic-surface-success-active);
   margin-bottom: 2rem;
