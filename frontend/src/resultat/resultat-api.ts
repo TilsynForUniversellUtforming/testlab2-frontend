@@ -1,5 +1,5 @@
 import { responseToJson } from '@common/util/apiUtils';
-import { AutotesterResult, TestResult } from '@maaling/api/types';
+import { TesterResult, TestResult } from '@maaling/api/types';
 
 export const fetchTestresultatAggregert = async (
   id: number
@@ -16,7 +16,7 @@ export const createTestresultatAggregert = async (id: number) =>
 export const fetchDetaljertResultat = async (
   id: number,
   testregelNoekkel: string
-): Promise<AutotesterResult[]> => {
+): Promise<TesterResult[]> => {
   return fetch(
     `/api/v1/testresultat/resultat?sakId=${id}&testregelNoekkel=${testregelNoekkel}`,
     {}

@@ -104,12 +104,13 @@ export type RestartRequest = {
   process: RestartProcess;
 };
 
-export type ACTElement = {
-  htmlCode: string;
-  pointer: string;
+export type ElementOmtale = {
+  htmlCode?: string;
+  pointer?: string;
+  description?: string;
 };
 
-export type AutotesterResult = {
+export type TesterResult = {
   suksesskriterium: string[];
   side: string;
   testregelId: number;
@@ -118,5 +119,6 @@ export type AutotesterResult = {
   testVartUtfoert: Date;
   elementUtfall: string;
   elementResultat: string;
-  elementOmtale?: ACTElement;
+  elementOmtale?: ElementOmtale;
+  kommentar?: string;
 };
