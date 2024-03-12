@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -52,13 +53,11 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       @RequestBody resultatManuellKontrollList: List<ResultatManuellKontroll>
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
-            logger.debug("Payload " + resultatManuellKontrollList.toString())
-
             resultatManuellKontrollList.forEach { resultatManuellKontroll ->
               logger.debug(
                   "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId} + status: ${resultatManuellKontroll.status}")
-              restTemplate.put(
-                  "$testresultUrl/${resultatManuellKontroll.id}", resultatManuellKontroll)
+              val resultatCopy = resultatManuellKontroll.copy(testVartUtfoert = Instant.now())
+              restTemplate.put("$testresultUrl/${resultatManuellKontroll.id}", resultatCopy)
             }
 
             getResultatManuellKontroll(resultatManuellKontrollList.first().sakId)

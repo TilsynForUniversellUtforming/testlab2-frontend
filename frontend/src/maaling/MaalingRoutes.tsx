@@ -68,7 +68,7 @@ export const TEST_RESULT_LIST: AppRoute = {
 
 export const TEST_VIOLATION_LIST: AppRoute = {
   navn: 'Brot',
-  path: ':testregelId',
+  path: ':testregelNoekkel',
   parentRoute: TEST_TESTING_LIST,
 };
 

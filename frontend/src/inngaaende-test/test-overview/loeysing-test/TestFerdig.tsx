@@ -26,7 +26,8 @@ const TestFerdig = () => {
           } as IdReplacement)
         );
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error(error);
         setAlert('danger', 'Kunne ikke lagre aggregert testresultat');
       });
   }, [sakId]);

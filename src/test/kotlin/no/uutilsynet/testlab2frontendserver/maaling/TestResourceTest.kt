@@ -35,15 +35,15 @@ class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
             "4.1.1"
         ],
         "testVartUtfoert": "2023-06-02T08:50:48",
-        "testregelId": "QW-ACT-R18"
+        "testregelId": 1,
+        "testregelNoekkel": "QW-ACT-R18"
     }]
     """
             .trimIndent()
     server
         .expect(
             ExpectedCount.once(),
-            MockRestRequestMatchers.requestTo(
-                CoreMatchers.containsString("v1/maalinger/1/testresultat")))
+            MockRestRequestMatchers.requestTo(CoreMatchers.containsString("resultat?maalingId=1")))
         .andRespond(MockRestResponseCreators.withSuccess(jsonSuccess, MediaType.APPLICATION_JSON))
 
     val maalingResource = MaalingResource(restTemplate, TestingApiProperties("https://testing.api"))
