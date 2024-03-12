@@ -2,13 +2,13 @@ import { responseToJson } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
-  AutotesterResult,
   IdList,
   Maaling,
   MaalingEditParams,
   MaalingInit,
   MaalingStatus,
   RestartRequest,
+  TesterResult,
 } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
@@ -105,7 +105,7 @@ export const fetchLoeysingNettsider = async (
 export const fetchTestResultatLoeysing = async (
   maalingId: number,
   loeysingId: number
-): Promise<AutotesterResult[]> =>
+): Promise<TesterResult[]> =>
   await fetch(
     `/api/v1/maalinger/${maalingId}/resultat?loeysingId=${loeysingId}`,
     {

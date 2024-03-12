@@ -12,5 +12,6 @@ data class TestResultat(
     val testVartUtfoert: LocalDateTime,
     val elementUtfall: String,
     val elementResultat: String,
-    val elementOmtale: ElementOmtale? = null
+    val elementOmtale: ElementOmtale? = null,
+    val kommentar: String?
 )
