@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
 import {
@@ -47,7 +48,7 @@ export const listTestobjekt = async (): Promise<Testobjekt[]> =>
 export const createTestregel = async (
   testregel: TestregelInit
 ): Promise<TestregelBase[]> =>
-  await fetch(`/api/v1/testreglar`, {
+  await fetchWrapper(`/api/v1/testreglar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ export const createTestregel = async (
 export const updateTestregel = async (
   testregel: TestregelInit
 ): Promise<TestregelBase[]> =>
-  await fetch(`/api/v1/testreglar`, {
+  await fetchWrapper(`/api/v1/testreglar`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
