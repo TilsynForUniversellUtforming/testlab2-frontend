@@ -1,4 +1,4 @@
-package no.uutilsynet.testlab2frontendserver
+package no.uutilsynet.testlab2frontendserver.security
 
 import java.util.stream.Collectors
 import no.uutilsynet.testlab2securitylib.RoleExtractor
@@ -13,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.csrf.*
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -25,7 +25,7 @@ class SecurityConfig {
 
   @Bean
   @Profile("security")
-  open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+  fun filterChain(http: HttpSecurity): SecurityFilterChain {
     http {
       csrf { csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse() }
       authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
@@ -51,13 +51,12 @@ class SecurityConfig {
   @Bean
   fun corsConfigurationSource(): CorsConfigurationSource {
     val configuration = CorsConfiguration()
-    configuration.allowedOrigins =
+    configuration.allowedOriginPatterns =
         listOf(
-            "https://user.difi.no",
-            "https://test-testlab.uutilsynet.no",
-            "https://beta-testlab.uutilsynet.no",
-            "http://localhost")
-    configuration.allowedOriginPatterns = listOf("*.difi.no", "*.uutilsynet.no", "http://localhost")
+            "https://*.difi.no",
+            "https://*.uutilsynet.no",
+            "http://localhost:5173",
+            "http://localhost:80")
     configuration.allowCredentials = true
     configuration.allowedMethods =
         listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
