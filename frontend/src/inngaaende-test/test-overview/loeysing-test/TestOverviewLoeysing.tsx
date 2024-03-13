@@ -244,6 +244,11 @@ const TestOverviewLoeysing = () => {
           'Det oppstod ein feil ved byting av testregel'
         );
       } else {
+        if (nextTestregel.id === activeTest?.testregel.id) {
+          setActiveTest(undefined);
+          return;
+        }
+
         const sakIdNumeric = Number(sakId);
         const loeysingIdNumeric = Number(loeysingId);
 
@@ -274,7 +279,15 @@ const TestOverviewLoeysing = () => {
         }
       }
     },
-    [sakId, loeysingId, contextSak, contextTestResults, pageType, innhaldstype]
+    [
+      sakId,
+      loeysingId,
+      contextSak,
+      contextTestResults,
+      pageType,
+      innhaldstype,
+      activeTest,
+    ]
   );
 
   const onChangeTestregelStatus = useCallback(
