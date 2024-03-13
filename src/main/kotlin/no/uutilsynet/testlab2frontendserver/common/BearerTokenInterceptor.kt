@@ -35,13 +35,12 @@ class BearerTokenInterceptor(
     val authentication: Authentication = SecurityContextHolder.getContext().authentication
 
     return if (authentication is OAuth2AuthenticationToken) {
-      val oauthToken = authentication
-      val clientRegistrationId = oauthToken.authorizedClientRegistrationId
+      val clientRegistrationId = authentication.authorizedClientRegistrationId
       var client =
           clientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
-              clientRegistrationId, oauthToken.name)
+              clientRegistrationId, authentication.name)
       if (client == null) {
-        client = reauthorize(oauthToken)
+        client = reauthorize(authentication)
       }
       if (hasTokenExpired(
           client!!
@@ -49,19 +48,19 @@ class BearerTokenInterceptor(
         logger.debug(
             "Re-authorized {} with scopes {} token expired",
             clientRegistrationId,
-            client!!.accessToken.scopes)
-        client = reauthorize(oauthToken)
+            client.accessToken.scopes)
+        client = reauthorize(authentication)
       }
-      request.getHeaders().set("Authorization", "Bearer " + client!!.accessToken.tokenValue)
+      request.headers.set("Authorization", "Bearer " + client!!.accessToken.tokenValue)
       var response: ClientHttpResponse = execution.execute(request, bytes)
       if (HttpStatus.UNAUTHORIZED ==
-          response.getStatusCode()) { // token might have been revoked - re-authorize and try again
-        client = reauthorize(oauthToken)
+          response.statusCode) { // token might have been revoked - re-authorize and try again
+        client = reauthorize(authentication)
         logger.debug(
             "Re-authorized {} with scopes {} unauthorized",
             clientRegistrationId,
             client!!.accessToken.scopes)
-        request.getHeaders().set("Authorization", "Bearer " + client!!.accessToken.tokenValue)
+        request.headers.set("Authorization", "Bearer " + client.accessToken.tokenValue)
         response = execution.execute(request, bytes)
       }
       response
@@ -85,6 +84,7 @@ class BearerTokenInterceptor(
   }
 
   private val clock = Clock.systemUTC()
+
   private fun hasTokenExpired(token: AbstractOAuth2Token): Boolean {
     return clock.instant().isAfter(token.expiresAt?.minusSeconds(10) ?: return false)
   }
