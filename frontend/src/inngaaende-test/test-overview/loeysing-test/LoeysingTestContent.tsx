@@ -1,6 +1,7 @@
+import AlertModal from '@common/alert/AlertModal';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/design-system-react';
-import { Svar } from '@test/api/types';
+import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
@@ -14,7 +15,7 @@ import {
 import { TestregelResultat } from '@test/util/testregelParser';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props {
@@ -60,6 +61,10 @@ const calculateItemsPerRow = () => {
   }
 };
 
+function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
+  return resultater.every((r) => r.elementUtfall != null);
+}
+
 const LoeysingTestContent = ({
   testFerdig,
   pageType,
@@ -79,6 +84,7 @@ const LoeysingTestContent = ({
 }: Props) => {
   const { id: sakId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
+  const alertRef = useRef<HTMLDialogElement>(null);
 
   const onClickSave = () => {
     clearActiveTestregel();
@@ -98,6 +104,17 @@ const LoeysingTestContent = ({
 
   if (testFerdig) {
     return <TestFerdig />;
+  }
+
+  function leggTilFlereTestelementer() {
+    if (
+      activeTest?.testResultList &&
+      alleHarUtfall(activeTest.testResultList)
+    ) {
+      createNewTestResult(activeTest);
+    } else {
+      alertRef?.current?.showModal();
+    }
   }
 
   return (
@@ -148,7 +165,7 @@ const LoeysingTestContent = ({
                 <div className="testregel-form-buttons">
                   <Button
                     variant={ButtonVariant.Outline}
-                    onClick={() => createNewTestResult(activeTest)}
+                    onClick={leggTilFlereTestelementer}
                   >
                     Legg til flere testelementer
                   </Button>
@@ -158,6 +175,13 @@ const LoeysingTestContent = ({
             )}
         </div>
       ))}
+      <AlertModal
+        ref={alertRef}
+        severity="warning"
+        title="Kan ikke legge til et nytt testelement"
+        message="Alle testelementer må ha et utfall før du kan legge til et nytt."
+        clearMessage={() => alertRef?.current?.close()}
+      />
     </>
   );
 };
