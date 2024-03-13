@@ -340,11 +340,21 @@ const TestOverviewLoeysing = () => {
               }));
 
             doUpdateTestResultStatus(updatedtestResults);
+            if (testregelId === activeTest?.testregel.id) {
+              setActiveTest(undefined);
+            }
           }
         }
       }
     },
-    [sak, testStatusMap, loeysingId, testResultsLoeysing, pageType.nettsideId]
+    [
+      sak,
+      testStatusMap,
+      loeysingId,
+      testResultsLoeysing,
+      pageType.nettsideId,
+      activeTest,
+    ]
   );
 
   // Create test result when the block is opened
