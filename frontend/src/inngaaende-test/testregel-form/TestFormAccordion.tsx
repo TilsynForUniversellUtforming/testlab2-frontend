@@ -170,7 +170,7 @@ export function TestFormAccordion({
                     Test {index + 1}
                   </Heading>
 
-                  {dropdownMenu(index)}
+                  {index !== 0 && dropdownMenu(index)}
                   {renderForm(resultatId, skjemaMedSvar, index)}
                   {removeElement(resultatId)}
                 </div>
