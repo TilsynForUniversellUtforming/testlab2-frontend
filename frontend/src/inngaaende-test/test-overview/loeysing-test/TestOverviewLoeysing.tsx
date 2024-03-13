@@ -1,6 +1,7 @@
 import AlertModal from '@common/alert/AlertModal';
 import useAlertModal from '@common/alert/useAlertModal';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
+import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { Sak } from '@sak/api/types';
 import {
   createTestResultat,
@@ -498,6 +499,7 @@ const TestOverviewLoeysing = () => {
     async (testResultat: ResultatManuellKontroll[]) => {
       try {
         const updatedTestResults = await updateTestResultatMany(testResultat);
+        await createTestresultatAggregert(contextSak.id);
         contextSetTestResults(updatedTestResults);
         processData(
           contextSak,
