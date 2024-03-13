@@ -54,8 +54,7 @@ class BearerTokenInterceptor(
       request.headers.set("Authorization", "Bearer " + client!!.accessToken.tokenValue)
       var response: ClientHttpResponse = execution.execute(request, bytes)
       if (HttpStatus.UNAUTHORIZED ==
-          response.statusCode
-      ) { // token might have been revoked - re-authorize and try again
+          response.statusCode) { // token might have been revoked - re-authorize and try again
         client = reauthorize(authentication)
         logger.debug(
             "Re-authorized {} with scopes {} unauthorized",
