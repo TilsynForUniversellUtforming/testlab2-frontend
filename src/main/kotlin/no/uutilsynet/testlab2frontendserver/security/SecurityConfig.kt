@@ -51,14 +51,12 @@ class SecurityConfig {
   @Bean
   fun corsConfigurationSource(): CorsConfigurationSource {
     val configuration = CorsConfiguration()
-    configuration.allowedOrigins =
-        listOf(
-            "https://user.difi.no",
-            "https://test-testlab.uutilsynet.no",
-            "https://beta-testlab.uutilsynet.no",
-            "http://localhost:5173")
     configuration.allowedOriginPatterns =
-        listOf("*.difi.no", "*.uutilsynet.no", "http://localhost:5173")
+        listOf(
+            "https://*.difi.no",
+            "https://*.uutilsynet.no",
+            "http://localhost:5173",
+            "http://localhost:80")
     configuration.allowCredentials = true
     configuration.allowedMethods =
         listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
