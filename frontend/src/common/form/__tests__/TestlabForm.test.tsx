@@ -160,7 +160,12 @@ describe('<TestlabForm />', () => {
     const option = await screen.findByLabelText('1');
     await userEvent.click(option);
 
-    await userEvent.click(submitButton);
+    await waitFor(
+      () => {
+        userEvent.click(submitButton);
+      },
+      { timeout: 500 }
+    );
 
     await waitFor(() => {
       expect(screen.queryByText(nameError)).not.toBeInTheDocument();
