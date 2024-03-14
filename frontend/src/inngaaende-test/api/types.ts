@@ -22,6 +22,7 @@ export type CreateTestResultat = {
   elementResultat?: ElementResultat;
   elementUtfall?: string;
   testVartUtfoert?: string;
+  kommentar?: string;
 };
 
 export type ResultatManuellKontroll = {
