@@ -3,10 +3,7 @@ package no.uutilsynet.testlab2frontendserver.kontroll
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
 @RestController
@@ -31,6 +28,14 @@ class KontrollResource(
           }
           .getOrElse {
             logger.error("Oppretting av kontroll feilet", it)
+            throw RuntimeException(it)
+          }
+
+  @DeleteMapping("{id}")
+  fun deleteKontroll(@PathVariable id: Int) =
+      runCatching { restTemplate.delete(testingApiProperties.url + "/kontroller/$id") }
+          .getOrElse {
+            logger.error("Sletting av kontroll feilet", it)
             throw RuntimeException(it)
           }
 
