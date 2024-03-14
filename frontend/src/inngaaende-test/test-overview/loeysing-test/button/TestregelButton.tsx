@@ -24,45 +24,40 @@ const TestregelButton = ({
   isActive,
   status,
   onChangeStatus,
-}: Props) => {
-  const isStarted = status !== 'ikkje-starta';
-  return (
-    <div
-      className={classnames('testregel-button-wrapper', {
+}: Props) => (
+  <div
+    className={classnames('testregel-button-wrapper', {
+      active: isActive,
+    })}
+  >
+    <button
+      className={classnames('testregel-button', {
         active: isActive,
+        [status]: status,
       })}
+      onClick={() => {
+        onClick(testregel.id);
+      }}
+      title={`${testregel.krav} ${testregel.name}`}
     >
-      <button
-        className={classnames('testregel-button', {
-          active: isActive,
-          [status]: status,
-        })}
-        onClick={() => {
-          onClick(testregel.id);
-        }}
-        title={`${testregel.krav} ${testregel.name}`}
-      >
-        <div className="testregel-button-id">
-          <div className="id-text-wrapper">
-            <div className="krav">{testregel.krav}</div>
-            {(isStarted || isActive) && (
-              <div className="status">
-                {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
-              </div>
-            )}
-          </div>
+      <div className="testregel-button-id">
+        <div className="id-text-wrapper">
+          <div className="krav">{testregel.krav}</div>
+          {(status !== 'ikkje-starta' || isActive) && (
+            <div className="status">
+              {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
+            </div>
+          )}
         </div>
-        <Paragraph className="testregel-button-name">
-          {testregel.name}
-        </Paragraph>
-      </button>
-      <TestregelStatusDropdown
-        isStarted={isStarted}
-        onChangeStatus={onChangeStatus}
-        testregelId={testregel.id}
-      />
-    </div>
-  );
-};
+      </div>
+      <Paragraph className="testregel-button-name">{testregel.name}</Paragraph>
+    </button>
+    <TestregelStatusDropdown
+      status={status}
+      onChangeStatus={onChangeStatus}
+      testregelId={testregel.id}
+    />
+  </div>
+);
 
 export default TestregelButton;
