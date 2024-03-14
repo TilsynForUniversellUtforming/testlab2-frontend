@@ -14,6 +14,11 @@ type Props = {
   testregel: Testregel;
   skjemaerMedSvar: SkjemaMedSvar[];
   onAnswer: (svar: Svar[], index: number) => void;
+  onChangeKommentar: (
+    resultatId: number,
+    kommentar: string | undefined
+  ) => void;
+  kommentarMap: Map<number, string>;
   slettTestelement: (resultatId: number) => void;
   showHelpText: boolean;
 };
@@ -22,6 +27,8 @@ export function TestFormAccordion({
   testregel,
   skjemaerMedSvar,
   onAnswer,
+  onChangeKommentar,
+  kommentarMap,
   slettTestelement,
   showHelpText,
 }: Readonly<Props>) {
@@ -50,6 +57,8 @@ export function TestFormAccordion({
     skjemaMedSvar: SkjemaMedSvar,
     index: number
   ) {
+    const kommentar = kommentarMap.get(resultatId) || '';
+
     return (
       <div key={resultatId} className={classes.form}>
         {skjemaMedSvar.skjema.steg.map((etSteg) => (
@@ -64,7 +73,12 @@ export function TestFormAccordion({
           </div>
         ))}
         {skjemaMedSvar.skjema.resultat && (
-          <TestFormResultat resultat={skjemaMedSvar.skjema.resultat} />
+          <TestFormResultat
+            resultat={skjemaMedSvar.skjema.resultat}
+            onChangeKommentar={onChangeKommentar}
+            kommentar={kommentar}
+            resultatId={resultatId}
+          />
         )}
       </div>
     );

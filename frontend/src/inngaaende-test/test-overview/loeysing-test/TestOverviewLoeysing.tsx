@@ -403,7 +403,8 @@ const TestOverviewLoeysing = () => {
       resultatId: number,
       alleSvar: Svar[],
       resultat?: TestregelResultat,
-      elementOmtale?: string
+      elementOmtale?: string,
+      kommentar?: string
     ) => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
@@ -430,6 +431,7 @@ const TestOverviewLoeysing = () => {
           elementUtfall: resultat?.utfall,
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
+          kommentar: kommentar,
         };
 
         try {
@@ -440,7 +442,8 @@ const TestOverviewLoeysing = () => {
             updatedTestResults,
             loeysingIdNumeric,
             pageType,
-            innhaldstype
+            innhaldstype,
+            activeTest?.testregel
           );
         } catch (e) {
           setAlert(
@@ -506,7 +509,7 @@ const TestOverviewLoeysing = () => {
       } catch (e) {
         setAlert(
           'danger',
-          'Kunne endre status',
+          'Kunne ikkje endre status',
           'Oppdatering av status for testresultat feila'
         );
       }

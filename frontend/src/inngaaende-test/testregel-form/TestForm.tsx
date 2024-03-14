@@ -6,7 +6,11 @@ import {
   Svar,
 } from '@test/api/types';
 import { TestFormAccordion } from '@test/testregel-form/TestFormAccordion';
-import { initSkjemaMedSvar, SkjemaMedSvar } from '@test/testregel-form/types';
+import {
+  initKommentarMap,
+  initSkjemaMedSvar,
+  SkjemaMedSvar,
+} from '@test/testregel-form/types';
 import { Steg } from '@test/util/testregel-interface/Steg';
 import {
   evaluateTestregel,
@@ -14,7 +18,7 @@ import {
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 import DOMPurify from 'dompurify';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   testregel: Testregel;
@@ -24,7 +28,8 @@ interface Props {
     resultatId: number,
     svar: Svar[],
     resultat?: TestregelResultat,
-    elementOmtale?: string
+    elementOmtale?: string,
+    kommentar?: string
   ) => void;
   slettTestelement: (resultatId: number) => void;
 }
@@ -42,6 +47,9 @@ const TestForm = ({
 }: Props) => {
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
+  );
+  const [kommentarMap, setKommentarMap] = useState<Map<number, string>>(
+    initKommentarMap(resultater)
   );
 
   const testregelSchema = JSON.parse(testregel.testregelSchema);
@@ -98,7 +106,34 @@ const TestForm = ({
 
   useEffect(() => {
     setSkjemaerMedSvar(initSkjemaMedSvar(resultater, testregel));
+    setKommentarMap(initKommentarMap(resultater));
   }, [testregel, resultater]);
+
+  const onResultatUpdate = useCallback(
+    (
+      resultatId: number,
+      svar: Svar[],
+      resultat: TestregelResultat | undefined,
+      kommentar?: string
+    ) => {
+      const elementOmtale = findElementOmtale(testregel, svar);
+      onResultat(resultatId, svar, resultat, elementOmtale, kommentar);
+    },
+    [testregel]
+  );
+
+  const onKommentar = useCallback(
+    (resultatId: number, kommentar?: string) => {
+      const skjemaMedSvar = skjemaerMedSvar.find(
+        (sms) => sms.resultatId === resultatId
+      );
+      if (skjemaMedSvar) {
+        const { skjema, svar } = skjemaMedSvar;
+        onResultatUpdate(resultatId, svar, skjema.resultat, kommentar);
+      }
+    },
+    [skjemaerMedSvar, testregel]
+  );
 
   useEffect(() => {
     skjemaerMedSvar.forEach((skjemaMedSvar) => {
@@ -106,10 +141,9 @@ const TestForm = ({
       const resultat = resultater.find(
         (resultat) => resultat.id === resultatId
       );
-      const elementOmtale = findElementOmtale(testregel, svar);
 
       if (!hasSameItems(resultat?.svar ?? [], svar, isEqual)) {
-        onResultat(resultatId, svar, skjema.resultat, elementOmtale);
+        onResultatUpdate(resultatId, svar, skjema.resultat);
       }
     });
   }, [skjemaerMedSvar]);
@@ -136,6 +170,8 @@ const TestForm = ({
         onAnswer={onAnswer}
         slettTestelement={slettTestelement}
         showHelpText={showHelpText}
+        onChangeKommentar={onKommentar}
+        kommentarMap={kommentarMap}
       />
     </div>
   );
