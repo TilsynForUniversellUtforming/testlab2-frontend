@@ -1,5 +1,6 @@
-import { LegacyTableCell, LegacyTableRow } from '@digdir/design-system-react';
+import { Table } from '@digdir/design-system-react';
 import { flexRender, Row } from '@tanstack/react-table';
+import classnames from 'classnames';
 import React from 'react';
 
 import TableSkeleton from './skeleton/TableSkeleton';
@@ -18,8 +19,10 @@ const TestlabTableBody = <T extends object>({
     return <TableSkeleton table={table} />;
   }
 
+  const isSelectable = typeof onClickCallback !== 'undefined';
+
   const onRowClick = (row: Row<T>, isCheckbox: boolean) => {
-    if (typeof onClickCallback === 'undefined' || isCheckbox) {
+    if (!isSelectable || isCheckbox) {
       return;
     } else {
       onClickCallback(row);
@@ -29,16 +32,21 @@ const TestlabTableBody = <T extends object>({
   return (
     <>
       {table.getRowModel().rows.map((row) => (
-        <LegacyTableRow key={row.id}>
+        <Table.Row
+          key={row.id}
+          className={classnames('testlab-table__row', {
+            selectable: isSelectable,
+          })}
+        >
           {row.getVisibleCells().map((cell) => (
-            <LegacyTableCell
+            <Table.Cell
               key={cell.id}
               onClick={() => onRowClick(row, cell.id.includes(CellCheckboxId))}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </LegacyTableCell>
+            </Table.Cell>
           ))}
-        </LegacyTableRow>
+        </Table.Row>
       ))}
     </>
   );

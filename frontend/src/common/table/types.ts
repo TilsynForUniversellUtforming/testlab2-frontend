@@ -20,7 +20,7 @@ export type TableFilterPreference = 'all' | 'none' | 'searchbar';
 
 export type Action = 'add' | 'delete' | 'restart' | 'save';
 
-export type LegacyTableRowAction = {
+export type TableRowAction = {
   action: Action;
   route?: AppRoute;
   modalProps?: ConfirmModalProps;
