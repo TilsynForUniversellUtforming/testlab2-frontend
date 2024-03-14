@@ -1,4 +1,4 @@
-import { LegacyTableCell } from '@digdir/design-system-react';
+import { Table } from '@digdir/design-system-react';
 import React from 'react';
 
 import HideWhenLoading from '../../../HideWhenLoading';
@@ -18,19 +18,20 @@ const PaginationContainer = <T extends object>({
   const displayPageSizeSelection = tableElementSize > 10;
 
   return (
-    <>
-      <LegacyTableCell colSpan={table.getHeaderGroups()[0].headers.length}>
-        <HideWhenLoading loading={loading}>
-          <div className="pagination-container">
-            {displayPageSizeSelection && (
-              <PageSizeSelection table={table} loading={loading} />
-            )}
-            <PaginationCount table={table} />
-            {displayPagination && <PaginationSelect table={table} />}
-          </div>
-        </HideWhenLoading>
-      </LegacyTableCell>
-    </>
+    <Table.Cell
+      colSpan={table.getHeaderGroups()[0].headers.length}
+      className="table-footer"
+    >
+      <HideWhenLoading loading={loading}>
+        <div className="pagination-container">
+          {displayPageSizeSelection && (
+            <PageSizeSelection table={table} loading={loading} />
+          )}
+          <PaginationCount table={table} />
+          {displayPagination && <PaginationSelect table={table} />}
+        </div>
+      </HideWhenLoading>
+    </Table.Cell>
   );
 };
 

@@ -1,20 +1,15 @@
-import TableFilterSelect from '@common/table/control/filter/TableFilterSelect';
 import { CellCheckboxId } from '@common/table/types';
-import {
-  LegacySortDirection,
-  LegacyTableCell,
-} from '@digdir/design-system-react';
-import { flexRender, Header, Table } from '@tanstack/react-table';
+import { Table as DSTable } from '@digdir/design-system-react';
+import { TableHeaderCellProps } from '@digdir/design-system-react/dist/types/components/Table/TableHeaderCell';
+import { flexRender, Header } from '@tanstack/react-table';
 import React from 'react';
 
 export interface Props<T> {
-  table: Table<T>;
   header: Header<T, unknown>;
   loading: boolean;
 }
 
 const TestlabTableHeader = <T extends object>({
-  table,
   header,
   loading,
 }: Props<T>) => {
@@ -28,51 +23,41 @@ const TestlabTableHeader = <T extends object>({
     const isCheckbox = header.id === CellCheckboxId;
     if (loading && isCheckbox) {
       return (
-        <LegacyTableCell
+        <DSTable.HeaderCell
           colSpan={header.colSpan}
           style={{ width: `3rem` }}
-        ></LegacyTableCell>
+        ></DSTable.HeaderCell>
       );
     }
 
     return (
-      <LegacyTableCell
+      <DSTable.HeaderCell
         colSpan={header.colSpan}
         style={{ width: isCheckbox ? `3rem` : 'auto' }}
       >
         {flexRender(column.columnDef.header, header.getContext())}
-      </LegacyTableCell>
+      </DSTable.HeaderCell>
     );
   }
 
-  let sortDirection: LegacySortDirection = 'notActive';
+  let sortDirection: TableHeaderCellProps['sort'] | undefined = undefined;
   if (header.column?.getIsSorted() === 'asc') {
-    sortDirection = 'asc';
+    sortDirection = 'ascending';
   }
   if (header.column?.getIsSorted() === 'desc') {
-    sortDirection = 'desc';
-  }
-
-  if (column.columnDef?.meta?.select && column.getCanFilter()) {
-    return (
-      <TableFilterSelect
-        table={table}
-        header={header}
-        sortDirection={sortDirection}
-      />
-    );
+    sortDirection = 'descending';
   }
 
   return (
     <>
-      <LegacyTableCell
-        onChange={header.column.getToggleSortingHandler()}
-        sortDirection={sortDirection}
-        disabled={loading}
+      <DSTable.HeaderCell
+        onSortClick={header.column.getToggleSortingHandler()}
+        sort={sortDirection}
         colSpan={header.colSpan}
+        sortable={column.getCanSort()}
       >
         {flexRender(header.column.columnDef.header, header.getContext())}
-      </LegacyTableCell>
+      </DSTable.HeaderCell>
     </>
   );
 };

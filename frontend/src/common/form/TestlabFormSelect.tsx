@@ -1,7 +1,7 @@
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { ErrorMessage, LegacySelect, Radio } from '@digdir/design-system-react';
+import { Combobox, ErrorMessage, Radio } from '@digdir/design-system-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -89,16 +89,21 @@ const TestlabFormSelect = <T extends object>({
               <div className="testlab-form__input-sub-label">{description}</div>
             )}
           </label>
-          <LegacySelect
-            inputId={name}
-            value={String(value)}
-            onChange={onChange}
-            options={options}
+          <Combobox
+            id={name}
+            value={value ? [String(value)] : undefined}
+            onValueChange={(value) => onChange(value[0])}
             error={isDefined(errorMessage)}
             disabled={disabled}
             label={label}
             hideLabel
-          />
+          >
+            {options.map((o) => (
+              <Combobox.Option value={o.value} key={`${o.label}_${o.value}`}>
+                {o.label}
+              </Combobox.Option>
+            ))}
+          </Combobox>
           {errorMessage && (
             <ErrorMessage size="small">{errorMessage}</ErrorMessage>
           )}
