@@ -321,7 +321,7 @@ const TestOverviewLoeysing = () => {
             setAlert(
               'warning',
               `Kan ikkje sette status ${status}`,
-              `${notFinished.length} testar er ikkje ferdig i "${testregel.namn}"`
+              'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement'
             );
           } else {
             const updatedtestResults: ResultatManuellKontroll[] =
