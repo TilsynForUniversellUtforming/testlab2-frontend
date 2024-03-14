@@ -82,8 +82,8 @@ export default function Kontroll() {
           id="sakstype"
           error={errors?.sakstype}
         >
-          <Radio value="Forvaltningssak">Forvaltningssak</Radio>
-          <Radio value="Arkivsak">Arkivsak</Radio>
+          <Radio value="forvaltningssak">Forvaltningssak</Radio>
+          <Radio value="arkivsak">Arkivsak</Radio>
         </RadioGroup>
         <Textfield
           label="Arkivreferanse"
