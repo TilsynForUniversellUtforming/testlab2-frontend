@@ -1,14 +1,8 @@
 import './testlabTable.scss';
 import '@tanstack/react-table';
 
-import {
-  ErrorMessage,
-  LegacyTable,
-  LegacyTableBody,
-  LegacyTableFooter,
-  LegacyTableHeader,
-  LegacyTableRow,
-} from '@digdir/design-system-react';
+import TestlabTableBody from '@common/table/TestlabTableBody';
+import { ErrorMessage, Table } from '@digdir/design-system-react';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
@@ -34,13 +28,8 @@ import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import { isDefined } from '../util/validationUtils';
 import ControlHeader from './control/ControlHeader';
 import PaginationContainer from './control/pagination/PaginationContainer';
-import TestlabTableBody from './TestlabTableBody';
 import TestlabTableHeader from './TestlabTableHeader';
-import {
-  LegacyTableRowAction,
-  TableFilterPreference,
-  TableStyle,
-} from './types';
+import { TableFilterPreference, TableRowAction, TableStyle } from './types';
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -81,7 +70,7 @@ export interface TestlabTableProps<T extends object> {
   onClickRow?: (row?: Row<T>) => void;
   onClickRetry?: () => void;
   customStyle?: TableStyle;
-  rowActions?: LegacyTableRowAction[];
+  rowActions?: TableRowAction[];
 }
 
 /**
@@ -100,7 +89,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {(row?: Row<T>) => void} [props.onClickRow] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
  * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
  * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
- * @param {LegacyTableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
+ * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @returns {ReactElement} - The React component for the TestlabTable.
  */
 const TestlabTable = <T extends object>({
@@ -194,10 +183,10 @@ const TestlabTable = <T extends object>({
 
   useEffect(() => {
     if (rowSelectionEnabled) {
-      const selectedLegacyTableRows = table
+      const selectedTableRows = table
         .getSelectedRowModel()
         .flatRows.map((fr) => fr.original);
-      onSelectRows?.(selectedLegacyTableRows);
+      onSelectRows?.(selectedTableRows);
     }
   }, [rowSelection, rowSelectionEnabled]);
 
@@ -235,37 +224,35 @@ const TestlabTable = <T extends object>({
         rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
         rowActions={rowActions}
       />
-      <LegacyTable
+      <Table
         className={classnames('testlab-table__table', {
           'table-error': !!actionRequiredError,
         })}
-        selectRows={typeof onClickRow !== 'undefined'}
       >
-        <LegacyTableHeader>
-          <LegacyTableRow>
+        <Table.Head>
+          <Table.Row>
             {headerGroup.headers.map((header) => (
               <TestlabTableHeader<T>
-                table={table}
                 header={header}
                 loading={isLoading}
                 key={header.column.id}
               />
             ))}
-          </LegacyTableRow>
-        </LegacyTableHeader>
-        <LegacyTableBody>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
           <TestlabTableBody<T>
             table={table}
             loading={isLoading}
             onClickCallback={onClickRow}
           />
-        </LegacyTableBody>
-        <LegacyTableFooter>
-          <LegacyTableRow>
+        </Table.Body>
+        <Table.Head>
+          <Table.Row className="testlab-table__footer">
             <PaginationContainer table={table} loading={isLoading} />
-          </LegacyTableRow>
-        </LegacyTableFooter>
-      </LegacyTable>
+          </Table.Row>
+        </Table.Head>
+      </Table>
       {actionRequiredError && (
         <ErrorMessage size="small">{actionRequiredError}</ErrorMessage>
       )}

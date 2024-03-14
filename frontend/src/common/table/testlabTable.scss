@@ -14,9 +14,30 @@
     margin-bottom: 1rem;
     table-layout: fixed;
     overflow-wrap: break-word;
-
+    width: 100%;
     &.table-error {
       box-shadow: 0 0 0 2px var(--fds-semantic-border-danger-default);
+    }
+  }
+
+  &__row {
+    &:hover {
+      background-color: var(--fds-semantic-background-default) !important;
+    }
+
+    &.selectable {
+      &:hover {
+        background-color: var(
+          --fds-semantic-surface-neutral-subtle-hover
+        ) !important;
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__footer {
+    &:hover {
+      background-color: var(--fds-semantic-background-default) !important;
     }
   }
 

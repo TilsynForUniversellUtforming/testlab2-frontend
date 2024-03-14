@@ -1,5 +1,5 @@
 import { LoadingTableProps } from '@common/table/types';
-import { Combobox } from '@digdir/design-system-react';
+import { NativeSelect } from '@digdir/design-system-react';
 import React from 'react';
 
 const PageSizeSelection = <T extends object>({
@@ -15,10 +15,10 @@ const PageSizeSelection = <T extends object>({
     <div className="pagination-container__pagination-select-wrapper">
       <label htmlFor={tableId}>Rader per side</label>
       <div className="pagination-select">
-        <Combobox
+        <NativeSelect
           label="Rader per side"
-          value={[String(table.getState().pagination.pageSize)]}
-          onValueChange={(selection) => table.setPageSize(Number(selection[0]))}
+          value={table.getState().pagination.pageSize}
+          onChange={(e) => table.setPageSize(Number(e.currentTarget.value))}
           disabled={loading}
           hideLabel
           id={tableId}
@@ -26,11 +26,11 @@ const PageSizeSelection = <T extends object>({
           htmlSize={1}
         >
           {['10', '25', '50', '100'].map((pageSize) => (
-            <Combobox.Option value={pageSize} key={pageSize}>
+            <option value={pageSize} key={pageSize}>
               {pageSize}
-            </Combobox.Option>
+            </option>
           ))}
-        </Combobox>
+        </NativeSelect>
       </div>
     </div>
   );
