@@ -23,7 +23,7 @@ export default function Kontroll() {
       <nav className={classes.stepper}>
         <ol>
           <li className={classes.selected}>Opprett kontroll</li>
-          <li>Velg virksomhet</li>
+          <li>Velg løsninger</li>
           <li>Gjennomfør sideutvalg</li>
           <li>Testregler</li>
           <li>Oppsummering</li>

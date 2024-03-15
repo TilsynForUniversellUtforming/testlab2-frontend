@@ -9,14 +9,20 @@ const VelgLoesninger = () => {
       <nav className={classes.stepper}>
         <ol>
           <li>Opprett kontroll</li>
-          <li className={classes.selected}>Velg virksomhet</li>
+          <li className={classes.selected}>Velg løsninger</li>
           <li>Gjennomfør sideutvalg</li>
           <li>Testregler</li>
           <li>Oppsummering</li>
         </ol>
       </nav>
-      <Heading level={1}>Velg løsninger</Heading>
-      <p>Velg hvilke løsninger du vil ha med i kontrollen</p>
+      <div className={classes.velgLoesningerOverskrift}>
+        <Heading level={1}>Velg løsninger</Heading>
+        <p>Velg hvilke løsninger du vil ha med i kontrollen</p>
+      </div>
+      <div className={classes.utvalgButtons}>
+        <button>Velg løsninger fra utvalg</button>
+        <button>Velg løsninger selv</button>
+      </div>
     </section>
   );
 };
