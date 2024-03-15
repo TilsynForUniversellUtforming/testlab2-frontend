@@ -81,6 +81,7 @@
   display: flex;
   gap: 2rem;
   height: 8rem;
+  margin-bottom: 3rem;
 }
 
 .utvalg-buttons button {
