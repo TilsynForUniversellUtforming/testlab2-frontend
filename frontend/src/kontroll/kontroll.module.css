@@ -26,11 +26,12 @@
   padding: 0.5rem 1rem;
   background-color: var(--fds-semantic-surface-first-light);
   border-radius: 10px;
+  border: 2px solid transparent;
 }
 
 .stepper .selected {
   background-color: var(--fds-semantic-surface-first-light-active);
-  border: 1px solid var(--fds-semantic-surface-first-dark);
+  border: 2px solid var(--fds-semantic-surface-first-dark);
   color: white;
 }
 
@@ -65,4 +66,36 @@
 
 .opprettResten {
   align-self: flex-start;
+}
+
+/* Velg løsninger */
+
+.velg-loesninger-overskrift {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.utvalg-buttons {
+  display: flex;
+  gap: 2rem;
+  height: 8rem;
+}
+
+.utvalg-buttons button {
+  width: 100%;
+  background-color: var(--fds-semantic-surface-first-light);
+  color: black;
+  border: none;
+  font-size: 1.5rem;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: var(--fds-semantic-surface-first-light-hover);
+  }
+
+  &:active {
+    background-color: var(--fds-semantic-surface-first-light-active);
+  }
 }

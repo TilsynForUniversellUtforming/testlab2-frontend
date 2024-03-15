@@ -26,7 +26,15 @@ export const KontrollRoutes: RouteObject = {
         if (isNaN(kontrollId)) {
           throw new Error('Id-en i URL-en er ikke et tall');
         }
-        return fetchKontroll(kontrollId);
+        const response = await fetchKontroll(kontrollId);
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+          } else {
+            throw new Error('Klarte ikke å hente kontrollen.');
+          }
+        }
+        return response;
       },
     },
   ],
