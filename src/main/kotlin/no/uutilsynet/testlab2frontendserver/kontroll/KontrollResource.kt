@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.kontroll
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
@@ -30,6 +31,13 @@ class KontrollResource(
             logger.error("Oppretting av kontroll feilet", it)
             throw RuntimeException(it)
           }
+
+  @GetMapping("{id}")
+  fun getKontroll(@PathVariable id: Int): ResponseEntity<*> {
+    val responseEntity =
+        restTemplate.getForEntity(testingApiProperties.url + "/kontroller/$id", String::class.java)
+    return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
+  }
 
   @DeleteMapping("{id}")
   fun deleteKontroll(@PathVariable id: Int) =
