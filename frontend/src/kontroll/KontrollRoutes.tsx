@@ -1,4 +1,5 @@
 import ErrorCard from '@common/error/ErrorCard';
+import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { Outlet } from 'react-router';
 import { RouteObject, useRouteError } from 'react-router-dom';
 
@@ -34,7 +35,9 @@ export const KontrollRoutes: RouteObject = {
             throw new Error('Klarte ikke å hente kontrollen.');
           }
         }
-        return response;
+
+        const utval = await fetchUtvalList();
+        return { kontroll: await response.json(), utval };
       },
     },
   ],
