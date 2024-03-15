@@ -16,6 +16,7 @@ import mineTestarImg from './assets/mine-testar.svg';
 import teknikkImg from './assets/teknikk.svg';
 import konkurranseImg from './assets/teknikk.svg';
 import tilsynImg from './assets/tilsyn.svg';
+import { KontrollRoutes } from './kontroll/KontrollRoutes';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
 import { RESULTAT_ROOT, ResultRoutes } from './resultat/ResultatRoutes';
@@ -99,6 +100,7 @@ export const AppRoutes: RouteObject = {
     KravRoutes,
     TestingRoutes,
     ResultRoutes,
+    KontrollRoutes,
     {
       path: '*',
       element: <Page404 />,

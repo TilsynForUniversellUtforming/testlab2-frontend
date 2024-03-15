@@ -1,13 +1,13 @@
 import { ButtonVariant } from '@common/types';
 import { DropdownMenu } from '@digdir/design-system-react';
 import { CogIcon } from '@navikt/aksel-icons';
-import { ManuellTestStatus } from '@test/types';
+import { ButtonStatus, ManuellTestStatus } from '@test/types';
 import { useState } from 'react';
 
 interface Props {
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
   testregelId: number;
-  isStarted: boolean;
+  status: ButtonStatus;
 }
 
 type StatusOption = {
@@ -20,7 +20,7 @@ type StatusOption = {
 const TestregelStatusDropdown = ({
   onChangeStatus,
   testregelId,
-  isStarted,
+  status,
 }: Props) => {
   const [show, setShow] = useState(false);
 
@@ -29,17 +29,30 @@ const TestregelStatusDropdown = ({
     onChangeStatus(status, testregelId);
   };
 
+  const isStarted = status !== 'ikkje-starta';
+  const isFinished = status === 'ferdig';
+  const isActive = isStarted && !isFinished;
+
   const options: StatusOption[] = [
     {
       label: 'Ferdig',
       value: 'ferdig',
-      title: isStarted ? 'Sett status ferdig' : 'Test ikkje starta',
-      disabled: !isStarted,
+      title: isFinished
+        ? 'Test er ferdig'
+        : isStarted
+          ? 'Sett test ferdig'
+          : 'Test ikkje starta',
+      disabled: !isActive,
     },
     {
-      label: 'Under arbeid',
+      label: isFinished ? 'Reåpne' : 'Under arbeid',
       value: 'under-arbeid',
-      title: 'Sett status under arbeid',
+      title: isActive
+        ? 'Allereie under arbeid'
+        : isFinished
+          ? 'Reåpne test'
+          : 'Sett test under arbeid',
+      disabled: isActive,
     },
   ];
 

@@ -22,6 +22,7 @@ export type CreateTestResultat = {
   elementResultat?: ElementResultat;
   elementUtfall?: string;
   testVartUtfoert?: string;
+  kommentar?: string;
 };
 
 export type ResultatManuellKontroll = {
@@ -58,5 +59,9 @@ export function findElementOmtale(
   svar: Svar[]
 ): string | undefined {
   const element = JSON.parse(testregel.testregelSchema).element;
-  return finnSvar(element, svar);
+  if (element.toLowerCase() === 'side') {
+    return 'Side';
+  } else {
+    return finnSvar(element, svar);
+  }
 }

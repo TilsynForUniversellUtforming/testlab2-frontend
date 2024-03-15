@@ -30,6 +30,7 @@ import {
   getNettsideProperties,
   getTestResultsForLoeysing,
   innhaldstypeAlle,
+  isTestFinished,
   mapTestregelOverviewElements,
   progressionForLoeysingNettside,
   toPageType,
@@ -114,16 +115,12 @@ const TestOverviewLoeysing = () => {
       loeysingId
     );
 
-    const filteredNettsideProperties = getNettsideProperties(
-      contextSak,
-      loeysingId
-    );
+    const nettsideProperties = getNettsideProperties(contextSak, loeysingId);
 
     setSak(contextSak);
     setTestregelList(testregelList);
     setTestResultsLoeysing(testResultsLoeysing);
-
-    setNettsideProperties(filteredNettsideProperties);
+    setNettsideProperties(nettsideProperties);
     setProgressionPercent(
       progressionForLoeysingNettside(
         contextSak,
@@ -144,9 +141,12 @@ const TestOverviewLoeysing = () => {
       )
     );
 
-    const finished =
-      testResultsLoeysing.length === contextSak.testreglar.length &&
-      testResultsLoeysing.every((tr) => tr.status === 'Ferdig');
+    const finished = isTestFinished(
+      testResultsLoeysing,
+      sak.testreglar.map((tr) => tr.id),
+      loeysingId,
+      nettsideProperties
+    );
     setTestFerdig(finished);
 
     if (activeTestregel) {
@@ -173,6 +173,7 @@ const TestOverviewLoeysing = () => {
       nettsideId: pageType.nettsideId,
     };
     const alleResultater = await createTestResultat(nyttTestresultat);
+    contextSetTestResults(alleResultater);
     processData(
       contextSak,
       alleResultater,
@@ -243,6 +244,11 @@ const TestOverviewLoeysing = () => {
           'Det oppstod ein feil ved byting av testregel'
         );
       } else {
+        if (nextTestregel.id === activeTest?.testregel.id) {
+          setActiveTest(undefined);
+          return;
+        }
+
         const sakIdNumeric = Number(sakId);
         const loeysingIdNumeric = Number(loeysingId);
 
@@ -273,7 +279,15 @@ const TestOverviewLoeysing = () => {
         }
       }
     },
-    [sakId, loeysingId, contextSak, contextTestResults, pageType, innhaldstype]
+    [
+      sakId,
+      loeysingId,
+      contextSak,
+      contextTestResults,
+      pageType,
+      innhaldstype,
+      activeTest,
+    ]
   );
 
   const onChangeTestregelStatus = useCallback(
@@ -307,7 +321,7 @@ const TestOverviewLoeysing = () => {
             setAlert(
               'warning',
               `Kan ikkje sette status ${status}`,
-              `${notFinished.length} testar er ikkje ferdig i "${testregel.namn}"`
+              'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement'
             );
           } else {
             const updatedtestResults: ResultatManuellKontroll[] =
@@ -326,11 +340,21 @@ const TestOverviewLoeysing = () => {
               }));
 
             doUpdateTestResultStatus(updatedtestResults);
+            if (testregelId === activeTest?.testregel.id) {
+              setActiveTest(undefined);
+            }
           }
         }
       }
     },
-    [sak, testStatusMap, loeysingId, testResultsLoeysing, pageType.nettsideId]
+    [
+      sak,
+      testStatusMap,
+      loeysingId,
+      testResultsLoeysing,
+      pageType.nettsideId,
+      activeTest,
+    ]
   );
 
   // Create test result when the block is opened
@@ -379,7 +403,8 @@ const TestOverviewLoeysing = () => {
       resultatId: number,
       alleSvar: Svar[],
       resultat?: TestregelResultat,
-      elementOmtale?: string
+      elementOmtale?: string,
+      kommentar?: string
     ) => {
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
@@ -406,6 +431,7 @@ const TestOverviewLoeysing = () => {
           elementUtfall: resultat?.utfall,
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
+          kommentar: kommentar,
         };
 
         try {
@@ -416,7 +442,8 @@ const TestOverviewLoeysing = () => {
             updatedTestResults,
             loeysingIdNumeric,
             pageType,
-            innhaldstype
+            innhaldstype,
+            activeTest?.testregel
           );
         } catch (e) {
           setAlert(
@@ -482,7 +509,7 @@ const TestOverviewLoeysing = () => {
       } catch (e) {
         setAlert(
           'danger',
-          'Kunne endre status',
+          'Kunne ikkje endre status',
           'Oppdatering av status for testresultat feila'
         );
       }

@@ -1,18 +1,19 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
-  AutotesterResult,
   IdList,
   Maaling,
   MaalingEditParams,
   MaalingInit,
   MaalingStatus,
   RestartRequest,
+  TesterResult,
 } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
-  await fetch('/api/v1/maalinger', {
+  await fetchWrapper('/api/v1/maalinger', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,7 +29,7 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
 export const updateMaaling = async (
   maaling: MaalingEditParams
 ): Promise<Maaling> =>
-  await fetch('/api/v1/maalinger', {
+  await fetchWrapper('/api/v1/maalinger', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +42,7 @@ export const updateMaaling = async (
 export const deleteMaalingList = async (
   maalingIdList: IdList
 ): Promise<Maaling[]> =>
-  fetch(`/api/v1/maalinger`, {
+  fetchWrapper(`/api/v1/maalinger`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ export const updateMaalingStatus = async (
   id: number,
   status: MaalingStatus
 ): Promise<Maaling> =>
-  await fetch(`/api/v1/maalinger/${id}`, {
+  await fetchWrapper(`/api/v1/maalinger/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ export const fetchMaaling = async (id: number): Promise<Maaling> =>
 export const restart = async (
   restartRequest: RestartRequest
 ): Promise<Maaling> =>
-  fetch(
+  fetchWrapper(
     `/api/v1/maalinger/${restartRequest.maalingId}/restart?process=${restartRequest.process}`,
     {
       method: 'PUT',
@@ -105,7 +106,7 @@ export const fetchLoeysingNettsider = async (
 export const fetchTestResultatLoeysing = async (
   maalingId: number,
   loeysingId: number
-): Promise<AutotesterResult[]> =>
+): Promise<TesterResult[]> =>
   await fetch(
     `/api/v1/maalinger/${maalingId}/resultat?loeysingId=${loeysingId}`,
     {

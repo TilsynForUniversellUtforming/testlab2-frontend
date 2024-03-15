@@ -1,5 +1,6 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
-import { TestResult } from '@maaling/api/types';
+import { TesterResult, TestResult } from '@maaling/api/types';
 
 export const fetchTestresultatAggregert = async (
   id: number
@@ -9,6 +10,21 @@ export const fetchTestresultatAggregert = async (
   );
 
 export const createTestresultatAggregert = async (id: number) =>
-  fetch(`/api/v1/testresultat/aggregert/${id}`, { method: 'POST' }).then(
+  fetchWrapper(`/api/v1/testresultat/aggregert/${id}`, { method: 'POST' }).then(
     (response) => responseToJson(response, 'Kunne ikkje hente for loeysing')
   );
+
+export const fetchDetaljertResultat = async (
+  id: number,
+  testregelNoekkel: string
+): Promise<TesterResult[]> => {
+  return fetch(
+    `/api/v1/testresultat/resultat?sakId=${id}&testregelNoekkel=${testregelNoekkel}`,
+    {}
+  ).then((response) =>
+    responseToJson(
+      response,
+      'Kunne ikkje hente for sakId ' + id + ' og testregel ' + testregelNoekkel
+    )
+  );
+};

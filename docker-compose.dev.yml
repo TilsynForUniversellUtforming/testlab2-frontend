@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Passw0rd
+      POSTGRES_DB: postgres
+    networks:
+      - dev_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  loeysingsregister:
+    image: acrddtprod.azurecr.io/testlab2-loeysingsregister:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8080"
+    networks:
+      - dev_network
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres?currentSchema=testlab2_loeysingsregister'
+
+  kravregister:
+    image: acrddtprod.azurecr.io/testlab2-krav:latest
+    ports:
+      - "8002:8080"
+    networks:
+      - dev_network
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres?currentSchema=testlab2_krav'
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: Passw0rd
+
+  testing:
+    image: acrddtprod.azurecr.io/testlab2-testing:latest
+    ports:
+      - "8001:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dev_network
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres?currentSchema=testlab2_testing'
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: Passw0rd
+      LOEYSINGREGISTER_HOST: loeysingsregister
+      KRAVREGISTER_HOST: kravregister
+
+networks:
+  dev_network:

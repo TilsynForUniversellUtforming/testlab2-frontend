@@ -4,7 +4,7 @@ import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import useError from '@common/hooks/useError';
-import { LegacyTableRowAction } from '@common/table/types';
+import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
@@ -103,8 +103,8 @@ const KvalitetssikringApp = () => {
     }
   }, [maalingStatus]);
 
-  const rowActions = useMemo<LegacyTableRowAction[]>(() => {
-    const actions: LegacyTableRowAction[] = [];
+  const rowActions = useMemo<TableRowAction[]>(() => {
+    const actions: TableRowAction[] = [];
     if (maalingStatus === 'kvalitetssikring') {
       actions.push(
         {

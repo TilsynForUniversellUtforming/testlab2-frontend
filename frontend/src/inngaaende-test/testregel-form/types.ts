@@ -20,3 +20,13 @@ export function initSkjemaMedSvar(
     };
   });
 }
+
+export function initKommentarMap(
+  resultater: ResultatManuellKontroll[]
+): Map<number, string> {
+  return resultater.reduce(
+    (entryMap, { id, kommentar }) =>
+      entryMap.set(id, entryMap.get(id) || kommentar),
+    new Map()
+  );
+}

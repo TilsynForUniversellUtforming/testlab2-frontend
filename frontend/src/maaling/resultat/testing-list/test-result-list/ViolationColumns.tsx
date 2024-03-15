@@ -1,5 +1,5 @@
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
-import { AutotesterResult } from '@maaling/api/types';
+import { TesterResult } from '@maaling/api/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -26,14 +26,10 @@ const decodeBase64 = (base64String?: string) => {
 /**
  * getTestresultatColumns function returns an array of column definitions for TestResultat.
  *
- * @returns {Array<ColumnDef<AutotesterResult>>} An array of column definitions.
+ * @returns {Array<ColumnDef<TesterResult>>} An array of column definitions.
  */
-export const getTestresultatColumns = (): Array<
-  ColumnDef<AutotesterResult>
-> => [
-  getCheckboxColumn(
-    (row: Row<AutotesterResult>) => `Velg ${row.original.side}`
-  ),
+export const getTestresultatColumns = (): Array<ColumnDef<TesterResult>> => [
+  getCheckboxColumn((row: Row<TesterResult>) => `Velg ${row.original.side}`),
   {
     accessorFn: (row) => row.side,
     id: 'side',

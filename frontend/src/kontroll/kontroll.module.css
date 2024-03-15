@@ -1,0 +1,102 @@
+.bygg-kontroll {
+  margin: 0 auto;
+  width: 800px;
+}
+
+.stepper ol {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 6rem 0;
+  padding: 0;
+  position: relative;
+}
+
+.stepper ol::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  width: 100%;
+  background-color: var(--fds-semantic-surface-first-dark);
+}
+
+.stepper ol li {
+  list-style: none;
+  padding: 0.5rem 1rem;
+  background-color: var(--fds-semantic-surface-first-light);
+  border-radius: 10px;
+  border: 2px solid transparent;
+}
+
+.stepper .selected {
+  background-color: var(--fds-semantic-surface-first-light-active);
+  border: 2px solid var(--fds-semantic-surface-first-dark);
+  color: white;
+}
+
+.ingress {
+  font-size: 1.5rem;
+}
+
+.skjema {
+  background-color: var(--fds-semantic-surface-third-light);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 3rem 4rem;
+}
+
+.skjema-overskrift {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--fds-semantic-surface-success-active);
+  margin-bottom: 2rem;
+}
+
+.combo-box,
+.tittel,
+.saksbehandler {
+  width: 50%;
+}
+
+.arkivreferanse {
+  width: 25%;
+}
+
+.opprettResten {
+  align-self: flex-start;
+}
+
+/* Velg løsninger */
+
+.velg-loesninger-overskrift {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.utvalg-buttons {
+  display: flex;
+  gap: 2rem;
+  height: 8rem;
+  margin-bottom: 3rem;
+}
+
+.utvalg-buttons button {
+  width: 100%;
+  background-color: var(--fds-semantic-surface-first-light);
+  color: black;
+  border: none;
+  font-size: 1.5rem;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: var(--fds-semantic-surface-first-light-hover);
+  }
+
+  &:active {
+    background-color: var(--fds-semantic-surface-first-light-active);
+  }
+}

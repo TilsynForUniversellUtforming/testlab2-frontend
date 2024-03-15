@@ -42,3 +42,37 @@ export const normalizeString = (str: string): string => {
     .toLowerCase()
     .replace(/[^a-zæøå0-9]/gi, '');
 };
+
+const getTokenFromResponse = async (response: Response): Promise<string> => {
+  const responseText = await response.text();
+  try {
+    const token = JSON.parse(responseText)['token'];
+    if (typeof token === 'string') {
+      return token;
+    } else {
+      return '';
+    }
+  } catch (e) {
+    return '';
+  }
+};
+
+export const fetchWrapper = async (
+  input: string,
+  init?: RequestInit
+): Promise<Response> => {
+  if (init) {
+    return await fetch(`/csrf`, { method: 'GET' }).then(async (response) => {
+      const token = await getTokenFromResponse(response);
+
+      init.credentials = 'include';
+      init.headers = {
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': token,
+      };
+      return await fetch(input, init);
+    });
+  } else {
+    return await fetch(input, init);
+  }
+};

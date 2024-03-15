@@ -5,7 +5,7 @@ import useError from '@common/hooks/useError';
 import UserActionTable from '@common/table/UserActionTable';
 import { extractDomain, joinStringsToList } from '@common/util/stringutils';
 import { fetchTestResultatLoeysing } from '@maaling/api/maaling-api';
-import { AutotesterResult, Maaling, TestResult } from '@maaling/api/types';
+import { Maaling, TesterResult, TestResult } from '@maaling/api/types';
 import { MaalingTestStatus } from '@maaling/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
@@ -20,19 +20,19 @@ const getSelectedLoeysing = (
   maaling?.testResult.find((tr) => tr.loeysing.id === Number(loeysingId));
 
 const ViolationListApp = () => {
-  const { id, loeysingId, testregelId } = useParams();
+  const { id, loeysingId, testregelNoekkel } = useParams();
 
   const { contextError, contextLoading, maaling }: TestResultContext =
     useOutletContext();
 
-  const [testResult, setTestresult] = useState<AutotesterResult[]>([]);
+  const [testResult, setTestresult] = useState<TesterResult[]>([]);
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState(contextLoading);
   const [selectedLoeysing, setSelectedLoeysing] = useState(
     getSelectedLoeysing(loeysingId, maaling)
   );
   const [testResultatRowSelection, setTestResultatRowSelection] = useState<
-    AutotesterResult[]
+    TesterResult[]
   >([]);
 
   const [testStatus, setTestStatus] = useState<MaalingTestStatus>({
@@ -40,7 +40,7 @@ const ViolationListApp = () => {
     message: undefined,
   });
 
-  const onClickDelete = (testResultatRowSelection: AutotesterResult[]) => {
+  const onClickDelete = (testResultatRowSelection: TesterResult[]) => {
     console.info(testResultatRowSelection);
   };
 
@@ -58,13 +58,13 @@ const ViolationListApp = () => {
 
     const doFetchTestresultat = async () => {
       try {
-        if (id && loeysingId && testregelId) {
+        if (id && loeysingId && testregelNoekkel) {
           const resultat = await fetchTestResultatLoeysing(
             Number(id),
             Number(loeysingId)
           );
           const filteredResult = resultat.filter(
-            (r) => r.testregelId === testregelId
+            (r) => r.testregelNoekkel === testregelNoekkel
           );
           setTestresult(filteredResult);
         } else {
@@ -86,9 +86,9 @@ const ViolationListApp = () => {
 
   return (
     <>
-      <UserActionTable<AutotesterResult>
+      <UserActionTable<TesterResult>
         heading={`Brot ${extractDomain(selectedLoeysing?.loeysing?.url)}`}
-        subHeading={`Testregel ${testregelId}`}
+        subHeading={`Testregel ${testregelNoekkel}`}
         tableProps={{
           data: testResult,
           defaultColumns: testResultatColumns,

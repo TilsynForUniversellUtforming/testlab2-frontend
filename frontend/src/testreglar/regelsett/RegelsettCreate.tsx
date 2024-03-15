@@ -5,7 +5,7 @@ import RegelsettFormSkeleton from '@testreglar/regelsett/skeleton/RegelsettFormS
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import { Regelsett, RegelsettCreate } from '../api/types';
+import type { Regelsett, RegelsettCreate } from '../api/types';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 

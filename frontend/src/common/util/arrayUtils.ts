@@ -6,6 +6,10 @@ export function drop<T>(array: T[], n: number): T[] {
   return array.slice(n);
 }
 
+export function take<T>(array: T[], n: number): T[] {
+  return array.slice(0, n);
+}
+
 export function takeWhile<T>(array: T[], predicate: (t: T) => boolean): T[] {
   const result: T[] = [];
   for (const t of array) {

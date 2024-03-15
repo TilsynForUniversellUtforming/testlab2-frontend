@@ -8,10 +8,15 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/__test__/setup.ts',
     css: false,
+    include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
   },
   server: {
     proxy: {
       '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/csrf': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
