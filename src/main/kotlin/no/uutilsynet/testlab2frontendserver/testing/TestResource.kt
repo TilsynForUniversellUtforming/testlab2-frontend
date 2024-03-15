@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
 import java.time.Instant
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -111,16 +111,15 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
           .body("Kun ${allowedMIMETypes.joinToString(",")} er lovelge typar")
     }
 
-    // TODO - Hent indeks på bilde
     val bilder = listOf(bilde)
 
     val body: MultiValueMap<String, Any> =
         LinkedMultiValueMap<String, Any>().apply {
-          bilder.forEach { image ->
+          bilder.forEachIndexed { index, image ->
             add(
                 "bilder",
                 object : ByteArrayResource(image.bytes) {
-                  override fun getFilename(): String = "${resultatId}_${0}.$fileExtension"
+                  override fun getFilename(): String = "${resultatId}_${index}.$fileExtension"
                 })
           }
         }
@@ -137,13 +136,8 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   @GetMapping("/bilder/{resultatId}")
   fun getBilder(
       @PathVariable("resultatId") resultatId: Int,
-      @RequestParam(required = false) thumbnail: Boolean?
-  ): ResponseEntity<ByteArray> {
-    val img =
-        restTemplate.getForObject<ByteArray>(
-            "$testresultUrl/bilder/$resultatId?thumbnail=${thumbnail ?: false}")
-    return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(img)
-  }
+  ): ResponseEntity<List<CloudImageUris>> =
+      ResponseEntity.ok(restTemplate.getList<CloudImageUris>("$testresultUrl/bilder/$resultatId"))
 
   data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
 

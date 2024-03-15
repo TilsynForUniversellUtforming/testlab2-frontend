@@ -8,10 +8,12 @@ import useCanvasDrawing from '@common/image-edit/hooks/useCanvasDrawing';
 import useFileUpload from '@common/image-edit/hooks/useFileUpload';
 import { Paragraph } from '@digdir/design-system-react';
 import { UploadIcon } from '@navikt/aksel-icons';
-import { uploadBilde } from '@test/api/testing-api';
+import { getImageUris, uploadBilde } from '@test/api/testing-api';
+import { ImageUris } from '@test/api/types';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import ImageGallery from './ImageGallery';
 import { Point } from './types';
 
 const ImageUpload = ({ resultatId }: { resultatId: number }) => {
@@ -24,6 +26,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   const [showContextMenu, setShowContextMenu] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
+  const [imageUris, setImageUris] = useState<ImageUris[]>([]);
 
   const {
     selectedFile,
@@ -51,6 +54,15 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
     undo,
     emptyStrokes,
   } = useCanvasDrawing(canvasRef, isEditMode, selectedFile, showContextMenu);
+
+  const fetchImageUris = useCallback(async () => {
+    try {
+      const imageUris = await getImageUris(resultatId);
+      setImageUris(imageUris);
+    } catch (e) {
+      console.error('Kunne ikkje hente bilder');
+    }
+  }, [resultatId]);
 
   const onClickSave = useCallback(async () => {
     if (!selectedFile || !canvasRef.current) return;
@@ -200,6 +212,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
           color={color}
         />
       </div>
+      <ImageGallery imageUris={imageUris} fetchImages={fetchImageUris} />
       {alert && (
         <AlertTimed
           severity={alert.severity}

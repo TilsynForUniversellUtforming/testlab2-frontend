@@ -1,7 +1,11 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
-import { CreateTestResultat, ResultatManuellKontroll } from './types';
+import {
+  CreateTestResultat,
+  ImageUris,
+  ResultatManuellKontroll,
+} from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
@@ -84,3 +88,8 @@ export const uploadBilde = async (
     body: formData,
   });
 };
+
+export const getImageUris = async (resultatId: number): Promise<ImageUris[]> =>
+  await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
+    (response) => responseToJson(response, 'Kunne ikkje hente bilder')
+  );

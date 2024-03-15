@@ -65,3 +65,8 @@ export function findElementOmtale(
     return finnSvar(element, svar);
   }
 }
+
+export type ImageUris = {
+  imageURI: string;
+  thumbnailURI: string;
+};
