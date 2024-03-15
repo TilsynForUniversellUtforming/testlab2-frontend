@@ -28,8 +28,9 @@
   border-radius: 10px;
 }
 
-.stepper ol li:first-of-type {
+.stepper .selected {
   background-color: var(--fds-semantic-surface-first-light-active);
+  border: 1px solid var(--fds-semantic-surface-first-dark);
   color: white;
 }
 
