@@ -3,7 +3,7 @@ import CircleIcon from '@common/icon/CircleIcon';
 import SquareIcon from '@common/icon/SquareIcon';
 import TextStyleIcon from '@common/icon/TextStyleIcon';
 import { DrawMode, LineType, TextStyle } from '@common/image-edit/types';
-import { ToggleGroup } from '@digdir/design-system-react';
+import { ToggleGroup } from '@digdir/designsystemet-react';
 import {
   EraserIcon,
   FingerButtonIcon,

@@ -2,7 +2,7 @@ import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestlabSeverity } from '@common/types';
-import { Heading, Paragraph, Tag } from '@digdir/design-system-react';
+import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
 import { TestregelResultat } from '@test/util/testregelParser';
 import DOMPurify from 'dompurify';
 import { useCallback } from 'react';

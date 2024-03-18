@@ -1,6 +1,6 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import TestlabFormInput from '@common/form/TestlabFormInput';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import { SakFormState } from '@sak/types';
 
 const SakVerksemdManualEntry = () => (

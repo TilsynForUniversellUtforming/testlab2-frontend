@@ -1,6 +1,6 @@
 import './link-button.scss';
 
-import { Button, ButtonProps } from '@digdir/design-system-react';
+import { Button, ButtonProps } from '@digdir/designsystemet-react';
 import { Link } from 'react-router-dom';
 
 import { AppRoute, getFullPath, IdReplacement } from '../util/routeUtils';

@@ -8,7 +8,7 @@ import { getLabelString } from '@common/form/autocomplete/util';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
-import { Button, ErrorMessage } from '@digdir/design-system-react';
+import { Button, ErrorMessage } from '@digdir/designsystemet-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { useCallback, useEffect, useState } from 'react';
 import {

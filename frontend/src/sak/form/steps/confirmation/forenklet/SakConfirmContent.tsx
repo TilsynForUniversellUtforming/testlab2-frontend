@@ -1,6 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { Accordion } from '@digdir/design-system-react';
+import { Accordion } from '@digdir/designsystemet-react';
 import { SakContext, SakFormState } from '@sak/types';
 import React, { useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';

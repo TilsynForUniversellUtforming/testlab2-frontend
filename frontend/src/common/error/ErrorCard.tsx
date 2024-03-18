@@ -1,7 +1,7 @@
 import './error-card.scss';
 
 import { ButtonColor, ButtonVariant } from '@common/types';
-import { Alert, Button, Heading } from '@digdir/design-system-react';
+import { Alert, Button, Heading } from '@digdir/designsystemet-react';
 import React from 'react';
 import {
   isRouteErrorResponse,

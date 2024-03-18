@@ -1,4 +1,4 @@
-import { Label, Search } from '@digdir/design-system-react';
+import { Label, Search } from '@digdir/designsystemet-react';
 import { ChangeEvent, useEffect, useState } from 'react';
 
 interface Props {

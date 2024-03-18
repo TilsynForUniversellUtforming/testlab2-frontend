@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { ButtonVariant } from '@common/types';
 import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
-import { Button, Heading, Tag } from '@digdir/design-system-react';
+import { Button, Heading, Tag } from '@digdir/designsystemet-react';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { TESTRESULTAT_TESTGRUNNLAG } from '@resultat/ResultatRoutes';
 import { TestContext } from '@test/types';

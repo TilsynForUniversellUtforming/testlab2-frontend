@@ -1,6 +1,6 @@
 import { CellCheckboxId } from '@common/table/types';
-import { Table as DSTable } from '@digdir/design-system-react';
-import { TableHeaderCellProps } from '@digdir/design-system-react/dist/types/components/Table/TableHeaderCell';
+import { Table as DSTable } from '@digdir/designsystemet-react';
+import { TableHeaderCellProps } from '@digdir/designsystemet-react/dist/types/components/Table/TableHeaderCell';
 import { flexRender, Header } from '@tanstack/react-table';
 import React from 'react';
 

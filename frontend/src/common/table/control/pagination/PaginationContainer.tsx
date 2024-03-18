@@ -1,4 +1,4 @@
-import { Table } from '@digdir/design-system-react';
+import { Table } from '@digdir/designsystemet-react';
 import React from 'react';
 
 import HideWhenLoading from '../../../HideWhenLoading';

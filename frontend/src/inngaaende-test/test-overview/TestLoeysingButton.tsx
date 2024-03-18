@@ -1,5 +1,5 @@
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
-import { Button, Heading, Tag } from '@digdir/design-system-react';
+import { Button, Heading, Tag } from '@digdir/designsystemet-react';
 import { ManuellTestStatus } from '@test/types';
 
 interface Props {

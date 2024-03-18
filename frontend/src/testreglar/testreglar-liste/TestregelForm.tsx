@@ -7,7 +7,7 @@ import { OptionType } from '@common/types';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import { Link } from '@digdir/design-system-react';
+import { Link } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TESTREGEL_DEMO } from '@test/TestingRoutes';
 import { Krav } from 'krav/types';

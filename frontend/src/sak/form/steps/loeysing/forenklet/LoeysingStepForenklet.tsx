@@ -1,6 +1,6 @@
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isDefined } from '@common/util/validationUtils';
-import { Radio } from '@digdir/design-system-react';
+import { Radio } from '@digdir/designsystemet-react';
 import SakLoeysingList from '@sak/form/steps/loeysing/forenklet/SakLoeysingList';
 import SakUtvalList from '@sak/form/steps/loeysing/forenklet/SakUtvalList';
 import { LoeysingSource, SakFormState } from '@sak/types';

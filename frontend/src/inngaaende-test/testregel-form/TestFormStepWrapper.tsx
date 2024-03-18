@@ -1,4 +1,4 @@
-import { ErrorMessage } from '@digdir/design-system-react';
+import { ErrorMessage } from '@digdir/designsystemet-react';
 import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';

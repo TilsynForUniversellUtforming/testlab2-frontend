@@ -1,7 +1,7 @@
 import './dropdown.scss';
 
 import { ButtonColor, ButtonSize, ButtonVariant } from '@common/types';
-import { DropdownMenu } from '@digdir/design-system-react';
+import { DropdownMenu } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React, { useState } from 'react';

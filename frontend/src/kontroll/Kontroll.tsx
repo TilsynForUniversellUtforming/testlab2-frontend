@@ -6,7 +6,7 @@ import {
   Radio,
   RadioGroup,
   Textfield,
-} from '@digdir/design-system-react';
+} from '@digdir/designsystemet-react';
 import {
   ActionFunctionArgs,
   Form,

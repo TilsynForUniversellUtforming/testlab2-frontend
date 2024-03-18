@@ -1,4 +1,4 @@
-import { Accordion, ListItem } from '@digdir/design-system-react';
+import { Accordion, ListItem } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import React from 'react';
 

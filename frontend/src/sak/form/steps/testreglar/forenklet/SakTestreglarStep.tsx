@@ -4,7 +4,7 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
 import { ButtonSize, OptionType } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
-import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
+import { Button, Combobox, ErrorMessage } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';

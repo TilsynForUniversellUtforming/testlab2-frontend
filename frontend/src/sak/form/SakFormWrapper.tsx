@@ -1,7 +1,7 @@
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormButtons from '@common/form/TestlabFormButtons';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
-import { Paragraph } from '@digdir/design-system-react';
+import { Paragraph } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 

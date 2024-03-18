@@ -1,6 +1,6 @@
 import '../test.scss';
 
-import { Spinner } from '@digdir/design-system-react';
+import { Spinner } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';

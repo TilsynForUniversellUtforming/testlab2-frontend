@@ -1,5 +1,5 @@
 import { ButtonColor, ButtonColorType, ButtonVariant } from '@common/types';
-import { Button } from '@digdir/design-system-react';
+import { Button } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';

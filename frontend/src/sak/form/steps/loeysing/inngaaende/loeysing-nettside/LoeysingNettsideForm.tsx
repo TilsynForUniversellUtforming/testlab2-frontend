@@ -1,4 +1,4 @@
-import { Chip, Heading, Ingress } from '@digdir/design-system-react';
+import { Chip, Heading, Ingress } from '@digdir/designsystemet-react';
 import NettsidePropertiesFieldArray from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/NettsidePropertiesFieldArray';
 
 interface Props {

@@ -3,7 +3,7 @@ import './testreglar.scss';
 import ErrorCard from '@common/error/ErrorCard';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/apiUtils';
-import { Tabs } from '@digdir/design-system-react';
+import { Tabs } from '@digdir/designsystemet-react';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { Krav } from 'krav/types';
 import React, { useCallback, useEffect, useState } from 'react';

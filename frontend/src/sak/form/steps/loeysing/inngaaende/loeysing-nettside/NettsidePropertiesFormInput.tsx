@@ -2,7 +2,7 @@ import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Button } from '@digdir/design-system-react';
+import { Button } from '@digdir/designsystemet-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { nettsidePropertyOptions } from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/types';
 import { SakFormState } from '@sak/types';

@@ -1,5 +1,5 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';

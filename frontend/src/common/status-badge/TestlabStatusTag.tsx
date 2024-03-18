@@ -1,5 +1,5 @@
 import { TestlabColor } from '@common/types';
-import { Tag, TagProps } from '@digdir/design-system-react';
+import { Tag, TagProps } from '@digdir/designsystemet-react';
 
 import { sanitizeEnumLabel } from '../util/stringutils';
 

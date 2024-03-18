@@ -5,7 +5,7 @@ import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import { TestlabFormLabel } from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Search } from '@digdir/design-system-react';
+import { Search } from '@digdir/designsystemet-react';
 import classnames from 'classnames';
 import React, {
   ReactNode,

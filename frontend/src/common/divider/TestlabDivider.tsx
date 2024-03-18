@@ -1,7 +1,7 @@
 import './testlab-divider.scss';
 
 import { Size } from '@common/types';
-import { Divider } from '@digdir/design-system-react';
+import { Divider } from '@digdir/designsystemet-react';
 import classnames from 'classnames';
 
 interface Props {
