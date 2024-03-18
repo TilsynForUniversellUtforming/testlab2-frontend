@@ -14,4 +14,5 @@ export type LoeysingInit = {
 export type Utval = {
   id: number;
   namn: string;
+  oppretta: Date;
 };
