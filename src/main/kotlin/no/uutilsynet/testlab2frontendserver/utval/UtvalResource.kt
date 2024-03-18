@@ -1,5 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.utval
 
+import java.net.URI
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
@@ -12,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
-import java.net.URI
-import java.time.Instant
 
 @RestController
 @RequestMapping("api/v1/utval")
