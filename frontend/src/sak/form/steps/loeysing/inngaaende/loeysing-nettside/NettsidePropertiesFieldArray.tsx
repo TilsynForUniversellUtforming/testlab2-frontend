@@ -1,7 +1,7 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { Button, ErrorMessage } from '@digdir/design-system-react';
+import { Button, ErrorMessage } from '@digdir/designsystemet-react';
 import NettsidePropertiesFormInput from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/NettsidePropertiesFormInput';
 import { NettsideProperties, SakFormState } from '@sak/types';
 import { Fragment, useMemo } from 'react';

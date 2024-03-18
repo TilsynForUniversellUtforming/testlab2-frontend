@@ -1,7 +1,7 @@
 import './app-title.scss';
 
 import { isNotDefined } from '@common/util/validationUtils';
-import { Heading, Paragraph } from '@digdir/design-system-react';
+import { Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Link } from 'react-router-dom';
 
 export type AppTitleSize =

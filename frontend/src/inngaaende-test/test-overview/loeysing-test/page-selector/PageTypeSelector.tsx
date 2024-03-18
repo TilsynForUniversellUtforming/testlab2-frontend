@@ -2,7 +2,7 @@ import './page-selector.scss';
 
 import { capitalize } from '@common/util/stringutils';
 import { isDefined, isOption } from '@common/util/validationUtils';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import { NettsideProperties } from '@sak/types';
 import TypeDropdown from '@test/test-overview/loeysing-test/page-selector/TypeDropdown';
 import { PageType } from '@test/types';

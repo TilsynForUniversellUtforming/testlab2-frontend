@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@common/form/util';
-import { Fieldset, Radio } from '@digdir/design-system-react';
+import { Fieldset, Radio } from '@digdir/designsystemet-react';
 import { SakContext, SakFormState } from '@sak/types';
 import { useFormContext } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';

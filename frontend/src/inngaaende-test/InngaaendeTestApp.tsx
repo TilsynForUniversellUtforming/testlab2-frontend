@@ -1,7 +1,7 @@
 import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import { isNotDefined } from '@common/util/validationUtils';
-import { Spinner } from '@digdir/design-system-react';
+import { Spinner } from '@digdir/designsystemet-react';
 import { getSak } from '@sak/api/sak-api';
 import { Sak } from '@sak/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';

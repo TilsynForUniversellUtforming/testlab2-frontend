@@ -6,7 +6,7 @@ import CanvasDrawingControls from '@common/image-edit/CanvasDrawingControls';
 import ImageControl from '@common/image-edit/control/ImageControl';
 import useCanvasDrawing from '@common/image-edit/hooks/useCanvasDrawing';
 import useFileUpload from '@common/image-edit/hooks/useFileUpload';
-import { Paragraph } from '@digdir/design-system-react';
+import { Paragraph } from '@digdir/designsystemet-react';
 import { UploadIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';

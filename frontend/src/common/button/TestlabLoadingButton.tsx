@@ -1,4 +1,4 @@
-import { Button, Spinner } from '@digdir/design-system-react';
+import { Button, Spinner } from '@digdir/designsystemet-react';
 
 export interface Props {
   title: string;

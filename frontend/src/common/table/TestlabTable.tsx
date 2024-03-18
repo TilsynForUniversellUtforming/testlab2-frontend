@@ -2,7 +2,7 @@ import './testlabTable.scss';
 import '@tanstack/react-table';
 
 import TestlabTableBody from '@common/table/TestlabTableBody';
-import { ErrorMessage, Table } from '@digdir/design-system-react';
+import { ErrorMessage, Table } from '@digdir/designsystemet-react';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
@@ -36,6 +36,7 @@ declare module '@tanstack/table-core' {
     fuzzy: FilterFn<unknown>;
     exact: FilterFn<unknown>;
   }
+
   interface FilterMeta {
     itemRank: RankingInfo;
   }

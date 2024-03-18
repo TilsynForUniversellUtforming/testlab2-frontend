@@ -3,7 +3,7 @@ import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useLoading from '@common/hooks/useLoading';
 import TestlabTable from '@common/table/TestlabTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { Tabs } from '@digdir/design-system-react';
+import { Tabs } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';

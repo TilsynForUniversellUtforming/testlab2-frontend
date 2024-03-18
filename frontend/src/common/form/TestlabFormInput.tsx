@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@common/form/util';
-import { Textfield, TextfieldProps } from '@digdir/design-system-react';
+import { Textfield, TextfieldProps } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';

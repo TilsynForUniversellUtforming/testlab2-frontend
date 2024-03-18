@@ -1,7 +1,11 @@
 import './testlab-search.scss';
 
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
-import { Button, Textfield, TextfieldProps } from '@digdir/design-system-react';
+import {
+  Button,
+  Textfield,
+  TextfieldProps,
+} from '@digdir/designsystemet-react';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 export interface Props {

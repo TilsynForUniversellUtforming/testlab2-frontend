@@ -3,7 +3,7 @@ import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
 import { ButtonSize, OptionExtended } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
-import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
+import { Button, Combobox, ErrorMessage } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingVerksemdColumns } from '@sak/form/steps/loeysing/forenklet/LoeysingColumns';
 import { LoeysingVerksemd, SakContext, SakFormState } from '@sak/types';

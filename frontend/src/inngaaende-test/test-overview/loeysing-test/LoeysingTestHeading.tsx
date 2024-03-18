@@ -1,4 +1,4 @@
-import { Heading, Ingress, Tag } from '@digdir/design-system-react';
+import { Heading, Ingress, Tag } from '@digdir/designsystemet-react';
 import PageTypeSelector, {
   PageTypeSelectorProps,
 } from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';

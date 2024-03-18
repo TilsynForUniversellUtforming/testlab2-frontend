@@ -1,7 +1,7 @@
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Combobox, ErrorMessage, Radio } from '@digdir/design-system-react';
+import { Combobox, ErrorMessage, Radio } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 

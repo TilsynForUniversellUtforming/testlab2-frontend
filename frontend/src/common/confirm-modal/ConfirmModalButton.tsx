@@ -6,7 +6,12 @@ import {
   ButtonVariant,
   ButtonVariantType,
 } from '@common/types';
-import { Button, Divider, Modal, Paragraph } from '@digdir/design-system-react';
+import {
+  Button,
+  Divider,
+  Modal,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import React, { useCallback, useRef } from 'react';
 
 export interface ConfirmModalProps {

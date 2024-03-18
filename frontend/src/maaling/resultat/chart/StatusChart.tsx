@@ -2,7 +2,7 @@ import './status-chart.scss';
 
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import { TestlabSeverity } from '@common/types';
-import { Heading, Spinner } from '@digdir/design-system-react';
+import { Heading, Spinner } from '@digdir/designsystemet-react';
 
 export type ChartStatus = {
   statusCount: number;

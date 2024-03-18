@@ -1,6 +1,6 @@
 import AlertModal from '@common/alert/AlertModal';
 import { ButtonVariant } from '@common/types';
-import { Button } from '@digdir/design-system-react';
+import { Button } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll, Svar } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';

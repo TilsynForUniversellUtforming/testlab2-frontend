@@ -1,5 +1,5 @@
 import { OptionType } from '@common/types';
-import { DropdownMenu } from '@digdir/design-system-react';
+import { DropdownMenu } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import { useState } from 'react';

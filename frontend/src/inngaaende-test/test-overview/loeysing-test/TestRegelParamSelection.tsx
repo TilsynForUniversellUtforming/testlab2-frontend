@@ -1,6 +1,6 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import { isUrl } from '@common/util/validationUtils';
-import { Heading, Link, Switch } from '@digdir/design-system-react';
+import { Heading, Link, Switch } from '@digdir/designsystemet-react';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
 
 interface Props {

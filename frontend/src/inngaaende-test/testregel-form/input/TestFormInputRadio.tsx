@@ -1,5 +1,5 @@
 import { htmlToReactNode } from '@common/util/stringutils';
-import { Radio } from '@digdir/design-system-react';
+import { Radio } from '@digdir/designsystemet-react';
 import { Svar } from '@test/api/types';
 import { StegJaNei, StegRadio } from '@test/util/testregel-interface/Steg';
 

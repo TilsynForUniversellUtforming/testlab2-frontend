@@ -1,7 +1,7 @@
 import './hamburger-menu.scss';
 
 import { ButtonColor, ButtonVariant } from '@common/types';
-import { Button } from '@digdir/design-system-react';
+import { Button } from '@digdir/designsystemet-react';
 import { MenuHamburgerIcon, XMarkIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
 

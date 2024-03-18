@@ -8,7 +8,7 @@ import {
   ErrorMessage,
   Heading,
   Paragraph,
-} from '@digdir/design-system-react';
+} from '@digdir/designsystemet-react';
 import LoeysingRelationList from '@sak/form/steps/init/inngaaende/verksemd-loeysing/LoeysingRelationList';
 import VerksemdLoeysingRelationForm from '@sak/form/steps/init/inngaaende/verksemd-loeysing/VerksemdLoeysingRelationForm';
 import { SakFormState, SakVerksemdLoeysingRelation } from '@sak/types';

@@ -1,7 +1,7 @@
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { ButtonVariant } from '@common/types';
-import { Button } from '@digdir/design-system-react';
+import { Button } from '@digdir/designsystemet-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import SakCrawlParameters from '@sak/form/steps/init/forenklet/SakCrawlParameters';
 import { SakContext, SakFormState } from '@sak/types';

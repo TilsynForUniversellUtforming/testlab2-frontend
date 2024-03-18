@@ -1,6 +1,6 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import { Checkbox, Table } from '@digdir/design-system-react';
+import { Checkbox, Table } from '@digdir/designsystemet-react';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 

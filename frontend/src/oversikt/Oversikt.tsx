@@ -4,7 +4,7 @@ import AppTitle from '@common/app-title/AppTitle';
 import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import { ButtonVariant } from '@common/types';
 import { AppRoute } from '@common/util/routeUtils';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import { SAK_CREATE } from '@sak/SakRoutes';
 import { TEST_ROOT } from '@test/TestingRoutes';
 import React from 'react';

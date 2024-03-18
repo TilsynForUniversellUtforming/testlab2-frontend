@@ -1,5 +1,5 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
-import { Alert, Heading, Spinner } from '@digdir/design-system-react';
+import { Alert, Heading, Spinner } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import SakVerksemdManualEntry from '@sak/form/steps/init/inngaaende/SakVerksemdManualEntry';
 
