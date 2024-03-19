@@ -1,6 +1,7 @@
 import AlertModal from '@common/alert/AlertModal';
 import useAlertModal from '@common/alert/useAlertModal';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
+import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { Sak } from '@sak/api/types';
 import {
   createTestResultat,
@@ -436,6 +437,7 @@ const TestOverviewLoeysing = () => {
 
         try {
           const updatedTestResults = await updateTestResultat(testResult);
+          await createTestresultatAggregert(contextSak.id);
           contextSetTestResults(updatedTestResults);
           processData(
             contextSak,
@@ -498,6 +500,13 @@ const TestOverviewLoeysing = () => {
     async (testResultat: ResultatManuellKontroll[]) => {
       try {
         const updatedTestResults = await updateTestResultatMany(testResultat);
+        await createTestresultatAggregert(contextSak.id).catch((e) => {
+          setAlert(
+            'danger',
+            'Kunne ikkje oppdatere aggregert resultat',
+            `Oppdatering av aggregert resultat feila ${e}`
+          );
+        });
         contextSetTestResults(updatedTestResults);
         processData(
           contextSak,
