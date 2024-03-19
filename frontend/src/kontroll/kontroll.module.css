@@ -77,26 +77,76 @@
   margin-bottom: 4rem;
 }
 
-.utvalg-buttons {
+.utvalg-eller-manuelt,
+.nyeste-utvalg-buttons {
+  button {
+    background-color: var(--fds-semantic-surface-first-light);
+    color: black;
+    border: none;
+    font-size: 1.5rem;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-first-light-hover);
+    }
+
+    &:active {
+      background-color: var(--fds-semantic-surface-first-light-active);
+    }
+
+    &.selected {
+      background: linear-gradient(
+        var(--fds-semantic-surface-first-light-active),
+        rgb(157 160 228 / 0.6),
+        var(--fds-semantic-surface-first-light-active)
+      );
+    }
+  }
+}
+
+.utvalg-eller-manuelt {
   display: flex;
   gap: 2rem;
-  height: 8rem;
   margin-bottom: 3rem;
 }
 
-.utvalg-buttons button {
+.utvalg-eller-manuelt button {
   width: 100%;
-  background-color: var(--fds-semantic-surface-first-light);
-  color: black;
-  border: none;
-  font-size: 1.5rem;
-  border-radius: 10px;
+  height: 8rem;
+}
 
-  &:hover {
-    background-color: var(--fds-semantic-surface-first-light-hover);
+.nyeste-utvalg-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+
+  button {
+    width: calc(100% / 3 - 1rem);
+    height: 8rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
+}
 
-  &:active {
-    background-color: var(--fds-semantic-surface-first-light-active);
+.eldre-utvalg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+
+  li {
+    flex: 1 1 calc(100% / 2 - 1.5rem);
+    max-width: calc(100% / 2 - 1.5rem);
+
+    button {
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 1rem;
+
+      &.selected {
+        outline: 2px solid var(--fds-semantic-surface-first-light-active);
+      }
+    }
   }
 }
