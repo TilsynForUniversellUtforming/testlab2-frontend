@@ -1,4 +1,4 @@
-export type OpprettetKontroll = {
+export type Kontroll = {
   id: number;
   kontrolltype: KontrollType;
   tittel: string;

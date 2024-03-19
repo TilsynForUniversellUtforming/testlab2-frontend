@@ -1,10 +1,12 @@
 import ErrorCard from '@common/error/ErrorCard';
+import { Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { Outlet } from 'react-router';
 import { RouteObject, useRouteError } from 'react-router-dom';
 
-import Kontroll, { action } from './Kontroll';
 import { fetchKontroll } from './kontroll-api';
+import OpprettKontroll, { action } from './OpprettKontroll';
+import { Kontroll } from './types';
 import VelgLoesninger from './VelgLoesninger';
 
 export const KontrollRoutes: RouteObject = {
@@ -14,7 +16,7 @@ export const KontrollRoutes: RouteObject = {
   children: [
     {
       path: 'opprett-kontroll',
-      element: <Kontroll />,
+      element: <OpprettKontroll />,
       handle: { name: 'Kontroll' },
       action: action,
     },
@@ -38,6 +40,14 @@ export const KontrollRoutes: RouteObject = {
 
         const utval = await fetchUtvalList();
         return { kontroll: await response.json(), utval };
+      },
+      action: async ({ request }) => {
+        const { kontroll, utval } = (await request.json()) as {
+          kontroll: Kontroll;
+          utval: Utval;
+        };
+        console.log('Lagrer kontroll', kontroll, utval);
+        return null;
       },
     },
   ],

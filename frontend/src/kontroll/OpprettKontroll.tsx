@@ -16,7 +16,7 @@ import {
 
 import classes from './kontroll.module.css';
 
-export default function Kontroll() {
+export default function OpprettKontroll() {
   const errors = useActionData() as Errors;
   return (
     <section className={classes.byggKontroll}>
