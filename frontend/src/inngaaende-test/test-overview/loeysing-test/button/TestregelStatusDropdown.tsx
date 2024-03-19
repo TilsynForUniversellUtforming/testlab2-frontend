@@ -1,5 +1,5 @@
 import { ButtonVariant } from '@common/types';
-import { DropdownMenu } from '@digdir/design-system-react';
+import { DropdownMenu } from '@digdir/designsystemet-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import { ButtonStatus, ManuellTestStatus } from '@test/types';
 import { useState } from 'react';

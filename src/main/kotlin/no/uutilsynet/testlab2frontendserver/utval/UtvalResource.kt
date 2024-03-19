@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.utval
 
 import java.net.URI
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
@@ -21,6 +22,7 @@ class UtvalResource(
     val testingApiProperties: TestingApiProperties
 ) {
   private val logger: Logger = LoggerFactory.getLogger(UtvalResource::class.java)
+
   @GetMapping
   fun getUtvalList(): List<UtvalListItem> {
     val url = "${testingApiProperties.url}/v1/utval"
@@ -44,7 +46,12 @@ class UtvalResource(
             }
           }
 
-  data class UtvalListItem(val id: Int, val namn: String)
+  data class UtvalListItem(val id: Int, val namn: String, val oppretta: Instant)
 
-  data class Utval(val id: Int, val namn: String, val loeysingar: List<Loeysing>)
+  data class Utval(
+      val id: Int,
+      val namn: String,
+      val loeysingar: List<Loeysing>,
+      val oppretta: Instant
+  )
 }

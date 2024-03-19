@@ -5,7 +5,7 @@ import {
   Divider,
   Modal,
   Paragraph,
-} from '@digdir/design-system-react';
+} from '@digdir/designsystemet-react';
 import React, { useCallback, useRef } from 'react';
 
 export type ConfirmModalProps = {

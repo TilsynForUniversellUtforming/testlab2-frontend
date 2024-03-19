@@ -1,4 +1,4 @@
-import { Button, DropdownMenu, Heading } from '@digdir/design-system-react';
+import { Button, DropdownMenu, Heading } from '@digdir/designsystemet-react';
 import { ArrowDownIcon } from '@navikt/aksel-icons';
 import { findElementOmtale, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';

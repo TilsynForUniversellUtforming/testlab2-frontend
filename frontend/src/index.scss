@@ -1,5 +1,5 @@
-@import '@digdir/design-system-tokens/brand/tilsynet/tokens.css';
-@import '@altinn/figma-design-tokens/dist/tokens.css';
+@import '@digdir/designsystemet-theme/brand/tilsynet/tokens.css';
+@import '@digdir/designsystemet-css';
 
 $blaasvart: #1e2b3c;
 
@@ -20,8 +20,10 @@ body {
   h6 {
     font-family: 'Inter', sans-serif !important;
   }
+
   a {
     color: var(--fds-semantic-text-neutral-default);
+
     &:hover {
       color: var(--fds-semantic-text-neutral-subtle);
     }

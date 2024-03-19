@@ -1,5 +1,5 @@
 import { hasSameItems, isEmpty, takeWhile } from '@common/util/arrayUtils';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import {
   findElementOmtale,
   ResultatManuellKontroll,

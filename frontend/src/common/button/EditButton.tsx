@@ -1,4 +1,4 @@
-import { Button } from '@digdir/design-system-react';
+import { Button } from '@digdir/designsystemet-react';
 import React from 'react';
 
 export interface Props {

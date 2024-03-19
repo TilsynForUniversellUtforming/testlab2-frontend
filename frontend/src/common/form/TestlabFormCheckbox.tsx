@@ -1,7 +1,7 @@
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
-import { Checkbox } from '@digdir/design-system-react';
+import { Checkbox } from '@digdir/designsystemet-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 export interface Props<T extends object> extends TestlabInputBaseProps<T> {

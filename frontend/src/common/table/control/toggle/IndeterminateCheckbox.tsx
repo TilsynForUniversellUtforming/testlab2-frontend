@@ -1,5 +1,5 @@
 import { CheckboxSize } from '@common/types';
-import { Checkbox } from '@digdir/design-system-react';
+import { Checkbox } from '@digdir/designsystemet-react';
 import { Row, Table } from '@tanstack/react-table';
 import React, { HTMLProps, useEffect, useRef } from 'react';
 

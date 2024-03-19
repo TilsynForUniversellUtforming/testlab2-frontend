@@ -3,7 +3,11 @@ import { getErrorMessage, normalizeString } from '@common/form/util';
 import TestlabTable from '@common/table/TestlabTable';
 import { ButtonSize, OptionExtended } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
-import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
+import {
+  Button,
+  ErrorMessage,
+  NativeSelect,
+} from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingVerksemdColumns } from '@sak/form/steps/loeysing/forenklet/LoeysingColumns';
 import { LoeysingVerksemd, SakContext, SakFormState } from '@sak/types';
@@ -57,7 +61,7 @@ const SakLoeysingList = () => {
 
         setSelectableLoeysingList([]);
         setLoeysingId(undefined);
-        setVerksemdId(undefined);
+        setVerksemdId('blank');
       } else {
         setError('loeysingList', {
           type: 'manual',
@@ -135,10 +139,6 @@ const SakLoeysingList = () => {
 
   const listErrors = getErrorMessage(formState, 'loeysingList');
 
-  const onValueChange = (value: string[]) => {
-    setVerksemdId(value[0]);
-  };
-
   return (
     <>
       <div className="sak-loeysing__input-wrapper">
@@ -158,18 +158,20 @@ const SakLoeysingList = () => {
           />
         </div>
         <div className="sak-loeysing__input-select">
-          <Combobox
-            id="testregelId"
-            onValueChange={onValueChange}
-            value={verksemdId ? [verksemdId] : undefined}
+          <NativeSelect
             label="Ansvarlig verksemd (i saka)"
+            onChange={(e) => setVerksemdId(e.currentTarget.value)}
+            value={verksemdId}
+            error={!!listErrors}
+            size="small"
           >
-            {verksemdOptions.map((o) => (
-              <Combobox.Option value={o.value} key={`${o.label}_${o.value}`}>
-                {o.label}
-              </Combobox.Option>
+            <option value="blank">Velg …</option>
+            {verksemdOptions.map((verksemd) => (
+              <option value={verksemd.value} key={verksemd.value}>
+                {verksemd.label}
+              </option>
             ))}
-          </Combobox>
+          </NativeSelect>
         </div>
         <Button
           title="Legg til"

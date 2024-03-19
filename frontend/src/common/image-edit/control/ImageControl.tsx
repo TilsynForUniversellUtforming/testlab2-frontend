@@ -5,7 +5,7 @@ import SquareIcon from '@common/icon/SquareIcon';
 import TextStyleIcon from '@common/icon/TextStyleIcon';
 import { DrawMode, LineType, TextStyle } from '@common/image-edit/types';
 import { ButtonVariant } from '@common/types';
-import { Button, ToggleGroup } from '@digdir/design-system-react';
+import { Button, ToggleGroup } from '@digdir/designsystemet-react';
 import {
   ArrowUndoIcon,
   EraserIcon,

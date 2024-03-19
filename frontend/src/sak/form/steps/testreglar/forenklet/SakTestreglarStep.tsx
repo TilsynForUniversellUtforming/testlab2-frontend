@@ -4,7 +4,11 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
 import { ButtonSize, OptionType } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
-import { Button, Combobox, ErrorMessage } from '@digdir/design-system-react';
+import {
+  Button,
+  ErrorMessage,
+  NativeSelect,
+} from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SakFormWrapper from '@sak/form/SakFormWrapper';
 import { sakTestreglarValidationSchemaForenklet } from '@sak/form/steps/testreglar/forenklet/sakTestreglarValidationSchemaForenklet';
@@ -138,7 +142,7 @@ const SakTestreglarStep = ({
           (value, idx, self) => self.findIndex((v) => v.id === value.id) === idx
         );
         setValue('testregelList', filteredValues);
-        setTestregelId(undefined);
+        setTestregelId('blank');
       } else {
         setError('testregelList', {
           type: 'manual',
@@ -175,10 +179,6 @@ const SakTestreglarStep = ({
     }
   };
 
-  const onValueChange = (value: string[]) => {
-    setTestregelId(value[0]);
-  };
-
   return (
     <SakFormWrapper
       formStepState={formStepState}
@@ -197,17 +197,20 @@ const SakTestreglarStep = ({
               description="Vel enkelt testregel eller samling av testreglar (testregelsett)
                 du vil legge til."
             />
-            <Combobox
+            <NativeSelect
               id="testregelId"
-              onValueChange={onValueChange}
-              value={testregelId ? [testregelId] : undefined}
+              onChange={(e) => setTestregelId(e.currentTarget.value)}
+              value={testregelId}
+              error={!!formError}
+              size="small"
             >
-              {testRegelOptions.map((o) => (
-                <Combobox.Option value={o.value} key={`${o.label}_${o.value}`}>
-                  {o.label}
-                </Combobox.Option>
+              <option value="blank">Velg …</option>
+              {testRegelOptions.map((tr) => (
+                <option value={tr.value} key={tr.value}>
+                  {tr.label}
+                </option>
               ))}
-            </Combobox>
+            </NativeSelect>
           </div>
           <Button
             title="Legg til"

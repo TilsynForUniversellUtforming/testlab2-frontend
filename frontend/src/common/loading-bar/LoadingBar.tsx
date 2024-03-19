@@ -1,7 +1,7 @@
 import './loading-bar.scss';
 
 import { Size, TestlabSeverity } from '@common/types';
-import { Label } from '@digdir/design-system-react';
+import { Label } from '@digdir/designsystemet-react';
 import classnames from 'classnames';
 import React from 'react';
 

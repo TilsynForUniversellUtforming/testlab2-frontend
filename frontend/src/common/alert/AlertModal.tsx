@@ -1,5 +1,5 @@
 import { AlertProps } from '@common/alert/AlertTimed';
-import { Alert, Modal } from '@digdir/design-system-react';
+import { Alert, Modal } from '@digdir/designsystemet-react';
 import { forwardRef } from 'react';
 
 export interface AlertModalProps extends AlertProps {

@@ -1,6 +1,6 @@
 import './alert.scss';
 
-import { Alert } from '@digdir/design-system-react';
+import { Alert } from '@digdir/designsystemet-react';
 import { useEffect, useState } from 'react';
 
 import { Severity } from '../types';

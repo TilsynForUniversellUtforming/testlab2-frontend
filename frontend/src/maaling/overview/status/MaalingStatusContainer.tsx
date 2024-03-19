@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import TestlabLoadingButton from '@common/button/TestlabLoadingButton';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { Spinner } from '@digdir/design-system-react';
+import { Spinner } from '@digdir/designsystemet-react';
 import { TEST_SIDEUTVAL_LIST, TEST_TESTING_LIST } from '@maaling/MaalingRoutes';
 import React from 'react';
 

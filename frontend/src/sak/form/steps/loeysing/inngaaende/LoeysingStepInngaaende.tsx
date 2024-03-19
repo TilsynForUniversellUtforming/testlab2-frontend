@@ -1,5 +1,5 @@
 import { isDefined } from '@common/util/validationUtils';
-import { Chip, Heading, Paragraph } from '@digdir/design-system-react';
+import { Chip, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import LoeysingNettsideForm from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/LoeysingNettsideForm';
 import { LoeysingNettsideRelation } from '@sak/types';

@@ -1,4 +1,4 @@
-import { Pagination } from '@digdir/design-system-react';
+import { Pagination } from '@digdir/designsystemet-react';
 import React from 'react';
 
 import { TableProps } from '../../types';

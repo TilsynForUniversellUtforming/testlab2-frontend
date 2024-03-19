@@ -2,7 +2,7 @@ import {
   Textarea,
   Textfield,
   TextfieldProps,
-} from '@digdir/design-system-react';
+} from '@digdir/designsystemet-react';
 import React, { useEffect, useState } from 'react';
 
 export type Props = {

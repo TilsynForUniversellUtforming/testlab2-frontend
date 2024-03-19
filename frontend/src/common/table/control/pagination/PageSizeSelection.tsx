@@ -1,5 +1,5 @@
 import { LoadingTableProps } from '@common/table/types';
-import { NativeSelect } from '@digdir/design-system-react';
+import { NativeSelect } from '@digdir/designsystemet-react';
 import React from 'react';
 
 const PageSizeSelection = <T extends object>({

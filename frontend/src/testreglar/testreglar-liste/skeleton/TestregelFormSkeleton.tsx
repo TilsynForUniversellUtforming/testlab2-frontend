@@ -1,7 +1,7 @@
 import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkeleton';
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
-import { Paragraph } from '@digdir/design-system-react';
+import { Paragraph } from '@digdir/designsystemet-react';
 
 import { Testregel } from '../../api/types';
 

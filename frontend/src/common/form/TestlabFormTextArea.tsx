@@ -1,5 +1,5 @@
 import { getErrorMessage } from '@common/form/util';
-import { Textarea, TextareaProps } from '@digdir/design-system-react';
+import { Textarea, TextareaProps } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Controller, Path, useFormContext } from 'react-hook-form';
 

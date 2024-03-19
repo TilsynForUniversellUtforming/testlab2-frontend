@@ -1,4 +1,4 @@
-import { Heading, Ingress, Paragraph } from '@digdir/design-system-react';
+import { Heading, Ingress, Paragraph } from '@digdir/designsystemet-react';
 import { Steg } from '@test/util/testregel-interface/Steg';
 import DOMPurify from 'dompurify';
 

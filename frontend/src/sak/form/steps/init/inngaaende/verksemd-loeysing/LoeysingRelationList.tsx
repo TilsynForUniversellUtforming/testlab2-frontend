@@ -1,5 +1,5 @@
 import { isNotDefined } from '@common/util/validationUtils';
-import { Chip, Heading } from '@digdir/design-system-react';
+import { Chip, Heading } from '@digdir/designsystemet-react';
 import { LoeysingNettsideRelationTest, SakFormState } from '@sak/types';
 import { useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';

@@ -1,5 +1,5 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -14,6 +14,9 @@ const VelgLoesninger = () => {
     kontroll: OpprettetKontroll;
     utval: Utval[];
   };
+  const utvalSortedByOppretta = utval.toSorted(
+    (a, b) => b.oppretta.getTime() - a.oppretta.getTime()
+  );
   const [selectedOption, setSelectedOption] =
     React.useState<UtvalgEllerLoesning>();
 
@@ -48,17 +51,17 @@ const VelgLoesninger = () => {
             Nyeste utvalg av løsninger
           </Heading>
           <ul>
-            {take(utval, 6).map((u) => (
+            {take(utvalSortedByOppretta, 6).map((u) => (
               <li key={u.id}>{u.namn}</li>
             ))}
           </ul>
-          {!isEmpty(drop(utval, 6)) && (
+          {!isEmpty(drop(utvalSortedByOppretta, 6)) && (
             <>
               <Heading level={3} size="small">
                 Eldre utvalg av løsninger
               </Heading>
               <ul>
-                {drop(utval, 6).map((u) => (
+                {drop(utvalSortedByOppretta, 6).map((u) => (
                   <li key={u.id}>{u.namn}</li>
                 ))}
               </ul>

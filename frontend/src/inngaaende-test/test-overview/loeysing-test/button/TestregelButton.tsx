@@ -1,7 +1,7 @@
 import './testregel-button.scss';
 
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Paragraph } from '@digdir/design-system-react';
+import { Paragraph } from '@digdir/designsystemet-react';
 import TestregelStatusDropdown from '@test/test-overview/loeysing-test/button/TestregelStatusDropdown';
 import {
   ButtonStatus,

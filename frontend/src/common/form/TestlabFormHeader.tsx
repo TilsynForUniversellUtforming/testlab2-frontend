@@ -1,4 +1,4 @@
-import { Heading, Ingress } from '@digdir/design-system-react';
+import { Heading, Ingress } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 
 /**

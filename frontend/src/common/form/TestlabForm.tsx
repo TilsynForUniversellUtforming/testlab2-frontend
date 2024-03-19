@@ -1,6 +1,6 @@
 import './TestlabForm.scss';
 
-import { Paragraph } from '@digdir/design-system-react';
+import { Paragraph } from '@digdir/designsystemet-react';
 import React, { ReactElement, ReactNode } from 'react';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 

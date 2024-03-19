@@ -2,7 +2,7 @@ import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import TestlabTable from '@common/table/TestlabTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { formatDateString } from '@common/util/stringutils';
-import { Heading } from '@digdir/design-system-react';
+import { Heading } from '@digdir/designsystemet-react';
 import { SakListeElement } from '@sak/api/types';
 import { SAK_CREATE } from '@sak/SakRoutes';
 import { ColumnDef } from '@tanstack/react-table';

@@ -1,4 +1,4 @@
-import { Table } from '@digdir/design-system-react';
+import { Table } from '@digdir/designsystemet-react';
 import { flexRender, Row } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React from 'react';
