@@ -66,7 +66,9 @@ export function findElementOmtale(
   }
 }
 
-export type ImageUris = {
-  imageURI: string;
+export type Bilde = {
+  id: number;
+  bildeURI: string;
   thumbnailURI: string;
+  opprettet: Date;
 };

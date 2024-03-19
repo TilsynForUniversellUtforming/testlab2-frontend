@@ -8,8 +8,8 @@ import useCanvasDrawing from '@common/image-edit/hooks/useCanvasDrawing';
 import useFileUpload from '@common/image-edit/hooks/useFileUpload';
 import { Paragraph } from '@digdir/design-system-react';
 import { UploadIcon } from '@navikt/aksel-icons';
-import { getImageUris, uploadBilde } from '@test/api/testing-api';
-import { ImageUris } from '@test/api/types';
+import { deleteBilde, getBilder, uploadBilde } from '@test/api/testing-api';
+import { Bilde } from '@test/api/types';
 import classnames from 'classnames';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -17,7 +17,6 @@ import ImageGallery from './ImageGallery';
 import { Point } from './types';
 
 const ImageUpload = ({ resultatId }: { resultatId: number }) => {
-  const [isEditMode, setIsEditMode] = useState(true);
   const [alert, setAlert] = useAlert();
   const [contextMenuPosition, setContextMenuPosition] = useState<Point>({
     x: 0,
@@ -26,7 +25,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   const [showContextMenu, setShowContextMenu] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
-  const [imageUris, setImageUris] = useState<ImageUris[]>([]);
+  const [imageUris, setImageUris] = useState<Bilde[]>([]);
 
   const {
     selectedFile,
@@ -53,15 +52,21 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
     clearStrokes,
     undo,
     emptyStrokes,
-  } = useCanvasDrawing(canvasRef, isEditMode, selectedFile, showContextMenu);
+  } = useCanvasDrawing(canvasRef, selectedFile, showContextMenu, () =>
+    setShowContextMenu(false)
+  );
 
   const fetchImageUris = useCallback(async () => {
     try {
-      const imageUris = await getImageUris(resultatId);
+      const imageUris = await getBilder(resultatId);
       setImageUris(imageUris);
     } catch (e) {
-      console.error('Kunne ikkje hente bilder');
+      setAlert('danger', 'Noko gjekk gale med henting av bilder');
     }
+  }, [resultatId]);
+
+  useEffect(() => {
+    fetchImageUris();
   }, [resultatId]);
 
   const onClickSave = useCallback(async () => {
@@ -74,52 +79,39 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
       const blob = await response.blob();
       const file = new File([blob], 'bilde.png', { type: 'image/png' });
 
-      await uploadBilde(file, resultatId);
+      const imageUris = await uploadBilde(file, resultatId);
+      handleClearFile();
+      setImageUris(imageUris);
     } catch (error) {
       setAlert('danger', 'Noko gjekk gale med opplasting av biletet');
     }
   }, [selectedFile, canvasRef]);
 
-  const toggleEditMode = () => {
-    setIsEditMode((prev) => !prev);
-  };
-
   const handleContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (isEditMode) {
-      event.preventDefault();
+    event.preventDefault();
 
-      const canvas = divRef.current;
-      if (canvas) {
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+    const canvas = divRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-        setContextMenuPosition({ x, y });
-        setShowContextMenu(true);
-      }
+      setContextMenuPosition({ x, y });
+      setShowContextMenu(true);
     }
   };
 
-  const drawButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (
-        !(
-          drawButtonRef.current &&
-          e.target instanceof Node &&
-          drawButtonRef.current.contains(e.target)
-        )
-      ) {
-        setShowContextMenu(false);
+  const onDeleteBilde = useCallback(
+    async (bildeId: number) => {
+      try {
+        const imageUris = await deleteBilde(resultatId, bildeId);
+        setImageUris(imageUris);
+      } catch (e) {
+        setAlert('danger', 'Noko gjekk gale med henting av bilder');
       }
-    };
-
-    window.addEventListener('click', (e) => handleClick(e));
-    return () => {
-      window.removeEventListener('click', (e) => handleClick(e));
-    };
-  }, [drawButtonRef]);
+    },
+    [resultatId]
+  );
 
   return (
     <div className="image-upload-container" ref={divRef}>
@@ -132,14 +124,13 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
           }}
         >
           <CanvasDrawingControls
-            show={isEditMode}
             setLineType={setLineType}
             lineType={lineType}
             setDrawMode={setDrawMode}
             drawMode={drawMode}
             setTextStyle={setTextStyle}
             textStyle={textStyle}
-            ref={drawButtonRef}
+            hideContextMenu={() => setShowContextMenu(false)}
           />
         </div>
       )}
@@ -157,9 +148,8 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
         >
           <canvas
             ref={canvasRef}
-            className={classnames('image-upload-canvas', {
+            className={classnames('image-upload-canvas full-size', {
               hidden: !selectedFile,
-              'full-size': isEditMode,
               [drawMode]: drawMode,
             })}
             onMouseDown={onMouseDown}
@@ -195,12 +185,10 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
         </Paragraph>
         <ImageControl
           show={!!selectedFile}
-          isEditMode={isEditMode}
           emptyStrokes={emptyStrokes}
           handleClearCanvas={handleClearFile}
           handleClearStrokes={clearStrokes}
           onClickSave={onClickSave}
-          toggleEditMode={toggleEditMode}
           handleUndo={undo}
           setColor={setColor}
           setLineType={setLineType}
@@ -212,7 +200,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
           color={color}
         />
       </div>
-      <ImageGallery imageUris={imageUris} fetchImages={fetchImageUris} />
+      <ImageGallery bilder={imageUris} onDeleteBilde={onDeleteBilde} />
       {alert && (
         <AlertTimed
           severity={alert.severity}

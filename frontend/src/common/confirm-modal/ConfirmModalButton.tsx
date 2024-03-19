@@ -1,26 +1,21 @@
+import { ButtonColor, ButtonSize, ButtonVariant } from '@common/types';
 import {
-  ButtonColor,
-  ButtonColorType,
-  ButtonSize,
-  ButtonSizeType,
-  ButtonVariant,
-  ButtonVariantType,
-} from '@common/types';
-import { Button, Divider, Modal, Paragraph } from '@digdir/design-system-react';
+  Button,
+  ButtonProps,
+  Divider,
+  Modal,
+  Paragraph,
+} from '@digdir/design-system-react';
 import React, { useCallback, useRef } from 'react';
 
-export interface ConfirmModalProps {
+export type ConfirmModalProps = {
   className?: string;
   title: string;
   message: string;
   onConfirm: () => void;
   disabled?: boolean;
-  icon?: JSX.Element;
-  color?: ButtonColorType;
-  size?: ButtonSizeType;
-  variant?: ButtonVariantType;
-  iconOnly?: boolean;
-}
+  buttonIcon?: JSX.Element;
+};
 
 const ConfirmModalButton = ({
   className,
@@ -29,11 +24,11 @@ const ConfirmModalButton = ({
   onConfirm,
   disabled = false,
   color = ButtonColor.Primary,
-  icon,
+  buttonIcon,
   variant,
   size,
-  iconOnly,
-}: ConfirmModalProps) => {
+  icon,
+}: ConfirmModalProps & ButtonProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const onConfirmModal = useCallback(() => {
     onConfirm();
@@ -47,13 +42,13 @@ const ConfirmModalButton = ({
         disabled={disabled}
         className={className}
         color={color}
-        icon={iconOnly}
+        icon={icon}
         size={size}
         variant={variant}
-        title={iconOnly ? title : undefined}
+        title={icon ? title : undefined}
       >
-        {icon}
-        {iconOnly ? null : title}
+        {buttonIcon}
+        {icon ? null : title}
       </Button>
       <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
         <Modal.Header>{title}</Modal.Header>

@@ -1,11 +1,7 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
-import {
-  CreateTestResultat,
-  ImageUris,
-  ResultatManuellKontroll,
-} from './types';
+import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
@@ -78,18 +74,26 @@ export const deleteTestResultat = async (
 export const uploadBilde = async (
   bilde: File,
   resultatId: number
-): Promise<void> => {
+): Promise<Bilde[]> => {
   const formData = new FormData();
   formData.append('bilde', bilde);
   formData.append('resultatId', String(resultatId));
 
-  await fetch(`${testingApiBaseUrl}/bilder`, {
+  return await fetch(`${testingApiBaseUrl}/bilder?includeBilder=true`, {
     method: 'POST',
     body: formData,
-  });
+  }).then((response) => responseToJson(response, 'Kunne ikkje hente bilder'));
 };
 
-export const getImageUris = async (resultatId: number): Promise<ImageUris[]> =>
+export const getBilder = async (resultatId: number): Promise<Bilde[]> =>
   await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
     (response) => responseToJson(response, 'Kunne ikkje hente bilder')
   );
+
+export const deleteBilde = async (
+  resultatId: number,
+  bildeId: number
+): Promise<Bilde[]> =>
+  await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
+    method: 'DELETE',
+  }).then((response) => responseToJson(response, 'Kunne ikkje slette bilde'));

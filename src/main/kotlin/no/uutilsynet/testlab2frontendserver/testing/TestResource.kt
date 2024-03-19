@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
@@ -31,6 +30,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   val logger: Logger = LoggerFactory.getLogger(TestResource::class.java)
 
   val testresultUrl = "${testingApiProperties.url}/testresultat"
+  val bildeUrl = "${testingApiProperties.url}/bilder"
 
   @GetMapping("{sakId}")
   fun getResultatManuellKontroll(
@@ -101,25 +101,25 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   @PostMapping("/bilder", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
   fun createBilder(
       @RequestParam("bilde") bilde: MultipartFile,
-      @RequestParam("resultatId") resultatId: String,
-  ): ResponseEntity<Any> {
+      @RequestParam("resultatId") resultatId: Int,
+      @RequestParam("includeBilder", required = false) includeBilder: Boolean = false,
+  ): ResponseEntity<List<Bilde>> {
 
     val fileExtension = bilde.originalFilename?.substringAfterLast('.', "") ?: ""
 
-    if (!allowedMIMETypes.contains(fileExtension)) {
-      return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-          .body("Kun ${allowedMIMETypes.joinToString(",")} er lovelge typar")
+    if (bilde.originalFilename == null || !allowedMIMETypes.contains(fileExtension)) {
+      return ResponseEntity.badRequest().build()
     }
 
     val bilder = listOf(bilde)
 
     val body: MultiValueMap<String, Any> =
         LinkedMultiValueMap<String, Any>().apply {
-          bilder.forEachIndexed { index, image ->
+          bilder.forEach { bilde ->
             add(
                 "bilder",
-                object : ByteArrayResource(image.bytes) {
-                  override fun getFilename(): String = "${resultatId}_${index}.$fileExtension"
+                object : ByteArrayResource(bilde.bytes) {
+                  override fun getFilename(): String = bilde.originalFilename!!
                 })
           }
         }
@@ -127,17 +127,33 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
     val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
     val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
 
-    restTemplate.postForEntity(
-        "$testresultUrl/bilder/${resultatId}", requestEntity, String::class.java)
+    restTemplate.postForEntity("$bildeUrl/${resultatId}", requestEntity, String::class.java)
 
+    if (includeBilder) {
+      return getBilder(resultatId)
+    }
     return ResponseEntity.noContent().build()
   }
 
   @GetMapping("/bilder/{resultatId}")
   fun getBilder(
       @PathVariable("resultatId") resultatId: Int,
-  ): ResponseEntity<List<CloudImageUris>> =
-      ResponseEntity.ok(restTemplate.getList<CloudImageUris>("$testresultUrl/bilder/$resultatId"))
+  ): ResponseEntity<List<Bilde>> =
+      ResponseEntity.ok(restTemplate.getList<Bilde>("$bildeUrl/$resultatId"))
+
+  @DeleteMapping("/bilder/{testresultatId}/{bildeId}")
+  fun deleteBilde(
+      @PathVariable testresultatId: Int,
+      @PathVariable bildeId: Int
+  ): ResponseEntity<List<Bilde>> =
+      runCatching {
+            restTemplate.delete("$bildeUrl/$testresultatId/$bildeId")
+            return getBilder(testresultatId)
+          }
+          .getOrElse {
+            logger.error("Kunne ikkje slette bilde", it)
+            return ResponseEntity.internalServerError().build()
+          }
 
   data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
 
