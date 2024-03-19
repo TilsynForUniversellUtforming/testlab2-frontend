@@ -437,7 +437,14 @@ const TestOverviewLoeysing = () => {
 
         try {
           const updatedTestResults = await updateTestResultat(testResult);
-          await createTestresultatAggregert(contextSak.id);
+          console.log('Oppdater svar');
+          await createTestresultatAggregert(contextSak.id).catch((e) => {
+            setAlert(
+              'danger',
+              'Kunne ikkje oppdatere aggregert resultat',
+              `Oppdatering av aggregert resultat feila ${e}`
+            );
+          });
           contextSetTestResults(updatedTestResults);
           processData(
             contextSak,
