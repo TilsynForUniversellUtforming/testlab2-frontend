@@ -50,8 +50,9 @@
       }
 
       &__input-select {
-        max-width: 20rem;
-        flex: 1;
+        select {
+          width: 100%;
+        }
       }
 
       &__utval {
@@ -119,8 +120,9 @@
       }
 
       &__input-select {
-        max-width: 20rem;
-        flex: 1;
+        select {
+          width: 100%;
+        }
       }
     }
 
