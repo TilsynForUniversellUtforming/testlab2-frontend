@@ -20,7 +20,7 @@ const PaginationContainer = <T extends object>({
   return (
     <Table.Cell
       colSpan={table.getHeaderGroups()[0].headers.length}
-      className="table-footer"
+      className="footer-wrapper"
     >
       <HideWhenLoading loading={loading}>
         <div className="pagination-container">
