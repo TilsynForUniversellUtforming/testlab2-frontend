@@ -36,25 +36,25 @@ const CanvasDrawingControls = ({
   <div className="image-upload-user-actions canvas">
     <ToggleGroup defaultValue={drawMode} onChange={setDrawMode}>
       <ToggleGroup.Item value="draw" icon={true} title="Tekn">
-        <PencilIcon />
+        <PencilIcon fontSize="1.5rem" />
       </ToggleGroup.Item>
       <ToggleGroup.Item value="text" title="Tekstmodus">
-        Aa
+        <TextStyleIcon selected={drawMode === 'text'} text={'Aa'} onlyText />
       </ToggleGroup.Item>
       <ToggleGroup.Item value="move" icon={true} title="Flytt">
-        <FingerButtonIcon />
+        <FingerButtonIcon fontSize="1.5rem" />
       </ToggleGroup.Item>
       <ToggleGroup.Item value="copy" icon={true} title="Kopier">
-        <TabsIcon />
+        <TabsIcon fontSize="1.5rem" />
       </ToggleGroup.Item>
       <ToggleGroup.Item value="erase" icon={true} title="Visk ut">
-        <EraserIcon />
+        <EraserIcon fontSize="1.5rem" />
       </ToggleGroup.Item>
     </ToggleGroup>
     {drawMode === 'draw' && (
       <ToggleGroup defaultValue={lineType} onChange={setLineType}>
         <ToggleGroup.Item value="line" icon={true} title="Linje">
-          <MinusIcon />
+          <MinusIcon fontSize="1.5rem" />
         </ToggleGroup.Item>
         <ToggleGroup.Item value="arrow" icon={true} title="Pil">
           <ArrowIcon selected={lineType === 'arrow'} />
@@ -87,7 +87,7 @@ const CanvasDrawingControls = ({
       icon
       variant={ButtonVariant.Quiet}
     >
-      <XMarkIcon />
+      <XMarkIcon fontSize="1.5rem" />
     </Button>
   </div>
 );

@@ -61,7 +61,7 @@ const ImageControl = ({
         <ConfirmModalButton
           title="Slett utkast"
           message="Vil du ta sletta utkastet? Dette kan ikkje angrast"
-          buttonIcon={<TrashIcon />}
+          buttonIcon={<TrashIcon fontSize="1.5rem" />}
           onConfirm={handleClearCanvas}
           icon
           variant={ButtonVariant.Quiet}
@@ -69,7 +69,7 @@ const ImageControl = ({
         <ConfirmModalButton
           title="Lagre"
           message="Vil du lagre bildet?"
-          buttonIcon={<FloppydiskIcon />}
+          buttonIcon={<FloppydiskIcon fontSize="1.5rem" />}
           onConfirm={onClickSave}
           icon
           variant={ButtonVariant.Quiet}
@@ -77,7 +77,7 @@ const ImageControl = ({
         <ConfirmModalButton
           title="Nullstill markeringar"
           message="Vil du nullstille markeringar? Dette kan ikkje angrast"
-          buttonIcon={<XMarkIcon />}
+          buttonIcon={<XMarkIcon fontSize="1.5rem" />}
           onConfirm={handleClearStrokes}
           disabled={emptyStrokes}
           icon
@@ -90,7 +90,7 @@ const ImageControl = ({
           variant={ButtonVariant.Quiet}
           disabled={emptyStrokes}
         >
-          <ArrowUndoIcon />
+          <ArrowUndoIcon fontSize="1.5rem" />
         </Button>
         <input
           type="color"
@@ -101,52 +101,64 @@ const ImageControl = ({
           title="Farge"
         />
       </div>
-      <ToggleGroup value={drawMode} onChange={setDrawMode} size="small">
-        <ToggleGroup.Item value="draw" icon title="Tekn">
-          <PencilIcon />
-        </ToggleGroup.Item>
-        <ToggleGroup.Item value="text" title="Tekstmodus">
-          Aa
-        </ToggleGroup.Item>
-        <ToggleGroup.Item value="move" icon title="Flytt">
-          <FingerButtonIcon />
-        </ToggleGroup.Item>
-        <ToggleGroup.Item value="copy" icon title="Kopier">
-          <TabsIcon />
-        </ToggleGroup.Item>
-        <ToggleGroup.Item value="erase" icon title="Visk ut">
-          <EraserIcon />
-        </ToggleGroup.Item>
-      </ToggleGroup>
-      {drawMode === 'draw' && (
-        <ToggleGroup value={lineType} onChange={setLineType} size="small">
-          <ToggleGroup.Item value="line" icon title="Linje">
-            <MinusIcon />
+      <div className="draw-actions">
+        <ToggleGroup value={drawMode} onChange={setDrawMode} size="small">
+          <ToggleGroup.Item value="draw" icon title="Tekn">
+            <PencilIcon fontSize="1.5rem" />
           </ToggleGroup.Item>
-          <ToggleGroup.Item value="arrow" icon title="Pil">
-            <ArrowIcon selected={lineType === 'arrow'} />
+          <ToggleGroup.Item
+            value="text"
+            title="Tekstmodus"
+            style={{ padding: 0 }}
+          >
+            <TextStyleIcon
+              selected={drawMode === 'text'}
+              text={'Aa'}
+              onlyText
+            />
           </ToggleGroup.Item>
-          <ToggleGroup.Item value="rectangle" icon title="Rektangel">
-            <SquareIcon selected={lineType === 'rectangle'} />
+          <ToggleGroup.Item value="move" icon={true} title="Flytt">
+            <FingerButtonIcon fontSize="1.5rem" />
           </ToggleGroup.Item>
-          <ToggleGroup.Item value="circle" icon title="Ellipse">
-            <CircleIcon selected={lineType === 'circle'} />
+          <ToggleGroup.Item value="copy" icon={true} title="Kopier">
+            <TabsIcon fontSize="1.5rem" />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item value="erase" icon={true} title="Visk ut">
+            <EraserIcon fontSize="1.5rem" />
           </ToggleGroup.Item>
         </ToggleGroup>
-      )}
-      {drawMode === 'text' && (
-        <ToggleGroup value={textStyle} onChange={setTextStyle} size="small">
-          <ToggleGroup.Item value="filled" icon title="Fylt">
-            <TextStyleIcon selected={textStyle === 'filled'} filled />
-          </ToggleGroup.Item>
-          <ToggleGroup.Item value="outline" icon title="Omriss">
-            <TextStyleIcon selected={textStyle === 'outline'} />
-          </ToggleGroup.Item>
-          <ToggleGroup.Item value="none" icon title="Ingen">
-            <TextStyleIcon selected={textStyle === 'none'} onlyText />
-          </ToggleGroup.Item>
-        </ToggleGroup>
-      )}
+        <div className="draw-actions-options">
+          {drawMode === 'draw' && (
+            <ToggleGroup value={lineType} onChange={setLineType} size="small">
+              <ToggleGroup.Item value="line" icon={true} title="Linje">
+                <MinusIcon fontSize="1.5rem" />
+              </ToggleGroup.Item>
+              <ToggleGroup.Item value="arrow" icon={true} title="Pil">
+                <ArrowIcon selected={lineType === 'arrow'} />
+              </ToggleGroup.Item>
+              <ToggleGroup.Item value="rectangle" icon={true} title="Rektangel">
+                <SquareIcon selected={lineType === 'rectangle'} />
+              </ToggleGroup.Item>
+              <ToggleGroup.Item value="circle" icon={true} title="Ellipse">
+                <CircleIcon selected={lineType === 'circle'} />
+              </ToggleGroup.Item>
+            </ToggleGroup>
+          )}
+          {drawMode === 'text' && (
+            <ToggleGroup value={textStyle} onChange={setTextStyle} size="small">
+              <ToggleGroup.Item value="filled" icon={true} title="Fylt">
+                <TextStyleIcon selected={textStyle === 'filled'} filled />
+              </ToggleGroup.Item>
+              <ToggleGroup.Item value="outline" icon={true} title="Omriss">
+                <TextStyleIcon selected={textStyle === 'outline'} />
+              </ToggleGroup.Item>
+              <ToggleGroup.Item value="none" icon={true} title="Ingen">
+                <TextStyleIcon selected={textStyle === 'none'} onlyText />
+              </ToggleGroup.Item>
+            </ToggleGroup>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

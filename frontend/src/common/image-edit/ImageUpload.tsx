@@ -74,10 +74,11 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
 
     try {
       const canvas = canvasRef.current;
-      const dataUrl = canvas.toDataURL('image/png');
+      const filetype = selectedFile.type;
+      const dataUrl = canvas.toDataURL(filetype);
       const response = await fetch(dataUrl);
       const blob = await response.blob();
-      const file = new File([blob], 'bilde.png', { type: 'image/png' });
+      const file = new File([blob], selectedFile.name, { type: filetype });
 
       const imageUris = await uploadBilde(file, resultatId);
       handleClearFile();
@@ -172,7 +173,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
                   id="file-upload"
                   type="file"
                   onChange={handleFileChange}
-                  accept=".jpg, .jpeg, .png,.bmp"
+                  accept=".jpg,.jpeg,.png,.bmp"
                   className="image-upload-manual-input"
                 />
               </div>
