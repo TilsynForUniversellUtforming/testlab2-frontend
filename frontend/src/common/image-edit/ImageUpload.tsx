@@ -8,13 +8,15 @@ import useCanvasDrawing from '@common/image-edit/hooks/useCanvasDrawing';
 import useFileUpload from '@common/image-edit/hooks/useFileUpload';
 import { Paragraph } from '@digdir/designsystemet-react';
 import { UploadIcon } from '@navikt/aksel-icons';
+import { deleteBilde, getBilder, uploadBilde } from '@test/api/testing-api';
+import { Bilde } from '@test/api/types';
 import classnames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import ImageGallery from './ImageGallery';
 import { Point } from './types';
 
-const ImageUpload = () => {
-  const [isEditMode, setIsEditMode] = useState(true);
+const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   const [alert, setAlert] = useAlert();
   const [contextMenuPosition, setContextMenuPosition] = useState<Point>({
     x: 0,
@@ -23,13 +25,14 @@ const ImageUpload = () => {
   const [showContextMenu, setShowContextMenu] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
+  const [imageUris, setImageUris] = useState<Bilde[]>([]);
 
   const {
+    selectedFile,
     handleFileChange,
     handleDrop,
     handleDragOver,
     handleDragLeave,
-    selectedFile,
     isDragOver,
     handleClearFile,
   } = useFileUpload({ canvasRef, setAlert });
@@ -49,48 +52,67 @@ const ImageUpload = () => {
     clearStrokes,
     undo,
     emptyStrokes,
-  } = useCanvasDrawing(canvasRef, isEditMode, selectedFile, showContextMenu);
+  } = useCanvasDrawing(canvasRef, selectedFile, showContextMenu, () =>
+    setShowContextMenu(false)
+  );
 
-  const toggleEditMode = () => {
-    setIsEditMode((prev) => !prev);
-  };
+  const fetchImageUris = useCallback(async () => {
+    try {
+      const imageUris = await getBilder(resultatId);
+      setImageUris(imageUris);
+    } catch (e) {
+      setAlert('danger', 'Noko gjekk gale med henting av bilder');
+    }
+  }, [resultatId]);
+
+  useEffect(() => {
+    fetchImageUris();
+  }, [resultatId]);
+
+  const onClickSave = useCallback(async () => {
+    if (!selectedFile || !canvasRef.current) return;
+
+    try {
+      const canvas = canvasRef.current;
+      const filetype = selectedFile.type;
+      const dataUrl = canvas.toDataURL(filetype);
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+      const file = new File([blob], selectedFile.name, { type: filetype });
+
+      const imageUris = await uploadBilde(file, resultatId);
+      handleClearFile();
+      setImageUris(imageUris);
+    } catch (error) {
+      setAlert('danger', 'Noko gjekk gale med opplasting av biletet');
+    }
+  }, [selectedFile, canvasRef]);
 
   const handleContextMenu = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (isEditMode) {
-      event.preventDefault();
+    event.preventDefault();
 
-      const canvas = divRef.current;
-      if (canvas) {
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+    const canvas = divRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-        setContextMenuPosition({ x, y });
-        setShowContextMenu(true);
-      }
+      setContextMenuPosition({ x, y });
+      setShowContextMenu(true);
     }
   };
 
-  const drawButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (
-        !(
-          drawButtonRef.current &&
-          e.target instanceof Node &&
-          drawButtonRef.current.contains(e.target)
-        )
-      ) {
-        setShowContextMenu(false);
+  const onDeleteBilde = useCallback(
+    async (bildeId: number) => {
+      try {
+        const imageUris = await deleteBilde(resultatId, bildeId);
+        setImageUris(imageUris);
+      } catch (e) {
+        setAlert('danger', 'Noko gjekk gale med henting av bilder');
       }
-    };
-
-    window.addEventListener('click', (e) => handleClick(e));
-    return () => {
-      window.removeEventListener('click', (e) => handleClick(e));
-    };
-  }, [drawButtonRef]);
+    },
+    [resultatId]
+  );
 
   return (
     <div className="image-upload-container" ref={divRef}>
@@ -103,14 +125,13 @@ const ImageUpload = () => {
           }}
         >
           <CanvasDrawingControls
-            show={isEditMode}
             setLineType={setLineType}
             lineType={lineType}
             setDrawMode={setDrawMode}
             drawMode={drawMode}
             setTextStyle={setTextStyle}
             textStyle={textStyle}
-            ref={drawButtonRef}
+            hideContextMenu={() => setShowContextMenu(false)}
           />
         </div>
       )}
@@ -128,9 +149,8 @@ const ImageUpload = () => {
         >
           <canvas
             ref={canvasRef}
-            className={classnames('image-upload-canvas', {
+            className={classnames('image-upload-canvas full-size', {
               hidden: !selectedFile,
-              'full-size': isEditMode,
               [drawMode]: drawMode,
             })}
             onMouseDown={onMouseDown}
@@ -141,7 +161,7 @@ const ImageUpload = () => {
           {!selectedFile && (
             <>
               <UploadIcon title="Last opp" fontSize={42} />
-              <Paragraph>
+              <div>
                 Dra og slepp eller&nbsp;
                 <label
                   htmlFor="file-upload"
@@ -153,11 +173,13 @@ const ImageUpload = () => {
                   id="file-upload"
                   type="file"
                   onChange={handleFileChange}
-                  accept=".jpg,.png,.bmp"
+                  accept=".jpg,.jpeg,.png,.bmp"
                   className="image-upload-manual-input"
                 />
-              </Paragraph>
-              <Paragraph>Filformater: .jpg og .png, og .bmp</Paragraph>
+              </div>
+              <div>
+                Filformater: .jpg, .jpeg, .png, og .bmp. Maks storleik er 2MB
+              </div>
             </>
           )}
         </div>
@@ -166,11 +188,10 @@ const ImageUpload = () => {
         </Paragraph>
         <ImageControl
           show={!!selectedFile}
-          isEditMode={isEditMode}
           emptyStrokes={emptyStrokes}
           handleClearCanvas={handleClearFile}
           handleClearStrokes={clearStrokes}
-          toggleImageSize={toggleEditMode}
+          onClickSave={onClickSave}
           handleUndo={undo}
           setColor={setColor}
           setLineType={setLineType}
@@ -182,6 +203,7 @@ const ImageUpload = () => {
           color={color}
         />
       </div>
+      <ImageGallery bilder={imageUris} onDeleteBilde={onDeleteBilde} />
       {alert && (
         <AlertTimed
           severity={alert.severity}

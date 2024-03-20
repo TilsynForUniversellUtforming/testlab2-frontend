@@ -65,3 +65,10 @@ export function findElementOmtale(
     return finnSvar(element, svar);
   }
 }
+
+export type Bilde = {
+  id: number;
+  bildeURI: string;
+  thumbnailURI: string;
+  opprettet: Date;
+};

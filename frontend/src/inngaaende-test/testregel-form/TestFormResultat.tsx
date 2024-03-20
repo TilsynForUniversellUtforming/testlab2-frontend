@@ -8,13 +8,13 @@ import DOMPurify from 'dompurify';
 import { useCallback } from 'react';
 
 interface Props {
+  resultatId: number;
   resultat: TestregelResultat;
   onChangeKommentar: (
     resultatId: number,
     kommentar: string | undefined
   ) => void;
   kommentar: string;
-  resultatId: number;
 }
 
 const TestFormResultat = ({
@@ -84,7 +84,7 @@ const TestFormResultat = ({
         onChange={onChange}
         textArea
       />
-      <ImageUpload />
+      <ImageUpload resultatId={resultatId} />
     </div>
   );
 };

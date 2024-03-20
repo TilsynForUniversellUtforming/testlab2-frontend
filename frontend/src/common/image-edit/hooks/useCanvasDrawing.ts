@@ -47,9 +47,9 @@ const defaultStartPoint: Point = { x: 0, y: 0 };
 
 const useCanvasDrawing = (
   canvasRef: React.RefObject<HTMLCanvasElement>,
-  isEditMode: boolean,
   selectedFile: File | null,
-  contextMenuOpen: boolean
+  contextMenuOpen: boolean,
+  hideContextMenu: () => void
 ): UseCanvasDrawingReturnType => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -72,7 +72,7 @@ const useCanvasDrawing = (
     setDrawMode,
     textStyle,
     setTextStyle,
-  } = useImageControl();
+  } = useImageControl(hideContextMenu);
 
   const getCanvasContext = () => {
     const canvas = canvasRef.current;
@@ -169,7 +169,7 @@ const useCanvasDrawing = (
 
   const onStart = useCallback(
     (event: React.MouseEvent) => {
-      if (!isEditMode || event.button !== 0 || contextMenuOpen) return;
+      if (event.button !== 0 || contextMenuOpen) return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -233,7 +233,6 @@ const useCanvasDrawing = (
     },
     [
       canvasRef,
-      isEditMode,
       lineType,
       color,
       drawMode,
@@ -245,8 +244,6 @@ const useCanvasDrawing = (
 
   const onMove = useCallback(
     (event: React.MouseEvent) => {
-      if (!isEditMode) return;
-
       const { canvas, ctx } = getCanvasContext();
       if (canvas && ctx) {
         const rect = canvas.getBoundingClientRect();
@@ -288,7 +285,6 @@ const useCanvasDrawing = (
       }
     },
     [
-      isEditMode,
       isDrawing,
       isErasing,
       shapeStart,

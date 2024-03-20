@@ -1,12 +1,14 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
-import { CreateTestResultat, ResultatManuellKontroll } from './types';
+import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
+
+const testingApiBaseUrl = '/api/v1/testing';
 
 export const getTestResults = async (
   sakId: number
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`/api/v1/testing/${sakId}`, {
+  return await fetch(`${testingApiBaseUrl}/${sakId}`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke hente testresultat')
@@ -16,7 +18,7 @@ export const getTestResults = async (
 export const createTestResultat = async (
   testResultat: CreateTestResultat
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(`/api/v1/testing`, {
+  return await fetchWrapper(testingApiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ export const createTestResultat = async (
 export const updateTestResultat = async (
   testResultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(`/api/v1/testing`, {
+  return await fetchWrapper(testingApiBaseUrl, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -44,7 +46,7 @@ export const updateTestResultat = async (
 export const updateTestResultatMany = async (
   testResultatList: ResultatManuellKontroll[]
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(`/api/v1/testing`, {
+  return await fetchWrapper(testingApiBaseUrl, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ export const updateTestResultatMany = async (
 export const deleteTestResultat = async (
   resultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(`/api/v1/testing`, {
+  return await fetchWrapper(testingApiBaseUrl, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -68,3 +70,30 @@ export const deleteTestResultat = async (
     responseToJson(response, 'Kunne ikkje slette testresultat')
   );
 };
+
+export const uploadBilde = async (
+  bilde: File,
+  resultatId: number
+): Promise<Bilde[]> => {
+  const formData = new FormData();
+  formData.append('bilde', bilde);
+  formData.append('resultatId', String(resultatId));
+
+  return await fetch(`${testingApiBaseUrl}/bilder?includeBilder=true`, {
+    method: 'POST',
+    body: formData,
+  }).then((response) => responseToJson(response, 'Kunne ikkje hente bilder'));
+};
+
+export const getBilder = async (resultatId: number): Promise<Bilde[]> =>
+  await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
+    (response) => responseToJson(response, 'Kunne ikkje hente bilder')
+  );
+
+export const deleteBilde = async (
+  resultatId: number,
+  bildeId: number
+): Promise<Bilde[]> =>
+  await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
+    method: 'DELETE',
+  }).then((response) => responseToJson(response, 'Kunne ikkje slette bilde'));
