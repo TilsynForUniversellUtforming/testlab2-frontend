@@ -8,7 +8,6 @@ import { ButtonVariant } from '@common/types';
 import { Button, ToggleGroup } from '@digdir/designsystemet-react';
 import {
   ArrowUndoIcon,
-  DocPencilIcon,
   EraserIcon,
   FingerButtonIcon,
   FloppydiskIcon,
@@ -21,11 +20,10 @@ import {
 
 interface Props {
   show: boolean;
-  isEditMode: boolean;
   emptyStrokes: boolean;
   handleClearCanvas: () => void;
   handleClearStrokes: () => void;
-  toggleImageSize: () => void;
+  onClickSave: () => void;
   handleUndo: () => void;
   setColor: (event: React.ChangeEvent<HTMLInputElement>) => void;
   color: string;
@@ -39,11 +37,10 @@ interface Props {
 
 const ImageControl = ({
   show,
-  isEditMode,
   emptyStrokes,
   handleClearCanvas,
   handleClearStrokes,
-  toggleImageSize,
+  onClickSave,
   handleUndo,
   setColor,
   color,
@@ -62,75 +59,79 @@ const ImageControl = ({
     <div className="image-upload-user-actions image-control">
       <div className="image-actions">
         <ConfirmModalButton
-          title="Slett"
-          message="Vil du ta slette biletet? Dette kan ikkje angrast"
-          icon={<TrashIcon />}
+          title="Slett utkast"
+          message="Vil du ta sletta utkastet? Dette kan ikkje angrast"
+          buttonIcon={<TrashIcon fontSize="1.5rem" />}
           onConfirm={handleClearCanvas}
-          iconOnly={true}
+          icon
+          variant={ButtonVariant.Quiet}
+        />
+        <ConfirmModalButton
+          title="Lagre"
+          message="Vil du lagre bildet?"
+          buttonIcon={<FloppydiskIcon fontSize="1.5rem" />}
+          onConfirm={onClickSave}
+          icon
+          variant={ButtonVariant.Quiet}
+        />
+        <ConfirmModalButton
+          title="Nullstill markeringar"
+          message="Vil du nullstille markeringar? Dette kan ikkje angrast"
+          buttonIcon={<XMarkIcon fontSize="1.5rem" />}
+          onConfirm={handleClearStrokes}
+          disabled={emptyStrokes}
+          icon
           variant={ButtonVariant.Quiet}
         />
         <Button
-          onClick={toggleImageSize}
-          title={isEditMode ? 'Lagre' : 'Rediger'}
+          onClick={handleUndo}
+          title="Angre hending"
+          icon
           variant={ButtonVariant.Quiet}
+          disabled={emptyStrokes}
         >
-          {isEditMode ? <FloppydiskIcon /> : <DocPencilIcon />}
+          <ArrowUndoIcon fontSize="1.5rem" />
         </Button>
-        {isEditMode && (
-          <>
-            <ConfirmModalButton
-              title="Nullstill"
-              message="Vil du nullstille markeringar? Dette kan ikkje angrast"
-              icon={<XMarkIcon />}
-              onConfirm={handleClearStrokes}
-              disabled={emptyStrokes}
-              iconOnly={true}
-              variant={ButtonVariant.Quiet}
-            />
-            <Button
-              onClick={handleUndo}
-              title="Tilbake"
-              icon={true}
-              variant={ButtonVariant.Quiet}
-              disabled={emptyStrokes}
-            >
-              <ArrowUndoIcon />
-            </Button>
-            <input
-              type="color"
-              id="farge"
-              className="farge"
-              value={color}
-              onChange={setColor}
-              title="Farge"
-            />
-          </>
-        )}
+        <input
+          type="color"
+          id="farge"
+          className="farge"
+          value={color}
+          onChange={setColor}
+          title="Farge"
+        />
       </div>
-
-      {isEditMode && (
-        <>
-          <ToggleGroup value={drawMode} onChange={setDrawMode} size="small">
-            <ToggleGroup.Item value="draw" icon={true} title="Tekn">
-              <PencilIcon />
-            </ToggleGroup.Item>
-            <ToggleGroup.Item value="text" title="Tekstmodus">
-              Aa
-            </ToggleGroup.Item>
-            <ToggleGroup.Item value="move" icon={true} title="Flytt">
-              <FingerButtonIcon />
-            </ToggleGroup.Item>
-            <ToggleGroup.Item value="copy" icon={true} title="Kopier">
-              <TabsIcon />
-            </ToggleGroup.Item>
-            <ToggleGroup.Item value="erase" icon={true} title="Visk ut">
-              <EraserIcon />
-            </ToggleGroup.Item>
-          </ToggleGroup>
+      <div className="draw-actions">
+        <ToggleGroup value={drawMode} onChange={setDrawMode} size="small">
+          <ToggleGroup.Item value="draw" icon title="Tekn">
+            <PencilIcon fontSize="1.5rem" />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item
+            value="text"
+            title="Tekstmodus"
+            style={{ padding: 0 }}
+          >
+            <TextStyleIcon
+              selected={drawMode === 'text'}
+              text={'Aa'}
+              onlyText
+            />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item value="move" icon={true} title="Flytt">
+            <FingerButtonIcon fontSize="1.5rem" />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item value="copy" icon={true} title="Kopier">
+            <TabsIcon fontSize="1.5rem" />
+          </ToggleGroup.Item>
+          <ToggleGroup.Item value="erase" icon={true} title="Visk ut">
+            <EraserIcon fontSize="1.5rem" />
+          </ToggleGroup.Item>
+        </ToggleGroup>
+        <div className="draw-actions-options">
           {drawMode === 'draw' && (
             <ToggleGroup value={lineType} onChange={setLineType} size="small">
               <ToggleGroup.Item value="line" icon={true} title="Linje">
-                <MinusIcon />
+                <MinusIcon fontSize="1.5rem" />
               </ToggleGroup.Item>
               <ToggleGroup.Item value="arrow" icon={true} title="Pil">
                 <ArrowIcon selected={lineType === 'arrow'} />
@@ -156,8 +157,8 @@ const ImageControl = ({
               </ToggleGroup.Item>
             </ToggleGroup>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };
