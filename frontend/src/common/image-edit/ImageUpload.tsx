@@ -172,11 +172,13 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
                   id="file-upload"
                   type="file"
                   onChange={handleFileChange}
-                  accept=".jpg,.png,.bmp"
+                  accept=".jpg, .jpeg, .png,.bmp"
                   className="image-upload-manual-input"
                 />
               </div>
-              <div>Filformater: .jpg og .png, og .bmp</div>
+              <div>
+                Filformater: .jpg, .jpeg, .png, og .bmp. Maks storleik er 2MB
+              </div>
             </>
           )}
         </div>
