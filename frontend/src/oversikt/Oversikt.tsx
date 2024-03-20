@@ -31,7 +31,7 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             fullWidth={true}
             disabled={route.disabled}
           >
-            <img src={route.imgSrc} alt={''} />
+            <img src={route.imgSrc} alt={route.navn} width={36} height={36} />
             {route.navn}
           </TestlabLinkButton>
         </div>
@@ -61,6 +61,8 @@ const Oversikt = () => {
               className="lenker__img"
               src={SAK_CREATE.imgSrc}
               alt={SAK_CREATE.navn}
+              width={36}
+              height={36}
             />
             {SAK_CREATE.navn}
           </TestlabLinkButton>
@@ -78,6 +80,8 @@ const Oversikt = () => {
               className="lenker__img"
               src={TEST_ROOT.imgSrc}
               alt={TEST_ROOT.navn}
+              width={36}
+              height={36}
             />
             {TEST_ROOT.navn}
           </TestlabLinkButton>
