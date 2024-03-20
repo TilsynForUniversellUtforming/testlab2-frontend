@@ -40,18 +40,18 @@
   align-items: center;
 
   &-instructions {
-    border: 0.125rem dotted var(--colors-blue-300);
+    border: 0.125rem dotted var(--fds-brand-alt1-300);
     padding: 3rem;
     text-align: center;
     max-width: 80vw;
     max-height: 80vh;
 
     &.drag-over {
-      background: var(--colors-blue-100);
+      background: var(--fds-brand-alt1-100);
     }
 
     &.file {
-      border: 1px solid var(--colors-blue-300);
+      border: 1px solid var(--fds-brand-alt1-300);
       padding: 0;
       overflow: auto;
     }

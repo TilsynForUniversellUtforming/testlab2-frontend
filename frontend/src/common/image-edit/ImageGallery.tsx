@@ -1,7 +1,7 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonColor, ButtonVariant } from '@common/types';
-import { Button, Heading, Modal } from '@digdir/design-system-react';
+import { Button, Heading, Modal } from '@digdir/designsystemet-react';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Bilde } from '@test/api/types';
 import { useRef, useState } from 'react';
