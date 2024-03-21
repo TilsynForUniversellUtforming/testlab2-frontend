@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MimeTypeUtils
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -105,9 +106,10 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       @RequestParam("includeBilder", required = false) includeBilder: Boolean = false,
   ): ResponseEntity<List<Bilde>> {
 
-    val fileExtension = bilde.originalFilename?.substringAfterLast('.', "") ?: ""
+    val allowedMIMETypes =
+        listOf(MimeTypeUtils.IMAGE_JPEG_VALUE, MimeTypeUtils.IMAGE_PNG_VALUE, "image/bmp")
 
-    if (bilde.originalFilename == null || !allowedMIMETypes.contains(fileExtension)) {
+    if (bilde.originalFilename == null || !allowedMIMETypes.contains(bilde.contentType)) {
       return ResponseEntity.badRequest().build()
     }
 
@@ -119,15 +121,18 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             add(
                 "bilder",
                 object : ByteArrayResource(bilde.bytes) {
-                  override fun getFilename(): String = bilde.originalFilename!!
+                  override fun getFilename(): String = bilde.originalFilename?.lowercase()!!
                 })
           }
         }
 
     val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
     val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
-
-    restTemplate.postForEntity("$bildeUrl/${resultatId}", requestEntity, String::class.java)
+    try {
+      restTemplate.postForEntity("$bildeUrl/${resultatId}", requestEntity, String::class.java)
+    } catch (e: Error) {
+      return ResponseEntity.badRequest().build()
+    }
 
     if (includeBilder) {
       return getBilder(resultatId)
@@ -156,6 +161,4 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
           }
 
   data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
-
-  val allowedMIMETypes = listOf("jpg", "jpeg", "png", "bmp")
 }

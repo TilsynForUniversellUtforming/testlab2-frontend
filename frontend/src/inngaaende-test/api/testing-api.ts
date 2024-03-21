@@ -82,7 +82,7 @@ export const uploadBilde = async (
   return await fetch(`${testingApiBaseUrl}/bilder?includeBilder=true`, {
     method: 'POST',
     body: formData,
-  }).then((response) => responseToJson(response, 'Kunne ikkje hente bilder'));
+  }).then((response) => responseToJson(response, 'Kunne ikkje lagre bilde'));
 };
 
 export const getBilder = async (resultatId: number): Promise<Bilde[]> =>
