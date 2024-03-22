@@ -1,7 +1,7 @@
 import AlertModal from '@common/alert/AlertModal';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
-import { ResultatManuellKontroll, Svar } from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
@@ -11,8 +11,8 @@ import {
   ManuellTestStatus,
   PageType,
   TestregelOverviewElement,
+  TestResultUpdate,
 } from '@test/types';
-import { TestregelResultat } from '@test/util/testregelParser';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
 import { useEffect, useRef, useState } from 'react';
@@ -29,12 +29,7 @@ interface Props {
   clearActiveTestregel: () => void;
   onChangeTestregel: (testregelId: number) => void;
   createNewTestResult: (activeTest: ActiveTest) => void;
-  doUpdateTestResult: (
-    resultatId: number,
-    alleSvar: Svar[],
-    resultat?: TestregelResultat,
-    elementOmtale?: string
-  ) => void;
+  doUpdateTestResult: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
   showHelpText: boolean;

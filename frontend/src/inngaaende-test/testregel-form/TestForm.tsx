@@ -11,6 +11,7 @@ import {
   initSkjemaMedSvar,
   SkjemaMedSvar,
 } from '@test/testregel-form/types';
+import { TestResultUpdate } from '@test/types';
 import { Steg } from '@test/util/testregel-interface/Steg';
 import {
   evaluateTestregel,
@@ -24,13 +25,7 @@ interface Props {
   testregel: Testregel;
   resultater: ResultatManuellKontroll[];
   showHelpText: boolean;
-  onResultat: (
-    resultatId: number,
-    svar: Svar[],
-    resultat?: TestregelResultat,
-    elementOmtale?: string,
-    kommentar?: string
-  ) => void;
+  onResultat: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (resultatId: number) => void;
 }
 
@@ -109,18 +104,21 @@ const TestForm = ({
     setKommentarMap(initKommentarMap(resultater));
   }, [testregel, resultater]);
 
-  const onResultatUpdate = useCallback(
-    (
-      resultatId: number,
-      svar: Svar[],
-      resultat: TestregelResultat | undefined,
-      kommentar?: string
-    ) => {
-      const elementOmtale = findElementOmtale(testregel, svar);
-      onResultat(resultatId, svar, resultat, elementOmtale, kommentar);
-    },
-    [testregel]
-  );
+  const onResultatUpdate = (
+    resultatId: number,
+    svar: Svar[],
+    resultat: TestregelResultat | undefined,
+    kommentar?: string
+  ) => {
+    const elementOmtale = findElementOmtale(testregel, svar);
+    onResultat({
+      resultatId: resultatId,
+      alleSvar: svar,
+      resultat: resultat,
+      elementOmtale: elementOmtale,
+      kommentar: kommentar,
+    });
+  };
 
   const onKommentar = useCallback(
     (resultatId: number, kommentar?: string) => {

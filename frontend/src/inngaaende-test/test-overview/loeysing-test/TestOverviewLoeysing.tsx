@@ -13,7 +13,6 @@ import {
   CreateTestResultat,
   ResultatManuellKontroll,
   ResultatStatus,
-  Svar,
   toElementResultat,
 } from '@test/api/types';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
@@ -23,8 +22,8 @@ import {
   ManuellTestStatus,
   PageType,
   TestContext,
+  TestResultUpdate,
 } from '@test/types';
-import { TestregelResultat } from '@test/util/testregelParser';
 import {
   findActiveTestResults,
   getInitialPageType,
@@ -400,13 +399,9 @@ const TestOverviewLoeysing = () => {
   );
 
   const doUpdateTestResult = useCallback(
-    async (
-      resultatId: number,
-      alleSvar: Svar[],
-      resultat?: TestregelResultat,
-      elementOmtale?: string,
-      kommentar?: string
-    ) => {
+    async (testResultUpdate: TestResultUpdate) => {
+      const { resultatId, alleSvar, resultat, elementOmtale, kommentar } =
+        testResultUpdate;
       const sakIdNumeric = Number(sakId);
       const loeysingIdNumeric = Number(loeysingId);
 
@@ -437,7 +432,6 @@ const TestOverviewLoeysing = () => {
 
         try {
           const updatedTestResults = await updateTestResultat(testResult);
-          console.log('Oppdater svar');
           await createTestresultatAggregert(contextSak.id).catch((e) => {
             setAlert(
               'danger',
@@ -492,15 +486,24 @@ const TestOverviewLoeysing = () => {
       );
       return;
     }
-    const alleResultater = await deleteTestResultat(resultat);
-    processData(
-      contextSak,
-      alleResultater,
-      Number(loeysingId),
-      pageType,
-      innhaldstype,
-      activeTest.testregel
-    );
+    try {
+      const alleResultater = await deleteTestResultat(resultat);
+      contextSetTestResults(alleResultater);
+      processData(
+        contextSak,
+        alleResultater,
+        Number(loeysingId),
+        pageType,
+        innhaldstype,
+        activeTest.testregel
+      );
+    } catch (e) {
+      setAlert(
+        'danger',
+        'Kunne ikkje slette test',
+        'Sletting av test for testregel feila'
+      );
+    }
   };
 
   const doUpdateTestResultStatus = useCallback(
