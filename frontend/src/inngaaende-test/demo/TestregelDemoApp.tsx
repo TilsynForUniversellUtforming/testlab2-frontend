@@ -1,14 +1,14 @@
 import '../test.scss';
 
 import { Spinner } from '@digdir/designsystemet-react';
-import { ResultatManuellKontroll, Svar } from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
+import { TestResultUpdate } from '@test/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import TestForm from '../testregel-form/TestForm';
-import { TestregelResultat } from '../util/testregelParser';
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
@@ -42,12 +42,8 @@ const TestregelDemoApp = () => {
     }
   }, [id]);
 
-  const onResultat = (
-    _resultatId: number,
-    alleSvar: Svar[],
-    resultat?: TestregelResultat,
-    elementOmtale?: string
-  ) => {
+  const onResultat = (testResultUpdate: TestResultUpdate) => {
+    const { resultat, elementOmtale, alleSvar } = testResultUpdate;
     console.info(
       `Resultat: ${JSON.stringify({ resultat, elementOmtale, alleSvar }, null, 2)}`
     );
