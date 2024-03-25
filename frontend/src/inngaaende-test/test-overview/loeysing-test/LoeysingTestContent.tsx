@@ -77,7 +77,7 @@ const LoeysingTestContent = ({
   showHelpText,
   toggleShowHelpText,
 }: Props) => {
-  const { id: sakId, loeysingId } = useParams();
+  const { loeysingId, testgrunnlagId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
   const alertRef = useRef<HTMLDialogElement>(null);
 
@@ -134,7 +134,7 @@ const LoeysingTestContent = ({
                 status={
                   testStatusMap.get(
                     toTestregelStatusKey(
-                      Number(sakId),
+                      Number(testgrunnlagId),
                       Number(loeysingId),
                       tr.id,
                       pageType.nettsideId

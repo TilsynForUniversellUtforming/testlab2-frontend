@@ -11,13 +11,13 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestFerdig = () => {
   const { contextSak }: TestContext = useOutletContext();
-  const { id: sakId, loeysingId } = useParams();
+  const { id: sakId, loeysingId, testgrunnlagId: testgrunnlagId } = useParams();
   const navigate = useNavigate();
   const [loeysingNamn, setLoeysingNamn] = useState<string>('');
   const [alert, setAlert] = useAlert();
 
   const onFerdigTest = useCallback(async () => {
-    await createTestresultatAggregert(Number(sakId))
+    await createTestresultatAggregert(Number(testgrunnlagId))
       .then(() => {
         navigate(
           getFullPath(TESTRESULTAT_TESTGRUNNLAG, {

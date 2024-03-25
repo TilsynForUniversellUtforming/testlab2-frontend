@@ -59,7 +59,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             logger.debug(
                 "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}, testregelId: ${createTestResultat.testregelId}, nettsideId: ${createTestResultat.nettsideId}")
             restTemplate.postForEntity(testresultUrl, createTestResultat, Int::class.java)
-            getResultatManuellKontroll(createTestResultat.sakId)
+            getResultatManuellKontroll(createTestResultat.testgrunnlagId)
           }
           .getOrElse {
             logger.error("Kunne ikkje opprette testresultat", it)
@@ -78,7 +78,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
               restTemplate.put("$testresultUrl/${resultatManuellKontroll.id}", resultatCopy)
             }
 
-            getResultatManuellKontroll(resultatManuellKontrollList.first().sakId)
+            getResultatManuellKontroll(resultatManuellKontrollList.first().testgrunnlagId)
           }
           .getOrElse {
             logger.error("Kunne ikkje oppdatere testresultat", it)
@@ -92,7 +92,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       runCatching {
             logger.debug("Sletter testresultat med id: ${resultatManuellKontroll.id}")
             restTemplate.delete("$testresultUrl/${resultatManuellKontroll.id}")
-            getResultatManuellKontroll(resultatManuellKontroll.sakId)
+            getResultatManuellKontroll(resultatManuellKontroll.testgrunnlagId)
           }
           .getOrElse {
             logger.error("Kunne ikkje slette testresultat", it)

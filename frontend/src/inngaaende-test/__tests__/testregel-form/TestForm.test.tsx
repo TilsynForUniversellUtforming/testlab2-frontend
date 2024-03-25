@@ -54,7 +54,7 @@ describe('TestForm', () => {
       const results: ResultatManuellKontroll[] = [
         {
           id: 1,
-          sakId: 1,
+          testgrunnlagId: 1,
           loeysingId: 1,
           testregelId: 1,
           nettsideId: 1,

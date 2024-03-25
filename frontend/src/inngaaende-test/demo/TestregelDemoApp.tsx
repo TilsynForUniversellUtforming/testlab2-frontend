@@ -75,7 +75,7 @@ function createResultat(testregel: Testregel): ResultatManuellKontroll {
     id: 1,
     svar: [],
     status: 'UnderArbeid',
-    sakId: 1,
+    testgrunnlagId: 1,
     loeysingId: 1,
     testregelId: testregel.id,
     nettsideId: 1,

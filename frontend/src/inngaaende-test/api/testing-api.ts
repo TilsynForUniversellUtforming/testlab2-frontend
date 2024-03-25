@@ -1,7 +1,13 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
-import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
+import {
+    Bilde,
+  CreateTestgrunnlag,
+  CreateTestResultat,
+  ResultatManuellKontroll,
+  Testgrunnlag,
+} from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
@@ -97,3 +103,17 @@ export const deleteBilde = async (
   await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
     method: 'DELETE',
   }).then((response) => responseToJson(response, 'Kunne ikkje slette bilde'));
+
+export const createTestgrunnlag = async (
+  testgrunnlag: CreateTestgrunnlag
+): Promise<Testgrunnlag> => {
+  return await fetch(`/api/v1/testgrunnlag`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(testgrunnlag),
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikke opprette testgrunnlag')
+  );
+};
