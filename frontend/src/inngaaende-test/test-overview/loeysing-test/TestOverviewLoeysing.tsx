@@ -42,7 +42,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
-  const { id: sakId, loeysingId } = useParams();
+  const { testgrunnlagId: testgrunnlagId, loeysingId } = useParams();
   const {
     contextSak,
     contextTestResults,
@@ -81,7 +81,7 @@ const TestOverviewLoeysing = () => {
     toTestregelStatus(
       testregelList,
       testResultsLoeysing,
-      contextSak.id,
+      Number(testgrunnlagId),
       Number(loeysingId),
       pageType.nettsideId
     )
@@ -135,7 +135,7 @@ const TestOverviewLoeysing = () => {
       toTestregelStatus(
         testregelList,
         testResultsLoeysing,
-        Number(sakId),
+        Number(testgrunnlagId),
         loeysingId,
         pageType.nettsideId
       )
@@ -154,7 +154,7 @@ const TestOverviewLoeysing = () => {
         testregel: activeTestregel,
         testResultList: findActiveTestResults(
           testResultsLoeysing,
-          Number(sakId),
+          Number(testgrunnlagId),
           loeysingId,
           activeTestregel.id,
           pageType.nettsideId
@@ -167,7 +167,7 @@ const TestOverviewLoeysing = () => {
     const numericLoeysingId = Number(loeysingId);
 
     const nyttTestresultat: CreateTestResultat = {
-      sakId: Number(sakId),
+      testgrunnlagId: Number(testgrunnlagId),
       loeysingId: numericLoeysingId,
       testregelId: activeTest.testregel.id,
       nettsideId: pageType.nettsideId,
@@ -249,7 +249,7 @@ const TestOverviewLoeysing = () => {
           return;
         }
 
-        const sakIdNumeric = Number(sakId);
+        const sakIdNumeric = Number(testgrunnlagId);
         const loeysingIdNumeric = Number(loeysingId);
 
         const statusKey = toTestregelStatusKey(
@@ -280,7 +280,7 @@ const TestOverviewLoeysing = () => {
       }
     },
     [
-      sakId,
+      testgrunnlagId,
       loeysingId,
       contextSak,
       contextTestResults,
@@ -292,7 +292,7 @@ const TestOverviewLoeysing = () => {
 
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
-      const sakIdNumeric = Number(sak.id);
+      const sakIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
       const testResults = findActiveTestResults(
@@ -302,6 +302,7 @@ const TestOverviewLoeysing = () => {
         testregelId,
         pageType.nettsideId
       );
+
       const testregel = sak.testreglar.find((tr) => tr.id === testregelId);
       const newStatus = mapStatus(status);
 
@@ -327,7 +328,7 @@ const TestOverviewLoeysing = () => {
             const updatedtestResults: ResultatManuellKontroll[] =
               testResults.map((testResult) => ({
                 id: testResult.id,
-                sakId: sakIdNumeric,
+                testgrunnlagId: sakIdNumeric,
                 loeysingId: loeysingIdNumeric,
                 testregelId: testregelId,
                 nettsideId: testResult.nettsideId,
@@ -367,7 +368,7 @@ const TestOverviewLoeysing = () => {
     ) => {
       if (activeTestregel && nettsideId) {
         const testResult: CreateTestResultat = {
-          sakId: sakId,
+          testgrunnlagId: sakId,
           loeysingId: loeysingId,
           testregelId: activeTestregel.id,
           nettsideId: nettsideId,
@@ -402,7 +403,7 @@ const TestOverviewLoeysing = () => {
     async (testResultUpdate: TestResultUpdate) => {
       const { resultatId, alleSvar, resultat, elementOmtale, kommentar } =
         testResultUpdate;
-      const sakIdNumeric = Number(sakId);
+      const sakIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
       const activeTestResult = testResultsLoeysing.find(
@@ -418,7 +419,7 @@ const TestOverviewLoeysing = () => {
       ) {
         const testResult: ResultatManuellKontroll = {
           id: activeTestResult.id,
-          sakId: sakIdNumeric,
+          testgrunnlagId: sakIdNumeric,
           loeysingId: loeysingIdNumeric,
           testregelId: activeTest.testregel?.id,
           nettsideId: pageType.nettsideId,
@@ -432,13 +433,15 @@ const TestOverviewLoeysing = () => {
 
         try {
           const updatedTestResults = await updateTestResultat(testResult);
-          await createTestresultatAggregert(contextSak.id).catch((e) => {
-            setAlert(
-              'danger',
-              'Kunne ikkje oppdatere aggregert resultat',
-              `Oppdatering av aggregert resultat feila ${e}`
-            );
-          });
+          await createTestresultatAggregert(Number(testgrunnlagId)).catch(
+            (e) => {
+              setAlert(
+                'danger',
+                'Kunne ikkje oppdatere aggregert resultat',
+                `Oppdatering av aggregert resultat feila ${e}`
+              );
+            }
+          );
           contextSetTestResults(updatedTestResults);
           processData(
             contextSak,
@@ -464,7 +467,7 @@ const TestOverviewLoeysing = () => {
       }
     },
     [
-      sakId,
+      testgrunnlagId,
       loeysingId,
       activeTest,
       testResultsLoeysing,
@@ -510,7 +513,7 @@ const TestOverviewLoeysing = () => {
     async (testResultat: ResultatManuellKontroll[]) => {
       try {
         const updatedTestResults = await updateTestResultatMany(testResultat);
-        await createTestresultatAggregert(contextSak.id).catch((e) => {
+        await createTestresultatAggregert(Number(testgrunnlagId)).catch((e) => {
           setAlert(
             'danger',
             'Kunne ikkje oppdatere aggregert resultat',
@@ -533,7 +536,7 @@ const TestOverviewLoeysing = () => {
         );
       }
     },
-    [contextSak, loeysingId, activeTest, pageType, innhaldstype]
+    [contextSak, loeysingId, activeTest, pageType, innhaldstype, testgrunnlagId]
   );
 
   const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {

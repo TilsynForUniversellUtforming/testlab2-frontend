@@ -5,7 +5,7 @@ import no.uutilsynet.testlab2frontendserver.sak.Brukar
 
 data class ResultatManuellKontroll(
     val id: Int,
-    val sakId: Int,
+    val testgrunnlagId: Int,
     val loeysingId: Int,
     val testregelId: Int,
     val nettsideId: Int,
