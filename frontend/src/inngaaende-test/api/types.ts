@@ -85,3 +85,8 @@ export type CreateTestgrunnlag = {
   loeysingNettsideRelation: LoeysingNettsideRelation;
   type: string;
 };
+
+export type TestgrunnlagListElement = {
+  id: number;
+  loeysingId: number;
+};

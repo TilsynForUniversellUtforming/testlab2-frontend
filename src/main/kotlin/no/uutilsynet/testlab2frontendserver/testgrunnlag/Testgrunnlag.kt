@@ -4,6 +4,11 @@ import no.uutilsynet.testlab2frontendserver.sak.LoeysingNettsideRelation
 import no.uutilsynet.testlab2frontendserver.sak.SakDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 
+data class TestgrunnlagListElement(
+    val id: Int,
+    val loeysingId: Int,
+)
+
 data class Testgrunnlag(
     val id: Int?,
     val parentId: Int,

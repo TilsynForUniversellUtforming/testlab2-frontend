@@ -1,6 +1,12 @@
+import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
+import { getSak } from '@sak/api/sak-api';
+import { getTestResults, listTestgrunnlagForSak } from '@test/api/testing-api';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
-import { Outlet, RouteObject } from 'react-router-dom';
+import { TestOverviewLoaderResponse } from '@test/types';
+import { innhaldstypeAlle } from '@test/util/testregelUtils';
+import { listInnhaldstype } from '@testreglar/api/testreglar-api';
+import { defer, Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import TestregelDemoApp from './demo/TestregelDemoApp';
@@ -20,16 +26,10 @@ export const TEST: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
-export const TEST_LOEYSING: AppRoute = {
-  navn: 'Test løysing',
-  path: ':loeysingId',
-  parentRoute: TEST,
-};
-
 export const TEST_LOEYSING_TESTGRUNNLAG: AppRoute = {
   navn: 'Test løysing testgrunnlag',
-  path: ':testgrunnlagId',
-  parentRoute: TEST_LOEYSING,
+  path: ':loeysingId/:testgrunnlagId',
+  parentRoute: TEST,
 };
 
 export const TESTREGEL_DEMO: AppRoute = {
@@ -47,22 +47,57 @@ export const TestingRoutes: RouteObject = {
       path: TEST.path,
       element: <InngaaendeTestApp />,
       handle: { name: 'Test' },
+      errorElement: <ErrorCard />,
+      loader: async ({ params }) => {
+        const id = Number(params?.id);
+
+        if (isNaN(id) || id <= 0) {
+          throw new Error('Ugyldig sak id');
+        }
+
+        const [sakResponse, testgrunnlagResponse, innhaldstypeResponse] =
+          await Promise.allSettled([
+            getSak(id),
+            listTestgrunnlagForSak(id),
+            listInnhaldstype(),
+          ]);
+
+        if (sakResponse.status === 'rejected') {
+          throw new Error(`Fann ikkje sak med id ${id}`);
+        }
+
+        if (testgrunnlagResponse.status === 'rejected') {
+          throw new Error('Kunne ikkje hente testgrunnlag');
+        }
+
+        if (innhaldstypeResponse.status === 'rejected') {
+          throw new Error('Kunne ikkje hente innhaldstypar');
+        }
+
+        return defer({
+          sak: sakResponse.value,
+          testgrunnlag: testgrunnlagResponse.value,
+          innhaldstypeTestingList: [
+            ...innhaldstypeResponse.value,
+            innhaldstypeAlle,
+          ],
+        });
+      },
       children: [
         {
           index: true,
           element: <TestOverview />,
         },
         {
-          path: TEST_LOEYSING.path,
+          path: TEST_LOEYSING_TESTGRUNNLAG.path,
           element: <TestOverviewLoeysing />,
-          handle: { name: TEST_LOEYSING.navn },
-          children: [
-            {
-              path: TEST_LOEYSING_TESTGRUNNLAG.path,
-              element: <TestOverviewLoeysing />,
-              handle: { name: TEST_LOEYSING_TESTGRUNNLAG.navn },
-            },
-          ],
+          handle: { name: TEST_LOEYSING_TESTGRUNNLAG.navn },
+          loader: async ({ params }): Promise<TestOverviewLoaderResponse> => {
+            const testResults = await getTestResults(
+              Number(params?.testgrunnlagId)
+            );
+            return { results: testResults };
+          },
         },
       ],
     },
