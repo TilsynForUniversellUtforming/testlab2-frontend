@@ -4,7 +4,7 @@ import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { Outlet } from 'react-router';
 import { RouteObject, useRouteError } from 'react-router-dom';
 
-import { fetchKontroll } from './kontroll-api';
+import { fetchKontroll, updateKontroll } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Kontroll } from './types';
 import VelgLoesninger from './VelgLoesninger';
@@ -46,7 +46,10 @@ export const KontrollRoutes: RouteObject = {
           kontroll: Kontroll;
           utval: Utval;
         };
-        console.log('Lagrer kontroll', kontroll, utval);
+        const response = await updateKontroll(kontroll, utval);
+        if (!response.ok) {
+          throw new Error('Klarte ikke å lagre kontrollen.');
+        }
         return null;
       },
     },
