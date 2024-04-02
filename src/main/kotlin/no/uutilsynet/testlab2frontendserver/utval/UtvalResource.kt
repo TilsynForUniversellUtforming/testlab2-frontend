@@ -31,10 +31,7 @@ class UtvalResource(
 
   @GetMapping("/{id}")
   fun getUtval(@PathVariable id: Int): ResponseEntity<Utval> =
-      runCatching {
-            val url = URI("${testingApiProperties.url}/v1/utval/$id")
-            restTemplate.getForObject(url, Utval::class.java)
-          }
+      fetchUtval(id)
           .map { ResponseEntity.ok(it) }
           .getOrElse {
             when (it) {
@@ -45,6 +42,11 @@ class UtvalResource(
               }
             }
           }
+
+  fun fetchUtval(id: Int): Result<Utval> = runCatching {
+    val url = URI("${testingApiProperties.url}/v1/utval/$id")
+    restTemplate.getForObject(url, Utval::class.java)!!
+  }
 
   data class UtvalListItem(val id: Int, val namn: String, val oppretta: Instant)
 
