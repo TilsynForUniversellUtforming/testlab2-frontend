@@ -38,9 +38,10 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       @PathVariable testgrunnlagId: Int
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
-            val testResults: ResultatForSak? =
+            val testResults: TestresultatForKontroll? =
                 restTemplate.getForObject(
-                    "$testresultUrl?testgrunnlagId=$testgrunnlagId", ResultatForSak::class.java)
+                    "$testresultUrl?testgrunnlagId=$testgrunnlagId",
+                    TestresultatForKontroll::class.java)
             if (testResults != null) {
               return ResponseEntity.ok(testResults.resultat)
             } else {
@@ -161,5 +162,5 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             return ResponseEntity.internalServerError().build()
           }
 
-  data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
+  data class TestresultatForKontroll(val resultat: List<ResultatManuellKontroll>)
 }
