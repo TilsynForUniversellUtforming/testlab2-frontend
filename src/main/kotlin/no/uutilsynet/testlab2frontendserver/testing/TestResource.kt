@@ -33,13 +33,15 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   val testresultUrl = "${testingApiProperties.url}/testresultat"
   val bildeUrl = "${testingApiProperties.url}/bilder"
 
-  @GetMapping("{sakId}")
+  @GetMapping("{testgrunnlagId}")
   fun getResultatManuellKontroll(
-      @PathVariable sakId: Int
+      @PathVariable testgrunnlagId: Int
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
-            val testResults: ResultatForSak? =
-                restTemplate.getForObject("$testresultUrl?sakId=$sakId", ResultatForSak::class.java)
+            val testResults: TestresultatForKontroll? =
+                restTemplate.getForObject(
+                    "$testresultUrl?testgrunnlagId=$testgrunnlagId",
+                    TestresultatForKontroll::class.java)
             if (testResults != null) {
               return ResponseEntity.ok(testResults.resultat)
             } else {
@@ -47,7 +49,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             }
           }
           .getOrElse {
-            logger.error("Kunne ikkje hente testresultat for sak $sakId")
+            logger.error("Kunne ikkje hente testresultat for testgrunnlag $testgrunnlagId")
             throw it
           }
 
@@ -160,5 +162,5 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             return ResponseEntity.internalServerError().build()
           }
 
-  data class ResultatForSak(val resultat: List<ResultatManuellKontroll>)
+  data class TestresultatForKontroll(val resultat: List<ResultatManuellKontroll>)
 }

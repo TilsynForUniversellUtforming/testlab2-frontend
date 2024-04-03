@@ -2,7 +2,11 @@ import { Sak } from '@sak/api/types';
 import { TestregelResultat } from '@test/util/testregelParser';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
-import { ResultatManuellKontroll, Svar } from './api/types';
+import {
+  ResultatManuellKontroll,
+  Svar,
+  TestgrunnlagListElement,
+} from './api/types';
 
 export type ManuellTestStatus =
   | 'ferdig'
@@ -20,8 +24,7 @@ export type TestregelOverviewElement = {
 
 export interface TestContext {
   contextSak: Sak;
-  contextTestResults: ResultatManuellKontroll[];
-  contextSetTestResults: (testResults: ResultatManuellKontroll[]) => void;
+  testgrunnlag: TestgrunnlagListElement[];
   innhaldstypeList: InnhaldstypeTesting[];
 }
 
@@ -42,4 +45,14 @@ export type TestResultUpdate = {
   resultat?: TestregelResultat;
   elementOmtale?: string;
   kommentar?: string;
+};
+
+export type InngaaendeTestLoadingResponse = {
+  sak: Sak;
+  testgrunnlag: TestgrunnlagListElement[];
+  innhaldstypeTestingList: InnhaldstypeTesting[];
+};
+
+export type TestOverviewLoaderResponse = {
+  results: ResultatManuellKontroll[];
 };

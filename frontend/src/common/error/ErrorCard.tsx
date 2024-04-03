@@ -63,6 +63,7 @@ const ErrorCard = ({
   if (
     typeof error === 'undefined' &&
     typeof asyncError === 'undefined' &&
+    typeof routeError === 'undefined' &&
     !isRouteError
   ) {
     return null;
@@ -104,6 +105,16 @@ const ErrorCard = ({
         errorText={asyncError.message}
         onClick={onClick}
         buttonText={buttonText}
+      />
+    );
+  } else if (routeError) {
+    const err = routeError as Error;
+    return (
+      <ErrorContent
+        errorHeader={errorHeader ?? 'Uventa feil'}
+        errorText={err!.message}
+        onClick={() => window.location.reload()}
+        buttonText="Prøv på nytt"
       />
     );
   } else {

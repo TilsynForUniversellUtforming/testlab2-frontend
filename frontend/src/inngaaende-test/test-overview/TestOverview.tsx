@@ -12,7 +12,7 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverview = () => {
   const { id } = useParams();
-  const { contextSak }: TestContext = useOutletContext();
+  const { contextSak, testgrunnlag }: TestContext = useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
 
@@ -24,25 +24,35 @@ const TestOverview = () => {
       if (!nextLoeysing || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
       } else {
-        const nyttTestgrunnlag = await opprettTestgrunnlag(nextLoeysing);
+        const existingTestgrunnlag = testgrunnlag.find(
+          (tg) => tg.loeysingId === nextLoeysing.loeysing.id
+        );
+        let testgrunnlagId: number;
+
+        if (existingTestgrunnlag) {
+          testgrunnlagId = existingTestgrunnlag.id;
+        } else {
+          testgrunnlagId = await opprettTestgrunnlag(nextLoeysing);
+        }
+
         navigate(
           getFullPath(
             TEST_LOEYSING_TESTGRUNNLAG,
             { pathParam: idPath, id: id },
             { pathParam: ':loeysingId', id: String(nextLoeysing.loeysing.id) },
-            { pathParam: ':testgrunnlagId', id: String(nyttTestgrunnlag) }
+            { pathParam: ':testgrunnlagId', id: String(testgrunnlagId) }
           )
         );
       }
     },
-    [contextSak.loeysingList, id, navigate, setAlert]
+    [contextSak.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
   const opprettTestgrunnlag = useCallback(
     async (loeysing: LoeysingNettsideRelation): Promise<number> => {
       const testgrunnlag: CreateTestgrunnlag = {
-        namn: `Test av ${loeysing.loeysing.namn} for sak ${contextSak.id}`,
-        parentId: contextSak.id,
+        namn: `Test av ${loeysing.loeysing.namn} for sak ${id}`,
+        parentId: Number(id),
         loeysingNettsideRelation: loeysing,
         testreglar: contextSak.testreglar.map((testregel) => testregel.id),
         type: 'OPPRINNELEG_TEST',
@@ -50,7 +60,7 @@ const TestOverview = () => {
       const nyttTestgrunnlag = await createTestgrunnlag(testgrunnlag);
       return nyttTestgrunnlag.id;
     },
-    [contextSak.id, contextSak.testreglar]
+    [id, contextSak.testreglar]
   );
 
   return (
