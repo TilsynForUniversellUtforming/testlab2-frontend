@@ -2,19 +2,20 @@ import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
 import {
-    Bilde,
+  Bilde,
   CreateTestgrunnlag,
   CreateTestResultat,
   ResultatManuellKontroll,
   Testgrunnlag,
+  TestgrunnlagListElement,
 } from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
 export const getTestResults = async (
-  sakId: number
+  testgrunnlagId: number
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`${testingApiBaseUrl}/${sakId}`, {
+  return await fetch(`${testingApiBaseUrl}/${testgrunnlagId}`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikke hente testresultat')
@@ -117,3 +118,10 @@ export const createTestgrunnlag = async (
     responseToJson(response, 'Kunne ikke opprette testgrunnlag')
   );
 };
+
+export const listTestgrunnlagForSak = async (
+  sakId: number
+): Promise<TestgrunnlagListElement[]> =>
+  await fetch(`/api/v1/testgrunnlag/list/${sakId}`).then((response) =>
+    responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
+  );

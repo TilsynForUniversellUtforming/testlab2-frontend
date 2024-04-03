@@ -12,7 +12,12 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
 @RequestMapping("api/v1/testgrunnlag")
@@ -61,6 +66,15 @@ class TestgrunnlagResource(
                     }))
     return nyttTestgrunnlag
   }
+
+  @GetMapping("list/{sakId}")
+  fun listTestgrunnlagForSak(
+      @PathVariable sakId: Int
+  ): ResponseEntity<List<TestgrunnlagListElement>> =
+      ResponseEntity.ok(
+          restTemplate.getList<TestgrunnlagDTO>("$testgrunnlagUrl/list/$sakId").map {
+            TestgrunnlagListElement(it.id!!, it.loeysing.loeysingId)
+          })
 
   @GetMapping("/{id}")
   fun getManueltTestgrunnlag(@PathVariable id: Int): ResponseEntity<Testgrunnlag> {
