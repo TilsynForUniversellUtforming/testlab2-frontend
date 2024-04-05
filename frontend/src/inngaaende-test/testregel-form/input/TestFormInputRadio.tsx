@@ -20,7 +20,7 @@ const TestFormInputRadio = ({ steg, svar, index, onAnswer }: Props) => {
   const options = steg.type === 'jaNei' ? ['Ja', 'Nei'] : steg.svarArray;
 
   return (
-    <div className="">
+    <div>
       <Radio.Group
         legend={htmlToReactNode(spm)}
         value={svar ?? 'ikke_svart'} // default må være noe annet enn tom streng, pga. en bug i designsystemet
