@@ -11,13 +11,13 @@ const TestFormDescription = ({ steg }: Props) => {
   const spmHTML = { __html: DOMPurify.sanitize(spm) };
   const htHTML = { __html: DOMPurify.sanitize(ht) };
   return (
-    <>
-      <Heading size="small" level={4} spacing>
+    <div className="test-form-instruction">
+      <Heading size="xsmall" level={4} spacing>
         Instruksjon:
       </Heading>
       <Ingress dangerouslySetInnerHTML={spmHTML}></Ingress>
       <Paragraph size="small" dangerouslySetInnerHTML={htHTML}></Paragraph>
-    </>
+    </div>
   );
 };
 
