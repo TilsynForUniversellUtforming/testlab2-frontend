@@ -1,7 +1,13 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonColor, ButtonVariant } from '@common/types';
-import { Button, Heading, Modal } from '@digdir/designsystemet-react';
+import { formatDateString } from '@common/util/stringutils';
+import {
+  Button,
+  Heading,
+  Modal,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Bilde } from '@test/api/types';
 import { useRef, useState } from 'react';
@@ -13,10 +19,10 @@ interface Props {
 
 const ImageGallery = ({ onDeleteBilde, bilder }: Props) => {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const [largeImage, setLargeImage] = useState<string | undefined>();
+  const [activeBilde, setActiveBilde] = useState<Bilde | undefined>();
 
-  const handleOpenModal = (img: string) => {
-    setLargeImage(img);
+  const handleOpenModal = (bilde: Bilde) => {
+    setActiveBilde(bilde);
     modalRef.current?.showModal();
   };
 
@@ -35,7 +41,7 @@ const ImageGallery = ({ onDeleteBilde, bilder }: Props) => {
           <div className="image-gallery-item" key={bilde.thumbnailURI}>
             <Button
               variant={ButtonVariant.Quiet}
-              onClick={() => handleOpenModal(bilde.bildeURI)}
+              onClick={() => handleOpenModal(bilde)}
               title="Trykk for å se full storleik"
               icon
               size="large"
@@ -58,7 +64,7 @@ const ImageGallery = ({ onDeleteBilde, bilder }: Props) => {
         <Modal
           ref={modalRef}
           onInteractOutside={() => modalRef.current?.close()}
-          onClose={() => setLargeImage(undefined)}
+          onClose={() => setActiveBilde(undefined)}
           style={{
             maxWidth: '1200px',
             width: 'fit-content',
@@ -66,7 +72,10 @@ const ImageGallery = ({ onDeleteBilde, bilder }: Props) => {
         >
           <Modal.Header>Resultat</Modal.Header>
           <Modal.Content>
-            <img src={largeImage} alt="" />
+            <img src={activeBilde?.bildeURI} alt="" />
+            <Paragraph size="xsmall">
+              Oppretta {formatDateString(String(activeBilde?.opprettet), true)}
+            </Paragraph>
           </Modal.Content>
         </Modal>
       </div>
