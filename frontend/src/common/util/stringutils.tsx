@@ -62,17 +62,32 @@ export const parseNumberInput = (value: number | string): number => {
 };
 
 /**
- * Formats a date string into 'dd.mm.yyyy' format.
+ * Formats a date string into 'dd.MM.yyyy HH:mm' format, with time part optional.
  * @param {string} dateString - Date string to format.
+ * @param {boolean} includeTime - Include the time part of the date
  * @returns {string} Formatted date string.
  */
-export const formatDateString = (dateString: string): string => {
+export const formatDateString = (
+  dateString: string,
+  includeTime: boolean = false
+): string => {
   const date = new Date(dateString);
-  const format = new Intl.DateTimeFormat('nb-NO', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
+  const options: Intl.DateTimeFormatOptions = includeTime
+    ? {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hourCycle: 'h24',
+        hour: '2-digit',
+        minute: '2-digit',
+      }
+    : {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      };
+
+  const format = new Intl.DateTimeFormat('nb-NO', options);
 
   try {
     return format.format(date);
