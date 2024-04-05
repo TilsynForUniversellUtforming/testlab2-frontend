@@ -132,20 +132,23 @@
 .eldre-utvalg {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1rem;
 
   li {
-    flex: 1 1 calc(100% / 2 - 1.5rem);
-    max-width: calc(100% / 2 - 1.5rem);
+    flex: 1 1 calc(100% / 2 - 1rem);
+    max-width: calc(100% / 2 - 1rem);
 
     button {
       border: none;
       background: none;
       text-align: left;
       font-size: 1rem;
+      padding: 0.5rem;
+      cursor: pointer;
 
       &.selected {
-        outline: 2px solid var(--fds-semantic-surface-first-light-active);
+        background-color: var(--fds-semantic-surface-first-light);
+        border-radius: 10px;
       }
     }
   }
