@@ -93,6 +93,7 @@ object AggregertResultatDTODummy {
               fleireSuksesskriterium = fleireSuksesskriteriums[index],
               talElementSamsvar = Random.nextInt(0, 100),
               talElementVarsel = 0,
+              talElementIkkjeForekomst = 0,
               talSiderSamsvar = pagesSuccess,
               talSiderBrot = pagesCrawled - pagesSuccess,
               talSiderIkkjeForekomst = 0,
