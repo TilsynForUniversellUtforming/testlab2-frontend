@@ -3,7 +3,6 @@ package no.uutilsynet.testlab2frontendserver.kontroll
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.utval.UtvalResource
-import no.uutilsynet.testlab2frontendserver.utval.UtvalResource.Utval
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -58,7 +57,8 @@ class KontrollResource(
   ): ResponseEntity<Unit> =
       runCatching {
             val utval = utvalResource.fetchUtval(updateKontrollBody.utval.id).getOrThrow()
-            val oppdatertKontroll = updateKontrollBody.kontroll.copy(utval = utval)
+            val loeysingar = utval.loeysingar
+            val oppdatertKontroll = updateKontrollBody.kontroll.copy(loeysingar = loeysingar)
             restTemplate.put(
                 testingApiProperties.url + "/kontroller/$id",
                 mapOf("kontroll" to oppdatertKontroll))
@@ -86,7 +86,6 @@ class KontrollResource(
       val saksbehandler: String,
       val sakstype: String,
       val arkivreferanse: String,
-      val loeysingar: List<Loeysing> = emptyList(),
-      val utval: Utval? = null
+      val loeysingar: List<Loeysing> = emptyList()
   )
 }
