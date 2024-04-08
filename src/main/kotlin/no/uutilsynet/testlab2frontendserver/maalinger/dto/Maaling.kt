@@ -79,7 +79,12 @@ fun mergeLists(
               talElementSamsvar = result.talElementSamsvar,
               talElementBrot = result.talElementBrot,
               talElementVarsel = result.talElementVarsel,
-              compliancePercent = compliancePercent)
+              talElementIkkjeForekomst = result.talElementIkkjeForekomst,
+              compliancePercent = compliancePercent,
+              testregelGjennomsnittlegSideSamsvarProsent =
+                  result.testregelGjennomsnittlegSideSamsvarProsent,
+              testregelGjennomsnittlegSideBrotProsent =
+                  result.testregelGjennomsnittlegSideBrotProsent)
         }
             ?: emptyList()
 

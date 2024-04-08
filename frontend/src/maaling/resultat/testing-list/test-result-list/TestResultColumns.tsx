@@ -16,9 +16,6 @@ export const getAggregatedResultColumns = (): Array<
     id: 'testregelId',
     cell: ({ row }) => <>{row.original.testregelId}</>,
     header: () => <>Testregel</>,
-    meta: {
-      select: true,
-    },
     filterFn: 'exact',
   },
   {
@@ -26,9 +23,6 @@ export const getAggregatedResultColumns = (): Array<
     id: 'suksesskriterium',
     cell: (info) => info.getValue(),
     header: () => <>Hovudkrav</>,
-    meta: {
-      select: true,
-    },
   },
   {
     accessorFn: (row) => row.compliancePercent,

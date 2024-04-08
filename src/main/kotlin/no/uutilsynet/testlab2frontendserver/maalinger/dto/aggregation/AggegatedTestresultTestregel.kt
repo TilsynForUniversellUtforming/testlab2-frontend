@@ -7,5 +7,8 @@ data class AggegatedTestresultTestregel(
     val talElementSamsvar: Int,
     val talElementBrot: Int,
     val talElementVarsel: Int,
-    val compliancePercent: Int,
+    val talElementIkkjeForekomst: Int,
+    val testregelGjennomsnittlegSideBrotProsent: Float?,
+    val testregelGjennomsnittlegSideSamsvarProsent: Float?,
+    val compliancePercent: Int
 )

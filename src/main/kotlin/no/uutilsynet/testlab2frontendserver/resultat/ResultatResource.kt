@@ -31,8 +31,15 @@ class ResultatResource(
       @PathVariable testgrunnlagId: Int
   ): List<AggegatedTestresultTestregel> {
     logger.debug("henter aggregering frå sak/maaling med id: $testgrunnlagId")
-    return restTemplate.getList<AggegatedTestresultTestregel>(
-        "$testresultatUrl/aggregert/$testgrunnlagId")
+    return restTemplate
+        .getList<AggegatedTestresultTestregel>("$testresultatUrl/aggregert/$testgrunnlagId")
+        .map {
+          it.copy(compliancePercent = toPercentage(it.testregelGjennomsnittlegSideSamsvarProsent))
+        }
+  }
+
+  fun toPercentage(value: Float?): Int {
+    return value?.times(100)?.toInt() ?: 0
   }
 
   @PostMapping("aggregert/{testgrunnlagId}")
