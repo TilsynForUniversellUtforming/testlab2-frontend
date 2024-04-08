@@ -1,9 +1,13 @@
+import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { Button, DropdownMenu, Heading } from '@digdir/designsystemet-react';
 import { ArrowDownIcon } from '@navikt/aksel-icons';
-import { findElementOmtale, Svar } from '@test/api/types';
+import { ElementResultat, findElementOmtale, Svar } from '@test/api/types';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
 import TestFormStepWrapper from '@test/testregel-form/TestFormStepWrapper';
-import { SkjemaMedSvar } from '@test/testregel-form/types';
+import {
+  resultatFromSkjemaMedSvar,
+  SkjemaMedSvar,
+} from '@test/testregel-form/types';
 import { Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
@@ -134,6 +138,8 @@ export function TestFormAccordion({
     elementOmtale: string | undefined,
     index: number
   ) {
+    const resultat = resultatFromSkjemaMedSvar(skjemaMedSvar);
+
     return (
       <button
         key={skjemaMedSvar.resultatId}
@@ -154,6 +160,17 @@ export function TestFormAccordion({
           {elementOmtale ? index + 1 + ': ' : index + 1}
         </span>
         {elementOmtale}
+        <TestlabStatusTag<ElementResultat>
+          className={classes.resultat}
+          status={resultat}
+          colorMapping={{
+            danger: ['brot'],
+            success: ['samsvar'],
+            warning: ['advarsel'],
+            info: ['ikkjeForekomst', 'ikkjeTesta'],
+          }}
+          size="medium"
+        />
       </button>
     );
   }
