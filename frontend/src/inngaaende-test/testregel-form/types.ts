@@ -1,4 +1,9 @@
-import { ResultatManuellKontroll, Svar } from '@test/api/types';
+import {
+  ElementResultat,
+  ResultatManuellKontroll,
+  Svar,
+  toElementResultat,
+} from '@test/api/types';
 import { evaluateTestregel, TestregelForm } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 
@@ -29,4 +34,11 @@ export function initKommentarMap(
       entryMap.set(id, entryMap.get(id) || kommentar),
     new Map()
   );
+}
+
+export function resultatFromSkjemaMedSvar(
+  skjemaMedSvar: SkjemaMedSvar
+): ElementResultat | undefined {
+  const resultat = skjemaMedSvar.skjema?.resultat;
+  return resultat ? toElementResultat(resultat) : undefined;
 }
