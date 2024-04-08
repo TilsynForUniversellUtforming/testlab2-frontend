@@ -133,10 +133,12 @@ const VelgLoesninger = () => {
               </ul>
             </>
           )}
-          <Button variant="secondary" onClick={lagreKontroll}>
-            Lagre kontroll
-          </Button>
-          <Button variant="primary">Neste</Button>
+          <div className={classes.lagreOgNeste}>
+            <Button variant="secondary" onClick={lagreKontroll}>
+              Lagre kontroll
+            </Button>
+            <Button variant="primary">Neste</Button>
+          </div>
         </>
       )}
       {isLoesning(selectedOption) && (
