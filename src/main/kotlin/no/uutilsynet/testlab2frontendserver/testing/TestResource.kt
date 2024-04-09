@@ -73,9 +73,22 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       @RequestBody resultatManuellKontrollList: List<ResultatManuellKontroll>
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
+            val missingKommentar =
+                resultatManuellKontrollList.any { resultatManuellKontroll ->
+                  resultatManuellKontroll.elementOmtale == "Side" &&
+                      resultatManuellKontroll.kommentar.isNullOrBlank()
+                }
+            if (missingKommentar) {
+              throw IllegalArgumentException(
+                  "Kan ikkje oppdatere test med elementOmtale 'Side' uten kommentar")
+            }
             resultatManuellKontrollList.forEach { resultatManuellKontroll ->
               logger.debug(
-                  "Lagrer nytt testresultat med loeysingId: ${resultatManuellKontroll.loeysingId}, testregelId: ${resultatManuellKontroll.testregelId}, nettsideId: ${resultatManuellKontroll.nettsideId} + status: ${resultatManuellKontroll.status}")
+                  "Lagrer nytt testresultat med loeysingId: {}, testregelId: {}, nettsideId: {} + status: {}",
+                  resultatManuellKontroll.loeysingId,
+                  resultatManuellKontroll.testregelId,
+                  resultatManuellKontroll.nettsideId,
+                  resultatManuellKontroll.status)
               val resultatCopy = resultatManuellKontroll.copy(testVartUtfoert = Instant.now())
               restTemplate.put("$testresultUrl/${resultatManuellKontroll.id}", resultatCopy)
             }

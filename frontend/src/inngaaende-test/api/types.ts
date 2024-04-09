@@ -38,6 +38,8 @@ export type ResultatStatus =
   | 'UnderArbeid'
   | 'IkkjePaabegynt';
 
+export const elementOmtaleSide = 'Side';
+
 export function toElementResultat(
   resultat: TestregelResultat
 ): ElementResultat {
@@ -61,7 +63,7 @@ export function findElementOmtale(
 ): string | undefined {
   const element = JSON.parse(testregel.testregelSchema).element;
   if (element.toLowerCase() === 'side') {
-    return 'Side';
+    return elementOmtaleSide;
   } else {
     return finnSvar(element, svar);
   }

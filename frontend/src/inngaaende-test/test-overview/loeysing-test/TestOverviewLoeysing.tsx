@@ -280,10 +280,13 @@ const TestOverviewLoeysing = () => {
       const testregel = contextSak.testreglar.find(
         (tr) => tr.id === testregelId
       );
+      const selectedTestresultat = testResults.filter(
+        (tr) => tr.testregelId === testregelId
+      );
       const newStatus = mapStatus(status);
 
       if (testStatusMap && testregel) {
-        if (status === 'under-arbeid' && isNotDefined(testResults)) {
+        if (status === 'under-arbeid' && isNotDefined(selectedTestresultat)) {
           doCreateTestResult(
             sakIdNumeric,
             loeysingIdNumeric,
@@ -291,7 +294,15 @@ const TestOverviewLoeysing = () => {
             pageType.nettsideId
           );
         } else {
-          const notFinished = testResults.filter((tr) =>
+          const isElementSide =
+            JSON.parse(testregel.testregelSchema).element.toLowerCase() ===
+            'side';
+          const missingKommentar =
+            isElementSide &&
+            selectedTestresultat.filter((tr) => isDefined(tr.kommentar))
+              .length !== selectedTestresultat.length;
+
+          const notFinished = selectedTestresultat.filter((tr) =>
             isNotDefined(tr.elementResultat)
           );
           if (status === 'ferdig' && notFinished.length > 0) {
@@ -300,9 +311,15 @@ const TestOverviewLoeysing = () => {
               `Kan ikkje sette status ${status}`,
               'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement'
             );
+          } else if (status === 'ferdig' && missingKommentar) {
+            setAlert(
+              'warning',
+              `Kan ikkje sette status ${status}`,
+              'Ferdigstatus kan ikkje settast før alle testelement har kommentar til resultat'
+            );
           } else {
             const updatedtestResults: ResultatManuellKontroll[] =
-              testResults.map((testResult) => ({
+              selectedTestresultat.map((testResult) => ({
                 id: testResult.id,
                 testgrunnlagId: sakIdNumeric,
                 loeysingId: loeysingIdNumeric,
@@ -314,6 +331,7 @@ const TestOverviewLoeysing = () => {
                 testVartUtfoert: testResult.testVartUtfoert,
                 svar: testResult.svar,
                 status: newStatus,
+                kommentar: testResult.kommentar,
               }));
 
             doUpdateTestResultStatus(updatedtestResults);
