@@ -103,9 +103,6 @@ const LoeysingTestContent = ({
       const handleResize = () => {
         const nextItemsPerRow = calculateItemsPerRow();
         setItemsPerRow(nextItemsPerRow);
-        if (itemsPerRow !== nextItemsPerRow) {
-          scrollIntoView('start');
-        }
       };
 
       window.addEventListener('resize', handleResize);
@@ -115,7 +112,7 @@ const LoeysingTestContent = ({
       };
     },
     250,
-    [buttonRef]
+    []
   );
 
   if (testFerdig) {
