@@ -15,6 +15,7 @@ interface Props {
     kommentar: string | undefined
   ) => void;
   kommentar: string;
+  isElementSide: boolean;
 }
 
 const TestFormResultat = ({
@@ -22,6 +23,7 @@ const TestFormResultat = ({
   onChangeKommentar,
   kommentar,
   resultatId,
+  isElementSide,
 }: Props) => {
   let severity: TestlabSeverity;
   let title: string;
@@ -79,7 +81,11 @@ const TestFormResultat = ({
         <Paragraph dangerouslySetInnerHTML={cleanHTMLUtfall}></Paragraph>
       </div>
       <DebouncedInput
-        label="Frivillig kommentar til resultatet"
+        label={
+          isElementSide
+            ? 'Kommenter resultat'
+            : 'Frivillig kommentar til resultatet'
+        }
         value={kommentar}
         onChange={onChange}
         textArea
