@@ -1,4 +1,5 @@
 import AlertModal from '@common/alert/AlertModal';
+import useDebouncedEffect from '@common/hooks/useDebouncedEffect';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
@@ -15,7 +16,7 @@ import {
 } from '@test/types';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props {
@@ -80,22 +81,42 @@ const LoeysingTestContent = ({
   const { loeysingId, testgrunnlagId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
   const alertRef = useRef<HTMLDialogElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const scrollIntoView = (block: ScrollLogicalPosition) => {
+    buttonRef?.current?.scrollIntoView({ block: block, inline: 'nearest' });
+    buttonRef?.current?.focus();
+  };
 
   const onClickSave = () => {
+    scrollIntoView('center');
     clearActiveTestregel();
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setItemsPerRow(calculateItemsPerRow());
-    };
+  const handleChangeTestregel = (testregelId: number) => {
+    scrollIntoView('center');
+    onChangeTestregel(testregelId);
+  };
 
-    window.addEventListener('resize', handleResize);
+  useDebouncedEffect(
+    () => {
+      const handleResize = () => {
+        const nextItemsPerRow = calculateItemsPerRow();
+        setItemsPerRow(nextItemsPerRow);
+        if (itemsPerRow !== nextItemsPerRow) {
+          scrollIntoView('start');
+        }
+      };
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    },
+    250,
+    [buttonRef]
+  );
 
   if (testFerdig) {
     return <TestFerdig />;
@@ -125,25 +146,29 @@ const LoeysingTestContent = ({
       {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
         <div className="testregel-row" key={rowIndex}>
           <div className="testregel-container">
-            {row.map((tr) => (
-              <TestregelButton
-                isActive={tr.id === Number(activeTest?.testregel.id)}
-                key={tr.id}
-                testregel={tr}
-                onClick={onChangeTestregel}
-                status={
-                  testStatusMap.get(
-                    toTestregelStatusKey(
-                      Number(testgrunnlagId),
-                      Number(loeysingId),
-                      tr.id,
-                      pageType.nettsideId
-                    )
-                  ) || 'ikkje-starta'
-                }
-                onChangeStatus={onChangeStatus}
-              />
-            ))}
+            {row.map((tr) => {
+              const isActive = tr.id === Number(activeTest?.testregel.id);
+              return (
+                <TestregelButton
+                  isActive={isActive}
+                  key={tr.id}
+                  testregel={tr}
+                  onClick={handleChangeTestregel}
+                  status={
+                    testStatusMap.get(
+                      toTestregelStatusKey(
+                        Number(testgrunnlagId),
+                        Number(loeysingId),
+                        tr.id,
+                        pageType.nettsideId
+                      )
+                    ) || 'ikkje-starta'
+                  }
+                  onChangeStatus={onChangeStatus}
+                  ref={isActive ? buttonRef : null}
+                />
+              );
+            })}
           </div>
           {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
             activeTest && (

@@ -9,6 +9,7 @@ import {
   TestregelOverviewElement,
 } from '@test/types';
 import classnames from 'classnames';
+import { forwardRef } from 'react';
 
 export interface Props {
   testregel: TestregelOverviewElement;
@@ -18,46 +19,47 @@ export interface Props {
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
 }
 
-const TestregelButton = ({
-  onClick,
-  testregel,
-  isActive,
-  status,
-  onChangeStatus,
-}: Props) => (
-  <div
-    className={classnames('testregel-button-wrapper', {
-      active: isActive,
-    })}
-  >
-    <button
-      className={classnames('testregel-button', {
+const TestregelButton = forwardRef<HTMLButtonElement, Props>(
+  ({ onClick, testregel, isActive, status, onChangeStatus }, buttonRef) => (
+    <div
+      className={classnames('testregel-button-wrapper', {
         active: isActive,
-        [status]: status,
       })}
-      onClick={() => {
-        onClick(testregel.id);
-      }}
-      title={`${testregel.krav} ${testregel.name}`}
     >
-      <div className="testregel-button-id">
-        <div className="id-text-wrapper">
-          <div className="krav">{testregel.krav}</div>
-          {(status !== 'ikkje-starta' || isActive) && (
-            <div className="status">
-              {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
-            </div>
-          )}
+      <button
+        ref={buttonRef}
+        className={classnames('testregel-button', {
+          active: isActive,
+          [status]: status,
+        })}
+        onClick={() => {
+          onClick(testregel.id);
+        }}
+        title={`${testregel.krav} ${testregel.name}`}
+      >
+        <div className="testregel-button-id">
+          <div className="id-text-wrapper">
+            <div className="krav">{testregel.krav}</div>
+            {(status !== 'ikkje-starta' || isActive) && (
+              <div className="status">
+                {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <Paragraph className="testregel-button-name">{testregel.name}</Paragraph>
-    </button>
-    <TestregelStatusDropdown
-      status={status}
-      onChangeStatus={onChangeStatus}
-      testregelId={testregel.id}
-    />
-  </div>
+        <Paragraph className="testregel-button-name">
+          {testregel.name}
+        </Paragraph>
+      </button>
+      <TestregelStatusDropdown
+        status={status}
+        onChangeStatus={onChangeStatus}
+        testregelId={testregel.id}
+      />
+    </div>
+  )
 );
+
+TestregelButton.displayName = 'TestregelButton';
 
 export default TestregelButton;
