@@ -56,12 +56,12 @@ class KontrollResource(
       @RequestBody updateKontrollBody: UpdateKontrollBody
   ): ResponseEntity<Unit> =
       runCatching {
-            val utval = utvalResource.fetchUtval(updateKontrollBody.utval.id).getOrThrow()
-            val loeysingar = utval.loeysingar
-            val oppdatertKontroll = updateKontrollBody.kontroll.copy(loeysingar = loeysingar)
             restTemplate.put(
-                testingApiProperties.url + "/kontroller/$id",
-                mapOf("kontroll" to oppdatertKontroll))
+                testingApiProperties.url + "/kontroller/{id}",
+                mapOf(
+                    "kontroll" to updateKontrollBody.kontroll,
+                    "utvalId" to updateKontrollBody.utval.id),
+                mapOf("id" to id))
             ResponseEntity.noContent().build<Unit>()
           }
           .getOrElse {
