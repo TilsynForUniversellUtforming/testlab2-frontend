@@ -8,11 +8,6 @@ export type VelgTestreglarLoader = {
   regelsettList: Regelsett[];
 };
 
-export type TestregelSelection = {
-  testregelList: TestregelBase[];
-  regelsettId?: number;
-};
-
 export type SelectionType = 'regelsett' | 'testregel';
 
 export type ModusFilter = 'automatisk' | 'manuell' | 'begge';

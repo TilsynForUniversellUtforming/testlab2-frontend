@@ -29,7 +29,7 @@ const VelgTestreglar = () => {
   const { testregelList, regelsettList } =
     useLoaderData() as VelgTestreglarLoader;
   const [selectionType, setSelectionType] =
-    useState<SelectionType>('regelsett');
+    useState<SelectionType>('testregel');
   const [selectedRegelsettId, setSelectedRegelsettId] = useState<number>();
   const [selectedTestregelIdList, setSelectedTestregelIdList] = useState<
     number[]
