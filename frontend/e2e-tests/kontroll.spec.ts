@@ -12,7 +12,7 @@ function saveKontrollId(page: Page) {
 }
 
 test('send inn skjema', async ({ page }) => {
-  await page.goto('/kontroll/opprett-kontroll');
+  await page.goto('/kontroll');
 
   await page.getByLabel('Velg kontrolltype').fill('Manuell kontroll');
   await page.fill('input[name="tittel"]', 'Test');
