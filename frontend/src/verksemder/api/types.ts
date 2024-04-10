@@ -19,8 +19,6 @@ export type Verksemd = {
   talTilsette: number;
   forvaltningsnivaa: string;
   tenesteromraade: string;
-  aktiv: boolean;
-  original: number;
   underAvviking: boolean;
 };
 export type VerksemdInit = {

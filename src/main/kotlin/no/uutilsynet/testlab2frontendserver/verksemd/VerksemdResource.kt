@@ -2,9 +2,10 @@ package no.uutilsynet.testlab2frontendserver.verksemd
 
 import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiProperties
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
 @RestController
@@ -14,10 +15,23 @@ class VerksemdResource(
     loeysingsregisterApiProperties: LoeysingsregisterApiProperties
 ) {
 
-  val verksemdUrlUrl = "${loeysingsregisterApiProperties.url}/v1/verksemd"
+  val verksemdUrl = "${loeysingsregisterApiProperties.url}/v1/verksemd"
+  val logger: Logger = LoggerFactory.getLogger(VerksemdResource::class.java)
 
   @GetMapping
   fun getVerksemder(): List<Verksemd> {
-    return restTemplate.getList(verksemdUrlUrl)
+    return restTemplate.getList(verksemdUrl)
+  }
+
+  @PutMapping
+  fun updateVerksemd(@RequestBody verksemd: Verksemd): ResponseEntity<out Any> {
+    return runCatching {
+          restTemplate.put(verksemdUrl + "/${verksemd.id}", verksemd)
+          ResponseEntity.ok(getVerksemder())
+        }
+        .getOrElse {
+          logger.error("Klarte ikkje å oppdatere verksemd", it)
+          ResponseEntity.badRequest().body(it.message)
+        }
   }
 }

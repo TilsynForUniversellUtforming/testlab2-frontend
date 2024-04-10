@@ -5,6 +5,7 @@ import {
   VerksemdContext,
   VerksemdUpdate,
 } from '@verksemder/api/types';
+import { updateVerksemd } from '@verksemder/api/verksemd-api';
 import VerksemdForm from '@verksemder/form/VerksemdForm';
 import { VERKSEMD_EDIT } from '@verksemder/VerksemdRoutes';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -14,10 +15,11 @@ const getVerksemd = (verksemdList: Verksemd[], id: string | undefined) => {
   return verksemdList.find((v) => v.id === Number(id));
 };
 const VerksemdEdit = () => {
-  const { verksemdList, contextLoading }: VerksemdContext = useOutletContext();
+  const { verksemdList, contextLoading, setVerksemdList }: VerksemdContext =
+    useOutletContext();
   const { id } = useParams();
   const [verksemd, setVerksemd] = useState(getVerksemd(verksemdList, id));
-  const [loading, setLoading] = useState(contextLoading);
+  const [, setLoading] = useState(contextLoading);
   const [alert] = useAlert();
 
   useEffect(() => {
@@ -32,12 +34,20 @@ const VerksemdEdit = () => {
 
   const onSubmit = useCallback(
     (verksemdEdit: VerksemdUpdate) => {
+      const doEditVerksemd = async () => {
+        if (verksemdEdit && id) {
+          setLoading(true);
+          const verksemd: Verksemd = { ...verksemdEdit, id: Number(id) };
+          const updated = await updateVerksemd(verksemd);
+          setVerksemdList(updated);
+          console.log(verksemd);
+        }
+      };
+      doEditVerksemd();
       console.log(verksemdEdit);
     },
     [verksemdList]
   );
-
-  console.log('Verksemd ' + JSON.stringify(verksemd) + ' Loading ' + loading);
 
   return (
     <VerksemdForm
