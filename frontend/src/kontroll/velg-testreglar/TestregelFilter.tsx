@@ -36,7 +36,7 @@ const TestregelFilter = ({
     <Heading level={3} size="small">
       Hva slags test skal du kjøre?
     </Heading>
-    <Chip.Group size="small">
+    <Chip.Group>
       <Chip.Toggle
         selected={modus === 'manuell'}
         onClick={() => onChangeModus('manuell')}

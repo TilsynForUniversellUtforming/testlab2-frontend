@@ -76,19 +76,17 @@ const VelgTestreglar = () => {
     [selectionType]
   );
 
-  const onSelectTestregelId = (testregelId: number) => {
-    const selectedTestregel = testregelList.find((tr) => tr.id === testregelId);
-    if (!selectedTestregel) {
-      throw new Error('Valgt regelsett finns ikkje');
+  const onSelectTestregelId = (selectedIds: string[]) => {
+    const selectedIdsNumeric = selectedIds.map((id) => Number(id));
+    const testregelIds = testregelList.map((tr) => tr.id);
+    const validTestregelIds = selectedIdsNumeric.every(
+      (id) => !isNaN(id) && testregelIds.includes(id)
+    );
+    if (!validTestregelIds) {
+      throw new Error('Valgt testregel finns ikkje');
     }
-    setSelectedTestregelIdList((prev) => {
-      const isAlreadySelected = prev.includes(testregelId);
-      if (isAlreadySelected) {
-        return prev.filter((id) => id !== testregelId);
-      } else {
-        return [...prev, testregelId];
-      }
-    });
+
+    setSelectedTestregelIdList(selectedIdsNumeric);
     setSelectedRegelsettId(undefined);
   };
 
@@ -139,7 +137,7 @@ const VelgTestreglar = () => {
           switchTitle={
             regelsettSelected
               ? 'Vel same regelsett til alle løysingar'
-              : 'Vel same testrelgar til alle løysingar'
+              : 'Vel same testreglar til alle løysingar'
           }
           selectAll={selectAll}
           onToggleSelectAll={toggleSelectAll}
