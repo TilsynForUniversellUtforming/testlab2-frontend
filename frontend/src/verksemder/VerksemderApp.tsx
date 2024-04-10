@@ -54,8 +54,6 @@ const VerksemderApp = () => {
     refresh: doFetchVerksemdList,
   };
 
-  console.log('Verksemdlist ' + JSON.stringify(verksemdList));
-
   return <Outlet context={verksemdContext} />;
 };
 

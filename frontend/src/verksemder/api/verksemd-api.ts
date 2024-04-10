@@ -34,7 +34,7 @@ const verksemdLoeysingRelation_dummy_response: LoeysingNettsideRelation[] = [
   },
 ];
 
-const getVerksemdList_dummy = async (): Promise<Verksemd[]> => {
+const getVerksemdList_dummy = async () => {
   return verksemdList_dummy_response;
 };
 

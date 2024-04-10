@@ -11,7 +11,7 @@ data class Verksemd(
     val naeringskode: String,
     val naeringskodeBeskrivelse: String,
     val organisasjonsformKode: String,
-    val organsisasjonsformOmtale: String,
+    val organisasjonsformOmtale: String,
     val fylkesnummer: String,
     val fylke: String,
     val kommune: String,
