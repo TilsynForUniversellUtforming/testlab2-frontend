@@ -1,9 +1,10 @@
 import { AlertProps } from '@common/alert/AlertTimed';
-import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkeleton';
 import TestlabForm, { TestlabFormProps } from '@common/form/TestlabForm';
+import TestlabFormCheckbox from '@common/form/TestlabFormCheckbox';
+import TestlabFormInput from '@common/form/TestlabFormInput';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loeysingValidationSchema } from '@loeysingar/form/loeysingValidationSchema';
 import { Verksemd, VerksemdUpdate } from '@verksemder/api/types';
+import { verksemdValidationSchema } from '@verksemder/form/VerksemdValidationSchema';
 import { useForm } from 'react-hook-form';
 
 export interface Props
@@ -13,8 +14,6 @@ export interface Props
 }
 
 const VerksemdForm = ({ verksemd, heading, description, onSubmit }: Props) => {
-  console.log('VerksemdForm ' + JSON.stringify(verksemd));
-
   const formMethods = useForm<VerksemdUpdate>({
     defaultValues: {
       namn: verksemd?.namn ?? '',
@@ -37,7 +36,7 @@ const VerksemdForm = ({ verksemd, heading, description, onSubmit }: Props) => {
       tenesteromraade: verksemd?.tenesteromraade ?? '',
       underAvviking: verksemd?.underAvviking ?? false,
     },
-    resolver: zodResolver(loeysingValidationSchema),
+    resolver: zodResolver(verksemdValidationSchema),
   });
 
   return (
@@ -50,133 +49,101 @@ const VerksemdForm = ({ verksemd, heading, description, onSubmit }: Props) => {
         hasRequiredFields
       >
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Namn"
-            name="namn"
-            required
-          />
+          <TestlabFormInput label="Namn" name="namn" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Organisasjonsnummer"
             name="organisasjonsnummer"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Institusjonell sektorkode"
             name="institusjonellSektorkode"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Institusjonell sektorkode beskrivelse"
             name="institusjonellSektorkodeBeskrivelse"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Næringskode"
-            name="naeringskode"
-            required
-          />
+          <TestlabFormInput label="Næringskode" name="naeringskode" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Naeringskode beskrivelse"
             name="naeringskodeBeskrivelse"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Organisasjonsform kode"
             name="organisasjonsformKode"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Organisasjonsform omtale"
             name="organisasjonsformOmtale"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Fylkesnummer"
-            name="fylkesnummer"
-            required
-          />
+          <TestlabFormInput label="Fylkesnummer" name="fylkesnummer" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Fylke"
-            name="fylke"
-            required
-          />
+          <TestlabFormInput label="Fylke" name="fylke" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Kommune"
-            name="kommune"
-            required
-          />
+          <TestlabFormInput label="Kommune" name="kommune" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Kommunenummer"
             name="kommunenummer"
             required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Postnummer"
-            name="postnummer"
-            required
-          />
+          <TestlabFormInput label="Postnummer" name="postnummer" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Poststad"
-            name="poststad"
-            required
-          />
+          <TestlabFormInput label="Poststad" name="poststad" required />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Tal tilsette"
             name="talTilsette"
             required
+            type={'number'}
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormInput
             label="Forvaltningsnivaa"
             name="forvaltningsnivaa"
-            required
           />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
-            label="Tenesteromraade"
-            name="tenesteromraade"
-            required
-          />
+          <TestlabFormInput label="Tenesteromraade" name="tenesteromraade" />
         </div>
         <div className="loeysing-form__input">
-          <TestlabFormFieldSkeleton<VerksemdUpdate>
+          <TestlabFormCheckbox
             label="Under avviking"
+            checkboxLabel={'underAvviking'}
             name="underAvviking"
-            required
           />
         </div>
         <div className="loeysing-form__submit">
-          <TestlabForm.FormButtons loading />
+          <TestlabForm.FormButtons />
         </div>
       </TestlabForm>
       )
