@@ -46,6 +46,7 @@ const LoeysingEdit = () => {
             namn: loeysingInit.namn,
             url: loeysingInit.url,
             orgnummer: orgnummerWithoutWhitespace,
+            verksemdId: loeysingInit.verksemdId,
           };
 
           const existingLoeysing = loeysingList.find(
@@ -84,6 +85,8 @@ const LoeysingEdit = () => {
       <LoeysingFormSkeleton heading="Endre løysing" subHeading="Laster..." />
     );
   }
+
+  console.log('LoeysingEdit: loeysing', loeysing);
 
   return (
     <LoeysingForm

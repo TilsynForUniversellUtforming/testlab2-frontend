@@ -27,6 +27,7 @@ const LoeysingForm = ({
       namn: loeysing?.namn ?? '',
       url: loeysing?.url ?? '',
       organisasjonsnummer: loeysing?.orgnummer ?? '',
+      verksemdId: loeysing?.verksemdId ?? 0,
     },
     resolver: zodResolver(loeysingValidationSchema),
   });
