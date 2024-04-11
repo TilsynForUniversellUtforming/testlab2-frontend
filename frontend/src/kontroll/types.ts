@@ -1,3 +1,5 @@
+import { Utval } from '@loeysingar/api/types';
+
 export type Kontroll = {
   id: number;
   kontrolltype: KontrollType;
@@ -5,6 +7,7 @@ export type Kontroll = {
   saksbehandler: string;
   sakstype: Sakstype;
   arkivreferanse: string;
+  utval: Utval;
 };
 
 export type KontrollType = 'manuell-kontroll';
