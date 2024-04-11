@@ -1,8 +1,9 @@
 import ErrorCard from '@common/error/ErrorCard';
+import { Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { Outlet } from 'react-router';
-import { RouteObject, useRouteError } from 'react-router-dom';
+import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
 import { fetchKontroll, updateKontroll } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
@@ -42,16 +43,21 @@ export const KontrollRoutes: RouteObject = {
         return { kontroll: await response.json(), utval };
       },
       action: async ({ request }) => {
-        const { kontroll, utval } = (await request.json()) as {
+        const { kontroll, utval, neste } = (await request.json()) as {
           kontroll: Kontroll;
           utval: Utval;
+          neste: boolean;
         };
         const response = await updateKontroll(kontroll, utval);
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return null;
+        return neste ? redirect(`/kontroll/${kontroll.id}/sideutvalg`) : null;
       },
+    },
+    {
+      path: ':kontrollId/sideutvalg',
+      element: <Heading level={1}>Sideutvalg</Heading>,
     },
   ],
 };
