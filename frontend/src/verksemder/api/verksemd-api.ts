@@ -102,15 +102,15 @@ export const createVerksemd = async (
   );
 };
 
-export const deleteVerksemdList = async (
-  VerksemdIdList: number[]
+export const deleteVerksemd = async (
+  verksemdId: number[]
 ): Promise<Verksemd[]> => {
-  const response = await fetchWrapper(`/api/v1/Verksemd`, {
+  const response = await fetchWrapper(`/api/v1/verksemd`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ VerksemdIdList: VerksemdIdList }),
+    body: JSON.stringify({ verksemdId }),
   });
 
   if (response.ok) {

@@ -15,8 +15,12 @@ const getVerksemd = (verksemdList: Verksemd[], id: string | undefined) => {
   return verksemdList.find((v) => v.id === Number(id));
 };
 const VerksemdEdit = () => {
-  const { verksemdList, contextLoading, setVerksemdList }: VerksemdContext =
-    useOutletContext();
+  const {
+    verksemdList,
+    contextLoading,
+    setVerksemdList,
+    setContextError,
+  }: VerksemdContext = useOutletContext();
   const { id } = useParams();
   const [verksemd, setVerksemd] = useState(getVerksemd(verksemdList, id));
   const [, setLoading] = useState(contextLoading);
@@ -38,8 +42,12 @@ const VerksemdEdit = () => {
         if (verksemdEdit && id) {
           setLoading(true);
           const verksemd: Verksemd = { ...verksemdEdit, id: Number(id) };
-          const updated = await updateVerksemd(verksemd);
-          setVerksemdList(updated);
+          try {
+            const updated = await updateVerksemd(verksemd);
+            setVerksemdList(updated);
+          } catch (e) {
+            setContextError(new Error('Kunne ikkje endre løysing'));
+          }
           console.log(verksemd);
         }
       };

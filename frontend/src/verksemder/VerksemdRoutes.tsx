@@ -1,4 +1,5 @@
-import { AppRoute, idPath } from '@common/util/routeUtils';
+import { AppRoute, createPath, idPath } from '@common/util/routeUtils';
+import VerksemdCreate from '@verksemder/form/VerksemdCreate';
 import VerksemdList from '@verksemder/list/VerksemdList';
 import VerksemdEdit from '@verksemder/VerksemdEdit';
 import VerksemderApp from '@verksemder/VerksemderApp';
@@ -19,6 +20,12 @@ export const VERKSEMD_EDIT: AppRoute = {
   parentRoute: VERKSEMD_LIST,
 };
 
+export const VERKSEMD_CREATE: AppRoute = {
+  navn: 'Ny verksemd',
+  path: createPath,
+  parentRoute: VERKSEMD_LIST,
+};
+
 export const VerksemdRoutes: RouteObject = {
   path: VERKSEMD_LIST.path,
   element: <VerksemderApp />,
@@ -27,6 +34,11 @@ export const VerksemdRoutes: RouteObject = {
     {
       index: true,
       element: <VerksemdList />,
+    },
+    {
+      path: createPath,
+      element: <VerksemdCreate />,
+      handle: { name: VERKSEMD_CREATE.navn },
     },
     {
       path: idPath,
