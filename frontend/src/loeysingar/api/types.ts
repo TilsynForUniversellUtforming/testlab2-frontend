@@ -3,12 +3,14 @@ export type Loeysing = {
   namn: string;
   url: string;
   orgnummer: string;
+  verksemdId: number | undefined;
 };
 
 export type LoeysingInit = {
   namn: string;
   url: string;
   organisasjonsnummer: string;
+  verksemdId: number | undefined;
 };
 
 export type Utval = {
