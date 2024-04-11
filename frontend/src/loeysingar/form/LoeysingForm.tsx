@@ -32,6 +32,8 @@ const LoeysingForm = ({
     resolver: zodResolver(loeysingValidationSchema),
   });
 
+  console.log('loeysing', JSON.stringify(loeysing));
+
   return (
     <div className="loeysing-form">
       <TestlabForm<LoeysingInit>
@@ -60,6 +62,12 @@ const LoeysingForm = ({
             label="Organisasjonsnummer"
             name="organisasjonsnummer"
             required
+          />
+        </div>
+        <div className="loeysing-form__input">
+          <TestlabForm.FormInput<LoeysingInit>
+            label="Verksemd"
+            name="verksemdId"
           />
         </div>
         <div className="loeysing-form__submit">
