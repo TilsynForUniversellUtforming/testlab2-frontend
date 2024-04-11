@@ -21,6 +21,8 @@ test('opprett kontroll', async ({ page }) => {
   await page.fill('input[name="arkivreferanse"]', '123');
   await page.click('button[type="submit"]');
 
+  saveKontrollId(page);
+
   await expect(
     page.getByRole('heading', { name: 'Velg løsninger' })
   ).toBeVisible();
@@ -30,8 +32,6 @@ test('opprett kontroll', async ({ page }) => {
   await page.getByRole('button', { name: 'Neste' }).click();
 
   await expect(page.getByRole('heading', { name: 'Sideutvalg' })).toBeVisible();
-
-  saveKontrollId(page);
 });
 
 test.afterAll(async () => {
