@@ -34,4 +34,31 @@ class VerksemdResource(
           ResponseEntity.badRequest().body(it.message)
         }
   }
+
+  @DeleteMapping
+  fun deleteVerksemd(@RequestBody id: Int): ResponseEntity<out Any> {
+    return runCatching {
+          restTemplate.delete(verksemdUrl + "/${id}")
+          ResponseEntity.ok(getVerksemder())
+        }
+        .getOrElse {
+          logger.error("Klarte ikkje å slette verksemd", it)
+          ResponseEntity.badRequest().body(it.message)
+        }
+  }
+
+  @PostMapping
+  fun createVerksemd(@RequestBody verksemdInit: NyVerksemdBase): ResponseEntity<out Any> {
+    return runCatching {
+          val nyVerksemd =
+              restTemplate.postForEntity(verksemdUrl, verksemdInit, Verksemd::class.java)
+          ResponseEntity.ok(nyVerksemd.body)
+        }
+        .getOrElse {
+          logger.error("Klarte ikkje å opprette verksemd")
+          ResponseEntity.badRequest().body(it.message)
+        }
+  }
 }
+
+data class NyVerksemdBase(val organisasjonsnummer: String)

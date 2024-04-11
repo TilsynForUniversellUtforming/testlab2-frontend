@@ -3,7 +3,7 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { ColumnDef } from '@tanstack/react-table';
 import { Verksemd, VerksemdContext } from '@verksemder/api/types';
 import { getVerksemdColumns } from '@verksemder/list/VerksemdColumns';
-import { VERKSEMD_EDIT } from '@verksemder/VerksemdRoutes';
+import { VERKSEMD_CREATE, VERKSEMD_EDIT } from '@verksemder/VerksemdRoutes';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
@@ -30,6 +30,12 @@ const VerksemdList = () => {
         data: verksemdList,
         defaultColumns: verksemdColumns,
         loading: loading,
+        rowActions: [
+          {
+            action: 'add',
+            route: VERKSEMD_CREATE,
+          },
+        ],
         onClickRow: (row) =>
           navigate(
             getFullPath(VERKSEMD_EDIT, {
