@@ -16,7 +16,13 @@ const VelgLoesninger = () => {
     kontroll: Kontroll;
     utval: Utval[];
   };
-  const [selectedOption, setSelectedOption] = React.useState<SelectedOption>();
+  const [selectedOption, setSelectedOption] = React.useState<
+    SelectedOption | undefined
+  >(() => {
+    if (kontroll?.utval) {
+      return { t: 'utvalg', valgtUtvalg: kontroll.utval };
+    }
+  });
   const submit = useSubmit();
 
   const utvalSortedByOppretta = utval.toSorted(
@@ -82,7 +88,9 @@ const VelgLoesninger = () => {
       </div>
       <div className={classes.utvalgEllerManuelt}>
         <button
-          onClick={() => setSelectedOption({ t: 'utvalg' })}
+          onClick={() =>
+            setSelectedOption({ t: 'utvalg', valgtUtvalg: kontroll?.utval })
+          }
           className={classNames({
             [classes.selected]: isUtvalg(selectedOption),
           })}
