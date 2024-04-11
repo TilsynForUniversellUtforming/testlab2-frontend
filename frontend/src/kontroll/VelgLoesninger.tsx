@@ -55,18 +55,21 @@ const VelgLoesninger = () => {
     );
   }
 
-  function lagreKontroll() {
-    if (isUtvalg(selectedOption) && selectedOption.valgtUtvalg) {
-      const data = {
-        kontroll,
-        utval: selectedOption.valgtUtvalg,
-      };
-      submit(JSON.stringify(data), {
-        method: 'put',
-        action: `/kontroll/${kontroll.id}/velg-losninger`,
-        encType: 'application/json',
-      });
-    }
+  function lagre(gaaTilNeste: boolean): () => void {
+    return () => {
+      if (isUtvalg(selectedOption) && selectedOption.valgtUtvalg) {
+        const data = {
+          kontroll,
+          utval: selectedOption.valgtUtvalg,
+          neste: gaaTilNeste,
+        };
+        submit(JSON.stringify(data), {
+          method: 'put',
+          action: `/kontroll/${kontroll.id}/velg-losninger`,
+          encType: 'application/json',
+        });
+      }
+    };
   }
 
   return (
@@ -142,10 +145,12 @@ const VelgLoesninger = () => {
             </>
           )}
           <div className={classes.lagreOgNeste}>
-            <Button variant="secondary" onClick={lagreKontroll}>
+            <Button variant="secondary" onClick={lagre(false)}>
               Lagre kontroll
             </Button>
-            <Button variant="primary">Neste</Button>
+            <Button variant="primary" onClick={lagre(true)}>
+              Neste
+            </Button>
           </div>
         </>
       )}
