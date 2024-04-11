@@ -117,6 +117,7 @@ const VelgLoesninger = () => {
           <div className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
               <button
+                data-testid="utvalg"
                 key={u.id}
                 onClick={velgUtvalg(u)}
                 className={classNames({ [classes.selected]: isValgt(u) })}
