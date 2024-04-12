@@ -1,21 +1,33 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
-import { Alert, Button, Heading } from '@digdir/designsystemet-react';
+import { Alert, Button, Heading, Spinner } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
+import { CheckmarkIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
-import React from 'react';
-import { useLoaderData, useSubmit } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from './kontroll.module.css';
 import { Kontroll } from './types';
 
 type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };
 type SelectedOption = SelectedUtvalg | { t: 'løsning' };
+type SaveState =
+  | { t: 'idle' }
+  | { t: 'saving'; timestamp: Date }
+  | { t: 'saved' };
+
+function isSaving(
+  saveState: SaveState
+): saveState is { t: 'saving'; timestamp: Date } {
+  return saveState.t === 'saving';
+}
 
 const VelgLoesninger = () => {
   const { kontroll, utval } = useLoaderData() as {
     kontroll: Kontroll;
     utval: Utval[];
   };
+  const actionData = useActionData() as { sistLagret: Date };
   const [selectedOption, setSelectedOption] = React.useState<
     SelectedOption | undefined
   >(() => {
@@ -23,6 +35,7 @@ const VelgLoesninger = () => {
       return { t: 'utvalg', valgtUtvalg: kontroll.utval };
     }
   });
+  const [saveState, setSaveState] = React.useState<SaveState>({ t: 'idle' });
   const submit = useSubmit();
 
   const utvalSortedByOppretta = utval.toSorted(
@@ -30,6 +43,20 @@ const VelgLoesninger = () => {
   );
   const nyesteUtvalg = take(utvalSortedByOppretta, 6);
   const eldreUtvalg = drop(utvalSortedByOppretta, 6);
+
+  useEffect(() => {
+    if (actionData?.sistLagret && isSaving(saveState)) {
+      const now = new Date();
+      const diff = now.getTime() - saveState.timestamp.getTime();
+      const wait = diff < 1000 ? 1000 - diff : 0;
+      setTimeout(() => {
+        setSaveState({ t: 'saved' });
+      }, wait);
+      setTimeout(() => {
+        setSaveState({ t: 'idle' });
+      }, wait + 3000);
+    }
+  }, [actionData]);
 
   function velgUtvalg(utval: Utval) {
     return function () {
@@ -58,6 +85,7 @@ const VelgLoesninger = () => {
   function lagre(gaaTilNeste: boolean): () => void {
     return () => {
       if (isUtvalg(selectedOption) && selectedOption.valgtUtvalg) {
+        setSaveState({ t: 'saving', timestamp: new Date() });
         const data = {
           kontroll,
           utval: selectedOption.valgtUtvalg,
@@ -146,12 +174,28 @@ const VelgLoesninger = () => {
             </>
           )}
           <div className={classes.lagreOgNeste}>
-            <Button variant="secondary" onClick={lagre(false)}>
+            <Button
+              variant="secondary"
+              onClick={lagre(false)}
+              aria-disabled={isSaving(saveState)}
+            >
               Lagre kontroll
             </Button>
-            <Button variant="primary" onClick={lagre(true)}>
+            <Button
+              variant="primary"
+              onClick={lagre(true)}
+              aria-disabled={isSaving(saveState)}
+            >
               Neste
             </Button>
+            {isSaving(saveState) && (
+              <Spinner title={'Lagrer...'} size="small" />
+            )}
+            {saveState.t === 'saved' && (
+              <span className={classes.lagret}>
+                Lagret <CheckmarkIcon fontSize="1.5rem" />
+              </span>
+            )}
           </div>
         </>
       )}
