@@ -158,4 +158,11 @@
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
+  align-items: center;
+}
+
+.lagret {
+  display: flex;
+  color: var(--fds-semantic-surface-success-default);
+  align-items: center;
 }
