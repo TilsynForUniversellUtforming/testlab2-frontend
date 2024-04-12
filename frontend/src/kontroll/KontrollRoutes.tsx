@@ -52,7 +52,9 @@ export const KontrollRoutes: RouteObject = {
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return neste ? redirect(`/kontroll/${kontroll.id}/sideutvalg`) : null;
+        return neste
+          ? redirect(`/kontroll/${kontroll.id}/sideutvalg`)
+          : { sistLagret: new Date() };
       },
     },
     {
