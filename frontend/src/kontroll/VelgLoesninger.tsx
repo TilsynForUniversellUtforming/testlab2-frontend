@@ -6,7 +6,7 @@ import React from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from './kontroll.module.css';
-import LagreOgNeste from './LagreOgNeste';
+import LagreOgNeste from './lagre-og-neste/LagreOgNeste';
 import { Kontroll } from './types';
 
 type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };

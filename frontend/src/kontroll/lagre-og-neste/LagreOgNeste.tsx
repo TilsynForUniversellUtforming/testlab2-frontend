@@ -2,7 +2,7 @@ import { Button, Spinner } from '@digdir/designsystemet-react';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import React, { useEffect } from 'react';
 
-import classes from './kontroll.module.css';
+import classes from './lagre-og-neste.module.css';
 
 type SaveState =
   | { t: 'idle' }
