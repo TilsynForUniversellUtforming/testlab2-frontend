@@ -23,6 +23,12 @@ class VerksemdResource(
     return restTemplate.getList(verksemdUrl)
   }
 
+  @GetMapping("/{id}")
+  fun getVerksemd(@PathVariable id: Int): ResponseEntity<out Any> {
+    val verksemd = restTemplate.getForObject("$verksemdUrl/$id", Verksemd::class.java)
+    return if (verksemd != null) ResponseEntity.ok(verksemd) else ResponseEntity.notFound().build()
+  }
+
   @PutMapping
   fun updateVerksemd(@RequestBody verksemd: Verksemd): ResponseEntity<out Any> {
     return runCatching {
@@ -31,7 +37,7 @@ class VerksemdResource(
         }
         .getOrElse {
           logger.error("Klarte ikkje å oppdatere verksemd", it)
-          ResponseEntity.badRequest().body(it.message)
+          ResponseEntity.internalServerError().body(it.message)
         }
   }
 
@@ -43,7 +49,7 @@ class VerksemdResource(
         }
         .getOrElse {
           logger.error("Klarte ikkje å slette verksemd", it)
-          ResponseEntity.badRequest().body(it.message)
+          ResponseEntity.internalServerError().body(it.message)
         }
   }
 
@@ -51,12 +57,12 @@ class VerksemdResource(
   fun createVerksemd(@RequestBody verksemdInit: NyVerksemdBase): ResponseEntity<out Any> {
     return runCatching {
           val nyVerksemd =
-              restTemplate.postForEntity(verksemdUrl, verksemdInit, Verksemd::class.java)
-          ResponseEntity.ok(nyVerksemd.body)
+              restTemplate.postForObject(verksemdUrl, verksemdInit, Verksemd::class.java)
+          ResponseEntity.ok(nyVerksemd)
         }
         .getOrElse {
           logger.error("Klarte ikkje å opprette verksemd")
-          ResponseEntity.badRequest().body(it.message)
+          ResponseEntity.internalServerError().body(it.message)
         }
   }
 }

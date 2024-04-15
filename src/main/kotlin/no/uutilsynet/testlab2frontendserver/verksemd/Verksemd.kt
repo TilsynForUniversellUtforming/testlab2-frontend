@@ -6,18 +6,12 @@ data class Verksemd(
     val id: Int,
     val namn: String,
     val organisasjonsnummer: String,
-    val institusjonellSektorkode: String,
-    val institusjonellSektorkodeBeskrivelse: String,
-    val naeringskode: String,
-    val naeringskodeBeskrivelse: String,
-    val organisasjonsformKode: String,
-    val organisasjonsformOmtale: String,
-    val fylkesnummer: String,
-    val fylke: String,
-    val kommune: String,
-    val kommunenummer: String,
-    val postnummer: String?,
-    val poststad: String?,
+    val institusjonellSektorKode: InstitusjonellSektorKode,
+    val naeringskode: Nearingskode,
+    val organisasjonsform: Organisasjonsform,
+    val fylke: Fylke,
+    val kommune: Kommune,
+    val postadresse: Postadresse?,
     val talTilsette: Int,
     val forvaltningsnivaa: String?,
     val tenesteromraade: String?,
@@ -26,3 +20,15 @@ data class Verksemd(
     val tidspunkt: Instant = Instant.now(),
     val underAvviking: Boolean = false
 )
+
+data class Postadresse(val poststad: String?, val postnummer: String?)
+
+data class InstitusjonellSektorKode(val kode: String, val beskrivelse: String)
+
+data class Nearingskode(val kode: String, val beskrivelse: String)
+
+data class Organisasjonsform(val kode: String, val omtale: String)
+
+data class Fylke(val fylkesnummer: String, val fylke: String)
+
+data class Kommune(val kommunenummer: String, val kommune: String)
