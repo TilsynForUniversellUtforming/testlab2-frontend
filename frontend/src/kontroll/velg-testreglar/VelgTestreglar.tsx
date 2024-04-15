@@ -1,15 +1,23 @@
+import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isEmpty } from '@common/util/arrayUtils';
 import { isNotDefined } from '@common/util/validationUtils';
-import { Button, Heading, Paragraph } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+  Spinner,
+} from '@digdir/designsystemet-react';
+import { CheckmarkIcon } from '@navikt/aksel-icons';
 import {
   Regelsett,
   TestregelBase,
   TestregelModus,
 } from '@testreglar/api/types';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
-import { useLoaderData, useSubmit } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import { UpdateKontrollTestregel } from '../types';
@@ -28,17 +36,42 @@ const filterByModus = <T extends { modus: TestregelModus }>(
   return list;
 };
 
+type SaveState =
+  | { t: 'idle' }
+  | { t: 'saving'; timestamp: Date }
+  | { t: 'saved' };
+
+function isSaving(
+  saveState: SaveState
+): saveState is { t: 'saving'; timestamp: Date } {
+  return saveState.t === 'saving';
+}
+
 const VelgTestreglar = () => {
   const { kontroll, testregelList, regelsettList } =
     useLoaderData() as VelgTestreglarLoader;
   const submit = useSubmit();
+  const [alert, setAlert] = useAlert();
 
+  /* Regelsett */
+  const initRegelsettId = kontroll?.testreglar?.regelsettId;
+  const [selectedRegelsettId, setSelectedRegelsettId] = useState<
+    number | undefined
+  >(initRegelsettId);
+
+  /* Manuelt valgte testregler */
+  const initTestregelIdList = initRegelsettId
+    ? []
+    : kontroll?.testreglar?.testregelList?.map((tr) => tr.id) || [];
+  const [selectedTestregelIdList, setSelectedTestregelIdList] =
+    useState<number[]>(initTestregelIdList);
+
+  /* Skal sette testregler manuelt eller regelsett */
+  const isRegelsett = initRegelsettId || isNotDefined(kontroll?.testreglar);
+  const initSelectionType = isRegelsett ? 'regelsett' : 'testregel';
   const [selectionType, setSelectionType] =
-    useState<SelectionType>('testregel');
-  const [selectedRegelsettId, setSelectedRegelsettId] = useState<number>();
-  const [selectedTestregelIdList, setSelectedTestregelIdList] = useState<
-    number[]
-  >([]);
+    useState<SelectionType>(initSelectionType);
+
   const [selectAll, setSelectAll] = useState(true);
   const [modus, setModus] = useState<ModusFilter>('manuell');
   const [filteredTestregelList, setFilteredTestregelList] = useState<
@@ -47,6 +80,24 @@ const VelgTestreglar = () => {
   const [filteredRegelsettList, setFilteredRegelsettList] = useState<
     Regelsett[]
   >(filterByModus(regelsettList, modus));
+
+  const [saveState, setSaveState] = useState<SaveState>({ t: 'idle' });
+
+  const actionData = useActionData() as { sistLagret: Date };
+
+  useEffect(() => {
+    if (actionData?.sistLagret && isSaving(saveState)) {
+      const now = new Date();
+      const diff = now.getTime() - saveState.timestamp.getTime();
+      const wait = diff < 1000 ? 1000 - diff : 0;
+      setTimeout(() => {
+        setSaveState({ t: 'saved' });
+      }, wait);
+      setTimeout(() => {
+        setSaveState({ t: 'idle' });
+      }, wait + 3000);
+    }
+  }, [actionData]);
 
   const toggleSelectAll = () => {
     setSelectAll((selectAll) => !selectAll);
@@ -99,6 +150,8 @@ const VelgTestreglar = () => {
 
   const lagreKontroll = () => {
     const testregelIdList: number[] = [];
+    alert?.clearMessage();
+    setSaveState({ t: 'saving', timestamp: new Date() });
 
     if (regelsettSelected && selectedRegelsettId) {
       const testregelIdsForRegelsett = regelsettList
@@ -106,22 +159,22 @@ const VelgTestreglar = () => {
         ?.testregelList.map((tr) => tr.id);
 
       if (isNotDefined(testregelIdsForRegelsett)) {
-        throw new Error('Kan ikkje lagre, regelsett finns ikkje');
+        setAlert('danger', 'Kan ikkje lagre, regelsett finns ikkje');
+      } else {
+        testregelIdList.push(...testregelIdsForRegelsett);
       }
-
-      testregelIdList.push(...testregelIdsForRegelsett);
     } else {
       if (isEmpty(selectedTestregelIdList)) {
-        throw new Error('Kan ikkje lagre uten testreglar');
+        setAlert('danger', 'Kan ikkje lagre uten testreglar');
+      } else {
+        testregelIdList.push(...selectedTestregelIdList);
       }
-
-      testregelIdList.push(...selectedTestregelIdList);
     }
 
     const data: UpdateKontrollTestregel = {
       kontroll,
       testreglar: {
-        regesettId: selectedRegelsettId,
+        regelsettId: selectedRegelsettId,
         testregelIdList: testregelIdList,
       },
     };
@@ -191,6 +244,7 @@ const VelgTestreglar = () => {
               <RegelsettSelector
                 regelsettList={filteredRegelsettList}
                 onSelectRegelsett={onSelectRegelsett}
+                modus={modus}
                 selectedRegelsettId={selectedRegelsettId}
               />
             }
@@ -204,11 +258,28 @@ const VelgTestreglar = () => {
             }
           />
         </div>
+        {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
         <div className={classes.lagreOgNeste}>
-          <Button variant="secondary" onClick={lagreKontroll}>
+          <Button
+            variant="secondary"
+            onClick={lagreKontroll}
+            aria-disabled={isSaving(saveState)}
+          >
             Lagre kontroll
           </Button>
-          <Button variant="primary">Neste</Button>
+          <Button
+            variant="primary"
+            onClick={lagreKontroll}
+            aria-disabled={isSaving(saveState)}
+          >
+            Neste
+          </Button>
+          {isSaving(saveState) && <Spinner title={'Lagrer...'} size="small" />}
+          {saveState.t === 'saved' && (
+            <span className={classes.lagret}>
+              Lagret <CheckmarkIcon fontSize="1.5rem" />
+            </span>
+          )}
         </div>
       </div>
     </section>

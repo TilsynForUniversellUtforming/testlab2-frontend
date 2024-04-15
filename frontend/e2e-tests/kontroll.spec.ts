@@ -11,7 +11,7 @@ function saveKontrollId(page: Page) {
   }
 }
 
-test('send inn skjema', async ({ page }) => {
+test('opprett kontroll', async ({ page }) => {
   await page.goto('/kontroll');
 
   await page.getByLabel('Velg kontrolltype').fill('Manuell kontroll');
@@ -21,16 +21,23 @@ test('send inn skjema', async ({ page }) => {
   await page.fill('input[name="arkivreferanse"]', '123');
   await page.click('button[type="submit"]');
 
+  saveKontrollId(page);
+
   await expect(
     page.getByRole('heading', { name: 'Velg løsninger' })
   ).toBeVisible();
 
-  saveKontrollId(page);
+  await page.getByRole('button', { name: 'Velg løsninger fra utvalg' }).click();
+  await page.getByTestId('utvalg').first().click();
+  await page.getByRole('button', { name: 'Neste' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Sideutvalg' })).toBeVisible();
 });
 
 test.afterAll(async () => {
-  for (const id of deleteThese) {
-    const requestContext = await request.newContext();
-    await requestContext.delete('/api/v1/kontroller/' + id);
-  }
+  const requestContext = await request.newContext();
+  const promises = deleteThese.map((id) =>
+    requestContext.delete('/api/v1/kontroller/' + id)
+  );
+  await Promise.all(promises);
 });

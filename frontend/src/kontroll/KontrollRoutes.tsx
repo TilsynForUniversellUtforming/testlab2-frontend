@@ -1,4 +1,5 @@
 import ErrorCard from '@common/error/ErrorCard';
+import { Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
@@ -60,15 +61,18 @@ export const KontrollRoutes: RouteObject = {
         return { kontroll: await response.json(), utval };
       },
       action: async ({ request }) => {
-        const { kontroll, utval } = (await request.json()) as {
+        const { kontroll, utval, neste } = (await request.json()) as {
           kontroll: Kontroll;
           utval: Utval;
+          neste: boolean;
         };
         const response = await updateKontroll(kontroll, utval);
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return redirect(`/kontroll/${kontroll.id}/velg-testreglar`);
+        return neste
+          ? redirect(`/kontroll/${kontroll.id}/velg-testreglar`)
+          : { sistLagret: new Date() };
       },
     },
     {
@@ -111,8 +115,12 @@ export const KontrollRoutes: RouteObject = {
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return null;
+        return { sistLagret: new Date() };
       },
+    },
+    {
+      path: ':kontrollId/sideutvalg',
+      element: <Heading level={1}>Sideutvalg</Heading>,
     },
   ],
 };

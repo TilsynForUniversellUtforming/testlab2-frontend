@@ -3,18 +3,29 @@ import { Regelsett } from '@testreglar/api/types';
 import classNames from 'classnames';
 
 import classes from '../kontroll.module.css';
+import { ModusFilter } from './types';
 
 interface Props {
   regelsettList: Regelsett[];
   selectedRegelsettId: number | undefined;
   onSelectRegelsett: (regelsettId: number) => void;
+  modus: ModusFilter;
 }
 
 const RegelsettSelector = ({
   onSelectRegelsett,
   selectedRegelsettId,
   regelsettList,
+  modus,
 }: Props) => {
+  if (modus !== 'manuell') {
+    return (
+      <Alert severity="warning">
+        Kun manuelle testreglar kan veljast for manuell test
+      </Alert>
+    );
+  }
+
   if (regelsettList.length === 0) {
     return (
       <Alert severity="info">Ingen regelsett for valgt type tilgjengelig</Alert>

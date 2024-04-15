@@ -41,6 +41,14 @@ const TestregelSelector = ({
     return new Map([...groups.entries()].sort());
   }, [testregelList]);
 
+  if (modus !== 'manuell') {
+    return (
+      <Alert severity="warning">
+        Kun manuelle testreglar kan veljast for manuell test
+      </Alert>
+    );
+  }
+
   if (testregelList.length === 0) {
     return (
       <Alert severity="info">

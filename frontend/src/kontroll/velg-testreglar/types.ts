@@ -13,6 +13,6 @@ export type SelectionType = 'regelsett' | 'testregel';
 export type ModusFilter = 'automatisk' | 'manuell' | 'begge';
 
 export type KontrollTestreglar = {
-  regesettId: number | undefined;
-  testregelIdList: number[];
+  regelsettId: number | undefined;
+  testregelList: TestregelBase[];
 };
