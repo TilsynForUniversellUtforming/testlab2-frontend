@@ -1,6 +1,6 @@
 import { Utval } from '@loeysingar/api/types';
 
-import { Kontroll } from './types';
+import { Kontroll, UpdateKontrollTestreglar } from './types';
 
 export function fetchKontroll(kontrollId: number): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontrollId}`);
@@ -12,7 +12,20 @@ export function updateKontroll(
 ): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontroll.id}`, {
     method: 'put',
-    body: JSON.stringify({ kontroll, utval }),
+    body: JSON.stringify({ kontroll, utval, kontrollSteg: 'utval' }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+export function updateKontrollTestreglar(
+  kontroll: Kontroll,
+  testreglar: UpdateKontrollTestreglar
+): Promise<Response> {
+  return fetch(`/api/v1/kontroller/${kontroll.id}`, {
+    method: 'put',
+    body: JSON.stringify({ kontroll, testreglar, kontrollSteg: 'testreglar' }),
     headers: {
       'Content-Type': 'application/json',
     },
