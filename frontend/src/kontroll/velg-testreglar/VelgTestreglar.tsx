@@ -2,24 +2,18 @@ import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isEmpty } from '@common/util/arrayUtils';
 import { isNotDefined } from '@common/util/validationUtils';
-import {
-  Alert,
-  Button,
-  Heading,
-  Paragraph,
-  Spinner,
-} from '@digdir/designsystemet-react';
-import { CheckmarkIcon } from '@navikt/aksel-icons';
+import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import {
   Regelsett,
   TestregelBase,
   TestregelModus,
 } from '@testreglar/api/types';
 import classNames from 'classnames';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
+import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import { UpdateKontrollTestregel } from '../types';
 import RegelsettSelector from './RegelsettSelector';
 import TestregelFilter from './TestregelFilter';
@@ -35,17 +29,6 @@ const filterByModus = <T extends { modus: TestregelModus }>(
   }
   return list;
 };
-
-type SaveState =
-  | { t: 'idle' }
-  | { t: 'saving'; timestamp: Date }
-  | { t: 'saved' };
-
-function isSaving(
-  saveState: SaveState
-): saveState is { t: 'saving'; timestamp: Date } {
-  return saveState.t === 'saving';
-}
 
 const VelgTestreglar = () => {
   const { kontroll, testregelList, regelsettList } =
@@ -81,23 +64,7 @@ const VelgTestreglar = () => {
     Regelsett[]
   >(filterByModus(regelsettList, modus));
 
-  const [saveState, setSaveState] = useState<SaveState>({ t: 'idle' });
-
   const actionData = useActionData() as { sistLagret: Date };
-
-  useEffect(() => {
-    if (actionData?.sistLagret && isSaving(saveState)) {
-      const now = new Date();
-      const diff = now.getTime() - saveState.timestamp.getTime();
-      const wait = diff < 1000 ? 1000 - diff : 0;
-      setTimeout(() => {
-        setSaveState({ t: 'saved' });
-      }, wait);
-      setTimeout(() => {
-        setSaveState({ t: 'idle' });
-      }, wait + 3000);
-    }
-  }, [actionData]);
 
   const toggleSelectAll = () => {
     setSelectAll((selectAll) => !selectAll);
@@ -151,7 +118,6 @@ const VelgTestreglar = () => {
   const lagreKontroll = () => {
     const testregelIdList: number[] = [];
     alert?.clearMessage();
-    setSaveState({ t: 'saving', timestamp: new Date() });
 
     if (regelsettSelected && selectedRegelsettId) {
       const testregelIdsForRegelsett = regelsettList
@@ -259,28 +225,11 @@ const VelgTestreglar = () => {
           />
         </div>
         {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
-        <div className={classes.lagreOgNeste}>
-          <Button
-            variant="secondary"
-            onClick={lagreKontroll}
-            aria-disabled={isSaving(saveState)}
-          >
-            Lagre kontroll
-          </Button>
-          <Button
-            variant="primary"
-            onClick={lagreKontroll}
-            aria-disabled={isSaving(saveState)}
-          >
-            Neste
-          </Button>
-          {isSaving(saveState) && <Spinner title={'Lagrer...'} size="small" />}
-          {saveState.t === 'saved' && (
-            <span className={classes.lagret}>
-              Lagret <CheckmarkIcon fontSize="1.5rem" />
-            </span>
-          )}
-        </div>
+        <LagreOgNeste
+          sistLagret={actionData?.sistLagret}
+          onClickLagreKontroll={lagreKontroll}
+          onClickNeste={lagreKontroll}
+        />
       </div>
     </section>
   );
