@@ -1,7 +1,14 @@
+import { isOrgnummer } from '@common/util/validationUtils';
 import { z } from 'zod';
 export const verksemdValidationSchema = z.object({
   namn: z.string().min(1, 'Namn er påkrevd'),
-  organisasjonsnummer: z.string().min(1, 'Organisasjonsnummer er påkrevd'),
+  organisasjonsnummer: z
+    .string()
+    .min(1, 'Organisasjonsnummer er påkrevd')
+    .refine(
+      (value) => isOrgnummer(value),
+      'Dette er ikkje eit gyldig organisasjonsnummer'
+    ),
   institusjonellSektorkode: z
     .string()
     .min(1, 'Institusjonell sektorkode er påkrevd'),

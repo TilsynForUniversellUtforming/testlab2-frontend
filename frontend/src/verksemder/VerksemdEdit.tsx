@@ -1,4 +1,3 @@
-import useAlert from '@common/alert/useAlert';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import {
   Verksemd,
@@ -8,12 +7,9 @@ import {
 import { updateVerksemd } from '@verksemder/api/verksemd-api';
 import VerksemdForm from '@verksemder/form/VerksemdForm';
 import { VERKSEMD_EDIT } from '@verksemder/VerksemdRoutes';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
-const getVerksemd = (verksemdList: Verksemd[], id: string | undefined) => {
-  return verksemdList.find((v) => v.id === Number(id));
-};
 const VerksemdEdit = () => {
   const {
     verksemdList,
@@ -22,17 +18,9 @@ const VerksemdEdit = () => {
     setContextError,
   }: VerksemdContext = useOutletContext();
   const { id } = useParams();
-  const [verksemd, setVerksemd] = useState(getVerksemd(verksemdList, id));
+  const initVerksemd = useLoaderData() as Verksemd;
+  const [verksemd] = useState(initVerksemd);
   const [, setLoading] = useState(contextLoading);
-  const [alert] = useAlert();
-
-  useEffect(() => {
-    const foundVerksemd = getVerksemd(verksemdList, id);
-    if (foundVerksemd) {
-      setVerksemd(foundVerksemd);
-      setLoading(false);
-    }
-  }, [verksemdList]);
 
   useContentDocumentTitle(VERKSEMD_EDIT.navn, verksemd?.namn);
 
@@ -47,6 +35,8 @@ const VerksemdEdit = () => {
             setVerksemdList(updated);
           } catch (e) {
             setContextError(new Error('Kunne ikkje endre løysing'));
+          } finally {
+            setLoading(false);
           }
           console.log(verksemd);
         }
@@ -62,7 +52,6 @@ const VerksemdEdit = () => {
       heading="Endre løysing"
       description={verksemd?.namn}
       verksemd={verksemd}
-      alert={alert}
       onSubmit={onSubmit}
     />
   );

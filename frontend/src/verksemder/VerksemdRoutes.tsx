@@ -1,4 +1,6 @@
 import { AppRoute, createPath, idPath } from '@common/util/routeUtils';
+import { Verksemd } from '@verksemder/api/types';
+import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 import VerksemdCreate from '@verksemder/form/VerksemdCreate';
 import VerksemdList from '@verksemder/list/VerksemdList';
 import VerksemdEdit from '@verksemder/VerksemdEdit';
@@ -44,6 +46,9 @@ export const VerksemdRoutes: RouteObject = {
       path: idPath,
       element: <VerksemdEdit />,
       handle: { name: VERKSEMD_EDIT.navn },
+      loader: async ({ params }): Promise<Verksemd> => {
+        return await fetchVerksemd(Number(params?.id));
+      },
     },
   ],
 };

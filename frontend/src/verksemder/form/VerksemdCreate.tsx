@@ -1,5 +1,6 @@
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
+import { isOrgnummer } from '@common/util/validationUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { VerksemdContext, VerksemdInit } from '@verksemder/api/types';
 import { createVerksemd } from '@verksemder/api/verksemd-api';
@@ -13,10 +14,7 @@ const VerksemdCreate = () => {
     useOutletContext();
 
   const onSubmit = useCallback((verksemdInit: VerksemdInit) => {
-    console.log('onSubmit' + JSON.stringify(verksemdInit));
-
     const doCreateVerksemd = async () => {
-      console.log(verksemdInit);
       try {
         const updated = await createVerksemd(verksemdInit);
         setVerksemdList(updated);
@@ -28,7 +26,13 @@ const VerksemdCreate = () => {
   }, []);
 
   const verksemdCreateValidationSchema = z.object({
-    organisasjonsnummer: z.string().min(1, 'Organisasjonsnummer er påkrevd'),
+    organisasjonsnummer: z
+      .string()
+      .min(1, 'Organisasjonsnummer er påkrevd')
+      .refine(
+        (value) => isOrgnummer(value),
+        'Dette er ikkje eit gyldig organisasjonsnummer'
+      ),
   });
 
   const formMethods = useForm<VerksemdInit>({
