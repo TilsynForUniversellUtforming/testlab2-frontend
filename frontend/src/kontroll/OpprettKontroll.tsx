@@ -36,11 +36,7 @@ export default function OpprettKontroll() {
         Opprett en ny kontroll. Du vil i senere steg kunne legge inn
         virksomheter og løsninger.
       </p>
-      <Form
-        method="post"
-        action={'/kontroll/opprett-kontroll'}
-        className={classes.skjema}
-      >
+      <Form method="post" className={classes.skjema}>
         <Heading level={2} size="medium" className={classes.skjemaOverskrift}>
           Kontrolltype
         </Heading>

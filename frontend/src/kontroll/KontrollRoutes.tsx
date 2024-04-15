@@ -2,13 +2,31 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
+import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
+import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
-import { fetchKontroll, updateKontroll } from './kontroll-api';
+import {
+  fetchKontroll,
+  updateKontroll,
+  updateKontrollTestreglar,
+} from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
-import { Kontroll } from './types';
+import { Kontroll, UpdateKontrollTestregel } from './types';
+import { VelgTestreglarLoader } from './velg-testreglar/types';
+import VelgTestreglar from './velg-testreglar/VelgTestreglar';
 import VelgLoesninger from './VelgLoesninger';
+
+const getKontrollIdFromParams = (
+  kontrollIdString: string | undefined
+): number => {
+  const kontrollId = parseInt(kontrollIdString ?? '', 10);
+  if (isNaN(kontrollId)) {
+    throw new Error('Id-en i URL-en er ikke et tall');
+  }
+  return kontrollId;
+};
 
 export const KontrollRoutes: RouteObject = {
   path: 'kontroll',
@@ -16,7 +34,7 @@ export const KontrollRoutes: RouteObject = {
   errorElement: <ErrorElement />,
   children: [
     {
-      path: 'opprett-kontroll',
+      index: true,
       element: <OpprettKontroll />,
       handle: { name: 'Kontroll' },
       action: action,
@@ -53,8 +71,51 @@ export const KontrollRoutes: RouteObject = {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
         return neste
-          ? redirect(`/kontroll/${kontroll.id}/sideutvalg`)
+          ? redirect(`/kontroll/${kontroll.id}/velg-testreglar`)
           : { sistLagret: new Date() };
+      },
+    },
+    {
+      path: ':kontrollId/velg-testreglar',
+      element: <VelgTestreglar />,
+      handle: { name: 'Kontroll' },
+      loader: async ({ params }): Promise<VelgTestreglarLoader> => {
+        const kontrollId = getKontrollIdFromParams(params.kontrollId);
+        const kontroll = await fetchKontroll(kontrollId);
+        if (!kontroll.ok) {
+          if (kontroll.status === 404) {
+            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+          } else {
+            throw new Error('Klarte ikke å hente kontrollen.');
+          }
+        }
+
+        const [testregelList, regelsett] = await Promise.allSettled([
+          listTestreglar(),
+          fetchRegelsettList(true),
+        ]);
+        if (testregelList.status !== 'fulfilled') {
+          throw new Error('Kunne ikkje hente testreglar');
+        }
+
+        if (regelsett.status !== 'fulfilled') {
+          throw new Error('Kunne ikkje hente regelsett');
+        }
+
+        return {
+          kontroll: await kontroll.json(),
+          testregelList: testregelList.value,
+          regelsettList: regelsett.value,
+        };
+      },
+      action: async ({ request }) => {
+        const { kontroll, testreglar } =
+          (await request.json()) as UpdateKontrollTestregel;
+        const response = await updateKontrollTestreglar(kontroll, testreglar);
+        if (!response.ok) {
+          throw new Error('Klarte ikke å lagre kontrollen.');
+        }
+        return { sistLagret: new Date() };
       },
     },
     {

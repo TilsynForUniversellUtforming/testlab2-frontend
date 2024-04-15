@@ -1,5 +1,7 @@
 import { Utval } from '@loeysingar/api/types';
 
+import { KontrollTestreglar } from './velg-testreglar/types';
+
 export type Kontroll = {
   id: number;
   kontrolltype: KontrollType;
@@ -7,7 +9,18 @@ export type Kontroll = {
   saksbehandler: string;
   sakstype: Sakstype;
   arkivreferanse: string;
-  utval: Utval;
+  utval: Utval | undefined;
+  testreglar: KontrollTestreglar | undefined;
+};
+
+export type UpdateKontrollTestregel = {
+  kontroll: Kontroll;
+  testreglar: UpdateKontrollTestreglar;
+};
+
+export type UpdateKontrollTestreglar = {
+  regelsettId: number | undefined;
+  testregelIdList: number[];
 };
 
 export type KontrollType = 'manuell-kontroll';
