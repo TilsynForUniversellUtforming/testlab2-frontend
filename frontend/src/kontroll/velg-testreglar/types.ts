@@ -11,3 +11,8 @@ export type VelgTestreglarLoader = {
 export type SelectionType = 'regelsett' | 'testregel';
 
 export type ModusFilter = 'automatisk' | 'manuell' | 'begge';
+
+export type KontrollTestreglar = {
+  regesettId: number | undefined;
+  testregelIdList: number[];
+};

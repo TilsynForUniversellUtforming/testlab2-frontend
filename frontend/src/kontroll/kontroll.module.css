@@ -211,12 +211,15 @@
   padding-bottom: 3rem;
 }
 
+.grid-wrapper {
+  width: 75vw;
+  max-width: 2000px;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 1px;
-  width: 75vw;
-  max-width: 2000px;
   border-top: 1px solid var(--fds-semantic-surface-third-light-active);
   border-left: 1px solid var(--fds-semantic-surface-third-light-active);
 }

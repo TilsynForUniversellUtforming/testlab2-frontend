@@ -1,3 +1,5 @@
+import { KontrollTestreglar } from './velg-testreglar/types';
+
 export type Kontroll = {
   id: number;
   kontrolltype: KontrollType;
@@ -5,6 +7,11 @@ export type Kontroll = {
   saksbehandler: string;
   sakstype: Sakstype;
   arkivreferanse: string;
+};
+
+export type UpdateKontrollTestregel = {
+  kontroll: Kontroll;
+  testreglar: KontrollTestreglar;
 };
 
 export type KontrollType = 'manuell-kontroll';

@@ -1,20 +1,33 @@
-import { ButtonSize, ButtonVariant } from '@common/types';
-import { Alert, Button, Checkbox, Heading } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Checkbox,
+  Heading,
+  Ingress,
+} from '@digdir/designsystemet-react';
 import { TestregelBase } from '@testreglar/api/types';
 import { useMemo } from 'react';
 
 import classes from '../kontroll.module.css';
+import { ModusFilter } from './types';
 
 interface Props {
   testregelList: TestregelBase[];
   selectedTestregelIdList: number[];
   onSelectTestregelId: (testregelIdList: string[]) => void;
+  modus: ModusFilter;
 }
+
+const modusHeaders: { [K in ModusFilter]: string } = {
+  automatisk: 'Vel automatiske testreglar',
+  manuell: 'Vel manuelle testreglar',
+  begge: 'Vel både manuelle og automatiske testreglar',
+};
 
 const TestregelSelector = ({
   testregelList,
   selectedTestregelIdList,
   onSelectTestregelId,
+  modus,
 }: Props) => {
   const groupedTestreglar = useMemo(() => {
     const groups = new Map<string, TestregelBase[]>();
@@ -37,19 +50,19 @@ const TestregelSelector = ({
   }
 
   return (
-    <>
-      <Heading size="xsmall" level={4}>
-        Vel testreglar og sukesskriteriar som skal væra med i testen din
+    <div className={classes.gridWrapper}>
+      <Heading size="small" level={4} spacing>
+        {modusHeaders[modus]}
       </Heading>
+      <Ingress level={5} spacing>
+        Vel testreglar og sukesskriteriar som skal væra med i testen din
+      </Ingress>
       <div className={classes.gridContainer}>
         {[...groupedTestreglar.entries()].map(([krav, testreglar]) => (
           <div key={krav} className={classes.gridItem}>
-            <Heading size="xxsmall" level={5}>
+            <Heading size="xxsmall" level={6}>
               {krav}
             </Heading>
-            <Button size={ButtonSize.Small} variant={ButtonVariant.Quiet}>
-              Vel alle
-            </Button>
             <br />
             <Checkbox.Group
               legend={krav}
@@ -59,7 +72,11 @@ const TestregelSelector = ({
               size="small"
             >
               {testreglar.map((testregel) => (
-                <Checkbox key={testregel.id} value={String(testregel.id)}>
+                <Checkbox
+                  key={testregel.id}
+                  value={String(testregel.id)}
+                  title={`Vel ${testregel.namn}`}
+                >
                   {testregel.namn}
                 </Checkbox>
               ))}
@@ -67,7 +84,7 @@ const TestregelSelector = ({
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,7 @@
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
-import { Heading, Paragraph } from '@digdir/designsystemet-react';
+import { isEmpty } from '@common/util/arrayUtils';
+import { isNotDefined } from '@common/util/validationUtils';
+import { Button, Heading, Paragraph } from '@digdir/designsystemet-react';
 import {
   Regelsett,
   TestregelBase,
@@ -7,9 +9,10 @@ import {
 } from '@testreglar/api/types';
 import classNames from 'classnames';
 import { useCallback, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
+import { UpdateKontrollTestregel } from '../types';
 import RegelsettSelector from './RegelsettSelector';
 import TestregelFilter from './TestregelFilter';
 import TestregelSelector from './TestregelSelector';
@@ -26,8 +29,10 @@ const filterByModus = <T extends { modus: TestregelModus }>(
 };
 
 const VelgTestreglar = () => {
-  const { testregelList, regelsettList } =
+  const { kontroll, testregelList, regelsettList } =
     useLoaderData() as VelgTestreglarLoader;
+  const submit = useSubmit();
+
   const [selectionType, setSelectionType] =
     useState<SelectionType>('testregel');
   const [selectedRegelsettId, setSelectedRegelsettId] = useState<number>();
@@ -91,6 +96,41 @@ const VelgTestreglar = () => {
   };
 
   const regelsettSelected = selectionType === 'regelsett';
+
+  const lagreKontroll = () => {
+    const testregelIdList: number[] = [];
+
+    if (regelsettSelected && selectedRegelsettId) {
+      const testregelIdsForRegelsett = regelsettList
+        .find((rs) => rs.id === selectedRegelsettId)
+        ?.testregelList.map((tr) => tr.id);
+
+      if (isNotDefined(testregelIdsForRegelsett)) {
+        throw new Error('Kan ikkje lagre, regelsett finns ikkje');
+      }
+
+      testregelIdList.push(...testregelIdsForRegelsett);
+    } else {
+      if (isEmpty(selectedTestregelIdList)) {
+        throw new Error('Kan ikkje lagre uten testreglar');
+      }
+
+      testregelIdList.push(...selectedTestregelIdList);
+    }
+
+    const data: UpdateKontrollTestregel = {
+      kontroll,
+      testreglar: {
+        regesettId: selectedRegelsettId,
+        testregelIdList: testregelIdList,
+      },
+    };
+    submit(JSON.stringify(data), {
+      method: 'put',
+      action: `/kontroll/${kontroll.id}/velg-testreglar`,
+      encType: 'application/json',
+    });
+  };
 
   return (
     <section className={classes.byggKontroll}>
@@ -157,11 +197,18 @@ const VelgTestreglar = () => {
             otherComponent={
               <TestregelSelector
                 testregelList={filteredTestregelList}
+                modus={modus}
                 selectedTestregelIdList={selectedTestregelIdList}
                 onSelectTestregelId={onSelectTestregelId}
               />
             }
           />
+        </div>
+        <div className={classes.lagreOgNeste}>
+          <Button variant="secondary" onClick={lagreKontroll}>
+            Lagre kontroll
+          </Button>
+          <Button variant="primary">Neste</Button>
         </div>
       </div>
     </section>

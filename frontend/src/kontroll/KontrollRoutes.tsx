@@ -4,11 +4,15 @@ import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
-import { RouteObject, useRouteError } from 'react-router-dom';
+import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
-import { fetchKontroll, updateKontroll } from './kontroll-api';
+import {
+  fetchKontroll,
+  updateKontroll,
+  updateKontrollTestreglar,
+} from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
-import { Kontroll } from './types';
+import { Kontroll, UpdateKontrollTestregel } from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
 import VelgLoesninger from './VelgLoesninger';
@@ -64,7 +68,7 @@ export const KontrollRoutes: RouteObject = {
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return null;
+        return redirect(`/kontroll/${kontroll.id}/velg-testreglar`);
       },
     },
     {
@@ -99,6 +103,15 @@ export const KontrollRoutes: RouteObject = {
           testregelList: testregelList.value,
           regelsettList: regelsett.value,
         };
+      },
+      action: async ({ request }) => {
+        const { kontroll, testreglar } =
+          (await request.json()) as UpdateKontrollTestregel;
+        const response = await updateKontrollTestreglar(kontroll, testreglar);
+        if (!response.ok) {
+          throw new Error('Klarte ikke å lagre kontrollen.');
+        }
+        return null;
       },
     },
   ],
