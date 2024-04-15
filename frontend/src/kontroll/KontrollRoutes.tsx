@@ -71,9 +71,13 @@ export const KontrollRoutes: RouteObject = {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
         return neste
-          ? redirect(`/kontroll/${kontroll.id}/velg-testreglar`)
+          ? redirect(`/kontroll/${kontroll.id}/sideutvalg`)
           : { sistLagret: new Date() };
       },
+    },
+    {
+      path: ':kontrollId/sideutvalg',
+      element: <Heading level={1}>Sideutvalg</Heading>,
     },
     {
       path: ':kontrollId/velg-testreglar',
@@ -117,10 +121,6 @@ export const KontrollRoutes: RouteObject = {
         }
         return { sistLagret: new Date() };
       },
-    },
-    {
-      path: ':kontrollId/sideutvalg',
-      element: <Heading level={1}>Sideutvalg</Heading>,
     },
   ],
 };
