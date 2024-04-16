@@ -23,16 +23,36 @@
 
 .stepper ol li {
   list-style: none;
-  padding: 0.5rem 1rem;
   background-color: var(--fds-semantic-surface-first-light);
   border-radius: 10px;
   border: 2px solid transparent;
+  &:hover {
+    background-color: var(--fds-semantic-surface-first-light-hover);
+  }
 }
 
 .stepper .selected {
   background-color: var(--fds-semantic-surface-first-light-active);
   border: 2px solid var(--fds-semantic-surface-first-dark);
-  color: white;
+  p {
+    color: white;
+  }
+  &:hover {
+    background-color: var(--fds-semantic-surface-first-light-hover);
+  }
+}
+
+.stepper a {
+  background: none;
+  text-decoration: none;
+  margin: 0;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.stepper p {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
 }
 
 .ingress {
