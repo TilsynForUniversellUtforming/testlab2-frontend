@@ -13,6 +13,7 @@ import {
   updateKontrollTestreglar,
 } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
+import { Oppsummering } from './oppsummering/Oppsummering';
 import { Kontroll, UpdateKontrollTestregel } from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
@@ -121,6 +122,12 @@ export const KontrollRoutes: RouteObject = {
         }
         return { sistLagret: new Date() };
       },
+    },
+    {
+      path: ':kontrollId/oppsummering',
+      element: <Oppsummering />,
+      loader: ({ params }) =>
+        fetchKontroll(getKontrollIdFromParams(params.kontrollId)),
     },
   ],
 };
