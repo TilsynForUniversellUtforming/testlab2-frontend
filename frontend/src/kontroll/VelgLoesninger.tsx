@@ -75,7 +75,7 @@ const VelgLoesninger = () => {
   }
 
   return (
-    <section className={classes.byggKontroll}>
+    <section className={classes.kontrollSection}>
       <nav className={classes.stepper}>
         <ol>
           <li>Opprett kontroll</li>

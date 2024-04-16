@@ -19,7 +19,7 @@ import classes from './kontroll.module.css';
 export default function OpprettKontroll() {
   const errors = useActionData() as Errors;
   return (
-    <section className={classes.byggKontroll}>
+    <section className={classes.kontrollSection}>
       <nav className={classes.stepper}>
         <ol>
           <li className={classes.selected}>Opprett kontroll</li>

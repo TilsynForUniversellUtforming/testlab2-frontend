@@ -1,4 +1,4 @@
-.bygg-kontroll {
+.kontroll-section {
   margin: 0 auto;
   width: 800px;
 }
@@ -198,6 +198,7 @@
     font-size: 21px;
     font-weight: 400;
     min-width: 16rem;
+
     &.selected {
       background: linear-gradient(
         var(--fds-semantic-surface-third-light-active),
@@ -205,6 +206,7 @@
         var(--fds-semantic-surface-third-light-active)
       );
     }
+
     &:hover {
       background-color: var(--fds-semantic-surface-third-light-hover);
     }
