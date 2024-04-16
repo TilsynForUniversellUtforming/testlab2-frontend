@@ -7,6 +7,7 @@ import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
+import classes from './kontroll.module.css';
 import {
   fetchKontroll,
   updateKontroll,
@@ -14,6 +15,7 @@ import {
 } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
+import KontrollStepper from './stepper/KontrollStepper';
 import { Kontroll, UpdateKontrollTestregel } from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
@@ -29,6 +31,14 @@ const getKontrollIdFromParams = (
   return kontrollId;
 };
 
+export const steps = {
+  opprett: { name: 'Opprett Kontroll', relativePath: '..' },
+  loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
+  testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
+  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
+  oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
+};
+
 export const KontrollRoutes: RouteObject = {
   path: 'kontroll',
   element: <Outlet />,
@@ -37,13 +47,13 @@ export const KontrollRoutes: RouteObject = {
     {
       index: true,
       element: <OpprettKontroll />,
-      handle: { name: 'Kontroll' },
+      handle: { name: steps.opprett.name },
       action: action,
     },
     {
       path: ':kontrollId/velg-losninger',
       element: <VelgLoesninger />,
-      handle: { name: 'Velg løsninger' },
+      handle: { name: steps.loesying.name },
       loader: async ({ params }) => {
         const kontrollId = parseInt(params.kontrollId ?? '', 10);
         if (isNaN(kontrollId)) {
@@ -78,12 +88,18 @@ export const KontrollRoutes: RouteObject = {
     },
     {
       path: ':kontrollId/sideutvalg',
-      element: <Heading level={1}>Sideutvalg</Heading>,
+      element: (
+        <section className={classes.byggKontroll}>
+          <KontrollStepper />
+          <Heading level={1}>Sideutval</Heading>
+        </section>
+      ),
+      handle: { name: steps.sideutval.name },
     },
     {
       path: ':kontrollId/velg-testreglar',
       element: <VelgTestreglar />,
-      handle: { name: 'Kontroll' },
+      handle: { name: steps.testregel.name },
       loader: async ({ params }): Promise<VelgTestreglarLoader> => {
         const kontrollId = getKontrollIdFromParams(params.kontrollId);
         const kontroll = await fetchKontroll(kontrollId);

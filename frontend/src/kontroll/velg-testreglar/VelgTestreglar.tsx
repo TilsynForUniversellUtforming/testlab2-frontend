@@ -14,6 +14,7 @@ import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
+import KontrollStepper from '../stepper/KontrollStepper';
 import { UpdateKontrollTestregel } from '../types';
 import RegelsettSelector from './RegelsettSelector';
 import TestregelFilter from './TestregelFilter';
@@ -153,15 +154,7 @@ const VelgTestreglar = () => {
 
   return (
     <section className={classes.kontrollSection}>
-      <nav className={classes.stepper}>
-        <ol>
-          <li>Opprett kontroll</li>
-          <li>Velg løsninger</li>
-          <li>Gjennomfør sideutvalg</li>
-          <li className={classes.selected}>Testregler</li>
-          <li>Oppsummering</li>
-        </ol>
-      </nav>
+      <KontrollStepper />
       <div className={classes.velgTestreglarOverskrift}>
         <Heading level={1} size="xlarge">
           Vel testreglar

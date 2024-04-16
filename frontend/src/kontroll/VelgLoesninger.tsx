@@ -7,6 +7,7 @@ import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from './kontroll.module.css';
 import LagreOgNeste from './lagre-og-neste/LagreOgNeste';
+import KontrollStepper from './stepper/KontrollStepper';
 import { Kontroll } from './types';
 
 type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };
@@ -76,15 +77,7 @@ const VelgLoesninger = () => {
 
   return (
     <section className={classes.kontrollSection}>
-      <nav className={classes.stepper}>
-        <ol>
-          <li>Opprett kontroll</li>
-          <li className={classes.selected}>Velg løsninger</li>
-          <li>Gjennomfør sideutvalg</li>
-          <li>Testregler</li>
-          <li>Oppsummering</li>
-        </ol>
-      </nav>
+      <KontrollStepper />
       <div className={classes.velgLoesningerOverskrift}>
         <Heading level={1} size="xlarge">
           Velg løsninger
