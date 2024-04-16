@@ -12,7 +12,11 @@ export function updateKontroll(
 ): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontroll.id}`, {
     method: 'put',
-    body: JSON.stringify({ kontroll, utval, kontrollSteg: 'utval' }),
+    body: JSON.stringify({
+      kontroll,
+      utvalId: utval.id,
+      kontrollSteg: 'utval',
+    }),
     headers: {
       'Content-Type': 'application/json',
     },
