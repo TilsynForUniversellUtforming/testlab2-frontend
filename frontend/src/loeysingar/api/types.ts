@@ -16,3 +16,10 @@ export type Utval = {
   namn: string;
   oppretta: Date;
 };
+
+export type UtvalFull = {
+  id: number;
+  namn: string;
+  oppretta: Date;
+  loeysingar: Loeysing[];
+}

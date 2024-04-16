@@ -98,6 +98,7 @@
   margin-bottom: 4rem;
 }
 
+.automatisk-eller-manuelt,
 .testregel-eller-manuelt,
 .utvalg-eller-manuelt,
 .nyeste-utvalg-buttons {
@@ -127,6 +128,7 @@
   }
 }
 
+.automatisk-eller-manuelt,
 .testregel-eller-manuelt,
 .utvalg-eller-manuelt {
   display: flex;
@@ -134,6 +136,7 @@
   margin-bottom: 3rem;
 }
 
+.automatisk-eller-manuelt button,
 .testregel-eller-manuelt button,
 .utvalg-eller-manuelt button {
   width: 100%;
