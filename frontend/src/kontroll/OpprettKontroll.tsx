@@ -15,20 +15,13 @@ import {
 } from 'react-router-dom';
 
 import classes from './kontroll.module.css';
+import KontrollStepper from './stepper/KontrollStepper';
 
 export default function OpprettKontroll() {
   const errors = useActionData() as Errors;
   return (
     <section className={classes.kontrollSection}>
-      <nav className={classes.stepper}>
-        <ol>
-          <li className={classes.selected}>Opprett kontroll</li>
-          <li>Velg løsninger</li>
-          <li>Gjennomfør sideutvalg</li>
-          <li>Testregler</li>
-          <li>Oppsummering</li>
-        </ol>
-      </nav>
+      <KontrollStepper />
       <Heading level={1} size="xlarge">
         Bygg kontroll
       </Heading>
