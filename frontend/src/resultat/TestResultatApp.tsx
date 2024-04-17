@@ -18,7 +18,12 @@ const TestResultatApp = () => {
       tableProps={{
         data: testResultList ?? [],
         defaultColumns: testResultatColumns,
-        onClickRow: (row) => navigate(String(row?.original.testregelId ?? '')),
+        onClickRow: (row) =>
+          navigate(
+            String(row?.original.testregelId ?? '') +
+              '/' +
+              String(row?.original.loeysing.id ?? '')
+          ),
       }}
     />
   );

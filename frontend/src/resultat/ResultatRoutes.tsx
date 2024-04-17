@@ -24,7 +24,7 @@ export const TESTRESULTAT_TESTGRUNNLAG: AppRoute = {
 
 export const VIOLATION_LIST: AppRoute = {
   navn: 'Resultat testregel',
-  path: ':testregelId',
+  path: ':testregelId/:loeysingId',
   parentRoute: TESTRESULTAT_TESTGRUNNLAG,
 };
 
@@ -49,7 +49,8 @@ export const ResultRoutes: RouteObject = {
           loader: ({ params }) =>
             fetchDetaljertResultat(
               parseInt(params.id as string),
-              params.testregelId as string
+              params.testregelId as string,
+              parseInt(params.loeysingId as string)
             ),
           element: <ViolationsList />,
           handle: { name: VIOLATION_LIST.navn },

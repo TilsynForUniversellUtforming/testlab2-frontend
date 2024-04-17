@@ -16,10 +16,11 @@ export const createTestresultatAggregert = async (id: number) =>
 
 export const fetchDetaljertResultat = async (
   id: number,
-  testregelNoekkel: string
+  testregelNoekkel: string,
+  loeysingId: number
 ): Promise<TesterResult[]> => {
   return fetch(
-    `/api/v1/testresultat/resultat?sakId=${id}&testregelNoekkel=${testregelNoekkel}`,
+    `/api/v1/testresultat/resultat?sakId=${id}&testregelNoekkel=${testregelNoekkel}&loeysingId=${loeysingId}`,
     {}
   ).then((response) =>
     responseToJson(

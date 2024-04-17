@@ -84,7 +84,7 @@ export type CreateTestgrunnlag = {
   parentId: number;
   namn: string;
   testreglar: number[];
-  loeysingNettsideRelation: LoeysingNettsideRelation;
+  loeysingNettsideRelation: LoeysingNettsideRelation[];
   type: string;
 };
 

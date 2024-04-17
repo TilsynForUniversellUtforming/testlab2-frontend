@@ -73,6 +73,7 @@ fun mergeLists(
               result.testregelGjennomsnittlegSideSamsvarProsent?.roundToInt() ?: 0
 
           AggegatedTestresultTestregel(
+              loeysing = result.loeysing,
               testregelId = result.testregelId,
               suksesskriterium = result.suksesskriterium,
               fleireSuksesskriterium = result.fleireSuksesskriterium,

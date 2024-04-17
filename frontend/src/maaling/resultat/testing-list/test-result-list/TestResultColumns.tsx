@@ -12,6 +12,13 @@ export const getAggregatedResultColumns = (): Array<
   ColumnDef<AggregatedTestresult>
 > => [
   {
+    accessorFn: (row) => row.loeysing.namn,
+    id: 'loeysing',
+    cell: ({ row }) => <>{row.original.loeysing.namn}</>,
+    header: () => <>Loeysing</>,
+    filterFn: 'exact',
+  },
+  {
     accessorFn: (row) => row.testregelId,
     id: 'testregelId',
     cell: ({ row }) => <>{row.original.testregelId}</>,

@@ -72,9 +72,10 @@ class TestgrunnlagResource(
       @PathVariable sakId: Int
   ): ResponseEntity<List<TestgrunnlagListElement>> =
       ResponseEntity.ok(
-          restTemplate.getList<TestgrunnlagDTO>("$testgrunnlagUrl/list/$sakId").map {
-            TestgrunnlagListElement(it.id!!, it.loeysing.loeysingId)
-          })
+          restTemplate
+              .getList<TestgrunnlagDTO>("$testgrunnlagUrl/list/$sakId")
+              .map { it.toTestgrunnlagListElement() }
+              .flatten())
 
   @GetMapping("/{id}")
   fun getManueltTestgrunnlag(@PathVariable id: Int): ResponseEntity<Testgrunnlag> {
@@ -106,7 +107,7 @@ class TestgrunnlagResource(
                     testgrunnlagDTO.parentId,
                     testgrunnlagDTO.namn,
                     testreglar,
-                    testgrunnlagDTO.loeysing,
+                    testgrunnlagDTO.loeysingar,
                     testgrunnlagDTO.type)
             return ResponseEntity.ok(testgrunnlag)
           } else {
@@ -117,5 +118,9 @@ class TestgrunnlagResource(
           logger.error("Kunne ikkje hente testgrunnlag", it)
           throw it
         }
+  }
+
+  fun TestgrunnlagDTO.toTestgrunnlagListElement(): List<TestgrunnlagListElement> {
+    return loeysingar.map { loeysing -> TestgrunnlagListElement(id!!, loeysing.loeysingId) }
   }
 }
