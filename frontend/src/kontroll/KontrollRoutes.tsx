@@ -141,6 +141,7 @@ export const KontrollRoutes: RouteObject = {
     },
     {
       path: ':kontrollId/oppsummering',
+      handle: { name: steps.oppsummering.name },
       element: <Oppsummering />,
       loader: ({ params }) =>
         fetchKontroll(getKontrollIdFromParams(params.kontrollId)),
