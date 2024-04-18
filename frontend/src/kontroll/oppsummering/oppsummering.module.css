@@ -30,13 +30,21 @@
     margin: 1rem 0;
 
     .navn {
+      align-self: stretch;
       font: var(--fds-typography-heading-small);
       background-color: #bcbdec;
-      padding: 2rem 4rem 2rem 2rem;
       border-radius: 10px 0 0 10px;
       display: flex;
       align-items: center;
-      width: 220px;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      width: 33%;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    .navn > * {
+      text-overflow: ellipsis;
     }
 
     .nettsteder-og-mobilapper {
