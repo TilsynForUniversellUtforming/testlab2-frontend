@@ -86,7 +86,7 @@ export const uploadBilde = async (
   formData.append('bilde', bilde);
   formData.append('resultatId', String(resultatId));
 
-  return await fetch(`${testingApiBaseUrl}/bilder?includeBilder=true`, {
+  return await fetchWrapper(`${testingApiBaseUrl}/bilder?includeBilder=true`, {
     method: 'POST',
     body: formData,
   }).then((response) => responseToJson(response, 'Kunne ikkje lagre bilde'));
@@ -108,7 +108,7 @@ export const deleteBilde = async (
 export const createTestgrunnlag = async (
   testgrunnlag: CreateTestgrunnlag
 ): Promise<Testgrunnlag> => {
-  return await fetch(`/api/v1/testgrunnlag`, {
+  return await fetchWrapper(`/api/v1/testgrunnlag`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
