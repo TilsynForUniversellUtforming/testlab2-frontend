@@ -35,8 +35,8 @@ export const steps = {
   opprett: { name: 'Opprett Kontroll', relativePath: '..' },
   loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
   testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
-  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
   oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
+  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
 };
 
 export const KontrollRoutes: RouteObject = {
@@ -82,14 +82,14 @@ export const KontrollRoutes: RouteObject = {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
         return neste
-          ? redirect(`/kontroll/${kontroll.id}/sideutvalg`)
+          ? redirect(`/kontroll/${kontroll.id}/${steps.testregel.relativePath}`)
           : { sistLagret: new Date() };
       },
     },
     {
       path: ':kontrollId/sideutvalg',
       element: (
-        <section className={classes.byggKontroll}>
+        <section className={classes.kontrollSection}>
           <KontrollStepper />
           <Heading level={1}>Sideutval</Heading>
         </section>

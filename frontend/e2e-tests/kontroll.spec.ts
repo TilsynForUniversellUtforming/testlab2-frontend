@@ -31,7 +31,7 @@ test('opprett kontroll', async ({ page }) => {
   await page.getByTestId('utvalg').first().click();
   await page.getByRole('button', { name: 'Neste' }).click();
 
-  await expect(page.getByRole('heading', { name: 'Sideutval' })).toBeVisible();
+  await expect(page.getByTestId('testreglar-heading')).toBeVisible();
 });
 
 test.afterAll(async () => {
