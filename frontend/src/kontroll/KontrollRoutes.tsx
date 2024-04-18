@@ -143,8 +143,18 @@ export const KontrollRoutes: RouteObject = {
       path: ':kontrollId/oppsummering',
       handle: { name: steps.oppsummering.name },
       element: <Oppsummering />,
-      loader: ({ params }) =>
-        fetchKontroll(getKontrollIdFromParams(params.kontrollId)),
+      loader: async ({ params }) => {
+        const kontrollId = getKontrollIdFromParams(params.kontrollId);
+        const response = await fetchKontroll(kontrollId);
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+          } else {
+            throw new Error('Klarte ikke å hente kontrollen.');
+          }
+        }
+        return await response.json();
+      },
     },
   ],
 };

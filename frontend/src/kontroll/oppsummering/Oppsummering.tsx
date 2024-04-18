@@ -1,19 +1,26 @@
 import { Button, Heading, Tag } from '@digdir/designsystemet-react';
+import { Loeysing, Utval } from '@loeysingar/api/types';
 import {
   CheckmarkCircleIcon,
   CircleSlashIcon,
   TrashIcon,
 } from '@navikt/aksel-icons';
+import { useLoaderData } from 'react-router-dom';
 
 import kontrollClasses from '../kontroll.module.css';
 import KontrollStepper from '../stepper/KontrollStepper';
+import { Kontroll, KontrollType } from '../types';
 import classes from './oppsummering.module.css';
 
 export function Oppsummering() {
-  function listeElement(navn: string) {
+  const kontroll = useLoaderData() as Kontroll;
+
+  function listeElement(loeysing: Loeysing) {
     return (
-      <li className={classes.listeelement}>
-        <div className={classes.navn}>{navn}</div>
+      <li className={classes.listeelement} key={loeysing.id}>
+        <div className={classes.navn} title={loeysing.namn}>
+          {loeysing.namn}
+        </div>
         <div className={classes.nettstederOgMobilapper}>
           <div className={classes.nettsteder}>
             <CheckmarkCircleIcon fontSize={24} />
@@ -28,15 +35,35 @@ export function Oppsummering() {
           className={classes.styringsdata}
           size="small"
           variant="secondary"
+          disabled={true}
         >
           Legg til styringsdata
         </Button>
-        <Button variant="tertiary" className={classes.slett}>
+        <Button variant="tertiary" className={classes.slett} disabled={true}>
           <TrashIcon fontSize={24} />
           Slett
         </Button>
       </li>
     );
+  }
+
+  function viewKontrollType(kontrolltype: KontrollType) {
+    switch (kontrolltype) {
+      case 'manuell-kontroll':
+        return 'Manuell kontroll';
+      default:
+        console.error('Ukjent kontrolltype', kontrolltype);
+        return 'Ukjent kontrolltype';
+    }
+  }
+
+  function viewUtvalNamn(utval: Utval | undefined) {
+    if (utval?.namn) {
+      return utval.namn;
+    } else {
+      console.error('Utval mangler på denne kontrollen');
+      return 'Utval mangler';
+    }
   }
 
   return (
@@ -47,11 +74,11 @@ export function Oppsummering() {
       </Heading>
       <div className={classes.overskriftMedTags}>
         <Heading level={2} size="medium">
-          Sektortilsyn 2024
+          {kontroll.tittel}
         </Heading>
         <div className={classes.tags}>
-          <Tag color="first">Tilsyn</Tag>
-          <Tag color="first">Navn på ansvarlig</Tag>
+          <Tag color="first">{viewKontrollType(kontroll.kontrolltype)}</Tag>
+          <Tag color="first">{kontroll.saksbehandler}</Tag>
         </div>
       </div>
       <div className={classes.overskriftMedTags}>
@@ -59,15 +86,11 @@ export function Oppsummering() {
           Virksomheter og løsninger i denne testen
         </Heading>
         <div className={classes.tags}>
-          <Tag color="first">Adrians utvalgte</Tag>
+          <Tag color="first">{viewUtvalNamn(kontroll.utval)}</Tag>
         </div>
       </div>
       <ul className={classes.liste}>
-        {[
-          'Eidefjord kommune',
-          'Tvedestrand kommune',
-          'Tverrlandet kommune',
-        ].map(listeElement)}
+        {kontroll.utval?.loeysingar?.map(listeElement)}
       </ul>
       <Button className={classes.neste}>Neste</Button>
     </section>
