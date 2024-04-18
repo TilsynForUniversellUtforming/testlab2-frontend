@@ -156,7 +156,7 @@ const VelgTestreglar = () => {
     <section className={classes.kontrollSection}>
       <KontrollStepper />
       <div className={classes.velgTestreglarOverskrift}>
-        <Heading level={1} size="xlarge">
+        <Heading level={1} size="xlarge" data-testid="testreglar-heading">
           Vel testreglar
         </Heading>
         <Paragraph>
