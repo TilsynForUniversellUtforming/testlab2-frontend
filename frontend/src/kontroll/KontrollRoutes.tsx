@@ -2,11 +2,18 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { listInnhaldstype, listTestreglar, } from '@testreglar/api/testreglar-api';
+import {
+  listInnhaldstype,
+  listTestreglar,
+} from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
-import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
+import {
+  fetchKontroll,
+  updateKontroll,
+  updateKontrollTestreglar,
+} from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
 import Sideutval from './sideutval/Sideutval';
@@ -30,8 +37,8 @@ export const steps = {
   opprett: { name: 'Opprett Kontroll', relativePath: '..' },
   loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
   testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
-  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
   oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
+  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
 };
 
 export const KontrollRoutes: RouteObject = {
@@ -77,7 +84,7 @@ export const KontrollRoutes: RouteObject = {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
         return neste
-          ? redirect(`/kontroll/${kontroll.id}/velg-testreglar`)
+          ? redirect(`/kontroll/${kontroll.id}/${steps.testregel.relativePath}`)
           : { sistLagret: new Date() };
       },
     },
@@ -128,9 +135,20 @@ export const KontrollRoutes: RouteObject = {
     },
     {
       path: ':kontrollId/oppsummering',
+      handle: { name: steps.oppsummering.name },
       element: <Oppsummering />,
-      loader: ({ params }) =>
-        fetchKontroll(getKontrollIdFromParams(params.kontrollId)),
+      loader: async ({ params }) => {
+        const kontrollId = getKontrollIdFromParams(params.kontrollId);
+        const response = await fetchKontroll(kontrollId);
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+          } else {
+            throw new Error('Klarte ikke å hente kontrollen.');
+          }
+        }
+        return await response.json();
+      },
     },
     {
       path: ':kontrollId/sideutvalg',
