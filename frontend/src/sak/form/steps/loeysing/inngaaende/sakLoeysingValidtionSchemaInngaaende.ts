@@ -20,7 +20,7 @@ const nettsidePropertyType = z.union([
 const nettsidePropertiesSchema = z
   .object({
     type: nettsidePropertyType,
-    url: z.undefined().or(z.string().min(1, 'Manglar url')),
+    url: z.string().url('Nettside må være gyldig url'),
     description: z.undefined().or(z.string().min(1, 'Manglar beskrivelse')),
     reason: z.undefined().or(z.string().min(1, 'Manglar begrunnelse')),
   })
@@ -61,11 +61,18 @@ const loeysingNettsideRelationScehma = z.object({
   useInTest: z.boolean(),
 });
 
-const verksemdLoeysingRelationSchema = z.object({
-  verksemd: z.any(),
-  manualVerksemd: z.any(),
-  loeysingList: z.array(loeysingNettsideRelationScehma),
-});
+const verksemdLoeysingRelationSchema = z
+  .object({
+    verksemd: z.any(),
+    manualVerksemd: z.any(),
+    loeysingList: z.array(loeysingNettsideRelationScehma),
+  })
+  .refine(
+    (data) =>
+      data.loeysingList.filter((l) => l.properties.length > 0).length ===
+      data.loeysingList.length,
+    { message: 'Minst ei nettside må veljast' }
+  );
 
 export const sakLoeysingValidationSchemaInngaaende = z.object({
   sakId: z.number(),

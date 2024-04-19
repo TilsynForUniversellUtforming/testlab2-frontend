@@ -27,7 +27,12 @@ export const getErrorMessage = <TFieldValues extends FieldValues>(
     form.errors,
     String(name).replaceAll(regex, '.[$1].')
   );
-  return error?.message;
+
+  const rootError: FieldError | undefined = get(
+    form.errors,
+    `${String(name).replaceAll(regex, '.[$1].')}.root`
+  );
+  return error?.message || rootError?.message;
 };
 
 /**
