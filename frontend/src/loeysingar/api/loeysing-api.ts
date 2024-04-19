@@ -1,7 +1,8 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
+import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 
-import { Loeysing, LoeysingInit } from './types';
+import { Loeysing, LoeysingFormElement, LoeysingInit } from './types';
 
 export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
   await fetch(`/api/v1/loeysing/${id}`, {
@@ -72,5 +73,29 @@ export const deleteLoeysingList = async (
   } else {
     const message = await response.text();
     throw Error(message);
+  }
+};
+
+export const fetchLoeysingFormElement = async (
+  id: number
+): Promise<LoeysingFormElement> => {
+  const loeysing = await fetchLoeysing(id);
+  if (loeysing.verksemdId !== null && loeysing.verksemdId !== undefined) {
+    const verksemd = await fetchVerksemd(loeysing.verksemdId);
+    return {
+      id: loeysing.id,
+      namn: loeysing.namn,
+      url: loeysing.url,
+      orgnummer: loeysing.orgnummer,
+      verksemd: verksemd,
+    };
+  } else {
+    return {
+      id: loeysing.id,
+      namn: loeysing.namn,
+      url: loeysing.url,
+      orgnummer: loeysing.orgnummer,
+      verksemd: undefined,
+    };
   }
 };

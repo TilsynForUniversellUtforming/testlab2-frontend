@@ -2,4 +2,10 @@ package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
 import java.net.URL
 
-data class Loeysing(val id: Int, val namn: String, val url: URL, val orgnummer: String?, val verksemdId: Int?)
+data class Loeysing(
+    val id: Int,
+    val namn: String,
+    val url: URL,
+    val orgnummer: String?,
+    val verksemdId: Int?
+)

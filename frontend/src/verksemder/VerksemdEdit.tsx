@@ -24,12 +24,54 @@ const VerksemdEdit = () => {
 
   useContentDocumentTitle(VERKSEMD_EDIT.navn, verksemd?.namn);
 
+  const verksemdUpdateToVerksemd = (
+    verksemdEdit: VerksemdUpdate,
+    id: number
+  ): Verksemd => {
+    return {
+      id: id,
+      namn: verksemdEdit.namn,
+      organisasjonsnummer: verksemdEdit.organisasjonsnummer,
+      institusjonellSektorkode: {
+        kode: verksemdEdit.institusjonellSektorkode,
+        beskrivelse: verksemdEdit.institusjonellSektorkodeBeskrivelse,
+      },
+      naeringskode: {
+        kode: verksemdEdit.naeringskode,
+        beskrivelse: verksemdEdit.naeringskodeBeskrivelse,
+      },
+      organisasjonsform: {
+        kode: verksemdEdit.organisasjonsformKode,
+        omtale: verksemdEdit.organisasjonsformOmtale,
+      },
+      fylke: {
+        fylkesnummer: verksemdEdit.fylkesnummer,
+        fylke: verksemdEdit.fylke,
+      },
+      kommune: {
+        kommunenummer: verksemdEdit.kommunenummer,
+        kommune: verksemdEdit.kommune,
+      },
+      postadresse: {
+        postnummer: verksemdEdit.postnummer,
+        poststad: verksemdEdit.poststad,
+      },
+      talTilsette: verksemdEdit.talTilsette,
+      forvaltningsnivaa: verksemdEdit.forvaltningsnivaa,
+      tenesteromraade: verksemdEdit.tenesteromraade,
+      underAvviking: verksemdEdit.underAvviking,
+    };
+  };
+
   const onSubmit = useCallback(
     (verksemdEdit: VerksemdUpdate) => {
       const doEditVerksemd = async () => {
         if (verksemdEdit && id) {
           setLoading(true);
-          const verksemd: Verksemd = { ...verksemdEdit, id: Number(id) };
+          const verksemd: Verksemd = verksemdUpdateToVerksemd(
+            verksemdEdit,
+            Number(id)
+          );
           try {
             const updated = await updateVerksemd(verksemd);
             setVerksemdList(updated);

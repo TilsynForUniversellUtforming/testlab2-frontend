@@ -19,4 +19,5 @@ export const loeysingValidationSchema = z.object({
       (value) => isOrgnummer(value),
       'Dette er ikkje eit gyldig organisasjonsnummer'
     ),
+  verksemd: z.optional(z.any()),
 });

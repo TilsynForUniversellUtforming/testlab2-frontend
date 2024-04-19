@@ -7,7 +7,7 @@ import { useCallback, useState } from 'react';
 
 const useVerksemdAutocomplete = () => {
   const [verksemdAutocompleteList, setVerksemdAutocompleteList] = useState<
-    number[]
+    Verksemd[]
   >([]);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
@@ -20,16 +20,14 @@ const useVerksemdAutocomplete = () => {
       if (verksemdSearch.length > 0) {
         const verksemdlist: Verksemd[] = [];
         if (!isNaN(Number(verksemdSearch))) {
-          const loeysingListByOrgNr =
+          const verksemdListByOrgNr =
             await findVerksemdByOrgnummer(verksemdSearch);
-          verksemdlist.push(...loeysingListByOrgNr);
+          verksemdlist.push(...verksemdListByOrgNr);
         } else {
           const loeysingListByName = await findVerksemdByName(verksemdSearch);
           verksemdlist.push(...loeysingListByName);
         }
-        setVerksemdAutocompleteList(
-          verksemdlist.map((verksemd) => verksemd.id)
-        );
+        setVerksemdAutocompleteList(verksemdlist);
 
         if (verksemdlist.length === 0) {
           setVerksemdNotFound(true);
@@ -40,7 +38,7 @@ const useVerksemdAutocomplete = () => {
       }
     } catch (e) {
       setErrorMessage(
-        'Noko gjekk gale ved henting av løysing, ver vennleg og prøv igjen'
+        'Noko gjekk gale ved henting av verksemd, ver vennleg og prøv igjen'
       );
     }
   }, []);
