@@ -1,6 +1,6 @@
 .kontroll-section {
   margin: 0 auto;
-  width: 800px;
+  max-width: 900px;
 }
 
 .stepper ol {
@@ -26,6 +26,7 @@
   background-color: var(--fds-semantic-surface-first-light);
   border-radius: 10px;
   border: 2px solid transparent;
+
   &:hover {
     background-color: var(--fds-semantic-surface-first-light-hover);
   }
@@ -34,9 +35,11 @@
 .stepper .selected {
   background-color: var(--fds-semantic-surface-first-light-active);
   border: 2px solid var(--fds-semantic-surface-first-dark);
+
   p {
     color: var(--fds-semantic-surface-neutral-default);
   }
+
   &:hover {
     background-color: var(--fds-semantic-surface-first-light-hover);
   }

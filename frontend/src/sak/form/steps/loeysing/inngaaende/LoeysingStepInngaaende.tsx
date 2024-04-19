@@ -1,9 +1,16 @@
+import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Chip, Heading, Paragraph } from '@digdir/designsystemet-react';
+import {
+  Chip,
+  ErrorMessage,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import LoeysingNettsideForm from '@sak/form/steps/loeysing/inngaaende/loeysing-nettside/LoeysingNettsideForm';
-import { LoeysingNettsideRelation } from '@sak/types';
+import { LoeysingNettsideRelation, SakFormState } from '@sak/types';
 import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 interface Props {
   loeysingNettsideRelationList: LoeysingNettsideRelation[];
@@ -29,15 +36,17 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
     loeysingNettsideRelationList.map((lnr, index) => [lnr.loeysing.id, index])
   );
 
+  const { formState } = useFormContext<SakFormState>();
+  const errorMessage = getErrorMessage(formState, 'verksemdLoeysingRelation');
+
   return (
     <>
       <Heading level={5} size="small" spacing>
         Utvalgte nettsteder
       </Heading>
       <Paragraph size="small">
-        Valfritt steg kvar du kan leggja til sideutval for dei løysingane som
-        skal vera med i testen. Vel frå lista med løysingar nedanfor ved å
-        trykke på løsyinga.
+        Her kan du kan leggja til sideutval for dei løysingane som skal vera med
+        i testen. Vel frå lista med løysingar nedanfor ved å trykke på løsyinga.
       </Paragraph>
       <br />
       <div className="sak-loeysing__inngaaende-selection">
@@ -59,6 +68,7 @@ const LoeysingStepInngaaende = ({ loeysingNettsideRelationList }: Props) => {
           onClose={onCloseLoeysing}
         />
       )}
+      {errorMessage && <ErrorMessage size="small">{errorMessage}</ErrorMessage>}
     </>
   );
 };

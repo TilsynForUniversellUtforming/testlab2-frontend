@@ -15,6 +15,7 @@ export type Utval = {
   id: number;
   namn: string;
   oppretta: Date;
+  loeysingar: Loeysing[];
 };
 
 export type UtvalFull = {

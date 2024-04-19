@@ -1,0 +1,78 @@
+.hovedoverskrift {
+  margin-bottom: 4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.overskrift-med-tags {
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 1rem;
+  }
+
+  margin-bottom: 4rem;
+}
+
+.liste {
+  list-style: none;
+  padding: 0;
+
+  .listeelement {
+    display: flex;
+    align-items: center;
+
+    background-color: var(--fds-semantic-surface-first-light);
+    border-radius: 10px;
+    margin: 1rem 0;
+
+    .navn {
+      align-self: stretch;
+      font: var(--fds-typography-heading-small);
+      background-color: #bcbdec;
+      border-radius: 10px 0 0 10px;
+      display: flex;
+      align-items: center;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      width: 33%;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    .navn > * {
+      text-overflow: ellipsis;
+    }
+
+    .nettsteder-og-mobilapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 2rem;
+
+      .nettsteder,
+      .mobilapper {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+    }
+
+    .styringsdata {
+      margin: 0 auto;
+    }
+
+    .slett {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-left: auto;
+      margin-right: 1rem;
+    }
+  }
+
+  margin-bottom: 4rem;
+}

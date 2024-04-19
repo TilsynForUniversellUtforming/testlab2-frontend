@@ -3,7 +3,11 @@ import ConditionalComponentContainer from '@common/ConditionalComponentContainer
 import { isEmpty } from '@common/util/arrayUtils';
 import { isNotDefined } from '@common/util/validationUtils';
 import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
-import { Regelsett, TestregelBase, TestregelModus, } from '@testreglar/api/types';
+import {
+  Regelsett,
+  TestregelBase,
+  TestregelModus,
+} from '@testreglar/api/types';
 import classNames from 'classnames';
 import { useCallback, useState } from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
@@ -153,7 +157,7 @@ const VelgTestreglar = () => {
     <section className={classes.kontrollSection}>
       <KontrollStepper />
       <div className={classes.velgTestreglarOverskrift}>
-        <Heading level={1} size="xlarge">
+        <Heading level={1} size="xlarge" data-testid="testreglar-heading">
           Vel testreglar
         </Heading>
         <Paragraph>
