@@ -1,13 +1,10 @@
 package no.uutilsynet.testlab2frontendserver.verksemd
-
-import java.time.Instant
-
 data class Verksemd(
     val id: Int,
     val namn: String,
     val organisasjonsnummer: String,
     val institusjonellSektorKode: InstitusjonellSektorKode,
-    val naeringskode: Nearingskode,
+    val naeringskode: Naeringskode,
     val organisasjonsform: Organisasjonsform,
     val fylke: Fylke,
     val kommune: Kommune,
@@ -15,17 +12,14 @@ data class Verksemd(
     val talTilsette: Int,
     val forvaltningsnivaa: String?,
     val tenesteromraade: String?,
-    val aktiv: Boolean = true,
-    val original: Int,
-    val tidspunkt: Instant = Instant.now(),
     val underAvviking: Boolean = false
 )
 
-data class Postadresse(val poststad: String?, val postnummer: String?)
+data class Postadresse(val postnummer: String?, val poststad: String?)
 
 data class InstitusjonellSektorKode(val kode: String, val beskrivelse: String)
 
-data class Nearingskode(val kode: String, val beskrivelse: String)
+data class Naeringskode(val kode: String, val beskrivelse: String)
 
 data class Organisasjonsform(val kode: String, val omtale: String)
 

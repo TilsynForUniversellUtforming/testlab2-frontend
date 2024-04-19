@@ -52,15 +52,16 @@ export const getVerksemdLoeysingRelations_dummy = async (
 
 export default getVerksemdList_dummy;
 
-export const fetchVerksemd = async (id: number): Promise<Verksemd> =>
-  await fetch(`/api/v1/verksemd/${id}`, {
+export const fetchVerksemd = async (id: number): Promise<Verksemd> => {
+  return await fetch(`/api/v1/verksemd/${id}`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje hente løysingar')
   );
+};
 
 export const findVerksemdByName = async (name: string): Promise<Verksemd[]> =>
-  await fetch(`/api/v1/verksemd?name=${name}`, {
+  await fetch(`/api/v1/verksemd/list?name=${name}`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje søke etter virksomhet')
@@ -69,7 +70,7 @@ export const findVerksemdByName = async (name: string): Promise<Verksemd[]> =>
 export const findVerksemdByOrgnummer = async (
   orgnummer: string
 ): Promise<Verksemd[]> =>
-  await fetch(`/api/v1/verksemd?orgnummer=${orgnummer}`, {
+  await fetch(`/api/v1/verksemd/list?orgnummer=${orgnummer}`, {
     method: 'GET',
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje søke etter virksomhet')

@@ -1,4 +1,6 @@
 import { AppRoute, createPath, idPath } from '@common/util/routeUtils';
+import { fetchLoeysingFormElement } from '@loeysingar/api/loeysing-api';
+import { LoeysingFormElement } from '@loeysingar/api/types';
 import LoeysingList from '@loeysingar/list/LoeysingList';
 import LoeysingApp from '@loeysingar/LoeysingApp';
 import LoeysingCreate from '@loeysingar/LoeysingCreate';
@@ -42,6 +44,9 @@ export const LoeysingRoutes: RouteObject = {
       path: idPath,
       element: <LoeysingEdit />,
       handle: { name: LOEYSING_EDIT.navn },
+      loader: async ({ params }): Promise<LoeysingFormElement> => {
+        return await fetchLoeysingFormElement(Number(params?.id));
+      },
     },
   ],
 };
