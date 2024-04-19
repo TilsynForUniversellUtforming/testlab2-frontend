@@ -13,4 +13,3 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
 
 export const getUtvalById = async (id: number): Promise<Response> =>
   await fetch(`/api/v1/utval/${id}`);
-

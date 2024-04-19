@@ -22,4 +22,4 @@ export type UtvalFull = {
   namn: string;
   oppretta: Date;
   loeysingar: Loeysing[];
-}
+};

@@ -35,7 +35,7 @@
   background-color: var(--fds-semantic-surface-first-light-active);
   border: 2px solid var(--fds-semantic-surface-first-dark);
   p {
-    color: white;
+    color: var(--fds-semantic-surface-neutral-default);
   }
   &:hover {
     background-color: var(--fds-semantic-surface-first-light-hover);
@@ -193,6 +193,85 @@
   display: flex;
   color: var(--fds-semantic-surface-success-default);
   align-items: center;
+}
+
+/* Velg sideutval */
+.sideutval-section {
+  margin: 0 auto;
+  width: 800px;
+  /* Total height - top navigation + breadcrumbs + app-container padding */
+  height: calc(100vh - 168px);
+  display: flex;
+  flex-direction: column;
+}
+
+.velg-sideutval-container {
+  width: calc(100vw - 20px);
+  margin-bottom: auto;
+  margin-left: calc(-50vw + 50% + 10px);
+  background-color: var(--fds-semantic-surface-action-subtle);
+  padding-top: 2rem;
+  flex-grow: 1;
+
+  .centered {
+    display: flex;
+    justify-content: center;
+  }
+
+  .velg-sideutval {
+    min-width: 800px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 2rem;
+  }
+
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 16rem;
+    padding-top: 2rem;
+  }
+
+  .lagre-sideutval-nettside {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .accordion {
+    width: 100%;
+  }
+
+  .accordion-item {
+    background-color: var(--fds-semantic-surface-neutral-default);
+    box-shadow: var(--fds-shadow-medium);
+  }
+
+  .accordion-button {
+    background-color: var(--fds-semantic-surface-neutral-default);
+    width: 100%;
+    border: none;
+    padding: 3rem;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 21px;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    &:hover {
+      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+    }
+    .accordion-button-title {
+      text-align: left;
+    }
+  }
+
+  .accordion-button-title,
+  .sideutval-form {
+    width: 800px;
+  }
 }
 
 /* Velg testreglar */

@@ -3,11 +3,7 @@ import ConditionalComponentContainer from '@common/ConditionalComponentContainer
 import { isEmpty } from '@common/util/arrayUtils';
 import { isNotDefined } from '@common/util/validationUtils';
 import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
-import {
-  Regelsett,
-  TestregelBase,
-  TestregelModus,
-} from '@testreglar/api/types';
+import { Regelsett, TestregelBase, TestregelModus, } from '@testreglar/api/types';
 import classNames from 'classnames';
 import { useCallback, useState } from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
@@ -116,7 +112,7 @@ const VelgTestreglar = () => {
 
   const regelsettSelected = selectionType === 'regelsett';
 
-  const lagreKontroll = () => {
+  const lagreKontroll = (neste: boolean) => {
     const testregelIdList: number[] = [];
     alert?.clearMessage();
 
@@ -144,6 +140,7 @@ const VelgTestreglar = () => {
         regelsettId: selectedRegelsettId,
         testregelIdList: testregelIdList,
       },
+      neste,
     };
     submit(JSON.stringify(data), {
       method: 'put',
@@ -220,8 +217,8 @@ const VelgTestreglar = () => {
         {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
         <LagreOgNeste
           sistLagret={actionData?.sistLagret}
-          onClickLagreKontroll={lagreKontroll}
-          onClickNeste={lagreKontroll}
+          onClickLagreKontroll={() => lagreKontroll(false)}
+          onClickNeste={() => lagreKontroll(true)}
         />
       </div>
     </section>

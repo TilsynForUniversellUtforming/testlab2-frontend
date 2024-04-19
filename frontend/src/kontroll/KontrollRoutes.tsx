@@ -2,18 +2,19 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { listInnhaldstype, listTestreglar } from '@testreglar/api/testreglar-api';
+import { listInnhaldstype, listTestreglar, } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
+
 import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
+import Sideutval from './sideutval/Sideutval';
+import { SideutvalLoader } from './sideutval/types';
 import { Kontroll, UpdateKontrollTestregel } from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
 import VelgLoesninger from './VelgLoesninger';
-import Sideutval from './sideutval/Sideutval';
-import { SideutvalLoader } from './sideutval/types';
 
 const getKontrollIdFromParams = (
   kontrollIdString: string | undefined
@@ -76,52 +77,8 @@ export const KontrollRoutes: RouteObject = {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
         return neste
-          ? redirect(`/kontroll/${kontroll.id}/sideutvalg`)
+          ? redirect(`/kontroll/${kontroll.id}/velg-testreglar`)
           : { sistLagret: new Date() };
-      },
-    },
-    {
-      path: ':kontrollId/sideutvalg',
-      element: <Sideutval />,
-      handle: { name: steps.sideutval.name },
-      loader: async ({ params }): Promise<SideutvalLoader> => {
-        const kontrollId = getKontrollIdFromParams(params.kontrollId);
-        const kontrollResponse = await fetchKontroll(kontrollId);
-        if (!kontrollResponse.ok) {
-          if (kontrollResponse.status === 404) {
-            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
-          } else {
-            throw new Error('Klarte ikke å hente kontrollen.');
-          }
-        }
-        const kontroll: Kontroll = await kontrollResponse.json();
-        const utvalId = kontroll?.utval?.id;
-
-        const [innhaldstypeList, utvalResponse] = await Promise.allSettled([
-          listInnhaldstype(),
-          utvalId ? getUtvalById(utvalId) : Promise.reject('Kontroll manglar utval'),
-        ]);
-
-        if (innhaldstypeList.status === 'rejected') {
-          throw new Error('Kunne ikkje hente liste med innhaldstypar');
-        }
-
-        const loeysingList: Loeysing[] = [];
-
-        if (utvalResponse.status === 'rejected') {
-          if (utvalId) {
-            throw new Error('Kunne ikkje hente løysingar for kontrollens utval');
-          }
-        } else if (utvalResponse.value) {
-          const utval: UtvalFull = await utvalResponse.value.json()
-          loeysingList.push(...utval.loeysingar);
-        }
-
-        return {
-          kontroll: kontroll,
-          innhaldsTypeList: innhaldstypeList.value,
-          loeysingList: loeysingList,
-        };
       },
     },
     {
@@ -158,13 +115,15 @@ export const KontrollRoutes: RouteObject = {
         };
       },
       action: async ({ request }) => {
-        const { kontroll, testreglar } =
+        const { kontroll, testreglar, neste } =
           (await request.json()) as UpdateKontrollTestregel;
         const response = await updateKontrollTestreglar(kontroll, testreglar);
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return { sistLagret: new Date() };
+        return neste
+          ? redirect(`/kontroll/${kontroll.id}/oppsummering`)
+          : { sistLagret: new Date() };
       },
     },
     {
@@ -172,6 +131,54 @@ export const KontrollRoutes: RouteObject = {
       element: <Oppsummering />,
       loader: ({ params }) =>
         fetchKontroll(getKontrollIdFromParams(params.kontrollId)),
+    },
+    {
+      path: ':kontrollId/sideutvalg',
+      element: <Sideutval />,
+      handle: { name: steps.sideutval.name },
+      loader: async ({ params }): Promise<SideutvalLoader> => {
+        const kontrollId = getKontrollIdFromParams(params.kontrollId);
+        const kontrollResponse = await fetchKontroll(kontrollId);
+        if (!kontrollResponse.ok) {
+          if (kontrollResponse.status === 404) {
+            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+          } else {
+            throw new Error('Klarte ikke å hente kontrollen.');
+          }
+        }
+        const kontroll: Kontroll = await kontrollResponse.json();
+        const utvalId = kontroll?.utval?.id;
+
+        const [innhaldstypeList, utvalResponse] = await Promise.allSettled([
+          listInnhaldstype(),
+          utvalId
+            ? getUtvalById(utvalId)
+            : Promise.reject('Kontroll manglar utval'),
+        ]);
+
+        if (innhaldstypeList.status === 'rejected') {
+          throw new Error('Kunne ikkje hente liste med innhaldstypar');
+        }
+
+        const loeysingList: Loeysing[] = [];
+
+        if (utvalResponse.status === 'rejected') {
+          if (utvalId) {
+            throw new Error(
+              'Kunne ikkje hente løysingar for kontrollens utval'
+            );
+          }
+        } else if (utvalResponse.value) {
+          const utval: UtvalFull = await utvalResponse.value.json();
+          loeysingList.push(...utval.loeysingar);
+        }
+
+        return {
+          kontroll: kontroll,
+          innhaldstypeList: innhaldstypeList.value,
+          loeysingList: loeysingList,
+        };
+      },
     },
   ],
 };

@@ -1,78 +1,104 @@
+import useAlert from '@common/alert/useAlert';
 import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import KontrollStepper from '../stepper/KontrollStepper';
-import classes from '../kontroll.module.css';
-import { SideutvalLoader, SideutvalLoeysing } from './types';
-import useAlert from '@common/alert/useAlert';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
-import LoeysingFilter from './LoeysingFilter';
+
+import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
+import KontrollStepper from '../stepper/KontrollStepper';
+import LoeysingFilter from './LoeysingFilter';
+import SideutvalAccordion from './SideutvalAccordion';
+import { SideutvalLoader, SideutvalLoeysing } from './types';
+import { createDefaultSideutval } from './sideutval-util';
 
 const Sideutval = () => {
-  const { kontroll, innhaldsTypeList, loeysingList } =
+  const { kontroll, innhaldstypeList, loeysingList } =
     useLoaderData() as SideutvalLoader;
   const submit = useSubmit();
 
-  const [selectedLoeysingId, setSelectedLoesyingId] = useState<number | undefined>();
-  const [sideutvalLoeysing, setSideutvalLoeysing] = useState<SideutvalLoeysing | undefined>();
-  const [sideutval, setSideutval] = useState<SideutvalLoeysing[]>([]);
+  const [selectedLoeysingId, setSelectedLoesyingId] = useState<
+    number | undefined
+  >();
+  const [sideutvalLoeysing, setSideutvalLoeysing] = useState<
+    SideutvalLoeysing | undefined
+  >();
   const [alert, setAlert] = useAlert();
   const manueltSelected = true;
   const actionData = useActionData() as { sistLagret: Date };
 
   const handleChangeLoeysing = (loeysingId: number) => {
-    setSelectedLoesyingId(loeysingId);
-    setSideutvalLoeysing(sideutval.find(su => su.loesyingId === loeysingId));
-  }
+    setSelectedLoesyingId((prev) =>
+      loeysingId === prev ? undefined : loeysingId
+    );
+    const sideutvalLoeysing = kontroll?.sideutval?.find((su) => su.loeysingId === loeysingId);
+    if (sideutvalLoeysing) {
+      setSideutvalLoeysing(sideutvalLoeysing);
+    } else {
+      const forsideType = innhaldstypeList.find(it => it.innhaldstype.toLowerCase() === 'forside');
+      if (!forsideType) {
+        setAlert('danger', 'Utval for forside finnes ikkje i systemet');
+        return;
+      }
+      setSideutvalLoeysing(createDefaultSideutval(loeysingId, forsideType));
+    }
+  };
 
-  const lagreKontroll = () => console.log("lagre");
-
+  const lagreKontroll = () => console.log('lagre');
 
   return (
-    <section className={classes.kontrollSection}>
+    <section className={classes.sideutvalSection}>
       <KontrollStepper />
       <Heading level={1} size="large">
         Sideutval
       </Heading>
-      <Paragraph>
-        Vel hvilke sider du vil ha med inn i testen
-      </Paragraph>
+      <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
       <div className={classes.automatiskEllerManuelt}>
         <button
           className={classNames({
             [classes.selected]: manueltSelected,
           })}
         >
-          Vel testregelsett
+          Manuelt sideutval
         </button>
         <button
           className={classNames({
             [classes.selected]: !manueltSelected,
           })}
         >
-          Vel testreglar selv
+          Automatisk sideutval
         </button>
       </div>
-      <div className={classes.testreglarValgWrapper}>
-        <LoeysingFilter
-          heading={kontroll.tittel}
-          loeysingList={loeysingList}
-          onChangeLoeysing={handleChangeLoeysing}
-          selectedLoeysingId={selectedLoeysingId}
-        />
-        <div className={classes.testreglarValg}>
-
+      <LoeysingFilter
+        heading={kontroll.tittel}
+        loeysingList={loeysingList}
+        onChangeLoeysing={handleChangeLoeysing}
+        selectedLoeysingId={selectedLoeysingId}
+      />
+      <div className={classes.velgSideutvalContainer}>
+        <div className={classes.centered}>
+          <div className={classes.velgSideutval}>
+            {selectedLoeysingId && <SideutvalAccordion
+              sideutvalLoeysing={sideutvalLoeysing}
+              innhaldstypeList={innhaldstypeList}
+            />}
+            <div className={classes.centered}>
+              <div className={classes.sideutvalForm}>
+                {alert && (
+                  <Alert severity={alert.severity}>{alert.message}</Alert>
+                )}
+                <LagreOgNeste
+                  sistLagret={actionData?.sistLagret}
+                  onClickLagreKontroll={lagreKontroll}
+                  onClickNeste={lagreKontroll}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
-        <LagreOgNeste
-          sistLagret={actionData?.sistLagret}
-          onClickLagreKontroll={lagreKontroll}
-          onClickNeste={lagreKontroll}
-        />
       </div>
     </section>
   );
-}
+};
 
 export default Sideutval;

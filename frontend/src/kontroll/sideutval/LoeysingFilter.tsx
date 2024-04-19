@@ -1,8 +1,8 @@
+import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { Alert, Chip, Heading } from '@digdir/designsystemet-react';
+import { Loeysing } from '@loeysingar/api/types';
 
 import classes from '../kontroll.module.css';
-import { Loeysing } from '@loeysingar/api/types';
-import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 
 interface Props {
   heading: string;
@@ -15,7 +15,7 @@ const LoeysingFilter = ({
   heading,
   loeysingList,
   selectedLoeysingId,
-  onChangeLoeysing
+  onChangeLoeysing,
 }: Props) => (
   <div className={classes.testregelFilter}>
     <Heading level={3} size="medium">
@@ -27,20 +27,23 @@ const LoeysingFilter = ({
     <ConditionalComponentContainer
       condition={loeysingList.length > 0}
       conditionalComponent={
-    <Chip.Group>
-      {loeysingList.map(l => (
-        <Chip.Toggle
-          key={l.id}
-          selected={l.id === selectedLoeysingId}
-          onClick={() => onChangeLoeysing(l.id)}
-          checkmark
-        >
-          {l.namn}
-        </Chip.Toggle>
-      ))}
-    </Chip.Group>}
-      otherComponent={<Alert severity="warning">Kontroll har ikkje løysingsutval</Alert>}
-      />
+        <Chip.Group>
+          {loeysingList.map((l) => (
+            <Chip.Toggle
+              key={l.id}
+              selected={l.id === selectedLoeysingId}
+              onClick={() => onChangeLoeysing(l.id)}
+              checkmark
+            >
+              {l.namn}
+            </Chip.Toggle>
+          ))}
+        </Chip.Group>
+      }
+      otherComponent={
+        <Alert severity="warning">Kontroll har ikkje løysingsutval</Alert>
+      }
+    />
   </div>
 );
 

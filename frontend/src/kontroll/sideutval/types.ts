@@ -1,20 +1,29 @@
-import { Kontroll } from '../types';
-import { InnhaldstypeTesting } from '@testreglar/api/types';
 import { Loeysing } from '@loeysingar/api/types';
+import { InnhaldstypeTesting } from '@testreglar/api/types';
+
+import { Kontroll } from '../types';
 
 export type SideutvalLoader = {
   kontroll: Kontroll;
-  innhaldsTypeList: InnhaldstypeTesting[];
+  innhaldstypeList: InnhaldstypeTesting[];
   loeysingList: Loeysing[];
 };
 
-export type NettsideEgenskaper = {
+export type InnhaldstypeKontroll = InnhaldstypeTesting & {
+  egendefinertType?: string;
+};
+
+export type Side = {
   begrunnelse: string;
-  type: string;
   url: string;
 };
 
+export type Sideutval = {
+  type: InnhaldstypeKontroll;
+  sideBegrunnelseList: Side[];
+};
+
 export type SideutvalLoeysing = {
-  loesyingId: number,
-  nettside: NettsideEgenskaper
+  loeysingId: number;
+  sideUtval: Sideutval[];
 };
