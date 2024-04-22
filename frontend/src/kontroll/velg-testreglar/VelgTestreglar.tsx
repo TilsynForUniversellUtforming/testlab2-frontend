@@ -56,7 +56,6 @@ const VelgTestreglar = () => {
   const [selectionType, setSelectionType] =
     useState<SelectionType>(initSelectionType);
 
-  const [selectAll, setSelectAll] = useState(true);
   const [modus, setModus] = useState<ModusFilter>('manuell');
   const [filteredTestregelList, setFilteredTestregelList] = useState<
     TestregelBase[]
@@ -66,10 +65,6 @@ const VelgTestreglar = () => {
   >(filterByModus(regelsettList, modus));
 
   const actionData = useActionData() as { sistLagret: Date };
-
-  const toggleSelectAll = () => {
-    setSelectAll((selectAll) => !selectAll);
-  };
 
   const onSelectRegelsett = (regelsettId: number) => {
     const selectedRegelsett = regelsettList.find((rs) => rs.id === regelsettId);
@@ -186,13 +181,6 @@ const VelgTestreglar = () => {
           heading={
             regelsettSelected ? 'Vel testregelsett' : 'Vel testreglar selv'
           }
-          switchTitle={
-            regelsettSelected
-              ? 'Vel same regelsett til alle løysingar'
-              : 'Vel same testreglar til alle løysingar'
-          }
-          selectAll={selectAll}
-          onToggleSelectAll={toggleSelectAll}
           modus={modus}
           onChangeModus={onChangeModus}
         />
