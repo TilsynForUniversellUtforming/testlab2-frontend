@@ -1,24 +1,24 @@
 import useAlert from '@common/alert/useAlert';
 import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
+import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useState } from 'react';
-import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
+import { useActionData, useLoaderData } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import LoeysingFilter from './LoeysingFilter';
+import { createDefaultSideutval } from './sideutval-util';
 import SideutvalAccordion from './SideutvalAccordion';
 import { SideutvalLoader, SideutvalLoeysing } from './types';
-import { createDefaultSideutval } from './sideutval-util';
 
 const Sideutval = () => {
   const { kontroll, innhaldstypeList, loeysingList } =
     useLoaderData() as SideutvalLoader;
-  const submit = useSubmit();
 
-  const [selectedLoeysingId, setSelectedLoesyingId] = useState<
-    number | undefined
+  const [selectedLoeysing, setSelectedLoesying] = useState<
+    Loeysing | undefined
   >();
   const [sideutvalLoeysing, setSideutvalLoeysing] = useState<
     SideutvalLoeysing | undefined
@@ -28,14 +28,24 @@ const Sideutval = () => {
   const actionData = useActionData() as { sistLagret: Date };
 
   const handleChangeLoeysing = (loeysingId: number) => {
-    setSelectedLoesyingId((prev) =>
-      loeysingId === prev ? undefined : loeysingId
+    const loeysing = loeysingList.find((l) => l.id === loeysingId);
+    if (!loeysing) {
+      setAlert('danger', 'Ugylig løysing valgt');
+      return;
+    }
+
+    setSelectedLoesying((prev) =>
+      loeysing.id === prev?.id ? undefined : loeysing
     );
-    const sideutvalLoeysing = kontroll?.sideutval?.find((su) => su.loeysingId === loeysingId);
+    const sideutvalLoeysing = kontroll?.sideutval?.find(
+      (su) => su.loeysingId === loeysingId
+    );
     if (sideutvalLoeysing) {
       setSideutvalLoeysing(sideutvalLoeysing);
     } else {
-      const forsideType = innhaldstypeList.find(it => it.innhaldstype.toLowerCase() === 'forside');
+      const forsideType = innhaldstypeList.find(
+        (it) => it.innhaldstype.toLowerCase() === 'forside'
+      );
       if (!forsideType) {
         setAlert('danger', 'Utval for forside finnes ikkje i systemet');
         return;
@@ -73,15 +83,18 @@ const Sideutval = () => {
         heading={kontroll.tittel}
         loeysingList={loeysingList}
         onChangeLoeysing={handleChangeLoeysing}
-        selectedLoeysingId={selectedLoeysingId}
+        selectedLoeysing={selectedLoeysing}
       />
       <div className={classes.velgSideutvalContainer}>
         <div className={classes.centered}>
           <div className={classes.velgSideutval}>
-            {selectedLoeysingId && <SideutvalAccordion
-              sideutvalLoeysing={sideutvalLoeysing}
-              innhaldstypeList={innhaldstypeList}
-            />}
+            {selectedLoeysing && (
+              <SideutvalAccordion
+                selectedLoeysing={selectedLoeysing}
+                sideutvalLoeysing={sideutvalLoeysing}
+                innhaldstypeList={innhaldstypeList}
+              />
+            )}
             <div className={classes.centered}>
               <div className={classes.sideutvalForm}>
                 {alert && (

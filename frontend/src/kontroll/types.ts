@@ -1,7 +1,7 @@
 import { Utval } from '@loeysingar/api/types';
 
-import { KontrollTestreglar } from './velg-testreglar/types';
 import { SideutvalLoeysing } from './sideutval/types';
+import { KontrollTestreglar } from './velg-testreglar/types';
 
 export type Kontroll = {
   id: number;
@@ -12,7 +12,7 @@ export type Kontroll = {
   arkivreferanse: string;
   utval: Utval | undefined;
   testreglar: KontrollTestreglar | undefined;
-  sideutval?: SideutvalLoeysing[]
+  sideutval?: SideutvalLoeysing[];
 };
 
 export type UpdateKontrollTestregel = {

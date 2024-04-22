@@ -27,3 +27,9 @@ export type SideutvalLoeysing = {
   loeysingId: number;
   sideUtval: Sideutval[];
 };
+
+export type SideListItem = Side & {
+  key: string;
+}
+
+export const defaultSide: Side = { url: '', begrunnelse: '' };

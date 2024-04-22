@@ -1,4 +1,3 @@
-import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { Alert, Chip, Heading } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 
@@ -7,14 +6,39 @@ import classes from '../kontroll.module.css';
 interface Props {
   heading: string;
   loeysingList: Loeysing[];
-  selectedLoeysingId: number | undefined;
+  selectedLoeysing: Loeysing | undefined;
   onChangeLoeysing: (loeysingId: number) => void;
 }
+
+const Filter = ({
+  loeysingList,
+  selectedLoeysing,
+  onChangeLoeysing,
+}: Omit<Props, 'heading'>) => {
+  if (loeysingList.length === 0) {
+    return <Alert severity="warning">Kontroll har ikkje løysingsutval</Alert>;
+  }
+
+  return (
+    <Chip.Group>
+      {loeysingList.map((l) => (
+        <Chip.Toggle
+          key={l.id}
+          selected={l.id === selectedLoeysing?.id}
+          onClick={() => onChangeLoeysing(l.id)}
+          checkmark
+        >
+          {l.namn}
+        </Chip.Toggle>
+      ))}
+    </Chip.Group>
+  );
+};
 
 const LoeysingFilter = ({
   heading,
   loeysingList,
-  selectedLoeysingId,
+  selectedLoeysing,
   onChangeLoeysing,
 }: Props) => (
   <div className={classes.testregelFilter}>
@@ -24,25 +48,10 @@ const LoeysingFilter = ({
     <Heading level={4} size="xsmall">
       Vel løysing til sideutval
     </Heading>
-    <ConditionalComponentContainer
-      condition={loeysingList.length > 0}
-      conditionalComponent={
-        <Chip.Group>
-          {loeysingList.map((l) => (
-            <Chip.Toggle
-              key={l.id}
-              selected={l.id === selectedLoeysingId}
-              onClick={() => onChangeLoeysing(l.id)}
-              checkmark
-            >
-              {l.namn}
-            </Chip.Toggle>
-          ))}
-        </Chip.Group>
-      }
-      otherComponent={
-        <Alert severity="warning">Kontroll har ikkje løysingsutval</Alert>
-      }
+    <Filter
+      loeysingList={loeysingList}
+      selectedLoeysing={selectedLoeysing}
+      onChangeLoeysing={onChangeLoeysing}
     />
   </div>
 );
