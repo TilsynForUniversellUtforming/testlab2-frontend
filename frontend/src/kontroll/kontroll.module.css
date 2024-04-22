@@ -211,6 +211,12 @@
 }
 
 .velg-regelsett-buttons {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+
   button {
     border: none;
     padding: 3rem;
