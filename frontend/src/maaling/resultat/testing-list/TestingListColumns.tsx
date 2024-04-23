@@ -41,7 +41,7 @@ export const getTestingListColumns = (
       maalingStatus === 'testing_ferdig' && (
         <LoadingBar
           percentage={row.original.compliancePercent}
-          ariaLabel={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}%`}
+          ariaLabel={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}`}
           show={row.original.tilstand === 'ferdig'}
         />
       ),
