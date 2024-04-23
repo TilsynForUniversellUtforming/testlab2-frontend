@@ -2,7 +2,7 @@ import useAlert from '@common/alert/useAlert';
 import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useActionData, useLoaderData } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
@@ -26,6 +26,9 @@ const Sideutval = () => {
   const [alert, setAlert] = useAlert();
   const manueltSelected = true;
   const actionData = useActionData() as { sistLagret: Date };
+  const handleSetSideutvalLoeysing = useCallback((sideutvalLoeysing: SideutvalLoeysing) => {
+    setSideutvalLoeysing(sideutvalLoeysing);
+  }, [sideutvalLoeysing]);
 
   const handleChangeLoeysing = (loeysingId: number) => {
     const loeysing = loeysingList.find((l) => l.id === loeysingId);
@@ -88,10 +91,11 @@ const Sideutval = () => {
       <div className={classes.velgSideutvalContainer}>
         <div className={classes.centered}>
           <div className={classes.velgSideutval}>
-            {selectedLoeysing && (
+            {(selectedLoeysing && sideutvalLoeysing) && (
               <SideutvalAccordion
                 selectedLoeysing={selectedLoeysing}
                 sideutvalLoeysing={sideutvalLoeysing}
+                setSideutvalLoesying={handleSetSideutvalLoeysing}
                 innhaldstypeList={innhaldstypeList}
               />
             )}

@@ -33,7 +33,7 @@ export type Testobjekt = {
 };
 
 export type InnhaldstypeTesting = {
-  id: number;
+  id?: number;
   innhaldstype: string;
 };
 

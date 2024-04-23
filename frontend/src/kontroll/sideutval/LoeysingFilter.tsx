@@ -20,18 +20,18 @@ const Filter = ({
   }
 
   return (
-    <Chip.Group>
-      {loeysingList.map((l) => (
-        <Chip.Toggle
-          key={l.id}
-          selected={l.id === selectedLoeysing?.id}
-          onClick={() => onChangeLoeysing(l.id)}
-          checkmark
-        >
-          {l.namn}
-        </Chip.Toggle>
-      ))}
-    </Chip.Group>
+      <Chip.Group className={classes.sideutvalLoeysingChips}>
+        {loeysingList.map((l) => (
+          <Chip.Toggle
+            key={l.id}
+            selected={l.id === selectedLoeysing?.id}
+            onClick={() => onChangeLoeysing(l.id)}
+            checkmark
+          >
+            {l.namn}
+          </Chip.Toggle>
+        ))}
+      </Chip.Group>
   );
 };
 

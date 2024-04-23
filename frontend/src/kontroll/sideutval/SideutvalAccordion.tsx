@@ -1,7 +1,7 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Button, Chip, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
+import { Button, Chip, Combobox, Heading, Paragraph, Textarea, Textfield, } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
@@ -9,12 +9,19 @@ import { useCallback, useEffect, useState } from 'react';
 
 import classes from '../kontroll.module.css';
 import { defaultSide, InnhaldstypeKontroll, Side, SideListItem, SideutvalLoeysing } from './types';
-import { toSideListItem } from './sideutval-util';
+import { toSelectableInnhaldstype, toSideListItem } from './sideutval-util';
 
 interface Props {
   selectedLoeysing: Loeysing;
-  sideutvalLoeysing: SideutvalLoeysing | undefined;
+  sideutvalLoeysing: SideutvalLoeysing;
+  setSideutvalLoesying: (sideutvalLoeysing: SideutvalLoeysing) => void;
   innhaldstypeList: InnhaldstypeKontroll[];
+}
+
+interface InnhaldstypeAccordionProps {
+  sideutvalLoeysing: SideutvalLoeysing;
+  expandedKeys: string[];
+  setExpanded: (key: string) => void;
 }
 
 interface AccordionItemProps {
@@ -41,6 +48,7 @@ const SideBegrunnelseForm = ({
   handleRemoveInnhaldstype,
 }: SideBegrunnelseFormProps) => {
   const hasMultipleItems = sideBegrunnelseList.length > 1;
+  const isForside = innhaldstype.toLowerCase() === 'forside';
 
   return (
     <div className={classes.sideutvalForm}>
@@ -48,13 +56,13 @@ const SideBegrunnelseForm = ({
         <Heading size="xsmall" level={5} spacing>
           Legg til {sanitizeEnumLabel(innhaldstype)}
         </Heading>
-        {sideBegrunnelseList.map((sideBegrunnelse, idx) => (
+        {sideBegrunnelseList.map((sideBegrunnelse) => (
           <div key={sideBegrunnelse.key} className={classes.inputs}>
-            <Textfield
+            <Textarea
               label="Begrunnelse for sideutvalg"
-              value={sideBegrunnelse?.begrunnelse}
+              value={sideBegrunnelse?.begrunnelse?.length !== 0 ? sideBegrunnelse?.begrunnelse : undefined}
             />
-            <Textfield label="Url" value={sideBegrunnelse?.url} type="url" />
+            <Textfield label="Url" value={sideBegrunnelse?.url?.length !== 0 ? sideBegrunnelse?.url : undefined} type="url" />
             {hasMultipleItems &&
               <Button
                 size={ButtonSize.Small}
@@ -76,11 +84,11 @@ const SideBegrunnelseForm = ({
         type="button"
         onClick={() => handleRemoveInnhaldstype(innhaldstype)}
         title={
-          sideBegrunnelseList.length === 1 && innhaldstype.toLowerCase() === 'forside'
+          isForside
             ? 'Forside er påkrevd'
             : ''
         }
-        aria-disabled={sideBegrunnelseList.length === 1}
+        aria-disabled={isForside}
       >
         <MinusCircleIcon />
         Fjern innhaldstype {sanitizeEnumLabel(innhaldstype)}
@@ -108,12 +116,12 @@ const AccordionItem = ({
 
   const handleAddSide = useCallback(() => {
     setSideList(prev => toSideListItem([...prev, defaultSide], innhaldstype));
-  }, [sideBegrunnelseList, innhaldstype]);
+  }, [sideBegrunnelseList, innhaldstype, sideList]);
 
   const handleRemoveSide = useCallback((key: string) => {
     const filteredList = sideList.filter(sl => sl.key !== key);
     setSideList(filteredList);
-  }, [innhaldstype])
+  }, [innhaldstype, sideList])
 
   const handleRemoveInnhaldstype = useCallback((innhaldstype: string) => {
   }, [sideBegrunnelseList, innhaldstype])
@@ -161,9 +169,14 @@ const AccordionItem = ({
 
 const SideutvalAccordion = ({
   sideutvalLoeysing,
+  setSideutvalLoesying,
   innhaldstypeList,
   selectedLoeysing,
 }: Props) => {
+  const [typeList, setTypeList] = useState<InnhaldstypeKontroll[]>(toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing));
+  const [innhaldstypeToAdd, setInnhaldstypeToAdd] = useState<InnhaldstypeKontroll | undefined>();
+  const [egendefinertType, setEgendefinertType] = useState<string>();
+
   const [expanded, setExpanded] = useState<string[]>([]);
 
   const handleSetExpanded = (key: string) => {
@@ -174,6 +187,37 @@ const SideutvalAccordion = ({
     );
   };
 
+  const onChangeInnhaldstype = (values: string[]) => {
+    const innhaldstypeId = parseInt(values[0]);
+    const innhaldstype = typeList.find(type => type.id === innhaldstypeId);
+    setInnhaldstypeToAdd(innhaldstype);
+  };
+
+  const handleAddInnhaldstype = () => {
+    if (!innhaldstypeToAdd) {
+      // TODO - Alert
+    }
+
+    if (innhaldstypeToAdd && innhaldstypeToAdd.innhaldstype.toLowerCase() === 'egendefinert' && !egendefinertType) {
+      // TODO - Alert
+    }
+
+    const oldSideutval = sideutvalLoeysing.sideUtval;
+
+    if (innhaldstypeToAdd) {
+      const newInnhaldstype: InnhaldstypeKontroll = {
+       ...innhaldstypeToAdd,
+        egendefinertType: egendefinertType,
+      }
+
+      const newSideutval = [...oldSideutval, { type: newInnhaldstype, sideBegrunnelseList: [defaultSide] }];
+      const newSideutvalLoeysing: SideutvalLoeysing = { ...sideutvalLoeysing, sideUtval: newSideutval };
+      setSideutvalLoesying(newSideutvalLoeysing);
+      setInnhaldstypeToAdd(undefined);
+      setTypeList(toSelectableInnhaldstype(innhaldstypeList, newSideutvalLoeysing));
+    }
+  }
+
   useEffect(() => {
     // Lukk alle ved ending av selectedLoeysing
     setExpanded([]);
@@ -181,49 +225,74 @@ const SideutvalAccordion = ({
 
   return (
     <div className={classes.accordion}>
-      {sideutvalLoeysing?.sideUtval.map((sideutval) => {
-        const innhaldstype =
-          sideutval.type.egendefinertType || sideutval.type.innhaldstype;
+      <div className={classes.centered}>
+        <div
+          className={classNames(
+            classes.sideutvalForm,
+            classes.testregelTypeSelector
+          )}
+        >
+          <Heading level={5} size="small">
+            {selectedLoeysing.namn}
+          </Heading>
+          <Chip.Group className={classes.chipSpacing}>
+            <Chip.Toggle selected checkmark>
+              Test av nettside
+            </Chip.Toggle>
+            <Chip.Toggle disabled>Test av mobil</Chip.Toggle>
+          </Chip.Group>
+          <Paragraph size="medium">
+            Velg i nedtrekkslisten. Forside skal alltid med. 10% av
+            utvalget skal være egendefinert. Velg derfor egendefinert for
+            disse sidene.
+          </Paragraph>
+        </div>
+      </div>
+      <div className={classes.centered}>
+        <div className={classes.sideutvalForm}>
+          <div className={classes.inputs}>
+            <Combobox
+              label="Legg til innhaldstype"
+              size="small"
+              value={innhaldstypeToAdd?.id ? [String(innhaldstypeToAdd.id)] : []}
+              onValueChange={onChangeInnhaldstype}
+              // For å tømme søkefeltet etter man har trykket på legg til
+              inputValue={innhaldstypeToAdd?.innhaldstype ? String(innhaldstypeToAdd.innhaldstype) : ''}
+            >
+              <Combobox.Empty>
+                Ingen treff
+              </Combobox.Empty>
+              {typeList.map(tl => (
+                <Combobox.Option value={String(tl.id)} key={tl.id}>
+                  {tl.innhaldstype}
+                </Combobox.Option>
+              ))}
+            </Combobox>
+            <Button className={classes.innhaldstypeLagre} variant={ButtonVariant.Outline} size={ButtonSize.Small} onClick={handleAddInnhaldstype}>Legg til</Button>
+          </div>
+        </div>
+      </div>
+      <div className={classes.accordionItems}>
+        {sideutvalLoeysing.sideUtval.map((sideutval) => {
+          const innhaldstype =
+            sideutval.type.egendefinertType || sideutval.type.innhaldstype;
 
-        const sideBegrunnelseList =
-          sideutval.sideBegrunnelseList.length === 0
-            ? [defaultSide]
-            : sideutval.sideBegrunnelseList;
+          const sideBegrunnelseList =
+            sideutval.sideBegrunnelseList.length === 0
+              ? [defaultSide]
+              : sideutval.sideBegrunnelseList;
 
-        return (
-          <div key={innhaldstype}>
-            <div className={classes.centered}>
-              <div
-                className={classNames(
-                  classes.sideutvalForm,
-                  classes.testregelTypeSelector
-                )}
-              >
-                <Heading level={5} size="small">
-                  {selectedLoeysing.namn}
-                </Heading>
-                <Chip.Group className={classes.chipSpacing}>
-                  <Chip.Toggle selected checkmark>
-                    Test av nettside
-                  </Chip.Toggle>
-                  <Chip.Toggle disabled>Test av mobil</Chip.Toggle>
-                </Chip.Group>
-                <Paragraph size="medium">
-                  Velg i nedtrekkslisten. Forside skal alltid med. 10% av
-                  utvalget skal være egendefinert. Velg derfor egendefinert for
-                  disse sidene. Øvrige hjelpetekster her.
-                </Paragraph>
-              </div>
-            </div>
+          return (
             <AccordionItem
               expanded={expanded.includes(innhaldstype)}
               setExpanded={handleSetExpanded}
               sideBegrunnelseList={sideBegrunnelseList}
               innhaldstype={innhaldstype}
+              key={innhaldstype}
             />
-          </div>
-        );
-      })}
+          )
+        })}
+      </div>
     </div>
   );
 };
