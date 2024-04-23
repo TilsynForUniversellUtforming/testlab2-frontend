@@ -22,7 +22,7 @@ const TestFerdig = () => {
         navigate(
           getFullPath(TESTRESULTAT_TESTGRUNNLAG, {
             pathParam: idPath,
-            id: sakId,
+            id: testgrunnlagId,
           } as IdReplacement)
         );
       })
