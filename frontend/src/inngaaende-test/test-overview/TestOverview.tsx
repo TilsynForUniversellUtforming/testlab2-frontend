@@ -1,9 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { LoeysingNettsideRelation } from '@sak/types';
-import { createTestgrunnlag } from '@test/api/testing-api';
-import { CreateTestgrunnlag } from '@test/api/types';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
 import { TEST_LOEYSING_TESTGRUNNLAG } from '@test/TestingRoutes';
 import { TestContext } from '@test/types';
@@ -31,37 +28,39 @@ const TestOverview = () => {
 
         if (existingTestgrunnlag) {
           testgrunnlagId = existingTestgrunnlag.id;
+          navigate(
+            getFullPath(
+              TEST_LOEYSING_TESTGRUNNLAG,
+              { pathParam: idPath, id: id },
+              {
+                pathParam: ':loeysingId',
+                id: String(nextLoeysing.loeysing.id),
+              },
+              { pathParam: ':testgrunnlagId', id: String(testgrunnlagId) }
+            )
+          );
         } else {
-          testgrunnlagId = await opprettTestgrunnlag(nextLoeysing);
+          setAlert('danger', 'Testgrunnlag er ikkje blitt oppretta');
         }
-
-        navigate(
-          getFullPath(
-            TEST_LOEYSING_TESTGRUNNLAG,
-            { pathParam: idPath, id: id },
-            { pathParam: ':loeysingId', id: String(nextLoeysing.loeysing.id) },
-            { pathParam: ':testgrunnlagId', id: String(testgrunnlagId) }
-          )
-        );
       }
     },
     [contextSak.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
-  const opprettTestgrunnlag = useCallback(
-    async (loeysing: LoeysingNettsideRelation): Promise<number> => {
-      const testgrunnlag: CreateTestgrunnlag = {
-        namn: `Test av ${loeysing.loeysing.namn} for sak ${id}`,
-        parentId: Number(id),
-        loeysingNettsideRelation: loeysing,
-        testreglar: contextSak.testreglar.map((testregel) => testregel.id),
-        type: 'OPPRINNELEG_TEST',
-      };
-      const nyttTestgrunnlag = await createTestgrunnlag(testgrunnlag);
-      return nyttTestgrunnlag.id;
-    },
-    [id, contextSak.testreglar]
-  );
+  // const opprettTestgrunnlag = useCallback(
+  //   async (loeysing: LoeysingNettsideRelation): Promise<number> => {
+  //     const testgrunnlag: CreateTestgrunnlag = {
+  //       namn: `Test av ${loeysing.loeysing.namn} for sak ${id}`,
+  //       parentId: Number(id),
+  //       loeysingNettsideRelation: loeysing,
+  //       testreglar: contextSak.testreglar.map((testregel) => testregel.id),
+  //       type: 'OPPRINNELEG_TEST',
+  //     };
+  //     const nyttTestgrunnlag = await createTestgrunnlag(testgrunnlag);
+  //     return nyttTestgrunnlag.id;
+  //   },
+  //   [id, contextSak.testreglar]
+  // );
 
   return (
     <div className="manual-test-overview">
