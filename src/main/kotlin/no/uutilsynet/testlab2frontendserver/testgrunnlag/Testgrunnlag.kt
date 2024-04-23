@@ -14,7 +14,7 @@ data class Testgrunnlag(
     val parentId: Int,
     val namn: String,
     val testreglar: List<Testregel> = emptyList(),
-    val loeysing: SakDTO.SakLoeysingDTO,
+    val loeysingar: List<SakDTO.SakLoeysingDTO> = emptyList(),
     val type: TestgrunnlagType,
 )
 

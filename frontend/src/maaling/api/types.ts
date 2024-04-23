@@ -58,6 +58,7 @@ export type JobStatistics = {
 };
 
 export type AggregatedTestresult = {
+  loeysing: Loeysing;
   testregelId: string;
   suksesskriterium: string;
   fleireSuksesskriterium: string[];
