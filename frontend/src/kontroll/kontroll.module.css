@@ -236,11 +236,18 @@
     margin: 0 2rem;
   }
 
-  .inputs {
+  .innhaldstype-select {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-width: 24rem;
+    max-width: 18rem;
+  }
+
+  .begrunnelse-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 32rem;
   }
 
   .innhaldstype-lagre {
@@ -249,6 +256,7 @@
 
   .type-form-wrapper {
     padding: 2rem;
+      width: 750px;
   }
 
   .lagre-sideutval-nettside {
@@ -256,47 +264,15 @@
     gap: 1rem;
   }
 
-  .accordion {
-    width: 100%;
-  }
-
-  .accordion-items {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding-top: 2rem;
-  }
-
-  .accordion-item {
-    background-color: var(--fds-semantic-surface-neutral-default);
-    box-shadow: var(--fds-shadow-medium);
-  }
-
-  .accordion-button {
-    background-color: var(--fds-semantic-surface-neutral-default);
-    width: 100%;
-    border: none;
-    padding: 3rem;
-    cursor: pointer;
-    border-radius: 3px;
-    font-size: 21px;
-    font-weight: 400;
-    display: flex;
-    justify-content: center;
-    &:hover {
-      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
-    }
-    .accordion-button-title {
-      text-align: left;
-    }
-  }
-
-  .accordion-button-title,
   .sideutval-form {
     @media (min-width: 920px) {
       width: 800px;
     }
     width: 100%;
+  }
+
+  .accordion-wrapper {
+    padding-top: 2rem;
   }
 
   .testregel-type-selector {

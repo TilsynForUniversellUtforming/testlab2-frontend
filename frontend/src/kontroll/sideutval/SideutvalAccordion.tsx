@@ -1,7 +1,16 @@
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Button, Chip, Combobox, Heading, Paragraph, Textarea, Textfield, } from '@digdir/designsystemet-react';
+import {
+  Accordion,
+  Button,
+  Chip,
+  Combobox,
+  Heading,
+  Paragraph,
+  Textarea,
+  Textfield,
+} from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
@@ -29,6 +38,7 @@ interface AccordionItemProps {
   setExpanded: (value: string) => void;
   sideBegrunnelseList: Side[];
   innhaldstype: string;
+  handleRemoveInnhaldstype: (innhaldstype: string, egendefinertType?: string) => void;
 }
 
 interface SideBegrunnelseFormProps {
@@ -51,13 +61,13 @@ const SideBegrunnelseForm = ({
   const isForside = innhaldstype.toLowerCase() === 'forside';
 
   return (
-    <div className={classes.sideutvalForm}>
-      <div className={classes.inputs}>
+    <>
         <Heading size="xsmall" level={5} spacing>
           Legg til {sanitizeEnumLabel(innhaldstype)}
         </Heading>
+
         {sideBegrunnelseList.map((sideBegrunnelse) => (
-          <div key={sideBegrunnelse.key} className={classes.inputs}>
+          <div key={sideBegrunnelse.key} className={classes.begrunnelseInputs}>
             <Textarea
               label="Begrunnelse for sideutvalg"
               value={sideBegrunnelse?.begrunnelse?.length !== 0 ? sideBegrunnelse?.begrunnelse : undefined}
@@ -76,7 +86,6 @@ const SideBegrunnelseForm = ({
             }
           </div>
         ))}
-      </div>
       <TestlabDivider />
       <Button
         size={ButtonSize.Small}
@@ -102,7 +111,7 @@ const SideBegrunnelseForm = ({
         <PlusCircleIcon />
         Legg til fleire sider innan {sanitizeEnumLabel(innhaldstype)}
       </Button>
-    </div>
+    </>
   );
 };
 
@@ -111,6 +120,7 @@ const AccordionItem = ({
   setExpanded,
   sideBegrunnelseList,
   innhaldstype,
+  handleRemoveInnhaldstype,
 }: AccordionItemProps) => {
   const [sideList, setSideList] = useState<SideListItem[]>(toSideListItem(sideBegrunnelseList, innhaldstype));
 
@@ -123,21 +133,12 @@ const AccordionItem = ({
     setSideList(filteredList);
   }, [innhaldstype, sideList])
 
-  const handleRemoveInnhaldstype = useCallback((innhaldstype: string) => {
-  }, [sideBegrunnelseList, innhaldstype])
-
   return (
-    <div className={classes.accordionItem}>
-      {!expanded && (
-        <button
-          onClick={() => setExpanded(innhaldstype)}
-          className={classes.accordionButton}
-        >
-          <div className={classes.accordionButtonTitle}>{innhaldstype}</div>
-        </button>
-      )}
-      {expanded && (
-        <div className={classes.centered}>
+    <Accordion.Item open={expanded}>
+        <Accordion.Header level={3} onHeaderClick={() => setExpanded(innhaldstype)}>
+          {innhaldstype}
+        </Accordion.Header>
+        <Accordion.Content className={classes.centered}>
           <div className={classes.typeFormWrapper}>
             <SideBegrunnelseForm
               innhaldstype={innhaldstype}
@@ -161,9 +162,8 @@ const AccordionItem = ({
               </Button>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        </Accordion.Content>
+    </Accordion.Item>
   );
 };
 
@@ -218,6 +218,19 @@ const SideutvalAccordion = ({
     }
   }
 
+  const handleRemoveInnhaldstype = (innhaldstype: string, egendefinertType?: string) => {
+    const oldSideutval = sideutvalLoeysing.sideUtval;
+    if (innhaldstype.toLowerCase() === 'forside') {
+      // TODO - Alert
+    }
+
+    if (innhaldstype.toLowerCase() === 'egendefinert' && egendefinertType) {
+      return {...sideutvalLoeysing, sideutval: oldSideutval.filter(su => su.type.egendefinertType?.toLowerCase() === egendefinertType.toLowerCase())}
+    } else {
+      return {...sideutvalLoeysing, sideutval: oldSideutval.filter(su => su.type.innhaldstype.toLowerCase() === innhaldstype.toLowerCase())}
+    }
+  }
+
   useEffect(() => {
     // Lukk alle ved ending av selectedLoeysing
     setExpanded([]);
@@ -250,13 +263,12 @@ const SideutvalAccordion = ({
       </div>
       <div className={classes.centered}>
         <div className={classes.sideutvalForm}>
-          <div className={classes.inputs}>
+          <div className={classes.innhaldstypeSelect}>
             <Combobox
               label="Legg til innhaldstype"
               size="small"
               value={innhaldstypeToAdd?.id ? [String(innhaldstypeToAdd.id)] : []}
               onValueChange={onChangeInnhaldstype}
-              // For å tømme søkefeltet etter man har trykket på legg til
               inputValue={innhaldstypeToAdd?.innhaldstype ? String(innhaldstypeToAdd.innhaldstype) : ''}
             >
               <Combobox.Empty>
@@ -270,28 +282,31 @@ const SideutvalAccordion = ({
             </Combobox>
             <Button className={classes.innhaldstypeLagre} variant={ButtonVariant.Outline} size={ButtonSize.Small} onClick={handleAddInnhaldstype}>Legg til</Button>
           </div>
+          <div className={classes.accordionWrapper}>
+            <Accordion>
+              {sideutvalLoeysing.sideUtval.map((sideutval) => {
+                const innhaldstype =
+                  sideutval.type.egendefinertType || sideutval.type.innhaldstype;
+
+                const sideBegrunnelseList =
+                  sideutval.sideBegrunnelseList.length === 0
+                    ? [defaultSide]
+                    : sideutval.sideBegrunnelseList;
+
+                return (
+                  <AccordionItem
+                    expanded={expanded.includes(innhaldstype)}
+                    setExpanded={handleSetExpanded}
+                    sideBegrunnelseList={sideBegrunnelseList}
+                    innhaldstype={innhaldstype}
+                    key={innhaldstype}
+                    handleRemoveInnhaldstype={handleRemoveInnhaldstype}
+                  />
+                )
+              })}
+            </Accordion>
+          </div>
         </div>
-      </div>
-      <div className={classes.accordionItems}>
-        {sideutvalLoeysing.sideUtval.map((sideutval) => {
-          const innhaldstype =
-            sideutval.type.egendefinertType || sideutval.type.innhaldstype;
-
-          const sideBegrunnelseList =
-            sideutval.sideBegrunnelseList.length === 0
-              ? [defaultSide]
-              : sideutval.sideBegrunnelseList;
-
-          return (
-            <AccordionItem
-              expanded={expanded.includes(innhaldstype)}
-              setExpanded={handleSetExpanded}
-              sideBegrunnelseList={sideBegrunnelseList}
-              innhaldstype={innhaldstype}
-              key={innhaldstype}
-            />
-          )
-        })}
       </div>
     </div>
   );
