@@ -37,7 +37,7 @@ export const getAggregatedResultColumns = (): Array<
     cell: ({ row }) => (
       <LoadingBar
         percentage={row.original.compliancePercent}
-        ariaLabel={`${row.original.testregelId} har resultat på ${row.original.compliancePercent}%`}
+        ariaLabel={`${row.original.testregelId} har resultat på ${row.original.compliancePercent}`}
       />
     ),
     header: () => <>Score</>,
