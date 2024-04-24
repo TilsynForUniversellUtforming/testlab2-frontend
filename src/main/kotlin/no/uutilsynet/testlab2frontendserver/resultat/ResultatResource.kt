@@ -65,13 +65,14 @@ class ResultatResource(
   fun getDetaljertResultat(
       @RequestParam sakId: Int?,
       @RequestParam maalingId: Int?,
-      @RequestParam testregelNoekkel: String?
+      @RequestParam testregelNoekkel: String?,
+      @RequestParam loeysingId: Int?
   ): List<TestResultat> {
     logger.debug("Hent resultat for sakId: $sakId, maalingId: $maalingId")
     return when {
       sakId != null ->
           restTemplate.getList<TestResultat>(
-              "$testresultatUrl?testgrunnlagId=$sakId&testregelNoekkel=$testregelNoekkel")
+              "$testresultatUrl?testgrunnlagId=$sakId&testregelNoekkel=$testregelNoekkel&loeysingId=$loeysingId")
       maalingId != null ->
           restTemplate.getList<TestResultat>("$testresultatUrl?maalingId=$maalingId")
       else -> return emptyList()

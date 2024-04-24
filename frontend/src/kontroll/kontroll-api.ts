@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { Utval } from '@loeysingar/api/types';
 
 import { Kontroll, UpdateKontrollTestreglar } from './types';
@@ -10,7 +11,7 @@ export function updateKontroll(
   kontroll: Kontroll,
   utval: Utval
 ): Promise<Response> {
-  return fetch(`/api/v1/kontroller/${kontroll.id}`, {
+  return fetchWrapper(`/api/v1/kontroller/${kontroll.id}`, {
     method: 'put',
     body: JSON.stringify({
       kontroll,
@@ -27,7 +28,7 @@ export function updateKontrollTestreglar(
   kontroll: Kontroll,
   testreglar: UpdateKontrollTestreglar
 ): Promise<Response> {
-  return fetch(`/api/v1/kontroller/${kontroll.id}`, {
+  return fetchWrapper(`/api/v1/kontroller/${kontroll.id}`, {
     method: 'put',
     body: JSON.stringify({ kontroll, testreglar, kontrollSteg: 'testreglar' }),
     headers: {

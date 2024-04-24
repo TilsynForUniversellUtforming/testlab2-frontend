@@ -12,6 +12,13 @@ export const getAggregatedResultColumns = (): Array<
   ColumnDef<AggregatedTestresult>
 > => [
   {
+    accessorFn: (row) => row.loeysing.namn,
+    id: 'loeysing',
+    cell: ({ row }) => <>{row.original.loeysing.namn}</>,
+    header: () => <>Loeysing</>,
+    filterFn: 'exact',
+  },
+  {
     accessorFn: (row) => row.testregelId,
     id: 'testregelId',
     cell: ({ row }) => <>{row.original.testregelId}</>,
@@ -30,7 +37,7 @@ export const getAggregatedResultColumns = (): Array<
     cell: ({ row }) => (
       <LoadingBar
         percentage={row.original.compliancePercent}
-        ariaLabel={`${row.original.testregelId} har resultat på ${row.original.compliancePercent}%`}
+        ariaLabel={`${row.original.testregelId} har resultat på ${row.original.compliancePercent}`}
       />
     ),
     header: () => <>Score</>,
