@@ -11,12 +11,8 @@ import React, { useCallback, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 const VerksemdEdit = () => {
-  const {
-    verksemdList,
-    contextLoading,
-    setVerksemdList,
-    setContextError,
-  }: VerksemdContext = useOutletContext();
+  const { verksemdList, setVerksemdList, setContextError }: VerksemdContext =
+    useOutletContext();
   const { id } = useParams();
   const initVerksemd = useLoaderData() as Verksemd;
   const [verksemd] = useState(initVerksemd);
@@ -67,7 +63,6 @@ const VerksemdEdit = () => {
     (verksemdEdit: VerksemdUpdate) => {
       const doEditVerksemd = async () => {
         if (verksemdEdit && id) {
-          setLoading(true);
           const verksemd: Verksemd = verksemdUpdateToVerksemd(
             verksemdEdit,
             Number(id)

@@ -1,8 +1,7 @@
 import useAlert from '@common/alert/useAlert';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
-import LoeysingFormSkeleton from '@loeysingar/form/skeleton/LoeysingFormSkeleton';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 import { updateLoeysing } from './api/loeysing-api';
@@ -11,24 +10,14 @@ import LoeysingForm from './form/LoeysingForm';
 import { LoeysingContext } from './types';
 
 const LoeysingEdit = () => {
-  const {
-    loeysingList,
-    contextLoading,
-    setContextError,
-    setLoeysingList,
-  }: LoeysingContext = useOutletContext();
+  const { loeysingList, setContextError, setLoeysingList }: LoeysingContext =
+    useOutletContext();
   const { id } = useParams();
   const initLoeysing = useLoaderData() as LoeysingFormElement;
   const [loeysing, setLoeysing] = useState(initLoeysing);
-  const [loading, setLoading] = useState(contextLoading);
   const [alert, setAlert] = useAlert();
 
   useContentDocumentTitle(LOEYSING_EDIT.navn, loeysing?.namn);
-  useEffect(() => {
-    if (loeysing) {
-      setLoading(false);
-    }
-  }, []);
 
   const onSubmit = useCallback(
     (loeysingInit: LoeysingInit) => {
@@ -59,7 +48,6 @@ const LoeysingEdit = () => {
             return;
           }
           try {
-            setLoading(true);
             const updatedLoeysingList = await updateLoeysing(loeysing);
             setLoeysingList(updatedLoeysingList);
             setLoeysing({
@@ -70,8 +58,6 @@ const LoeysingEdit = () => {
             setAlert('success', `${loeysing.namn} er endra`);
           } catch (e) {
             setContextError(new Error('Kunne ikkje endre løysing'));
-          } finally {
-            setLoading(false);
           }
         } else {
           setContextError(new Error('Løysingparameter ikkje gyldig'));
@@ -82,12 +68,6 @@ const LoeysingEdit = () => {
     },
     [loeysingList]
   );
-
-  if (loading) {
-    return (
-      <LoeysingFormSkeleton heading="Endre løysing" subHeading="Laster..." />
-    );
-  }
 
   return (
     <LoeysingForm
