@@ -1,6 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
-import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 
 import { Loeysing, LoeysingFormElement, LoeysingInit } from './types';
 
@@ -79,23 +78,9 @@ export const deleteLoeysingList = async (
 export const fetchLoeysingFormElement = async (
   id: number
 ): Promise<LoeysingFormElement> => {
-  const loeysing = await fetchLoeysing(id);
-  if (loeysing.verksemdId !== null && loeysing.verksemdId !== undefined) {
-    const verksemd = await fetchVerksemd(loeysing.verksemdId);
-    return {
-      id: loeysing.id,
-      namn: loeysing.namn,
-      url: loeysing.url,
-      orgnummer: loeysing.orgnummer,
-      verksemd: verksemd,
-    };
-  } else {
-    return {
-      id: loeysing.id,
-      namn: loeysing.namn,
-      url: loeysing.url,
-      orgnummer: loeysing.orgnummer,
-      verksemd: undefined,
-    };
-  }
+  return await fetch(`/api/v1/loeysing/${id}/withVerksemd`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente løysingar')
+  );
 };
