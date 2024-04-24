@@ -30,6 +30,6 @@ export type SideutvalLoeysing = {
 
 export type SideListItem = Side & {
   key: string;
-}
+};
 
 export const defaultSide: Side = { url: '', begrunnelse: '' };

@@ -26,9 +26,12 @@ const Sideutval = () => {
   const [alert, setAlert] = useAlert();
   const manueltSelected = true;
   const actionData = useActionData() as { sistLagret: Date };
-  const handleSetSideutvalLoeysing = useCallback((sideutvalLoeysing: SideutvalLoeysing) => {
-    setSideutvalLoeysing(sideutvalLoeysing);
-  }, [sideutvalLoeysing]);
+  const handleSetSideutvalLoeysing = useCallback(
+    (sideutvalLoeysing: SideutvalLoeysing) => {
+      setSideutvalLoeysing(sideutvalLoeysing);
+    },
+    [sideutvalLoeysing]
+  );
 
   const handleChangeLoeysing = (loeysingId: number) => {
     const loeysing = loeysingList.find((l) => l.id === loeysingId);
@@ -91,7 +94,7 @@ const Sideutval = () => {
       <div className={classes.velgSideutvalContainer}>
         <div className={classes.centered}>
           <div className={classes.velgSideutval}>
-            {(selectedLoeysing && sideutvalLoeysing) && (
+            {selectedLoeysing && sideutvalLoeysing && (
               <SideutvalAccordion
                 selectedLoeysing={selectedLoeysing}
                 sideutvalLoeysing={sideutvalLoeysing}
