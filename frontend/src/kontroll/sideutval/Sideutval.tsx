@@ -6,13 +6,14 @@ import { useCallback, useState } from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
-import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import LoeysingFilter from './LoeysingFilter';
 import { createDefaultSideutval } from './sideutval-util';
-import SideutvalAccordion from './SideutvalAccordion';
-import { SideutvalLoader, SideutvalLoeysing } from './types';
+import SideutvalAccordion from './accordion/SideutvalAccordion';
+import { SideutvalForm, SideutvalLoader, SideutvalLoeysing } from './types';
 import { UpdateKontrollSideutval } from '../types';
+import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 const Sideutval = () => {
   const { kontroll, innhaldstypeList, loeysingList } =
@@ -83,6 +84,16 @@ const Sideutval = () => {
     });
   };
 
+  const { control, register } = useForm<SideutvalForm>(
+  //   {
+  //   resolver: zodResolver(loeysingValidationSchema),
+  // }
+  );
+
+  const { fields, append } = useFieldArray({
+    control,
+    name: "sideutval"
+  });
 
   return (
     <section className={classes.sideutvalSection}>
@@ -122,7 +133,6 @@ const Sideutval = () => {
                 sideutvalLoeysing={sideutvalLoeysing}
                 setSideutvalLoesying={handleSetSideutvalLoeysing}
                 innhaldstypeList={innhaldstypeList}
-                inputErrors={[]}
               />
             )}
             <div className={classes.centered}>

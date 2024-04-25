@@ -2,18 +2,11 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import {
-  listInnhaldstype,
-  listTestreglar,
-} from '@testreglar/api/testreglar-api';
+import { listInnhaldstype, listTestreglar, } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
-import { redirect, RouteObject, useRouteError } from 'react-router-dom';
+import { ActionFunctionArgs, redirect, RouteObject, useRouteError } from 'react-router-dom';
 
-import {
-  fetchKontroll,
-  updateKontroll,
-  updateKontrollTestreglar,
-} from './kontroll-api';
+import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
 import Sideutval from './sideutval/Sideutval';
@@ -38,7 +31,7 @@ export const steps = {
   loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
   testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
   oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
-  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
+  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutval' },
 };
 
 export const KontrollRoutes: RouteObject = {
@@ -151,7 +144,7 @@ export const KontrollRoutes: RouteObject = {
       },
     },
     {
-      path: ':kontrollId/sideutvalg',
+      path: ':kontrollId/sideutval',
       element: <Sideutval />,
       handle: { name: steps.sideutval.name },
       loader: async ({ params }): Promise<SideutvalLoader> => {
@@ -197,6 +190,17 @@ export const KontrollRoutes: RouteObject = {
           loeysingList: loeysingList,
         };
       },
+      action: async ({ request }: ActionFunctionArgs) => {
+        // const { kontroll, sideutval, neste } =
+        //   (await request.json()) as UpdateKontrollSideutval;
+        // console.log(sideutval);
+        const formData = Object.fromEntries(await request.formData());
+        console.log(formData);
+        // const keys = Object.keys(formData).map(key => );
+        // console.log(keys) // TODO - Groupby type
+
+        return { sistLagret: new Date() };
+      }
     },
   ],
 };

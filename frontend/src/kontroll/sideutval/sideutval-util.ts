@@ -1,16 +1,11 @@
-import {
-  InnhaldstypeKontroll,
-  Side,
-  SideListItem,
-  SideutvalLoeysing,
-} from './types';
+import { InnhaldstypeKontroll, Side, SideItemKey, SideListItem, SideutvalLoeysing, } from './types';
 
 export const createDefaultSideutval = (
   loeysingId: number,
   forsideType: InnhaldstypeKontroll
 ): SideutvalLoeysing => ({
   loeysingId: loeysingId,
-  sideUtval: [
+  sideutval: [
     {
       type: forsideType,
       sideBegrunnelseList: [],
@@ -18,7 +13,7 @@ export const createDefaultSideutval = (
   ],
 });
 
-export const toSideListItemKey = (innhaldstype: string, index: number) =>
+export const toSideListItemKey = (innhaldstype: string, index: number): SideItemKey =>
   `${innhaldstype}_${index}`;
 
 export const toSideListItem = (
@@ -35,7 +30,7 @@ export const toSelectableInnhaldstype = (
   innhaldstypeList: InnhaldstypeKontroll[],
   sideutvalLoeysing: SideutvalLoeysing
 ) => {
-  const loeysingInnhaldstypeList = sideutvalLoeysing.sideUtval.map(
+  const loeysingInnhaldstypeList = sideutvalLoeysing.sideutval.map(
     (su) => su.type.innhaldstype
   );
   const egendefinert = innhaldstypeList.filter(
