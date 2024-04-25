@@ -122,6 +122,7 @@ const Sideutval = () => {
                 sideutvalLoeysing={sideutvalLoeysing}
                 setSideutvalLoesying={handleSetSideutvalLoeysing}
                 innhaldstypeList={innhaldstypeList}
+                inputErrors={[]}
               />
             )}
             <div className={classes.centered}>

@@ -1,6 +1,5 @@
 import useAlert from '@common/alert/useAlert';
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
-import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import {
@@ -21,19 +20,15 @@ import { useCallback, useEffect, useState } from 'react';
 
 import classes from '../kontroll.module.css';
 import { toSelectableInnhaldstype, toSideListItem } from './sideutval-util';
-import {
-  defaultSide,
-  InnhaldstypeKontroll,
-  Side,
-  SideListItem,
-  SideutvalLoeysing,
-} from './types';
+import { defaultSide, InnhaldstypeKontroll, InputError, Side, SideListItem, SideutvalLoeysing, } from './types';
+import TestlabDivider from '@common/divider/TestlabDivider';
 
 interface Props {
   selectedLoeysing: Loeysing;
   sideutvalLoeysing: SideutvalLoeysing;
   setSideutvalLoesying: (sideutvalLoeysing: SideutvalLoeysing) => void;
   innhaldstypeList: InnhaldstypeKontroll[];
+  inputErrors: InputError[];
 }
 
 interface AccordionItemProps {
@@ -99,19 +94,22 @@ const SideBegrunnelseForm = ({
             type="url"
           />
           {hasMultipleItems && (
-            <Button
-              size={ButtonSize.Small}
-              variant={ButtonVariant.Quiet}
-              type="button"
-              onClick={() => handleRemoveSide(sideBegrunnelse.key)}
-            >
-              <MinusCircleIcon />
-              Ta bort side
-            </Button>
+            <div className={classes.taBortSideWrapper}>
+              <Button
+                size={ButtonSize.Small}
+                variant={ButtonVariant.Quiet}
+                type="button"
+                onClick={() => handleRemoveSide(sideBegrunnelse.key)}
+                className={classes.taBortSide}
+              >
+                <MinusCircleIcon />
+                Ta bort side
+              </Button>
+            </div>
           )}
         </div>
       ))}
-      <TestlabDivider />
+      <div className={classes.lagreSideutvalNettside}>
       <ConfirmModalButton
         size={ButtonSize.Small}
         variant={ButtonVariant.Quiet}
@@ -137,6 +135,9 @@ const SideBegrunnelseForm = ({
         <PlusCircleIcon />
         Legg til fleire sider innan {innhaldstypeLabel}
       </Button>
+        <TestlabDivider />
+      <Button size={ButtonSize.Small}>Lagre {innhaldstypeLabel}</Button>
+      </div>
     </>
   );
 };
@@ -184,17 +185,6 @@ const AccordionItem = ({
             handleRemoveSide={handleRemoveSide}
             handleRemoveInnhaldstype={handleRemoveInnhaldstype}
           />
-          <TestlabDivider />
-          <div className={classes.lagreSideutvalNettside}>
-            <Button
-              size={ButtonSize.Small}
-              variant={ButtonVariant.Outline}
-              onClick={() => setExpanded(innhaldsType)}
-            >
-              Lukk
-            </Button>
-            <Button size={ButtonSize.Small}>Lagre {innhaldsTypeLabel}</Button>
-          </div>
         </div>
       </Accordion.Content>
     </Accordion.Item>
@@ -206,6 +196,7 @@ const SideutvalAccordion = ({
   setSideutvalLoesying,
   innhaldstypeList,
   selectedLoeysing,
+  inputErrors,
 }: Props) => {
   const [typeList, setTypeList] = useState<InnhaldstypeKontroll[]>(
     toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing)

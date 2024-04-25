@@ -32,4 +32,9 @@ export type SideListItem = Side & {
   key: string;
 };
 
+export type InputError = SideListItem & {
+  url: boolean;
+  begrunnelse: boolean;
+}
+
 export const defaultSide: Side = { url: '', begrunnelse: '' };
