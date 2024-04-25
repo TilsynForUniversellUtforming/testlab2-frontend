@@ -1,4 +1,5 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
+import { formatDate } from '@common/util/stringutils';
 import { Alert, Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import classNames from 'classnames';
@@ -75,14 +76,6 @@ const VelgLoesninger = () => {
     };
   }
 
-  function viewDate(date: Date): string {
-    return date.toLocaleDateString('nn-NO', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  }
-
   return (
     <section className={classes.kontrollSection}>
       <KontrollStepper />
@@ -127,7 +120,7 @@ const VelgLoesninger = () => {
               >
                 <span className={classes.utvalgNamn}>{u.namn}</span>
                 <span className={classes.utvalgOppretta}>
-                  {viewDate(u.oppretta)}
+                  {formatDate(u.oppretta)}
                 </span>
               </button>
             ))}
