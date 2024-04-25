@@ -111,6 +111,10 @@
     font: var(--fds-typography-paragraph-large);
     border-radius: 10px;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
       background-color: var(--fds-semantic-surface-first-light-hover);
@@ -126,6 +130,11 @@
         rgb(157 160 228 / 0.6),
         var(--fds-semantic-surface-first-light-active)
       );
+    }
+
+    .utvalgOppretta {
+      font: var(--fds-typography-paragraph-medium);
+      color: var(--fds-semantic-text-neutral-subtle);
     }
   }
 }
