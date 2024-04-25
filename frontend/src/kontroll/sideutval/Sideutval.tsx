@@ -3,7 +3,7 @@ import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useCallback, useState } from 'react';
-import { useActionData, useLoaderData } from 'react-router-dom';
+import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
@@ -12,10 +12,13 @@ import LoeysingFilter from './LoeysingFilter';
 import { createDefaultSideutval } from './sideutval-util';
 import SideutvalAccordion from './SideutvalAccordion';
 import { SideutvalLoader, SideutvalLoeysing } from './types';
+import { UpdateKontrollSideutval } from '../types';
 
 const Sideutval = () => {
   const { kontroll, innhaldstypeList, loeysingList } =
     useLoaderData() as SideutvalLoader;
+
+  const submit = useSubmit();
 
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
@@ -60,7 +63,26 @@ const Sideutval = () => {
     }
   };
 
-  const lagreKontroll = () => console.log('lagre');
+  const lagreKontroll = (neste: boolean) => {
+    alert?.clearMessage();
+
+    if (!sideutvalLoeysing) {
+      setAlert('danger', 'Må velja sideutval');
+      return;
+    }
+
+    const data: UpdateKontrollSideutval = {
+      kontroll: kontroll,
+      sideutval: sideutvalLoeysing,
+      neste,
+    };
+    submit(JSON.stringify(data), {
+      method: 'put',
+      action: `/kontroll/${kontroll.id}/sideutval`,
+      encType: 'application/json',
+    });
+  };
+
 
   return (
     <section className={classes.sideutvalSection}>
@@ -109,8 +131,8 @@ const Sideutval = () => {
                 )}
                 <LagreOgNeste
                   sistLagret={actionData?.sistLagret}
-                  onClickLagreKontroll={lagreKontroll}
-                  onClickNeste={lagreKontroll}
+                  onClickLagreKontroll={() => lagreKontroll(false)}
+                  onClickNeste={() => lagreKontroll(true)}
                 />
               </div>
             </div>

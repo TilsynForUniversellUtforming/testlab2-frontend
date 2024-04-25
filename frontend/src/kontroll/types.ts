@@ -26,5 +26,12 @@ export type UpdateKontrollTestreglar = {
   testregelIdList: number[];
 };
 
+export type UpdateKontrollSideutval = {
+  kontroll: Kontroll;
+  sideutval: SideutvalLoeysing;
+  neste: boolean;
+};
+
+
 export type KontrollType = 'manuell-kontroll';
 export type Sakstype = 'forvaltningssak' | 'arkivsak';
