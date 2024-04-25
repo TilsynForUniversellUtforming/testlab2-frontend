@@ -108,7 +108,7 @@
     background-color: var(--fds-semantic-surface-first-light);
     color: black;
     border: none;
-    font-size: 1.5rem;
+    font: var(--fds-typography-paragraph-large);
     border-radius: 10px;
     cursor: pointer;
 
@@ -147,7 +147,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem 0 4rem;
 
   button {
     width: calc(100% / 3 - 1rem);
@@ -170,7 +170,7 @@
       border: none;
       background: none;
       text-align: left;
-      font-size: 1rem;
+      font: var(--fds-typography-paragraph-large);
       padding: 0.5rem;
       cursor: pointer;
 

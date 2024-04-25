@@ -123,7 +123,7 @@ const VelgLoesninger = () => {
           </div>
           {!isEmpty(eldreUtvalg) && (
             <>
-              <Heading level={3} size="small">
+              <Heading level={2} size="large">
                 Eldre utvalg av løsninger
               </Heading>
               <ul className={classes.eldreUtvalg}>
