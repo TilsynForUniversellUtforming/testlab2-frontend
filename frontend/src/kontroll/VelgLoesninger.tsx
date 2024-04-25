@@ -75,6 +75,14 @@ const VelgLoesninger = () => {
     };
   }
 
+  function viewDate(date: Date): string {
+    return date.toLocaleDateString('nn-NO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+
   return (
     <section className={classes.kontrollSection}>
       <KontrollStepper />
@@ -117,7 +125,10 @@ const VelgLoesninger = () => {
                 onClick={velgUtvalg(u)}
                 className={classNames({ [classes.selected]: isValgt(u) })}
               >
-                {u.namn}
+                <span className={classes.utvalgNamn}>{u.namn}</span>
+                <span className={classes.utvalgOppretta}>
+                  {viewDate(u.oppretta)}
+                </span>
               </button>
             ))}
           </div>
