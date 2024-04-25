@@ -16,6 +16,7 @@ export type Kontroll = {
 export type UpdateKontrollTestregel = {
   kontroll: Kontroll;
   testreglar: UpdateKontrollTestreglar;
+  neste: boolean;
 };
 
 export type UpdateKontrollTestreglar = {

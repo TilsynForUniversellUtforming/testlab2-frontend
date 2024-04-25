@@ -35,8 +35,8 @@ export const steps = {
   opprett: { name: 'Opprett Kontroll', relativePath: '..' },
   loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
   testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
-  oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
   sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
+  oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
 };
 
 export const KontrollRoutes: RouteObject = {
@@ -130,13 +130,15 @@ export const KontrollRoutes: RouteObject = {
         };
       },
       action: async ({ request }) => {
-        const { kontroll, testreglar } =
+        const { kontroll, testreglar, neste } =
           (await request.json()) as UpdateKontrollTestregel;
         const response = await updateKontrollTestreglar(kontroll, testreglar);
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
-        return { sistLagret: new Date() };
+        return neste
+          ? redirect(`/kontroll/${kontroll.id}/${steps.sideutval.relativePath}`)
+          : { sistLagret: new Date() };
       },
     },
     {

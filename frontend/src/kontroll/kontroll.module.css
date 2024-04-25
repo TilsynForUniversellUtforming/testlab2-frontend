@@ -231,18 +231,15 @@
     padding: 3rem;
     cursor: pointer;
     border-radius: 10px;
-    background-color: var(--fds-semantic-surface-third-light-active);
+    background-color: var(--fds-brand-alt3-200);
     text-align: left;
     font-size: 21px;
     font-weight: 400;
     min-width: 16rem;
 
-    &.selected {
-      background: linear-gradient(
-        var(--fds-semantic-surface-third-light-active),
-        rgb(157 199 188 / 0.6),
-        var(--fds-semantic-surface-third-light-active)
-      );
+    &.selected,
+    &.selected:hover {
+      background-color: var(--fds-brand-alt3-500);
     }
 
     &:hover {
