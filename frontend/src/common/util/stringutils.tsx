@@ -72,29 +72,39 @@ export const formatDateString = (
   includeTime: boolean = false
 ): string => {
   const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = includeTime
-    ? {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hourCycle: 'h24',
-        hour: '2-digit',
-        minute: '2-digit',
-      }
-    : {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      };
-
-  const format = new Intl.DateTimeFormat('nb-NO', options);
-
   try {
-    return format.format(date);
+    return includeTime ? formatDateTime(date) : formatDate(date);
   } catch (e) {
     return dateString;
   }
 };
+
+export function formatDate(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  };
+
+  const format = new Intl.DateTimeFormat('nb-NO', options);
+
+  return format.format(date);
+}
+
+export function formatDateTime(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hourCycle: 'h24',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+
+  const format = new Intl.DateTimeFormat('nb-NO', options);
+
+  return format.format(date);
+}
 
 /**
  * Removes all spaces from a string.
