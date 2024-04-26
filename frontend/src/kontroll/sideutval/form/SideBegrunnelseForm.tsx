@@ -1,36 +1,63 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import {
-  Button,
-  Heading,
-  Textarea,
-  Textfield,
-} from '@digdir/designsystemet-react';
+import { Button, Heading, Textarea, Textfield, } from '@digdir/designsystemet-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
+import { UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
-import { SideListItem } from '../types';
+import { SideutvalForm, SideutvalIndexed } from '../types';
 
 interface Props {
   innhaldstypeLabel: string;
-  sideList: SideListItem[];
+  sideutvalIndexedList: SideutvalIndexed[];
   setExpanded: (value: string) => void;
-  handleAddSide: () => void;
-  handleRemoveSide: (key: string) => void;
-  handleRemoveInnhaldstype: (typeId: number, egendefinertType?: string) => void;
+  handleAddSide: (
+    loeysingId: number,
+    typeId: number,
+    egendefinertType?: string
+  ) => void;
+  handleRemoveSide: (indices: number[]) => void;
+  register: UseFormRegister<SideutvalForm>;
 }
 
 const SideBegrunnelseForm = ({
   innhaldstypeLabel,
-  sideList,
+  sideutvalIndexedList,
   handleAddSide,
   handleRemoveSide,
-  handleRemoveInnhaldstype,
+  register,
 }: Props) => {
-  const hasMultipleItems = sideList.length > 1;
+  const hasMultipleItems = sideutvalIndexedList.length > 1;
   const isForside = innhaldstypeLabel.toLowerCase() === 'forside';
-  const side = sideList[0];
+  const defaultSide = sideutvalIndexedList[0].sideutval;
+
+  const handleRemoveInnhaldstype = () => {
+    if (isForside) {
+      return;
+    }
+
+    const { loeysingId, typeId, egendefinertType } = defaultSide;
+
+    if (!loeysingId) {
+      throw Error('Ugyldig løysing');
+    }
+
+    if (!typeId) {
+      throw Error('Ugyldig innhaldstype');
+    }
+
+    const indiciesToRemove = sideutvalIndexedList
+      .filter(
+        (field) =>
+          field.sideutval.loeysingId === loeysingId &&
+          field.sideutval.typeId === typeId &&
+          (!egendefinertType ||
+            field.sideutval.egendefinertType === egendefinertType)
+      )
+      .map((field) => field.index);
+    handleRemoveSide(indiciesToRemove);
+  };
 
   return (
     <>
@@ -38,26 +65,50 @@ const SideBegrunnelseForm = ({
         Legg til {innhaldstypeLabel}
       </Heading>
 
-      {sideList.map((side, index) => {
+      {sideutvalIndexedList.map((sideutvalIndexed) => {
+        const side = sideutvalIndexed.sideutval;
+        const index = sideutvalIndexed.index;
+
         return (
           <div
             key={`${side.typeId}_${index}`}
             className={classes.begrunnelseInputs}
           >
+            <input
+              type="hidden"
+              {...register(`sideutval.${index}.loeysingId` as const, {
+                required: true,
+              })}
+              defaultValue={side.loeysingId}
+            />
+            <input
+              type="hidden"
+              defaultValue={side.typeId}
+              {...register(`sideutval.${index}.typeId` as const, {
+                required: true,
+              })}
+            />
+            <input
+              type="hidden"
+              {...register(`sideutval.${index}.egendefinertType` as const, {
+                required: true,
+              })}
+              defaultValue={side.egendefinertType}
+            />
             <Textarea
               label="Begrunnelse for sideutval"
-              value={
-                side?.begrunnelse?.length !== 0 ? side?.begrunnelse : undefined
-              }
-              // name={begrunnelseKey}
-              // id={begrunnelseKey}
+              defaultValue={side.begrunnelse}
+              {...register(`sideutval.${index}.begrunnelse` as const, {
+                required: true,
+              })}
             />
             <Textfield
               label="Url"
-              value={side?.url?.length !== 0 ? side?.url : undefined}
+              defaultValue={side.url}
               type="url"
-              // name={urlKey}
-              // id={urlKey}
+              {...register(`sideutval.${index}.url` as const, {
+                required: true,
+              })}
             />
             {hasMultipleItems && (
               <div className={classes.taBortSideWrapper}>
@@ -65,7 +116,7 @@ const SideBegrunnelseForm = ({
                   size={ButtonSize.Small}
                   variant={ButtonVariant.Quiet}
                   type="button"
-                  onClick={() => handleRemoveSide(side.key)}
+                  onClick={() => handleRemoveSide([index])}
                   className={classes.taBortSide}
                 >
                   <MinusCircleIcon />
@@ -88,16 +139,20 @@ const SideBegrunnelseForm = ({
           }
           disabled={isForside}
           message="Vil du ta bort hele innhaldstypen? Dette kan ikkje angrast"
-          onConfirm={() =>
-            handleRemoveInnhaldstype(side.typeId, side.egendefinertType)
-          }
+          onConfirm={handleRemoveInnhaldstype}
           buttonIcon={<MinusCircleIcon />}
         />
         <Button
           size={ButtonSize.Small}
           variant={ButtonVariant.Quiet}
           type="button"
-          onClick={handleAddSide}
+          onClick={() =>
+            handleAddSide(
+              defaultSide.loeysingId,
+              defaultSide.typeId,
+              defaultSide.egendefinertType
+            )
+          }
         >
           <PlusCircleIcon />
           Legg til fleire sider innan {innhaldstypeLabel}

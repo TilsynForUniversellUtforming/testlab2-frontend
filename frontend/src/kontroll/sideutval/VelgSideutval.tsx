@@ -1,64 +1,69 @@
 import useAlert from '@common/alert/useAlert';
-import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
+import { Alert, Button, Heading, Paragraph, } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
-import { useCallback, useState } from 'react';
-import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useLoaderData } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
-import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
-import { UpdateKontrollSideutval } from '../types';
 import SideutvalAccordion from './accordion/SideutvalAccordion';
 import LoeysingFilter from './LoeysingFilter';
-import { createDefaultSideutval } from './sideutval-util';
-import { Sideutval, SideutvalLoader } from './types';
+import { getDefaultFormValues, groupByType } from './sideutval-util';
+import { SideutvalForm, SideutvalIndexed, SideutvalLoader } from './types';
 
 const VelgSideutval = () => {
   const { kontroll, innhaldstypeList, loeysingList } =
     useLoaderData() as SideutvalLoader;
 
-  const submit = useSubmit();
-
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
   >();
-  const [sideutval, setSideutval] = useState<Sideutval[]>([]);
+  const [sideutvalByInnhaldstype, setSideutvalByInnhaldstype] = useState<Map<string, SideutvalIndexed[]>>(new Map());
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SideutvalForm>({
+    defaultValues: {
+      sideutval:
+        kontroll?.sideutval ??
+        getDefaultFormValues(loeysingList, innhaldstypeList),
+    },
+    mode: 'onBlur',
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'sideutval',
+    control,
+  });
 
   const [alert, setAlert] = useAlert();
+
+  const handleAddSide = (
+    loeysingId: number,
+    typeId: number,
+    egendefinertType?: string
+  ) => {
+    append({
+      loeysingId: Number(loeysingId),
+      typeId: Number(typeId),
+      egendefinertType: egendefinertType,
+      url: '',
+      begrunnelse: '',
+    });
+  };
+
+  const handleRemoveSide = (indices: number[]) => {
+    remove(indices);
+  };
+
+  const onSubmit = (data: SideutvalForm) => console.log(data);
+
   const manueltSelected = true;
-  const actionData = useActionData() as { sistLagret: Date };
-
-  const handleAddSideutval = useCallback(
-    (sideutval: Sideutval) => {
-      setSideutval((prev) => [...prev, sideutval]);
-    },
-    [sideutval]
-  );
-
-  const handleRemoveInnhaldstype = useCallback(
-    (typeId: number, egendefinertType?: string) => {
-      const forside = innhaldstypeList.find(
-        (it) => it.innhaldstype.toLowerCase() === 'forside'
-      );
-      if (!forside) {
-        throw Error('Forside finns ikkje');
-      }
-
-      if (typeId === forside.id) {
-        setAlert('danger', 'Kan ikkje ta bort forside');
-      }
-
-      if (egendefinertType) {
-        setSideutval((prev) =>
-          prev.filter((su) => su.egendefinertType !== egendefinertType)
-        );
-      } else {
-        setSideutval((prev) => prev.filter((su) => su.typeId !== typeId));
-      }
-    },
-    [sideutval]
-  );
 
   const handleChangeLoeysing = (loeysingId: number) => {
     const loeysing = loeysingList.find((l) => l.id === loeysingId);
@@ -70,42 +75,13 @@ const VelgSideutval = () => {
     setSelectedLoesying((prev) =>
       loeysing.id === prev?.id ? undefined : loeysing
     );
-    const sideutvalLoeysing = kontroll?.sideutval?.filter(
-      (su) => su.loeysingId === loeysingId
-    );
-    if (sideutvalLoeysing && sideutvalLoeysing.length > 0) {
-      setSideutval(sideutvalLoeysing);
-    } else {
-      const forsideType = innhaldstypeList.find(
-        (it) => it.innhaldstype.toLowerCase() === 'forside'
-      );
-      if (!forsideType?.id) {
-        setAlert('danger', 'Utval for forside finnes ikkje i systemet');
-        return;
-      }
-      setSideutval(createDefaultSideutval(loeysingId, forsideType.id));
-    }
   };
 
-  const lagreKontroll = (neste: boolean) => {
-    alert?.clearMessage();
+  useEffect(() => {
+    setSideutvalByInnhaldstype(groupByType(fields, innhaldstypeList));
+  }, [fields]);
 
-    if (sideutval.length === 0) {
-      setAlert('danger', 'Må velja sideutval');
-      return;
-    }
-
-    const data: UpdateKontrollSideutval = {
-      kontroll: kontroll,
-      sideutval: sideutval,
-      neste,
-    };
-    submit(JSON.stringify(data), {
-      method: 'put',
-      action: `/kontroll/${kontroll.id}/sideutval`,
-      encType: 'application/json',
-    });
-  };
+  console.log(fields)
 
   return (
     <section className={classes.sideutvalSection}>
@@ -136,16 +112,20 @@ const VelgSideutval = () => {
         onChangeLoeysing={handleChangeLoeysing}
         selectedLoeysing={selectedLoeysing}
       />
-      <div className={classes.velgSideutvalContainer}>
+      <form
+        className={classes.velgSideutvalContainer}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className={classes.centered}>
           <div className={classes.velgSideutval}>
-            {selectedLoeysing && sideutval && (
+            {selectedLoeysing && (
               <SideutvalAccordion
                 selectedLoeysing={selectedLoeysing}
-                sideutval={sideutval}
-                handleAddSideutval={handleAddSideutval}
-                handleRemoveInnhaldstype={handleRemoveInnhaldstype}
+                sideutvalByInnhaldstype={sideutvalByInnhaldstype}
+                handleAddSide={handleAddSide}
+                handleRemoveSide={handleRemoveSide}
                 innhaldstypeList={innhaldstypeList}
+                register={register}
               />
             )}
             <div className={classes.centered}>
@@ -153,16 +133,20 @@ const VelgSideutval = () => {
                 {alert && (
                   <Alert severity={alert.severity}>{alert.message}</Alert>
                 )}
-                <LagreOgNeste
-                  sistLagret={actionData?.sistLagret}
-                  onClickLagreKontroll={() => lagreKontroll(false)}
-                  onClickNeste={() => lagreKontroll(true)}
-                />
+                <br/>
+                <Button type="submit" className={classes.opprettResten}>
+                  Opprett resten av kontrollen
+                </Button>
+                {/*<LagreOgNeste*/}
+                {/*  sistLagret={actionData?.sistLagret}*/}
+                {/*  onClickLagreKontroll={() => lagreKontroll(false)}*/}
+                {/*  onClickNeste={() => lagreKontroll(true)}*/}
+                {/*/>*/}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   );
 };

@@ -1,43 +1,45 @@
 import useAlert from '@common/alert/useAlert';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import {
-  Accordion,
-  Alert,
-  Button,
-  Chip,
-  Combobox,
-  Heading,
-  Paragraph,
-  Textfield,
-} from '@digdir/designsystemet-react';
+import { Accordion, Alert, Button, Chip, Combobox, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
+import { UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
-import { groupByType, toSelectableInnhaldstype } from '../sideutval-util';
-import { InnhaldstypeKontroll, Sideutval } from '../types';
-import SideutvalAccordionItem from './SideutvalAccordionItem';
+import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
+import { toSelectableInnhaldstype } from '../sideutval-util';
+import { InnhaldstypeKontroll, SideutvalForm, SideutvalIndexed } from '../types';
 
 interface Props {
   selectedLoeysing: Loeysing;
-  sideutval: Sideutval[];
-  handleAddSideutval: (sideutval: Sideutval) => void;
-  handleRemoveInnhaldstype: (typeId: number, egendefinertType?: string) => void;
+  sideutvalByInnhaldstype: Map<string, SideutvalIndexed[]>
+  handleAddSide: (
+    loeysingId: number,
+    typeId: number,
+    egendefinertType?: string
+  ) => void;
+  handleRemoveSide: (indices: number[]) => void;
   innhaldstypeList: InnhaldstypeKontroll[];
+  register: UseFormRegister<SideutvalForm>;
 }
 
 const SideutvalAccordion = ({
-  sideutval,
-  handleAddSideutval,
-  handleRemoveInnhaldstype,
+  sideutvalByInnhaldstype,
+  handleAddSide,
+  handleRemoveSide,
   innhaldstypeList,
   selectedLoeysing,
+  register,
 }: Props) => {
+  const sideutvalLoeysing = [...sideutvalByInnhaldstype.values()].flat()
+    .map(su => su.sideutval)
+    .filter(su => su.loeysingId === selectedLoeysing.id);
+
   const [selectableInnhaldstype, setSelectableInnhaldstype] = useState<
     InnhaldstypeKontroll[]
-  >(toSelectableInnhaldstype(innhaldstypeList, sideutval));
+  >(toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing));
   const [innhaldstypeToAdd, setInnhaldstypeToAdd] = useState<
     InnhaldstypeKontroll | undefined
   >();
@@ -76,14 +78,6 @@ const SideutvalAccordion = ({
       return;
     }
 
-    const newSideutval: Sideutval = {
-      loeysingId: selectedLoeysing.id,
-      typeId: innhaldstypeToAdd.id,
-      begrunnelse: '',
-      url: '',
-      egendefinertType: egendefinertType,
-    };
-
     // Hvis man legger til en ny innhaldstype som ikke er egendefinert, ta bort denne fra dropdown
     if (!egendefinertType) {
       setSelectableInnhaldstype((prev) =>
@@ -92,7 +86,11 @@ const SideutvalAccordion = ({
     }
 
     if (innhaldstypeToAdd) {
-      handleAddSideutval(newSideutval);
+      handleAddSide(
+        Number(selectedLoeysing.id),
+        Number(innhaldstypeToAdd.id),
+        egendefinertType
+      );
       setInnhaldstypeToAdd(undefined);
       setEgendefinertType('');
     }
@@ -101,18 +99,24 @@ const SideutvalAccordion = ({
   useEffect(() => {
     // Lukk alle ved ending av selectedLoeysing
     setExpanded([]);
+
+    const sideutvalLoeysing = [...sideutvalByInnhaldstype.values()].flat()
+      .map(su => su.sideutval)
+      .filter(su => su.loeysingId === selectedLoeysing.id);
     setSelectableInnhaldstype(
-      toSelectableInnhaldstype(innhaldstypeList, sideutval)
+      toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing)
     );
   }, [selectedLoeysing]);
 
   useEffect(() => {
+    const sideutvalLoeysing = [...sideutvalByInnhaldstype.values()].flat()
+      .map(su => su.sideutval)
+      .filter(su => su.loeysingId === selectedLoeysing.id);
+    
     setSelectableInnhaldstype(
-      toSelectableInnhaldstype(innhaldstypeList, sideutval)
+      toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing)
     );
-  }, [sideutval]);
-
-  const sideutvalByType = groupByType(sideutval, innhaldstypeList);
+  }, [sideutvalByInnhaldstype]);
 
   return (
     <div className={classes.accordion}>
@@ -182,19 +186,39 @@ const SideutvalAccordion = ({
           </div>
           <div className={classes.accordionWrapper}>
             <Accordion>
-              {[...sideutvalByType.keys()].map((key) => {
-                const sideutval = sideutvalByType.get(key) || [];
+              {[...sideutvalByInnhaldstype.keys()].map((key) => {
+                const sideutvalIndexedList = (sideutvalByInnhaldstype.get(key) || [])
+                  .filter(su => su.sideutval.loeysingId === selectedLoeysing.id);
+                if (sideutvalIndexedList.length === 0) {
+                  return null;
+                }
+
                 const innhaldstypeLabel = sanitizeEnumLabel(key);
 
                 return (
-                  <SideutvalAccordionItem
-                    expanded={expanded.includes(innhaldstypeLabel)}
-                    setExpanded={handleSetExpanded}
-                    sideutval={sideutval}
-                    innhaldstypeLabel={innhaldstypeLabel}
-                    key={innhaldstypeLabel}
-                    handleRemoveInnhaldstype={handleRemoveInnhaldstype}
-                  />
+                  <Accordion.Item
+                    open={expanded.includes(innhaldstypeLabel)}
+                    key={key}
+                  >
+                    <Accordion.Header
+                      level={6}
+                      onHeaderClick={() => handleSetExpanded(innhaldstypeLabel)}
+                    >
+                      {innhaldstypeLabel}
+                    </Accordion.Header>
+                    <Accordion.Content className={classes.centered}>
+                      <div className={classes.typeFormWrapper}>
+                        <SideBegrunnelseForm
+                          innhaldstypeLabel={innhaldstypeLabel}
+                          sideutvalIndexedList={sideutvalIndexedList}
+                          setExpanded={handleSetExpanded}
+                          handleAddSide={handleAddSide}
+                          handleRemoveSide={handleRemoveSide}
+                          register={register}
+                        />
+                      </div>
+                    </Accordion.Content>
+                  </Accordion.Item>
                 );
               })}
             </Accordion>

@@ -1,11 +1,8 @@
+import { Loeysing } from '@loeysingar/api/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
+import { FieldArrayWithId } from 'react-hook-form';
 
-import {
-  InnhaldstypeKontroll,
-  SideItemKey,
-  SideListItem,
-  Sideutval,
-} from './types';
+import { InnhaldstypeKontroll, SideItemKey, SideListItem, Sideutval, SideutvalForm, SideutvalIndexed, } from './types';
 
 export const createDefaultSideutval = (
   loeysingId: number,
@@ -36,9 +33,9 @@ export const toSideListItem = (
 
 export const toSelectableInnhaldstype = (
   innhaldstypeList: InnhaldstypeKontroll[],
-  sideutval: Sideutval[]
+  sideutvalLoeysing: Sideutval[]
 ) => {
-  const innhaldsTypeIdList = [...new Set(sideutval.map((su) => su.typeId))];
+  const innhaldsTypeIdList = [...new Set(sideutvalLoeysing.map((su) => su.typeId))];
   const egendefinert = innhaldstypeList.filter(
     (it) => it.innhaldstype.toLowerCase() === 'egendefinert'
   );
@@ -52,18 +49,18 @@ export const toSelectableInnhaldstype = (
 };
 
 export const groupByType = (
-  sideutval: Sideutval[],
+  sideutval: FieldArrayWithId<SideutvalForm, 'sideutval', 'id'>[],
   innhaldstypeList: InnhaldstypeTesting[]
-): Map<string, Sideutval[]> => {
-  const grouped = new Map<string, Sideutval[]>();
+): Map<string, SideutvalIndexed[]> => {
+  const grouped = new Map<string, SideutvalIndexed[]>();
 
-  sideutval.forEach((su) => {
+  sideutval.forEach((su, index) => {
     let innhaldstypeKey: string;
 
     if (su.egendefinertType) {
       innhaldstypeKey = su.egendefinertType;
     } else {
-      const match = innhaldstypeList.find((it) => it.id === su.typeId);
+      const match = innhaldstypeList.find((it) => it.id === Number(su.typeId));
       if (!match) {
         throw Error('Ugylig type');
       } else {
@@ -75,8 +72,28 @@ export const groupByType = (
       grouped.set(innhaldstypeKey, []);
     }
 
-    grouped.get(innhaldstypeKey)!.push(su);
+    grouped.get(innhaldstypeKey)!.push({ sideutval: su, index: index });
   });
 
   return grouped;
+};
+
+export const getDefaultFormValues = (
+  loeysingList: Loeysing[],
+  innhaldstypeList: InnhaldstypeTesting[]
+): Sideutval[] => {
+  const forsideType = innhaldstypeList.find(
+    (it) => it.innhaldstype.toLowerCase() === 'forside'
+  );
+
+  if (!forsideType) {
+    throw Error('Forside finns ikkje');
+  }
+
+  return loeysingList.map((l) => ({
+    loeysingId: l.id,
+    typeId: forsideType.id,
+    url: '',
+    begrunnelse: '',
+  }));
 };

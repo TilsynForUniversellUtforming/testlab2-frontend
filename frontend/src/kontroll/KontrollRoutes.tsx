@@ -2,23 +2,11 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import {
-  listInnhaldstype,
-  listTestreglar,
-} from '@testreglar/api/testreglar-api';
+import { listInnhaldstype, listTestreglar, } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
-import {
-  ActionFunctionArgs,
-  redirect,
-  RouteObject,
-  useRouteError,
-} from 'react-router-dom';
+import { ActionFunctionArgs, redirect, RouteObject, useRouteError, } from 'react-router-dom';
 
-import {
-  fetchKontroll,
-  updateKontroll,
-  updateKontrollTestreglar,
-} from './kontroll-api';
+import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
 import { SideutvalLoader } from './sideutval/types';
@@ -206,8 +194,11 @@ export const KontrollRoutes: RouteObject = {
         // const { kontroll, sideutval, neste } =
         //   (await request.json()) as UpdateKontrollSideutval;
         // console.log(sideutval);
-        const formData = Object.fromEntries(await request.formData());
+        const form = await request.formData();
+        const formData = Object.fromEntries(form);
         console.log(formData);
+        const sideutval = form.getAll('sideutval.loeysingId');
+        console.log(sideutval);
         // const keys = Object.keys(formData).map(key => );
         // console.log(keys) // TODO - Groupby type
 

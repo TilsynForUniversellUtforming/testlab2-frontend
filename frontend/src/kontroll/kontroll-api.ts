@@ -1,7 +1,7 @@
 import { fetchWrapper } from '@common/form/util';
 import { Utval } from '@loeysingar/api/types';
 
-import { Kontroll, UpdateKontrollSideutval, UpdateKontrollTestreglar } from './types';
+import { Kontroll, UpdateKontrollSideutval, UpdateKontrollTestreglar, } from './types';
 
 export function fetchKontroll(kontrollId: number): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontrollId}`);
