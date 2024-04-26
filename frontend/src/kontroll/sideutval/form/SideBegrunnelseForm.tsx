@@ -1,39 +1,36 @@
-import { sanitizeEnumLabel } from '@common/util/stringutils';
-import classes from '../../kontroll.module.css';
-import { ButtonSize, ButtonVariant } from '@common/types';
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabDivider from '@common/divider/TestlabDivider';
-import { FormFieldKey, InnhaldstypeKontroll, SideListItem } from '../types';
-import { Button, Heading, Textarea, Textfield } from '@digdir/designsystemet-react';
+import { ButtonSize, ButtonVariant } from '@common/types';
+import {
+  Button,
+  Heading,
+  Textarea,
+  Textfield,
+} from '@digdir/designsystemet-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 
+import classes from '../../kontroll.module.css';
+import { SideListItem } from '../types';
 
 interface Props {
-  type: InnhaldstypeKontroll;
-  sideBegrunnelseList: SideListItem[];
+  innhaldstypeLabel: string;
+  sideList: SideListItem[];
   setExpanded: (value: string) => void;
   handleAddSide: () => void;
   handleRemoveSide: (key: string) => void;
-  handleRemoveInnhaldstype: (
-    innhaldstype: string,
-    egendefinertType: string | undefined
-  ) => void;
+  handleRemoveInnhaldstype: (typeId: number, egendefinertType?: string) => void;
 }
 
-
 const SideBegrunnelseForm = ({
-  type,
-  sideBegrunnelseList,
+  innhaldstypeLabel,
+  sideList,
   handleAddSide,
   handleRemoveSide,
   handleRemoveInnhaldstype,
 }: Props) => {
-  const hasMultipleItems = sideBegrunnelseList.length > 1;
-  const innhaldstype = type.innhaldstype;
-  const isForside = innhaldstype.toLowerCase() === 'forside';
-  const innhaldstypeLabel = sanitizeEnumLabel(
-    type.egendefinertType || innhaldstype
-  );
+  const hasMultipleItems = sideList.length > 1;
+  const isForside = innhaldstypeLabel.toLowerCase() === 'forside';
+  const side = sideList[0];
 
   return (
     <>
@@ -41,32 +38,26 @@ const SideBegrunnelseForm = ({
         Legg til {innhaldstypeLabel}
       </Heading>
 
-      {sideBegrunnelseList.map((sideBegrunnelse) => {
-        const begrunnelseKey: FormFieldKey = `${sideBegrunnelse.key}_begrunnelse`;
-        const urlKey: FormFieldKey = `${sideBegrunnelse.key}_url`;
-
+      {sideList.map((side, index) => {
         return (
-          <div key={sideBegrunnelse.key} className={classes.begrunnelseInputs}>
+          <div
+            key={`${side.typeId}_${index}`}
+            className={classes.begrunnelseInputs}
+          >
             <Textarea
               label="Begrunnelse for sideutval"
               value={
-                sideBegrunnelse?.begrunnelse?.length !== 0
-                  ? sideBegrunnelse?.begrunnelse
-                  : undefined
+                side?.begrunnelse?.length !== 0 ? side?.begrunnelse : undefined
               }
-              name={begrunnelseKey}
-              id={begrunnelseKey}
+              // name={begrunnelseKey}
+              // id={begrunnelseKey}
             />
             <Textfield
               label="Url"
-              value={
-                sideBegrunnelse?.url?.length !== 0
-                  ? sideBegrunnelse?.url
-                  : undefined
-              }
+              value={side?.url?.length !== 0 ? side?.url : undefined}
               type="url"
-              name={urlKey}
-              id={urlKey}
+              // name={urlKey}
+              // id={urlKey}
             />
             {hasMultipleItems && (
               <div className={classes.taBortSideWrapper}>
@@ -74,16 +65,16 @@ const SideBegrunnelseForm = ({
                   size={ButtonSize.Small}
                   variant={ButtonVariant.Quiet}
                   type="button"
-                  onClick={() => handleRemoveSide(sideBegrunnelse.key)}
+                  onClick={() => handleRemoveSide(side.key)}
                   className={classes.taBortSide}
                 >
-                  <MinusCircleIcon/>
+                  <MinusCircleIcon />
                   Ta bort side
                 </Button>
               </div>
             )}
           </div>
-        )
+        );
       })}
       <div className={classes.lagreSideutvalNettside}>
         <ConfirmModalButton
@@ -96,9 +87,9 @@ const SideBegrunnelseForm = ({
               : `Fjern innhaldstype ${innhaldstypeLabel}`
           }
           disabled={isForside}
-          message='Vil du ta bort hele innhaldstypen? Dette kan ikkje angrast'
+          message="Vil du ta bort hele innhaldstypen? Dette kan ikkje angrast"
           onConfirm={() =>
-            handleRemoveInnhaldstype(innhaldstype, type.egendefinertType)
+            handleRemoveInnhaldstype(side.typeId, side.egendefinertType)
           }
           buttonIcon={<MinusCircleIcon />}
         />

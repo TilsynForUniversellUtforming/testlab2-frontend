@@ -1,60 +1,63 @@
-import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { defaultSide, InnhaldstypeKontroll, Side, SideListItem } from '../types';
-import { toSideListItem } from '../sideutval-util';
-import classes from '../../kontroll.module.css';
 import { Accordion } from '@digdir/designsystemet-react';
-import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
 import { useCallback, useState } from 'react';
+
+import classes from '../../kontroll.module.css';
+import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
+import { toSideListItem } from '../sideutval-util';
+import { SideListItem, Sideutval } from '../types';
 
 interface Props {
   expanded: boolean;
   setExpanded: (value: string) => void;
-  sideBegrunnelseList: Side[];
-  type: InnhaldstypeKontroll;
-  handleRemoveInnhaldstype: (
-    innhaldstype: string,
-    egendefinertType: string | undefined
-  ) => void;
+  sideutval: Sideutval[];
+  innhaldstypeLabel: string;
+  handleRemoveInnhaldstype: (typeId: number, egendefinertType?: string) => void;
 }
 
 const SideutvalAccordionItem = ({
   expanded,
   setExpanded,
-  sideBegrunnelseList,
-  type,
+  sideutval,
+  innhaldstypeLabel,
   handleRemoveInnhaldstype,
 }: Props) => {
-  const innhaldsType = type.egendefinertType || type.innhaldstype;
-  const innhaldsTypeLabel = sanitizeEnumLabel(innhaldsType);
   const [sideList, setSideList] = useState<SideListItem[]>(
-    toSideListItem(sideBegrunnelseList, innhaldsType)
+    toSideListItem(innhaldstypeLabel, sideutval)
   );
 
   const handleAddSide = useCallback(() => {
-    setSideList((prev) => toSideListItem([...prev, defaultSide], innhaldsType));
-  }, [sideBegrunnelseList, type, sideList]);
+    const side = sideList[0];
+    const newSide: Sideutval = {
+      ...side,
+      url: '',
+      begrunnelse: '',
+    };
+    setSideList((prev) =>
+      toSideListItem(innhaldstypeLabel, [...prev, newSide])
+    );
+  }, [sideutval, innhaldstypeLabel, sideList]);
 
   const handleRemoveSide = useCallback(
     (key: string) => {
       const filteredList = sideList.filter((sl) => sl.key !== key);
       setSideList(filteredList);
     },
-    [type, sideList]
+    [innhaldstypeLabel, sideList]
   );
 
   return (
     <Accordion.Item open={expanded}>
       <Accordion.Header
         level={6}
-        onHeaderClick={() => setExpanded(innhaldsType)}
+        onHeaderClick={() => setExpanded(innhaldstypeLabel)}
       >
-        {innhaldsTypeLabel}
+        {innhaldstypeLabel}
       </Accordion.Header>
       <Accordion.Content className={classes.centered}>
         <div className={classes.typeFormWrapper}>
           <SideBegrunnelseForm
-            type={type}
-            sideBegrunnelseList={sideList}
+            innhaldstypeLabel={innhaldstypeLabel}
+            sideList={sideList}
             setExpanded={setExpanded}
             handleAddSide={handleAddSide}
             handleRemoveSide={handleRemoveSide}

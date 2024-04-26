@@ -2,15 +2,27 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { listInnhaldstype, listTestreglar, } from '@testreglar/api/testreglar-api';
+import {
+  listInnhaldstype,
+  listTestreglar,
+} from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
-import { ActionFunctionArgs, redirect, RouteObject, useRouteError } from 'react-router-dom';
+import {
+  ActionFunctionArgs,
+  redirect,
+  RouteObject,
+  useRouteError,
+} from 'react-router-dom';
 
-import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
+import {
+  fetchKontroll,
+  updateKontroll,
+  updateKontrollTestreglar,
+} from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
-import Sideutval from './sideutval/Sideutval';
 import { SideutvalLoader } from './sideutval/types';
+import VelgSideutval from './sideutval/VelgSideutval';
 import { Kontroll, UpdateKontrollTestregel } from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
@@ -145,7 +157,7 @@ export const KontrollRoutes: RouteObject = {
     },
     {
       path: ':kontrollId/sideutval',
-      element: <Sideutval />,
+      element: <VelgSideutval />,
       handle: { name: steps.sideutval.name },
       loader: async ({ params }): Promise<SideutvalLoader> => {
         const kontrollId = getKontrollIdFromParams(params.kontrollId);
@@ -200,7 +212,7 @@ export const KontrollRoutes: RouteObject = {
         // console.log(keys) // TODO - Groupby type
 
         return { sistLagret: new Date() };
-      }
+      },
     },
   ],
 };

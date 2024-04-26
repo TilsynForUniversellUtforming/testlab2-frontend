@@ -6,16 +6,15 @@ import { useCallback, useState } from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
+import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
+import { UpdateKontrollSideutval } from '../types';
+import SideutvalAccordion from './accordion/SideutvalAccordion';
 import LoeysingFilter from './LoeysingFilter';
 import { createDefaultSideutval } from './sideutval-util';
-import SideutvalAccordion from './accordion/SideutvalAccordion';
-import { SideutvalForm, SideutvalLoader, SideutvalLoeysing } from './types';
-import { UpdateKontrollSideutval } from '../types';
-import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { Sideutval, SideutvalLoader } from './types';
 
-const Sideutval = () => {
+const VelgSideutval = () => {
   const { kontroll, innhaldstypeList, loeysingList } =
     useLoaderData() as SideutvalLoader;
 
@@ -24,17 +23,41 @@ const Sideutval = () => {
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
   >();
-  const [sideutvalLoeysing, setSideutvalLoeysing] = useState<
-    SideutvalLoeysing | undefined
-  >();
+  const [sideutval, setSideutval] = useState<Sideutval[]>([]);
+
   const [alert, setAlert] = useAlert();
   const manueltSelected = true;
   const actionData = useActionData() as { sistLagret: Date };
-  const handleSetSideutvalLoeysing = useCallback(
-    (sideutvalLoeysing: SideutvalLoeysing) => {
-      setSideutvalLoeysing(sideutvalLoeysing);
+
+  const handleAddSideutval = useCallback(
+    (sideutval: Sideutval) => {
+      setSideutval((prev) => [...prev, sideutval]);
     },
-    [sideutvalLoeysing]
+    [sideutval]
+  );
+
+  const handleRemoveInnhaldstype = useCallback(
+    (typeId: number, egendefinertType?: string) => {
+      const forside = innhaldstypeList.find(
+        (it) => it.innhaldstype.toLowerCase() === 'forside'
+      );
+      if (!forside) {
+        throw Error('Forside finns ikkje');
+      }
+
+      if (typeId === forside.id) {
+        setAlert('danger', 'Kan ikkje ta bort forside');
+      }
+
+      if (egendefinertType) {
+        setSideutval((prev) =>
+          prev.filter((su) => su.egendefinertType !== egendefinertType)
+        );
+      } else {
+        setSideutval((prev) => prev.filter((su) => su.typeId !== typeId));
+      }
+    },
+    [sideutval]
   );
 
   const handleChangeLoeysing = (loeysingId: number) => {
@@ -47,34 +70,34 @@ const Sideutval = () => {
     setSelectedLoesying((prev) =>
       loeysing.id === prev?.id ? undefined : loeysing
     );
-    const sideutvalLoeysing = kontroll?.sideutval?.find(
+    const sideutvalLoeysing = kontroll?.sideutval?.filter(
       (su) => su.loeysingId === loeysingId
     );
-    if (sideutvalLoeysing) {
-      setSideutvalLoeysing(sideutvalLoeysing);
+    if (sideutvalLoeysing && sideutvalLoeysing.length > 0) {
+      setSideutval(sideutvalLoeysing);
     } else {
       const forsideType = innhaldstypeList.find(
         (it) => it.innhaldstype.toLowerCase() === 'forside'
       );
-      if (!forsideType) {
+      if (!forsideType?.id) {
         setAlert('danger', 'Utval for forside finnes ikkje i systemet');
         return;
       }
-      setSideutvalLoeysing(createDefaultSideutval(loeysingId, forsideType));
+      setSideutval(createDefaultSideutval(loeysingId, forsideType.id));
     }
   };
 
   const lagreKontroll = (neste: boolean) => {
     alert?.clearMessage();
 
-    if (!sideutvalLoeysing) {
+    if (sideutval.length === 0) {
       setAlert('danger', 'Må velja sideutval');
       return;
     }
 
     const data: UpdateKontrollSideutval = {
       kontroll: kontroll,
-      sideutval: sideutvalLoeysing,
+      sideutval: sideutval,
       neste,
     };
     submit(JSON.stringify(data), {
@@ -83,17 +106,6 @@ const Sideutval = () => {
       encType: 'application/json',
     });
   };
-
-  const { control, register } = useForm<SideutvalForm>(
-  //   {
-  //   resolver: zodResolver(loeysingValidationSchema),
-  // }
-  );
-
-  const { fields, append } = useFieldArray({
-    control,
-    name: "sideutval"
-  });
 
   return (
     <section className={classes.sideutvalSection}>
@@ -127,11 +139,12 @@ const Sideutval = () => {
       <div className={classes.velgSideutvalContainer}>
         <div className={classes.centered}>
           <div className={classes.velgSideutval}>
-            {selectedLoeysing && sideutvalLoeysing && (
+            {selectedLoeysing && sideutval && (
               <SideutvalAccordion
                 selectedLoeysing={selectedLoeysing}
-                sideutvalLoeysing={sideutvalLoeysing}
-                setSideutvalLoesying={handleSetSideutvalLoeysing}
+                sideutval={sideutval}
+                handleAddSideutval={handleAddSideutval}
+                handleRemoveInnhaldstype={handleRemoveInnhaldstype}
                 innhaldstypeList={innhaldstypeList}
               />
             )}
@@ -154,4 +167,4 @@ const Sideutval = () => {
   );
 };
 
-export default Sideutval;
+export default VelgSideutval;

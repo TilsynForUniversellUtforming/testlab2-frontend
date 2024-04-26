@@ -1,31 +1,43 @@
 import useAlert from '@common/alert/useAlert';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { Accordion, Alert, Button, Chip, Combobox, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
+import {
+  Accordion,
+  Alert,
+  Button,
+  Chip,
+  Combobox,
+  Heading,
+  Paragraph,
+  Textfield,
+} from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 
 import classes from '../../kontroll.module.css';
-import { toSelectableInnhaldstype } from '../sideutval-util';
-import { defaultSide, InnhaldstypeKontroll, SideutvalLoeysing, } from '../types';
+import { groupByType, toSelectableInnhaldstype } from '../sideutval-util';
+import { InnhaldstypeKontroll, Sideutval } from '../types';
 import SideutvalAccordionItem from './SideutvalAccordionItem';
 
 interface Props {
   selectedLoeysing: Loeysing;
-  sideutvalLoeysing: SideutvalLoeysing;
-  setSideutvalLoesying: (sideutvalLoeysing: SideutvalLoeysing) => void;
+  sideutval: Sideutval[];
+  handleAddSideutval: (sideutval: Sideutval) => void;
+  handleRemoveInnhaldstype: (typeId: number, egendefinertType?: string) => void;
   innhaldstypeList: InnhaldstypeKontroll[];
 }
 
 const SideutvalAccordion = ({
-  sideutvalLoeysing,
-  setSideutvalLoesying,
+  sideutval,
+  handleAddSideutval,
+  handleRemoveInnhaldstype,
   innhaldstypeList,
   selectedLoeysing,
 }: Props) => {
-  const [typeList, setTypeList] = useState<InnhaldstypeKontroll[]>(
-    toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing)
-  );
+  const [selectableInnhaldstype, setSelectableInnhaldstype] = useState<
+    InnhaldstypeKontroll[]
+  >(toSelectableInnhaldstype(innhaldstypeList, sideutval));
   const [innhaldstypeToAdd, setInnhaldstypeToAdd] = useState<
     InnhaldstypeKontroll | undefined
   >();
@@ -43,13 +55,16 @@ const SideutvalAccordion = ({
 
   const onChangeInnhaldstype = (values: string[]) => {
     const innhaldstypeId = parseInt(values[0]);
-    const innhaldstype = typeList.find((type) => type.id === innhaldstypeId);
+    const innhaldstype = selectableInnhaldstype.find(
+      (type) => type.id === innhaldstypeId
+    );
     setInnhaldstypeToAdd(innhaldstype);
   };
 
   const handleAddInnhaldstype = () => {
     if (!innhaldstypeToAdd) {
       setAlert('danger', 'Ugylding innhaldstype');
+      return;
     }
 
     if (
@@ -58,66 +73,46 @@ const SideutvalAccordion = ({
       !egendefinertType
     ) {
       setAlert('danger', 'Ugylding innhaldstype');
+      return;
     }
 
-    const oldSideutval = sideutvalLoeysing.sideutval;
+    const newSideutval: Sideutval = {
+      loeysingId: selectedLoeysing.id,
+      typeId: innhaldstypeToAdd.id,
+      begrunnelse: '',
+      url: '',
+      egendefinertType: egendefinertType,
+    };
 
-    if (innhaldstypeToAdd) {
-      const newInnhaldstype: InnhaldstypeKontroll = {
-        ...innhaldstypeToAdd,
-        egendefinertType: egendefinertType,
-      };
-
-      const newSideutval = [
-        ...oldSideutval,
-        { type: newInnhaldstype, sideBegrunnelseList: [defaultSide] },
-      ];
-      const newSideutvalLoeysing: SideutvalLoeysing = {
-        ...sideutvalLoeysing,
-        sideutval: newSideutval,
-      };
-      setSideutvalLoesying(newSideutvalLoeysing);
-      setInnhaldstypeToAdd(undefined);
-      setEgendefinertType('');
-      setTypeList(
-        toSelectableInnhaldstype(innhaldstypeList, newSideutvalLoeysing)
+    // Hvis man legger til en ny innhaldstype som ikke er egendefinert, ta bort denne fra dropdown
+    if (!egendefinertType) {
+      setSelectableInnhaldstype((prev) =>
+        prev.filter((it) => it.id !== innhaldstypeToAdd.id)
       );
     }
-  };
 
-  const handleRemoveInnhaldstype = (
-    innhaldstype: string,
-    egendefinertType?: string
-  ) => {
-    const oldSideutval = sideutvalLoeysing.sideutval;
-    if (innhaldstype.toLowerCase() === 'forside') {
-      setAlert('danger', 'Kan ikkje ta bort forside');
-    }
-
-    if (innhaldstype.toLowerCase() === 'egendefinert' && egendefinertType) {
-      setSideutvalLoesying({
-        ...sideutvalLoeysing,
-        sideutval: oldSideutval.filter(
-          (su) =>
-            su.type.egendefinertType?.toLowerCase() !==
-            egendefinertType.toLowerCase()
-        ),
-      });
-    } else {
-      setSideutvalLoesying({
-        ...sideutvalLoeysing,
-        sideutval: oldSideutval.filter(
-          (su) =>
-            su.type.innhaldstype.toLowerCase() !== innhaldstype.toLowerCase()
-        ),
-      });
+    if (innhaldstypeToAdd) {
+      handleAddSideutval(newSideutval);
+      setInnhaldstypeToAdd(undefined);
+      setEgendefinertType('');
     }
   };
 
   useEffect(() => {
     // Lukk alle ved ending av selectedLoeysing
     setExpanded([]);
+    setSelectableInnhaldstype(
+      toSelectableInnhaldstype(innhaldstypeList, sideutval)
+    );
   }, [selectedLoeysing]);
+
+  useEffect(() => {
+    setSelectableInnhaldstype(
+      toSelectableInnhaldstype(innhaldstypeList, sideutval)
+    );
+  }, [sideutval]);
+
+  const sideutvalByType = groupByType(sideutval, innhaldstypeList);
 
   return (
     <div className={classes.accordion}>
@@ -160,7 +155,7 @@ const SideutvalAccordion = ({
               }
             >
               <Combobox.Empty>Ingen treff</Combobox.Empty>
-              {typeList.map((tl) => (
+              {selectableInnhaldstype.map((tl) => (
                 <Combobox.Option value={String(tl.id)} key={tl.id}>
                   {tl.innhaldstype}
                 </Combobox.Option>
@@ -187,22 +182,16 @@ const SideutvalAccordion = ({
           </div>
           <div className={classes.accordionWrapper}>
             <Accordion>
-                {sideutvalLoeysing.sideutval.map((sideutval) => {
-                const innhaldstypeLabel =
-                  sideutval.type.egendefinertType ||
-                  sideutval.type.innhaldstype;
-
-                const sideBegrunnelseList =
-                  sideutval.sideBegrunnelseList.length === 0
-                    ? [defaultSide]
-                    : sideutval.sideBegrunnelseList;
+              {[...sideutvalByType.keys()].map((key) => {
+                const sideutval = sideutvalByType.get(key) || [];
+                const innhaldstypeLabel = sanitizeEnumLabel(key);
 
                 return (
                   <SideutvalAccordionItem
                     expanded={expanded.includes(innhaldstypeLabel)}
                     setExpanded={handleSetExpanded}
-                    sideBegrunnelseList={sideBegrunnelseList}
-                    type={sideutval.type}
+                    sideutval={sideutval}
+                    innhaldstypeLabel={innhaldstypeLabel}
                     key={innhaldstypeLabel}
                     handleRemoveInnhaldstype={handleRemoveInnhaldstype}
                   />
