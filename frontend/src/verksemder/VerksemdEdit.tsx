@@ -32,7 +32,7 @@ const VerksemdEdit = () => {
       id: id,
       namn: verksemdEdit.namn,
       organisasjonsnummer: verksemdEdit.organisasjonsnummer,
-      institusjonellSektorkode: {
+      institusjonellSektorKode: {
         kode: verksemdEdit.institusjonellSektorkode,
         beskrivelse: verksemdEdit.institusjonellSektorkodeBeskrivelse,
       },

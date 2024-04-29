@@ -4,7 +4,7 @@ export type Verksemd = {
   id: number;
   namn: string;
   organisasjonsnummer: string;
-  institusjonellSektorkode: InstitusjonellSektorKode;
+  institusjonellSektorKode: InstitusjonellSektorKode;
   naeringskode: Naeringskode;
   organisasjonsform: Organisasjonsform;
   fylke: Fylke;
