@@ -41,17 +41,6 @@ class VerksemdResource(
     }
   }
 
-  @GetMapping("{id}")
-  fun getVerksemd(@PathVariable id: Int): ResponseEntity<Verksemd> =
-      try {
-        val url = "$verksemdUrl/$id"
-        val verksemd: Verksemd = restTemplate.getForObject(url)
-        ResponseEntity.ok(verksemd)
-      } catch (e: Error) {
-        logger.error("Klarte ikkje å hente verksemd med id $id", e)
-        throw RuntimeException("Klarte ikkje å hente verksemd")
-      }
-
   @GetMapping
   fun getVerksemder(): List<Verksemd> {
     return restTemplate.getList(verksemdUrl)
