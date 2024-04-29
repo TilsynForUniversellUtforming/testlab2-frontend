@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 
 @RestController
 @RequestMapping("api/v1/verksemd")
@@ -17,6 +18,28 @@ class VerksemdResource(
 
   val verksemdUrl = "${loeysingsregisterApiProperties.url}/v1/verksemd"
   val logger: Logger = LoggerFactory.getLogger(VerksemdResource::class.java)
+
+  @GetMapping("list")
+  fun findVerksemder(
+      @RequestParam("name", required = false) namn: String?,
+      @RequestParam("orgnummer", required = false) orgnummer: String?
+  ): ResponseEntity<Any> {
+    if (namn != null && orgnummer != null) {
+      return ResponseEntity.badRequest().body("Må søke med enten namn eller orgnummer")
+    }
+    return try {
+      if (namn != null) {
+        ResponseEntity.ok(restTemplate.getList<Verksemd>("$verksemdUrl/list?search=$namn"))
+      } else if (orgnummer != null) {
+        ResponseEntity.ok(restTemplate.getList<Verksemd>("$verksemdUrl/list?search=$orgnummer"))
+      } else {
+        ResponseEntity.ok(getVerksemder())
+      }
+    } catch (e: Error) {
+      logger.error("Klarte ikkje å hente verksemder", e)
+      return ResponseEntity.internalServerError().body("Klarte ikkje å hente verksemder")
+    }
+  }
 
   @GetMapping
   fun getVerksemder(): List<Verksemd> {
