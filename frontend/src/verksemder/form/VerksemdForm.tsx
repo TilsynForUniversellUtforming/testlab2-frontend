@@ -18,9 +18,9 @@ const VerksemdForm = ({ verksemd, heading, description, onSubmit }: Props) => {
     defaultValues: {
       namn: verksemd?.namn ?? '',
       organisasjonsnummer: verksemd?.organisasjonsnummer ?? '',
-      institusjonellSektorkode: verksemd?.institusjonellSektorkode.kode ?? '',
+      institusjonellSektorkode: verksemd?.institusjonellSektorKode.kode ?? '',
       institusjonellSektorkodeBeskrivelse:
-        verksemd?.institusjonellSektorkode.beskrivelse ?? '',
+        verksemd?.institusjonellSektorKode.beskrivelse ?? '',
       naeringskode: verksemd?.naeringskode.kode ?? '',
       naeringskodeBeskrivelse: verksemd?.naeringskode.beskrivelse ?? '',
       organisasjonsformKode: verksemd?.organisasjonsform.kode ?? '',
