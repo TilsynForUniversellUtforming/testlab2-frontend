@@ -24,7 +24,8 @@ const VerksemdForm = ({ verksemd, heading, description, onSubmit }: Props) => {
       naeringskode: verksemd?.naeringskode.kode ?? '',
       naeringskodeBeskrivelse: verksemd?.naeringskode.beskrivelse ?? '',
       organisasjonsformKode: verksemd?.organisasjonsform.kode ?? '',
-      organisasjonsformOmtale: verksemd?.organisasjonsform.omtale ?? '',
+      organisasjonsformBeskrivelse:
+        verksemd?.organisasjonsform.beskrivelse ?? '',
       fylkesnummer: verksemd?.fylke.fylkesnummer ?? '',
       fylke: verksemd?.fylke.fylke ?? '',
       kommune: verksemd?.kommune.kommune ?? '',

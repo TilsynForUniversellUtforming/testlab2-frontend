@@ -27,7 +27,7 @@ export type VerksemdUpdate = {
   naeringskode: string;
   naeringskodeBeskrivelse: string;
   organisasjonsformKode: string;
-  organisasjonsformOmtale: string;
+  organisasjonsformBeskrivelse: string;
   fylkesnummer: string;
   fylke: string;
   kommune: string;
@@ -57,7 +57,7 @@ export type Naeringskode = {
 
 export type Organisasjonsform = {
   kode: string;
-  omtale: string;
+  beskrivelse: string;
 };
 
 export type Fylke = {

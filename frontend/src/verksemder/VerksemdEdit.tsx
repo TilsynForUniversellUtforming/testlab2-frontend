@@ -11,8 +11,12 @@ import React, { useCallback, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 const VerksemdEdit = () => {
-  const { verksemdList, setVerksemdList, setContextError }: VerksemdContext =
-    useOutletContext();
+  const {
+    verksemdList,
+    setVerksemdList,
+    setContextError,
+    contextLoading,
+  }: VerksemdContext = useOutletContext();
   const { id } = useParams();
   const initVerksemd = useLoaderData() as Verksemd;
   const [verksemd] = useState(initVerksemd);
@@ -38,7 +42,7 @@ const VerksemdEdit = () => {
       },
       organisasjonsform: {
         kode: verksemdEdit.organisasjonsformKode,
-        omtale: verksemdEdit.organisasjonsformOmtale,
+        beskrivelse: verksemdEdit.organisasjonsformBeskrivelse,
       },
       fylke: {
         fylkesnummer: verksemdEdit.fylkesnummer,
