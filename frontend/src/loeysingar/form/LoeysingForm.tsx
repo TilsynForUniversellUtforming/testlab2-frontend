@@ -1,17 +1,20 @@
 import './loeysing-form.scss';
 
 import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
+import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import TestlabForm, { TestlabFormProps } from '@common/form/TestlabForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loeysingValidationSchema } from '@loeysingar/form/loeysingValidationSchema';
+import { Verksemd } from '@verksemder/api/types';
+import useVerksemdAutocomplete from '@verksemder/useVerksemdAutocomplete';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import { Loeysing, LoeysingInit } from '../api/types';
+import { LoeysingFormElement, LoeysingInit } from '../api/types';
 
 export interface Props
   extends Omit<TestlabFormProps<LoeysingInit>, 'children' | 'formMethods'> {
-  loeysing?: Loeysing;
+  loeysing?: LoeysingFormElement;
   alert?: AlertProps;
 }
 
@@ -27,9 +30,13 @@ const LoeysingForm = ({
       namn: loeysing?.namn ?? '',
       url: loeysing?.url ?? '',
       organisasjonsnummer: loeysing?.orgnummer ?? '',
+      verksemd: loeysing?.verksemd,
     },
     resolver: zodResolver(loeysingValidationSchema),
   });
+
+  const { verksemdAutocompleteList, onChangeAutocomplete } =
+    useVerksemdAutocomplete();
 
   return (
     <div className="loeysing-form">
@@ -61,6 +68,29 @@ const LoeysingForm = ({
             required
           />
         </div>
+        <div className="loeysing-form__input">
+          <TestlabForm.FormInput<LoeysingInit>
+            label="Verksemd"
+            name="verksemd.namn"
+            disabled
+          />
+        </div>
+
+        <div className="loeysing-form__input">
+          <TestlabFormAutocomplete<LoeysingInit, Verksemd>
+            label="Verksemd"
+            description="Søk etter namn, orgnr"
+            resultList={verksemdAutocompleteList}
+            resultLabelKey="namn"
+            resultDescriptionKey="organisasjonsnummer"
+            onChange={onChangeAutocomplete}
+            retainLabelValueChange={false}
+            hideErrors
+            name="verksemd"
+            size="small"
+          />
+        </div>
+
         <div className="loeysing-form__submit">
           <TestlabForm.FormButtons />
         </div>

@@ -1,37 +1,21 @@
 import useAlert from '@common/alert/useAlert';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
-import LoeysingFormSkeleton from '@loeysingar/form/skeleton/LoeysingFormSkeleton';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 import { updateLoeysing } from './api/loeysing-api';
-import { Loeysing, LoeysingInit } from './api/types';
+import { Loeysing, LoeysingFormElement, LoeysingInit } from './api/types';
 import LoeysingForm from './form/LoeysingForm';
 import { LoeysingContext } from './types';
 
-const getLoeysing = (loeysingList: Loeysing[], id: string | undefined) =>
-  loeysingList.find((loeysing) => loeysing.id === Number(id));
-
 const LoeysingEdit = () => {
-  const {
-    loeysingList,
-    contextLoading,
-    setContextError,
-    setLoeysingList,
-  }: LoeysingContext = useOutletContext();
+  const { loeysingList, setContextError, setLoeysingList }: LoeysingContext =
+    useOutletContext();
   const { id } = useParams();
-  const [loeysing, setLoeysing] = useState(getLoeysing(loeysingList, id));
-  const [loading, setLoading] = useState(contextLoading);
+  const initLoeysing = useLoaderData() as LoeysingFormElement;
+  const [loeysing, setLoeysing] = useState(initLoeysing);
   const [alert, setAlert] = useAlert();
-
-  useEffect(() => {
-    const foundLoeysing = getLoeysing(loeysingList, id);
-    if (foundLoeysing) {
-      setLoeysing(foundLoeysing);
-      setLoading(false);
-    }
-  }, [loeysingList]);
 
   useContentDocumentTitle(LOEYSING_EDIT.navn, loeysing?.namn);
 
@@ -40,12 +24,14 @@ const LoeysingEdit = () => {
       const doEditLoeysing = async () => {
         const orgnummerWithoutWhitespace =
           loeysingInit.organisasjonsnummer.replace(/\s/g, '');
+
         if (loeysingInit && id) {
           const loeysing: Loeysing = {
             id: Number(id),
             namn: loeysingInit.namn,
             url: loeysingInit.url,
             orgnummer: orgnummerWithoutWhitespace,
+            verksemdId: loeysingInit.verksemd?.id,
           };
 
           const existingLoeysing = loeysingList.find(
@@ -62,9 +48,13 @@ const LoeysingEdit = () => {
             return;
           }
           try {
-            setLoading(true);
             const updatedLoeysingList = await updateLoeysing(loeysing);
             setLoeysingList(updatedLoeysingList);
+            setLoeysing({
+              ...loeysingInit,
+              id: loeysing.id,
+              orgnummer: loeysing.orgnummer,
+            });
             setAlert('success', `${loeysing.namn} er endra`);
           } catch (e) {
             setContextError(new Error('Kunne ikkje endre løysing'));
@@ -78,12 +68,6 @@ const LoeysingEdit = () => {
     },
     [loeysingList]
   );
-
-  if (loading) {
-    return (
-      <LoeysingFormSkeleton heading="Endre løysing" subHeading="Laster..." />
-    );
-  }
 
   return (
     <LoeysingForm
