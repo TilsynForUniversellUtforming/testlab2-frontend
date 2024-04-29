@@ -1,27 +1,27 @@
 import useAlert from '@common/alert/useAlert';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Accordion, Alert, Button, Chip, Combobox, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { FieldArrayWithId, UseFormRegister } from 'react-hook-form';
+import { FieldArrayWithId, useFormContext, UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
 import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
-import { groupByType, toSelectableInnhaldstype } from '../sideutval-util';
-import { InnhaldstypeKontroll, SideutvalForm } from '../types';
+import { groupByType, toSelectableTestobjekt } from '../sideutval-util';
+import { FormError, SideutvalForm, TestobjektKontroll } from '../types';
 
 interface Props {
   selectedLoeysing: Loeysing;
   sideutval: FieldArrayWithId<SideutvalForm, 'sideutval', 'id'>[];
   handleAddSide: (
     loeysingId: number,
-    typeId: number,
-    egendefinertType?: string
+    objektId: number,
+    egendefinertObjekt?: string
   ) => void;
+  formErrors: FormError[];
   handleRemoveSide: (indices: number[]) => void;
-  innhaldstypeList: InnhaldstypeKontroll[];
+  testobjektList: TestobjektKontroll[];
   register: UseFormRegister<SideutvalForm>;
 }
 
@@ -29,19 +29,21 @@ const SideutvalAccordion = ({
   sideutval,
   handleAddSide,
   handleRemoveSide,
-  innhaldstypeList,
+  formErrors,
+  testobjektList,
   selectedLoeysing,
   register,
 }: Props) => {
-  const [selectableInnhaldstype, setSelectableInnhaldstype] = useState<
-    InnhaldstypeKontroll[]
-  >(toSelectableInnhaldstype(innhaldstypeList, sideutval, selectedLoeysing.id));
-  const [innhaldstypeToAdd, setInnhaldstypeToAdd] = useState<
-    InnhaldstypeKontroll | undefined
+  const [selectableTestobjekt, setSelectableTestobjekt] = useState<
+    TestobjektKontroll[]
+  >(toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id));
+  const [testobjektToAdd, setTestobjektToAdd] = useState<
+    TestobjektKontroll | undefined
   >();
-  const [egendefinertType, setEgendefinertType] = useState<string>('');
+  const [egendefinertObjekt, setEgendefinertObjekt] = useState<string>('');
   const [expanded, setExpanded] = useState<string[]>([]);
   const [alert, setAlert] = useAlert();
+  const { formState: { errors } } = useFormContext<SideutvalForm>();
 
   const handleSetExpanded = (key: string) => {
     setExpanded((prevExpanded) =>
@@ -51,60 +53,65 @@ const SideutvalAccordion = ({
     );
   };
 
-  const onChangeInnhaldstype = (values: string[]) => {
-    const innhaldstypeId = parseInt(values[0]);
-    const innhaldstype = selectableInnhaldstype.find(
-      (type) => type.id === innhaldstypeId
+  const onChangeTestobjekt = (values: string[]) => {
+    const testobjektId = parseInt(values[0]);
+    const testobjekt = selectableTestobjekt.find(
+      (type) => type.id === testobjektId
     );
-    setInnhaldstypeToAdd(innhaldstype);
+    setTestobjektToAdd(testobjekt);
   };
 
-  const handleAddInnhaldstype = () => {
-    if (!innhaldstypeToAdd) {
-      setAlert('danger', 'Ugylding innhaldstype');
+  const handleAddTestobjekt = () => {
+    if (!testobjektToAdd) {
+      setAlert('danger', 'Ugylding testobjekt');
       return;
     }
 
     if (
-      innhaldstypeToAdd &&
-      innhaldstypeToAdd.innhaldstype.toLowerCase() === 'egendefinert' &&
-      !egendefinertType
+      testobjektToAdd &&
+      testobjektToAdd.testobjekt.toLowerCase() === 'egendefinert' &&
+      !egendefinertObjekt
     ) {
-      setAlert('danger', 'Ugylding innhaldstype');
+      setAlert('danger', 'Ugylding testobjekt');
       return;
     }
 
-    // Hvis man legger til en ny innhaldstype som ikke er egendefinert, ta bort denne fra dropdown
-    if (!egendefinertType) {
-      setSelectableInnhaldstype((prev) =>
-        prev.filter((it) => it.id !== innhaldstypeToAdd.id)
+    // Hvis man legger til en ny testobjekt som ikke er egendefinert, ta bort denne fra dropdown
+    if (!egendefinertObjekt) {
+      setSelectableTestobjekt((prev) =>
+        prev.filter((it) => it.id !== testobjektToAdd.id)
       );
     }
 
-    if (innhaldstypeToAdd) {
+    if (testobjektToAdd) {
       handleAddSide(
         selectedLoeysing.id,
-        innhaldstypeToAdd.id,
-        egendefinertType
+        testobjektToAdd.id,
+        egendefinertObjekt
       );
-      setInnhaldstypeToAdd(undefined);
-      setEgendefinertType('');
+      setTestobjektToAdd(undefined);
+      setEgendefinertObjekt('');
     }
   };
 
   useEffect(() => {
-    // Lukk alle ved ending av selectedLoeysing
-    setExpanded([]);
-    setSelectableInnhaldstype(
-      toSelectableInnhaldstype(innhaldstypeList, sideutval, selectedLoeysing.id)
+    // Lukk alle accordion items det ikke er feil på ved endring av løysing
+    setExpanded(formErrors.filter(fe => fe.loeysingId === selectedLoeysing.id).map(fe => fe.testobjekt));
+    setSelectableTestobjekt(
+      toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id)
     );
   }, [selectedLoeysing]);
 
   useEffect(() => {
-    setSelectableInnhaldstype(
-      toSelectableInnhaldstype(innhaldstypeList, sideutval, selectedLoeysing.id)
+    setSelectableTestobjekt(
+      toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id)
     );
   }, [sideutval]);
+
+  useEffect(() => {
+    // Åpne alle accordion items det er feil på
+    setExpanded(formErrors.filter(fe => fe.loeysingId === selectedLoeysing.id).map(fe => fe.testobjekt));
+  }, [formErrors]);
 
   return (
     <div className={classes.accordion}>
@@ -132,76 +139,74 @@ const SideutvalAccordion = ({
       </div>
       <div className={classes.centered}>
         <div className={classes.sideutvalForm}>
-          <div className={classes.innhaldstypeSelect}>
+          <div className={classes.testobjektSelect}>
             <Combobox
-              label="Legg til innhaldstype"
+              label="Legg til testobjekt"
               size="small"
               value={
-                innhaldstypeToAdd?.id ? [String(innhaldstypeToAdd.id)] : []
+                testobjektToAdd?.id ? [String(testobjektToAdd.id)] : []
               }
-              onValueChange={onChangeInnhaldstype}
+              onValueChange={onChangeTestobjekt}
               inputValue={
-                innhaldstypeToAdd?.innhaldstype
-                  ? String(innhaldstypeToAdd.innhaldstype)
+                testobjektToAdd?.testobjekt
+                  ? String(testobjektToAdd.testobjekt)
                   : ''
               }
             >
               <Combobox.Empty>Ingen treff</Combobox.Empty>
-              {selectableInnhaldstype.map((tl) => (
+              {selectableTestobjekt.map((tl) => (
                 <Combobox.Option value={String(tl.id)} key={tl.id}>
-                  {tl.innhaldstype}
+                  {tl.testobjekt}
                 </Combobox.Option>
               ))}
             </Combobox>
-            {innhaldstypeToAdd?.innhaldstype?.toLowerCase() ===
+            {testobjektToAdd?.testobjekt?.toLowerCase() ===
               'egendefinert' && (
               <Textfield
-                label="Egendefinert innhaldstype"
+                label="Egendefinert testobjekt"
                 value={
-                  egendefinertType?.length !== 0 ? egendefinertType : undefined
+                  egendefinertObjekt?.length !== 0 ? egendefinertObjekt : undefined
                 }
-                onChange={(e) => setEgendefinertType(e.target.value)}
+                onChange={(e) => setEgendefinertObjekt(e.target.value)}
               />
             )}
             <Button
-              className={classes.innhaldstypeLagre}
+              className={classes.testobjektLagre}
               variant={ButtonVariant.Outline}
               size={ButtonSize.Small}
-              onClick={handleAddInnhaldstype}
+              onClick={handleAddTestobjekt}
             >
               Legg til
             </Button>
           </div>
           <div className={classes.accordionWrapper}>
             <Accordion>
-              {[...groupByType(sideutval, innhaldstypeList).entries()].map(
-                ([key, sideutvalByInnhaldstype]) => {
-                  const sideutvalIndexedList = sideutvalByInnhaldstype.filter(
+              {[...groupByType(sideutval, testobjektList).entries()].map(
+                ([testobjektLabel, sideutvalByTestobjekt]) => {
+                  const sideutvalIndexedList = sideutvalByTestobjekt.filter(
                     (su) => su.sideutval.loeysingId === selectedLoeysing.id
                   );
                   if (sideutvalIndexedList.length === 0) {
                     return null;
                   }
 
-                  const innhaldstypeLabel = sanitizeEnumLabel(key);
-
                   return (
                     <Accordion.Item
-                      open={expanded.includes(innhaldstypeLabel)}
-                      key={key}
+                      open={expanded.includes(testobjektLabel)}
+                      key={testobjektLabel}
                     >
                       <Accordion.Header
                         level={6}
                         onHeaderClick={() =>
-                          handleSetExpanded(innhaldstypeLabel)
+                          handleSetExpanded(testobjektLabel)
                         }
                       >
-                        {innhaldstypeLabel}
+                        {testobjektLabel}
                       </Accordion.Header>
                       <Accordion.Content className={classes.centered}>
                         <div className={classes.typeFormWrapper}>
                           <SideBegrunnelseForm
-                            innhaldstypeLabel={innhaldstypeLabel}
+                            testobjektLabel={testobjektLabel}
                             sideutvalIndexedList={sideutvalIndexedList}
                             setExpanded={handleSetExpanded}
                             handleAddSide={handleAddSide}

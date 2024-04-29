@@ -27,7 +27,7 @@ data class KontrollTestreglarUpdate(
     val testregelIdList: List<Int> = emptyList()
 )
 
-data class KontrollSideutvalUpdate(val sideutval: SideutvalLoeysing)
+data class KontrollSideutvalUpdate(val sideutval: List<Sideutval>)
 
 enum class KontrollSteg {
   @JsonProperty("utval") Utval,

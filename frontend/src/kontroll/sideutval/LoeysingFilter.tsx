@@ -27,6 +27,7 @@ const Filter = ({
           selected={l.id === selectedLoeysing?.id}
           onClick={() => onChangeLoeysing(l.id)}
           checkmark
+          id={`loeysing-${l.id}`}
         >
           {l.namn}
         </Chip.Toggle>
@@ -41,7 +42,7 @@ const LoeysingFilter = ({
   selectedLoeysing,
   onChangeLoeysing,
 }: Props) => (
-  <div className={classes.testregelFilter}>
+  <div className={classes.loeysingFilter}>
     <Heading level={3} size="medium">
       {heading}
     </Heading>

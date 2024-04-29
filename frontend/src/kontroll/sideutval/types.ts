@@ -1,24 +1,24 @@
 import { Loeysing } from '@loeysingar/api/types';
-import { InnhaldstypeTesting } from '@testreglar/api/types';
+import { Testobjekt } from '@testreglar/api/types';
 
 import { Kontroll } from '../types';
 
 export type SideutvalLoader = {
   kontroll: Kontroll;
-  innhaldstypeList: InnhaldstypeTesting[];
+  testobjektList: Testobjekt[];
   loeysingList: Loeysing[];
 };
 
-export type InnhaldstypeKontroll = InnhaldstypeTesting & {
-  egendefinertType?: string;
+export type TestobjektKontroll = Testobjekt & {
+  egendefinertObjekt?: string;
 };
 
 export type Sideutval = {
   loeysingId: number;
-  typeId: number;
+  objektId: number;
   begrunnelse: string;
   url: string;
-  egendefinertType?: string;
+  egendefinertObjekt?: string;
 };
 
 export type SideutvalIndexed = {
@@ -29,3 +29,8 @@ export type SideutvalIndexed = {
 export type SideutvalForm = {
   sideutval: Sideutval[];
 };
+
+export type FormError = {
+  loeysingId: number,
+  testobjekt: string,
+}

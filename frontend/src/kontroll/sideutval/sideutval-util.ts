@@ -1,10 +1,11 @@
 import { Loeysing } from '@loeysingar/api/types';
-import { InnhaldstypeTesting } from '@testreglar/api/types';
+import { Testobjekt } from '@testreglar/api/types';
 
-import { InnhaldstypeKontroll, Sideutval, SideutvalIndexed } from './types';
+import { Sideutval, SideutvalIndexed, TestobjektKontroll } from './types';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 
-export const toSelectableInnhaldstype = (
-  innhaldstypeList: InnhaldstypeKontroll[],
+export const toSelectableTestobjekt = (
+  innhaldstypeList: TestobjektKontroll[],
   sideutval: Sideutval[],
   loeysingId: number
 ) => {
@@ -12,39 +13,45 @@ export const toSelectableInnhaldstype = (
     ...new Set(
       sideutval
         .filter((su) => su.loeysingId === loeysingId)
-        .map((su) => su.typeId)
+        .map((su) => su.objektId)
     ),
   ];
   const egendefinert = innhaldstypeList.filter(
-    (it) => it.innhaldstype.toLowerCase() === 'egendefinert'
+    (it) => it.testobjekt.toLowerCase() === 'egendefinert'
   );
   const rest = innhaldstypeList.filter(
     (it) =>
-      it.innhaldstype.toLowerCase() !== 'egendefinert' &&
+      it.testobjekt.toLowerCase() !== 'egendefinert' &&
       !innhaldsTypeIdList.includes(it.id)
   );
 
   return [...rest, ...egendefinert];
 };
 
+export const getTestobjektLabel = (testobjektList: Testobjekt[], objektId: number, egendefinertObjekt?: string) => {
+  let innhaldstypeKey: string;
+
+  if (egendefinertObjekt) {
+    innhaldstypeKey = egendefinertObjekt;
+  } else {
+    const match = testobjektList.find((it) => it.id === objektId);
+    if (!match) {
+      throw Error('Ugylig type');
+    } else {
+      innhaldstypeKey = match.testobjekt;
+    }
+  }
+
+  return sanitizeEnumLabel(innhaldstypeKey);
+}
+
 export const groupByType = (
   sideutval: Sideutval[],
-  innhaldstypeList: InnhaldstypeTesting[]
+  testobjektList: Testobjekt[]
 ): Map<string, SideutvalIndexed[]> => {
   const grouped = new Map<string, SideutvalIndexed[]>();
   sideutval.forEach((su, index) => {
-    let innhaldstypeKey: string;
-
-    if (su.egendefinertType) {
-      innhaldstypeKey = su.egendefinertType;
-    } else {
-      const match = innhaldstypeList.find((it) => it.id === Number(su.typeId));
-      if (!match) {
-        throw Error('Ugylig type');
-      } else {
-        innhaldstypeKey = match.innhaldstype;
-      }
-    }
+    const innhaldstypeKey = getTestobjektLabel(testobjektList, su.objektId, su.egendefinertObjekt);
 
     if (!grouped.has(innhaldstypeKey)) {
       grouped.set(innhaldstypeKey, []);
@@ -58,10 +65,10 @@ export const groupByType = (
 
 export const getDefaultFormValues = (
   loeysingList: Loeysing[],
-  innhaldstypeList: InnhaldstypeTesting[]
+  testobjektList: Testobjekt[]
 ): Sideutval[] => {
-  const forsideType = innhaldstypeList.find(
-    (it) => it.innhaldstype.toLowerCase() === 'forside'
+  const forsideType = testobjektList.find(
+    (it) => it.testobjekt.toLowerCase() === 'forside'
   );
 
   if (!forsideType) {
@@ -70,9 +77,9 @@ export const getDefaultFormValues = (
 
   return loeysingList.map((l) => ({
     loeysingId: l.id,
-    typeId: forsideType.id,
+    objektId: forsideType.id,
     begrunnelse: '',
     url: '',
-    egendefinertType: undefined,
+    egendefinertObjekt: undefined,
   }));
 };

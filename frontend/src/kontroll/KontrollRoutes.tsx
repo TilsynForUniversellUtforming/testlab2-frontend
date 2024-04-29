@@ -2,14 +2,14 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { listInnhaldstype, listTestreglar, } from '@testreglar/api/testreglar-api';
+import { listTestobjekt, listTestreglar, } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
-import { ActionFunctionArgs, redirect, RouteObject, useRouteError, } from 'react-router-dom';
+import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
 import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
-import { SideutvalLoader } from './sideutval/types';
+import { SideutvalForm, SideutvalLoader } from './sideutval/types';
 import VelgSideutval from './sideutval/VelgSideutval';
 import { Kontroll, UpdateKontrollTestregel } from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
@@ -160,15 +160,15 @@ export const KontrollRoutes: RouteObject = {
         const kontroll: Kontroll = await kontrollResponse.json();
         const utvalId = kontroll?.utval?.id;
 
-        const [innhaldstypeList, utvalResponse] = await Promise.allSettled([
-          listInnhaldstype(),
+        const [testobjektList, utvalResponse] = await Promise.allSettled([
+          listTestobjekt(),
           utvalId
             ? getUtvalById(utvalId)
             : Promise.reject('Kontroll manglar utval'),
         ]);
 
-        if (innhaldstypeList.status === 'rejected') {
-          throw new Error('Kunne ikkje hente liste med innhaldstypar');
+        if (testobjektList.status === 'rejected') {
+          throw new Error('Kunne ikkje hente liste med testobjekt');
         }
 
         const loeysingList: Loeysing[] = [];
@@ -186,19 +186,18 @@ export const KontrollRoutes: RouteObject = {
 
         return {
           kontroll: kontroll,
-          innhaldstypeList: innhaldstypeList.value,
+          testobjektList: testobjektList.value,
           loeysingList: loeysingList,
         };
       },
-      action: async ({ request }: ActionFunctionArgs) => {
+      action: async ({ request }) => {
         // const { kontroll, sideutval, neste } =
         //   (await request.json()) as UpdateKontrollSideutval;
         // console.log(sideutval);
-        const form = await request.formData();
-        const formData = Object.fromEntries(form);
-        console.log(formData);
-        const sideutval = form.getAll('sideutval.loeysingId');
-        console.log(sideutval);
+        const form = (await request.json()) as SideutvalForm;
+        console.log(form);
+        // const sideutval = form.getAll('sideutval.loeysingId');
+        // console.log(sideutval);
         // const keys = Object.keys(formData).map(key => );
         // console.log(keys) // TODO - Groupby type
 

@@ -1,7 +1,9 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabDivider from '@common/divider/TestlabDivider';
+import TestlabFormInput from '@common/form/TestlabFormInput';
+import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { Button, Heading, Textarea, Textfield, } from '@digdir/designsystemet-react';
+import { Button, Heading } from '@digdir/designsystemet-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { UseFormRegister } from 'react-hook-form';
 
@@ -9,51 +11,51 @@ import classes from '../../kontroll.module.css';
 import { SideutvalForm, SideutvalIndexed } from '../types';
 
 interface Props {
-  innhaldstypeLabel: string;
+  testobjektLabel: string;
   sideutvalIndexedList: SideutvalIndexed[];
   setExpanded: (value: string) => void;
   handleAddSide: (
     loeysingId: number,
-    typeId: number,
-    egendefinertType?: string
+    objektId: number,
+    egendefinertObjekt?: string
   ) => void;
   handleRemoveSide: (indices: number[]) => void;
   register: UseFormRegister<SideutvalForm>;
 }
 
 const SideBegrunnelseForm = ({
-  innhaldstypeLabel,
+  testobjektLabel,
   sideutvalIndexedList,
   handleAddSide,
   handleRemoveSide,
   register,
 }: Props) => {
   const hasMultipleItems = sideutvalIndexedList.length > 1;
-  const isForside = innhaldstypeLabel.toLowerCase() === 'forside';
+  const isForside = testobjektLabel.toLowerCase() === 'forside';
   const defaultSide = sideutvalIndexedList[0].sideutval;
 
-  const handleRemoveInnhaldstype = () => {
+  const handleRemoveTestobjekt = () => {
     if (isForside) {
       return;
     }
 
-    const { loeysingId, typeId, egendefinertType } = defaultSide;
+    const { loeysingId, objektId, egendefinertObjekt } = defaultSide;
 
     if (!loeysingId) {
       throw Error('Ugyldig løysing');
     }
 
-    if (!typeId) {
-      throw Error('Ugyldig innhaldstype');
+    if (!objektId) {
+      throw Error('Ugyldig testobjekt');
     }
 
     const indiciesToRemove = sideutvalIndexedList
       .filter(
         (field) =>
           field.sideutval.loeysingId === loeysingId &&
-          field.sideutval.typeId === typeId &&
-          (!egendefinertType ||
-            field.sideutval.egendefinertType === egendefinertType)
+          field.sideutval.objektId === objektId &&
+          (!egendefinertObjekt ||
+            field.sideutval.egendefinertObjekt === egendefinertObjekt)
       )
       .map((field) => field.index);
     handleRemoveSide(indiciesToRemove);
@@ -62,7 +64,7 @@ const SideBegrunnelseForm = ({
   return (
     <>
       <Heading size="xsmall" level={5} spacing>
-        Legg til {innhaldstypeLabel}
+        Legg til {testobjektLabel}
       </Heading>
 
       {sideutvalIndexedList.map((sideutvalIndexed) => {
@@ -71,7 +73,7 @@ const SideBegrunnelseForm = ({
 
         return (
           <div
-            key={`${side.typeId}_${index}`}
+            key={`${side.objektId}_${index}`}
             className={classes.begrunnelseInputs}
           >
             <input
@@ -83,32 +85,24 @@ const SideBegrunnelseForm = ({
             />
             <input
               type="hidden"
-              defaultValue={side.typeId}
-              {...register(`sideutval.${index}.typeId` as const, {
+              defaultValue={side.objektId}
+              {...register(`sideutval.${index}.objektId` as const, {
                 required: true,
               })}
             />
             <input
               type="hidden"
-              {...register(`sideutval.${index}.egendefinertType` as const, {
-                required: true,
-              })}
-              defaultValue={side.egendefinertType}
+              {...register(`sideutval.${index}.egendefinertObjekt` as const)}
+              defaultValue={side.egendefinertObjekt}
             />
-            <Textarea
+            <TestlabFormTextArea
               label="Begrunnelse for sideutval"
-              defaultValue={side.begrunnelse}
-              {...register(`sideutval.${index}.begrunnelse` as const, {
-                required: true,
-              })}
+              name={`sideutval.${index}.begrunnelse`}
             />
-            <Textfield
+            <TestlabFormInput
               label="Url"
-              defaultValue={side.url}
               type="url"
-              {...register(`sideutval.${index}.url` as const, {
-                required: true,
-              })}
+              name={`sideutval.${index}.url`}
             />
             {hasMultipleItems && (
               <div className={classes.taBortSideWrapper}>
@@ -135,11 +129,11 @@ const SideBegrunnelseForm = ({
           title={
             isForside
               ? 'Forside er påkrevd'
-              : `Fjern innhaldstype ${innhaldstypeLabel}`
+              : `Fjern testobjekt ${testobjektLabel}`
           }
           disabled={isForside}
-          message="Vil du ta bort hele innhaldstypen? Dette kan ikkje angrast"
-          onConfirm={handleRemoveInnhaldstype}
+          message="Vil du ta bort hele testobjektet? Dette kan ikkje angrast"
+          onConfirm={handleRemoveTestobjekt}
           buttonIcon={<MinusCircleIcon />}
         />
         <Button
@@ -149,16 +143,16 @@ const SideBegrunnelseForm = ({
           onClick={() =>
             handleAddSide(
               defaultSide.loeysingId,
-              defaultSide.typeId,
-              defaultSide.egendefinertType
+              defaultSide.objektId,
+              defaultSide.egendefinertObjekt
             )
           }
         >
           <PlusCircleIcon />
-          Legg til fleire sider innan {innhaldstypeLabel}
+          Legg til fleire sider innan {testobjektLabel}
         </Button>
         <TestlabDivider />
-        <Button size={ButtonSize.Small}>Lagre {innhaldstypeLabel}</Button>
+        <Button size={ButtonSize.Small}>Lagre {testobjektLabel}</Button>
       </div>
     </>
   );
