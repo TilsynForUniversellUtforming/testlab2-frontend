@@ -5,16 +5,16 @@ import { Accordion, Alert, Button, Chip, Combobox, Heading, Paragraph, Textfield
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldArrayWithId, UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
 import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
-import { toSelectableInnhaldstype } from '../sideutval-util';
-import { InnhaldstypeKontroll, SideutvalForm, SideutvalIndexed } from '../types';
+import { groupByType, toSelectableInnhaldstype } from '../sideutval-util';
+import { InnhaldstypeKontroll, SideutvalForm } from '../types';
 
 interface Props {
   selectedLoeysing: Loeysing;
-  sideutvalByInnhaldstype: Map<string, SideutvalIndexed[]>
+  sideutval: FieldArrayWithId<SideutvalForm, 'sideutval', 'id'>[];
   handleAddSide: (
     loeysingId: number,
     typeId: number,
@@ -26,20 +26,16 @@ interface Props {
 }
 
 const SideutvalAccordion = ({
-  sideutvalByInnhaldstype,
+  sideutval,
   handleAddSide,
   handleRemoveSide,
   innhaldstypeList,
   selectedLoeysing,
   register,
 }: Props) => {
-  const sideutvalLoeysing = [...sideutvalByInnhaldstype.values()].flat()
-    .map(su => su.sideutval)
-    .filter(su => su.loeysingId === selectedLoeysing.id);
-
   const [selectableInnhaldstype, setSelectableInnhaldstype] = useState<
     InnhaldstypeKontroll[]
-  >(toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing));
+  >(toSelectableInnhaldstype(innhaldstypeList, sideutval, selectedLoeysing.id));
   const [innhaldstypeToAdd, setInnhaldstypeToAdd] = useState<
     InnhaldstypeKontroll | undefined
   >();
@@ -87,8 +83,8 @@ const SideutvalAccordion = ({
 
     if (innhaldstypeToAdd) {
       handleAddSide(
-        Number(selectedLoeysing.id),
-        Number(innhaldstypeToAdd.id),
+        selectedLoeysing.id,
+        innhaldstypeToAdd.id,
         egendefinertType
       );
       setInnhaldstypeToAdd(undefined);
@@ -99,24 +95,16 @@ const SideutvalAccordion = ({
   useEffect(() => {
     // Lukk alle ved ending av selectedLoeysing
     setExpanded([]);
-
-    const sideutvalLoeysing = [...sideutvalByInnhaldstype.values()].flat()
-      .map(su => su.sideutval)
-      .filter(su => su.loeysingId === selectedLoeysing.id);
     setSelectableInnhaldstype(
-      toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing)
+      toSelectableInnhaldstype(innhaldstypeList, sideutval, selectedLoeysing.id)
     );
   }, [selectedLoeysing]);
 
   useEffect(() => {
-    const sideutvalLoeysing = [...sideutvalByInnhaldstype.values()].flat()
-      .map(su => su.sideutval)
-      .filter(su => su.loeysingId === selectedLoeysing.id);
-    
     setSelectableInnhaldstype(
-      toSelectableInnhaldstype(innhaldstypeList, sideutvalLoeysing)
+      toSelectableInnhaldstype(innhaldstypeList, sideutval, selectedLoeysing.id)
     );
-  }, [sideutvalByInnhaldstype]);
+  }, [sideutval]);
 
   return (
     <div className={classes.accordion}>
@@ -186,41 +174,46 @@ const SideutvalAccordion = ({
           </div>
           <div className={classes.accordionWrapper}>
             <Accordion>
-              {[...sideutvalByInnhaldstype.keys()].map((key) => {
-                const sideutvalIndexedList = (sideutvalByInnhaldstype.get(key) || [])
-                  .filter(su => su.sideutval.loeysingId === selectedLoeysing.id);
-                if (sideutvalIndexedList.length === 0) {
-                  return null;
-                }
+              {[...groupByType(sideutval, innhaldstypeList).entries()].map(
+                ([key, sideutvalByInnhaldstype]) => {
+                  const sideutvalIndexedList = sideutvalByInnhaldstype.filter(
+                    (su) => su.sideutval.loeysingId === selectedLoeysing.id
+                  );
+                  if (sideutvalIndexedList.length === 0) {
+                    return null;
+                  }
 
-                const innhaldstypeLabel = sanitizeEnumLabel(key);
+                  const innhaldstypeLabel = sanitizeEnumLabel(key);
 
-                return (
-                  <Accordion.Item
-                    open={expanded.includes(innhaldstypeLabel)}
-                    key={key}
-                  >
-                    <Accordion.Header
-                      level={6}
-                      onHeaderClick={() => handleSetExpanded(innhaldstypeLabel)}
+                  return (
+                    <Accordion.Item
+                      open={expanded.includes(innhaldstypeLabel)}
+                      key={key}
                     >
-                      {innhaldstypeLabel}
-                    </Accordion.Header>
-                    <Accordion.Content className={classes.centered}>
-                      <div className={classes.typeFormWrapper}>
-                        <SideBegrunnelseForm
-                          innhaldstypeLabel={innhaldstypeLabel}
-                          sideutvalIndexedList={sideutvalIndexedList}
-                          setExpanded={handleSetExpanded}
-                          handleAddSide={handleAddSide}
-                          handleRemoveSide={handleRemoveSide}
-                          register={register}
-                        />
-                      </div>
-                    </Accordion.Content>
-                  </Accordion.Item>
-                );
-              })}
+                      <Accordion.Header
+                        level={6}
+                        onHeaderClick={() =>
+                          handleSetExpanded(innhaldstypeLabel)
+                        }
+                      >
+                        {innhaldstypeLabel}
+                      </Accordion.Header>
+                      <Accordion.Content className={classes.centered}>
+                        <div className={classes.typeFormWrapper}>
+                          <SideBegrunnelseForm
+                            innhaldstypeLabel={innhaldstypeLabel}
+                            sideutvalIndexedList={sideutvalIndexedList}
+                            setExpanded={handleSetExpanded}
+                            handleAddSide={handleAddSide}
+                            handleRemoveSide={handleRemoveSide}
+                            register={register}
+                          />
+                        </div>
+                      </Accordion.Content>
+                    </Accordion.Item>
+                  );
+                }
+              )}
             </Accordion>
             {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
           </div>

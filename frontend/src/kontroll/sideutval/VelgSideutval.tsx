@@ -1,17 +1,16 @@
 import useAlert from '@common/alert/useAlert';
 import { Alert, Button, Heading, Paragraph, } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
-import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { useLoaderData } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import KontrollStepper from '../stepper/KontrollStepper';
 import SideutvalAccordion from './accordion/SideutvalAccordion';
 import LoeysingFilter from './LoeysingFilter';
-import { getDefaultFormValues, groupByType } from './sideutval-util';
-import { SideutvalForm, SideutvalIndexed, SideutvalLoader } from './types';
+import { getDefaultFormValues } from './sideutval-util';
+import { SideutvalForm, SideutvalLoader } from './types';
 
 const VelgSideutval = () => {
   const { kontroll, innhaldstypeList, loeysingList } =
@@ -20,21 +19,21 @@ const VelgSideutval = () => {
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
   >();
-  const [sideutvalByInnhaldstype, setSideutvalByInnhaldstype] = useState<Map<string, SideutvalIndexed[]>>(new Map());
+
+  const formMethods = useForm<SideutvalForm>({
+    defaultValues: {
+      sideutval:
+        kontroll?.sideutval ??
+        getDefaultFormValues(loeysingList, innhaldstypeList),
+    },
+  });
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SideutvalForm>({
-    defaultValues: {
-      sideutval:
-        kontroll?.sideutval ??
-        getDefaultFormValues(loeysingList, innhaldstypeList),
-    },
-    mode: 'onBlur',
-  });
+  } = formMethods;
 
   const { fields, append, remove } = useFieldArray({
     name: 'sideutval',
@@ -49,11 +48,11 @@ const VelgSideutval = () => {
     egendefinertType?: string
   ) => {
     append({
-      loeysingId: Number(loeysingId),
-      typeId: Number(typeId),
-      egendefinertType: egendefinertType,
-      url: '',
+      loeysingId: loeysingId,
+      typeId: typeId,
       begrunnelse: '',
+      url: '',
+      egendefinertType: egendefinertType,
     });
   };
 
@@ -61,9 +60,10 @@ const VelgSideutval = () => {
     remove(indices);
   };
 
-  const onSubmit = (data: SideutvalForm) => console.log(data);
-
-  const manueltSelected = true;
+  const onSubmit = (data: SideutvalForm) => {
+    console.log('SUBMIT');
+    console.log(data);
+  };
 
   const handleChangeLoeysing = (loeysingId: number) => {
     const loeysing = loeysingList.find((l) => l.id === loeysingId);
@@ -77,12 +77,6 @@ const VelgSideutval = () => {
     );
   };
 
-  useEffect(() => {
-    setSideutvalByInnhaldstype(groupByType(fields, innhaldstypeList));
-  }, [fields]);
-
-  console.log(fields)
-
   return (
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
@@ -91,20 +85,8 @@ const VelgSideutval = () => {
       </Heading>
       <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
       <div className={classes.automatiskEllerManuelt}>
-        <button
-          className={classNames({
-            [classes.selected]: manueltSelected,
-          })}
-        >
-          Manuelt sideutval
-        </button>
-        <button
-          className={classNames({
-            [classes.selected]: !manueltSelected,
-          })}
-        >
-          Automatisk sideutval
-        </button>
+        <button className={classes.selected}>Manuelt sideutval</button>
+        <button>Automatisk sideutval</button>
       </div>
       <LoeysingFilter
         heading={kontroll.tittel}
@@ -112,41 +94,43 @@ const VelgSideutval = () => {
         onChangeLoeysing={handleChangeLoeysing}
         selectedLoeysing={selectedLoeysing}
       />
-      <form
-        className={classes.velgSideutvalContainer}
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className={classes.centered}>
-          <div className={classes.velgSideutval}>
-            {selectedLoeysing && (
-              <SideutvalAccordion
-                selectedLoeysing={selectedLoeysing}
-                sideutvalByInnhaldstype={sideutvalByInnhaldstype}
-                handleAddSide={handleAddSide}
-                handleRemoveSide={handleRemoveSide}
-                innhaldstypeList={innhaldstypeList}
-                register={register}
-              />
-            )}
-            <div className={classes.centered}>
-              <div className={classes.sideutvalForm}>
-                {alert && (
-                  <Alert severity={alert.severity}>{alert.message}</Alert>
-                )}
-                <br/>
-                <Button type="submit" className={classes.opprettResten}>
-                  Opprett resten av kontrollen
-                </Button>
-                {/*<LagreOgNeste*/}
-                {/*  sistLagret={actionData?.sistLagret}*/}
-                {/*  onClickLagreKontroll={() => lagreKontroll(false)}*/}
-                {/*  onClickNeste={() => lagreKontroll(true)}*/}
-                {/*/>*/}
+      <FormProvider {...formMethods}>
+        <form
+          className={classes.velgSideutvalContainer}
+          onSubmit={handleSubmit((data) => console.log(data))}
+        >
+          <div className={classes.centered}>
+            <div className={classes.velgSideutval}>
+              {selectedLoeysing && (
+                <SideutvalAccordion
+                  selectedLoeysing={selectedLoeysing}
+                  sideutval={fields}
+                  handleAddSide={handleAddSide}
+                  handleRemoveSide={handleRemoveSide}
+                  innhaldstypeList={innhaldstypeList}
+                  register={register}
+                />
+              )}
+              <div className={classes.centered}>
+                <div className={classes.sideutvalForm}>
+                  {alert && (
+                    <Alert severity={alert.severity}>{alert.message}</Alert>
+                  )}
+                  <br />
+                  <Button type="submit" className={classes.opprettResten}>
+                    Opprett resten av kontrollen
+                  </Button>
+                  {/*<LagreOgNeste*/}
+                  {/*  sistLagret={actionData?.sistLagret}*/}
+                  {/*  onClickLagreKontroll={() => lagreKontroll(false)}*/}
+                  {/*  onClickNeste={() => lagreKontroll(true)}*/}
+                  {/*/>*/}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </section>
   );
 };

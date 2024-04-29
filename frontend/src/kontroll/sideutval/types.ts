@@ -1,6 +1,5 @@
 import { Loeysing } from '@loeysingar/api/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
-import { FieldArrayWithId } from 'react-hook-form';
 
 import { Kontroll } from '../types';
 
@@ -22,14 +21,8 @@ export type Sideutval = {
   egendefinertType?: string;
 };
 
-export type SideItemKey = `${string}_${number}`; // innhaldstype_index
-
-export type SideListItem = Sideutval & {
-  key: SideItemKey;
-};
-
 export type SideutvalIndexed = {
-  sideutval: FieldArrayWithId<SideutvalForm, 'sideutval', 'id'>;
+  sideutval: Sideutval;
   index: number;
 };
 

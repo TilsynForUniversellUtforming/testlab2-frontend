@@ -1,41 +1,20 @@
 import { Loeysing } from '@loeysingar/api/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
-import { FieldArrayWithId } from 'react-hook-form';
 
-import { InnhaldstypeKontroll, SideItemKey, SideListItem, Sideutval, SideutvalForm, SideutvalIndexed, } from './types';
-
-export const createDefaultSideutval = (
-  loeysingId: number,
-  forsideTypeId: number
-): Sideutval[] => [
-  {
-    loeysingId: loeysingId,
-    typeId: forsideTypeId,
-    begrunnelse: '',
-    url: '',
-  },
-];
-
-export const toSideListItemKey = (
-  innhaldstype: string,
-  index: number
-): SideItemKey => `${innhaldstype}_${index}`;
-
-export const toSideListItem = (
-  innhaldstypeLabel: string,
-  sideutval: Sideutval[]
-): SideListItem[] => {
-  return sideutval.map((sl, index) => ({
-    ...sl,
-    key: toSideListItemKey(innhaldstypeLabel, index),
-  }));
-};
+import { InnhaldstypeKontroll, Sideutval, SideutvalIndexed } from './types';
 
 export const toSelectableInnhaldstype = (
   innhaldstypeList: InnhaldstypeKontroll[],
-  sideutvalLoeysing: Sideutval[]
+  sideutval: Sideutval[],
+  loeysingId: number
 ) => {
-  const innhaldsTypeIdList = [...new Set(sideutvalLoeysing.map((su) => su.typeId))];
+  const innhaldsTypeIdList = [
+    ...new Set(
+      sideutval
+        .filter((su) => su.loeysingId === loeysingId)
+        .map((su) => su.typeId)
+    ),
+  ];
   const egendefinert = innhaldstypeList.filter(
     (it) => it.innhaldstype.toLowerCase() === 'egendefinert'
   );
@@ -49,11 +28,10 @@ export const toSelectableInnhaldstype = (
 };
 
 export const groupByType = (
-  sideutval: FieldArrayWithId<SideutvalForm, 'sideutval', 'id'>[],
+  sideutval: Sideutval[],
   innhaldstypeList: InnhaldstypeTesting[]
 ): Map<string, SideutvalIndexed[]> => {
   const grouped = new Map<string, SideutvalIndexed[]>();
-
   sideutval.forEach((su, index) => {
     let innhaldstypeKey: string;
 
@@ -93,7 +71,8 @@ export const getDefaultFormValues = (
   return loeysingList.map((l) => ({
     loeysingId: l.id,
     typeId: forsideType.id,
-    url: '',
     begrunnelse: '',
+    url: '',
+    egendefinertType: undefined,
   }));
 };
