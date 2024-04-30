@@ -70,10 +70,7 @@ fun mergeLists(
     val aggregatedResultList =
         resultMap[testKoeyring.loeysing]?.map { result ->
           val compliancePercent =
-              result.testregelGjennomsnittlegSideSamsvarProsent
-                  .apply { this?.times(100) }
-                  ?.roundToInt()
-                  ?: 0
+              result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt() ?: 0
 
           AggegatedTestresultTestregel(
               loeysing = result.loeysing,
