@@ -71,8 +71,7 @@ class LoeysingResource(
   @GetMapping
   fun getLoeysingList(
       @RequestParam("name", required = false) namn: String?,
-      @RequestParam("orgnummer", required = false) orgnummer: String?,
-      @RequestParam("idFilter", required = false) idFilter: List<Int>?
+      @RequestParam("orgnummer", required = false) orgnummer: String?
   ): ResponseEntity<Any> {
     if (namn != null && orgnummer != null) {
       return ResponseEntity.badRequest().body("Må søke med enten namn eller orgnummer")
@@ -82,12 +81,6 @@ class LoeysingResource(
         ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?search=$namn"))
       } else if (orgnummer != null) {
         ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?search=$orgnummer"))
-      } else if (idFilter != null) {
-        val loeysingList = getLoeysingList().filter { idFilter.contains(it.id) }
-        if (loeysingList.size != idFilter.size) {
-          ResponseEntity.badRequest()
-        }
-        ResponseEntity.ok(loeysingList)
       } else {
         ResponseEntity.ok(getLoeysingList())
       }
