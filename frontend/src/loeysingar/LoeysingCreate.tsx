@@ -29,6 +29,7 @@ const LoeysingCreate = () => {
             namn: loeysingInit.namn,
             url: loeysingInit.url,
             organisasjonsnummer: orgnummerWithoutWhitespace,
+            verksemd: loeysingInit.verksemd,
           };
 
           const existingLoeysing = loeysingList.find(

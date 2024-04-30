@@ -4,6 +4,8 @@ import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiProperties
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.LoeysingFormElement
+import no.uutilsynet.testlab2frontendserver.verksemd.Verksemd
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -29,6 +31,7 @@ class LoeysingResource(
   val logger: Logger = LoggerFactory.getLogger(LoeysingResource::class.java)
 
   val loeysingUrl = "${loeysingsregisterApiProperties.url}/v1/loeysing"
+  val versksemdUrl = "${loeysingsregisterApiProperties.url}/v1/verksemd"
 
   data class CreateLoeysingDTO(val namn: String, val url: String, val organisasjonsnummer: String)
 
@@ -44,6 +47,26 @@ class LoeysingResource(
         logger.error("Klarte ikkje å hente løysing med id $id", e)
         throw RuntimeException("Klarte ikkje å hente løysing")
       }
+
+  @GetMapping("/{id}/withVerksemd")
+  fun getLoeysingWithVerksemd(@PathVariable id: Int): ResponseEntity<LoeysingFormElement> {
+    try {
+      val url = "$loeysingUrl/$id"
+      val loeysing: Loeysing = restTemplate.getForObject(url)
+      val verksemd = getVerksemd(loeysing)
+
+      return ResponseEntity.ok(
+          LoeysingFormElement(
+              loeysing.id, loeysing.namn, loeysing.url, loeysing.orgnummer, verksemd))
+    } catch (e: Error) {
+      logger.error("Klarte ikkje å hente løysing med id $id", e)
+      throw RuntimeException("Klarte ikkje å hente løysing")
+    }
+  }
+
+  fun getVerksemd(loeysing: Loeysing): Verksemd? {
+    return loeysing.verksemdId?.let { restTemplate.getForObject<Verksemd>("$versksemdUrl/$it") }
+  }
 
   @GetMapping
   fun getLoeysingList(

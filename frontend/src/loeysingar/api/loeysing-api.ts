@@ -1,7 +1,7 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
-import { Loeysing, LoeysingInit } from './types';
+import { Loeysing, LoeysingFormElement, LoeysingInit } from './types';
 
 export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
   await fetch(`/api/v1/loeysing/${id}`, {
@@ -73,4 +73,14 @@ export const deleteLoeysingList = async (
     const message = await response.text();
     throw Error(message);
   }
+};
+
+export const fetchLoeysingFormElement = async (
+  id: number
+): Promise<LoeysingFormElement> => {
+  return await fetch(`/api/v1/loeysing/${id}/withVerksemd`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente løysingar')
+  );
 };

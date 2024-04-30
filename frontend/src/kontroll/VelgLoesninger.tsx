@@ -1,4 +1,5 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
+import { formatDate } from '@common/util/stringutils';
 import { Alert, Heading } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import classNames from 'classnames';
@@ -117,13 +118,16 @@ const VelgLoesninger = () => {
                 onClick={velgUtvalg(u)}
                 className={classNames({ [classes.selected]: isValgt(u) })}
               >
-                {u.namn}
+                <span className={classes.utvalgNamn}>{u.namn}</span>
+                <span className={classes.utvalgOppretta}>
+                  {formatDate(u.oppretta)}
+                </span>
               </button>
             ))}
           </div>
           {!isEmpty(eldreUtvalg) && (
             <>
-              <Heading level={3} size="small">
+              <Heading level={2} size="large">
                 Eldre utvalg av løsninger
               </Heading>
               <ul className={classes.eldreUtvalg}>

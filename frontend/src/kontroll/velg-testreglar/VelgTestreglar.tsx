@@ -111,7 +111,7 @@ const VelgTestreglar = () => {
 
   const regelsettSelected = selectionType === 'regelsett';
 
-  const lagreKontroll = (neste: boolean) => {
+  const lagreKontroll = (neste: boolean) => () => {
     const testregelIdList: number[] = [];
     alert?.clearMessage();
 
