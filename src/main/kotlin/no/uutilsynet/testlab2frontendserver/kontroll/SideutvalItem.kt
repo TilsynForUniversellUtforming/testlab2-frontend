@@ -1,6 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
-data class Sideutval(
+data class SideutvalItem(
     val loeysingId: Int,
     val objektId: Int,
     val begrunnelse: String,

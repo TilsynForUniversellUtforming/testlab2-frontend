@@ -110,7 +110,9 @@ const SideutvalAccordion = ({
 
   useEffect(() => {
     // Åpne alle accordion items det er feil på
-    setExpanded(formErrors.filter(fe => fe.loeysingId === selectedLoeysing.id).map(fe => fe.testobjekt));
+    if (formErrors.length > 0) {
+      setExpanded(formErrors.filter(fe => fe.loeysingId === selectedLoeysing.id).map(fe => fe.testobjekt));
+    }
   }, [formErrors]);
 
   return (

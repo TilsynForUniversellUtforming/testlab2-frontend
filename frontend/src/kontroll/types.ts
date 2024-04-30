@@ -28,7 +28,7 @@ export type UpdateKontrollTestreglar = {
 
 export type UpdateKontrollSideutval = {
   kontroll: Kontroll;
-  sideutval: Sideutval[];
+  sideutvalList: Sideutval[];
   neste: boolean;
 };
 

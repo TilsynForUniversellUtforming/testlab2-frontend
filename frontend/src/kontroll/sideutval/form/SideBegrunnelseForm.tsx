@@ -1,5 +1,4 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
-import TestlabDivider from '@common/divider/TestlabDivider';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { ButtonSize, ButtonVariant } from '@common/types';
@@ -9,6 +8,7 @@ import { UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
 import { SideutvalForm, SideutvalIndexed } from '../types';
+import TestlabDivider from '@common/divider/TestlabDivider';
 
 interface Props {
   testobjektLabel: string;
