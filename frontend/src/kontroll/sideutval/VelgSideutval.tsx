@@ -1,20 +1,32 @@
 import useAlert from '@common/alert/useAlert';
-import { Alert, ErrorSummary, Heading, Paragraph } from '@digdir/designsystemet-react';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
+import { isDefined } from '@common/util/validationUtils';
+import {
+  Alert,
+  ErrorSummary,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
-import { useEffect, useState } from 'react';
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import {
+  FieldErrors,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
+import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
+import { UpdateKontrollSideutval } from '../types';
 import SideutvalAccordion from './accordion/SideutvalAccordion';
 import LoeysingFilter from './LoeysingFilter';
 import { getDefaultFormValues, getTestobjektLabel } from './sideutval-util';
 import { sideutvalValidationSchema } from './sideutvalValidationSchema';
 import { FormError, SideutvalForm, SideutvalLoader } from './types';
-import { isDefined } from '@common/util/validationUtils';
-import { sanitizeEnumLabel } from '@common/util/stringutils';
 
 const VelgSideutval = () => {
   const { kontroll, testobjektList, loeysingList } =
@@ -22,6 +34,7 @@ const VelgSideutval = () => {
   const actionData = useActionData() as { sistLagret: Date };
   const submit = useSubmit();
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
+  const [neste, setNeste] = useState<boolean>(false);
 
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
@@ -37,28 +50,28 @@ const VelgSideutval = () => {
     resolver: zodResolver(sideutvalValidationSchema),
   });
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = formMethods;
+  const { register, control, handleSubmit } = formMethods;
 
-  useEffect(() => {
+  const onSubmitError = (errors: FieldErrors<SideutvalForm>) => {
     const errorList: FormError[] = [];
     const sideutvalErrors = errors.sideutval;
     // Index på errors er lik som index på field
     fields.forEach((field, index) => {
       if (sideutvalErrors && isDefined(sideutvalErrors[index])) {
-        const testobjekt = getTestobjektLabel(testobjektList, field.objektId, field.egendefinertObjekt)
+        const testobjekt = getTestobjektLabel(
+          testobjektList,
+          field.objektId,
+          field.egendefinertObjekt
+        );
 
-        errorList.push({ loeysingId: field.loeysingId, testobjekt: sanitizeEnumLabel(testobjekt) })
+        errorList.push({
+          loeysingId: field.loeysingId,
+          testobjekt: sanitizeEnumLabel(testobjekt),
+        });
       }
     });
-
     setFormErrors(errorList);
-
-  }, [errors]);
+  };
 
   const { fields, append, remove } = useFieldArray({
     name: 'sideutval',
@@ -85,15 +98,6 @@ const VelgSideutval = () => {
     remove(indices);
   };
 
-  const onSubmit = (data: SideutvalForm) => {
-    console.log('submitter')
-    submit(JSON.stringify(data), {
-      method: 'put',
-      action: `/kontroll/${kontroll.id}/sideutval`,
-      encType: 'application/json',
-    });
-  };
-
   const handleChangeLoeysing = (loeysingId: number) => {
     const loeysing = loeysingList.find((l) => l.id === loeysingId);
     if (!loeysing) {
@@ -104,6 +108,22 @@ const VelgSideutval = () => {
     setSelectedLoesying((prev) =>
       loeysing.id === prev?.id ? undefined : loeysing
     );
+  };
+
+  const onSubmit = (form: SideutvalForm) => {
+    alert?.clearMessage();
+
+    const data: UpdateKontrollSideutval = {
+      kontroll,
+      sideutvalList: form.sideutval,
+      neste: neste,
+    };
+
+    submit(JSON.stringify(data), {
+      method: 'put',
+      action: `/kontroll/${kontroll.id}/sideutval`,
+      encType: 'application/json',
+    });
   };
 
   return (
@@ -123,26 +143,34 @@ const VelgSideutval = () => {
         onChangeLoeysing={handleChangeLoeysing}
         selectedLoeysing={selectedLoeysing}
       />
-      {formErrors.length > 0 &&
+      {formErrors.length > 0 && (
         <div className={classes.sideutvalLoeysingErrors}>
-          <ErrorSummary.Root size="medium" >
+          <ErrorSummary.Root size="medium">
             <ErrorSummary.Heading>
               Det er feil med sideutval på føljande løysingar
             </ErrorSummary.Heading>
             <ErrorSummary.List>
-              {[...new Set(formErrors.map((formError) => formError.loeysingId))].map((loeyingId) =>
-                <ErrorSummary.Item href={`#loeysing-${loeyingId}`} key={loeyingId}>
-                  {loeysingList.find(ll => ll.id === loeyingId)?.namn}
+              {[
+                ...new Set(formErrors.map((formError) => formError.loeysingId)),
+              ].map((loeyingId) => (
+                <ErrorSummary.Item
+                  href={`#loeysing-${loeyingId}`}
+                  key={loeyingId}
+                >
+                  {loeysingList.find((ll) => ll.id === loeyingId)?.namn}
                 </ErrorSummary.Item>
-              )}
+              ))}
             </ErrorSummary.List>
           </ErrorSummary.Root>
         </div>
-      }
+      )}
       <FormProvider {...formMethods}>
         <form
           className={classes.velgSideutvalContainer}
-          onSubmit={handleSubmit((data) => onSubmit(data))}
+          onSubmit={handleSubmit(
+            (data) => onSubmit(data),
+            (errors) => onSubmitError(errors)
+          )}
         >
           <div className={classes.centered}>
             <div className={classes.velgSideutval}>
@@ -163,7 +191,13 @@ const VelgSideutval = () => {
                     <Alert severity={alert.severity}>{alert.message}</Alert>
                   )}
                   <br />
-                  <input type="submit" />
+                  <LagreOgNeste
+                    sistLagret={actionData?.sistLagret}
+                    feilet={formErrors.length > 0}
+                    onClickNeste={() => setNeste(true)}
+                    onClickLagreKontroll={() => setNeste(false)}
+                    submitOnSave
+                  />
                 </div>
               </div>
             </div>

@@ -2,16 +2,25 @@ import ErrorCard from '@common/error/ErrorCard';
 import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { listTestobjekt, listTestreglar, } from '@testreglar/api/testreglar-api';
+import { listTestobjekt, listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
-import { fetchKontroll, updateKontroll, updateKontrollTestreglar, } from './kontroll-api';
+import {
+  fetchKontroll,
+  updateKontroll,
+  updateKontrollSideutval,
+  updateKontrollTestreglar,
+} from './kontroll-api';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
-import { SideutvalForm, SideutvalLoader } from './sideutval/types';
+import { SideutvalLoader } from './sideutval/types';
 import VelgSideutval from './sideutval/VelgSideutval';
-import { Kontroll, UpdateKontrollTestregel } from './types';
+import {
+  Kontroll,
+  UpdateKontrollSideutval,
+  UpdateKontrollTestregel,
+} from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
 import VelgLoesninger from './VelgLoesninger';
@@ -191,17 +200,15 @@ export const KontrollRoutes: RouteObject = {
         };
       },
       action: async ({ request }) => {
-        // const { kontroll, sideutval, neste } =
-        //   (await request.json()) as UpdateKontrollSideutval;
-        // console.log(sideutval);
-        const form = (await request.json()) as SideutvalForm;
-        console.log(form);
-        // const sideutval = form.getAll('sideutval.loeysingId');
-        // console.log(sideutval);
-        // const keys = Object.keys(formData).map(key => );
-        // console.log(keys) // TODO - Groupby type
-
-        return { sistLagret: new Date() };
+        const { kontroll, sideutvalList, neste } =
+          (await request.json()) as UpdateKontrollSideutval;
+        const response = await updateKontrollSideutval(kontroll, sideutvalList);
+        if (!response.ok) {
+          throw new Error('Klarte ikke å lagre kontrollen.');
+        }
+        return neste
+          ? redirect(`/kontroll/${kontroll.id}/${steps.testregel.relativePath}`)
+          : { sistLagret: new Date() };
       },
     },
   ],

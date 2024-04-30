@@ -8,7 +8,6 @@ import { UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
 import { SideutvalForm, SideutvalIndexed } from '../types';
-import TestlabDivider from '@common/divider/TestlabDivider';
 
 interface Props {
   testobjektLabel: string;
@@ -99,11 +98,7 @@ const SideBegrunnelseForm = ({
               label="Begrunnelse for sideutval"
               name={`sideutval.${index}.begrunnelse`}
             />
-            <TestlabFormInput
-              label="Url"
-              type="url"
-              name={`sideutval.${index}.url`}
-            />
+            <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
             {hasMultipleItems && (
               <div className={classes.taBortSideWrapper}>
                 <Button
@@ -151,8 +146,6 @@ const SideBegrunnelseForm = ({
           <PlusCircleIcon />
           Legg til fleire sider innan {testobjektLabel}
         </Button>
-        <TestlabDivider />
-        <Button size={ButtonSize.Small}>Lagre {testobjektLabel}</Button>
       </div>
     </>
   );
