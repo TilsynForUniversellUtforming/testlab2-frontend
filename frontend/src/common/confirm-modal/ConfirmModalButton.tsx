@@ -51,7 +51,7 @@ const ConfirmModalButton = ({
         {icon ? null : title}
       </Button>
       <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
-        <Modal.Header>{title}</Modal.Header>
+        <Modal.Header closeButton={false}>{title}</Modal.Header>
         <Divider color="subtle" />
         <Modal.Content>
           <Paragraph>{message}</Paragraph>

@@ -124,10 +124,10 @@ const SideBegrunnelseForm = ({
           title={
             isForside
               ? 'Forside er påkrevd'
-              : `Fjern testobjekt ${testobjektLabel}`
+              : `Ta bort sideutval for ${testobjektLabel}`
           }
           disabled={isForside}
-          message="Vil du ta bort hele testobjektet? Dette kan ikkje angrast"
+          message={`Vil du ta bort hele sideutvalet for ${testobjektLabel}? Dette kan ikkje angrast`}
           onConfirm={handleRemoveTestobjekt}
           buttonIcon={<MinusCircleIcon />}
         />

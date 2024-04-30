@@ -1,8 +1,8 @@
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Loeysing } from '@loeysingar/api/types';
 import { Testobjekt } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalIndexed, TestobjektKontroll } from './types';
-import { sanitizeEnumLabel } from '@common/util/stringutils';
 
 export const toSelectableTestobjekt = (
   innhaldstypeList: TestobjektKontroll[],
@@ -28,7 +28,11 @@ export const toSelectableTestobjekt = (
   return [...rest, ...egendefinert];
 };
 
-export const getTestobjektLabel = (testobjektList: Testobjekt[], objektId: number, egendefinertObjekt?: string) => {
+export const getTestobjektLabel = (
+  testobjektList: Testobjekt[],
+  objektId: number,
+  egendefinertObjekt?: string
+) => {
   let innhaldstypeKey: string;
 
   if (egendefinertObjekt) {
@@ -43,7 +47,7 @@ export const getTestobjektLabel = (testobjektList: Testobjekt[], objektId: numbe
   }
 
   return sanitizeEnumLabel(innhaldstypeKey);
-}
+};
 
 export const groupByType = (
   sideutval: Sideutval[],
@@ -51,7 +55,11 @@ export const groupByType = (
 ): Map<string, SideutvalIndexed[]> => {
   const grouped = new Map<string, SideutvalIndexed[]>();
   sideutval.forEach((su, index) => {
-    const innhaldstypeKey = getTestobjektLabel(testobjektList, su.objektId, su.egendefinertObjekt);
+    const innhaldstypeKey = getTestobjektLabel(
+      testobjektList,
+      su.objektId,
+      su.egendefinertObjekt
+    );
 
     if (!grouped.has(innhaldstypeKey)) {
       grouped.set(innhaldstypeKey, []);
@@ -65,21 +73,32 @@ export const groupByType = (
 
 export const getDefaultFormValues = (
   loeysingList: Loeysing[],
-  testobjektList: Testobjekt[]
+  testobjektList: Testobjekt[],
+  sideutvalKontroll: Sideutval[]
 ): Sideutval[] => {
   const forsideType = testobjektList.find(
     (it) => it.testobjekt.toLowerCase() === 'forside'
   );
 
   if (!forsideType) {
-    throw Error('Forside finns ikkje');
+    throw new Error('Forside finns ikkje');
   }
 
-  return loeysingList.map((l) => ({
-    loeysingId: l.id,
-    objektId: forsideType.id,
-    begrunnelse: '',
-    url: '',
-    egendefinertObjekt: undefined,
-  }));
+  return loeysingList.flatMap((loeysing) => {
+    const hasForside = sideutvalKontroll.find(
+      (su) => su.loeysingId === loeysing.id && su.objektId === forsideType.id
+    );
+
+    if (hasForside) {
+      return sideutvalKontroll.filter((su) => su.loeysingId === loeysing.id);
+    } else {
+      return {
+        loeysingId: loeysing.id,
+        objektId: forsideType.id,
+        begrunnelse: '',
+        url: '',
+        egendefinertObjekt: undefined,
+      };
+    }
+  });
 };

@@ -12,7 +12,7 @@ export type Kontroll = {
   arkivreferanse: string;
   utval: Utval | undefined;
   testreglar: KontrollTestreglar | undefined;
-  sideutval?: Sideutval[];
+  sideutvalList: Sideutval[];
 };
 
 export type UpdateKontrollTestregel = {

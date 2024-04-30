@@ -42,9 +42,11 @@ const VelgSideutval = () => {
 
   const formMethods = useForm<SideutvalForm>({
     defaultValues: {
-      sideutval:
-        kontroll?.sideutval ??
-        getDefaultFormValues(loeysingList, testobjektList),
+      sideutval: getDefaultFormValues(
+        loeysingList,
+        testobjektList,
+        kontroll.sideutvalList
+      ),
     },
     mode: 'onBlur',
     resolver: zodResolver(sideutvalValidationSchema),
@@ -112,6 +114,7 @@ const VelgSideutval = () => {
 
   const onSubmit = (form: SideutvalForm) => {
     alert?.clearMessage();
+    setSelectedLoesying(undefined);
 
     const data: UpdateKontrollSideutval = {
       kontroll,
@@ -135,11 +138,14 @@ const VelgSideutval = () => {
       <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
       <div className={classes.automatiskEllerManuelt}>
         <button className={classes.selected}>Manuelt sideutval</button>
-        <button>Automatisk sideutval</button>
+        <button disabled title="Automatisk sideutval kommer">
+          Automatisk sideutval
+        </button>
       </div>
       <LoeysingFilter
         heading={kontroll.tittel}
         loeysingList={loeysingList}
+        sideutvalKontroll={kontroll.sideutvalList}
         onChangeLoeysing={handleChangeLoeysing}
         selectedLoeysing={selectedLoeysing}
       />

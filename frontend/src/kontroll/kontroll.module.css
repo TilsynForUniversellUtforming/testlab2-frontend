@@ -129,6 +129,11 @@
       background: var(--fds-semantic-surface-first-light-active);
     }
 
+    &:disabled {
+      cursor: not-allowed;
+      background-color: var(--fds-semantic-surface-first-light);
+    }
+
     .utvalgOppretta {
       font: var(--fds-typography-paragraph-medium);
       color: var(--fds-semantic-text-neutral-subtle);
@@ -288,6 +293,7 @@
       width: 800px;
     }
     width: 100%;
+    padding-bottom: 2rem;
   }
 
   .accordion-wrapper {
@@ -300,6 +306,11 @@
     gap: 1rem;
     padding-bottom: 1rem;
   }
+}
+
+.ferdig-utval {
+  display: flex;
+  gap: 1rem;
 }
 
 .sideutval-loeysing-errors {

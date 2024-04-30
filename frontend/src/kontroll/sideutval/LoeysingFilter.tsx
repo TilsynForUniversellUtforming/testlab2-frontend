@@ -1,11 +1,13 @@
-import { Alert, Chip, Heading } from '@digdir/designsystemet-react';
+import { Alert, Chip, Heading, Tag } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 
 import classes from '../kontroll.module.css';
+import { Sideutval } from './types';
 
 interface Props {
   heading: string;
   loeysingList: Loeysing[];
+  sideutvalKontroll: Sideutval[];
   selectedLoeysing: Loeysing | undefined;
   onChangeLoeysing: (loeysingId: number) => void;
 }
@@ -14,7 +16,7 @@ const Filter = ({
   loeysingList,
   selectedLoeysing,
   onChangeLoeysing,
-}: Omit<Props, 'heading'>) => {
+}: Omit<Props, 'heading' | 'sideutvalKontroll'>) => {
   if (loeysingList.length === 0) {
     return <Alert severity="warning">Kontroll har ikkje løysingsutval</Alert>;
   }
@@ -39,22 +41,53 @@ const Filter = ({
 const LoeysingFilter = ({
   heading,
   loeysingList,
+  sideutvalKontroll,
   selectedLoeysing,
   onChangeLoeysing,
-}: Props) => (
-  <div className={classes.loeysingFilter}>
-    <Heading level={3} size="medium">
-      {heading}
-    </Heading>
-    <Heading level={4} size="xsmall">
-      Vel løysing til sideutval
-    </Heading>
-    <Filter
-      loeysingList={loeysingList}
-      selectedLoeysing={selectedLoeysing}
-      onChangeLoeysing={onChangeLoeysing}
-    />
-  </div>
-);
+}: Props) => {
+  const finished: Loeysing[] = [];
+  const notFinished: Loeysing[] = [];
+
+  loeysingList.forEach((loeysing) => {
+    const isInKontroll = sideutvalKontroll.some(
+      (sideutval) => sideutval.loeysingId === loeysing.id
+    );
+    if (isInKontroll) {
+      finished.push(loeysing);
+    } else {
+      notFinished.push(loeysing);
+    }
+  });
+
+  return (
+    <div className={classes.loeysingFilter}>
+      {finished.length !== loeysingList.length && (
+        <>
+          <Heading level={3} size="medium">
+            {heading}
+          </Heading>
+          <Heading level={4} size="xsmall">
+            Vel løysing til sideutval
+          </Heading>
+          <Filter
+            loeysingList={notFinished}
+            selectedLoeysing={selectedLoeysing}
+            onChangeLoeysing={onChangeLoeysing}
+          />
+        </>
+      )}
+      <Heading level={3} size="medium">
+        Ferdig
+      </Heading>
+      <div className={classes.ferdigUtval}>
+        {finished.map((loeysing) => (
+          <Tag color="first" size="medium" key={loeysing.id}>
+            {loeysing.namn}
+          </Tag>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default LoeysingFilter;

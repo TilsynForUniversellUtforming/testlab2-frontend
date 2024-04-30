@@ -1,10 +1,19 @@
 import useAlert from '@common/alert/useAlert';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { Accordion, Alert, Button, Chip, Combobox, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
+import {
+  Accordion,
+  Alert,
+  Button,
+  Chip,
+  Combobox,
+  Heading,
+  Paragraph,
+  Textfield,
+} from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { FieldArrayWithId, useFormContext, UseFormRegister } from 'react-hook-form';
+import { FieldArrayWithId, UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
 import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
@@ -43,7 +52,6 @@ const SideutvalAccordion = ({
   const [egendefinertObjekt, setEgendefinertObjekt] = useState<string>('');
   const [expanded, setExpanded] = useState<string[]>([]);
   const [alert, setAlert] = useAlert();
-  const { formState: { errors } } = useFormContext<SideutvalForm>();
 
   const handleSetExpanded = (key: string) => {
     setExpanded((prevExpanded) =>
@@ -96,7 +104,11 @@ const SideutvalAccordion = ({
 
   useEffect(() => {
     // Lukk alle accordion items det ikke er feil på ved endring av løysing
-    setExpanded(formErrors.filter(fe => fe.loeysingId === selectedLoeysing.id).map(fe => fe.testobjekt));
+    setExpanded(
+      formErrors
+        .filter((fe) => fe.loeysingId === selectedLoeysing.id)
+        .map((fe) => fe.testobjekt)
+    );
     setSelectableTestobjekt(
       toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id)
     );
@@ -111,7 +123,11 @@ const SideutvalAccordion = ({
   useEffect(() => {
     // Åpne alle accordion items det er feil på
     if (formErrors.length > 0) {
-      setExpanded(formErrors.filter(fe => fe.loeysingId === selectedLoeysing.id).map(fe => fe.testobjekt));
+      setExpanded(
+        formErrors
+          .filter((fe) => fe.loeysingId === selectedLoeysing.id)
+          .map((fe) => fe.testobjekt)
+      );
     }
   }, [formErrors]);
 
@@ -131,7 +147,9 @@ const SideutvalAccordion = ({
             <Chip.Toggle selected checkmark>
               Test av nettside
             </Chip.Toggle>
-            <Chip.Toggle disabled>Test av mobil</Chip.Toggle>
+            <Chip.Toggle disabled title="Test av mobil kommer">
+              Test av mobil
+            </Chip.Toggle>
           </Chip.Group>
           <Paragraph size="medium">
             Velg i nedtrekkslisten. Forside skal alltid med. 10% av utvalget
@@ -145,9 +163,7 @@ const SideutvalAccordion = ({
             <Combobox
               label="Legg til testobjekt"
               size="small"
-              value={
-                testobjektToAdd?.id ? [String(testobjektToAdd.id)] : []
-              }
+              value={testobjektToAdd?.id ? [String(testobjektToAdd.id)] : []}
               onValueChange={onChangeTestobjekt}
               inputValue={
                 testobjektToAdd?.testobjekt
@@ -162,12 +178,13 @@ const SideutvalAccordion = ({
                 </Combobox.Option>
               ))}
             </Combobox>
-            {testobjektToAdd?.testobjekt?.toLowerCase() ===
-              'egendefinert' && (
+            {testobjektToAdd?.testobjekt?.toLowerCase() === 'egendefinert' && (
               <Textfield
                 label="Egendefinert testobjekt"
                 value={
-                  egendefinertObjekt?.length !== 0 ? egendefinertObjekt : undefined
+                  egendefinertObjekt?.length !== 0
+                    ? egendefinertObjekt
+                    : undefined
                 }
                 onChange={(e) => setEgendefinertObjekt(e.target.value)}
               />
@@ -199,9 +216,7 @@ const SideutvalAccordion = ({
                     >
                       <Accordion.Header
                         level={6}
-                        onHeaderClick={() =>
-                          handleSetExpanded(testobjektLabel)
-                        }
+                        onHeaderClick={() => handleSetExpanded(testobjektLabel)}
                       >
                         {testobjektLabel}
                       </Accordion.Header>

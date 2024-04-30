@@ -1,5 +1,6 @@
 import ErrorCard from '@common/error/ErrorCard';
-import { Loeysing, Utval, UtvalFull } from '@loeysingar/api/types';
+import { isDefined } from '@common/util/validationUtils';
+import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestobjekt, listTestreglar } from '@testreglar/api/testreglar-api';
@@ -189,7 +190,7 @@ export const KontrollRoutes: RouteObject = {
             );
           }
         } else if (utvalResponse.value) {
-          const utval: UtvalFull = await utvalResponse.value.json();
+          const utval: Utval = await utvalResponse.value.json();
           loeysingList.push(...utval.loeysingar);
         }
 
@@ -202,10 +203,18 @@ export const KontrollRoutes: RouteObject = {
       action: async ({ request }) => {
         const { kontroll, sideutvalList, neste } =
           (await request.json()) as UpdateKontrollSideutval;
-        const response = await updateKontrollSideutval(kontroll, sideutvalList);
+        const filtredSideutvalList = sideutvalList.filter(
+          (su) => isDefined(su.url) && isDefined(su.begrunnelse)
+        );
+
+        const response = await updateKontrollSideutval(
+          kontroll,
+          filtredSideutvalList
+        );
         if (!response.ok) {
           throw new Error('Klarte ikke å lagre kontrollen.');
         }
+
         return neste
           ? redirect(`/kontroll/${kontroll.id}/${steps.testregel.relativePath}`)
           : { sistLagret: new Date() };

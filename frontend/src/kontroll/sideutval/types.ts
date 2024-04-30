@@ -31,6 +31,6 @@ export type SideutvalForm = {
 };
 
 export type FormError = {
-  loeysingId: number,
-  testobjekt: string,
-}
+  loeysingId: number;
+  testobjekt: string;
+};
