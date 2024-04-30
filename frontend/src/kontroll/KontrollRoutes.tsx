@@ -40,7 +40,7 @@ export const steps = {
   opprett: { name: 'Opprett Kontroll', relativePath: '..' },
   loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
   testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
-  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutvalg' },
+  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutval' },
   oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
 };
 
@@ -216,7 +216,9 @@ export const KontrollRoutes: RouteObject = {
         }
 
         return neste
-          ? redirect(`/kontroll/${kontroll.id}/${steps.testregel.relativePath}`)
+          ? redirect(
+              `/kontroll/${kontroll.id}/${steps.oppsummering.relativePath}`
+            )
           : { sistLagret: new Date() };
       },
     },

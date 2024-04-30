@@ -182,9 +182,7 @@ const SideutvalAccordion = ({
               <Textfield
                 label="Egendefinert testobjekt"
                 value={
-                  egendefinertObjekt?.length !== 0
-                    ? egendefinertObjekt
-                    : undefined
+                  egendefinertObjekt?.length !== 0 ? egendefinertObjekt : ''
                 }
                 onChange={(e) => setEgendefinertObjekt(e.target.value)}
               />

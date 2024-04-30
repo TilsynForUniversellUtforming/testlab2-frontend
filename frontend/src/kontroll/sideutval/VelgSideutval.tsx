@@ -115,6 +115,7 @@ const VelgSideutval = () => {
   const onSubmit = (form: SideutvalForm) => {
     alert?.clearMessage();
     setSelectedLoesying(undefined);
+    setFormErrors([]);
 
     const data: UpdateKontrollSideutval = {
       kontroll,
