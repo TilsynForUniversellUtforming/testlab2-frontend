@@ -57,7 +57,7 @@ const LoadingBar = ({
         className={classnames('loading-bar__label', textPlacement)}
         size={size}
       >
-        {customText ? customText : `${percentage}`}
+        {customText ? customText : `${percentage}%`}
       </Label>
       <progress
         className={classnames('loading-bar__progress', color)}
