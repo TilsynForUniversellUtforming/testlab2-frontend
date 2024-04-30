@@ -46,7 +46,6 @@ const LoeysingFilter = ({
   onChangeLoeysing,
 }: Props) => {
   const finished: Loeysing[] = [];
-  // const notFinished: Loeysing[] = [];
 
   loeysingList.forEach((loeysing) => {
     const isInKontroll = sideutvalKontroll.some(
@@ -55,31 +54,21 @@ const LoeysingFilter = ({
     if (isInKontroll) {
       finished.push(loeysing);
     }
-    // else {
-    //   notFinished.push(loeysing);
-    // }
   });
-
-  // const displayFilter = loeysingList.length === 0 || (finished.length !== loeysingList.length);
 
   return (
     <div className={classes.loeysingFilter}>
-      {/*{displayFilter && (*/}
-      <>
-        <Heading level={3} size="medium">
-          {heading}
-        </Heading>
-        <Heading level={4} size="xsmall">
-          Vel løysing til sideutval
-        </Heading>
-        <Filter
-          loeysingList={loeysingList}
-          // loeysingList={notFinished}
-          selectedLoeysing={selectedLoeysing}
-          onChangeLoeysing={onChangeLoeysing}
-        />
-      </>
-      {/*)}*/}
+      <Heading level={3} size="medium">
+        {heading}
+      </Heading>
+      <Heading level={4} size="xsmall">
+        Vel løysing til sideutval
+      </Heading>
+      <Filter
+        loeysingList={loeysingList}
+        selectedLoeysing={selectedLoeysing}
+        onChangeLoeysing={onChangeLoeysing}
+      />
       <Heading level={3} size="medium">
         Ferdig
       </Heading>
