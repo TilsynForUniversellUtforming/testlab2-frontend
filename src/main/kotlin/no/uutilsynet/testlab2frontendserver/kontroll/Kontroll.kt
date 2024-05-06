@@ -9,5 +9,6 @@ data class Kontroll(
     val saksbehandler: String,
     val sakstype: String,
     val arkivreferanse: String,
-    val loeysingar: List<Loeysing> = emptyList()
+    val loeysingar: List<Loeysing> = emptyList(),
+    val sideutvalList: List<SideutvalItem> = emptyList()
 )

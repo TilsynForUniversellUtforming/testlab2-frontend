@@ -19,12 +19,16 @@ type Props = {
   sistLagret: Date | undefined;
   onClickLagreKontroll: () => void;
   onClickNeste: () => void;
+  submitOnSave?: boolean;
+  feilet?: boolean;
 };
 
 export default function LagreOgNeste({
   sistLagret,
   onClickLagreKontroll,
   onClickNeste,
+  submitOnSave = false,
+  feilet = false,
 }: Props) {
   const [internalSaveState, setInternalSaveState] = React.useState<SaveState>({
     t: 'idle',
@@ -43,6 +47,12 @@ export default function LagreOgNeste({
     }
   }, [sistLagret]);
 
+  useEffect(() => {
+    if (feilet) {
+      setInternalSaveState({ t: 'idle' });
+    }
+  }, [feilet]);
+
   return (
     <div className={classes.lagreOgNeste}>
       <Button
@@ -51,6 +61,7 @@ export default function LagreOgNeste({
           setInternalSaveState({ t: 'saving', timestamp: new Date() });
           onClickLagreKontroll();
         }}
+        type={submitOnSave ? 'submit' : 'button'}
         aria-disabled={isSaving(internalSaveState)}
       >
         Lagre kontroll
@@ -62,6 +73,7 @@ export default function LagreOgNeste({
           onClickNeste();
         }}
         aria-disabled={isSaving(internalSaveState)}
+        type={submitOnSave ? 'submit' : 'button'}
       >
         Neste
       </Button>
