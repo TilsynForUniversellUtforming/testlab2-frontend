@@ -1,5 +1,6 @@
 import { Utval } from '@loeysingar/api/types';
 
+import { Sideutval } from './sideutval/types';
 import { KontrollTestreglar } from './velg-testreglar/types';
 
 export type Kontroll = {
@@ -11,6 +12,7 @@ export type Kontroll = {
   arkivreferanse: string;
   utval: Utval | undefined;
   testreglar: KontrollTestreglar | undefined;
+  sideutvalList: Sideutval[];
 };
 
 export type UpdateKontrollTestregel = {
@@ -22,6 +24,12 @@ export type UpdateKontrollTestregel = {
 export type UpdateKontrollTestreglar = {
   regelsettId: number | undefined;
   testregelIdList: number[];
+};
+
+export type UpdateKontrollSideutval = {
+  kontroll: Kontroll;
+  sideutvalList: Sideutval[];
+  neste: boolean;
 };
 
 export type KontrollType = 'manuell-kontroll';

@@ -10,3 +10,6 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
     .then((utval: Utval[]) =>
       utval.map((u) => ({ ...u, oppretta: new Date(u.oppretta) }))
     );
+
+export const getUtvalById = async (id: number): Promise<Response> =>
+  await fetch(`/api/v1/utval/${id}`);

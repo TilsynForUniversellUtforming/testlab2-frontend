@@ -37,7 +37,7 @@
   border: 2px solid var(--fds-semantic-surface-first-dark);
 
   p {
-    color: white;
+    color: var(--fds-semantic-surface-neutral-default);
   }
 
   &:hover {
@@ -101,6 +101,7 @@
   margin-bottom: 4rem;
 }
 
+.automatisk-eller-manuelt,
 .testregel-eller-manuelt,
 .utvalg-eller-manuelt,
 .nyeste-utvalg-buttons {
@@ -125,11 +126,12 @@
     }
 
     &.selected {
-      background: linear-gradient(
-        var(--fds-semantic-surface-first-light-active),
-        rgb(157 160 228 / 0.6),
-        var(--fds-semantic-surface-first-light-active)
-      );
+      background: var(--fds-semantic-surface-first-light-active);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: var(--fds-semantic-surface-first-light);
     }
 
     .utvalgOppretta {
@@ -139,6 +141,7 @@
   }
 }
 
+.automatisk-eller-manuelt,
 .testregel-eller-manuelt,
 .utvalg-eller-manuelt {
   display: flex;
@@ -146,6 +149,7 @@
   margin-bottom: 3rem;
 }
 
+.automatisk-eller-manuelt button,
 .testregel-eller-manuelt button,
 .utvalg-eller-manuelt button {
   width: 100%;
@@ -204,6 +208,121 @@
   align-items: center;
 }
 
+/* Velg sideutval */
+.sideutval-section {
+  margin: 0 auto;
+  @media (min-width: 920px) {
+    width: 800px;
+  }
+  /* Total height - top navigation + breadcrumbs + app-container padding */
+  height: calc(100vh - 168px);
+  display: flex;
+  flex-direction: column;
+}
+
+.velg-sideutval-container {
+  min-width: 400px;
+  @media (min-width: 920px) {
+    width: calc(100vw - 20px);
+    margin-left: calc(-50vw + 50% + 10px);
+  }
+  margin-bottom: auto;
+  background-color: var(--fds-semantic-surface-action-subtle);
+  padding-top: 2rem;
+  flex-grow: 1;
+
+  .centered {
+    display: flex;
+    justify-content: center;
+  }
+
+  .velg-sideutval {
+    @media (min-width: 920px) {
+      min-width: 800px;
+    }
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 2rem;
+  }
+
+  .sideutvaltype-select {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 18rem;
+  }
+
+  .begrunnelse-inputs {
+    display: flex;
+    flex-direction: column;
+    max-width: 32rem;
+  }
+
+  .ta-bort-side-wrapper {
+    display: flex;
+    width: 100%;
+    padding-bottom: 1.75rem;
+  }
+
+  .ta-bort-side {
+    width: fit-content;
+  }
+
+  .sideutvaltype-lagre {
+    width: fit-content;
+  }
+
+  .type-form-wrapper {
+    padding: 2rem;
+    width: 750px;
+  }
+
+  .lagre-sideutval-nettside {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    button {
+      width: fit-content;
+    }
+  }
+
+  .sideutval-form {
+    @media (min-width: 920px) {
+      width: 800px;
+    }
+    width: 100%;
+    padding-bottom: 2rem;
+  }
+
+  .accordion-wrapper {
+    padding-top: 2rem;
+  }
+
+  .testregel-type-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+.ferdig-utval {
+  display: flex;
+  gap: 1rem;
+}
+
+.sideutval-loeysing-errors {
+  padding-bottom: 2rem;
+}
+
+.sideutval-loeysing-chips {
+  max-width: 800px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 /* Velg testreglar */
 .testreglar-valg-wrapper {
   display: flex;
@@ -248,12 +367,24 @@
   }
 }
 
+.loeysing-filter,
 .testregel-filter {
   width: fit-content;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding-bottom: 3rem;
+  padding-bottom: 2rem;
+}
+
+.loeysing-filter {
+  button:focus {
+    --fds-focus-border-width: 3px;
+    box-shadow: 0 0 0 var(--fds-focus-border-width)
+      var(--fds-semantic-border-focus-boxshadow);
+    outline: var(--fds-focus-border-width) solid
+      var(--fds-semantic-border-focus-outline);
+    outline-offset: var(--fds-focus-border-width);
+  }
 }
 
 .grid-wrapper {
