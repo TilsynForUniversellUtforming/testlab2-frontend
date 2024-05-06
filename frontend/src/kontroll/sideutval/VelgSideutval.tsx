@@ -1,5 +1,4 @@
 import useAlert from '@common/alert/useAlert';
-import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
@@ -24,12 +23,12 @@ import KontrollStepper from '../stepper/KontrollStepper';
 import { UpdateKontrollSideutval } from '../types';
 import SideutvalAccordion from './accordion/SideutvalAccordion';
 import LoeysingFilter from './LoeysingFilter';
-import { getDefaultFormValues, getTestobjektLabel } from './sideutval-util';
+import { getDefaultFormValues, getSideutvalTypeLabel } from './sideutval-util';
 import { sideutvalValidationSchema } from './sideutvalValidationSchema';
 import { FormError, SideutvalForm, SideutvalLoader } from './types';
 
 const VelgSideutval = () => {
-  const { kontroll, testobjektList, loeysingList } =
+  const { kontroll, sideutvalTypeList, loeysingList } =
     useLoaderData() as SideutvalLoader;
   const actionData = useActionData() as { sistLagret: Date };
   const submit = useSubmit();
@@ -44,7 +43,7 @@ const VelgSideutval = () => {
     defaultValues: {
       sideutval: getDefaultFormValues(
         loeysingList,
-        testobjektList,
+        sideutvalTypeList,
         kontroll.sideutvalList
       ),
     },
@@ -60,15 +59,15 @@ const VelgSideutval = () => {
     // Index på errors er lik som index på field
     fields.forEach((field, index) => {
       if (sideutvalErrors && isDefined(sideutvalErrors[index])) {
-        const testobjekt = getTestobjektLabel(
-          testobjektList,
-          field.objektId,
-          field.egendefinertObjekt
+        const sideutvalTypeLabel = getSideutvalTypeLabel(
+          sideutvalTypeList,
+          field.typeId,
+          field.egendefinertType
         );
 
         errorList.push({
           loeysingId: field.loeysingId,
-          testobjekt: sanitizeEnumLabel(testobjekt),
+          sideutvalType: sideutvalTypeLabel,
         });
       }
     });
@@ -84,15 +83,15 @@ const VelgSideutval = () => {
 
   const handleAddSide = (
     loeysingId: number,
-    objektId: number,
-    egendefinertObjekt?: string
+    typeId: number,
+    egendefinertType?: string
   ) => {
     append({
       loeysingId: loeysingId,
-      objektId: objektId,
+      typeId: typeId,
       begrunnelse: '',
       url: '',
-      egendefinertObjekt: egendefinertObjekt,
+      egendefinertType: egendefinertType,
     });
   };
 
@@ -187,7 +186,7 @@ const VelgSideutval = () => {
                   sideutval={fields}
                   handleAddSide={handleAddSide}
                   handleRemoveSide={handleRemoveSide}
-                  testobjektList={testobjektList}
+                  sideutvalTypeList={sideutvalTypeList}
                   formErrors={formErrors}
                   register={register}
                 />

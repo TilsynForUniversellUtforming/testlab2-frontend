@@ -1,11 +1,15 @@
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Loeysing } from '@loeysingar/api/types';
-import { Testobjekt } from '@testreglar/api/types';
 
-import { Sideutval, SideutvalIndexed, TestobjektKontroll } from './types';
+import {
+  Sideutval,
+  SideutvalIndexed,
+  SideutvalType,
+  SideutvalTypeKontroll,
+} from './types';
 
-export const toSelectableTestobjekt = (
-  innhaldstypeList: TestobjektKontroll[],
+export const toSelectableSideutvalType = (
+  innhaldstypeList: SideutvalTypeKontroll[],
   sideutval: Sideutval[],
   loeysingId: number
 ) => {
@@ -13,36 +17,36 @@ export const toSelectableTestobjekt = (
     ...new Set(
       sideutval
         .filter((su) => su.loeysingId === loeysingId)
-        .map((su) => su.objektId)
+        .map((su) => su.typeId)
     ),
   ];
   const egendefinert = innhaldstypeList.filter(
-    (it) => it.testobjekt.toLowerCase() === 'egendefinert'
+    (it) => it.type.toLowerCase() === 'egendefinert'
   );
   const rest = innhaldstypeList.filter(
     (it) =>
-      it.testobjekt.toLowerCase() !== 'egendefinert' &&
+      it.type.toLowerCase() !== 'egendefinert' &&
       !innhaldsTypeIdList.includes(it.id)
   );
 
   return [...rest, ...egendefinert];
 };
 
-export const getTestobjektLabel = (
-  testobjektList: Testobjekt[],
-  objektId: number,
-  egendefinertObjekt?: string
+export const getSideutvalTypeLabel = (
+  sideutvalTypeList: SideutvalType[],
+  typeId: number,
+  egendefinertType?: string
 ) => {
   let innhaldstypeKey: string;
 
-  if (egendefinertObjekt) {
-    innhaldstypeKey = egendefinertObjekt;
+  if (egendefinertType) {
+    innhaldstypeKey = egendefinertType;
   } else {
-    const match = testobjektList.find((it) => it.id === objektId);
+    const match = sideutvalTypeList.find((it) => it.id === typeId);
     if (!match) {
       throw Error('Ugylig type');
     } else {
-      innhaldstypeKey = match.testobjekt;
+      innhaldstypeKey = match.type;
     }
   }
 
@@ -51,14 +55,14 @@ export const getTestobjektLabel = (
 
 export const groupByType = (
   sideutval: Sideutval[],
-  testobjektList: Testobjekt[]
+  sideutvalTypeList: SideutvalType[]
 ): Map<string, SideutvalIndexed[]> => {
   const grouped = new Map<string, SideutvalIndexed[]>();
   sideutval.forEach((su, index) => {
-    const innhaldstypeKey = getTestobjektLabel(
-      testobjektList,
-      su.objektId,
-      su.egendefinertObjekt
+    const innhaldstypeKey = getSideutvalTypeLabel(
+      sideutvalTypeList,
+      su.typeId,
+      su.egendefinertType
     );
 
     if (!grouped.has(innhaldstypeKey)) {
@@ -73,11 +77,11 @@ export const groupByType = (
 
 export const getDefaultFormValues = (
   loeysingList: Loeysing[],
-  testobjektList: Testobjekt[],
+  sideutvalTypeList: SideutvalType[],
   sideutvalKontroll: Sideutval[]
 ): Sideutval[] => {
-  const forsideType = testobjektList.find(
-    (it) => it.testobjekt.toLowerCase() === 'forside'
+  const forsideType = sideutvalTypeList.find(
+    (it) => it.type.toLowerCase() === 'forside'
   );
 
   if (!forsideType) {
@@ -86,7 +90,7 @@ export const getDefaultFormValues = (
 
   return loeysingList.flatMap((loeysing) => {
     const hasForside = sideutvalKontroll.find(
-      (su) => su.loeysingId === loeysing.id && su.objektId === forsideType.id
+      (su) => su.loeysingId === loeysing.id && su.typeId === forsideType.id
     );
 
     if (hasForside) {
@@ -94,10 +98,10 @@ export const getDefaultFormValues = (
     } else {
       return {
         loeysingId: loeysing.id,
-        objektId: forsideType.id,
+        typeId: forsideType.id,
         begrunnelse: '',
         url: '',
-        egendefinertObjekt: undefined,
+        egendefinertType: undefined,
       };
     }
   });

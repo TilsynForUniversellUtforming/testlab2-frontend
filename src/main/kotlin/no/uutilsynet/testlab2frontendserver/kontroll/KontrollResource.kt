@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
+import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -68,6 +69,20 @@ class KontrollResource(
             logger.error("Oppdatering av kontroll feilet")
             ResponseEntity.internalServerError().build()
           }
+
+  @GetMapping("sideutvaltype")
+  fun getSideutvalType(): List<SideutvalType> =
+      try {
+        restTemplate.getList<SideutvalType>("${testingApiProperties.url}/kontroller/sideutvaltype")
+      } catch (e: Error) {
+        logger.error("klarte ikke å hente sideutvaltyper", e)
+        throw Error("Klarte ikke å hente sideutvaltyper")
+      }
+
+  data class SideutvalType(
+      val id: Int,
+      val type: String,
+  )
 
   data class OpprettKontroll(
       val kontrolltype: String,

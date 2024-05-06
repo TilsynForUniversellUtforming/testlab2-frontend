@@ -45,16 +45,9 @@ const LoeysingFilter = ({
   selectedLoeysing,
   onChangeLoeysing,
 }: Props) => {
-  const finished: Loeysing[] = [];
-
-  loeysingList.forEach((loeysing) => {
-    const isInKontroll = sideutvalKontroll.some(
-      (sideutval) => sideutval.loeysingId === loeysing.id
-    );
-    if (isInKontroll) {
-      finished.push(loeysing);
-    }
-  });
+  const finished: Loeysing[] = loeysingList.filter((loeysing) =>
+    sideutvalKontroll.some((sideutval) => sideutval.loeysingId === loeysing.id)
+  );
 
   return (
     <div className={classes.loeysingFilter}>
@@ -69,16 +62,20 @@ const LoeysingFilter = ({
         selectedLoeysing={selectedLoeysing}
         onChangeLoeysing={onChangeLoeysing}
       />
-      <Heading level={3} size="medium">
-        Ferdig
-      </Heading>
-      <div className={classes.ferdigUtval}>
-        {finished.map((loeysing) => (
-          <Tag color="first" size="medium" key={loeysing.id}>
-            {loeysing.namn}
-          </Tag>
-        ))}
-      </div>
+      {finished.length > 0 && (
+        <>
+          <Heading level={3} size="medium">
+            Ferdig
+          </Heading>
+          <div className={classes.ferdigUtval}>
+            {finished.map((loeysing) => (
+              <Tag color="first" size="medium" key={loeysing.id}>
+                {loeysing.namn}
+              </Tag>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

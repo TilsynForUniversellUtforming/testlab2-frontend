@@ -10,51 +10,51 @@ import classes from '../../kontroll.module.css';
 import { SideutvalForm, SideutvalIndexed } from '../types';
 
 interface Props {
-  testobjektLabel: string;
+  sideutvalTypeLabel: string;
   sideutvalIndexedList: SideutvalIndexed[];
   setExpanded: (value: string) => void;
   handleAddSide: (
     loeysingId: number,
-    objektId: number,
-    egendefinertObjekt?: string
+    typeId: number,
+    egendefinertType?: string
   ) => void;
   handleRemoveSide: (indices: number[]) => void;
   register: UseFormRegister<SideutvalForm>;
 }
 
 const SideBegrunnelseForm = ({
-  testobjektLabel,
+  sideutvalTypeLabel,
   sideutvalIndexedList,
   handleAddSide,
   handleRemoveSide,
   register,
 }: Props) => {
   const hasMultipleItems = sideutvalIndexedList.length > 1;
-  const isForside = testobjektLabel.toLowerCase() === 'forside';
+  const isForside = sideutvalTypeLabel.toLowerCase() === 'forside';
   const defaultSide = sideutvalIndexedList[0].sideutval;
 
-  const handleRemoveTestobjekt = () => {
+  const handleRemoveSideutvalType = () => {
     if (isForside) {
       return;
     }
 
-    const { loeysingId, objektId, egendefinertObjekt } = defaultSide;
+    const { loeysingId, typeId, egendefinertType } = defaultSide;
 
     if (!loeysingId) {
       throw Error('Ugyldig løysing');
     }
 
-    if (!objektId) {
-      throw Error('Ugyldig testobjekt');
+    if (!typeId) {
+      throw Error('Ugyldig sideutval type');
     }
 
     const indiciesToRemove = sideutvalIndexedList
       .filter(
         (field) =>
           field.sideutval.loeysingId === loeysingId &&
-          field.sideutval.objektId === objektId &&
-          (!egendefinertObjekt ||
-            field.sideutval.egendefinertObjekt === egendefinertObjekt)
+          field.sideutval.typeId === typeId &&
+          (!egendefinertType ||
+            field.sideutval.egendefinertType === egendefinertType)
       )
       .map((field) => field.index);
     handleRemoveSide(indiciesToRemove);
@@ -63,7 +63,7 @@ const SideBegrunnelseForm = ({
   return (
     <>
       <Heading size="xsmall" level={5} spacing>
-        Legg til {testobjektLabel}
+        Legg til {sideutvalTypeLabel}
       </Heading>
 
       {sideutvalIndexedList.map((sideutvalIndexed) => {
@@ -72,7 +72,7 @@ const SideBegrunnelseForm = ({
 
         return (
           <div
-            key={`${side.objektId}_${index}`}
+            key={`${side.typeId}_${index}`}
             className={classes.begrunnelseInputs}
           >
             <input
@@ -84,15 +84,15 @@ const SideBegrunnelseForm = ({
             />
             <input
               type="hidden"
-              defaultValue={side.objektId}
-              {...register(`sideutval.${index}.objektId` as const, {
+              defaultValue={side.typeId}
+              {...register(`sideutval.${index}.typeId` as const, {
                 required: true,
               })}
             />
             <input
               type="hidden"
-              {...register(`sideutval.${index}.egendefinertObjekt` as const)}
-              defaultValue={side.egendefinertObjekt}
+              {...register(`sideutval.${index}.egendefinertType` as const)}
+              defaultValue={side.egendefinertType}
             />
             <TestlabFormTextArea
               label="Begrunnelse for sideutval"
@@ -124,11 +124,11 @@ const SideBegrunnelseForm = ({
           title={
             isForside
               ? 'Forside er påkrevd'
-              : `Ta bort sideutval for ${testobjektLabel}`
+              : `Ta bort sideutval for ${sideutvalTypeLabel}`
           }
           disabled={isForside}
-          message={`Vil du ta bort hele sideutvalet for ${testobjektLabel}? Dette kan ikkje angrast`}
-          onConfirm={handleRemoveTestobjekt}
+          message={`Vil du ta bort hele sideutvalet for ${sideutvalTypeLabel}? Dette kan ikkje angrast`}
+          onConfirm={handleRemoveSideutvalType}
           buttonIcon={<MinusCircleIcon />}
         />
         <Button
@@ -138,13 +138,13 @@ const SideBegrunnelseForm = ({
           onClick={() =>
             handleAddSide(
               defaultSide.loeysingId,
-              defaultSide.objektId,
-              defaultSide.egendefinertObjekt
+              defaultSide.typeId,
+              defaultSide.egendefinertType
             )
           }
         >
           <PlusCircleIcon />
-          Legg til fleire sider innan {testobjektLabel}
+          Legg til fleire sider innan {sideutvalTypeLabel}
         </Button>
       </div>
     </>

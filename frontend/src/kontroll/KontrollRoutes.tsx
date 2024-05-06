@@ -3,12 +3,13 @@ import { isDefined } from '@common/util/validationUtils';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { listTestobjekt, listTestreglar } from '@testreglar/api/testreglar-api';
+import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
 import {
   fetchKontroll,
+  listSideutvalType,
   updateKontroll,
   updateKontrollSideutval,
   updateKontrollTestreglar,
@@ -170,15 +171,15 @@ export const KontrollRoutes: RouteObject = {
         const kontroll: Kontroll = await kontrollResponse.json();
         const utvalId = kontroll?.utval?.id;
 
-        const [testobjektList, utvalResponse] = await Promise.allSettled([
-          listTestobjekt(),
+        const [sideutvalTypeList, utvalResponse] = await Promise.allSettled([
+          listSideutvalType(),
           utvalId
             ? getUtvalById(utvalId)
             : Promise.reject('Kontroll manglar utval'),
         ]);
 
-        if (testobjektList.status === 'rejected') {
-          throw new Error('Kunne ikkje hente liste med testobjekt');
+        if (sideutvalTypeList.status === 'rejected') {
+          throw new Error('Kunne ikkje hente liste med sideutval-typer');
         }
 
         const loeysingList: Loeysing[] = [];
@@ -196,7 +197,7 @@ export const KontrollRoutes: RouteObject = {
 
         return {
           kontroll: kontroll,
-          testobjektList: testobjektList.value,
+          sideutvalTypeList: sideutvalTypeList.value,
           loeysingList: loeysingList,
         };
       },

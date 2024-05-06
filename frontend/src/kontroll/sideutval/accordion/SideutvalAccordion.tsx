@@ -17,20 +17,20 @@ import { FieldArrayWithId, UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
 import SideBegrunnelseForm from '../form/SideBegrunnelseForm';
-import { groupByType, toSelectableTestobjekt } from '../sideutval-util';
-import { FormError, SideutvalForm, TestobjektKontroll } from '../types';
+import { groupByType, toSelectableSideutvalType } from '../sideutval-util';
+import { FormError, SideutvalForm, SideutvalTypeKontroll } from '../types';
 
 interface Props {
   selectedLoeysing: Loeysing;
   sideutval: FieldArrayWithId<SideutvalForm, 'sideutval', 'id'>[];
   handleAddSide: (
     loeysingId: number,
-    objektId: number,
-    egendefinertObjekt?: string
+    typeId: number,
+    egendefinertType?: string
   ) => void;
   formErrors: FormError[];
   handleRemoveSide: (indices: number[]) => void;
-  testobjektList: TestobjektKontroll[];
+  sideutvalTypeList: SideutvalTypeKontroll[];
   register: UseFormRegister<SideutvalForm>;
 }
 
@@ -39,17 +39,19 @@ const SideutvalAccordion = ({
   handleAddSide,
   handleRemoveSide,
   formErrors,
-  testobjektList,
+  sideutvalTypeList,
   selectedLoeysing,
   register,
 }: Props) => {
-  const [selectableTestobjekt, setSelectableTestobjekt] = useState<
-    TestobjektKontroll[]
-  >(toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id));
-  const [testobjektToAdd, setTestobjektToAdd] = useState<
-    TestobjektKontroll | undefined
+  const [selectableSideutvalType, setSelectableSideutvalType] = useState<
+    SideutvalTypeKontroll[]
+  >(
+    toSelectableSideutvalType(sideutvalTypeList, sideutval, selectedLoeysing.id)
+  );
+  const [sideutvalTypeToAdd, setSideutvalTypeToAdd] = useState<
+    SideutvalTypeKontroll | undefined
   >();
-  const [egendefinertObjekt, setEgendefinertObjekt] = useState<string>('');
+  const [egendefinertType, setEgendefinertType] = useState<string>('');
   const [expanded, setExpanded] = useState<string[]>([]);
   const [alert, setAlert] = useAlert();
 
@@ -61,44 +63,44 @@ const SideutvalAccordion = ({
     );
   };
 
-  const onChangeTestobjekt = (values: string[]) => {
-    const testobjektId = parseInt(values[0]);
-    const testobjekt = selectableTestobjekt.find(
-      (type) => type.id === testobjektId
+  const onChangeSideutvalType = (values: string[]) => {
+    const sideutvalTypeId = parseInt(values[0]);
+    const sideutvalType = selectableSideutvalType.find(
+      (type) => type.id === sideutvalTypeId
     );
-    setTestobjektToAdd(testobjekt);
+    setSideutvalTypeToAdd(sideutvalType);
   };
 
-  const handleAddTestobjekt = () => {
-    if (!testobjektToAdd) {
-      setAlert('danger', 'Ugylding testobjekt');
+  const handleAddSideutvalType = () => {
+    if (!sideutvalTypeToAdd) {
+      setAlert('danger', 'Ugylding sideutvalType');
       return;
     }
 
     if (
-      testobjektToAdd &&
-      testobjektToAdd.testobjekt.toLowerCase() === 'egendefinert' &&
-      !egendefinertObjekt
+      sideutvalTypeToAdd &&
+      sideutvalTypeToAdd.type.toLowerCase() === 'egendefinert' &&
+      !egendefinertType
     ) {
-      setAlert('danger', 'Ugylding testobjekt');
+      setAlert('danger', 'Ugylding sideutvalType');
       return;
     }
 
-    // Hvis man legger til en ny testobjekt som ikke er egendefinert, ta bort denne fra dropdown
-    if (!egendefinertObjekt) {
-      setSelectableTestobjekt((prev) =>
-        prev.filter((it) => it.id !== testobjektToAdd.id)
+    // Hvis man legger til en ny sideutvalType som ikke er egendefinert, ta bort denne fra dropdown
+    if (!egendefinertType) {
+      setSelectableSideutvalType((prev) =>
+        prev.filter((it) => it.id !== sideutvalTypeToAdd.id)
       );
     }
 
-    if (testobjektToAdd) {
+    if (sideutvalTypeToAdd) {
       handleAddSide(
         selectedLoeysing.id,
-        testobjektToAdd.id,
-        egendefinertObjekt
+        sideutvalTypeToAdd.id,
+        egendefinertType
       );
-      setTestobjektToAdd(undefined);
-      setEgendefinertObjekt('');
+      setSideutvalTypeToAdd(undefined);
+      setEgendefinertType('');
     }
   };
 
@@ -107,16 +109,24 @@ const SideutvalAccordion = ({
     setExpanded(
       formErrors
         .filter((fe) => fe.loeysingId === selectedLoeysing.id)
-        .map((fe) => fe.testobjekt)
+        .map((fe) => fe.sideutvalType)
     );
-    setSelectableTestobjekt(
-      toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id)
+    setSelectableSideutvalType(
+      toSelectableSideutvalType(
+        sideutvalTypeList,
+        sideutval,
+        selectedLoeysing.id
+      )
     );
   }, [selectedLoeysing]);
 
   useEffect(() => {
-    setSelectableTestobjekt(
-      toSelectableTestobjekt(testobjektList, sideutval, selectedLoeysing.id)
+    setSelectableSideutvalType(
+      toSelectableSideutvalType(
+        sideutvalTypeList,
+        sideutval,
+        selectedLoeysing.id
+      )
     );
   }, [sideutval]);
 
@@ -126,7 +136,7 @@ const SideutvalAccordion = ({
       setExpanded(
         formErrors
           .filter((fe) => fe.loeysingId === selectedLoeysing.id)
-          .map((fe) => fe.testobjekt)
+          .map((fe) => fe.sideutvalType)
       );
     }
   }, [formErrors]);
@@ -159,48 +169,46 @@ const SideutvalAccordion = ({
       </div>
       <div className={classes.centered}>
         <div className={classes.sideutvalForm}>
-          <div className={classes.testobjektSelect}>
+          <div className={classes.sideutvaltypeSelect}>
             <Combobox
-              label="Legg til testobjekt"
+              label="Legg til sidetype"
               size="small"
-              value={testobjektToAdd?.id ? [String(testobjektToAdd.id)] : []}
-              onValueChange={onChangeTestobjekt}
+              value={
+                sideutvalTypeToAdd?.id ? [String(sideutvalTypeToAdd.id)] : []
+              }
+              onValueChange={onChangeSideutvalType}
               inputValue={
-                testobjektToAdd?.testobjekt
-                  ? String(testobjektToAdd.testobjekt)
-                  : ''
+                sideutvalTypeToAdd?.type ? String(sideutvalTypeToAdd.type) : ''
               }
             >
               <Combobox.Empty>Ingen treff</Combobox.Empty>
-              {selectableTestobjekt.map((tl) => (
+              {selectableSideutvalType.map((tl) => (
                 <Combobox.Option value={String(tl.id)} key={tl.id}>
-                  {tl.testobjekt}
+                  {tl.type}
                 </Combobox.Option>
               ))}
             </Combobox>
-            {testobjektToAdd?.testobjekt?.toLowerCase() === 'egendefinert' && (
+            {sideutvalTypeToAdd?.type?.toLowerCase() === 'egendefinert' && (
               <Textfield
-                label="Egendefinert testobjekt"
-                value={
-                  egendefinertObjekt?.length !== 0 ? egendefinertObjekt : ''
-                }
-                onChange={(e) => setEgendefinertObjekt(e.target.value)}
+                label="Egendefinert sidetype"
+                value={egendefinertType?.length !== 0 ? egendefinertType : ''}
+                onChange={(e) => setEgendefinertType(e.target.value)}
               />
             )}
             <Button
-              className={classes.testobjektLagre}
+              className={classes.sideutvaltypeLagre}
               variant={ButtonVariant.Outline}
               size={ButtonSize.Small}
-              onClick={handleAddTestobjekt}
+              onClick={handleAddSideutvalType}
             >
               Legg til
             </Button>
           </div>
           <div className={classes.accordionWrapper}>
             <Accordion>
-              {[...groupByType(sideutval, testobjektList).entries()].map(
-                ([testobjektLabel, sideutvalByTestobjekt]) => {
-                  const sideutvalIndexedList = sideutvalByTestobjekt.filter(
+              {[...groupByType(sideutval, sideutvalTypeList).entries()].map(
+                ([sideutvalTypeLabel, sideutvalBySideutvalType]) => {
+                  const sideutvalIndexedList = sideutvalBySideutvalType.filter(
                     (su) => su.sideutval.loeysingId === selectedLoeysing.id
                   );
                   if (sideutvalIndexedList.length === 0) {
@@ -209,19 +217,21 @@ const SideutvalAccordion = ({
 
                   return (
                     <Accordion.Item
-                      open={expanded.includes(testobjektLabel)}
-                      key={testobjektLabel}
+                      open={expanded.includes(sideutvalTypeLabel)}
+                      key={sideutvalTypeLabel}
                     >
                       <Accordion.Header
                         level={6}
-                        onHeaderClick={() => handleSetExpanded(testobjektLabel)}
+                        onHeaderClick={() =>
+                          handleSetExpanded(sideutvalTypeLabel)
+                        }
                       >
-                        {testobjektLabel}
+                        {sideutvalTypeLabel}
                       </Accordion.Header>
                       <Accordion.Content className={classes.centered}>
                         <div className={classes.typeFormWrapper}>
                           <SideBegrunnelseForm
-                            testobjektLabel={testobjektLabel}
+                            sideutvalTypeLabel={sideutvalTypeLabel}
                             sideutvalIndexedList={sideutvalIndexedList}
                             setExpanded={handleSetExpanded}
                             handleAddSide={handleAddSide}
