@@ -28,6 +28,19 @@ export function Oppsummering() {
   );
 
   function listeElement(loeysing: Loeysing) {
+    const nettsteder = kontroll.sideutvalList.filter(
+      (sideutval) => sideutval.loeysingId === loeysing.id
+    ).length;
+    const mobilapper: number = 0;
+
+    function chooseIcon(antall: number) {
+      if (antall > 0) {
+        return <CheckmarkCircleIcon fontSize={24} />;
+      } else {
+        return <CircleSlashIcon fontSize={24} />;
+      }
+    }
+
     return (
       <li className={classes.listeelement} key={loeysing.id}>
         <Heading level={3} size="small" className={classes.navn}>
@@ -35,12 +48,12 @@ export function Oppsummering() {
         </Heading>
         <div className={classes.nettstederOgMobilapper}>
           <div className={classes.nettsteder}>
-            <CheckmarkCircleIcon fontSize={24} />
-            Nettsteder
+            {chooseIcon(nettsteder)}
+            {nettsteder} {nettsteder === 1 ? 'nettsted' : 'nettsteder'}
           </div>
           <div className={classes.mobilapper}>
-            <CircleSlashIcon fontSize={24} />
-            Mobilapper
+            {chooseIcon(mobilapper)}
+            {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
           </div>
         </div>
       </li>
