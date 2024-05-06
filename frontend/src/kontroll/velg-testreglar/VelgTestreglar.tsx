@@ -209,8 +209,8 @@ const VelgTestreglar = () => {
         {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
         <LagreOgNeste
           sistLagret={actionData?.sistLagret}
-          onClickLagreKontroll={() => lagreKontroll(false)}
-          onClickNeste={() => lagreKontroll(true)}
+          onClickLagreKontroll={lagreKontroll(false)}
+          onClickNeste={lagreKontroll(true)}
         />
       </div>
     </section>
