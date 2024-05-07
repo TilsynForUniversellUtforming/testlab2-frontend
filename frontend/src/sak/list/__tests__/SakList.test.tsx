@@ -8,7 +8,7 @@ import SakList from '../SakList';
 describe('SakList', () => {
   async function setup(saker: SakListeElement[]) {
     const routes = [
-      { path: '/sak', element: <SakList />, loader: () => saker },
+      { path: '/sak', element: <SakList />, loader: () => [saker, []] },
     ];
     const router = createMemoryRouter(routes, {
       initialEntries: ['/sak'],
