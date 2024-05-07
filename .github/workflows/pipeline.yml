@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push]
+on: [ push ]
 
 permissions:
   contents: read
@@ -63,14 +63,14 @@ jobs:
 
     steps:
       - name: Azure Login
-        uses: Azure/login@v1.6.1
+        uses: Azure/login@v2.1.0
         with:
           client-id: ${{ secrets.CLIENT_ID }}
           tenant-id: ${{ secrets.TENANT_ID }}
           allow-no-subscriptions: true
 
       - name: Azure CLI Action
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
