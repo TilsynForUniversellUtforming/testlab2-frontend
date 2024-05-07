@@ -2,6 +2,8 @@ import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { EditSak, NySak, Sak, SakListeElement } from '@sak/api/types';
 
+import { Kontroll } from '../../kontroll/types';
+
 export const getSak = async (id: number): Promise<Sak> => {
   return await fetch(`/api/v1/saker/${id}`, {
     method: 'GET',
@@ -29,6 +31,21 @@ export const updateSak = async (sakId: number, sak: EditSak): Promise<Sak> =>
   );
 
 export async function fetchAlleSaker(): Promise<Array<SakListeElement>> {
-  const r = await fetch('/api/v1/saker');
-  return await r.json();
+  const res = await fetch('/api/v1/saker');
+  if (res.status > 399) {
+    throw new Response('Feilet da vi prøvde å hente alle saker', {
+      statusText: res.statusText,
+    });
+  }
+  return res.json();
+}
+
+export async function fetchAlleKontroller(): Promise<Kontroll[]> {
+  const res = await fetch('/api/v1/kontroller');
+  if (res.status > 399) {
+    throw new Response('Feilet da vi prøvde å hente alle kontroller', {
+      statusText: res.statusText,
+    });
+  }
+  return res.json();
 }

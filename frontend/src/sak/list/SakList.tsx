@@ -10,11 +10,15 @@ import { TEST } from '@test/TestingRoutes';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
+import { Kontroll } from '../../kontroll/types';
+
 import('./sak-list.scss');
 
 const SakList = () => {
-  const saker: Array<SakListeElement> =
-    useLoaderData() as Array<SakListeElement>;
+  const [saker, _kontroller] = useLoaderData() as [
+    SakListeElement[],
+    Kontroll[],
+  ];
   const navigate = useNavigate();
 
   const columns: Array<ColumnDef<SakListeElement>> = [
