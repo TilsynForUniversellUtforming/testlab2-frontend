@@ -1,11 +1,13 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
 import java.net.URI
+import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -77,5 +79,20 @@ class ResultatResource(
           restTemplate.getList<TestResultat>("$testresultatUrl?maalingId=$maalingId")
       else -> return emptyList()
     }
+  }
+
+  @GetMapping("list", produces = [MediaType.APPLICATION_JSON_VALUE])
+  fun getListTest(): ResponseEntity<List<Resultat>> {
+    val resultat = restTemplate.getList<Resultat>("$testresultatUrl/list")
+    val resultatListElement =
+        resultat.map { kontroll ->
+          kontroll.copy(
+              loeysingar =
+                  kontroll.loeysingar.map { loeysing ->
+                    loeysing.copy(score = loeysing.score.times(100).roundToInt().toDouble())
+                  })
+        }
+
+    return ResponseEntity.ok(resultatListElement)
   }
 }
