@@ -1,3 +1,4 @@
+import fetchFeatures from '@common/features/api/features-api';
 import {
   AppRoute,
   createPath,
@@ -46,7 +47,11 @@ export const SakRoutes: RouteObject = {
     {
       index: true,
       loader: function () {
-        return Promise.all([fetchAlleSaker(), fetchAlleKontroller()]);
+        return Promise.all([
+          fetchAlleSaker(),
+          fetchAlleKontroller(),
+          fetchFeatures(),
+        ]);
       },
       element: <SakList />,
     },
