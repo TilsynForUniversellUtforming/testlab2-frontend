@@ -11,26 +11,51 @@ import { TEST } from '@test/TestingRoutes';
 import React, { useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
-import { Kontroll } from '../../kontroll/types';
+import { KontrollListItem } from '../../kontroll/types';
 import classes from './sak-list.module.css';
 
+type Filter =
+  | 'tilsyn'
+  | 'inngaaende-kontroll'
+  | 'uttalesak'
+  | 'forenklet-kontroll'
+  | 'statusmaaling'
+  | 'annet';
+
+function viewFilter(filter: Filter) {
+  switch (filter) {
+    case 'tilsyn':
+      return 'Tilsyn';
+    case 'inngaaende-kontroll':
+      return 'Inngående kontroll';
+    case 'uttalesak':
+      return 'Uttale';
+    case 'forenklet-kontroll':
+      return 'Forenklet kontroll';
+    case 'statusmaaling':
+      return 'Statusmåling';
+    case 'annet':
+      return 'Annet';
+  }
+}
+
 const SakList = () => {
-  const filters = [
-    'Tilsyn',
-    'Inngående kontroll',
-    'Uttalesak',
-    'Forenklet kontroll',
-    'Statusmåling',
-    'Annet',
+  const filters: Filter[] = [
+    'tilsyn',
+    'inngaaende-kontroll',
+    'uttalesak',
+    'forenklet-kontroll',
+    'statusmaaling',
+    'annet',
   ];
 
   const [saker, kontroller, features] = useLoaderData() as [
     SakListeElement[],
-    Kontroll[],
+    KontrollListItem[],
     Feature[],
   ];
   const navigate = useNavigate();
-  const [filter, setFilter] = useState(filters[0]);
+  const [filter, setFilter] = useState<Filter>(filters[1]);
 
   const columns: Array<ColumnDef<SakListeElement>> = [
     { accessorKey: 'namn', header: 'Saker' },
@@ -76,15 +101,15 @@ const SakList = () => {
           <div className={classes.filter}>
             {filters.map((s) => (
               <label key={s}>
-                {s}
+                {viewFilter(s)}
                 <input
-                  id={`filter-${slug(s)}`}
+                  id={`filter-${s}`}
                   type="radio"
                   name="kontroller-filter"
                   hidden
                   value={s}
                   defaultChecked={s === filter}
-                  onChange={(event) => setFilter(event.target.value)}
+                  onChange={(event) => setFilter(event.target.value as Filter)}
                 />
               </label>
             ))}
@@ -102,19 +127,21 @@ const SakList = () => {
               </Table.Row>
             </Table.Head>
             <Table.Body>
-              {kontroller.map((kontroll) => (
-                <Table.Row key={kontroll.id}>
-                  <Table.Cell>{kontroll.tittel}</Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>{kontroll.saksbehandler}</Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>
-                    <Button variant="tertiary">Ny merknad</Button>
-                  </Table.Cell>
-                  <Table.Cell>Inngående kontroll</Table.Cell>
-                </Table.Row>
-              ))}
+              {kontroller
+                .filter((k) => filter === k.kontrolltype)
+                .map((kontroll) => (
+                  <Table.Row key={kontroll.id}>
+                    <Table.Cell>{kontroll.tittel}</Table.Cell>
+                    <Table.Cell></Table.Cell>
+                    <Table.Cell>{kontroll.saksbehandler}</Table.Cell>
+                    <Table.Cell></Table.Cell>
+                    <Table.Cell></Table.Cell>
+                    <Table.Cell>
+                      <Button variant="tertiary">Ny merknad</Button>
+                    </Table.Cell>
+                    <Table.Cell>Inngående kontroll</Table.Cell>
+                  </Table.Row>
+                ))}
             </Table.Body>
           </Table>
         </section>
@@ -124,12 +151,3 @@ const SakList = () => {
 };
 
 export default SakList;
-
-function slug(s: string): string {
-  return s
-    .toLocaleLowerCase('no')
-    .replaceAll(' ', '-')
-    .replaceAll('æ', 'ae')
-    .replaceAll('ø', 'oe')
-    .replaceAll('å', 'aa');
-}

@@ -21,7 +21,8 @@ class KontrollResource(
       val tittel: String,
       val saksbehandler: String,
       val sakstype: String,
-      val arkivreferanse: String
+      val arkivreferanse: String,
+      val kontrolltype: String
   )
 
   @GetMapping
