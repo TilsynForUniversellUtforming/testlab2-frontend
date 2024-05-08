@@ -3,7 +3,7 @@ import { responseToJson } from '@common/util/apiUtils';
 import { Utval } from '@loeysingar/api/types';
 
 import { Sideutval, SideutvalType } from './sideutval/types';
-import { Kontroll, UpdateKontrollTestreglar } from './types';
+import { Kontroll, KontrollListItem, UpdateKontrollTestreglar } from './types';
 
 export function fetchKontroll(kontrollId: number): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontrollId}`);
@@ -53,4 +53,14 @@ export async function listSideutvalType(): Promise<SideutvalType[]> {
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje hente testregel')
   );
+}
+
+export async function fetchAlleKontroller(): Promise<KontrollListItem[]> {
+  const res = await fetch('/api/v1/kontroller');
+  if (res.status > 399) {
+    throw new Response('Feilet da vi prøvde å hente alle kontroller', {
+      statusText: res.statusText,
+    });
+  }
+  return res.json();
 }

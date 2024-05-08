@@ -5,7 +5,7 @@ import {
   editPath,
   idPath,
 } from '@common/util/routeUtils';
-import { fetchAlleKontroller, fetchAlleSaker } from '@sak/api/sak-api';
+import { fetchAlleSaker } from '@sak/api/sak-api';
 import SakList from '@sak/list/SakList';
 import SakApp from '@sak/SakApp';
 import SakCreate from '@sak/SakCreate';
@@ -13,6 +13,7 @@ import { RouteObject } from 'react-router-dom';
 
 import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';
+import { fetchAlleKontroller } from '../kontroll/kontroll-api';
 
 export const SAK_ROOT: AppRoute = {
   navn: 'Saker',
