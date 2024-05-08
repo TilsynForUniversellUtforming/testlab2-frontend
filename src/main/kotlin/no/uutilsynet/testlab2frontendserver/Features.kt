@@ -12,11 +12,16 @@ class Features(val featuresProperties: FeaturesProperties) {
   fun list(): List<Feature> {
     return listOf(
         Feature("maalinger", featuresProperties.maalinger),
-        Feature("testreglar", featuresProperties.testreglar))
+        Feature("testreglar", featuresProperties.testreglar),
+        Feature("alleKontroller", featuresProperties.alleKontroller))
   }
 }
 
 data class Feature(val key: String, val active: Boolean)
 
 @ConfigurationProperties(prefix = "features")
-data class FeaturesProperties(val maalinger: Boolean, val testreglar: Boolean)
+data class FeaturesProperties(
+    val maalinger: Boolean,
+    val testreglar: Boolean,
+    val alleKontroller: Boolean
+)
