@@ -1,8 +1,10 @@
-import { Sak } from '@sak/api/types';
 import { TestregelResultat } from '@test/util/testregelParser';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { ResultatManuellKontroll, Svar, TestgrunnlagListElement, } from './api/types';
+import { Kontroll } from '../kontroll/types';
+import { SideutvalType } from '../kontroll/sideutval/types';
+import { Loeysing } from '@loeysingar/api/types';
 
 export type ManuellTestStatus =
   | 'ferdig'
@@ -19,8 +21,10 @@ export type TestregelOverviewElement = {
 };
 
 export interface TestContext {
-  contextKontroll: Sak;
+  contextKontroll: Kontroll;
+  contextLoeysingWithSideutval: Loeysing[];
   testgrunnlag: TestgrunnlagListElement[];
+  sideutvalType: SideutvalType[];
   innhaldstypeList: InnhaldstypeTesting[];
 }
 
@@ -44,8 +48,10 @@ export type TestResultUpdate = {
 };
 
 export type InngaaendeTestLoadingResponse = {
-  sak: Sak;
+  kontroll: Kontroll;
+  loeysingWithSideutval: Loeysing[];
   testgrunnlag: TestgrunnlagListElement[];
+  sideutvalType: SideutvalType[];
   innhaldstypeTestingList: InnhaldstypeTesting[];
 };
 

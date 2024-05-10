@@ -125,3 +125,11 @@ export const listTestgrunnlagForSak = async (
   await fetch(`/api/v1/testgrunnlag/list/${sakId}`).then((response) =>
     responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
   );
+
+
+export const listTestgrunnlagForKontroll = async (
+  kontrollId: number
+): Promise<TestgrunnlagListElement[]> =>
+  await fetch(`/api/v1/testgrunnlag/list/kontroll/${kontrollId}`).then((response) =>
+    responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
+  );

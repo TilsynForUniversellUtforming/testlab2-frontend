@@ -1,0 +1,15 @@
+.page-selector {
+  &-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  &__dropdown .active {
+    background-color: var(--fds-semantic-surface-first-light-active);
+    border-radius: 5px;
+    > button {
+      color: var(--fds-semantic-background-default);
+    }
+  }
+}

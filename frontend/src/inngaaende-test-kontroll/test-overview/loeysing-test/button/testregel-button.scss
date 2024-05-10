@@ -1,0 +1,149 @@
+.testregel-button-wrapper {
+  position: relative;
+  &.active:after {
+    content: '';
+    position: absolute;
+    left: 15%;
+    transform: translateX(-50%);
+    border-width: 15px;
+    border-style: solid;
+    border-color: var(--fds-semantic-surface-first-light-active) transparent
+      transparent transparent;
+  }
+
+  .status-dropdown {
+    position: relative;
+    top: -2.75rem;
+    left: 7.5rem;
+    display: inline-block;
+    > button {
+      color: var(--fds-semantic-text-neutral-default);
+    }
+  }
+}
+
+.testregel-button {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--fds-semantic-surface-neutral-default);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  height: 10rem;
+  min-width: 26rem;
+  max-width: 26rem;
+
+  &.ferdig {
+    background-color: var(--fds-semantic-surface-third-light-hover);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-third-dark);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-third-light-active);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-third-dark);
+      }
+    }
+  }
+
+  &.deaktivert {
+    background-color: var(--fds-semantic-surface-neutral-subtle);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-neutral-dark);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-neutral-dark-hover);
+      }
+    }
+  }
+
+  &.under-arbeid {
+    background-color: var(--fds-semantic-surface-neutral-subtle);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-action-default);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-action-default);
+      }
+    }
+  }
+
+  &.active {
+    background-color: var(--fds-semantic-surface-first-light);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-first-light-active);
+    }
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-first-light-hover);
+      .testregel-button-id {
+        background-color: var(--fds-semantic-surface-first-light-active);
+      }
+    }
+  }
+
+  &-id {
+    background-color: var(--fds-semantic-border-action-first-subtle-hover);
+    color: var(--fds-semantic-surface-neutral-default);
+    padding: 2rem 1rem 1rem 1rem;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    min-height: 7rem;
+    width: 3rem;
+    min-width: 5rem;
+    font: var(--fds-typography-paragraph-medium);
+    font-family: 'Inter', sans-serif;
+
+    .id-text-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 7rem;
+      .status {
+        font: var(--fds-typography-paragraph-xsmall);
+        font-family: 'Inter', sans-serif;
+      }
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 0 2px;
+    background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+    .testregel-button-id {
+      background-color: var(--fds-semantic-surface-action-hover);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid #fadf4b;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px #1e2b3c;
+    border-radius: 3px;
+  }
+
+  &-name {
+    padding: 1.5rem 1.5rem 0 0;
+    min-width: 8rem;
+    position: absolute;
+    top: 0;
+    left: 8rem;
+    text-align: left;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+}
