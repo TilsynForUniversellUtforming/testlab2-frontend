@@ -137,7 +137,7 @@ const LoeysingTestContent = ({
                       Number(testgrunnlagId),
                       Number(loeysingId),
                       tr.id,
-                      pageType.nettsideId
+                      pageType.sideId
                     )
                   ) || 'ikkje-starta'
                 }

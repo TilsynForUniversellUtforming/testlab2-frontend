@@ -1,7 +1,10 @@
 package no.uutilsynet.testlab2frontendserver.testgrunnlag
 
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.kontroll.KontrollResource
+import no.uutilsynet.testlab2frontendserver.kontroll.Sideutval
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.sak.NettsideDTO
@@ -9,18 +12,18 @@ import no.uutilsynet.testlab2frontendserver.sak.SakDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelList
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
-@RequestMapping("api/v1/testgrunnlag")
+@RequestMapping("api/v2/testgrunnlag")
 @RestController
 class TestgrunnlagResourceKontroll(
     val restTemplate: RestTemplate,
@@ -29,86 +32,97 @@ class TestgrunnlagResourceKontroll(
 ) {
 
   val logger = LoggerFactory.getLogger(TestgrunnlagResourceKontroll::class.java)
-  val testgrunnlagUrl = "${testingApiProperties.url}/v1/testgrunnlag/kontroll"
+  val kontrollUrl = "${testingApiProperties.url}/kontroller/sideutvaltype"
+  val testgrunnlagKontrollUrl = "${testingApiProperties.url}/testgrunnlag/kontroll"
   val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
   val kravUrl = "${kravApiProperties.url}/v1/krav"
 
-  @PostMapping
-  fun createManueltTestgrunnlag(
-      @RequestBody testgrunnlag: CreateTestgrunnlag
-  ): ResponseEntity<Testgrunnlag> {
+  data class TestgrunnlagKontrollDTO(
+      val id: Int,
+      val kontrollId: Int,
+      val namn: String,
+      val testreglar: List<TestregelDTO> = emptyList(),
+      val sideutval: List<Sideutval> = emptyList(),
+      val type: TestgrunnlagType,
+      val datoOppretta: Instant
+  )
 
-    runCatching {
-          val nyttTestgrunnlag = createTestgrunnlag(testgrunnlag)
-
-          val location = restTemplate.postForLocation(testgrunnlagUrl, nyttTestgrunnlag)
-          val id = location?.path?.substringAfterLast("/")
-          if (location != null && id != null) {
-            return getManueltTestgrunnlag(id.toInt())
-          } else {
-            throw RuntimeException("Kunne ikkje opprette testgrunnlag")
-          }
-        }
-        .getOrElse {
-          logger.error("Feil ved oppretting av testgrunnlag", it)
-          throw it
-        }
-  }
-
-  private fun createTestgrunnlag(testgrunnlag: CreateTestgrunnlag): CreateTestgrunnlag {
-    val nyttTestgrunnlag =
-        testgrunnlag.copy(
-            loeysing =
-                SakDTO.SakLoeysingDTO(
-                    testgrunnlag.loeysingNettsideRelation.loeysing.id,
-                    testgrunnlag.loeysingNettsideRelation.properties.map {
-                      NettsideDTO(it.type, it.url, it.description ?: "", it.reason, it.id)
-                    }))
-    return nyttTestgrunnlag
-  }
-
-  @GetMapping("list/{sakId}")
-  fun listTestgrunnlagForSak(
-      @PathVariable sakId: Int
+  @GetMapping("list/{kontrollId}")
+  fun listTestgrunnlagForKontroll(
+      @PathVariable kontrollId: Int
   ): ResponseEntity<List<TestgrunnlagListElement>> =
-      ResponseEntity.ok(
-          restTemplate
-              .getList<TestgrunnlagDTO>("$testgrunnlagUrl/list/$sakId")
-              .map { it.toTestgrunnlagListElement() }
-              .flatten())
+      runCatching {
+            ResponseEntity.ok(
+                restTemplate
+                    .getList<TestgrunnlagKontrollDTO>("$testgrunnlagKontrollUrl/list/$kontrollId")
+                    .map { it.toTestgrunnlagListElement() }
+                    .flatten())
+          }
+          .getOrElse {
+            logger.error("Kunne ikkje hente testgrunnlag", it)
+            throw it
+          }
 
-  @GetMapping("/{id}")
-  fun getManueltTestgrunnlag(@PathVariable id: Int): ResponseEntity<Testgrunnlag> {
+  @GetMapping("/{kontrollId}")
+  fun getManueltTestgrunnlag(@PathVariable kontrollId: Int): ResponseEntity<Testgrunnlag> {
     runCatching {
-          logger.debug("Henter testgrunnlag fra $testgrunnlagUrl/$id")
+          logger.debug("Henter testgrunnlag fra $testgrunnlagKontrollUrl/$kontrollId")
 
+          val testregelList =
+              restTemplate.getList<TestregelBaseDTO>("$testregelUrl?includeMetadata=true")
+          val sidetypeList =
+              restTemplate.getList<KontrollResource.SideutvalType>("$kontrollUrl/sideutvaltype")
+
+          val testgrunnlagDTO =
+              restTemplate.getForObject(
+                  "$testgrunnlagKontrollUrl/$kontrollId", TestgrunnlagKontrollDTO::class.java)
+
+          val kravList = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
           val temaList = restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
           val testobjektList =
               restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
           val innhaldstypeForTestingList =
               restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
-          val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
 
-          val testgrunnlagDTO =
-              restTemplate.getForObject("$testgrunnlagUrl/$id", TestgrunnlagDTO::class.java)
           if (testgrunnlagDTO != null) {
+            val testregelIdList = testgrunnlagDTO.testreglar.map { it.id }
+
             val testreglar =
-                testgrunnlagDTO.testreglar.map {
-                  it.toTestregel(
-                      temaList,
-                      testobjektList,
-                      innhaldstypeForTestingList,
-                      krav.find { krav -> krav.id == it.kravId }
-                          ?: throw RuntimeException("Testregel har krav som ikkje finns"))
-                }
+                testregelList
+                    .filterIsInstance<TestregelDTO>()
+                    .filter { tr -> testregelIdList.contains(tr.id) }
+                    .toTestregelList(temaList, testobjektList, innhaldstypeForTestingList, kravList)
+
+            val loeysingList =
+                testgrunnlagDTO.sideutval
+                    .groupBy { it.loeysingId }
+                    .map { (loeysingId, sideutvals) ->
+                      SakDTO.SakLoeysingDTO(
+                          loeysingId = loeysingId,
+                          nettsider =
+                              sideutvals.map { sideutval ->
+                                NettsideDTO(
+                                    type =
+                                        if (!sideutval.egendefinertType.isNullOrEmpty())
+                                            sideutval.egendefinertType
+                                        else
+                                            sidetypeList.find { it.id == sideutval.typeId }?.type
+                                                ?: "",
+                                    url = sideutval.url.toString(),
+                                    beskrivelse = "",
+                                    begrunnelse = sideutval.begrunnelse,
+                                    id = sideutval.id)
+                              })
+                    }
+
             val testgrunnlag =
                 Testgrunnlag(
                     testgrunnlagDTO.id,
-                    testgrunnlagDTO.parentId,
+                    testgrunnlagDTO.kontrollId,
                     testgrunnlagDTO.namn,
                     testreglar,
-                    testgrunnlagDTO.loeysingar,
-                    testgrunnlagDTO.type)
+                    loeysingList,
+                    TestgrunnlagType.OPPRINNELEG_TEST)
             return ResponseEntity.ok(testgrunnlag)
           } else {
             throw IllegalArgumentException("Feil ved henting av testgrunnlag")
@@ -120,7 +134,7 @@ class TestgrunnlagResourceKontroll(
         }
   }
 
-  fun TestgrunnlagDTO.toTestgrunnlagListElement(): List<TestgrunnlagListElement> {
-    return loeysingar.map { loeysing -> TestgrunnlagListElement(id!!, loeysing.loeysingId) }
+  fun TestgrunnlagKontrollDTO.toTestgrunnlagListElement(): List<TestgrunnlagListElement> {
+    return sideutval.map { sideutval -> TestgrunnlagListElement(id, sideutval.loeysingId) }
   }
 }

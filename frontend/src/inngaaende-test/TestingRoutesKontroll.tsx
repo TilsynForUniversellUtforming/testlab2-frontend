@@ -1,24 +1,27 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import { getTestResults, listTestgrunnlagForKontroll } from '@test/api/testing-api';
-import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
-import { TestOverviewLoaderResponse } from '@test/types';
+import {
+  getTestResults,
+  listTestgrunnlagForKontroll,
+} from '@test/api/testing-api';
+import TestregelDemoApp from '@test/demo/TestregelDemoApp';
+import TestOverviewLoeysingKontroll from '@test/test-overview/loeysing-test/TestOverviewLoeysingKontroll';
+import { ContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { innhaldstypeAlle } from '@test/util/testregelUtils';
-import { listInnhaldstype } from '@testreglar/api/testreglar-api';
+import {
+  listInnhaldstype,
+  listTestreglarWithMetadata,
+} from '@testreglar/api/testreglar-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
-import nyTestImg from '../assets/ny_test.svg';
-import TestregelDemoApp from './demo/TestregelDemoApp';
-import InngaaendeTestApp from './InngaaendeTestApp';
-import TestOverview from './test-overview/TestOverview';
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
+import InngaaendeTestAppKontroll from './InngaaendeTestAppKontroll';
+import TestOverviewKontroll from './test-overview/TestOverviewKontroll';
 
 export const TEST_ROOT: AppRoute = {
   navn: 'Tester',
-  path: 'test',
-  imgSrc: nyTestImg,
-  disabled: true,
+  path: 'kontroll-test',
 };
 
 export const TEST: AppRoute = {
@@ -27,7 +30,7 @@ export const TEST: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
-export const TEST_LOEYSING_TESTGRUNNLAG: AppRoute = {
+export const TEST_LOEYSING_KONTROLL: AppRoute = {
   navn: 'Test løysing testgrunnlag',
   path: ':loeysingId/:testgrunnlagId',
   parentRoute: TEST,
@@ -46,7 +49,7 @@ export const TestingRoutesKontroll: RouteObject = {
   children: [
     {
       path: TEST.path,
-      element: <InngaaendeTestApp />,
+      element: <InngaaendeTestAppKontroll />,
       handle: { name: 'Test' },
       errorElement: <ErrorCard />,
       loader: async ({ params }) => {
@@ -56,30 +59,38 @@ export const TestingRoutesKontroll: RouteObject = {
           throw new Error('Ugyldig kontroll-id');
         }
 
-        const [kontrollPromise, testgrunnlagPromise, sideutvalTypePromise, innhaldstypePromise] =
-          await Promise.allSettled([
-            fetchKontroll(kontrollId),
-            listTestgrunnlagForKontroll(kontrollId),
-            listSideutvalType(),
-            listInnhaldstype(),
-          ]);
-
+        const [
+          kontrollPromise,
+          testgrunnlagPromise,
+          sideutvalTypePromise,
+          innhaldstypePromise,
+          testreglarPromise,
+        ] = await Promise.allSettled([
+          fetchKontroll(kontrollId),
+          listTestgrunnlagForKontroll(kontrollId),
+          listSideutvalType(),
+          listInnhaldstype(),
+          listTestreglarWithMetadata(),
+        ]);
 
         if (testgrunnlagPromise.status === 'rejected') {
           throw new Error('Kunne ikkje hente testgrunnlag');
         }
 
         if (sideutvalTypePromise.status === 'rejected') {
-          throw new Error('Kunne ikkje hente sideutvaltyper')
+          throw new Error('Kunne ikkje hente sideutvaltyper');
         }
 
         if (innhaldstypePromise.status === 'rejected') {
           throw new Error('Kunne ikkje hente innhaldstypar');
         }
 
-
         if (kontrollPromise.status === 'rejected') {
           throw new Error(`Fann ikkje kontroll med id ${kontrollId}`);
+        }
+
+        if (testreglarPromise.status === 'rejected') {
+          throw new Error(`Kunne ikkje hente testreglar`);
         }
 
         const kontrollResponse = kontrollPromise.value;
@@ -93,14 +104,31 @@ export const TestingRoutesKontroll: RouteObject = {
         }
         const kontroll: Kontroll = await kontrollResponse.json();
 
-        const loeysingWithSideutvalIds = kontroll.sideutvalList.map(su => su.loeysingId);
-        const loeysingWithSideutval = kontroll.utval?.loeysingar.filter(l => loeysingWithSideutvalIds.some(lsu => lsu === l.id)) ?? [];
+        const loeysingWithSideutvalIds = kontroll.sideutvalList.map(
+          (su) => su.loeysingId
+        );
+        const loeysingWithSideutval =
+          kontroll.utval?.loeysingar.filter((l) =>
+            loeysingWithSideutvalIds.includes(l.id)
+          ) ?? [];
+
+        const kontrollTestregelIdList =
+          kontroll.testreglar?.testregelList?.map((tr) => tr.id) ?? [];
+
+        const kontrollTestreglar = testreglarPromise.value.filter((tr) =>
+          kontrollTestregelIdList.includes(tr.id)
+        );
+
+        const contextKontroll: ContextKontroll = {
+          ...kontroll,
+          loeysingList: loeysingWithSideutval,
+          testregelList: kontrollTestreglar,
+        };
 
         return defer({
-          kontroll: kontroll,
-          loeysingWithSideutval: loeysingWithSideutval,
+          kontroll: contextKontroll,
           testgrunnlag: testgrunnlagPromise.value,
-          sideutvalType: sideutvalTypePromise.value,
+          sideutvalTypeList: sideutvalTypePromise.value,
           innhaldstypeTestingList: [
             ...innhaldstypePromise.value,
             innhaldstypeAlle,
@@ -110,12 +138,12 @@ export const TestingRoutesKontroll: RouteObject = {
       children: [
         {
           index: true,
-          element: <TestOverview />,
+          element: <TestOverviewKontroll />,
         },
         {
-          path: TEST_LOEYSING_TESTGRUNNLAG.path,
-          element: <TestOverviewLoeysing />,
-          handle: { name: TEST_LOEYSING_TESTGRUNNLAG.navn },
+          path: TEST_LOEYSING_KONTROLL.path,
+          element: <TestOverviewLoeysingKontroll />,
+          handle: { name: TEST_LOEYSING_KONTROLL.navn },
           loader: async ({ params }): Promise<TestOverviewLoaderResponse> => {
             const testResults = await getTestResults(
               Number(params?.testgrunnlagId)

@@ -9,7 +9,7 @@ import no.uutilsynet.testlab2frontendserver.sak.SakDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelList
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -93,14 +93,9 @@ class TestgrunnlagResource(
               restTemplate.getForObject("$testgrunnlagUrl/$id", TestgrunnlagDTO::class.java)
           if (testgrunnlagDTO != null) {
             val testreglar =
-                testgrunnlagDTO.testreglar.map {
-                  it.toTestregel(
-                      temaList,
-                      testobjektList,
-                      innhaldstypeForTestingList,
-                      krav.find { krav -> krav.id == it.kravId }
-                          ?: throw RuntimeException("Testregel har krav som ikkje finns"))
-                }
+                testgrunnlagDTO.testreglar.toTestregelList(
+                    temaList, testobjektList, innhaldstypeForTestingList, krav)
+
             val testgrunnlag =
                 Testgrunnlag(
                     testgrunnlagDTO.id,

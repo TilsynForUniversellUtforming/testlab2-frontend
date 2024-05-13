@@ -1,6 +1,6 @@
 import { Utval } from '@loeysingar/api/types';
 
-import { Sideutval } from './sideutval/types';
+import { Sideutval, SideutvalBase } from './sideutval/types';
 import { KontrollTestreglar } from './velg-testreglar/types';
 
 export type Kontroll = {
@@ -28,7 +28,7 @@ export type UpdateKontrollTestreglar = {
 
 export type UpdateKontrollSideutval = {
   kontroll: Kontroll;
-  sideutvalList: Sideutval[];
+  sideutvalList: SideutvalBase[];
   neste: boolean;
 };
 

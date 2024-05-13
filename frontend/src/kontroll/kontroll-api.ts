@@ -2,7 +2,7 @@ import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { Utval } from '@loeysingar/api/types';
 
-import { Sideutval, SideutvalType } from './sideutval/types';
+import { SideutvalBase, SideutvalType } from './sideutval/types';
 import { Kontroll, UpdateKontrollTestreglar } from './types';
 
 export function fetchKontroll(kontrollId: number): Promise<Response> {
@@ -35,7 +35,7 @@ export function updateKontrollTestreglar(
 
 export function updateKontrollSideutval(
   kontroll: Kontroll,
-  sideutvalList: Sideutval[]
+  sideutvalList: SideutvalBase[]
 ): Promise<Response> {
   return fetchWrapper(`/api/v1/kontroller/${kontroll.id}`, {
     method: 'put',

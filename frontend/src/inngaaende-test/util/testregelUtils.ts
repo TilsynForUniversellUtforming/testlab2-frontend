@@ -1,13 +1,7 @@
 import { capitalize } from '@common/util/stringutils';
-import { isDefined, isNotDefined } from '@common/util/validationUtils';
-import { Sak } from '@sak/api/types';
-import { NettsideProperties } from '@sak/types';
+import { isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll } from '@test/api/types';
-import {
-  ManuellTestStatus,
-  PageType,
-  TestregelOverviewElement,
-} from '@test/types';
+import { ManuellTestStatus, TestregelOverviewElement } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 export const innhaldstypeAlle: InnhaldstypeTesting = {
@@ -25,7 +19,7 @@ export const isTestFinished = (
   testResults: ResultatManuellKontroll[],
   testregelIdList: number[],
   loeysingId: number,
-  nettsideProperties: NettsideProperties[]
+  nettsideLength: number
 ): boolean => {
   const finishedTestIdentifierArray = testResults
     .filter(
@@ -36,83 +30,9 @@ export const isTestFinished = (
     )
     .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId}`);
 
-  const numNettside = nettsideProperties.length;
-  const totalTestregelToTest = testregelIdList.length * numNettside;
+  const totalTestregelToTest = testregelIdList.length * nettsideLength;
 
   return new Set(finishedTestIdentifierArray).size === totalTestregelToTest;
-};
-
-export const progressionForLoeysingNettside = (
-  sak: Sak,
-  testResults: ResultatManuellKontroll[],
-  nettsideId: number,
-  innhaldstype: InnhaldstypeTesting,
-  loeysingId: number
-): number => {
-  const testregelIdList = filterTestregelByInnhaldstype(
-    sak.testreglar,
-    innhaldstype
-  ).map((tr) => tr.id);
-
-  const finishedTestIdentifierArray = testResults
-    .filter(
-      (tr) =>
-        testregelIdList.includes(tr.testregelId) &&
-        tr.loeysingId === loeysingId &&
-        tr.nettsideId === nettsideId &&
-        tr.status === 'Ferdig'
-    )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId}`);
-
-  const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
-
-  const numContentTestregel = testregelIdList.length;
-
-  if (numContentTestregel > 0) {
-    return Math.round((numFinishedTestResults / numContentTestregel) * 100);
-  }
-
-  // No testregel with current innhaldstype
-  return 0;
-};
-
-export const getNettsideProperties = (
-  sak: Sak,
-  loeysingId: number | undefined
-): NettsideProperties[] =>
-  sak.loeysingList.find((l) => loeysingId === l.loeysing.id)?.properties || [];
-
-export const toPageType = (
-  nettsideProperties: NettsideProperties[],
-  nettsideId: number
-): PageType => {
-  const property =
-    nettsideProperties.find((np) => np.id === nettsideId) ||
-    nettsideProperties[0];
-
-  const { id, type, url } = property;
-
-  if (isDefined(id) && isDefined(type) && isDefined(url)) {
-    return { nettsideId: id, pageType: type, url: url };
-  } else {
-    throw Error('Sidetype finnes ikkje');
-  }
-};
-
-export const getInitialPageType = (
-  nettsideProperties: NettsideProperties[]
-): PageType => {
-  const property =
-    nettsideProperties.find((np) => np.type === 'forside') ||
-    nettsideProperties[0];
-
-  const { id, type, url } = property;
-
-  if (isDefined(id) && isDefined(type) && isDefined(url)) {
-    return { nettsideId: id, pageType: type, url: url };
-  } else {
-    throw Error('Sidetype finnes ikkje');
-  }
 };
 
 export const toTestregelStatusKey = (
@@ -178,7 +98,7 @@ const toTestregelOverviewElement = ({
   return { id: id, name: namn, krav: capitalize(testregelId) };
 };
 
-const filterTestregelByInnhaldstype = (
+export const filterTestregelByInnhaldstype = (
   testregelList: Testregel[],
   innhaldstype: InnhaldstypeTesting
 ) =>
@@ -201,13 +121,13 @@ export function findActiveTestResults(
   sakId: number,
   loeysingId: number,
   testregelId: number,
-  nettsideId: number
+  sideId: number
 ): ResultatManuellKontroll[] {
   return testResults.filter(
     (tr) =>
       tr.testgrunnlagId === sakId &&
       tr.loeysingId === loeysingId &&
       tr.testregelId === testregelId &&
-      tr.nettsideId === nettsideId
+      (tr.nettsideId === sideId || tr.sideutvalId === sideId)
   );
 }

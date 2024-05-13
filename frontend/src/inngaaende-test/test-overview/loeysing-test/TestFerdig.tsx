@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestFerdig = () => {
-  const { contextKontroll }: TestContext = useOutletContext();
+  const { contextSak }: TestContext = useOutletContext();
   const { id: sakId, loeysingId, testgrunnlagId: testgrunnlagId } = useParams();
   const navigate = useNavigate();
   const [loeysingNamn, setLoeysingNamn] = useState<string>('');
@@ -33,13 +33,13 @@ const TestFerdig = () => {
   }, [sakId]);
 
   useEffect(() => {
-    const foundLoeysing = contextKontroll?.loeysingList.find(
+    const foundLoeysing = contextSak?.loeysingList.find(
       (l) => l.loeysing.id === Number(loeysingId)
     );
     if (foundLoeysing) {
       setLoeysingNamn(foundLoeysing.loeysing.namn);
     }
-  }, [loeysingId, contextKontroll?.loeysingList]);
+  }, [loeysingId, contextSak?.loeysingList]);
 
   return (
     <div className="statusFerdig">

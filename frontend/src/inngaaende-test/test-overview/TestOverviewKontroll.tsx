@@ -2,20 +2,21 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
-import { TEST_LOEYSING_TESTGRUNNLAG } from '@test/TestingRoutes';
+import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutesKontroll';
+import { TestContextKontroll } from '@test/types';
 import { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import { TestContext } from '../types';
 
-const TestOverview = () => {
+const TestOverviewKontroll = () => {
   const { id } = useParams();
-  const { contextLoeysingWithSideutval, testgrunnlag }: TestContext = useOutletContext();
+  const { contextKontroll, testgrunnlag }: TestContextKontroll =
+    useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
 
   const onChangeLoeysing = useCallback(
     async (loeysingId: number) => {
-      const nextLoeysingId = contextLoeysingWithSideutval.find(
+      const nextLoeysingId = contextKontroll.loeysingList.find(
         (l) => l.id === loeysingId
       )?.id;
       if (!nextLoeysingId || !id) {
@@ -30,7 +31,7 @@ const TestOverview = () => {
           testgrunnlagId = existingTestgrunnlag.id;
           navigate(
             getFullPath(
-              TEST_LOEYSING_TESTGRUNNLAG,
+              TEST_LOEYSING_KONTROLL,
               { pathParam: idPath, id: id },
               {
                 pathParam: ':loeysingId',
@@ -44,12 +45,12 @@ const TestOverview = () => {
         }
       }
     },
-    [contextLoeysingWithSideutval, testgrunnlag, id, navigate, setAlert]
+    [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
   return (
     <div className="manual-test-overview">
-      {contextLoeysingWithSideutval.map((loeysing) => {
+      {contextKontroll.loeysingList.map((loeysing) => {
         return (
           <TestLoeysingButton
             key={loeysing.id}
@@ -70,4 +71,4 @@ const TestOverview = () => {
   );
 };
 
-export default TestOverview;
+export default TestOverviewKontroll;

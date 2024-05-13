@@ -1,11 +1,11 @@
 import { Spinner } from '@digdir/designsystemet-react';
+import { InngaaendeTestLoadingResponseKontroll } from '@test/types';
 import { Suspense } from 'react';
 import { Await, Outlet, useLoaderData } from 'react-router-dom';
 
-import { InngaaendeTestLoadingResponse } from './types';
-
-const InngaaendeTestApp = () => {
-  const data = useLoaderData() as Promise<InngaaendeTestLoadingResponse>;
+const InngaaendeTestAppKontroll = () => {
+  const data =
+    useLoaderData() as Promise<InngaaendeTestLoadingResponseKontroll>;
 
   return (
     <Suspense fallback={<Spinner title="Hentar test" />}>
@@ -14,9 +14,8 @@ const InngaaendeTestApp = () => {
           <Outlet
             context={{
               contextKontroll: data.kontroll,
-              contextLoeysingWithSideutval: data.loeysingWithSideutval,
               testgrunnlag: data.testgrunnlag,
-              sideutvalType: data.sideutvalType,
+              sideutvalTypeList: data.sideutvalTypeList,
               innhaldstypeList: data.innhaldstypeTestingList,
             }}
           />
@@ -26,4 +25,4 @@ const InngaaendeTestApp = () => {
   );
 };
 
-export default InngaaendeTestApp;
+export default InngaaendeTestAppKontroll;

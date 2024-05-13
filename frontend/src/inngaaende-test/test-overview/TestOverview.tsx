@@ -9,13 +9,13 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverview = () => {
   const { id } = useParams();
-  const { contextKontroll, testgrunnlag }: TestContext = useOutletContext();
+  const { contextSak, testgrunnlag }: TestContext = useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
 
   const onChangeLoeysing = useCallback(
     async (loeysingId: number) => {
-      const nextLoeysing = contextKontroll.loeysingList.find(
+      const nextLoeysing = contextSak.loeysingList.find(
         (l) => l.loeysing.id === loeysingId
       );
       if (!nextLoeysing || !id) {
@@ -44,7 +44,7 @@ const TestOverview = () => {
         }
       }
     },
-    [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
+    [contextSak.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
   // const opprettTestgrunnlag = useCallback(
@@ -64,7 +64,7 @@ const TestOverview = () => {
 
   return (
     <div className="manual-test-overview">
-      {contextKontroll.loeysingList.map(({ loeysing }) => {
+      {contextSak.loeysingList.map(({ loeysing }) => {
         return (
           <TestLoeysingButton
             key={loeysing.id}
