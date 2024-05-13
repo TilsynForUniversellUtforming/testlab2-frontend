@@ -49,3 +49,35 @@ fun TestregelDTO.toTestregel(
               innhaldstypeTesting.id == this.innhaldstypeTesting
             },
     )
+
+fun List<TestregelDTO>.toTestregelList(
+    temaList: List<Tema>,
+    testobjektList: List<Testobjekt>,
+    innhaldstypeTestingList: List<InnhaldstypeTesting>,
+    kravList: List<Krav>
+): List<Testregel> {
+  val temaMap: Map<Int, Tema> = temaList.associateBy { it.id }
+  val testobjektMap: Map<Int, Testobjekt> = testobjektList.associateBy { it.id }
+  val innhaldstypeTestingMap: Map<Int, InnhaldstypeTesting> =
+      innhaldstypeTestingList.associateBy { it.id }
+  val kravMap: Map<Int, Krav> = kravList.associateBy { it.id }
+
+  return this.map { testregelDTO ->
+    Testregel(
+        id = testregelDTO.id,
+        testregelId = testregelDTO.testregelId,
+        versjon = testregelDTO.versjon,
+        namn = testregelDTO.namn,
+        krav = kravMap[testregelDTO.kravId] ?: throw IllegalArgumentException("Krav finns ikkje"),
+        status = testregelDTO.status,
+        datoSistEndra = testregelDTO.datoSistEndra.toString(),
+        type = testregelDTO.type,
+        modus = testregelDTO.modus,
+        spraak = testregelDTO.spraak,
+        tema = testregelDTO.tema?.let { temaMap[it] },
+        testobjekt = testregelDTO.testobjekt?.let { testobjektMap[it] },
+        kravTilSamsvar = testregelDTO.kravTilSamsvar,
+        testregelSchema = testregelDTO.testregelSchema,
+        innhaldstypeTesting = testregelDTO.innhaldstypeTesting?.let { innhaldstypeTestingMap[it] })
+  }
+}

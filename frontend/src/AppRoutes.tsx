@@ -6,6 +6,7 @@ import { LOEYSING_ROOT, LoeysingRoutes } from '@loeysingar/LoeysingRoutes';
 import { MAALING_ROOT, MaalingRoutes } from '@maaling/MaalingRoutes';
 import { SAK_ROOT, SakRoutes } from '@sak/SakRoutes';
 import { TestingRoutes } from '@test/TestingRoutes';
+import { TestingRoutesKontroll } from '@test/TestingRoutesKontroll';
 import { TESTREGEL_ROOT, TestregelRoutes } from '@testreglar/TestregelRoutes';
 import { VERKSEMD_LIST, VerksemdRoutes } from '@verksemder/VerksemdRoutes';
 import { RouteObject } from 'react-router-dom';
@@ -101,6 +102,7 @@ export const AppRoutes: RouteObject = {
     TestingRoutes,
     ResultRoutes,
     KontrollRoutes,
+    TestingRoutesKontroll,
     {
       path: '*',
       element: <Page404 />,

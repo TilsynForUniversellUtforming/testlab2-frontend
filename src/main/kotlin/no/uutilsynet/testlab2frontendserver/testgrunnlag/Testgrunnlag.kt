@@ -14,7 +14,7 @@ data class Testgrunnlag(
     val parentId: Int,
     val namn: String,
     val testreglar: List<Testregel> = emptyList(),
-    val loeysingar: List<SakDTO.SakLoeysingDTO> = emptyList(),
+    val loeysingar: List<SakDTO.SakLoeysingDTO> = emptyList(), // TODO - Kontrollvariant
     val type: TestgrunnlagType,
 )
 
@@ -28,6 +28,6 @@ data class CreateTestgrunnlag(
     val namn: String,
     val type: TestgrunnlagType,
     val testreglar: List<Int>,
-    val loeysing: SakDTO.SakLoeysingDTO?,
+    val loeysing: SakDTO.SakLoeysingDTO?, // TODO - Kontrollvariant
     val loeysingNettsideRelation: LoeysingNettsideRelation
 )

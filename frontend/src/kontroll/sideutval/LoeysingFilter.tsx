@@ -2,12 +2,12 @@ import { Alert, Chip, Heading, Tag } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 
 import classes from '../kontroll.module.css';
-import { Sideutval } from './types';
+import { SideutvalBase } from './types';
 
 interface Props {
   heading: string;
   loeysingList: Loeysing[];
-  sideutvalKontroll: Sideutval[];
+  sideutvalKontroll: SideutvalBase[];
   selectedLoeysing: Loeysing | undefined;
   onChangeLoeysing: (loeysingId: number) => void;
 }

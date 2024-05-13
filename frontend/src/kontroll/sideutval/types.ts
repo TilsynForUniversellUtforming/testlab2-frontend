@@ -17,7 +17,7 @@ export type SideutvalTypeKontroll = SideutvalType & {
   egendefinertType?: string;
 };
 
-export type Sideutval = {
+export type SideutvalBase = {
   loeysingId: number;
   typeId: number;
   begrunnelse: string;
@@ -25,13 +25,17 @@ export type Sideutval = {
   egendefinertType?: string;
 };
 
+export type Sideutval = SideutvalBase & {
+  id: number;
+};
+
 export type SideutvalIndexed = {
-  sideutval: Sideutval;
+  sideutval: SideutvalBase;
   index: number;
 };
 
 export type SideutvalForm = {
-  sideutval: Sideutval[];
+  sideutval: SideutvalBase[];
 };
 
 export type FormError = {

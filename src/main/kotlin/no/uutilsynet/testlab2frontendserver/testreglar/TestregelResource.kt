@@ -16,6 +16,7 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelBase
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelList
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -70,9 +71,20 @@ class TestregelResource(
   ): List<TestregelBase> =
       try {
         logger.debug("Henter testreglar fra $testregelUrl")
-        val url = if (includeMetadata) "$testregelUrl?includeMetadata=true" else testregelUrl
-        val kravMap = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
-        restTemplate.getList<TestregelBaseDTO>(url).toTestregelBase(kravMap)
+        val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
+        if (includeMetadata) {
+          val temaList = restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
+          val testobjektList =
+              restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+          val innhaldstypeForTestingList =
+              restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
+          restTemplate
+              .getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
+              .toTestregelList(temaList, testobjektList, innhaldstypeForTestingList, krav)
+        } else {
+          val kravMap = krav.associateBy { it.id }
+          restTemplate.getList<TestregelBaseDTO>(testregelUrl).toTestregelBase(kravMap)
+        }
       } catch (e: Error) {
         logger.error("klarte ikke å hente testreglar", e)
         throw Error("Klarte ikke å hente testreglar")

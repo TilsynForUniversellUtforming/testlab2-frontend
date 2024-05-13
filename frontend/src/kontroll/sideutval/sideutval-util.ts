@@ -2,7 +2,7 @@ import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Loeysing } from '@loeysingar/api/types';
 
 import {
-  Sideutval,
+  SideutvalBase,
   SideutvalIndexed,
   SideutvalType,
   SideutvalTypeKontroll,
@@ -10,7 +10,7 @@ import {
 
 export const toSelectableSideutvalType = (
   innhaldstypeList: SideutvalTypeKontroll[],
-  sideutval: Sideutval[],
+  sideutval: SideutvalBase[],
   loeysingId: number
 ) => {
   const innhaldsTypeIdList = [
@@ -54,7 +54,7 @@ export const getSideutvalTypeLabel = (
 };
 
 export const groupByType = (
-  sideutval: Sideutval[],
+  sideutval: SideutvalBase[],
   sideutvalTypeList: SideutvalType[]
 ): Map<string, SideutvalIndexed[]> => {
   const grouped = new Map<string, SideutvalIndexed[]>();
@@ -78,8 +78,8 @@ export const groupByType = (
 export const getDefaultFormValues = (
   loeysingList: Loeysing[],
   sideutvalTypeList: SideutvalType[],
-  sideutvalKontroll: Sideutval[]
-): Sideutval[] => {
+  sideutvalKontroll: SideutvalBase[]
+): SideutvalBase[] => {
   const forsideType = sideutvalTypeList.find(
     (it) => it.type.toLowerCase() === 'forside'
   );

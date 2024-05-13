@@ -1,26 +1,24 @@
-import { capitalize } from '@common/util/stringutils';
-import { isDefined, isOption } from '@common/util/validationUtils';
+import { OptionType } from '@common/types';
 import { Heading, Ingress, Tag } from '@digdir/designsystemet-react';
-import { NettsideProperties } from '@sak/types';
 import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
 import { PageType } from '@test/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
 
 export interface Props {
-  sakName: string;
+  title: string;
   currentLoeysingName: string;
   innhaldstypeList: InnhaldstypeTesting[];
-  nettsideProperties: NettsideProperties[];
+  sideutvalOptionList: OptionType[];
   pageType: PageType;
-  onChangePageType: (nettsideId: string) => void;
+  onChangePageType: (sideutvalId: string) => void;
   innhaldstype: InnhaldstypeTesting;
   onChangeInnhaldstype: (innhaldstypeId: string) => void;
 }
 
-const LoeysingTestHeading = ({
-  sakName,
+const LoeysingTestHeadingKontroll = ({
+  title,
   currentLoeysingName,
-  nettsideProperties,
+  sideutvalOptionList,
   pageType,
   onChangePageType,
   innhaldstype,
@@ -32,30 +30,19 @@ const LoeysingTestHeading = ({
     label: innhaldstype,
   }));
 
-  const nettsideOptions = nettsideProperties
-    .map(({ id, type }) => {
-      if (isDefined(id) && isDefined(type)) {
-        return {
-          value: String(id),
-          label: capitalize(type),
-        };
-      }
-    })
-    .filter(isOption);
-
   return (
     <div className="manual-test-heading">
       <Heading spacing size="xlarge" level={2}>
         Gjennomfør test
       </Heading>
-      <Ingress spacing>{sakName}</Ingress>
+      <Ingress spacing>{title}</Ingress>
       <div className="tags">
         <Tag color="second">Inngående kontroll</Tag>
         <Tag color="second">Nettside</Tag>
         <Tag color="second">{currentLoeysingName}</Tag>
       </div>
       <PageTypeSelector
-        nettsideOptions={nettsideOptions}
+        nettsideOptions={sideutvalOptionList}
         sideId={String(pageType.sideId)}
         onChangeSide={onChangePageType}
         innhaldstypeOptions={innhaldstypeOptions}
@@ -66,4 +53,4 @@ const LoeysingTestHeading = ({
   );
 };
 
-export default LoeysingTestHeading;
+export default LoeysingTestHeadingKontroll;
