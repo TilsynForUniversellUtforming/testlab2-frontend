@@ -1,4 +1,5 @@
 import { AppRoute, idPath } from '@common/util/routeUtils';
+import ResultListApp from '@resultat/list/ResultListApp';
 import ViolationsList from '@resultat/ViolationsList';
 import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
@@ -6,6 +7,7 @@ import { Outlet, RouteObject } from 'react-router-dom';
 import resultatImg from '../assets/resultat.svg';
 import {
   fetchDetaljertResultat,
+  fetchResultList,
   fetchTestresultatAggregert,
 } from './resultat-api';
 import TestResultatApp from './TestResultatApp';
@@ -33,6 +35,11 @@ export const ResultRoutes: RouteObject = {
   element: <Outlet />,
   handle: { name: RESULTAT_ROOT.navn },
   children: [
+    {
+      index: true,
+      loader: fetchResultList,
+      element: <ResultListApp />,
+    },
     {
       path: TESTRESULTAT_TESTGRUNNLAG.path,
       element: <Outlet />,
