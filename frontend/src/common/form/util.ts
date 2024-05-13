@@ -64,17 +64,24 @@ const getTokenFromResponse = async (response: Response): Promise<string> => {
 
 export const fetchWrapper = async (
   input: string,
-  init?: RequestInit
+  init?: RequestInit,
+  defaultContentType: boolean = true
 ): Promise<Response> => {
   if (init) {
     return await fetch(`/csrf`, { method: 'GET' }).then(async (response) => {
       const token = await getTokenFromResponse(response);
 
       init.credentials = 'include';
-      init.headers = {
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': token,
-      };
+      if (defaultContentType) {
+        init.headers = {
+          'Content-Type': 'application/json',
+          'X-XSRF-TOKEN': token,
+        };
+      } else {
+        init.headers = {
+          'X-XSRF-TOKEN': token,
+        };
+      }
       return await fetch(input, init);
     });
   } else {
