@@ -311,6 +311,7 @@
 .ferdig-utval {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .sideutval-loeysing-errors {

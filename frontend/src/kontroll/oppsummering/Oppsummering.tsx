@@ -98,7 +98,8 @@ export function Oppsummering() {
   }
 
   const isFinished =
-    kontroll.sideutvalList.filter((su) => su.url.length > 0).length > 0 &&
+    kontroll.sideutvalList.filter((su) => su.url.length > 0).length ===
+      (kontroll.utval?.loeysingar?.length ?? -1) &&
     isDefined(kontroll.testreglar?.testregelList) &&
     isDefined(kontroll.utval?.loeysingar);
 
