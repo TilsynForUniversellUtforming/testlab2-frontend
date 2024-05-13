@@ -44,16 +44,33 @@ export const getSideutvalOptionList = (
   kontroll: ContextKontroll,
   sideutvalType: SideutvalType[],
   loeysingId: number | undefined
-): OptionType[] =>
-  kontroll.sideutvalList
+): OptionType[] => {
+  return kontroll.sideutvalList
     .filter((l) => loeysingId === l.loeysingId)
-    .map((su) => ({
-      label:
-        su?.egendefinertType ??
-        sideutvalType.find((sut) => sut.id === su.typeId)?.type ??
-        '',
-      value: String(su.id),
-    }));
+    .reduce((acc: OptionType[], su) => {
+      let label: string;
+      if (su.egendefinertType && su.egendefinertType.length > 0) {
+        label = `Egendefinert: ${su.egendefinertType}`;
+      } else {
+        const type =
+          sideutvalType.find((sut) => sut.id === su.typeId)?.type || '';
+        const existingType = acc.find((item) => item.label.startsWith(type));
+        if (existingType) {
+          const typeCount =
+            acc.filter((item) => item.label.startsWith(type)).length + 1;
+          label = `${type} ${typeCount}`;
+        } else {
+          label = type;
+        }
+      }
+
+      acc.push({
+        label: label,
+        value: String(su.id),
+      });
+      return acc;
+    }, []);
+};
 
 export const getInitialPageTypeKontroll = (
   sideutval: Sideutval[],

@@ -34,7 +34,7 @@ const PageTypeSelector = ({
           options={innhaldstypeOptions}
         />
         <TypeDropdown
-          title="Sideutvalg"
+          title="Sideutval"
           typeId={sideId}
           onChangeType={onChangeSide}
           options={nettsideOptions}
