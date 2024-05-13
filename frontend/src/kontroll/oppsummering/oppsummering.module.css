@@ -16,6 +16,11 @@
   margin-bottom: 4rem;
 }
 
+.tilbake-og-neste {
+  display: flex;
+  gap: 1rem;
+}
+
 .kontroll-tittel {
   margin-bottom: 1rem;
 }

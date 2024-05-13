@@ -3,7 +3,6 @@ import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
-import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
 import TestForm from '@test/testregel-form/TestForm';
 import {
@@ -19,7 +18,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props {
-  testFerdig: boolean;
   pageType: PageType;
   innhaldstype: InnhaldstypeTesting;
   progressionPercent: number;
@@ -61,7 +59,6 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
 }
 
 const LoeysingTestContent = ({
-  testFerdig,
   pageType,
   innhaldstype,
   progressionPercent,
@@ -96,10 +93,6 @@ const LoeysingTestContent = ({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  if (testFerdig) {
-    return <TestFerdig />;
-  }
 
   function leggTilFlereTestelementer() {
     if (
@@ -137,7 +130,7 @@ const LoeysingTestContent = ({
                       Number(testgrunnlagId),
                       Number(loeysingId),
                       tr.id,
-                      pageType.nettsideId
+                      pageType.sideId
                     )
                   ) || 'ikkje-starta'
                 }

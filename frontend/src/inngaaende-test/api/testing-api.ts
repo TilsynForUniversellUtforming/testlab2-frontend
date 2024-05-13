@@ -3,10 +3,8 @@ import { responseToJson } from '@common/util/apiUtils';
 
 import {
   Bilde,
-  CreateTestgrunnlag,
   CreateTestResultat,
   ResultatManuellKontroll,
-  Testgrunnlag,
   TestgrunnlagListElement,
 } from './types';
 
@@ -105,23 +103,16 @@ export const deleteBilde = async (
     method: 'DELETE',
   }).then((response) => responseToJson(response, 'Kunne ikkje slette bilde'));
 
-export const createTestgrunnlag = async (
-  testgrunnlag: CreateTestgrunnlag
-): Promise<Testgrunnlag> => {
-  return await fetchWrapper(`/api/v1/testgrunnlag`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(testgrunnlag),
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikke opprette testgrunnlag')
-  );
-};
-
 export const listTestgrunnlagForSak = async (
   sakId: number
 ): Promise<TestgrunnlagListElement[]> =>
   await fetch(`/api/v1/testgrunnlag/list/${sakId}`).then((response) =>
+    responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
+  );
+
+export const listTestgrunnlagForKontroll = async (
+  kontrollId: number
+): Promise<TestgrunnlagListElement[]> =>
+  await fetch(`/api/v2/testgrunnlag/list/${kontrollId}`).then((response) =>
     responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
   );

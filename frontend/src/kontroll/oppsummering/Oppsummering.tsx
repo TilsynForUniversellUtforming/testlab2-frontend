@@ -1,3 +1,4 @@
+import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
   Button,
@@ -10,7 +11,7 @@ import {
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
 import kontrollClasses from '../kontroll.module.css';
 import { steps } from '../KontrollRoutes';
@@ -96,6 +97,11 @@ export function Oppsummering() {
     navigate('/');
   }
 
+  const isFinished =
+    kontroll.sideutvalList.filter((su) => su.url.length > 0).length > 0 &&
+    isDefined(kontroll.testreglar?.testregelList) &&
+    isDefined(kontroll.utval?.loeysingar);
+
   return (
     <section className={kontrollClasses.kontrollSection}>
       <Heading level={1} size="xlarge" className={classes.hovedoverskrift}>
@@ -156,14 +162,21 @@ export function Oppsummering() {
           onChange={setCurrentPage}
         />
       </div>
-      <Button
-        variant="secondary"
-        onClick={() =>
-          navigate(`../${kontroll.id}/${steps.sideutval.relativePath}`)
-        }
-      >
-        Tilbake
-      </Button>
+      <div className={classes.tilbakeOgNeste}>
+        <Button
+          variant="secondary"
+          onClick={() =>
+            navigate(`../${kontroll.id}/${steps.sideutval.relativePath}`)
+          }
+        >
+          Tilbake
+        </Button>
+        {isFinished && (
+          <Link to={`../../kontroll-test/${kontroll.id}`}>
+            <Button>Gå til test</Button>
+          </Link>
+        )}
+      </div>
     </section>
   );
 }
