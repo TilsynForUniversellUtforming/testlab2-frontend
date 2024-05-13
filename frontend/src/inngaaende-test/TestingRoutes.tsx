@@ -4,7 +4,7 @@ import { getSak } from '@sak/api/sak-api';
 import { getTestResults, listTestgrunnlagForSak } from '@test/api/testing-api';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import { TestOverviewLoaderResponse } from '@test/types';
-import { innhaldstypeAlle } from '@test/util/testregelUtils';
+import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
 import { listInnhaldstype } from '@testreglar/api/testreglar-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
@@ -74,13 +74,16 @@ export const TestingRoutes: RouteObject = {
           throw new Error('Kunne ikkje hente innhaldstypar');
         }
 
+        const sak = sakResponse.value;
+        const innhaldstypeList = innhaldstypeResponse.value;
+
         return defer({
           sak: sakResponse.value,
           testgrunnlag: testgrunnlagResponse.value,
-          innhaldstypeTestingList: [
-            ...innhaldstypeResponse.value,
-            innhaldstypeAlle,
-          ],
+          innhaldstypeTestingList: getInnhaldstypeInTest(
+            sak.testreglar,
+            innhaldstypeList
+          ),
         });
       },
       children: [

@@ -1,5 +1,5 @@
 import { capitalize } from '@common/util/stringutils';
-import { isNotDefined } from '@common/util/validationUtils';
+import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { ManuellTestStatus, TestregelOverviewElement } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
@@ -133,3 +133,18 @@ export function findActiveTestResults(
       (tr.nettsideId === sideId || tr.sideutvalId === sideId)
   );
 }
+
+export const getInnhaldstypeInTest = (
+  testregelList: Testregel[],
+  innhaldstypeList: InnhaldstypeTesting[]
+) => {
+  const innhaldstypeIdInTest = testregelList
+    .map((tr) => tr.innhaldstypeTesting?.id)
+    .filter((id) => isDefined(id));
+  return [
+    innhaldstypeAlle,
+    ...innhaldstypeList
+      .filter((it) => innhaldstypeIdInTest.includes(it.id))
+      .sort(),
+  ];
+};
