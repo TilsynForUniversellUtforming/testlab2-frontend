@@ -17,6 +17,7 @@ import {
 } from '@test/api/types';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
+import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import {
   ActiveTest,
   ManuellTestStatus,
@@ -557,11 +558,13 @@ const TestOverviewLoeysing = () => {
     }
   }, [alert]);
 
+  const loeysingNamn = contextSak.loeysingList[0].loeysing.namn;
+
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
         sakName={contextSak.verksemd.namn}
-        currentLoeysingName={contextSak.loeysingList[0].loeysing.namn}
+        currentLoeysingName={loeysingNamn}
         nettsideProperties={nettsideProperties}
         pageType={pageType}
         onChangePageType={onChangePageType}
@@ -570,23 +573,25 @@ const TestOverviewLoeysing = () => {
         onChangeInnhaldstype={onChangeInnhaldstype}
       />
       <div className="manual-test-buttons">
-        <LoeysingTestContent
-          testFerdig={testFerdig}
-          pageType={pageType}
-          innhaldstype={innhaldstype}
-          progressionPercent={progressionPercent}
-          testStatusMap={testStatusMap}
-          testregelList={testregelList}
-          activeTest={activeTest}
-          clearActiveTestregel={handleSetInactiveTest}
-          onChangeTestregel={onChangeTestregel}
-          createNewTestResult={createNewTestResult}
-          doUpdateTestResult={doUpdateTestResult}
-          slettTestelement={slettTestelement}
-          onChangeStatus={onChangeTestregelStatus}
-          toggleShowHelpText={toggleShowHelpText}
-          showHelpText={showHelpText}
-        />
+        {testFerdig && <TestFerdig loeysingNamn={loeysingNamn} />}
+        {!testFerdig && (
+          <LoeysingTestContent
+            pageType={pageType}
+            innhaldstype={innhaldstype}
+            progressionPercent={progressionPercent}
+            testStatusMap={testStatusMap}
+            testregelList={testregelList}
+            activeTest={activeTest}
+            clearActiveTestregel={handleSetInactiveTest}
+            onChangeTestregel={onChangeTestregel}
+            createNewTestResult={createNewTestResult}
+            doUpdateTestResult={doUpdateTestResult}
+            slettTestelement={slettTestelement}
+            onChangeStatus={onChangeTestregelStatus}
+            toggleShowHelpText={toggleShowHelpText}
+            showHelpText={showHelpText}
+          />
+        )}
       </div>
       {alert && (
         <AlertModal

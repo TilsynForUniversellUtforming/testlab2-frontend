@@ -17,6 +17,7 @@ import {
 } from '@test/api/types';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
 import LoeysingTestHeadingKontroll from '@test/test-overview/loeysing-test/LoeysingTestHeadingKontroll';
+import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import {
   ActiveTest,
   ContextKontroll,
@@ -257,11 +258,11 @@ const TestOverviewLoeysingKontroll = () => {
           return;
         }
 
-        const sakIdNumeric = Number(testgrunnlagId);
+        const testgrunnlagIdNumeric = Number(testgrunnlagId);
         const loeysingIdNumeric = Number(loeysingId);
 
         const statusKey = toTestregelStatusKey(
-          sakIdNumeric,
+          testgrunnlagIdNumeric,
           loeysingIdNumeric,
           nextTestregel.id,
           pageType.sideId
@@ -270,7 +271,7 @@ const TestOverviewLoeysingKontroll = () => {
 
         if (testregelStatus && testregelStatus === 'ikkje-starta') {
           doCreateTestResult(
-            sakIdNumeric,
+            testgrunnlagIdNumeric,
             loeysingIdNumeric,
             nextTestregel,
             pageType.sideId
@@ -300,7 +301,7 @@ const TestOverviewLoeysingKontroll = () => {
 
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
-      const sakIdNumeric = Number(testgrunnlagId);
+      const testgrunnlagIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
       const testregel = contextKontroll.testregelList.find(
@@ -314,7 +315,7 @@ const TestOverviewLoeysingKontroll = () => {
       if (testStatusMap && testregel) {
         if (status === 'under-arbeid' && isNotDefined(selectedTestresultat)) {
           doCreateTestResult(
-            sakIdNumeric,
+            testgrunnlagIdNumeric,
             loeysingIdNumeric,
             testregel,
             pageType.sideId
@@ -347,7 +348,7 @@ const TestOverviewLoeysingKontroll = () => {
             const updatedtestResults: ResultatManuellKontroll[] =
               selectedTestresultat.map((testResult) => ({
                 id: testResult.id,
-                testgrunnlagId: sakIdNumeric,
+                testgrunnlagId: testgrunnlagIdNumeric,
                 loeysingId: loeysingIdNumeric,
                 testregelId: testregelId,
                 sideutvalId: testResult.sideutvalId,
@@ -381,14 +382,14 @@ const TestOverviewLoeysingKontroll = () => {
   // Create test result when the block is opened
   const doCreateTestResult = useCallback(
     async (
-      sakId: number,
+      testgrunnlagId: number,
       loeysingId: number,
       activeTestregel: Testregel,
       sideutvalId: number | undefined
     ) => {
       if (activeTestregel && sideutvalId) {
         const testResult: CreateTestResultat = {
-          testgrunnlagId: sakId,
+          testgrunnlagId: testgrunnlagId,
           loeysingId: loeysingId,
           testregelId: activeTestregel.id,
           sideutvalId: sideutvalId,
@@ -423,7 +424,7 @@ const TestOverviewLoeysingKontroll = () => {
     async (testResultUpdate: TestResultUpdate) => {
       const { resultatId, alleSvar, resultat, elementOmtale, kommentar } =
         testResultUpdate;
-      const sakIdNumeric = Number(testgrunnlagId);
+      const testgrunnlagIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
       const activeTestResult = testResults.find(
@@ -431,7 +432,7 @@ const TestOverviewLoeysingKontroll = () => {
       );
 
       if (
-        isDefined(sakIdNumeric) &&
+        isDefined(testgrunnlagIdNumeric) &&
         isDefined(loeysingIdNumeric) &&
         activeTest &&
         pageType.sideId &&
@@ -439,7 +440,7 @@ const TestOverviewLoeysingKontroll = () => {
       ) {
         const testResult: ResultatManuellKontroll = {
           id: activeTestResult.id,
-          testgrunnlagId: sakIdNumeric,
+          testgrunnlagId: testgrunnlagIdNumeric,
           loeysingId: loeysingIdNumeric,
           testregelId: activeTest.testregel?.id,
           sideutvalId: pageType.sideId,
@@ -585,11 +586,13 @@ const TestOverviewLoeysingKontroll = () => {
     }
   }, [alert]);
 
+  const loeysingNamn = contextKontroll.loeysingList[0].namn;
+
   return (
     <div className="manual-test-container">
       <LoeysingTestHeadingKontroll
         title={contextKontroll.tittel}
-        currentLoeysingName={contextKontroll.loeysingList[0].namn}
+        currentLoeysingName={loeysingNamn}
         sideutvalOptionList={sideutvalOptionList}
         pageType={pageType}
         onChangePageType={onChangePageType}
@@ -598,23 +601,25 @@ const TestOverviewLoeysingKontroll = () => {
         onChangeInnhaldstype={onChangeInnhaldstype}
       />
       <div className="manual-test-buttons">
-        <LoeysingTestContent
-          testFerdig={testFerdig}
-          pageType={pageType}
-          innhaldstype={innhaldstype}
-          progressionPercent={progressionPercent}
-          testStatusMap={testStatusMap}
-          testregelList={testregelList}
-          activeTest={activeTest}
-          clearActiveTestregel={handleSetInactiveTest}
-          onChangeTestregel={onChangeTestregel}
-          createNewTestResult={createNewTestResult}
-          doUpdateTestResult={doUpdateTestResult}
-          slettTestelement={slettTestelement}
-          onChangeStatus={onChangeTestregelStatus}
-          toggleShowHelpText={toggleShowHelpText}
-          showHelpText={showHelpText}
-        />
+        {testFerdig && <TestFerdig loeysingNamn={loeysingNamn} />}
+        {!testFerdig && (
+          <LoeysingTestContent
+            pageType={pageType}
+            innhaldstype={innhaldstype}
+            progressionPercent={progressionPercent}
+            testStatusMap={testStatusMap}
+            testregelList={testregelList}
+            activeTest={activeTest}
+            clearActiveTestregel={handleSetInactiveTest}
+            onChangeTestregel={onChangeTestregel}
+            createNewTestResult={createNewTestResult}
+            doUpdateTestResult={doUpdateTestResult}
+            slettTestelement={slettTestelement}
+            onChangeStatus={onChangeTestregelStatus}
+            toggleShowHelpText={toggleShowHelpText}
+            showHelpText={showHelpText}
+          />
+        )}
       </div>
       {alert && (
         <AlertModal

@@ -9,12 +9,6 @@ export const innhaldstypeAlle: InnhaldstypeTesting = {
   innhaldstype: 'Alle',
 };
 
-export const getTestResultsForLoeysing = (
-  testResults: ResultatManuellKontroll[],
-  loeysingId: number | undefined
-): ResultatManuellKontroll[] =>
-  testResults.filter((tr) => tr.loeysingId === loeysingId);
-
 export const isTestFinished = (
   testResults: ResultatManuellKontroll[],
   testregelIdList: number[],
@@ -28,7 +22,10 @@ export const isTestFinished = (
         tr.loeysingId === loeysingId &&
         tr.status === 'Ferdig'
     )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId}`);
+    .map(
+      (tr) =>
+        `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId ?? tr.sideutvalId}`
+    );
 
   const totalTestregelToTest = testregelIdList.length * nettsideLength;
 
@@ -36,16 +33,16 @@ export const isTestFinished = (
 };
 
 export const toTestregelStatusKey = (
-  sakId: number,
+  testgrunnlagId: number,
   loeysingId: number,
   testregelId: number,
   nettsideId: number
-) => [sakId, loeysingId, testregelId, nettsideId].join('_');
+) => [testgrunnlagId, loeysingId, testregelId, nettsideId].join('_');
 
 export const toTestregelStatus = (
   testregelList: TestregelOverviewElement[],
   testResults: ResultatManuellKontroll[],
-  sakId: number,
+  testgrunnlagId: number,
   loeysingId: number,
   nettsideId: number
 ): Map<string, ManuellTestStatus> =>
@@ -53,7 +50,7 @@ export const toTestregelStatus = (
     testregelList.map((testregel) => {
       const testresults = findActiveTestResults(
         testResults,
-        sakId,
+        testgrunnlagId,
         loeysingId,
         testregel.id,
         nettsideId
@@ -76,7 +73,12 @@ export const toTestregelStatus = (
       // TODO - Slett
 
       return [
-        toTestregelStatusKey(sakId, loeysingId, testregel.id, nettsideId),
+        toTestregelStatusKey(
+          testgrunnlagId,
+          loeysingId,
+          testregel.id,
+          nettsideId
+        ),
         status,
       ];
     })
@@ -118,14 +120,14 @@ export const mapTestregelOverviewElements = (
 
 export function findActiveTestResults(
   testResults: ResultatManuellKontroll[],
-  sakId: number,
+  testgrunnlagId: number,
   loeysingId: number,
   testregelId: number,
   sideId: number
 ): ResultatManuellKontroll[] {
   return testResults.filter(
     (tr) =>
-      tr.testgrunnlagId === sakId &&
+      tr.testgrunnlagId === testgrunnlagId &&
       tr.loeysingId === loeysingId &&
       tr.testregelId === testregelId &&
       (tr.nettsideId === sideId || tr.sideutvalId === sideId)

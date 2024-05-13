@@ -24,10 +24,10 @@ export const progressionForLoeysingNettsideKontroll = (
       (tr) =>
         testregelIdList.includes(tr.testregelId) &&
         tr.loeysingId === loeysingId &&
-        tr.nettsideId === sideutvalId &&
+        tr.sideutvalId === sideutvalId &&
         tr.status === 'Ferdig'
     )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId}`);
+    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
 
   const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
 
