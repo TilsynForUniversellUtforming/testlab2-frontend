@@ -84,10 +84,14 @@ export const uploadBilde = async (
   formData.append('bilde', bilde);
   formData.append('resultatId', String(resultatId));
 
-  return await fetchWrapper(`${testingApiBaseUrl}/bilder?includeBilder=true`, {
-    method: 'POST',
-    body: formData,
-  }).then((response) => responseToJson(response, 'Kunne ikkje lagre bilde'));
+  return await fetchWrapper(
+    `${testingApiBaseUrl}/bilder?includeBilder=true`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+    false
+  ).then((response) => responseToJson(response, 'Kunne ikkje lagre bilde'));
 };
 
 export const getBilder = async (resultatId: number): Promise<Bilde[]> =>

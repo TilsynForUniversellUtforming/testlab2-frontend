@@ -7,7 +7,7 @@ import {
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysingKontroll from '@test/test-overview/loeysing-test/TestOverviewLoeysingKontroll';
 import { ContextKontroll, TestOverviewLoaderResponse } from '@test/types';
-import { innhaldstypeAlle } from '@test/util/testregelUtils';
+import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
 import {
   listInnhaldstype,
   listTestreglarWithMetadata,
@@ -125,14 +125,16 @@ export const TestingRoutesKontroll: RouteObject = {
           testregelList: kontrollTestreglar,
         };
 
+        const innhaldstypeList = innhaldstypePromise.value;
+
         return defer({
           kontroll: contextKontroll,
           testgrunnlag: testgrunnlagPromise.value,
           sideutvalTypeList: sideutvalTypePromise.value,
-          innhaldstypeTestingList: [
-            ...innhaldstypePromise.value,
-            innhaldstypeAlle,
-          ],
+          innhaldstypeTestingList: getInnhaldstypeInTest(
+            kontrollTestreglar,
+            innhaldstypeList
+          ),
         });
       },
       children: [
