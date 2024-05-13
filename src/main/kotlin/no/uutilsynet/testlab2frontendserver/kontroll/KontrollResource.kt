@@ -5,14 +5,7 @@ import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
 @RestController
@@ -22,6 +15,26 @@ class KontrollResource(
     val testingApiProperties: TestingApiProperties,
 ) {
   private val logger: Logger = LoggerFactory.getLogger(KontrollResource::class.java)
+
+  data class KontrollListItem(
+      val id: Int,
+      val tittel: String,
+      val saksbehandler: String,
+      val sakstype: String,
+      val arkivreferanse: String,
+      val kontrolltype: String
+  )
+
+  @GetMapping
+  fun getKontroller(): List<KontrollListItem> {
+    return runCatching {
+          restTemplate.getList<KontrollListItem>(testingApiProperties.url + "/kontroller")
+        }
+        .getOrElse {
+          logger.error("Henting av alle kontroller feilet", it)
+          throw RuntimeException(it)
+        }
+  }
 
   @PostMapping
   fun createKontroll(@RequestBody opprettKontroll: OpprettKontroll) =

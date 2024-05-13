@@ -29,6 +29,11 @@ export const updateSak = async (sakId: number, sak: EditSak): Promise<Sak> =>
   );
 
 export async function fetchAlleSaker(): Promise<Array<SakListeElement>> {
-  const r = await fetch('/api/v1/saker');
-  return await r.json();
+  const res = await fetch('/api/v1/saker');
+  if (res.status > 399) {
+    throw new Response('Feilet da vi prøvde å hente alle saker', {
+      statusText: res.statusText,
+    });
+  }
+  return res.json();
 }

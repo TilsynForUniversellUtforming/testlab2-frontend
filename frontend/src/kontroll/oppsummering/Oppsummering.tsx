@@ -63,8 +63,8 @@ export function Oppsummering() {
 
   function viewKontrollType(kontrolltype: KontrollType) {
     switch (kontrolltype) {
-      case 'manuell-kontroll':
-        return 'Manuell kontroll';
+      case 'inngaaende-kontroll':
+        return 'Inngående kontroll';
       default:
         console.error('Ukjent kontrolltype', kontrolltype);
         return 'Ukjent kontrolltype';

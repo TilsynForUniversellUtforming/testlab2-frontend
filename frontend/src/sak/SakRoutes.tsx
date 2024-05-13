@@ -1,3 +1,4 @@
+import fetchFeatures from '@common/features/api/features-api';
 import {
   AppRoute,
   createPath,
@@ -12,6 +13,7 @@ import { RouteObject } from 'react-router-dom';
 
 import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';
+import { fetchAlleKontroller } from '../kontroll/kontroll-api';
 
 export const SAK_ROOT: AppRoute = {
   navn: 'Saker',
@@ -45,7 +47,13 @@ export const SakRoutes: RouteObject = {
   children: [
     {
       index: true,
-      loader: fetchAlleSaker,
+      loader: function () {
+        return Promise.all([
+          fetchAlleSaker(),
+          fetchAlleKontroller(),
+          fetchFeatures(),
+        ]);
+      },
       element: <SakList />,
     },
     {
