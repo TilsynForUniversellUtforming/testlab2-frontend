@@ -54,13 +54,18 @@ const ResultTableBody = <T extends object>({
 
   function filterLoeysingCells<T>(subRow: Row<T>) {
     return subRow.getVisibleCells().filter((cell) => {
-      return cell.column.id !== 'namn';
+      return !['namn', 'type', 'dato'].includes(cell.column.id);
     });
   }
 
   function filterKontrollCell<T>(row: Row<T>, index: number) {
     return row.getVisibleCells().filter((cell) => {
-      return cell.column.id == 'namn' && index == 0;
+      return (
+        (cell.column.id == 'namn' ||
+          cell.column.id == 'type' ||
+          cell.column.id == 'dato') &&
+        index == 0
+      );
     });
   }
 

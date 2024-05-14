@@ -6,3 +6,19 @@
     }
   }
 }
+
+.resultat-header {
+  background: var(--fds-semantic-surface-action-subtle);
+  padding: 1rem;
+  width: 100%;
+
+  #kontrollTypeFilter {
+    max-width: 20%;
+  }
+
+  #kontrollDateFilter {
+    padding-top: 2rem;
+    display: flex;
+    gap: 2rem;
+  }
+}
