@@ -174,7 +174,7 @@ const VelgTestreglar = () => {
             [classes.selected]: !regelsettSelected,
           })}
         >
-          Vel testreglar selv
+          Vel testreglar sjølv
         </button>
       </div>
       <div className={classes.testreglarValgWrapper}>
