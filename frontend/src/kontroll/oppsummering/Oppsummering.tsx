@@ -160,14 +160,16 @@ export function Oppsummering() {
         <ul className={classes.liste}>
           {getPage(kontroll.utval?.loeysingar, currentPage).map(listeElement)}
         </ul>
-        <Pagination
-          className={classes.pagination}
-          nextLabel="Neste"
-          previousLabel="Forrige"
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onChange={setCurrentPage}
-        />
+        {totalPages > 1 && (
+          <Pagination
+            className={classes.pagination}
+            nextLabel="Neste"
+            previousLabel="Forrige"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onChange={setCurrentPage}
+          />
+        )}
       </div>
       <div className={classes.tilbakeOgNeste}>
         <Button
