@@ -97,11 +97,17 @@ export function Oppsummering() {
     navigate('/');
   }
 
+  const loeysingIdList = kontroll.utval?.loeysingar?.map((l) => l.id) ?? [];
+  const sideutvalLoeysingIdList = kontroll.sideutvalList.map(
+    (su) => su.loeysingId
+  );
+
   const isFinished =
-    kontroll.sideutvalList.filter((su) => su.url.length > 0).length ===
-      (kontroll.utval?.loeysingar?.length ?? -1) &&
+    loeysingIdList.length > 0 &&
     isDefined(kontroll.testreglar?.testregelList) &&
-    isDefined(kontroll.utval?.loeysingar);
+    loeysingIdList.every((loeysingId) =>
+      sideutvalLoeysingIdList.includes(loeysingId)
+    );
 
   return (
     <section className={kontrollClasses.kontrollSection}>
