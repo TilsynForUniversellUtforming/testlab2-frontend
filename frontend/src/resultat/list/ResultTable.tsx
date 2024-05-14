@@ -12,8 +12,10 @@ import {
 } from '@common/table/types';
 import { Button, ErrorMessage, Table } from '@digdir/designsystemet-react';
 import ResultTableBody from '@resultat/list/ResultTableBody';
+import ResultTableHeader from '@resultat/list/ResultTableHeader';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import {
+  Column,
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
@@ -118,7 +120,6 @@ const ResultatTable = <T extends object>({
     ...defaultColumns,
   ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(
     Object.assign({}, selectedRows) as unknown as RowSelectionState
   );
@@ -157,9 +158,9 @@ const ResultatTable = <T extends object>({
       talElementSamsvar: !visDetaljer,
       talElementBrot: !visDetaljer,
       idKontroll: !visDetaljer,
-      kontrollType: false,
       resultatId: false,
       dato: false,
+      type: true,
     });
     setVisDetaljer(!visDetaljer);
   };
@@ -169,9 +170,9 @@ const ResultatTable = <T extends object>({
       talElementSamsvar: false,
       talElementBrot: false,
       id: false,
-      kontrollType: false,
       resultatId: false,
       dato: false,
+      type: true,
     });
 
   const tableOptions: TableOptions<T> = {
@@ -183,7 +184,6 @@ const ResultatTable = <T extends object>({
     },
     state: {
       columnFilters,
-      globalFilter,
       rowSelection,
       columnVisibility,
     },
@@ -198,7 +198,6 @@ const ResultatTable = <T extends object>({
     },
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -214,6 +213,7 @@ const ResultatTable = <T extends object>({
       // eslint-disable-next-line
       return row.loeysingar;
     },
+    maxLeafRowFilterDepth: 0,
   };
 
   const table = useReactTable(tableOptions);
@@ -246,9 +246,18 @@ const ResultatTable = <T extends object>({
   }
 
   const headerGroup = table.getHeaderGroups()[0];
+  const kontrollTypeColumn: Column<T, unknown> | undefined =
+    table.getColumn('type');
+  const dateColumn: Column<T, unknown> | undefined = table.getColumn('dato');
 
   return (
     <div className="testlab-table">
+      {kontrollTypeColumn && dateColumn && (
+        <ResultTableHeader
+          kontrollTypeColumn={kontrollTypeColumn}
+          dateColumn={dateColumn}
+        ></ResultTableHeader>
+      )}
       <Table
         className={classnames('testlab-table__table', 'resultat-table', {
           'table-error': !!actionRequiredError,

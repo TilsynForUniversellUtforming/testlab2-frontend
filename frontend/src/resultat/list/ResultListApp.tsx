@@ -1,9 +1,10 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import { TestlabSeverity } from '@common/types';
-import { Heading, Tag } from '@digdir/designsystemet-react';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
+import { Tag } from '@digdir/designsystemet-react';
 import ResultTable from '@resultat/list/ResultTable';
 import { Resultat } from '@resultat/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, FilterFn, Row } from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
@@ -15,6 +16,20 @@ const ResultListApp = () => {
     if (percentage < 60) return 'danger';
     if (percentage < 90) return 'warning';
     return 'success';
+  };
+
+  const dateRangeFilter: FilterFn<Resultat> = (
+    row: Row<Resultat>,
+    columnId: string,
+    filterValue: [number, number]
+  ) => {
+    const [min, max] = filterValue;
+    const rowValue = Date.parse(row.getValue('dato'));
+
+    const before = max ? rowValue < max : true;
+    const after = min ? rowValue > min : true;
+
+    return before && after;
   };
 
   const columns: Array<ColumnDef<Resultat>> = [
@@ -30,6 +45,21 @@ const ResultListApp = () => {
       header: 'Saker',
       enableGlobalFilter: false,
       enableColumnFilter: false,
+    },
+
+    {
+      accessorKey: 'type',
+      header: 'Type kontroll',
+      cell: ({ row }) => sanitizeEnumLabel(row.original.type),
+      filterFn: 'includesString',
+    },
+
+    {
+      accessorKey: 'dato',
+      header: 'dato',
+      enableGlobalFilter: false,
+      enableColumnFilter: false,
+      filterFn: dateRangeFilter,
     },
 
     {
@@ -67,13 +97,7 @@ const ResultListApp = () => {
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
-    {
-      accessorKey: 'dato',
-      header: 'dato',
-      enableGlobalFilter: false,
-      enableColumnFilter: false,
-    },
-    { accessorKey: 'type', header: 'kontrolltype' },
+
     {
       accessorKey: 'talElementSamsvar',
       header: 'talElementSamsvar',
@@ -89,7 +113,6 @@ const ResultListApp = () => {
   ];
   return (
     <div className="sak-list">
-      <Heading level={1}> Resultatvisning</Heading>
       <ResultTable data={resultat} defaultColumns={columns} />
     </div>
   );
