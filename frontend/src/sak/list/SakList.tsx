@@ -9,7 +9,7 @@ import { SAK_CREATE } from '@sak/SakRoutes';
 import { ColumnDef } from '@tanstack/react-table';
 import { TEST } from '@test/TestingRoutes';
 import React, { useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
 import { KontrollListItem } from '../../kontroll/types';
 import classes from './sak-list.module.css';
@@ -131,7 +131,11 @@ const SakList = () => {
                 .filter((k) => filter === k.kontrolltype)
                 .map((kontroll) => (
                   <Table.Row key={kontroll.id}>
-                    <Table.Cell>{kontroll.tittel}</Table.Cell>
+                    <Table.Cell>
+                      <Link to={`/kontroll/${kontroll.id}/oppsummering`}>
+                        {kontroll.tittel}
+                      </Link>
+                    </Table.Cell>
                     <Table.Cell></Table.Cell>
                     <Table.Cell>{kontroll.saksbehandler}</Table.Cell>
                     <Table.Cell></Table.Cell>
