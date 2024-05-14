@@ -180,7 +180,7 @@ const VelgTestreglar = () => {
       <div className={classes.testreglarValgWrapper}>
         <TestregelFilter
           heading={
-            regelsettSelected ? 'Vel testregelsett' : 'Vel testreglar selv'
+            regelsettSelected ? 'Vel testregelsett' : 'Vel testreglar sjølv'
           }
           modus={modus}
           onChangeModus={onChangeModus}
