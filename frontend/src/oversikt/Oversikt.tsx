@@ -5,11 +5,11 @@ import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import { ButtonVariant } from '@common/types';
 import { AppRoute } from '@common/util/routeUtils';
 import { Heading } from '@digdir/designsystemet-react';
-import { SAK_CREATE } from '@sak/SakRoutes';
 import { TEST_ROOT } from '@test/TestingRoutes';
 import React from 'react';
 
 import { anna, saksbehandling, testing, utval } from '../AppRoutes';
+import { KONTROLL_CREATE } from '../kontroll/KontrollRoutes';
 
 interface OversiktLinkListProps {
   heading: string;
@@ -49,8 +49,8 @@ const Oversikt = () => {
         </Heading>
         <div className="oversikt__sak-links">
           <TestlabLinkButton
-            route={SAK_CREATE}
-            title={SAK_CREATE.navn}
+            route={KONTROLL_CREATE}
+            title={KONTROLL_CREATE.navn}
             variant={ButtonVariant.Outline}
             size="large"
             color="second"
@@ -59,12 +59,12 @@ const Oversikt = () => {
           >
             <img
               className="lenker__img"
-              src={SAK_CREATE.imgSrc}
-              alt={SAK_CREATE.navn}
+              src={KONTROLL_CREATE.imgSrc}
+              alt={KONTROLL_CREATE.navn}
               width={36}
               height={36}
             />
-            {SAK_CREATE.navn}
+            {KONTROLL_CREATE.navn}
           </TestlabLinkButton>
           <TestlabLinkButton
             route={TEST_ROOT}
