@@ -1,4 +1,5 @@
 import ErrorCard from '@common/error/ErrorCard';
+import { AppRoute } from '@common/util/routeUtils';
 import { isDefined } from '@common/util/validationUtils';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
@@ -8,6 +9,7 @@ import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
+import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';
 import {
   fetchAlleKontroller,
@@ -52,6 +54,12 @@ export const KONTROLL_LISTE = {
   navn: 'Kontroller',
   path: 'kontroll/liste',
   imgSrc: sakerImg,
+};
+
+export const KONTROLL_CREATE: AppRoute = {
+  navn: 'Ny kontroll',
+  path: 'kontroll',
+  imgSrc: nySakImg,
 };
 
 export const KontrollRoutes: RouteObject = {
