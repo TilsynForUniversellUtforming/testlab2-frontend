@@ -2,12 +2,15 @@ import ErrorCard from '@common/error/ErrorCard';
 import { isDefined } from '@common/util/validationUtils';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
+import KontrollList from '@sak/list/KontrollList';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
 import { redirect, RouteObject, useRouteError } from 'react-router-dom';
 
+import sakerImg from '../assets/saker.svg';
 import {
+  fetchAlleKontroller,
   fetchKontroll,
   listSideutvalType,
   updateKontroll,
@@ -45,6 +48,12 @@ export const steps = {
   oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
 };
 
+export const KONTROLL_LISTE = {
+  navn: 'Kontroller',
+  path: 'kontroll/liste',
+  imgSrc: sakerImg,
+};
+
 export const KontrollRoutes: RouteObject = {
   path: 'kontroll',
   element: <Outlet />,
@@ -55,6 +64,12 @@ export const KontrollRoutes: RouteObject = {
       element: <OpprettKontroll />,
       handle: { name: steps.opprett.name },
       action: action,
+    },
+    {
+      element: <KontrollList />,
+      handle: { name: 'Alle kontroller' },
+      path: 'liste',
+      loader: fetchAlleKontroller,
     },
     {
       path: ':kontrollId/velg-losninger',

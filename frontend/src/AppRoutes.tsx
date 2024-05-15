@@ -4,7 +4,7 @@ import Page404 from '@common/Page404';
 import { AppRoute } from '@common/util/routeUtils';
 import { LOEYSING_ROOT, LoeysingRoutes } from '@loeysingar/LoeysingRoutes';
 import { MAALING_ROOT, MaalingRoutes } from '@maaling/MaalingRoutes';
-import { SAK_ROOT, SakRoutes } from '@sak/SakRoutes';
+import { SakRoutes } from '@sak/SakRoutes';
 import { TestingRoutes } from '@test/TestingRoutes';
 import { TestingRoutesKontroll } from '@test/TestingRoutesKontroll';
 import { TESTREGEL_ROOT, TestregelRoutes } from '@testreglar/TestregelRoutes';
@@ -17,7 +17,7 @@ import mineTestarImg from './assets/mine-testar.svg';
 import teknikkImg from './assets/teknikk.svg';
 import konkurranseImg from './assets/teknikk.svg';
 import tilsynImg from './assets/tilsyn.svg';
-import { KontrollRoutes } from './kontroll/KontrollRoutes';
+import { KONTROLL_LISTE, KontrollRoutes } from './kontroll/KontrollRoutes';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
 import { RESULTAT_ROOT, ResultRoutes } from './resultat/ResultatRoutes';
@@ -76,7 +76,7 @@ export const utval: AppRoute[] = [
 
 export const saksbehandling: AppRoute[] = [
   MINE_SAKER_ROOT,
-  SAK_ROOT,
+  KONTROLL_LISTE,
   MAALING_ROOT,
 ];
 

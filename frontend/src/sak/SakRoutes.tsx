@@ -1,12 +1,10 @@
-import fetchFeatures from '@common/features/api/features-api';
 import {
   AppRoute,
   createPath,
   editPath,
   idPath,
 } from '@common/util/routeUtils';
-import { fetchAlleSaker } from '@sak/api/sak-api';
-import SakList from '@sak/list/SakList';
+import KontrollList from '@sak/list/KontrollList';
 import SakApp from '@sak/SakApp';
 import SakCreate from '@sak/SakCreate';
 import { RouteObject } from 'react-router-dom';
@@ -47,14 +45,8 @@ export const SakRoutes: RouteObject = {
   children: [
     {
       index: true,
-      loader: function () {
-        return Promise.all([
-          fetchAlleSaker(),
-          fetchAlleKontroller(),
-          fetchFeatures(),
-        ]);
-      },
-      element: <SakList />,
+      loader: fetchAlleKontroller,
+      element: <KontrollList />,
     },
     {
       path: createPath,
