@@ -8,7 +8,7 @@ import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingColumnsReadOnly } from '@loeysingar/list/LoeysingColumns';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { MAALING } from '@maaling/MaalingRoutes';
-import MaalingEdit from '@sak/MaalingEdit';
+import MaalingEdit from '@maaling/MaalingEdit';
 import { TestregelBase } from '@testreglar/api/types';
 import { TESTREGEL_EDIT } from '@testreglar/TestregelRoutes';
 import { getTestregelColumnsReadOnly } from '@testreglar/testreglar-liste/TestregelColumns';

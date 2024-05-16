@@ -9,10 +9,10 @@ import { MaalingContext } from '@maaling/types';
 import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
-import SakForm from './form/SakForm';
-import useMaalingFormState from './hooks/useMaalingFormState';
-import useSakForm from './hooks/useSakForm';
-import { SakFormState } from './types';
+import SakForm from '@sak/form/SakForm';
+import useMaalingFormState from '@sak/hooks/useMaalingFormState';
+import useSakForm from '@sak/hooks/useSakForm';
+import { SakFormState } from '@sak/types';
 
 interface Props {
   onChangeTabs: (tab: string) => void;

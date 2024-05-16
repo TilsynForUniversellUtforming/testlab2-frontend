@@ -18,8 +18,7 @@ export type CreateTestResultat = {
   testgrunnlagId: number;
   loeysingId: number;
   testregelId: number;
-  nettsideId?: number;
-  sideutvalId?: number;
+  sideutvalId: number;
   elementOmtale?: string;
   elementResultat?: ElementResultat;
   elementUtfall?: string;

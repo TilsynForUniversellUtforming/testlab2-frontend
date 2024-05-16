@@ -14,9 +14,9 @@ interface Props {
 const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (nettsideId: string) => {
+  const handleButtonClick = (typeId: string) => {
     setShow(false);
-    onChangeType(nettsideId);
+    onChangeType(typeId);
   };
 
   return (

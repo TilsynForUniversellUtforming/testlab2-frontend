@@ -2,7 +2,7 @@ import { Button, Heading, Table } from '@digdir/designsystemet-react';
 import React, { useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 
-import { KontrollListItem } from '../../kontroll/types';
+import { KontrollListItem } from '../types';
 import classes from './kontroll-list.module.css';
 
 type Filter =
