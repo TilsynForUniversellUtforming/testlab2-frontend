@@ -1,7 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
 import java.time.Instant
-import no.uutilsynet.testlab2frontendserver.sak.Brukar
+import no.uutilsynet.testlab2frontendserver.common.Brukar
 
 data class ResultatManuellKontroll(
     val id: Int,

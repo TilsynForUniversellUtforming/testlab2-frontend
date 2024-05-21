@@ -3,7 +3,6 @@ import { AppRoute } from '@common/util/routeUtils';
 import { isDefined } from '@common/util/validationUtils';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { fetchUtvalList, getUtvalById } from '@loeysingar/api/utval-api';
-import KontrollList from './list/KontrollList';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Outlet } from 'react-router';
@@ -19,11 +18,16 @@ import {
   updateKontrollSideutval,
   updateKontrollTestreglar,
 } from './kontroll-api';
+import KontrollList from './list/KontrollList';
 import OpprettKontroll, { action } from './OpprettKontroll';
 import { Oppsummering } from './oppsummering/Oppsummering';
 import { SideutvalLoader } from './sideutval/types';
 import VelgSideutval from './sideutval/VelgSideutval';
-import { Kontroll, UpdateKontrollSideutval, UpdateKontrollTestregel, } from './types';
+import {
+  Kontroll,
+  UpdateKontrollSideutval,
+  UpdateKontrollTestregel,
+} from './types';
 import { VelgTestreglarLoader } from './velg-testreglar/types';
 import VelgTestreglar from './velg-testreglar/VelgTestreglar';
 import VelgLoesninger from './VelgLoesninger';

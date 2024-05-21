@@ -6,6 +6,7 @@ import {
 } from '@common/util/routeUtils';
 import MaalingList from '@maaling/list/MaalingList';
 import MaalingApp from '@maaling/MaalingApp';
+import MaalingCreate from '@maaling/MaalingCreate';
 import MaalingOverviewApp from '@maaling/overview/MaalingOverviewApp';
 import MaalingOverviewWrapper from '@maaling/overview/MaalingOverviewWrapper';
 import KvalitetssikringApp from '@maaling/resultat/sideutval/kvalitetssikring/KvalitetssikringApp';
@@ -80,6 +81,13 @@ export const MaalingRoutes: RouteObject = {
     {
       index: true,
       element: <MaalingList />,
+    },
+    {
+      path: MAALING_CREATE.path,
+      element: <MaalingCreate />,
+      handle: {
+        name: MAALING_CREATE.navn,
+      },
     },
     {
       path: idPath,

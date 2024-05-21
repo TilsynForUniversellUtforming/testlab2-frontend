@@ -22,10 +22,7 @@ export const isTestFinished = (
         tr.loeysingId === loeysingId &&
         tr.status === 'Ferdig'
     )
-    .map(
-      (tr) =>
-        `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`
-    );
+    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
 
   const totalTestregelToTest = testregelIdList.length * nettsideLength;
 

@@ -1,4 +1,3 @@
-import { LoeysingNettsideRelation } from '@sak/types';
 import { finnSvar, TestregelResultat } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 
@@ -74,18 +73,6 @@ export type Bilde = {
   bildeURI: string;
   thumbnailURI: string;
   opprettet: Date;
-};
-
-export type Testgrunnlag = {
-  id: number;
-} & CreateTestgrunnlag;
-
-export type CreateTestgrunnlag = {
-  parentId: number;
-  namn: string;
-  testreglar: number[];
-  loeysingNettsideRelation: LoeysingNettsideRelation[];
-  type: string;
 };
 
 export type TestgrunnlagListElement = {

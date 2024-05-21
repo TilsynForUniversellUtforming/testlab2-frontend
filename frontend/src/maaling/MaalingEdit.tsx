@@ -5,14 +5,12 @@ import useError from '@common/hooks/useError';
 import useLoading from '@common/hooks/useLoading';
 import { updateMaaling } from '@maaling/api/maaling-api';
 import { MaalingEditParams } from '@maaling/api/types';
-import { MaalingContext } from '@maaling/types';
+import MaalingForm from '@maaling/form/form/MaalingForm';
+import useMaalingForm from '@maaling/hooks/hooks/useMaalingForm';
+import useMaalingFormState from '@maaling/hooks/hooks/useMaalingFormState';
+import { MaalingContext, MaalingFormState } from '@maaling/types';
 import React, { useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
-
-import SakForm from '@sak/form/SakForm';
-import useMaalingFormState from '@sak/hooks/useMaalingFormState';
-import useSakForm from '@sak/hooks/useSakForm';
-import { SakFormState } from '@sak/types';
 
 interface Props {
   onChangeTabs: (tab: string) => void;
@@ -38,7 +36,7 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
   );
 
   const doSubmitMaaling = useCallback(
-    (maalingFormState: SakFormState) => {
+    (maalingFormState: MaalingFormState) => {
       setLoading(true);
       setError(undefined);
 
@@ -77,11 +75,11 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
     [maaling]
   );
 
-  const formStepState = useSakForm(maaling?.status, true);
+  const formStepState = useMaalingForm(maaling?.status, true);
   const { isLastStep, setNextStep, currentStepIdx } = formStepState;
 
   const handleSubmit = useCallback(
-    (maalingFormState: SakFormState) => {
+    (maalingFormState: MaalingFormState) => {
       setMaalingFormState((prevState) => ({
         ...prevState,
         ...maalingFormState,
@@ -97,9 +95,9 @@ const MaalingEdit = ({ onChangeTabs }: Props) => {
 
   return (
     <>
-      <SakForm
+      <MaalingForm
         formStepState={formStepState}
-        sakFormState={maalingFormState}
+        maalingFormState={maalingFormState}
         onSubmit={handleSubmit}
         loading={loading}
         error={error}

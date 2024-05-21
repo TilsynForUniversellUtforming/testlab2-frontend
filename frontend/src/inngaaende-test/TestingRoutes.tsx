@@ -1,13 +1,17 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import { getTestResults, listTestgrunnlagForKontroll, } from '@test/api/testing-api';
+import { getTestResults, listTestgrunnlag } from '@test/api/testing-api';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import { ContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
-import { listInnhaldstype, listTestreglarWithMetadata, } from '@testreglar/api/testreglar-api';
+import {
+  listInnhaldstype,
+  listTestreglarWithMetadata,
+} from '@testreglar/api/testreglar-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
+import nyTestImg from '../assets/ny_test.svg';
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
 import InngaaendeTestApp from './InngaaendeTestApp';
@@ -16,6 +20,8 @@ import TestOverview from './test-overview/TestOverview';
 export const TEST_ROOT: AppRoute = {
   navn: 'Tester',
   path: 'kontroll-test',
+  imgSrc: nyTestImg,
+  disabled: true,
 };
 
 export const TEST: AppRoute = {
@@ -61,7 +67,7 @@ export const TestingRoutes: RouteObject = {
           testreglarPromise,
         ] = await Promise.allSettled([
           fetchKontroll(kontrollId),
-          listTestgrunnlagForKontroll(kontrollId),
+          listTestgrunnlag(kontrollId),
           listSideutvalType(),
           listInnhaldstype(),
           listTestreglarWithMetadata(),

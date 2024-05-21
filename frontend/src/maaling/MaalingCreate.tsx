@@ -1,4 +1,4 @@
-import '@sak/sak.scss';
+import '@maaling/sak.scss';
 
 import toError from '@common/error/util';
 import useError from '@common/hooks/useError';
@@ -6,13 +6,12 @@ import useLoading from '@common/hooks/useLoading';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { createMaaling } from '@maaling/api/maaling-api';
 import { MaalingInit } from '@maaling/api/types';
+import MaalingForm from '@maaling/form/form/MaalingForm';
+import useMaalingForm from '@maaling/hooks/hooks/useMaalingForm';
 import { MAALING } from '@maaling/MaalingRoutes';
+import { MaalingContext, MaalingFormState } from '@maaling/types';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-
-import SakForm from '@sak/form/SakForm';
-import useSakForm from '@sak/hooks/useSakForm';
-import { MaalingContext, MaalingFormState } from '@maaling/types';
 
 const MaalingCreate = () => {
   const navigate = useNavigate();
@@ -22,27 +21,42 @@ const MaalingCreate = () => {
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useLoading(contextLoading);
 
-  const [sakFormState, setSakFormState] =
-    useState<MaalingFormState>(defaultSakFormState);
+  const [formState, setFormState] = useState<MaalingFormState>({
+    navn: '',
+    loeysingList: [],
+    loeysingSource: 'manuell',
+    testregelList: [],
+    maxLenker: 100,
+    talLenker: 30,
+    sakType: 'Forenklet kontroll',
+    advisorId: undefined,
+    sakNumber: undefined,
+  });
 
-  const doCreateMaaling = async (sakFormState: MaalingFormState) => {
+  const doCreateMaaling = async (maalingFormState: MaalingFormState) => {
     setLoading(true);
     setError(undefined);
 
-    if (sakFormState.navn && sakFormState.maxLenker && sakFormState.talLenker) {
+    if (
+      maalingFormState.navn &&
+      maalingFormState.maxLenker &&
+      maalingFormState.talLenker
+    ) {
       const base = {
-        navn: sakFormState.navn,
-        testregelIdList: sakFormState.testregelList.map((tr) => tr.id),
+        navn: maalingFormState.navn,
+        testregelIdList: maalingFormState.testregelList.map((tr) => tr.id),
         crawlParameters: {
-          maxLenker: sakFormState.maxLenker,
-          talLenker: sakFormState.talLenker,
+          maxLenker: maalingFormState.maxLenker,
+          talLenker: maalingFormState.talLenker,
         },
       };
-      const maalingInit: MaalingInit = sakFormState.utval
-        ? { ...base, utvalId: sakFormState.utval.id }
+      const maalingInit: MaalingInit = maalingFormState.utval
+        ? { ...base, utvalId: maalingFormState.utval.id }
         : {
             ...base,
-            loeysingIdList: sakFormState.loeysingList.map((l) => l.loeysing.id),
+            loeysingIdList: maalingFormState.loeysingList.map(
+              (l) => l.loeysing.id
+            ),
           };
 
       try {
@@ -61,21 +75,21 @@ const MaalingCreate = () => {
     }
   };
 
-  const formStepState = useSakForm('planlegging');
+  const formStepState = useMaalingForm('planlegging');
   const { isLastStep, setNextStep, currentStepIdx } = formStepState;
 
   const handleSubmit = useCallback(
-    (sakFormState: MaalingFormState) => {
-      setSakFormState((prevState) => ({
+    (maalingFormState: MaalingFormState) => {
+      setFormState((prevState) => ({
         ...prevState,
-        ...sakFormState,
+        ...maalingFormState,
       }));
 
-      if (sakFormState?.sakType === 'Forenklet kontroll') {
+      if (maalingFormState?.sakType === 'Forenklet kontroll') {
         if (!isLastStep(currentStepIdx)) {
           return setNextStep();
         } else {
-          doCreateMaaling(sakFormState).finally(() => {
+          doCreateMaaling(maalingFormState).finally(() => {
             setLoading(false);
           });
         }
@@ -85,9 +99,9 @@ const MaalingCreate = () => {
   );
 
   return (
-    <SakForm
+    <MaalingForm
       formStepState={formStepState}
-      sakFormState={sakFormState}
+      maalingFormState={formState}
       onSubmit={handleSubmit}
       loading={loading}
       error={error}

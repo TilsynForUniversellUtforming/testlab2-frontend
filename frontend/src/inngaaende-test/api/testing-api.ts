@@ -107,14 +107,7 @@ export const deleteBilde = async (
     method: 'DELETE',
   }).then((response) => responseToJson(response, 'Kunne ikkje slette bilde'));
 
-export const listTestgrunnlagForSak = async (
-  sakId: number
-): Promise<TestgrunnlagListElement[]> =>
-  await fetch(`/api/v1/testgrunnlag/list/${sakId}`).then((response) =>
-    responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
-  );
-
-export const listTestgrunnlagForKontroll = async (
+export const listTestgrunnlag = async (
   kontrollId: number
 ): Promise<TestgrunnlagListElement[]> =>
   await fetch(`/api/v2/testgrunnlag/list/${kontrollId}`).then((response) =>

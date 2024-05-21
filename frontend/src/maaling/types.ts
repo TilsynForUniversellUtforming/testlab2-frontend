@@ -1,8 +1,9 @@
 import { AppContext, Severity } from '@common/types';
 import { Loeysing, Utval } from '@loeysingar/api/types';
+import { FormStepState } from '@maaling/hooks/hooks/useMaalingForm';
+import { Regelsett, TestregelBase } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 
-import { Regelsett, TestregelBase } from '@testreglar/api/types';
 import { User } from '../user/api/types';
 import { Maaling } from './api/types';
 
@@ -127,26 +128,26 @@ export const defaultSakFormState: MaalingFormState = {
   sakId: undefined,
   frist: undefined,
 };
-export type SakStepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
+export type StepType = 'Init' | 'Loeysing' | 'Testregel' | 'Confirm';
 
-export type SakStepBase = {
+export type StepBase = {
   heading: string;
   subHeading?: string;
   stepperTitle: string;
   stepperSubTitle: string;
-  sakStepType: SakStepType;
+  sakStepType: StepType;
 };
 
-export type SakStep = {
+export type MaalingStep = {
   index: number;
   heading: string;
   description?: string;
   stepperTitle: string;
   stepperSubTitle: string;
-  sakStepType: SakStepType;
+  sakStepType: StepType;
 };
 
-const initStep: SakStepBase = {
+const initStep: StepBase = {
   heading: 'La oss opprette ei sak',
   subHeading: 'Fortell oss litt om saka du vil opprette.',
   stepperTitle: 'Saka',
@@ -154,7 +155,7 @@ const initStep: SakStepBase = {
   sakStepType: 'Init',
 };
 
-const loeysingStep: SakStepBase = {
+const loeysingStep: StepBase = {
   heading: 'La oss legge til løysingar',
   subHeading: 'Vel aktuelle løysingar og kven som har ansvar for dei i saka.',
   stepperTitle: 'Løysingar',
@@ -162,7 +163,7 @@ const loeysingStep: SakStepBase = {
   sakStepType: 'Loeysing',
 };
 
-const regelsettStep: SakStepBase = {
+const regelsettStep: StepBase = {
   heading: 'La oss legge til testreglar',
   subHeading: 'Vel aktuelle testreglar.',
   stepperTitle: 'Testreglar',
@@ -170,10 +171,41 @@ const regelsettStep: SakStepBase = {
   sakStepType: 'Testregel',
 };
 
-const summaryStep: SakStepBase = {
+const summaryStep: StepBase = {
   heading: 'Oppsummering',
   subHeading: 'Sjå over at alt er på plass.',
   stepperTitle: 'Oppsummering',
   stepperSubTitle: 'Sjå over og opprett',
   sakStepType: 'Confirm',
 };
+
+export const defaultSakSteps: MaalingStep[] = [
+  { ...initStep, index: 0 },
+  { ...loeysingStep, index: 1 },
+  { ...regelsettStep, index: 2 },
+  { ...summaryStep, index: 3 },
+];
+
+export const startedSakSteps = [
+  { ...initStep, index: 0 },
+  { ...summaryStep, index: 1 },
+];
+
+export interface FormBaseProps {
+  formStepState: FormStepState;
+  maalingFormState: MaalingFormState;
+  onSubmit: (formState: MaalingFormState) => void;
+}
+
+export type Saktype =
+  | 'Forenklet kontroll'
+  | 'Inngående kontroll'
+  | 'Retest'
+  | 'Tilsyn';
+
+export const saktypeForenklet = {
+  label: 'Forenklet kontroll',
+  value: 'Forenklet kontroll',
+};
+
+export const maalingTypeOptions = [saktypeForenklet];

@@ -1,0 +1,88 @@
+.sak-stepper {
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+  padding-bottom: 5rem;
+  justify-content: center;
+
+  &__button {
+    padding: 0;
+    background: none;
+    color: var(--fds-semantic-surface-first-dark);
+    border: none;
+    font: inherit;
+    cursor: default;
+    outline: inherit;
+
+    &.active {
+      cursor: pointer;
+      .icon {
+        box-shadow: 0 0 0 1px var(--fds-semantic-surface-first-dark);
+      }
+      &:hover {
+        color: var(--colors-blue-800);
+        .icon {
+          box-shadow: 0 0 0 1px var(--fds-semantic-surface-first-light);
+          background-color: var(--fds-semantic-surface-action-no_fill-hover);
+        }
+        .text {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &.current {
+      .text {
+        text-decoration: underline;
+      }
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      word-break: break-word;
+      position: relative;
+
+      .text {
+        top: 3.5rem;
+        text-align: center;
+        position: absolute;
+        word-break: keep-all;
+
+        .title {
+          font-weight: bold;
+        }
+      }
+
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        min-height: 3rem;
+        border-radius: 50%;
+        color: var(--fds-semantic-surface-first-dark);
+        background-color: var(--fds-semantic-surface-first-light-hover);
+
+        &__line {
+          position: absolute;
+          z-index: -1;
+          border-top: 1px solid var(--fds-semantic-surface-first-dark);
+          width: 5rem;
+          left: 3rem;
+          //margin-top: 146px;
+        }
+      }
+    }
+
+    &:focus-visible {
+      outline: 3px solid #fadf4b;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 3px #1e2b3c;
+      border-radius: 3px;
+    }
+  }
+}
