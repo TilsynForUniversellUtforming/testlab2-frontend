@@ -1,7 +1,7 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { Loeysing } from '@loeysingar/api/types';
-import { LoeysingNettsideRelation } from '@sak/types';
+import { LoeysingNettsideRelation } from '@maaling/types';
 
 import { Verksemd, VerksemdInit } from './types';
 

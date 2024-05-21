@@ -6,8 +6,7 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { formatDateString, joinStringsToList } from '@common/util/stringutils';
-import { MAALING } from '@maaling/MaalingRoutes';
-import { SAK_CREATE } from '@sak/SakRoutes';
+import { MAALING, MAALING_CREATE } from '@maaling/MaalingRoutes';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -115,10 +114,6 @@ const MaalingList = () => {
         onSelectRows: onSelectRows,
         rowActions: [
           {
-            action: 'add',
-            route: SAK_CREATE,
-          },
-          {
             action: 'delete',
             rowSelectionRequired: true,
             modalProps: {
@@ -127,6 +122,10 @@ const MaalingList = () => {
               message: deleteMessage,
               onConfirm: onClickDelete,
             },
+          },
+          {
+            action: 'add',
+            route: MAALING_CREATE,
           },
         ],
         onClickRow: (row) =>

@@ -1,28 +1,24 @@
 import AlertModal from '@common/alert/AlertModal';
 import useAlertModal from '@common/alert/useAlertModal';
+import { OptionType } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
-import { Sak } from '@sak/api/types';
 import {
   createTestResultat,
   deleteTestResultat,
   updateTestResultat,
   updateTestResultatMany,
 } from '@test/api/testing-api';
-import {
-  CreateTestResultat,
-  ResultatManuellKontroll,
-  ResultatStatus,
-  toElementResultat,
-} from '@test/api/types';
+import { CreateTestResultat, ResultatManuellKontroll, ResultatStatus, toElementResultat, } from '@test/api/types';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import {
   ActiveTest,
+  ContextKontroll,
   ManuellTestStatus,
   PageType,
-  TestContext,
+  TestContextKontroll,
   TestOverviewLoaderResponse,
   TestResultUpdate,
 } from '@test/types';
@@ -35,18 +31,22 @@ import {
   toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import {
-  getInitialPageTypeSak,
-  getNettsidePropertiesSak,
-  progressionForLoeysingNettsideSak,
-  toPageTypeSak,
-} from '@test/util/testregelUtilsSak';
+  getInitialPageTypeKontroll,
+  getSideutvalOptionList,
+  progressionForLoeysingNettsideKontroll,
+  toSideutvalTestside,
+} from '@test/util/testregelUtilsKontroll';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { useCallback, useEffect, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
   const { testgrunnlagId: testgrunnlagId, loeysingId } = useParams();
-  const { contextSak, innhaldstypeList }: TestContext = useOutletContext();
+  const {
+    contextKontroll,
+    innhaldstypeList,
+    sideutvalTypeList,
+  }: TestContextKontroll = useOutletContext();
   const [innhaldstype, setInnhaldstype] =
     useState<InnhaldstypeTesting>(innhaldstypeAlle);
   const { results } = useLoaderData() as TestOverviewLoaderResponse;
@@ -57,15 +57,20 @@ const TestOverviewLoeysing = () => {
   const [alert, setAlert, modalRef] = useAlertModal();
   const [testFerdig, setTestFerdig] = useState(false);
 
-  const [nettsideProperties, setNettsideProperties] = useState(
-    getNettsidePropertiesSak(contextSak, Number(loeysingId))
+  const [sideutvalOptionList, setSideutvalOptionList] = useState<OptionType[]>(
+    getSideutvalOptionList(
+      contextKontroll,
+      sideutvalTypeList,
+      Number(loeysingId)
+    )
   );
   const [pageType, setPageType] = useState<PageType>(
-    getInitialPageTypeSak(nettsideProperties)
+    getInitialPageTypeKontroll(contextKontroll.sideutvalList, sideutvalTypeList)
   );
+
   const [progressionPercent, setProgressionPercent] = useState(
-    progressionForLoeysingNettsideSak(
-      contextSak,
+    progressionForLoeysingNettsideKontroll(
+      contextKontroll,
       results,
       pageType.sideId,
       innhaldstype,
@@ -73,7 +78,7 @@ const TestOverviewLoeysing = () => {
     )
   );
   const [testregelList, setTestregelList] = useState(
-    mapTestregelOverviewElements(contextSak.testreglar, innhaldstype)
+    mapTestregelOverviewElements(contextKontroll.testregelList, innhaldstype)
   );
   const [testStatusMap, setTestStatusMap] = useState(
     toTestregelStatus(
@@ -96,7 +101,7 @@ const TestOverviewLoeysing = () => {
   }, []);
 
   const processData = (
-    contextSak: Sak,
+    contextKontroll: ContextKontroll,
     testResultsLoeysing: ResultatManuellKontroll[],
     loeysingId: number,
     pageType: PageType,
@@ -104,17 +109,21 @@ const TestOverviewLoeysing = () => {
     activeTestregel?: Testregel
   ) => {
     const testregelList = mapTestregelOverviewElements(
-      contextSak.testreglar,
+      contextKontroll.testregelList,
       innhaldstype
     );
 
-    const nettsideProperties = getNettsidePropertiesSak(contextSak, loeysingId);
+    const sideutvalOptions = getSideutvalOptionList(
+      contextKontroll,
+      sideutvalTypeList,
+      loeysingId
+    );
 
     setTestregelList(testregelList);
-    setNettsideProperties(nettsideProperties);
+    setSideutvalOptionList(sideutvalOptions);
     setProgressionPercent(
-      progressionForLoeysingNettsideSak(
-        contextSak,
+      progressionForLoeysingNettsideKontroll(
+        contextKontroll,
         testResultsLoeysing,
         pageType.sideId,
         innhaldstype,
@@ -134,9 +143,9 @@ const TestOverviewLoeysing = () => {
 
     const finished = isTestFinished(
       testResultsLoeysing,
-      contextSak.testreglar.map((tr) => tr.id),
+      contextKontroll.testregelList.map((tr) => tr.id),
       loeysingId,
-      nettsideProperties.length
+      sideutvalOptions.length
     );
     setTestFerdig(finished);
 
@@ -161,12 +170,12 @@ const TestOverviewLoeysing = () => {
       testgrunnlagId: Number(testgrunnlagId),
       loeysingId: numericLoeysingId,
       testregelId: activeTest.testregel.id,
-      nettsideId: pageType.sideId,
+      sideutvalId: pageType.sideId,
     };
     const alleResultater = await createTestResultat(nyttTestresultat);
     setTestResults(alleResultater);
     processData(
-      contextSak,
+      contextKontroll,
       alleResultater,
       numericLoeysingId,
       pageType,
@@ -176,27 +185,34 @@ const TestOverviewLoeysing = () => {
   };
 
   const onChangePageType = useCallback(
-    (nettsideId?: string) => {
-      const nettsideIdNumeric = Number(nettsideId);
-      if (isDefined(nettsideIdNumeric)) {
-        const nextPageType = toPageTypeSak(
-          nettsideProperties,
-          nettsideIdNumeric
+    (sideutvalId?: string) => {
+      const sideutvalIdNumeric = Number(sideutvalId);
+      if (isDefined(sideutvalIdNumeric)) {
+        const nextSideutvalTestside = toSideutvalTestside(
+          contextKontroll.sideutvalList,
+          sideutvalTypeList,
+          sideutvalIdNumeric
         );
-        setPageType(nextPageType);
+        setPageType(nextSideutvalTestside);
         setActiveTest(undefined);
         processData(
-          contextSak,
+          contextKontroll,
           testResults,
           Number(loeysingId),
-          nextPageType,
+          nextSideutvalTestside,
           innhaldstype
         );
       } else {
         setAlert('danger', 'Kan ikkje byta side', 'Ugylig nettside');
       }
     },
-    [contextSak, testResults, loeysingId, nettsideProperties, innhaldstype]
+    [
+      contextKontroll,
+      testResults,
+      loeysingId,
+      sideutvalOptionList,
+      innhaldstype,
+    ]
   );
 
   const onChangeInnhaldstype = useCallback(
@@ -208,7 +224,7 @@ const TestOverviewLoeysing = () => {
         setInnhaldstype(innhaldstype);
         setActiveTest(undefined);
         processData(
-          contextSak,
+          contextKontroll,
           testResults,
           Number(loeysingId),
           pageType,
@@ -216,13 +232,13 @@ const TestOverviewLoeysing = () => {
         );
       }
     },
-    [contextSak, testResults, loeysingId, nettsideProperties, pageType]
+    [contextKontroll, testResults, loeysingId, sideutvalOptionList, pageType]
   );
 
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       setActiveTest(undefined);
-      const nextTestregel = contextSak.testreglar.find(
+      const nextTestregel = contextKontroll.testregelList.find(
         (tr) => tr.id === testregelId
       );
       if (!nextTestregel) {
@@ -237,11 +253,11 @@ const TestOverviewLoeysing = () => {
           return;
         }
 
-        const sakIdNumeric = Number(testgrunnlagId);
+        const testgrunnlagIdNumeric = Number(testgrunnlagId);
         const loeysingIdNumeric = Number(loeysingId);
 
         const statusKey = toTestregelStatusKey(
-          sakIdNumeric,
+          testgrunnlagIdNumeric,
           loeysingIdNumeric,
           nextTestregel.id,
           pageType.sideId
@@ -250,14 +266,14 @@ const TestOverviewLoeysing = () => {
 
         if (testregelStatus && testregelStatus === 'ikkje-starta') {
           doCreateTestResult(
-            sakIdNumeric,
+            testgrunnlagIdNumeric,
             loeysingIdNumeric,
             nextTestregel,
             pageType.sideId
           );
         } else {
           processData(
-            contextSak,
+            contextKontroll,
             testResults,
             Number(loeysingId),
             pageType,
@@ -270,7 +286,7 @@ const TestOverviewLoeysing = () => {
     [
       testgrunnlagId,
       loeysingId,
-      contextSak,
+      contextKontroll,
       testResults,
       pageType,
       innhaldstype,
@@ -280,10 +296,10 @@ const TestOverviewLoeysing = () => {
 
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
-      const sakIdNumeric = Number(testgrunnlagId);
+      const testgrunnlagIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
-      const testregel = contextSak.testreglar.find(
+      const testregel = contextKontroll.testregelList.find(
         (tr) => tr.id === testregelId
       );
       const selectedTestresultat = testResults.filter(
@@ -294,7 +310,7 @@ const TestOverviewLoeysing = () => {
       if (testStatusMap && testregel) {
         if (status === 'under-arbeid' && isNotDefined(selectedTestresultat)) {
           doCreateTestResult(
-            sakIdNumeric,
+            testgrunnlagIdNumeric,
             loeysingIdNumeric,
             testregel,
             pageType.sideId
@@ -327,10 +343,10 @@ const TestOverviewLoeysing = () => {
             const updatedtestResults: ResultatManuellKontroll[] =
               selectedTestresultat.map((testResult) => ({
                 id: testResult.id,
-                testgrunnlagId: sakIdNumeric,
+                testgrunnlagId: testgrunnlagIdNumeric,
                 loeysingId: loeysingIdNumeric,
                 testregelId: testregelId,
-                nettsideId: testResult.nettsideId,
+                sideutvalId: testResult.sideutvalId,
                 elementOmtale: testResult.elementOmtale,
                 elementResultat: testResult.elementResultat,
                 elementUtfall: testResult.elementUtfall,
@@ -349,7 +365,7 @@ const TestOverviewLoeysing = () => {
       }
     },
     [
-      contextSak,
+      contextKontroll,
       testStatusMap,
       loeysingId,
       testResults,
@@ -361,24 +377,24 @@ const TestOverviewLoeysing = () => {
   // Create test result when the block is opened
   const doCreateTestResult = useCallback(
     async (
-      sakId: number,
+      testgrunnlagId: number,
       loeysingId: number,
       activeTestregel: Testregel,
-      nettsideId: number | undefined
+      sideutvalId: number | undefined
     ) => {
-      if (activeTestregel && nettsideId) {
+      if (activeTestregel && sideutvalId) {
         const testResult: CreateTestResultat = {
-          testgrunnlagId: sakId,
+          testgrunnlagId: testgrunnlagId,
           loeysingId: loeysingId,
           testregelId: activeTestregel.id,
-          nettsideId: nettsideId,
+          sideutvalId: sideutvalId,
         };
 
         try {
           const createdTestResults = await createTestResultat(testResult);
           setTestResults(createdTestResults);
           processData(
-            contextSak,
+            contextKontroll,
             createdTestResults,
             loeysingId,
             pageType,
@@ -396,14 +412,14 @@ const TestOverviewLoeysing = () => {
         );
       }
     },
-    [contextSak, loeysingId, activeTest, pageType, innhaldstype]
+    [contextKontroll, loeysingId, activeTest, pageType, innhaldstype]
   );
 
   const doUpdateTestResult = useCallback(
     async (testResultUpdate: TestResultUpdate) => {
       const { resultatId, alleSvar, resultat, elementOmtale, kommentar } =
         testResultUpdate;
-      const sakIdNumeric = Number(testgrunnlagId);
+      const testgrunnlagIdNumeric = Number(testgrunnlagId);
       const loeysingIdNumeric = Number(loeysingId);
 
       const activeTestResult = testResults.find(
@@ -411,7 +427,7 @@ const TestOverviewLoeysing = () => {
       );
 
       if (
-        isDefined(sakIdNumeric) &&
+        isDefined(testgrunnlagIdNumeric) &&
         isDefined(loeysingIdNumeric) &&
         activeTest &&
         pageType.sideId &&
@@ -419,10 +435,10 @@ const TestOverviewLoeysing = () => {
       ) {
         const testResult: ResultatManuellKontroll = {
           id: activeTestResult.id,
-          testgrunnlagId: sakIdNumeric,
+          testgrunnlagId: testgrunnlagIdNumeric,
           loeysingId: loeysingIdNumeric,
           testregelId: activeTest.testregel?.id,
-          nettsideId: pageType.sideId,
+          sideutvalId: pageType.sideId,
           elementOmtale,
           elementResultat: resultat && toElementResultat(resultat),
           elementUtfall: resultat?.utfall,
@@ -444,7 +460,7 @@ const TestOverviewLoeysing = () => {
           );
           setTestResults(updatedTestResults);
           processData(
-            contextSak,
+            contextKontroll,
             updatedTestResults,
             loeysingIdNumeric,
             pageType,
@@ -493,7 +509,7 @@ const TestOverviewLoeysing = () => {
       const alleResultater = await deleteTestResultat(resultat);
       setTestResults(alleResultater);
       processData(
-        contextSak,
+        contextKontroll,
         alleResultater,
         Number(loeysingId),
         pageType,
@@ -522,7 +538,7 @@ const TestOverviewLoeysing = () => {
         });
         setTestResults(updatedTestResults);
         processData(
-          contextSak,
+          contextKontroll,
           updatedTestResults,
           Number(loeysingId),
           pageType,
@@ -536,7 +552,14 @@ const TestOverviewLoeysing = () => {
         );
       }
     },
-    [contextSak, loeysingId, activeTest, pageType, innhaldstype, testgrunnlagId]
+    [
+      contextKontroll,
+      loeysingId,
+      activeTest,
+      pageType,
+      innhaldstype,
+      testgrunnlagId,
+    ]
   );
 
   const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
@@ -558,14 +581,14 @@ const TestOverviewLoeysing = () => {
     }
   }, [alert]);
 
-  const loeysingNamn = contextSak.loeysingList[0].loeysing.namn;
+  const loeysingNamn = contextKontroll.loeysingList[0].namn;
 
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
-        sakName={contextSak.verksemd.namn}
+        title={contextKontroll.tittel}
         currentLoeysingName={loeysingNamn}
-        nettsideProperties={nettsideProperties}
+        sideutvalOptionList={sideutvalOptionList}
         pageType={pageType}
         onChangePageType={onChangePageType}
         innhaldstypeList={innhaldstypeList}

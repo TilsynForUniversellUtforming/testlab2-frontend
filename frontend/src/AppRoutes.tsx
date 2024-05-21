@@ -4,9 +4,7 @@ import Page404 from '@common/Page404';
 import { AppRoute } from '@common/util/routeUtils';
 import { LOEYSING_ROOT, LoeysingRoutes } from '@loeysingar/LoeysingRoutes';
 import { MAALING_ROOT, MaalingRoutes } from '@maaling/MaalingRoutes';
-import { SakRoutes } from '@sak/SakRoutes';
 import { TestingRoutes } from '@test/TestingRoutes';
-import { TestingRoutesKontroll } from '@test/TestingRoutesKontroll';
 import { TESTREGEL_ROOT, TestregelRoutes } from '@testreglar/TestregelRoutes';
 import { VERKSEMD_LIST, VerksemdRoutes } from '@verksemder/VerksemdRoutes';
 import { RouteObject } from 'react-router-dom';
@@ -93,7 +91,6 @@ export const AppRoutes: RouteObject = {
       index: true,
       element: <Oversikt />,
     },
-    SakRoutes,
     MaalingRoutes,
     LoeysingRoutes,
     TestregelRoutes,
@@ -102,7 +99,7 @@ export const AppRoutes: RouteObject = {
     TestingRoutes,
     ResultRoutes,
     KontrollRoutes,
-    TestingRoutesKontroll,
+    TestingRoutes,
     {
       path: '*',
       element: <Page404 />,

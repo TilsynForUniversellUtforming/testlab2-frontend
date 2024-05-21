@@ -2,27 +2,28 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
-import { TEST_LOEYSING_TESTGRUNNLAG } from '@test/TestingRoutes';
-import { TestContext } from '@test/types';
+import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
+import { TestContextKontroll } from '@test/types';
 import { useCallback } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverview = () => {
   const { id } = useParams();
-  const { contextSak, testgrunnlag }: TestContext = useOutletContext();
+  const { contextKontroll, testgrunnlag }: TestContextKontroll =
+    useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
 
   const onChangeLoeysing = useCallback(
     async (loeysingId: number) => {
-      const nextLoeysing = contextSak.loeysingList.find(
-        (l) => l.loeysing.id === loeysingId
-      );
-      if (!nextLoeysing || !id) {
+      const nextLoeysingId = contextKontroll.loeysingList.find(
+        (l) => l.id === loeysingId
+      )?.id;
+      if (!nextLoeysingId || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
       } else {
         const existingTestgrunnlag = testgrunnlag.find(
-          (tg) => tg.loeysingId === nextLoeysing.loeysing.id
+          (tg) => tg.loeysingId === nextLoeysingId
         );
         let testgrunnlagId: number;
 
@@ -30,11 +31,11 @@ const TestOverview = () => {
           testgrunnlagId = existingTestgrunnlag.id;
           navigate(
             getFullPath(
-              TEST_LOEYSING_TESTGRUNNLAG,
+              TEST_LOEYSING_KONTROLL,
               { pathParam: idPath, id: id },
               {
                 pathParam: ':loeysingId',
-                id: String(nextLoeysing.loeysing.id),
+                id: String(nextLoeysingId),
               },
               { pathParam: ':testgrunnlagId', id: String(testgrunnlagId) }
             )
@@ -44,27 +45,12 @@ const TestOverview = () => {
         }
       }
     },
-    [contextSak.loeysingList, testgrunnlag, id, navigate, setAlert]
+    [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
-
-  // const opprettTestgrunnlag = useCallback(
-  //   async (loeysing: LoeysingNettsideRelation): Promise<number> => {
-  //     const testgrunnlag: CreateTestgrunnlag = {
-  //       namn: `Test av ${loeysing.loeysing.namn} for sak ${id}`,
-  //       parentId: Number(id),
-  //       loeysingNettsideRelation: loeysing,
-  //       testreglar: contextSak.testreglar.map((testregel) => testregel.id),
-  //       type: 'OPPRINNELEG_TEST',
-  //     };
-  //     const nyttTestgrunnlag = await createTestgrunnlag(testgrunnlag);
-  //     return nyttTestgrunnlag.id;
-  //   },
-  //   [id, contextSak.testreglar]
-  // );
 
   return (
     <div className="manual-test-overview">
-      {contextSak.loeysingList.map(({ loeysing }) => {
+      {contextKontroll.loeysingList.map((loeysing) => {
         return (
           <TestLoeysingButton
             key={loeysing.id}

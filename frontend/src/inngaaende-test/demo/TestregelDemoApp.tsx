@@ -78,6 +78,6 @@ function createResultat(testregel: Testregel): ResultatManuellKontroll {
     testgrunnlagId: 1,
     loeysingId: 1,
     testregelId: testregel.id,
-    nettsideId: 1,
+    sideutvalId: 1,
   };
 }
