@@ -22,10 +22,7 @@ export const isTestFinished = (
         tr.loeysingId === loeysingId &&
         tr.status === 'Ferdig'
     )
-    .map(
-      (tr) =>
-        `${tr.testregelId}-${tr.loeysingId}-${tr.nettsideId ?? tr.sideutvalId}`
-    );
+    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
 
   const totalTestregelToTest = testregelIdList.length * nettsideLength;
 
@@ -36,15 +33,15 @@ export const toTestregelStatusKey = (
   testgrunnlagId: number,
   loeysingId: number,
   testregelId: number,
-  nettsideId: number
-) => [testgrunnlagId, loeysingId, testregelId, nettsideId].join('_');
+  sideutvalId: number
+) => [testgrunnlagId, loeysingId, testregelId, sideutvalId].join('_');
 
 export const toTestregelStatus = (
   testregelList: TestregelOverviewElement[],
   testResults: ResultatManuellKontroll[],
   testgrunnlagId: number,
   loeysingId: number,
-  nettsideId: number
+  sideutvalId: number
 ): Map<string, ManuellTestStatus> =>
   new Map(
     testregelList.map((testregel) => {
@@ -53,7 +50,7 @@ export const toTestregelStatus = (
         testgrunnlagId,
         loeysingId,
         testregel.id,
-        nettsideId
+        sideutvalId
       );
 
       // TODO - Slett når ResultatManuellKontroll har statusfelt
@@ -77,7 +74,7 @@ export const toTestregelStatus = (
           testgrunnlagId,
           loeysingId,
           testregel.id,
-          nettsideId
+          sideutvalId
         ),
         status,
       ];
@@ -130,7 +127,7 @@ export function findActiveTestResults(
       tr.testgrunnlagId === testgrunnlagId &&
       tr.loeysingId === loeysingId &&
       tr.testregelId === testregelId &&
-      (tr.nettsideId === sideId || tr.sideutvalId === sideId)
+      tr.sideutvalId === sideId
   );
 }
 

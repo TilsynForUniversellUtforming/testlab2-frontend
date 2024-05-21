@@ -1,21 +1,25 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import { getSak } from '@sak/api/sak-api';
-import { getTestResults, listTestgrunnlagForSak } from '@test/api/testing-api';
+import { getTestResults, listTestgrunnlag } from '@test/api/testing-api';
+import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
-import { TestOverviewLoaderResponse } from '@test/types';
+import { ContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
-import { listInnhaldstype } from '@testreglar/api/testreglar-api';
+import {
+  listInnhaldstype,
+  listTestreglarWithMetadata,
+} from '@testreglar/api/testreglar-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
-import TestregelDemoApp from './demo/TestregelDemoApp';
+import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
+import { Kontroll } from '../kontroll/types';
 import InngaaendeTestApp from './InngaaendeTestApp';
 import TestOverview from './test-overview/TestOverview';
 
 export const TEST_ROOT: AppRoute = {
   navn: 'Tester',
-  path: 'test',
+  path: 'kontroll-test',
   imgSrc: nyTestImg,
   disabled: true,
 };
@@ -26,7 +30,7 @@ export const TEST: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
-export const TEST_LOEYSING_TESTGRUNNLAG: AppRoute = {
+export const TEST_LOEYSING_KONTROLL: AppRoute = {
   navn: 'Test løysing testgrunnlag',
   path: ':loeysingId/:testgrunnlagId',
   parentRoute: TEST,
@@ -49,39 +53,86 @@ export const TestingRoutes: RouteObject = {
       handle: { name: 'Test' },
       errorElement: <ErrorCard />,
       loader: async ({ params }) => {
-        const id = Number(params?.id);
+        const kontrollId = Number(params?.id);
 
-        if (isNaN(id) || id <= 0) {
-          throw new Error('Ugyldig sak id');
+        if (isNaN(kontrollId) || kontrollId <= 0) {
+          throw new Error('Ugyldig kontroll-id');
         }
 
-        const [sakResponse, testgrunnlagResponse, innhaldstypeResponse] =
-          await Promise.allSettled([
-            getSak(id),
-            listTestgrunnlagForSak(id),
-            listInnhaldstype(),
-          ]);
+        const [
+          kontrollPromise,
+          testgrunnlagPromise,
+          sideutvalTypePromise,
+          innhaldstypePromise,
+          testreglarPromise,
+        ] = await Promise.allSettled([
+          fetchKontroll(kontrollId),
+          listTestgrunnlag(kontrollId),
+          listSideutvalType(),
+          listInnhaldstype(),
+          listTestreglarWithMetadata(),
+        ]);
 
-        if (sakResponse.status === 'rejected') {
-          throw new Error(`Fann ikkje sak med id ${id}`);
-        }
-
-        if (testgrunnlagResponse.status === 'rejected') {
+        if (testgrunnlagPromise.status === 'rejected') {
           throw new Error('Kunne ikkje hente testgrunnlag');
         }
 
-        if (innhaldstypeResponse.status === 'rejected') {
+        if (sideutvalTypePromise.status === 'rejected') {
+          throw new Error('Kunne ikkje hente sideutvaltyper');
+        }
+
+        if (innhaldstypePromise.status === 'rejected') {
           throw new Error('Kunne ikkje hente innhaldstypar');
         }
 
-        const sak = sakResponse.value;
-        const innhaldstypeList = innhaldstypeResponse.value;
+        if (kontrollPromise.status === 'rejected') {
+          throw new Error(`Fann ikkje kontroll med id ${kontrollId}`);
+        }
+
+        if (testreglarPromise.status === 'rejected') {
+          throw new Error(`Kunne ikkje hente testreglar`);
+        }
+
+        const kontrollResponse = kontrollPromise.value;
+
+        if (!kontrollResponse.ok) {
+          if (kontrollResponse.status === 404) {
+            throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+          } else {
+            throw new Error('Klarte ikke å hente kontrollen.');
+          }
+        }
+        const kontroll: Kontroll = await kontrollResponse.json();
+
+        const loeysingWithSideutvalIds = kontroll.sideutvalList.map(
+          (su) => su.loeysingId
+        );
+        const loeysingWithSideutval =
+          kontroll.utval?.loeysingar.filter((l) =>
+            loeysingWithSideutvalIds.includes(l.id)
+          ) ?? [];
+
+        const kontrollTestregelIdList =
+          kontroll.testreglar?.testregelList?.map((tr) => tr.id) ?? [];
+
+        const kontrollTestreglar = testreglarPromise.value.filter((tr) =>
+          kontrollTestregelIdList.includes(tr.id)
+        );
+
+        const contextKontroll: ContextKontroll = {
+          ...kontroll,
+          loeysingList: loeysingWithSideutval,
+          testregelList: kontrollTestreglar,
+        };
+
+        const innhaldstypeList = innhaldstypePromise.value;
 
         return defer({
-          sak: sakResponse.value,
-          testgrunnlag: testgrunnlagResponse.value,
+          kontroll: contextKontroll,
+          testgrunnlag: testgrunnlagPromise.value,
+          sideutvalTypeList: sideutvalTypePromise.value,
           innhaldstypeTestingList: getInnhaldstypeInTest(
-            sak.testreglar,
+            kontrollTestreglar,
             innhaldstypeList
           ),
         });
@@ -92,9 +143,9 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverview />,
         },
         {
-          path: TEST_LOEYSING_TESTGRUNNLAG.path,
+          path: TEST_LOEYSING_KONTROLL.path,
           element: <TestOverviewLoeysing />,
-          handle: { name: TEST_LOEYSING_TESTGRUNNLAG.navn },
+          handle: { name: TEST_LOEYSING_KONTROLL.navn },
           loader: async ({ params }): Promise<TestOverviewLoaderResponse> => {
             const testResults = await getTestResults(
               Number(params?.testgrunnlagId)

@@ -59,7 +59,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   ): ResponseEntity<List<ResultatManuellKontroll>> =
       runCatching {
             logger.debug(
-                "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}, testregelId: ${createTestResultat.testregelId}, nettsideId: ${createTestResultat.nettsideId}")
+                "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}, testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
             restTemplate.postForEntity(testresultUrl, createTestResultat, Int::class.java)
             getResultatManuellKontroll(createTestResultat.testgrunnlagId)
           }
@@ -84,10 +84,10 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
             }
             resultatManuellKontrollList.forEach { resultatManuellKontroll ->
               logger.debug(
-                  "Lagrer nytt testresultat med loeysingId: {}, testregelId: {}, nettsideId: {} + status: {}",
+                  "Lagrer nytt testresultat med loeysingId: {}, testregelId: {}, sideutvalId: {} + status: {}",
                   resultatManuellKontroll.loeysingId,
                   resultatManuellKontroll.testregelId,
-                  resultatManuellKontroll.nettsideId,
+                  resultatManuellKontroll.sideutvalId,
                   resultatManuellKontroll.status)
               val resultatCopy = resultatManuellKontroll.copy(testVartUtfoert = Instant.now())
               restTemplate.put("$testresultUrl/${resultatManuellKontroll.id}", resultatCopy)

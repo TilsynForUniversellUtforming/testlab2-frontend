@@ -7,7 +7,7 @@ import TypeDropdown from '@test/test-overview/loeysing-test/page-selector/TypeDr
 export interface PageTypeSelectorProps {
   nettsideOptions: OptionType[];
   sideId: string;
-  onChangeSide: (nettsideId: string) => void;
+  onChangeSide: (sideId: string) => void;
   innhaldstypeOptions: OptionType[];
   innhaldstypeId: string;
   onChangeType: (type: string) => void;
