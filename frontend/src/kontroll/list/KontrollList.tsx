@@ -2,7 +2,7 @@ import { Button, Heading, Table } from '@digdir/designsystemet-react';
 import React, { useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 
-import { KontrollListItem } from '../types';
+import { KontrollListItem, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';
 
 type Filter =
@@ -88,7 +88,9 @@ const KontrollList = () => {
                     {kontroll.tittel}
                   </Link>
                 </Table.Cell>
-                <Table.Cell></Table.Cell>
+                <Table.Cell>
+                  {viewVirksomheter(kontroll.virksomheter)}
+                </Table.Cell>
                 <Table.Cell>{kontroll.saksbehandler}</Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
@@ -105,3 +107,14 @@ const KontrollList = () => {
 };
 
 export default KontrollList;
+
+function viewVirksomheter(virksomheter: Orgnummer[]) {
+  switch (virksomheter.length) {
+    case 0:
+      return '';
+    case 1:
+      return virksomheter[0];
+    default:
+      return `${virksomheter.length} virksomheter`;
+  }
+}

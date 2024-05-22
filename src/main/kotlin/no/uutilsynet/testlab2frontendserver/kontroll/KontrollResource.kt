@@ -8,6 +8,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
+typealias Orgnummer = String
+
+data class KontrollListItem(
+    val id: Int,
+    val tittel: String,
+    val saksbehandler: String,
+    val sakstype: String,
+    val arkivreferanse: String,
+    val kontrolltype: String,
+    val virksomheter: List<Orgnummer>
+)
+
 @RestController
 @RequestMapping("api/v1/kontroller")
 class KontrollResource(
@@ -15,15 +27,6 @@ class KontrollResource(
     val testingApiProperties: TestingApiProperties,
 ) {
   private val logger: Logger = LoggerFactory.getLogger(KontrollResource::class.java)
-
-  data class KontrollListItem(
-      val id: Int,
-      val tittel: String,
-      val saksbehandler: String,
-      val sakstype: String,
-      val arkivreferanse: String,
-      val kontrolltype: String
-  )
 
   @GetMapping
   fun getKontroller(): List<KontrollListItem> {
