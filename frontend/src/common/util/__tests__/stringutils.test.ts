@@ -8,6 +8,7 @@ import {
   parseNumberInput,
   removeSpaces,
   sanitizeEnumLabel,
+  substrings,
 } from '../stringutils';
 
 describe('joinStringsToList', () => {
@@ -102,5 +103,31 @@ describe('editDistance', () => {
   });
   it('should give distance 5 for "tri" and "tilsyn"', () => {
     expect(editDistance('tri', 'tilsyn')).toBe(5);
+  });
+});
+
+describe('substrings', () => {
+  it('should return an empty array for an empty string', () => {
+    expect(substrings(10, '')).toStrictEqual([]);
+  });
+  it('should return one substring if length is equal to or greater than length of string', () => {
+    expect(substrings(6, 'kitten')).toStrictEqual(['kitten']);
+    expect(substrings(12, 'kitten')).toStrictEqual(['kitten']);
+  });
+  it('should return two substrings it length is one less than length of string', () => {
+    expect(substrings(5, 'kitten')).toStrictEqual(['kitte', 'itten']);
+  });
+  it('should return every letter if length is 1', () => {
+    expect(substrings(1, 'kitten')).toStrictEqual([
+      'k',
+      'i',
+      't',
+      't',
+      'e',
+      'n',
+    ]);
+  });
+  it('should return substrings of the given length', () => {
+    expect(substrings(3, 'kitten')).toStrictEqual(['kit', 'itt', 'tte', 'ten']);
   });
 });
