@@ -147,3 +147,55 @@ export function htmlToReactNode(s: string) {
   const safeHTML = DOMPurify.sanitize(s);
   return <div dangerouslySetInnerHTML={{ __html: safeHTML }} />;
 }
+
+export function editDistance(a: string, b: string): number {
+  // implementation of Wagner-Fischer algorithm: https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm
+  const rows = b.length + 1;
+  const cols = a.length + 1;
+  if (cols === 0) {
+    return rows;
+  }
+  if (rows === 0) {
+    return cols;
+  }
+  const distances: number[][] = Array(rows)
+    .fill(null)
+    .map(() => Array(cols).fill(0));
+  for (let row = 0; row < rows; row++) {
+    distances[row][0] = row;
+  }
+  for (let col = 0; col < cols; col++) {
+    distances[0][col] = col;
+  }
+  for (let row = 1; row < rows; row++) {
+    for (let col = 1; col < cols; col++) {
+      const substitutionCost = b[row - 1] === a[col - 1] ? 0 : 1;
+      distances[row][col] = Math.min(
+        distances[row - 1][col] + 1,
+        distances[row][col - 1] + 1,
+        distances[row - 1][col - 1] + substitutionCost
+      );
+    }
+  }
+  return distances[rows - 1][cols - 1];
+}
+
+export function words(s: string): string[] {
+  if (s === '') {
+    return [];
+  }
+
+  return s.split(/\s+/);
+}
+
+export function hasCapitalLetter(s: string): boolean {
+  if (s === '') {
+    return false;
+  }
+
+  return s.split('').some(isCapital);
+}
+
+function isCapital(letter: string): boolean {
+  return letter === letter.toLocaleUpperCase('no-NO');
+}

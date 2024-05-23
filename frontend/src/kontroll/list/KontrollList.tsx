@@ -1,5 +1,15 @@
-import { Button, Heading, Table } from '@digdir/designsystemet-react';
-import React, { useState } from 'react';
+import {
+  editDistance,
+  hasCapitalLetter,
+  words,
+} from '@common/util/stringutils';
+import {
+  Button,
+  Heading,
+  Table,
+  Textfield,
+} from '@digdir/designsystemet-react';
+import React, { ChangeEvent, useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 
 import { KontrollListItem, Orgnummer } from '../types';
@@ -42,12 +52,45 @@ const KontrollList = () => {
 
   const kontroller = useLoaderData() as KontrollListItem[];
   const [kontrollFilter, setKontrollFilter] = useState<Filter>(filters[1]);
+  const [searchResult, setSearchResult] =
+    useState<KontrollListItem[]>(kontroller);
+
+  function searchForKontroller(event: ChangeEvent<HTMLInputElement>): void {
+    const searchTerm = event.target.value;
+    if (searchTerm === '') {
+      setSearchResult(kontroller);
+      return;
+    }
+
+    const caseSensitive = hasCapitalLetter(searchTerm);
+    const tittel = (k: KontrollListItem): string =>
+      caseSensitive ? k.tittel : k.tittel.toLocaleLowerCase('no-NO');
+
+    const hits = kontroller
+      .map((k) => ({
+        kontroll: k,
+        distance: Math.min(
+          ...words(tittel(k)).map((word) => editDistance(searchTerm, word))
+        ),
+      }))
+      .filter(({ kontroll, distance }) => distance < tittel(kontroll).length)
+      .toSorted((a, b) =>
+        a.distance < b.distance ? -1 : a.distance > b.distance ? 1 : 0
+      )
+      .map(({ kontroll }) => kontroll);
+    setSearchResult(hits);
+  }
 
   return (
     <section className={classes.kontrollList}>
       <Heading level={1} size="xlarge">
         Alle kontroller
       </Heading>
+      <Textfield
+        className={classes.soek}
+        label="Hvilken kontroll leter du etter?"
+        onChange={searchForKontroller}
+      />
       <div className={classes.filter}>
         {filters.map((s) => (
           <label key={s}>
@@ -79,7 +122,7 @@ const KontrollList = () => {
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {kontroller
+          {searchResult
             .filter((k) => kontrollFilter === k.kontrolltype)
             .map((kontroll) => (
               <Table.Row key={kontroll.id}>
