@@ -19,22 +19,8 @@ data class LoeysingResultat(
     val testType: TestgrunnlagType,
     val talElementSamsvar: Int,
     val talElementBrot: Int,
-    val testar: String,
+    val testar: List<String>,
     val progresjon: Int = 0,
-)
-
-data class ResultatListElement(
-    val id: Int,
-    val namnLoeysing: String,
-    val score: Int,
-    val testType: TestgrunnlagType,
-    val resultatId: Int,
-    val namnKontroll: String,
-    val kontrollType: KontrollType,
-    val dato: LocalDate,
-    val talElementSamsvar: Int,
-    val talElementBrot: Int,
-    val testar: String,
 )
 
 enum class KontrollType {
