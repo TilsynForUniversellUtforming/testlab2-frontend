@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  editDistance,
   extractDomain,
   formatDateString,
   joinStringsToList,
@@ -82,5 +83,24 @@ describe('removeSpaces', () => {
   it('should return the same string if no spaces are present', () => {
     const result = removeSpaces('test');
     expect(result).toBe('test');
+  });
+});
+
+describe('editDistance', () => {
+  it('should give distance 0 for two empty strings', () =>
+    expect(editDistance('', '')).toBe(0));
+  it('should give distance 0 for two equal strings', () =>
+    expect(editDistance('hello', 'hello')).toBe(0));
+  it('should give distance 3 for "kitten" and "sitting"', () => {
+    expect(editDistance('kitten', 'sitting')).toBe(3);
+  });
+  it('should give distance equal to length of first word if second word is empty', () => {
+    expect(editDistance('kitten', '')).toBe(6);
+  });
+  it('should give distance equal to length of second word if first word is empty', () => {
+    expect(editDistance('', 'kitten')).toBe(6);
+  });
+  it('should give distance 5 for "tri" and "tilsyn"', () => {
+    expect(editDistance('tri', 'tilsyn')).toBe(5);
   });
 });
