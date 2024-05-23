@@ -1,8 +1,4 @@
-import {
-  editDistance,
-  hasCapitalLetter,
-  words,
-} from '@common/util/stringutils';
+import { search } from '@common/util/arrayUtils';
 import {
   Button,
   Heading,
@@ -57,27 +53,7 @@ const KontrollList = () => {
 
   function searchForKontroller(event: ChangeEvent<HTMLInputElement>): void {
     const searchTerm = event.target.value;
-    if (searchTerm === '') {
-      setSearchResult(kontroller);
-      return;
-    }
-
-    const caseSensitive = hasCapitalLetter(searchTerm);
-    const tittel = (k: KontrollListItem): string =>
-      caseSensitive ? k.tittel : k.tittel.toLocaleLowerCase('no-NO');
-
-    const hits = kontroller
-      .map((k) => ({
-        kontroll: k,
-        distance: Math.min(
-          ...words(tittel(k)).map((word) => editDistance(searchTerm, word))
-        ),
-      }))
-      .filter(({ kontroll, distance }) => distance < tittel(kontroll).length)
-      .toSorted((a, b) =>
-        a.distance < b.distance ? -1 : a.distance > b.distance ? 1 : 0
-      )
-      .map(({ kontroll }) => kontroll);
+    const hits = search(searchTerm, (kontroll) => kontroll.tittel, kontroller);
     setSearchResult(hits);
   }
 

@@ -180,15 +180,11 @@ export function editDistance(a: string, b: string): number {
   return distances[rows - 1][cols - 1];
 }
 
-export function words(s: string): string[] {
-  if (s === '') {
-    return [];
+export function hasCapitalLetter(s: string): boolean {
+  function isCapital(letter: string): boolean {
+    return letter === letter.toLocaleUpperCase('no-NO');
   }
 
-  return s.split(/\s+/);
-}
-
-export function hasCapitalLetter(s: string): boolean {
   if (s === '') {
     return false;
   }
@@ -196,6 +192,20 @@ export function hasCapitalLetter(s: string): boolean {
   return s.split('').some(isCapital);
 }
 
-function isCapital(letter: string): boolean {
-  return letter === letter.toLocaleUpperCase('no-NO');
+/**
+ * Returns all substrings of s with length n.
+ */
+export function substrings(n: number, s: string): string[] {
+  if (s === '') {
+    return [];
+  }
+
+  const result = [];
+  let remaining = s;
+  while (n < remaining.length) {
+    result.push(remaining.substring(0, n));
+    remaining = remaining.slice(1);
+  }
+  result.push(remaining);
+  return result;
 }

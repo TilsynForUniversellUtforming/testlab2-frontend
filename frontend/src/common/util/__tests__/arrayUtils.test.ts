@@ -1,4 +1,4 @@
-import { hasSameItems } from '@common/util/arrayUtils';
+import { first, hasSameItems, search } from '@common/util/arrayUtils';
 import { describe, expect, it } from 'vitest';
 
 describe('arrayUtils', () => {
@@ -38,5 +38,13 @@ describe('arrayUtils', () => {
         hasSameItems(as, bs, (a, b) => a.id === b.id && a.value === b.value)
       ).toBe(false);
     });
+  });
+});
+
+describe('search', () => {
+  it('should rank a perfect match hightest', () => {
+    const ts = ['Trine tester', 'Trine tester 2', 'Tilsyn Verdens Gang AS'];
+    const result = search('trine tester 2', (t) => t, ts);
+    expect(first(result)).toBe('Trine tester 2');
   });
 });

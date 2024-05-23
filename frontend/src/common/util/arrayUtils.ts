@@ -1,3 +1,9 @@
+import {
+  editDistance,
+  hasCapitalLetter,
+  substrings,
+} from '@common/util/stringutils';
+
 export function first<T>(array: T[]): T | undefined {
   return array[0];
 }
@@ -46,4 +52,40 @@ export function hasSameItems<T>(
   return (
     as.length === bs.length && as.every((a) => bs.some((b) => isEqual(a, b)))
   );
+}
+
+/**
+ * Searches an array of objects, and returns an array of hits, sorted by the shortest distance between the search term
+ * and some word in the selected field.
+ * @param searchTerm The term you want to search for
+ * @param selector A function from T to string, that returns the field you want to search
+ * @param ts An array of objects
+ */
+export function search<T>(
+  searchTerm: string,
+  selector: (t: T) => string,
+  ts: T[]
+): T[] {
+  if (searchTerm === '') {
+    return ts;
+  }
+
+  const caseSensitive = hasCapitalLetter(searchTerm);
+  const text = (t: T): string =>
+    caseSensitive ? selector(t) : selector(t).toLocaleLowerCase('no-NO');
+
+  return ts
+    .map((t: T) => ({
+      element: t,
+      distance: Math.min(
+        ...substrings(searchTerm.length, text(t)).map((s) =>
+          editDistance(searchTerm, s)
+        )
+      ),
+    }))
+    .filter(({ distance }) => distance < searchTerm.length)
+    .toSorted((a, b) =>
+      a.distance < b.distance ? -1 : a.distance > b.distance ? 1 : 0
+    )
+    .map(({ element }) => element);
 }
