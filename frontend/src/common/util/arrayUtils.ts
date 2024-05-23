@@ -56,7 +56,7 @@ export function hasSameItems<T>(
 
 /**
  * Searches an array of objects, and returns an array of hits, sorted by the shortest distance between the search term
- * and some word in the selected field.
+ * and the best matching substring in the selected field.
  * @param searchTerm The term you want to search for
  * @param selector A function from T to string, that returns the field you want to search
  * @param ts An array of objects
