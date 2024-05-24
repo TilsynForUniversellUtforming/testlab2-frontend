@@ -6,10 +6,10 @@ import classNames from 'classnames';
 import React from 'react';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
-import classes from './kontroll.module.css';
-import LagreOgNeste from './lagre-og-neste/LagreOgNeste';
-import KontrollStepper from './stepper/KontrollStepper';
-import { Kontroll } from './types';
+import classes from '../kontroll.module.css';
+import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
+import KontrollStepper from '../stepper/KontrollStepper';
+import { Kontroll } from '../types';
 
 type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };
 type SelectedOption = SelectedUtvalg | { t: 'løsning' };

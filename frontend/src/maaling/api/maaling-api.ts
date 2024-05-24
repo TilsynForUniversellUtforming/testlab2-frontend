@@ -2,15 +2,7 @@ import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
-import {
-  IdList,
-  Maaling,
-  MaalingEditParams,
-  MaalingInit,
-  MaalingStatus,
-  RestartRequest,
-  TesterResult,
-} from './types';
+import { IdList, Maaling, MaalingEditParams, MaalingInit, MaalingStatus, RestartRequest, TesterResult, } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
   await fetchWrapper('/api/v1/maalinger', {
@@ -109,6 +101,16 @@ export const fetchTestResultatLoeysing = async (
 ): Promise<TesterResult[]> =>
   await fetch(
     `/api/v1/maalinger/${maalingId}/resultat?loeysingId=${loeysingId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) => responseToJson(response, 'Kunne ikkje hente løysingar'));
+
+export const getMaalingIdFromKontrollId = async (
+  kontrollId: number
+): Promise<number> =>
+  await fetch(
+    `/api/v1/maalinger/kontroll/${kontrollId}`,
     {
       method: 'GET',
     }

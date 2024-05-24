@@ -9,6 +9,7 @@ interface Props {
   regelsettList: Regelsett[];
   selectedRegelsettId: number | undefined;
   onSelectRegelsett: (regelsettId: number) => void;
+  isInngaaende: boolean;
   modus: ModusFilter;
 }
 
@@ -16,12 +17,13 @@ const RegelsettSelector = ({
   onSelectRegelsett,
   selectedRegelsettId,
   regelsettList,
+  isInngaaende,
   modus,
 }: Props) => {
-  if (modus !== 'manuell') {
+  if ((isInngaaende && modus !== 'manuell') || (!isInngaaende && modus !== 'automatisk')) {
     return (
       <Alert severity="warning">
-        Kun manuelle testreglar kan veljast for manuell test
+        Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå
       </Alert>
     );
   }

@@ -1,21 +1,12 @@
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Alert,
-  Button,
-  Heading,
-  Ingress,
-  Pagination,
-  Paragraph,
-  Tag,
-} from '@digdir/designsystemet-react';
+import { Alert, Button, Heading, Ingress, Pagination, Paragraph, Tag, } from '@digdir/designsystemet-react';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
 import kontrollClasses from '../kontroll.module.css';
-import { steps } from '../KontrollRoutes';
-import { Kontroll, KontrollType } from '../types';
+import { Kontroll, KontrollType, steps } from '../types';
 import classes from './oppsummering.module.css';
 
 export function Oppsummering() {
@@ -108,6 +99,8 @@ export function Oppsummering() {
     loeysingIdList.every((loeysingId) =>
       sideutvalLoeysingIdList.includes(loeysingId)
     );
+
+  const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
 
   return (
     <section className={kontrollClasses.kontrollSection}>

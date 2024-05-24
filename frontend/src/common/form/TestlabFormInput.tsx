@@ -49,15 +49,19 @@ const TestlabFormInput = <T extends object>({
             date: type === 'date',
           })}
         >
-          <label htmlFor={name} className="testlab-form__input-label">
-            {label}
-            {required && <span className="asterisk-color">*</span>}
-            {description && (
-              <div className="testlab-form__input-sub-label">{description}</div>
-            )}
-          </label>
           <Textfield
             {...rest}
+            label={
+              <div className="testlab-form__input-label">
+                {label}
+                {required && <span className="asterisk-color">*</span>}
+                {description && (
+                  <div className="testlab-form__input-sub-label">
+                    {description}
+                  </div>
+                )}
+              </div>
+            }
             value={value || ''}
             id={name}
             error={errorMessage}

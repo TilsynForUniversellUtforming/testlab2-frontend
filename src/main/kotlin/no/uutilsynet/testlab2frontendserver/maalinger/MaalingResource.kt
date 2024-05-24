@@ -231,6 +231,12 @@ class MaalingResource(
             throw RuntimeException("Klarte ikkje å hente testresultat", it)
           }
 
+  @GetMapping("kontroll/{kontrollId}")
+  fun getMaalingIdFromKontrollId(@PathVariable kontrollId: Int): ResponseEntity<Int> =
+      restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)?.let {
+        ResponseEntity.ok(it)
+      } ?: ResponseEntity.badRequest().build()
+
   private fun getTestregelListForMaaling(maalingId: Int): List<TestregelBaseDTO> =
       runCatching {
             logger.debug("Henter testreglar for måling $maalingId")

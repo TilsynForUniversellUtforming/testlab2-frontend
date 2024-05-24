@@ -1,21 +1,11 @@
 import useAlert from '@common/alert/useAlert';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Alert,
-  ErrorSummary,
-  Heading,
-  Paragraph,
-} from '@digdir/designsystemet-react';
+import { Alert, ErrorSummary, Heading, Paragraph, } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
 import { useState } from 'react';
-import {
-  FieldErrors,
-  FormProvider,
-  useFieldArray,
-  useForm,
-} from 'react-hook-form';
-import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
+import { FieldErrors, FormProvider, useFieldArray, useForm, } from 'react-hook-form';
+import { useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
@@ -26,6 +16,8 @@ import LoeysingFilter from './LoeysingFilter';
 import { getDefaultFormValues, getSideutvalTypeLabel } from './sideutval-util';
 import { sideutvalValidationSchema } from './sideutvalValidationSchema';
 import { FormError, SideutvalForm, SideutvalLoader } from './types';
+import classNames from 'classnames';
+import { SideutvalType } from '../velg-testreglar/types';
 
 const VelgSideutval = () => {
   const { kontroll, sideutvalTypeList, loeysingList } =
