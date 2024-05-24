@@ -27,8 +27,25 @@ export const capitalize = (str: string): string =>
  * @param {string} label - Label to sanitize.
  * @returns {string} Sanitized label.
  */
-export const sanitizeEnumLabel = (label: string): string =>
-  capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
+export const sanitizeEnumLabel = (label: string): string => {
+  function isCamelCase(s: string): boolean {
+    const noWhitespace = /\S+/.test(s.trim());
+    const onlyLetters = /^[a-zA-ZæøåÆØÅ]+$/.test(s.trim());
+    return noWhitespace && onlyLetters;
+  }
+
+  if (isCamelCase(label)) {
+    return label
+      .trim()
+      .split('')
+      .reduce((acc, c) => (c === c.toUpperCase() ? acc + ' ' + c : acc + c), '')
+      .split(/\s+/)
+      .map((word, i) => (i === 0 ? capitalize(word) : word.toLowerCase()))
+      .join(' ');
+  } else {
+    return capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
+  }
+};
 
 /**
  * Extracts the domain from a given URL.

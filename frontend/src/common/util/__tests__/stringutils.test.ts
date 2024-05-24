@@ -40,7 +40,7 @@ describe('formatDateString', () => {
   });
 });
 
-describe('sanitizeLabel', () => {
+describe('sanitizeEnumLabel', () => {
   it('should replace underscore with space and capitalize', () => {
     const result = sanitizeEnumLabel('test_label');
     expect(result).toBe('Test label');
@@ -49,6 +49,11 @@ describe('sanitizeLabel', () => {
   it('should handle strings without underscores', () => {
     const result = sanitizeEnumLabel('test');
     expect(result).toBe('Test');
+  });
+
+  it('should split camel case into words', () => {
+    expect(sanitizeEnumLabel('ikkjeForekomst')).toBe('Ikkje forekomst');
+    expect(sanitizeEnumLabel('oneTwoThreeFour')).toBe('One two three four');
   });
 });
 
