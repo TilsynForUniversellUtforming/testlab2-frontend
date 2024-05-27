@@ -2,18 +2,10 @@ import { Button, Heading, Table } from '@digdir/designsystemet-react';
 import React, { useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 
-import { KontrollListItem } from '../types';
+import { KontrollListItem, KontrollType } from '../types';
 import classes from './kontroll-list.module.css';
 
-type Filter =
-  | 'tilsyn'
-  | 'inngaaende-kontroll'
-  | 'uttalesak'
-  | 'forenklet-kontroll'
-  | 'statusmaaling'
-  | 'annet';
-
-function viewFilter(filter: Filter) {
+function viewFilter(filter: KontrollType) {
   switch (filter) {
     case 'tilsyn':
       return 'Tilsyn';
@@ -21,27 +13,29 @@ function viewFilter(filter: Filter) {
       return 'Inngående kontroll';
     case 'uttalesak':
       return 'Uttale';
-    case 'forenklet-kontroll':
-      return 'Forenklet kontroll';
+    case 'forenkla-kontroll':
+      return 'Forenkla kontroll';
     case 'statusmaaling':
       return 'Statusmåling';
-    case 'annet':
-      return 'Annet';
+    case 'anna':
+      return 'Anna';
   }
 }
 
 const KontrollList = () => {
-  const filters: Filter[] = [
+  const filters: KontrollType[] = [
     'tilsyn',
     'inngaaende-kontroll',
     'uttalesak',
-    'forenklet-kontroll',
+    'forenkla-kontroll',
     'statusmaaling',
-    'annet',
+    'anna',
   ];
 
   const kontroller = useLoaderData() as KontrollListItem[];
-  const [kontrollFilter, setKontrollFilter] = useState<Filter>(filters[1]);
+  const [kontrollFilter, setKontrollFilter] = useState<KontrollType>(
+    filters[1]
+  );
 
   return (
     <section className={classes.kontrollList}>
@@ -60,7 +54,7 @@ const KontrollList = () => {
               value={s}
               defaultChecked={s === kontrollFilter}
               onChange={(event) =>
-                setKontrollFilter(event.target.value as Filter)
+                setKontrollFilter(event.target.value as KontrollType)
               }
             />
           </label>
@@ -84,7 +78,13 @@ const KontrollList = () => {
             .map((kontroll) => (
               <Table.Row key={kontroll.id}>
                 <Table.Cell>
-                  <Link to={`/kontroll/${kontroll.id}/oppsummering`}>
+                  <Link
+                    to={
+                      kontrollFilter === 'forenkla-kontroll'
+                        ? `/maaling?kontrollId=${kontroll.id}`
+                        : `/kontroll/${kontroll.id}/oppsummering`
+                    }
+                  >
                     {kontroll.tittel}
                   </Link>
                 </Table.Cell>
