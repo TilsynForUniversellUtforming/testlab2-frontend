@@ -3,6 +3,7 @@ import { responseToJson } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
+  CrawlParameters,
   IdList,
   Maaling,
   MaalingEditParams,
@@ -37,6 +38,35 @@ export const updateMaaling = async (
     body: JSON.stringify(maaling),
   }).then((response) =>
     responseToJson(response, 'Kunne ikkje oppdatere måling')
+  );
+
+export const fetchCrawlParametersKontroll = async (
+  kontrollId: number
+): Promise<CrawlParameters> =>
+  await fetchWrapper(
+    `/api/v1/maalinger/crawlparameters/kontroll/${kontrollId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente crawl-parametere')
+  );
+
+export const updateCrawlParameters = async (
+  kontrollId: number,
+  crawlParameters: CrawlParameters
+): Promise<void> =>
+  await fetchWrapper(
+    `/api/v1/maalinger/crawlparameters/kontroll/${kontrollId}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(crawlParameters),
+    }
+  ).then((response) =>
+    responseToJson(response, 'Kunne ikkje oppdatere crawl-parametere')
   );
 
 export const deleteMaalingList = async (
@@ -113,3 +143,12 @@ export const fetchTestResultatLoeysing = async (
       method: 'GET',
     }
   ).then((response) => responseToJson(response, 'Kunne ikkje hente løysingar'));
+
+export const getMaalingIdFromKontrollId = async (
+  kontrollId: number
+): Promise<number> =>
+  await fetch(`/api/v1/maalinger/kontroll/${kontrollId}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente løysingar')
+  );

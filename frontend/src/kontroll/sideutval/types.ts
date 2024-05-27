@@ -1,4 +1,5 @@
 import { Loeysing } from '@loeysingar/api/types';
+import { CrawlParameters } from '@maaling/api/types';
 
 import { Kontroll } from '../types';
 
@@ -11,6 +12,7 @@ export type SideutvalLoader = {
   kontroll: Kontroll;
   sideutvalTypeList: SideutvalType[];
   loeysingList: Loeysing[];
+  crawlParameters: CrawlParameters | undefined;
 };
 
 export type SideutvalTypeKontroll = SideutvalType & {

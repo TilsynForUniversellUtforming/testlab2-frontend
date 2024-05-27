@@ -5,6 +5,7 @@ import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Aggregeringstype
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlUrl
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
@@ -114,6 +115,49 @@ class MaalingResource(
             ResponseEntity.internalServerError()
                 .body("noe gikk galt da jeg forsøkte å lage en ny måling: ${it.message}")
           }
+
+  @GetMapping("crawlparameters/kontroll/{kontrollId}")
+  fun getCrawlParametersKontrollMaaling(
+      @PathVariable kontrollId: Int,
+  ): ResponseEntity<CrawlParameters> {
+    val maalingId =
+        restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)
+    val maaling = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+
+    if (maaling == null) {
+      logger.error("Finns ingen måling knytta til kontrollId $kontrollId")
+      return ResponseEntity.badRequest().build()
+    }
+
+    return ResponseEntity.ok(maaling.crawlParameters)
+  }
+
+  @PutMapping("crawlparameters/kontroll/{kontrollId}")
+  fun updateCrawlParametersKontrollMaaling(
+      @PathVariable kontrollId: Int,
+      @RequestBody crawlParameters: CrawlParameters
+  ): ResponseEntity<out Any> =
+      runCatching {
+            val maalingId =
+                restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)
+            val maaling =
+                restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+            if (maaling == null) {
+              logger.error("Finns ingen måling knytta til kontrollId $kontrollId")
+              return ResponseEntity.badRequest().build()
+            }
+
+            val maalingEdit =
+                MaalingEdit(
+                    id = maaling.id,
+                    navn = maaling.navn,
+                    testregelIdList = maaling.testregelList?.map { it.id } ?: emptyList(),
+                    loeysingIdList = maaling.loeysingList?.map { it.id } ?: emptyList(),
+                    crawlParameters = crawlParameters)
+
+            updateMaaling(maalingEdit)
+          }
+          .getOrElse { ResponseEntity.internalServerError().build() }
 
   @PutMapping
   fun updateMaaling(@RequestBody maaling: MaalingEdit): ResponseEntity<out Any> =
@@ -230,6 +274,13 @@ class MaalingResource(
                 "Kunne ikkje hente testresultat for måling med id $maalingId og løysing med id $loeysingId")
             throw RuntimeException("Klarte ikkje å hente testresultat", it)
           }
+
+  @GetMapping("kontroll/{kontrollId}")
+  fun getMaalingIdFromKontrollId(@PathVariable kontrollId: Int): ResponseEntity<Int> =
+      restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)?.let {
+        ResponseEntity.ok(it)
+      }
+          ?: ResponseEntity.badRequest().build()
 
   private fun getTestregelListForMaaling(maalingId: Int): List<TestregelBaseDTO> =
       runCatching {

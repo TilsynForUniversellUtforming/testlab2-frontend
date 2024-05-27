@@ -1,4 +1,5 @@
 import { Utval } from '@loeysingar/api/types';
+import { CrawlParameters } from '@maaling/api/types';
 
 import { Sideutval, SideutvalBase } from './sideutval/types';
 import { KontrollTestreglar } from './velg-testreglar/types';
@@ -41,8 +42,24 @@ export type UpdateKontrollTestreglar = {
 export type UpdateKontrollSideutval = {
   kontroll: Kontroll;
   sideutvalList: SideutvalBase[];
+  crawlParameters: CrawlParameters | undefined;
   neste: boolean;
 };
 
-export type KontrollType = 'inngaaende-kontroll';
+export type KontrollType =
+  | 'inngaaende-kontroll'
+  | 'forenkla-kontroll'
+  | 'tilsyn'
+  | 'statusmaaling'
+  | 'uttalesak'
+  | 'anna';
+
 export type Sakstype = 'forvaltningssak' | 'arkivsak';
+
+export const steps = {
+  opprett: { name: 'Opprett Kontroll', relativePath: '..' },
+  loesying: { name: 'Vel løysingar', relativePath: 'velg-losninger' },
+  testregel: { name: 'Vel testreglar', relativePath: 'velg-testreglar' },
+  sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutval' },
+  oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
+};

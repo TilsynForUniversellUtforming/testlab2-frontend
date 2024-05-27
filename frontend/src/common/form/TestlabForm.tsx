@@ -1,6 +1,7 @@
 import './TestlabForm.scss';
 
 import { Paragraph } from '@digdir/designsystemet-react';
+import classnames from 'classnames';
 import React, { ReactElement, ReactNode } from 'react';
 import { FormProvider, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
@@ -16,6 +17,7 @@ export interface TestlabFormProps<T extends object> {
   formMethods: UseFormReturn<T>;
   hasRequiredFields?: boolean;
   children: ReactNode;
+  className?: string;
 }
 
 /**
@@ -28,6 +30,7 @@ export interface TestlabFormProps<T extends object> {
  * @param {UseFormReturn<T>} props.formMethods - React hook form methods for the form.
  * @param {ReactNode} props.children - React children to render within the form.
  * @param {booelan} props.hasRequiredFields - For displaying info about fields being required. Default to true.
+ * @param {string} className - Optional field for custom classes
  * @return {ReactElement} The React component for the TestlabForm.
  */
 const TestlabForm = <T extends object>({
@@ -37,6 +40,7 @@ const TestlabForm = <T extends object>({
   formMethods,
   onSubmit,
   hasRequiredFields = true,
+  className,
 }: TestlabFormProps<T>): ReactElement => {
   const { handleSubmit } = formMethods;
 
@@ -59,7 +63,7 @@ const TestlabForm = <T extends object>({
       setFocus={formMethods.setFocus}
     >
       <form
-        className="testlab-form"
+        className={classnames('testlab-form', className)}
         onSubmit={handleSubmit(onSubmit)}
         autoComplete="off"
       >

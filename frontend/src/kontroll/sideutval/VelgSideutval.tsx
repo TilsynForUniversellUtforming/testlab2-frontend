@@ -1,4 +1,5 @@
 import useAlert from '@common/alert/useAlert';
+import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
@@ -8,6 +9,8 @@ import {
 } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
+import { CrawlParameters } from '@maaling/api/types';
+import classNames from 'classnames';
 import { useState } from 'react';
 import {
   FieldErrors,
@@ -21,19 +24,27 @@ import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import { UpdateKontrollSideutval } from '../types';
+import { SideutvalType } from '../velg-testreglar/types';
 import SideutvalAccordion from './accordion/SideutvalAccordion';
+import AutomatiskSideutval from './AutomatiskSideutval';
 import LoeysingFilter from './LoeysingFilter';
 import { getDefaultFormValues, getSideutvalTypeLabel } from './sideutval-util';
 import { sideutvalValidationSchema } from './sideutvalValidationSchema';
 import { FormError, SideutvalForm, SideutvalLoader } from './types';
 
 const VelgSideutval = () => {
-  const { kontroll, sideutvalTypeList, loeysingList } =
+  const { kontroll, sideutvalTypeList, loeysingList, crawlParameters } =
     useLoaderData() as SideutvalLoader;
   const actionData = useActionData() as { sistLagret: Date };
   const submit = useSubmit();
+
+  const isInngaaende = kontroll.kontrolltype === 'inngaaende-kontroll';
+
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [neste, setNeste] = useState<boolean>(false);
+  const [sideutvalType, setSideutvalType] = useState<SideutvalType>(
+    isInngaaende ? 'manuell' : 'automatisk'
+  );
 
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
@@ -111,7 +122,7 @@ const VelgSideutval = () => {
     );
   };
 
-  const onSubmit = (form: SideutvalForm) => {
+  const onSubmitManuell = (form: SideutvalForm) => {
     alert?.clearMessage();
     setSelectedLoesying(undefined);
     setFormErrors([]);
@@ -119,6 +130,7 @@ const VelgSideutval = () => {
     const data: UpdateKontrollSideutval = {
       kontroll,
       sideutvalList: form.sideutval,
+      crawlParameters: undefined,
       neste: neste,
     };
 
@@ -129,6 +141,26 @@ const VelgSideutval = () => {
     });
   };
 
+  const onSubmitAutomatisk = (crawlParameters: CrawlParameters) => {
+    alert?.clearMessage();
+    setSelectedLoesying(undefined);
+
+    const data: UpdateKontrollSideutval = {
+      kontroll,
+      sideutvalList: [],
+      crawlParameters: crawlParameters,
+      neste: neste,
+    };
+
+    submit(JSON.stringify(data), {
+      method: 'put',
+      action: `/kontroll/${kontroll.id}/sideutval`,
+      encType: 'application/json',
+    });
+  };
+
+  const manuellSelected = sideutvalType === 'manuell';
+
   return (
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
@@ -137,79 +169,119 @@ const VelgSideutval = () => {
       </Heading>
       <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
       <div className={classes.automatiskEllerManuelt}>
-        <button className={classes.selected}>Manuelt sideutval</button>
-        <button disabled title="Automatisk sideutval kommer">
+        <button
+          onClick={() => setSideutvalType('manuell')}
+          className={classNames({
+            [classes.selected]: manuellSelected,
+          })}
+          disabled={!isInngaaende}
+          title={!isInngaaende ? 'Automatisk sideutval kommer' : ''}
+        >
+          Manuelt sideutval
+        </button>
+        <button
+          onClick={() => setSideutvalType('automatisk')}
+          className={classNames({
+            [classes.selected]: !manuellSelected,
+          })}
+          disabled={isInngaaende}
+          title={
+            isInngaaende
+              ? 'Manuelt sideutval ikkje tilgjengelig for forenkla kontroll'
+              : ''
+          }
+        >
           Automatisk sideutval
         </button>
       </div>
-      <LoeysingFilter
-        heading={kontroll.tittel}
-        loeysingList={loeysingList}
-        sideutvalKontroll={kontroll.sideutvalList}
-        onChangeLoeysing={handleChangeLoeysing}
-        selectedLoeysing={selectedLoeysing}
-      />
-      {formErrors.length > 0 && (
-        <div className={classes.sideutvalLoeysingErrors}>
-          <ErrorSummary.Root size="medium">
-            <ErrorSummary.Heading>
-              Det er feil med sideutval på føljande løysingar
-            </ErrorSummary.Heading>
-            <ErrorSummary.List>
-              {[
-                ...new Set(formErrors.map((formError) => formError.loeysingId)),
-              ].map((loeyingId) => (
-                <ErrorSummary.Item
-                  href={`#loeysing-${loeyingId}`}
-                  key={loeyingId}
-                >
-                  {loeysingList.find((ll) => ll.id === loeyingId)?.namn}
-                </ErrorSummary.Item>
-              ))}
-            </ErrorSummary.List>
-          </ErrorSummary.Root>
-        </div>
-      )}
-      <FormProvider {...formMethods}>
-        <form
-          className={classes.velgSideutvalContainer}
-          onSubmit={handleSubmit(
-            (data) => onSubmit(data),
-            (errors) => onSubmitError(errors)
-          )}
-        >
-          <div className={classes.centered}>
-            <div className={classes.velgSideutval}>
-              {selectedLoeysing && (
-                <SideutvalAccordion
-                  selectedLoeysing={selectedLoeysing}
-                  sideutval={fields}
-                  handleAddSide={handleAddSide}
-                  handleRemoveSide={handleRemoveSide}
-                  sideutvalTypeList={sideutvalTypeList}
-                  formErrors={formErrors}
-                  register={register}
-                />
-              )}
-              <div className={classes.centered}>
-                <div className={classes.sideutvalForm}>
-                  {alert && (
-                    <Alert severity={alert.severity}>{alert.message}</Alert>
-                  )}
-                  <br />
-                  <LagreOgNeste
-                    sistLagret={actionData?.sistLagret}
-                    feilet={formErrors.length > 0}
-                    onClickNeste={() => setNeste(true)}
-                    onClickLagreKontroll={() => setNeste(false)}
-                    submitOnSave
-                  />
-                </div>
+      <ConditionalComponentContainer
+        condition={manuellSelected}
+        conditionalComponent={
+          <>
+            <LoeysingFilter
+              heading={kontroll.tittel}
+              loeysingList={loeysingList}
+              sideutvalKontroll={kontroll.sideutvalList}
+              onChangeLoeysing={handleChangeLoeysing}
+              selectedLoeysing={selectedLoeysing}
+            />
+            {formErrors.length > 0 && (
+              <div className={classes.sideutvalLoeysingErrors}>
+                <ErrorSummary.Root size="medium">
+                  <ErrorSummary.Heading>
+                    Det er feil med sideutval på føljande løysingar
+                  </ErrorSummary.Heading>
+                  <ErrorSummary.List>
+                    {[
+                      ...new Set(
+                        formErrors.map((formError) => formError.loeysingId)
+                      ),
+                    ].map((loeyingId) => (
+                      <ErrorSummary.Item
+                        href={`#loeysing-${loeyingId}`}
+                        key={loeyingId}
+                      >
+                        {loeysingList.find((ll) => ll.id === loeyingId)?.namn}
+                      </ErrorSummary.Item>
+                    ))}
+                  </ErrorSummary.List>
+                </ErrorSummary.Root>
               </div>
-            </div>
-          </div>
-        </form>
-      </FormProvider>
+            )}
+            <FormProvider {...formMethods}>
+              <form
+                className={classes.velgSideutvalContainer}
+                onSubmit={handleSubmit(
+                  (data) => onSubmitManuell(data),
+                  (errors) => onSubmitError(errors)
+                )}
+              >
+                <div className={classes.centered}>
+                  <div className={classes.velgSideutval}>
+                    {selectedLoeysing && (
+                      <SideutvalAccordion
+                        selectedLoeysing={selectedLoeysing}
+                        sideutval={fields}
+                        handleAddSide={handleAddSide}
+                        handleRemoveSide={handleRemoveSide}
+                        sideutvalTypeList={sideutvalTypeList}
+                        formErrors={formErrors}
+                        register={register}
+                      />
+                    )}
+                    <div className={classes.centered}>
+                      <div className={classes.sideutvalForm}>
+                        {alert && (
+                          <Alert severity={alert.severity}>
+                            {alert.message}
+                          </Alert>
+                        )}
+                        <br />
+                        <LagreOgNeste
+                          sistLagret={actionData?.sistLagret}
+                          feilet={formErrors.length > 0}
+                          onClickNeste={() => setNeste(true)}
+                          onClickLagreKontroll={() => setNeste(false)}
+                          submitOnSave
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </FormProvider>
+          </>
+        }
+        otherComponent={
+          <AutomatiskSideutval
+            onSubmit={onSubmitAutomatisk}
+            crawlParameters={crawlParameters}
+            sistLagret={actionData?.sistLagret}
+            onClickNeste={() => setNeste(true)}
+            onClickLagreKontroll={() => setNeste(false)}
+          />
+        }
+      />
     </section>
   );
 };

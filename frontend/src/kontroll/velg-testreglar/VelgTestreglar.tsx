@@ -56,7 +56,10 @@ const VelgTestreglar = () => {
   const [selectionType, setSelectionType] =
     useState<SelectionType>(initSelectionType);
 
-  const [modus, setModus] = useState<ModusFilter>('manuell');
+  const isInngaaende = kontroll.kontrolltype === 'inngaaende-kontroll';
+  const [modus, setModus] = useState<ModusFilter>(
+    isInngaaende ? 'manuell' : 'automatisk'
+  );
   const [filteredTestregelList, setFilteredTestregelList] = useState<
     TestregelBase[]
   >(filterByModus(testregelList, modus));
@@ -193,6 +196,7 @@ const VelgTestreglar = () => {
                 regelsettList={filteredRegelsettList}
                 onSelectRegelsett={onSelectRegelsett}
                 modus={modus}
+                isInngaaende={isInngaaende}
                 selectedRegelsettId={selectedRegelsettId}
               />
             }
@@ -202,6 +206,7 @@ const VelgTestreglar = () => {
                 modus={modus}
                 selectedTestregelIdList={selectedTestregelIdList}
                 onSelectTestregelId={onSelectTestregelId}
+                isInngaaende={isInngaaende}
               />
             }
           />
