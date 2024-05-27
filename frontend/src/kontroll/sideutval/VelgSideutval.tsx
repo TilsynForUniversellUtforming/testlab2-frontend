@@ -24,7 +24,6 @@ import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import { UpdateKontrollSideutval } from '../types';
-import { SideutvalType } from '../velg-testreglar/types';
 import SideutvalAccordion from './accordion/SideutvalAccordion';
 import AutomatiskSideutval from './AutomatiskSideutval';
 import LoeysingFilter from './LoeysingFilter';
@@ -42,9 +41,6 @@ const VelgSideutval = () => {
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [neste, setNeste] = useState<boolean>(false);
-  const [sideutvalType, setSideutvalType] = useState<SideutvalType>(
-    isInngaaende ? 'manuell' : 'automatisk'
-  );
 
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
@@ -159,8 +155,6 @@ const VelgSideutval = () => {
     });
   };
 
-  const manuellSelected = sideutvalType === 'manuell';
-
   return (
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
@@ -170,32 +164,34 @@ const VelgSideutval = () => {
       <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
       <div className={classes.automatiskEllerManuelt}>
         <button
-          onClick={() => setSideutvalType('manuell')}
           className={classNames({
-            [classes.selected]: manuellSelected,
+            [classes.selected]: isInngaaende,
           })}
           disabled={!isInngaaende}
-          title={!isInngaaende ? 'Automatisk sideutval kommer' : ''}
+          title={
+            !isInngaaende
+              ? 'Manuelt sideutval er ikkje tilgjengelig for forenkla kontroll'
+              : 'Vel manuelt'
+          }
         >
           Manuelt sideutval
         </button>
         <button
-          onClick={() => setSideutvalType('automatisk')}
           className={classNames({
-            [classes.selected]: !manuellSelected,
+            [classes.selected]: !isInngaaende,
           })}
           disabled={isInngaaende}
           title={
             isInngaaende
-              ? 'Manuelt sideutval ikkje tilgjengelig for forenkla kontroll'
-              : ''
+              ? 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
+              : 'Vel automatisk'
           }
         >
           Automatisk sideutval
         </button>
       </div>
       <ConditionalComponentContainer
-        condition={manuellSelected}
+        condition={isInngaaende}
         conditionalComponent={
           <>
             <LoeysingFilter
