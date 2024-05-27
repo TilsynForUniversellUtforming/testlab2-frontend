@@ -1,7 +1,11 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute } from '@common/util/routeUtils';
 import { Outlet } from 'react-router';
-import { RouteObject, useRouteError } from 'react-router-dom';
+import {
+  RouteObject,
+  ScrollRestoration,
+  useRouteError,
+} from 'react-router-dom';
 
 import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';
@@ -26,7 +30,12 @@ export const KONTROLL_CREATE: AppRoute = {
 
 export const KontrollRoutes: RouteObject = {
   path: 'kontroll',
-  element: <Outlet />,
+  element: (
+    <>
+      <ScrollRestoration />
+      <Outlet />
+    </>
+  ),
   errorElement: <ErrorElement />,
   children: [
     OpprettKontrollRoute,
