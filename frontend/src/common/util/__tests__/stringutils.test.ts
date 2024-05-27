@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  editDistance,
   extractDomain,
   formatDateString,
   joinStringsToList,
   parseNumberInput,
   removeSpaces,
   sanitizeEnumLabel,
+  substrings,
 } from '../stringutils';
 
 describe('joinStringsToList', () => {
@@ -38,7 +40,7 @@ describe('formatDateString', () => {
   });
 });
 
-describe('sanitizeLabel', () => {
+describe('sanitizeEnumLabel', () => {
   it('should replace underscore with space and capitalize', () => {
     const result = sanitizeEnumLabel('test_label');
     expect(result).toBe('Test label');
@@ -47,6 +49,11 @@ describe('sanitizeLabel', () => {
   it('should handle strings without underscores', () => {
     const result = sanitizeEnumLabel('test');
     expect(result).toBe('Test');
+  });
+
+  it('should split camel case into words', () => {
+    expect(sanitizeEnumLabel('ikkjeForekomst')).toBe('Ikkje forekomst');
+    expect(sanitizeEnumLabel('oneTwoThreeFour')).toBe('One two three four');
   });
 });
 
@@ -82,5 +89,50 @@ describe('removeSpaces', () => {
   it('should return the same string if no spaces are present', () => {
     const result = removeSpaces('test');
     expect(result).toBe('test');
+  });
+});
+
+describe('editDistance', () => {
+  it('should give distance 0 for two empty strings', () =>
+    expect(editDistance('', '')).toBe(0));
+  it('should give distance 0 for two equal strings', () =>
+    expect(editDistance('hello', 'hello')).toBe(0));
+  it('should give distance 3 for "kitten" and "sitting"', () => {
+    expect(editDistance('kitten', 'sitting')).toBe(3);
+  });
+  it('should give distance equal to length of first word if second word is empty', () => {
+    expect(editDistance('kitten', '')).toBe(6);
+  });
+  it('should give distance equal to length of second word if first word is empty', () => {
+    expect(editDistance('', 'kitten')).toBe(6);
+  });
+  it('should give distance 5 for "tri" and "tilsyn"', () => {
+    expect(editDistance('tri', 'tilsyn')).toBe(5);
+  });
+});
+
+describe('substrings', () => {
+  it('should return an empty array for an empty string', () => {
+    expect(substrings(10, '')).toStrictEqual([]);
+  });
+  it('should return one substring if length is equal to or greater than length of string', () => {
+    expect(substrings(6, 'kitten')).toStrictEqual(['kitten']);
+    expect(substrings(12, 'kitten')).toStrictEqual(['kitten']);
+  });
+  it('should return two substrings it length is one less than length of string', () => {
+    expect(substrings(5, 'kitten')).toStrictEqual(['kitte', 'itten']);
+  });
+  it('should return every letter if length is 1', () => {
+    expect(substrings(1, 'kitten')).toStrictEqual([
+      'k',
+      'i',
+      't',
+      't',
+      'e',
+      'n',
+    ]);
+  });
+  it('should return substrings of the given length', () => {
+    expect(substrings(3, 'kitten')).toStrictEqual(['kit', 'itt', 'tte', 'ten']);
   });
 });

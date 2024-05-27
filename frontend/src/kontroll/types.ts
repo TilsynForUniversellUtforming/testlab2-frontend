@@ -4,6 +4,8 @@ import { CrawlParameters } from '@maaling/api/types';
 import { Sideutval, SideutvalBase } from './sideutval/types';
 import { KontrollTestreglar } from './velg-testreglar/types';
 
+export type Orgnummer = string;
+
 export type KontrollListItem = {
   id: number;
   tittel: string;
@@ -11,6 +13,7 @@ export type KontrollListItem = {
   sakstype: Sakstype;
   arkivreferanse: string;
   kontrolltype: KontrollType;
+  virksomheter: Orgnummer[];
 };
 
 export type Kontroll = {

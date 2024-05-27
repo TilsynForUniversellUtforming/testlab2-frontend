@@ -22,16 +22,42 @@ export const capitalize = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
 /**
+ * Replaces common ascii safe letters for æ, ø, å with the corresponding letter
+ * @param {string} s - Ascii safe string
+ * @returns {string} - String with norwegian letters
+ * */
+function asciiSafeCharactersToNorwegian(s: string): string {
+  return s.replaceAll('aa', 'å').replaceAll('oe', 'ø').replaceAll('ae', 'æ');
+}
+
+/**
  * Sanitizes an emum value to be used in a label by replacing underscores with
  * spaces and capitalizing the first character.
  * @param {string} label - Label to sanitize.
  * @returns {string} Sanitized label.
  */
-export const sanitizeEnumLabel = (label: string): string =>
-  capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '))
-    .replaceAll('aa', 'å')
-    .replaceAll('oe', 'ø')
-    .replaceAll('ae', 'æ');
+export const sanitizeEnumLabel = (label: string): string => {
+  function isCamelCase(s: string): boolean {
+    const noWhitespace = /\S+/.test(s.trim());
+    const onlyLetters = /^[a-zA-ZæøåÆØÅ]+$/.test(s.trim());
+    return noWhitespace && onlyLetters;
+  }
+
+  let enumLabel = '';
+  if (isCamelCase(label)) {
+    enumLabel = label
+      .trim()
+      .split('')
+      .reduce((acc, c) => (c === c.toUpperCase() ? acc + ' ' + c : acc + c), '')
+      .split(/\s+/)
+      .map((word, i) => (i === 0 ? capitalize(word) : word.toLowerCase()))
+      .join(' ');
+  } else {
+    enumLabel = capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
+  }
+
+  return asciiSafeCharactersToNorwegian(enumLabel);
+};
 
 /**
  * Extracts the domain from a given URL.
@@ -149,4 +175,66 @@ export const createOptionsFromLiteral = <T extends string>(
 export function htmlToReactNode(s: string) {
   const safeHTML = DOMPurify.sanitize(s);
   return <div dangerouslySetInnerHTML={{ __html: safeHTML }} />;
+}
+
+export function editDistance(a: string, b: string): number {
+  // implementation of Wagner-Fischer algorithm: https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm
+  const rows = b.length + 1;
+  const cols = a.length + 1;
+  if (cols === 0) {
+    return rows;
+  }
+  if (rows === 0) {
+    return cols;
+  }
+  const distances: number[][] = Array(rows)
+    .fill(null)
+    .map(() => Array(cols).fill(0));
+  for (let row = 0; row < rows; row++) {
+    distances[row][0] = row;
+  }
+  for (let col = 0; col < cols; col++) {
+    distances[0][col] = col;
+  }
+  for (let row = 1; row < rows; row++) {
+    for (let col = 1; col < cols; col++) {
+      const substitutionCost = b[row - 1] === a[col - 1] ? 0 : 1;
+      distances[row][col] = Math.min(
+        distances[row - 1][col] + 1,
+        distances[row][col - 1] + 1,
+        distances[row - 1][col - 1] + substitutionCost
+      );
+    }
+  }
+  return distances[rows - 1][cols - 1];
+}
+
+export function hasCapitalLetter(s: string): boolean {
+  function isCapital(letter: string): boolean {
+    return letter === letter.toLocaleUpperCase('no-NO');
+  }
+
+  if (s === '') {
+    return false;
+  }
+
+  return s.split('').some(isCapital);
+}
+
+/**
+ * Returns all substrings of s with length n.
+ */
+export function substrings(n: number, s: string): string[] {
+  if (s === '') {
+    return [];
+  }
+
+  const result = [];
+  let remaining = s;
+  while (n < remaining.length) {
+    result.push(remaining.substring(0, n));
+    remaining = remaining.slice(1);
+  }
+  result.push(remaining);
+  return result;
 }
