@@ -1,4 +1,5 @@
 import { Utval } from '@loeysingar/api/types';
+import { CrawlParameters } from '@maaling/api/types';
 
 import { Sideutval, SideutvalBase } from './sideutval/types';
 import { KontrollTestreglar } from './velg-testreglar/types';
@@ -38,6 +39,7 @@ export type UpdateKontrollTestreglar = {
 export type UpdateKontrollSideutval = {
   kontroll: Kontroll;
   sideutvalList: SideutvalBase[];
+  crawlParameters: CrawlParameters | undefined;
   neste: boolean;
 };
 

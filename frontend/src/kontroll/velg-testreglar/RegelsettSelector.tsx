@@ -20,7 +20,10 @@ const RegelsettSelector = ({
   isInngaaende,
   modus,
 }: Props) => {
-  if ((isInngaaende && modus !== 'manuell') || (!isInngaaende && modus !== 'automatisk')) {
+  if (
+    (isInngaaende && modus !== 'manuell') ||
+    (!isInngaaende && modus !== 'automatisk')
+  ) {
     return (
       <Alert severity="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå

@@ -1,4 +1,9 @@
-import { Alert, Checkbox, Heading, Ingress, } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Checkbox,
+  Heading,
+  Ingress,
+} from '@digdir/designsystemet-react';
 import { TestregelBase } from '@testreglar/api/types';
 import { useMemo } from 'react';
 
@@ -24,7 +29,7 @@ const TestregelSelector = ({
   selectedTestregelIdList,
   onSelectTestregelId,
   modus,
-  isInngaaende
+  isInngaaende,
 }: Props) => {
   const groupedTestreglar = useMemo(() => {
     const groups = new Map<string, TestregelBase[]>();
@@ -38,7 +43,10 @@ const TestregelSelector = ({
     return new Map([...groups.entries()].sort());
   }, [testregelList]);
 
-  if ((isInngaaende && modus !== 'manuell') || (!isInngaaende && modus !== 'automatisk')) {
+  if (
+    (isInngaaende && modus !== 'manuell') ||
+    (!isInngaaende && modus !== 'automatisk')
+  ) {
     return (
       <Alert severity="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå

@@ -1,9 +1,17 @@
 import { isDefined } from '@common/util/validationUtils';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { getUtvalById } from '@loeysingar/api/utval-api';
+import {
+  fetchCrawlParametersKontroll,
+  updateCrawlParameters,
+} from '@maaling/api/maaling-api';
 import { redirect, RouteObject } from 'react-router-dom';
 
-import { fetchKontroll, listSideutvalType, updateKontrollSideutval, } from '../kontroll-api';
+import {
+  fetchKontroll,
+  listSideutvalType,
+  updateKontrollSideutval,
+} from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';
 import { Kontroll, steps, UpdateKontrollSideutval } from '../types';
 import { SideutvalLoader } from './types';
@@ -48,25 +56,44 @@ export const SideutvalRoute: RouteObject = {
       loeysingList.push(...utval.loeysingar);
     }
 
+    if (kontroll.kontrolltype === 'forenkla-kontroll') {
+      const crawlParameters = await fetchCrawlParametersKontroll(kontroll.id);
+
+      return {
+        kontroll: kontroll,
+        sideutvalTypeList: sideutvalTypeList.value,
+        loeysingList: loeysingList,
+        crawlParameters: crawlParameters,
+      };
+    }
+
     return {
       kontroll: kontroll,
       sideutvalTypeList: sideutvalTypeList.value,
       loeysingList: loeysingList,
+      crawlParameters: undefined,
     };
   },
   action: async ({ request }) => {
-    const { kontroll, sideutvalList, neste } =
+    const { kontroll, sideutvalList, crawlParameters, neste } =
       (await request.json()) as UpdateKontrollSideutval;
-    const filtredSideutvalList = sideutvalList.filter(
-      (su) => isDefined(su.url) && isDefined(su.begrunnelse)
-    );
 
-    const response = await updateKontrollSideutval(
-      kontroll,
-      filtredSideutvalList
-    );
-    if (!response.ok) {
-      throw new Error('Klarte ikke å lagre kontrollen.');
+    if (sideutvalList.length > 0) {
+      const filtredSideutvalList = sideutvalList.filter(
+        (su) => isDefined(su.url) && isDefined(su.begrunnelse)
+      );
+
+      const response = await updateKontrollSideutval(
+        kontroll,
+        filtredSideutvalList
+      );
+      if (!response.ok) {
+        throw new Error('Klarte ikke å lagre kontrollen.');
+      }
+    }
+
+    if (isDefined(crawlParameters)) {
+      await updateCrawlParameters(kontroll.id, crawlParameters);
     }
 
     return neste

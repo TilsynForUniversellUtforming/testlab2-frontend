@@ -1,12 +1,21 @@
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import { Alert, Button, Heading, Ingress, Pagination, Paragraph, Tag, } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Ingress,
+  Pagination,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
 import kontrollClasses from '../kontroll.module.css';
-import { Kontroll, KontrollType, steps } from '../types';
+import { Kontroll, steps } from '../types';
 import classes from './oppsummering.module.css';
 
 export function Oppsummering() {
@@ -52,16 +61,6 @@ export function Oppsummering() {
     );
   }
 
-  function viewKontrollType(kontrolltype: KontrollType) {
-    switch (kontrolltype) {
-      case 'inngaaende-kontroll':
-        return 'Inngående kontroll';
-      default:
-        console.error('Ukjent kontrolltype', kontrolltype);
-        return 'Ukjent kontrolltype';
-    }
-  }
-
   function viewUtvalNamn(utval: Utval | undefined) {
     if (utval?.namn) {
       return utval.namn;
@@ -93,14 +92,15 @@ export function Oppsummering() {
     (su) => su.loeysingId
   );
 
+  const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
+
   const isFinished =
     loeysingIdList.length > 0 &&
     isDefined(kontroll.testreglar?.testregelList) &&
-    loeysingIdList.every((loeysingId) =>
-      sideutvalLoeysingIdList.includes(loeysingId)
-    );
-
-  const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
+    (isForenkla ||
+      loeysingIdList.every((loeysingId) =>
+        sideutvalLoeysingIdList.includes(loeysingId)
+      ));
 
   return (
     <section className={kontrollClasses.kontrollSection}>
@@ -138,7 +138,7 @@ export function Oppsummering() {
       <div className={classes.kontrollTittel}>
         <Ingress>{kontroll.tittel}</Ingress>
         <div className={classes.tags}>
-          <Tag color="first">{viewKontrollType(kontroll.kontrolltype)}</Tag>
+          <Tag color="first">{sanitizeEnumLabel(kontroll.kontrolltype)}</Tag>
           <Tag color="first">{kontroll.saksbehandler}</Tag>
         </div>
       </div>
@@ -174,7 +174,13 @@ export function Oppsummering() {
           Tilbake
         </Button>
         {isFinished && (
-          <Link to={`../../kontroll-test/${kontroll.id}`}>
+          <Link
+            to={
+              isForenkla
+                ? `../../maaling?kontrollId=${kontroll.id}`
+                : `../../kontroll-test/${kontroll.id}`
+            }
+          >
             <Button>Gå til test</Button>
           </Link>
         )}
