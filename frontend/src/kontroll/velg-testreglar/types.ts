@@ -10,9 +10,7 @@ export type VelgTestreglarLoader = {
 
 export type SelectionType = 'regelsett' | 'testregel';
 
-export type SideutvalType = 'automatisk' | 'manuell';
-
-export type ModusFilter = SideutvalType | 'begge';
+export type ModusFilter = 'automatisk' | 'manuell' | 'begge';
 
 export type KontrollTestreglar = {
   regelsettId: number | undefined;

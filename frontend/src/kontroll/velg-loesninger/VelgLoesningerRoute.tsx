@@ -3,6 +3,7 @@ import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { redirect, RouteObject } from 'react-router-dom';
 
 import { fetchKontroll, updateKontroll } from '../kontroll-api';
+import { getKontrollIdFromParams } from '../kontroll-utils';
 import { Kontroll, steps } from '../types';
 import VelgLoesninger from './VelgLoesninger';
 
@@ -11,7 +12,7 @@ export const VelgLoesningerRoute: RouteObject = {
   element: <VelgLoesninger />,
   handle: { name: steps.loesying.name },
   loader: async ({ params }) => {
-    const kontrollId = parseInt(params.kontrollId ?? '', 10);
+    const kontrollId = getKontrollIdFromParams(params.kontrollId);
     if (isNaN(kontrollId)) {
       throw new Error('Id-en i URL-en er ikke et tall');
     }
