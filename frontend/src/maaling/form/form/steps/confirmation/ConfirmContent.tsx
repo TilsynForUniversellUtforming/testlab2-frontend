@@ -110,7 +110,7 @@ const ConfirmContent = ({
         testregelList.map((tr) => ({
           id: tr.id,
           header: tr.namn,
-          text: tr.krav.tittel,
+          text: '',
         })) ?? [];
 
       return [sakItems, loeysingListItems, utvalListItems, testregelItems];
