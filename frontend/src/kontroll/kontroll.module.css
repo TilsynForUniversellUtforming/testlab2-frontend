@@ -67,7 +67,6 @@
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   padding: 0 3rem 4rem;
 }
 
@@ -77,18 +76,13 @@
   margin-bottom: 2rem;
 }
 
-.combo-box,
-.tittel,
-.saksbehandler {
-  width: 50%;
-}
-
 .arkivreferanse {
-  width: 25%;
+  width: 50%;
 }
 
 .opprettResten {
   align-self: flex-start;
+  margin-bottom: 1rem;
 }
 
 /* Velg løsninger */

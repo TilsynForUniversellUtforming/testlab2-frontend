@@ -4,6 +4,8 @@ import {
   editPath,
   idPath,
 } from '@common/util/routeUtils';
+import { isDefined } from '@common/util/validationUtils';
+import { getMaalingIdFromKontrollId } from '@maaling/api/maaling-api';
 import MaalingList from '@maaling/list/MaalingList';
 import MaalingApp from '@maaling/MaalingApp';
 import MaalingCreate from '@maaling/MaalingCreate';
@@ -15,7 +17,7 @@ import TestResultList from '@maaling/resultat/testing-list/test-result-list/Test
 import TestResultListApp from '@maaling/resultat/testing-list/test-result-list/TestResultListApp';
 import ViolationListApp from '@maaling/resultat/testing-list/test-result-list/ViolationListApp';
 import TestingListApp from '@maaling/resultat/testing-list/TestingListApp';
-import { RouteObject } from 'react-router-dom';
+import { redirect, RouteObject } from 'react-router-dom';
 
 import maalingImg from '../assets/maalingar.svg';
 
@@ -77,6 +79,17 @@ export const MaalingRoutes: RouteObject = {
   path: MAALING_ROOT.path,
   element: <MaalingApp />,
   handle: { name: MAALING_ROOT.navn },
+  loader: async ({ request }) => {
+    const kontrollIdSearchParams = new URL(request.url).searchParams.get(
+      'kontrollId'
+    );
+    const kontrollId = parseInt(kontrollIdSearchParams ?? '');
+    if (isDefined(kontrollId)) {
+      const maalingId = await getMaalingIdFromKontrollId(kontrollId);
+      return redirect(`/maaling/${maalingId}`);
+    }
+    return null;
+  },
   children: [
     {
       index: true,

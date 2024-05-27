@@ -22,6 +22,15 @@ export const capitalize = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
 /**
+ * Replaces common ascii safe letters for æ, ø, å with the corresponding letter
+ * @param {string} s - Ascii safe string
+ * @returns {string} - String with norwegian letters
+ * */
+function asciiSafeCharactersToNorwegian(s: string): string {
+  return s.replaceAll('aa', 'å').replaceAll('oe', 'ø').replaceAll('ae', 'æ');
+}
+
+/**
  * Sanitizes an emum value to be used in a label by replacing underscores with
  * spaces and capitalizing the first character.
  * @param {string} label - Label to sanitize.
@@ -34,8 +43,9 @@ export const sanitizeEnumLabel = (label: string): string => {
     return noWhitespace && onlyLetters;
   }
 
+  let enumLabel = '';
   if (isCamelCase(label)) {
-    return label
+    enumLabel = label
       .trim()
       .split('')
       .reduce((acc, c) => (c === c.toUpperCase() ? acc + ' ' + c : acc + c), '')
@@ -43,8 +53,10 @@ export const sanitizeEnumLabel = (label: string): string => {
       .map((word, i) => (i === 0 ? capitalize(word) : word.toLowerCase()))
       .join(' ');
   } else {
-    return capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
+    enumLabel = capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
   }
+
+  return asciiSafeCharactersToNorwegian(enumLabel);
 };
 
 /**

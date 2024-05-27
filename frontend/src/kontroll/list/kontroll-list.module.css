@@ -14,15 +14,22 @@
       display: flex;
       justify-content: center;
 
-      background-color: var(--fds-brand-alt3-300);
+      background-color: var(--fds-semantic-surface-third-light);
       padding: 1.5rem;
       border-radius: 10px;
       font: var(--fds-typography-heading-small);
+      cursor: pointer;
+      &:hover {
+        background-color: var(--fds-semantic-surface-third-light-hover);
+      }
     }
 
     label:has(> input:checked) {
-      background-color: var(--fds-brand-alt3-600);
+      background-color: var(--fds-semantic-surface-third-light-active);
       text-decoration: underline;
+      &:hover {
+        background-color: var(--fds-semantic-surface-third-light-hover);
+      }
     }
   }
 }

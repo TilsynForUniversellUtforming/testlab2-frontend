@@ -15,6 +15,7 @@ interface Props {
   selectedTestregelIdList: number[];
   onSelectTestregelId: (testregelIdList: string[]) => void;
   modus: ModusFilter;
+  isInngaaende: boolean;
 }
 
 const modusHeaders: { [K in ModusFilter]: string } = {
@@ -28,6 +29,7 @@ const TestregelSelector = ({
   selectedTestregelIdList,
   onSelectTestregelId,
   modus,
+  isInngaaende,
 }: Props) => {
   const groupedTestreglar = useMemo(() => {
     const groups = new Map<string, TestregelBase[]>();
@@ -41,10 +43,13 @@ const TestregelSelector = ({
     return new Map([...groups.entries()].sort());
   }, [testregelList]);
 
-  if (modus !== 'manuell') {
+  if (
+    (isInngaaende && modus !== 'manuell') ||
+    (!isInngaaende && modus !== 'automatisk')
+  ) {
     return (
       <Alert severity="warning">
-        Kun manuelle testreglar kan veljast for manuell test
+        Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå
       </Alert>
     );
   }

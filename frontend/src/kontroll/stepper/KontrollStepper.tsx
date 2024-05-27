@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
-import { steps } from '../KontrollRoutes';
+import { steps } from '../types';
 
 const KontrollStepper = () => {
   const pathNameList = usePathName();

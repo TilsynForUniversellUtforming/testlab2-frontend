@@ -1,7 +1,7 @@
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Combobox, ErrorMessage, Radio } from '@digdir/designsystemet-react';
+import { Combobox, ErrorMessage, Label, Radio, } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -82,13 +82,13 @@ const TestlabFormSelect = <T extends object>({
       control={control}
       render={({ field: { onChange, value } }) => (
         <div className="testlab-form__select">
-          <label htmlFor={name} className="testlab-form__input-label">
+          <Label htmlFor={name} className="testlab-form__input-label">
             {label}
             {required && <span className="asterisk-color">*</span>}
             {description && (
               <div className="testlab-form__input-sub-label">{description}</div>
             )}
-          </label>
+          </Label>
           <Combobox
             id={name}
             value={value ? [String(value)] : undefined}
