@@ -64,7 +64,7 @@ export default function LagreOgNeste({
         type={submitOnSave ? 'submit' : 'button'}
         aria-disabled={isSaving(internalSaveState)}
       >
-        Lagre kontroll
+        Lagre til seinare
       </Button>
       <Button
         variant="primary"
@@ -75,7 +75,7 @@ export default function LagreOgNeste({
         aria-disabled={isSaving(internalSaveState)}
         type={submitOnSave ? 'submit' : 'button'}
       >
-        Neste
+        Lagre og gå til neste
       </Button>
       {isSaving(internalSaveState) && (
         <Spinner title={'Lagrer...'} size="small" />
