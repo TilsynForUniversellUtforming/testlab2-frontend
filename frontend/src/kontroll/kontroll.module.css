@@ -121,6 +121,10 @@
 
     &.selected {
       background: var(--fds-semantic-surface-first-light-active);
+      color: var(--fds-semantic-surface-neutral-default);
+      &:hover {
+        background-color: var(--fds-semantic-surface-first-light-hover);
+      }
     }
 
     &:disabled {
@@ -168,22 +172,33 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 
   li {
     flex: 1 1 calc(100% / 2 - 1rem);
     max-width: calc(100% / 2 - 1rem);
 
+    :hover {
+      background-color: var(--fds-semantic-surface-first-light-hover);
+    }
+
     button {
       border: none;
-      background: none;
       text-align: left;
       font: var(--fds-typography-paragraph-large);
       padding: 0.5rem;
       cursor: pointer;
+      border-radius: 10px;
+      background-color: var(--fds-semantic-surface-action-first-subtle);
 
       &.selected {
-        background-color: var(--fds-semantic-surface-first-light);
-        border-radius: 10px;
+        color: var(--fds-semantic-surface-neutral-default);
+        background-color: var(--fds-semantic-surface-first-light-active);
+        &:hover {
+          background-color: var(--fds-semantic-surface-first-light-hover);
+        }
       }
     }
   }
@@ -351,13 +366,15 @@
     font-weight: 400;
     min-width: 16rem;
 
-    &.selected,
-    &.selected:hover {
-      background-color: var(--fds-brand-alt3-500);
-    }
-
     &:hover {
       background-color: var(--fds-semantic-surface-third-light-hover);
+    }
+
+    &.selected {
+      background-color: var(--fds-brand-alt3-500);
+      &:hover {
+        background-color: var(--fds-semantic-surface-third-light-hover);
+      }
     }
   }
 }
