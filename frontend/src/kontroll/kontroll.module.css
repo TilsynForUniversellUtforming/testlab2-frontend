@@ -206,7 +206,7 @@
 .sideutval-section {
   margin: 0 auto;
   @media (min-width: 920px) {
-    width: 800px;
+    width: 900px;
   }
   /* Total height - top navigation + breadcrumbs + app-container padding */
   height: calc(100vh - 168px);
@@ -232,7 +232,7 @@
 
   .velg-sideutval {
     @media (min-width: 920px) {
-      min-width: 800px;
+      min-width: 900px;
     }
     display: flex;
     flex-direction: column;
@@ -284,7 +284,7 @@
 
   .sideutval-form {
     @media (min-width: 920px) {
-      width: 800px;
+      width: 900px;
     }
     width: 100%;
     padding-bottom: 2rem;
@@ -313,7 +313,7 @@
 }
 
 .sideutval-loeysing-chips {
-  max-width: 800px;
+  max-width: 900px;
   display: flex;
   flex-wrap: wrap;
 }
