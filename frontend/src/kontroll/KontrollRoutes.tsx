@@ -38,7 +38,7 @@ export const KontrollRoutes: RouteObject = {
   ),
   errorElement: <ErrorElement />,
   children: [
-    OpprettKontrollRoute,
+    ...OpprettKontrollRoute,
     KontrollListRoute,
     VelgLoesningerRoute,
     VelgTestreglarRoute,

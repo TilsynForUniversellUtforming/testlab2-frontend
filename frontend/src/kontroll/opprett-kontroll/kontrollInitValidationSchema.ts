@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-export const opprettKontrollValidationSchema = z.object({
+export const kontrollInitValidationSchema = z.object({
+  id: z
+    .union([z.string(), z.number()])
+    .transform((d) => Number(d))
+    .optional(),
   kontrolltype: z
     .union([
       z.literal('inngaaende-kontroll'),
@@ -26,6 +30,4 @@ export const opprettKontrollValidationSchema = z.object({
   arkivreferanse: z.string().optional(),
 });
 
-export type CreateKontrollType = z.input<
-  typeof opprettKontrollValidationSchema
->;
+export type KontrollInit = z.input<typeof kontrollInitValidationSchema>;
