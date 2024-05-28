@@ -13,18 +13,5 @@ export type LoeysingResultat = {
   score: number;
   testType: string;
   progress: number;
-};
-
-export type ResultatListElement = {
-  id: number;
-  namnLoeysing: string;
-  score: number;
-  testType: string;
-  resultatId: number;
-  namnKontroll: string;
-  kontrollType: string;
-  dato: string;
-  talElementSamsvar: number;
-  talElementBrot: number;
-  testar: string;
+  testar: string[];
 };
