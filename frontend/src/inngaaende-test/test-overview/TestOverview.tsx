@@ -1,12 +1,20 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { TestgrunnlagListElement } from '@test/api/types';
+import {
+  ResultatManuellKontroll,
+  TestgrunnlagListElement,
+} from '@test/api/types';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import { TestContextKontroll } from '@test/types';
+import { ManuellTestStatus, TestContextKontroll } from '@test/types';
 import { useCallback } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import {
+  useLoaderData,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 
 const TestOverview = () => {
   const { id } = useParams();
@@ -14,6 +22,7 @@ const TestOverview = () => {
     useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
+  const resultater = useLoaderData() as ResultatManuellKontroll[];
 
   const onChangeLoeysing = useCallback(
     async (testgrunnlag: TestgrunnlagListElement) => {
@@ -39,6 +48,19 @@ const TestOverview = () => {
     [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
+  function teststatus(
+    resultater: ResultatManuellKontroll[]
+  ): ManuellTestStatus {
+    console.log(resultater);
+    if (resultater.length === 0) {
+      return 'ikkje-starta';
+    } else if (resultater.every((r) => r.status === 'Ferdig')) {
+      return 'ferdig';
+    } else {
+      return 'under-arbeid';
+    }
+  }
+
   return (
     <div className="manual-test-overview">
       {testgrunnlag.map((etTestgrunnlag) => {
@@ -46,11 +68,14 @@ const TestOverview = () => {
           contextKontroll.loeysingList.find(
             (loeysing) => loeysing.id === etTestgrunnlag.loeysingId
           )?.namn ?? '';
+        const status = teststatus(
+          resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
+        );
         return (
           <TestLoeysingButton
             key={etTestgrunnlag.id}
             name={namn}
-            status={'ikkje-starta'}
+            status={status}
             onClick={() => onChangeLoeysing(etTestgrunnlag)}
           />
         );

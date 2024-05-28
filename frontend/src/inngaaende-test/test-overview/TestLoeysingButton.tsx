@@ -34,7 +34,7 @@ const TestLoeysingButton = ({ name, onClick, status }: Props) => (
         </Tag>
       </div>
       <Button title="Start testing" onClick={onClick}>
-        Start testing
+        {status === 'ikkje-starta' ? 'Start testing' : 'Fortsett testing'}
       </Button>
     </div>
   </div>
