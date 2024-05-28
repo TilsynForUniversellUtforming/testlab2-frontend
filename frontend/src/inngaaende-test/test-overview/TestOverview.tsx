@@ -1,6 +1,7 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { TestgrunnlagListElement } from '@test/api/types';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { TestContextKontroll } from '@test/types';
@@ -15,34 +16,24 @@ const TestOverview = () => {
   const [alert, setAlert] = useAlert();
 
   const onChangeLoeysing = useCallback(
-    async (loeysingId: number) => {
-      const nextLoeysingId = contextKontroll.loeysingList.find(
-        (l) => l.id === loeysingId
-      )?.id;
-      if (!nextLoeysingId || !id) {
+    async (testgrunnlag: TestgrunnlagListElement) => {
+      const loeysing = contextKontroll.loeysingList.find(
+        (l) => l.id === testgrunnlag.loeysingId
+      );
+      if (!loeysing || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
       } else {
-        const existingTestgrunnlag = testgrunnlag.find(
-          (tg) => tg.loeysingId === nextLoeysingId
+        navigate(
+          getFullPath(
+            TEST_LOEYSING_KONTROLL,
+            { pathParam: idPath, id: id },
+            {
+              pathParam: ':loeysingId',
+              id: String(testgrunnlag.loeysingId),
+            },
+            { pathParam: ':testgrunnlagId', id: String(testgrunnlag.id) }
+          )
         );
-        let testgrunnlagId: number;
-
-        if (existingTestgrunnlag) {
-          testgrunnlagId = existingTestgrunnlag.id;
-          navigate(
-            getFullPath(
-              TEST_LOEYSING_KONTROLL,
-              { pathParam: idPath, id: id },
-              {
-                pathParam: ':loeysingId',
-                id: String(nextLoeysingId),
-              },
-              { pathParam: ':testgrunnlagId', id: String(testgrunnlagId) }
-            )
-          );
-        } else {
-          setAlert('danger', 'Testgrunnlag er ikkje blitt oppretta');
-        }
       }
     },
     [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
@@ -50,13 +41,17 @@ const TestOverview = () => {
 
   return (
     <div className="manual-test-overview">
-      {contextKontroll.loeysingList.map((loeysing) => {
+      {testgrunnlag.map((etTestgrunnlag) => {
+        const namn =
+          contextKontroll.loeysingList.find(
+            (loeysing) => loeysing.id === etTestgrunnlag.loeysingId
+          )?.namn ?? '';
         return (
           <TestLoeysingButton
-            key={loeysing.id}
-            name={loeysing.namn}
+            key={etTestgrunnlag.id}
+            name={namn}
             status={'ikkje-starta'}
-            onClick={() => onChangeLoeysing(loeysing.id)}
+            onClick={() => onChangeLoeysing(etTestgrunnlag)}
           />
         );
       })}
