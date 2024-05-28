@@ -1,6 +1,7 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import { getTestResults, listTestgrunnlag } from '@test/api/testing-api';
+import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import { ContextKontroll, TestOverviewLoaderResponse } from '@test/types';
@@ -141,6 +142,14 @@ export const TestingRoutes: RouteObject = {
         {
           index: true,
           element: <TestOverview />,
+          loader: async ({ params }): Promise<ResultatManuellKontroll[]> => {
+            const kontrollId = Number(params?.id);
+            const testgrunnlag = await listTestgrunnlag(kontrollId);
+            const resultater: ResultatManuellKontroll[][] = await Promise.all(
+              testgrunnlag.map((t) => getTestResults(t.id))
+            );
+            return resultater.flat();
+          },
         },
         {
           path: TEST_LOEYSING_KONTROLL.path,
