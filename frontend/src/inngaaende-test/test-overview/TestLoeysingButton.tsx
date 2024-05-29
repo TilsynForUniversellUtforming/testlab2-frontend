@@ -2,6 +2,8 @@ import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { Button, Heading, Tag } from '@digdir/designsystemet-react';
 import { ManuellTestStatus } from '@test/types';
 
+import classes from './test-loeysing-button.module.css';
+
 interface Props {
   name: string;
   onClick: () => void;
@@ -33,9 +35,12 @@ const TestLoeysingButton = ({ name, onClick, status }: Props) => (
           Nettsted
         </Tag>
       </div>
-      <Button title="Start testing" onClick={onClick}>
-        {status === 'ikkje-starta' ? 'Start testing' : 'Fortsett testing'}
-      </Button>
+      <div className={classes.buttons}>
+        <Button title="Start testing" onClick={onClick}>
+          {status === 'ikkje-starta' ? 'Start testing' : 'Fortsett testing'}
+        </Button>
+        {status === 'ferdig' && <Button variant="secondary">Retest</Button>}
+      </div>
     </div>
   </div>
 );
