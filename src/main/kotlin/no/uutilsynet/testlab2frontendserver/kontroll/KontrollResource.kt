@@ -1,7 +1,10 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -102,6 +105,18 @@ class KontrollResource(
         throw Error("Klarte ikke å hente sideutvaltyper")
       }
 
+  @GetMapping("{kontrollId}/testgrunnlag")
+  fun testgrunnlagForKontroll(@PathVariable kontrollId: Int): List<TestgrunnlagDTO> {
+    return runCatching {
+          restTemplate.getList<TestgrunnlagDTO>(
+              "${testingApiProperties.url}/testgrunnlag/kontroll/list/$kontrollId")
+        }
+        .getOrElse {
+          logger.error("Klarte ikke å hente testgrunnlag for kontroll $kontrollId")
+          throw it
+        }
+  }
+
   data class SideutvalType(
       val id: Int,
       val type: String,
@@ -113,5 +128,15 @@ class KontrollResource(
       val saksbehandler: String,
       val sakstype: String,
       val arkivreferanse: String,
+  )
+
+  data class TestgrunnlagDTO(
+      val id: Int,
+      val kontrollId: Int,
+      val namn: String,
+      val testreglar: List<TestregelDTO> = emptyList(),
+      val sideutval: List<Sideutval> = emptyList(),
+      val type: TestgrunnlagType,
+      val datoOppretta: Instant
   )
 }
