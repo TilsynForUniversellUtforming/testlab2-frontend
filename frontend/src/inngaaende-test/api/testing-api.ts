@@ -1,5 +1,6 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
+import { Testgrunnlag } from '@test/types';
 
 import {
   Bilde,
@@ -112,4 +113,12 @@ export const listTestgrunnlag = async (
 ): Promise<TestgrunnlagListElement[]> =>
   await fetch(`/api/v2/testgrunnlag/list/${kontrollId}`).then((response) =>
     responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
+  );
+
+export const listTestgrunnlag2 = async (
+  kontrollId: number
+): Promise<Testgrunnlag[]> =>
+  await fetch(`/api/v1/kontroller/${kontrollId}/testgrunnlag`).then(
+    (response) =>
+      responseToJson(response, 'Klarte ikke å hente liste med testgrunnlag')
   );

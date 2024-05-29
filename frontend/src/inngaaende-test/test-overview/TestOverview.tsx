@@ -1,13 +1,14 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import {
-  ResultatManuellKontroll,
-  TestgrunnlagListElement,
-} from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import TestLoeysingButton from '@test/test-overview/TestLoeysingButton';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import { ManuellTestStatus, TestContextKontroll } from '@test/types';
+import {
+  ManuellTestStatus,
+  TestContextKontroll,
+  Testgrunnlag,
+} from '@test/types';
 import { useCallback } from 'react';
 import {
   useLoaderData,
@@ -16,18 +17,25 @@ import {
   useParams,
 } from 'react-router-dom';
 
+import { Sideutval } from '../../kontroll/sideutval/types';
+
+export type TestOverviewLoaderData = {
+  resultater: ResultatManuellKontroll[];
+  testgrunnlag: Testgrunnlag[];
+};
+
 const TestOverview = () => {
   const { id } = useParams();
-  const { contextKontroll, testgrunnlag }: TestContextKontroll =
-    useOutletContext();
+  const { contextKontroll }: TestContextKontroll = useOutletContext();
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const resultater = useLoaderData() as ResultatManuellKontroll[];
+  const { resultater, testgrunnlag } =
+    useLoaderData() as TestOverviewLoaderData;
 
   const onChangeLoeysing = useCallback(
-    async (testgrunnlag: TestgrunnlagListElement) => {
+    async (testgrunnlag: Testgrunnlag, sideutval: Sideutval) => {
       const loeysing = contextKontroll.loeysingList.find(
-        (l) => l.id === testgrunnlag.loeysingId
+        (l) => l.id === sideutval.loeysingId
       );
       if (!loeysing || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
@@ -38,7 +46,7 @@ const TestOverview = () => {
             { pathParam: idPath, id: id },
             {
               pathParam: ':loeysingId',
-              id: String(testgrunnlag.loeysingId),
+              id: String(sideutval.loeysingId),
             },
             { pathParam: ':testgrunnlagId', id: String(testgrunnlag.id) }
           )
@@ -63,22 +71,24 @@ const TestOverview = () => {
 
   return (
     <div className="manual-test-overview">
-      {testgrunnlag.map((etTestgrunnlag) => {
-        const namn =
-          contextKontroll.loeysingList.find(
-            (loeysing) => loeysing.id === etTestgrunnlag.loeysingId
-          )?.namn ?? '';
-        const status = teststatus(
-          resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
-        );
-        return (
-          <TestLoeysingButton
-            key={etTestgrunnlag.id}
-            name={namn}
-            status={status}
-            onClick={() => onChangeLoeysing(etTestgrunnlag)}
-          />
-        );
+      {testgrunnlag.flatMap((etTestgrunnlag) => {
+        return etTestgrunnlag.sideutval.map((etSideutval) => {
+          const namn =
+            contextKontroll.loeysingList.find(
+              (loeysing) => loeysing.id === etSideutval.loeysingId
+            )?.namn ?? '';
+          const status = teststatus(
+            resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
+          );
+          return (
+            <TestLoeysingButton
+              key={etTestgrunnlag.id}
+              name={namn}
+              status={status}
+              onClick={() => onChangeLoeysing(etTestgrunnlag, etSideutval)}
+            />
+          );
+        });
       })}
       {alert && (
         <AlertTimed
