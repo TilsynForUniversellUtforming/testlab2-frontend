@@ -55,6 +55,11 @@ describe('sanitizeEnumLabel', () => {
     expect(sanitizeEnumLabel('ikkjeForekomst')).toBe('Ikkje forekomst');
     expect(sanitizeEnumLabel('oneTwoThreeFour')).toBe('One two three four');
   });
+
+  it('should not format an all caps word as camel case', () => {
+    expect(sanitizeEnumLabel('RETEST')).toBe('Retest');
+    expect(sanitizeEnumLabel('OPPRINNELIG_TEST')).toBe('Opprinnelig test');
+  });
 });
 
 describe('extractDomain', () => {

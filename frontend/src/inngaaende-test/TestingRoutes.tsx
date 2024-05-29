@@ -1,6 +1,10 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import { getTestResults, listTestgrunnlag2 } from '@test/api/testing-api';
+import {
+  getTestResults,
+  listTestgrunnlag,
+  postTestgrunnlag,
+} from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
@@ -139,7 +143,7 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverview />,
           loader: async ({ params }): Promise<TestOverviewLoaderData> => {
             const kontrollId = Number(params?.id);
-            const testgrunnlag = await listTestgrunnlag2(kontrollId);
+            const testgrunnlag = await listTestgrunnlag(kontrollId);
             const resultater: ResultatManuellKontroll[][] = await Promise.all(
               testgrunnlag.map((t) => getTestResults(t.id))
             );
@@ -147,6 +151,10 @@ export const TestingRoutes: RouteObject = {
               resultater: resultater.flat(),
               testgrunnlag,
             };
+          },
+          action: async ({ request }) => {
+            const jsonData = await request.json();
+            return await postTestgrunnlag(jsonData);
           },
         },
         {

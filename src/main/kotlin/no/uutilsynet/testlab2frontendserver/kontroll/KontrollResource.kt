@@ -117,6 +117,23 @@ class KontrollResource(
         }
   }
 
+  @PostMapping("{kontrollId}/testgrunnlag")
+  fun nyttTestgrunnlag(
+      @PathVariable kontrollId: Int,
+      @RequestBody nyttTestgrunnlag: NyttTestgrunnlag
+  ): ResponseEntity<Unit> {
+    return runCatching {
+          val location =
+              restTemplate.postForLocation(
+                  "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag)
+          ResponseEntity.created(location!!).build<Unit>()
+        }
+        .getOrElse {
+          logger.error("Klarte ikke å lage et nytt testgrunnlag")
+          throw it
+        }
+  }
+
   data class SideutvalType(
       val id: Int,
       val type: String,
@@ -138,5 +155,13 @@ class KontrollResource(
       val sideutval: List<Sideutval> = emptyList(),
       val type: TestgrunnlagType,
       val datoOppretta: Instant
+  )
+
+  data class NyttTestgrunnlag(
+      val kontrollId: Int,
+      val namn: String,
+      val type: TestgrunnlagType,
+      val sideutval: List<Sideutval>,
+      val testregelIdList: List<Int>
   )
 }
