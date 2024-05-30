@@ -278,7 +278,11 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               "QW-ACT-R1 HTML Page has a title",
               krav,
               TestregelModus.automatisk,
-          ),
+              TestregelInnholdstype.nett),
           TestregelBase(
-              2, "QW-ACT-R2 HTML page has lang attribute", krav, TestregelModus.automatisk))
+              2,
+              "QW-ACT-R2 HTML page has lang attribute",
+              krav,
+              TestregelModus.automatisk,
+              TestregelInnholdstype.nett))
 }

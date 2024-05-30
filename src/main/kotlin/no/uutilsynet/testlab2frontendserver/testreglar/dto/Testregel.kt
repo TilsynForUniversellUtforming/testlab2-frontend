@@ -13,7 +13,7 @@ data class Testregel(
     override val krav: Krav,
     val status: TestregelStatus,
     val datoSistEndra: String,
-    val type: TestregelInnholdstype,
+    override val type: TestregelInnholdstype,
     override val modus: TestregelModus,
     val spraak: TestlabLocale,
     val tema: Tema?,
@@ -21,7 +21,7 @@ data class Testregel(
     val kravTilSamsvar: String?,
     val testregelSchema: String,
     val innhaldstypeTesting: InnhaldstypeTesting?
-) : TestregelBase(id, namn, krav, modus)
+) : TestregelBase(id, namn, krav, modus, type)
 
 fun TestregelDTO.toTestregel(
     temaList: List<Tema>,

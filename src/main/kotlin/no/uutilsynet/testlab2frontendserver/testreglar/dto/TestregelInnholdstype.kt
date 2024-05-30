@@ -6,3 +6,11 @@ enum class TestregelInnholdstype(val value: String) {
   dokument("dokument"),
   nett("nett"),
 }
+
+enum class RegelsettInnholdstype(val value: String) {
+  app(TestregelInnholdstype.app.value),
+  automat(TestregelInnholdstype.automat.value),
+  dokument(TestregelInnholdstype.dokument.value),
+  nett(TestregelInnholdstype.nett.value),
+  kombinasjon("kombinasjon")
+}

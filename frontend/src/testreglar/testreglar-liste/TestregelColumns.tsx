@@ -32,9 +32,12 @@ export const getTestregelColumns = (): Array<ColumnDef<TestregelBase>> => [
     id: 'modus',
     cell: (info) => sanitizeEnumLabel(String(info.getValue())),
     header: () => <>Modus</>,
-    meta: {
-      select: true,
-    },
+  },
+  {
+    accessorFn: (row) => row.type,
+    id: 'type',
+    cell: (info) => sanitizeEnumLabel(String(info.getValue())),
+    header: () => <>Type</>,
   },
 ];
 
