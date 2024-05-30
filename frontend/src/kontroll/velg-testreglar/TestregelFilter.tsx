@@ -16,7 +16,7 @@ const TestregelFilter = ({
   onChangeFilter,
   regelsettSelected,
 }: Props) => (
-  <Card level={3} size="small" className={classes.testregelFilter}>
+  <Card className={classes.testregelFilter}>
     <Card.Header>
       <Heading level={4} size="small">
         Kva slags test skal du køyra?

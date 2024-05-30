@@ -13,10 +13,13 @@
   }
 
   .dropdown__button {
+    color: white;
+
     &:hover {
       color: var(--fds-semantic-surface-neutral-subtle-hover);
       background: none !important;
     }
+
     .chevron-icon {
       display: inline-block;
       transition: transform 0.15s ease;
@@ -117,6 +120,7 @@
           }
         }
       }
+
       .navigation__item {
         display: none;
       }
