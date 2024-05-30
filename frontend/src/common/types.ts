@@ -32,7 +32,6 @@ export const ButtonColor = {
   Secondary: 'second',
   Success: 'success',
   Danger: 'danger',
-  Inverted: 'inverted',
 } as const;
 
 export type ButtonColorType = (typeof ButtonColor)[keyof typeof ButtonColor];

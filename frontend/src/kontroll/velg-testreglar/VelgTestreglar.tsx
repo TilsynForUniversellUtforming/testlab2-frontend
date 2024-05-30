@@ -80,7 +80,7 @@ const VelgTestreglar = () => {
     setSelectedTestregelIdList([]);
 
     /* Type 'kombinasjon' finnes kun for regelsett, sett til default 'nett'
-     ved endring til å velge testregler manuelt */
+             ved endring til å velge testregler manuelt */
     if (selectionType === 'testregel' && type === 'kombinasjon') {
       setType('nett');
       setFilteredTestregelList(filterList(testregelList, modus, 'nett'));
@@ -221,7 +221,7 @@ const VelgTestreglar = () => {
             <Heading size="small" level={4} spacing>
               {modusHeaders[modus]}
             </Heading>
-            <Paragraph size="medium" level={5} spacing>
+            <Paragraph size="medium" spacing>
               Vel testreglar og sukesskriteriar som skal væra med i testen din
             </Paragraph>
           </>

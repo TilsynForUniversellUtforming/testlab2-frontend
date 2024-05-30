@@ -1,6 +1,6 @@
 import './hamburger-menu.scss';
 
-import { ButtonColor, ButtonVariant } from '@common/types';
+import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
 import { MenuHamburgerIcon, XMarkIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
@@ -15,7 +15,6 @@ const HamburgerMenu = ({ open, onClick }: Props) => {
     <Button
       className={classNames('hamburger', { open: open })}
       variant={ButtonVariant.Quiet}
-      color={ButtonColor.Inverted}
       onClick={onClick}
       aria-expanded={open}
       title="Meny for verktøy"
