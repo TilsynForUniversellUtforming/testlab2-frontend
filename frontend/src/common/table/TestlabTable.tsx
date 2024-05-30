@@ -3,12 +3,11 @@ import '@tanstack/react-table';
 
 import TestlabTableBody from '@common/table/TestlabTableBody';
 import { ErrorMessage, Table } from '@digdir/designsystemet-react';
-import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
+import { RankingInfo } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
-  FilterMeta,
   getCoreRowModel,
   getFacetedMinMaxValues,
   getFacetedRowModel,
@@ -30,6 +29,7 @@ import ControlHeader from './control/ControlHeader';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableHeader from './TestlabTableHeader';
 import { TableFilterPreference, TableRowAction, TableStyle } from './types';
+import { fuzzyFilter } from './util';
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -128,23 +128,6 @@ const TestlabTable = <T extends object>({
   useEffect(() => {
     setColumns([...defaultColumns]);
   }, [defaultColumns]);
-
-  const fuzzyFilter: FilterFn<T> = (
-    row: Row<T>,
-    columnId: string,
-    value: string,
-    addMeta: (meta: FilterMeta) => void
-  ) => {
-    const itemRank: RankingInfo = rankItem(row.getValue(columnId), value, {
-      threshold: rankings.CONTAINS,
-    });
-
-    addMeta({
-      itemRank,
-    });
-
-    return itemRank.passed;
-  };
 
   const tableOptions: TableOptions<T> = {
     data: data,

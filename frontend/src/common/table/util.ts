@@ -1,3 +1,7 @@
+import { TestlabSeverity } from '@common/types';
+import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
+import { FilterMeta, Row } from '@tanstack/react-table';
+
 /**
  * Function for adding sorting-prefix to the accessorFn for the react-table,
  * such that columns can be sorted by a different value in addition to
@@ -19,3 +23,29 @@ export const headingWithoutSorting = (sortHeading: string): string =>
   sortHeading.replace(/^_\d+_/, '');
 
 export default headingWithSorting;
+
+export const fuzzyFilter = <T extends object>(
+  row: Row<T>,
+  columnId: string,
+  value: string,
+  addMeta: (meta: FilterMeta) => void
+) => {
+  const itemRank: RankingInfo = rankItem(row.getValue(columnId), value, {
+    threshold: rankings.CONTAINS,
+  });
+
+  addMeta({
+    itemRank,
+  });
+
+  return itemRank.passed;
+};
+
+export const getSeverity = (percentage: number): TestlabSeverity => {
+  if (percentage < 60) return 'danger';
+  if (percentage < 90) return 'warning';
+  return 'success';
+};
+
+export const scoreToPercentage = (score: number): number =>
+  Math.round(score * 100);
