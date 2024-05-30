@@ -7,15 +7,23 @@ import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import TestlabTable from '@common/table/TestlabTable';
 import { OptionType } from '@common/types';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
+import { Chip, Heading } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef, Row } from '@tanstack/react-table';
+import { filterList } from '@testreglar/api/util';
 import { regelsettValidationSchema } from '@testreglar/regelsett/regelsettValidationSchema';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router-dom';
 
-import { Regelsett, TestregelBase, TestregelModus } from '../api/types';
+import {
+  Regelsett,
+  TestregelBase,
+  TestregelInnholdstype,
+  TestregelModus,
+} from '../api/types';
 import { TestregelContext } from '../types';
 
 export interface Props {
@@ -52,10 +60,15 @@ const RegelsettForm = ({
     refresh,
   }: TestregelContext = useOutletContext();
 
-  const regelsettType = useWatch({
+  const modus = useWatch({
     control,
     name: 'modus',
   }) as TestregelModus;
+
+  const [type, setType] = useState<TestregelInnholdstype | undefined>();
+  const [selectableTestreglar, setSelectableTestreglar] = useState<
+    TestregelBase[]
+  >(filterList(testregelList, modus));
 
   const onChangeRows = useCallback((rowSelection: TestregelBase[]) => {
     setValue('testregelList', rowSelection);
@@ -76,10 +89,6 @@ const RegelsettForm = ({
     },
   ];
 
-  const selectableTestreglar = testregelList.filter(
-    (tr) => tr.modus === regelsettType
-  );
-
   const selectedRows = useMemo(() => {
     const rowArray = new Array(selectableTestreglar.length);
 
@@ -87,9 +96,7 @@ const RegelsettForm = ({
       const index = selectableTestreglar.findIndex(
         (selectableTr) => selectableTr.id === tr.id
       );
-      if (index !== -1) {
-        rowArray[index] = true;
-      }
+      rowArray[index] = index !== -1;
     });
 
     return rowArray;
@@ -112,15 +119,27 @@ const RegelsettForm = ({
         id: 'krav',
         cell: (info) => info.getValue(),
         header: () => <>Krav</>,
-        meta: {
-          select: true,
-        },
+      },
+      {
+        accessorFn: (row) => row.type,
+        id: 'type',
+        cell: (info) => sanitizeEnumLabel(String(info.getValue())),
+        header: () => <>Type</>,
       },
     ],
     []
   );
 
   const tableError = getErrorMessage(formMethods.formState, 'testregelList');
+
+  const onChangeType = (selectedType: TestregelInnholdstype) => {
+    const newType = type !== selectedType ? selectedType : undefined;
+    setType(newType);
+  };
+
+  useEffect(() => {
+    setSelectableTestreglar(filterList(testregelList, modus, type));
+  }, [modus, type]);
 
   return (
     <div className="testregel-form">
@@ -146,6 +165,41 @@ const RegelsettForm = ({
           checkboxLabel="Standard regelsett"
           name="standard"
         />
+        <div className="testregel-form-type-filter">
+          <Heading level={3} size="xsmall" spacing>
+            Filtrer type
+          </Heading>
+          <Chip.Group>
+            <Chip.Toggle
+              selected={type === 'nett'}
+              onClick={() => onChangeType('nett')}
+              checkmark={false}
+            >
+              Nett
+            </Chip.Toggle>
+            <Chip.Toggle
+              selected={type === 'app'}
+              onClick={() => onChangeType('app')}
+              checkmark={false}
+            >
+              App
+            </Chip.Toggle>
+            <Chip.Toggle
+              selected={type === 'automat'}
+              onClick={() => onChangeType('automat')}
+              checkmark={false}
+            >
+              Automat
+            </Chip.Toggle>
+            <Chip.Toggle
+              selected={type === 'dokument'}
+              onClick={() => onChangeType('dokument')}
+              checkmark={false}
+            >
+              Dokument
+            </Chip.Toggle>
+          </Chip.Group>
+        </div>
         <TestlabTable<TestregelBase>
           data={selectableTestreglar}
           defaultColumns={testRegelColumns}
@@ -154,7 +208,6 @@ const RegelsettForm = ({
           selectedRows={selectedRows}
           onSelectRows={onChangeRows}
           onClickRetry={refresh}
-          customStyle={{ small: true }}
           actionRequiredError={tableError}
         />
         <TestlabForm.FormButtons />

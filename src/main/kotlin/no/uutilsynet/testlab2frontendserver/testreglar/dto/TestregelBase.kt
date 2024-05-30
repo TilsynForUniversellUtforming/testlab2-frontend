@@ -7,6 +7,7 @@ open class TestregelBase(
     open val namn: String,
     open val krav: Krav,
     open val modus: TestregelModus,
+    open val type: TestregelInnholdstype,
 )
 
 fun List<TestregelBaseDTO>.toTestregelBase(kravMap: Map<Int, Krav>) =
@@ -15,5 +16,6 @@ fun List<TestregelBaseDTO>.toTestregelBase(kravMap: Map<Int, Krav>) =
           it.id,
           it.namn,
           kravMap[it.kravId] ?: throw IllegalStateException("Krav for testregel finns ikkje"),
-          it.modus)
+          it.modus,
+          it.type)
     }
