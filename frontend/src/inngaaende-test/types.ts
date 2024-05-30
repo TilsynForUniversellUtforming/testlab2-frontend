@@ -2,9 +2,13 @@ import { Loeysing } from '@loeysingar/api/types';
 import { TestregelResultat } from '@test/util/testregelParser';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
-import { SideutvalType } from '../kontroll/sideutval/types';
+import { Sideutval, SideutvalType } from '../kontroll/sideutval/types';
 import { Kontroll } from '../kontroll/types';
-import { ResultatManuellKontroll, Svar, TestgrunnlagListElement, } from './api/types';
+import {
+  ResultatManuellKontroll,
+  Svar,
+  TestgrunnlagListElement,
+} from './api/types';
 
 export type ManuellTestStatus =
   | 'ferdig'
@@ -61,4 +65,14 @@ export type InngaaendeTestLoadingResponseKontroll = {
 export type ContextKontroll = Kontroll & {
   loeysingList: Loeysing[];
   testregelList: Testregel[];
+};
+
+export type Testgrunnlag = {
+  id: number;
+  kontrollId: number;
+  namn: string;
+  testreglar: Testregel[];
+  sideutval: Sideutval[];
+  type: 'OPPRINNELIG_TEST' | 'RETEST';
+  datoOppretta: string;
 };

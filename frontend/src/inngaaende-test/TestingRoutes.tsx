@@ -1,6 +1,10 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import { getTestResults, listTestgrunnlag } from '@test/api/testing-api';
+import {
+  getTestResults,
+  listTestgrunnlag,
+  postTestgrunnlag,
+} from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
@@ -16,7 +20,9 @@ import nyTestImg from '../assets/ny_test.svg';
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
 import InngaaendeTestApp from './InngaaendeTestApp';
-import TestOverview from './test-overview/TestOverview';
+import TestOverview, {
+  TestOverviewLoaderData,
+} from './test-overview/TestOverview';
 
 export const TEST_ROOT: AppRoute = {
   navn: 'Tester',
@@ -62,21 +68,15 @@ export const TestingRoutes: RouteObject = {
 
         const [
           kontrollPromise,
-          testgrunnlagPromise,
           sideutvalTypePromise,
           innhaldstypePromise,
           testreglarPromise,
         ] = await Promise.allSettled([
           fetchKontroll(kontrollId),
-          listTestgrunnlag(kontrollId),
           listSideutvalType(),
           listInnhaldstype(),
           listTestreglarWithMetadata(),
         ]);
-
-        if (testgrunnlagPromise.status === 'rejected') {
-          throw new Error('Kunne ikkje hente testgrunnlag');
-        }
 
         if (sideutvalTypePromise.status === 'rejected') {
           throw new Error('Kunne ikkje hente sideutvaltyper');
@@ -130,7 +130,6 @@ export const TestingRoutes: RouteObject = {
 
         return defer({
           kontroll: contextKontroll,
-          testgrunnlag: testgrunnlagPromise.value,
           sideutvalTypeList: sideutvalTypePromise.value,
           innhaldstypeTestingList: getInnhaldstypeInTest(
             kontrollTestreglar,
@@ -142,13 +141,20 @@ export const TestingRoutes: RouteObject = {
         {
           index: true,
           element: <TestOverview />,
-          loader: async ({ params }): Promise<ResultatManuellKontroll[]> => {
+          loader: async ({ params }): Promise<TestOverviewLoaderData> => {
             const kontrollId = Number(params?.id);
             const testgrunnlag = await listTestgrunnlag(kontrollId);
             const resultater: ResultatManuellKontroll[][] = await Promise.all(
               testgrunnlag.map((t) => getTestResults(t.id))
             );
-            return resultater.flat();
+            return {
+              resultater: resultater.flat(),
+              testgrunnlag,
+            };
+          },
+          action: async ({ request }) => {
+            const jsonData = await request.json();
+            return await postTestgrunnlag(jsonData);
           },
         },
         {
