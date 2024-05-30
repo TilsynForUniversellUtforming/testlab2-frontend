@@ -6,7 +6,6 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Button, Heading, Tag } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
-import classes from '@test/test-overview/test-loeysing-button.module.css';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import {
   ManuellTestStatus,
@@ -23,6 +22,7 @@ import {
 } from 'react-router-dom';
 
 import { Sideutval } from '../../kontroll/sideutval/types';
+import classes from './test-overview.module.css';
 
 export type TestOverviewLoaderData = {
   resultater: ResultatManuellKontroll[];
@@ -94,6 +94,21 @@ const TestOverview = () => {
     }
   }
 
+  function viewTestType(testgrunnlag: Testgrunnlag) {
+    const normalized = sanitizeEnumLabel(testgrunnlag.type);
+    if (testgrunnlag.type === 'RETEST') {
+      const datoOppretta = Date.parse(testgrunnlag.datoOppretta);
+      const formatter = new Intl.DateTimeFormat('nn', {
+        month: 'long',
+        year: 'numeric',
+      });
+      const dateString = formatter.format(datoOppretta);
+      return `${normalized} ${dateString}`;
+    } else {
+      return normalized;
+    }
+  }
+
   return (
     <div className="manual-test-overview">
       {testgrunnlag.flatMap((etTestgrunnlag) => {
@@ -105,21 +120,6 @@ const TestOverview = () => {
           const status = teststatus(
             resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
           );
-
-          function viewTestType() {
-            const normalized = sanitizeEnumLabel(etTestgrunnlag.type);
-            if (etTestgrunnlag.type === 'RETEST') {
-              const datoOppretta = Date.parse(etTestgrunnlag.datoOppretta);
-              const formatter = new Intl.DateTimeFormat('nn', {
-                month: 'long',
-                year: 'numeric',
-              });
-              const dateString = formatter.format(datoOppretta);
-              return `${normalized} ${dateString}`;
-            } else {
-              return normalized;
-            }
-          }
 
           return (
             <div
@@ -146,7 +146,7 @@ const TestOverview = () => {
                     Inngående kontroll
                   </Tag>
                   <Tag color="second" size="small">
-                    {viewTestType()}
+                    {viewTestType(etTestgrunnlag)}
                   </Tag>
                   <Tag color="info" size="small">
                     Nettsted
