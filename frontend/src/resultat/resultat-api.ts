@@ -41,3 +41,9 @@ export const fetchResultList = async (): Promise<Resultat[]> => {
     responseToJson(response, 'Kunne ikkje hente resultat')
   );
 };
+
+export function fetchKontrollResultat(idKontroll: number): Promise<Resultat[]> {
+  return fetch(`/api/v1/testresultat/kontroll/${idKontroll}`, {}).then(
+    (response) => responseToJson(response, 'Kunne ikkje hente resultat')
+  );
+}
