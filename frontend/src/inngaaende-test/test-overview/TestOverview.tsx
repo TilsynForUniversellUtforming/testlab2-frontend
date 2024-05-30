@@ -98,7 +98,7 @@ const TestOverview = () => {
     const normalized = sanitizeEnumLabel(testgrunnlag.type);
     if (testgrunnlag.type === 'RETEST') {
       const datoOppretta = Date.parse(testgrunnlag.datoOppretta);
-      const formatter = new Intl.DateTimeFormat('nn', {
+      const formatter = new Intl.DateTimeFormat('no-NO', {
         month: 'long',
         year: 'numeric',
       });
