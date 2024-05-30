@@ -1,67 +1,27 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import { TestlabSeverity } from '@common/types';
-import { getFullPath, idPath } from '@common/util/routeUtils';
-import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
-import ResultTable from '@resultat/list/ResultTable';
-import { RESULTAT_KONTROLL } from '@resultat/ResultatRoutes';
+import ResultatKontrollOverviewTable from '@resultat/kontroll_detaljer/ResultatKontrollOverviewTable';
 import { Resultat } from '@resultat/types';
-import { ColumnDef, FilterFn, Row } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
-const ResultListApp = () => {
+const RestultatKontrollOversikt = () => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
-  const navigate = useNavigate();
+  useNavigate();
 
   const getSeverity = (percentage: number): TestlabSeverity => {
     if (percentage < 60) return 'danger';
     if (percentage < 90) return 'warning';
     return 'success';
   };
-
-  const dateRangeFilter: FilterFn<Resultat> = (
-    row: Row<Resultat>,
-    columnId: string,
-    filterValue: [number, number]
-  ) => {
-    const [min, max] = filterValue;
-    const rowValue = Date.parse(row.getValue('dato'));
-
-    const before = max ? rowValue < max : true;
-    const after = min ? rowValue > min : true;
-
-    return before && after;
-  };
-
   const columns: Array<ColumnDef<Resultat>> = [
     {
-      accessorKey: 'id',
-      header: 'idKontroll',
+      accessorKey: 'namnVerksemd',
+      header: 'Verksemder',
       enableGlobalFilter: false,
       enableColumnFilter: false,
-    },
-
-    {
-      accessorKey: 'namn',
-      header: 'Saker',
-      enableGlobalFilter: false,
-      enableColumnFilter: false,
-    },
-
-    {
-      accessorKey: 'type',
-      header: 'Type kontroll',
-      cell: ({ row }) => sanitizeEnumLabel(row.original.type),
-      filterFn: 'includesString',
-    },
-
-    {
-      accessorKey: 'dato',
-      header: 'dato',
-      enableGlobalFilter: false,
-      enableColumnFilter: false,
-      filterFn: dateRangeFilter,
     },
 
     {
@@ -113,24 +73,11 @@ const ResultListApp = () => {
       enableColumnFilter: false,
     },
   ];
-  const onClickRow = (kontrollId: string) => {
-    console.log('onClickKontroll ' + kontrollId);
-
-    const path = getFullPath(RESULTAT_KONTROLL, {
-      pathParam: idPath,
-      id: kontrollId,
-    });
-    navigate(path);
-  };
-
   return (
     <div className="sak-list">
-      <ResultTable
-        data={resultat}
-        defaultColumns={columns}
-        onClickRow={onClickRow}
-      />
+      <ResultatKontrollOverviewTable data={resultat} defaultColumns={columns} />
     </div>
   );
 };
-export default ResultListApp;
+
+export default RestultatKontrollOversikt;

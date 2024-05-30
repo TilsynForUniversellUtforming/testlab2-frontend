@@ -10,6 +10,7 @@ export type Resultat = {
 export type LoeysingResultat = {
   id: number;
   namnLoeysing: string;
+  namnVerksemd: string;
   score: number;
   testType: string;
   progress: number;

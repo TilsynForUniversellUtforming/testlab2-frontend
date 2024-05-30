@@ -15,6 +15,7 @@ data class Resultat(
 data class LoeysingResultat(
     val id: Int,
     val namnLoeysing: String,
+    val namnVerksemd: String,
     val score: Double,
     val testType: TestgrunnlagType,
     val talElementSamsvar: Int,

@@ -12,10 +12,8 @@ import {
 } from '@common/table/types';
 import { Button, ErrorMessage, Table } from '@digdir/designsystemet-react';
 import ResultTableBody from '@resultat/list/ResultTableBody';
-import ResultTableHeader from '@resultat/list/ResultTableHeader';
 import { resultTable } from '@resultat/tableoptions';
 import {
-  Column,
   ColumnDef,
   ColumnFiltersState,
   RowSelectionState,
@@ -24,6 +22,7 @@ import {
 import classnames from 'classnames';
 import React, { ReactElement, useEffect, useState } from 'react';
 
+// eslint-disable-next-line
 export interface TestlabTableProps<T extends object> {
   data: T[];
   defaultColumns: ColumnDef<T>[];
@@ -58,7 +57,7 @@ export interface TestlabTableProps<T extends object> {
  * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
  * @returns {ReactElement} - The React component for the TestlabTable.
  */
-const ResultatTable = <T extends object>({
+const ResultatKontrollOverviewTable = <T extends object>({
   data,
   defaultColumns,
   displayError,
@@ -70,31 +69,6 @@ const ResultatTable = <T extends object>({
   onClickRetry,
 }: TestlabTableProps<T>): ReactElement => {
   const isLoading = loading ?? false;
-
-  const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
-
-  const showDetails = () => {
-    setColumnVisibility({
-      talElementSamsvar: !visDetaljer,
-      talElementBrot: !visDetaljer,
-      idKontroll: !visDetaljer,
-      resultatId: false,
-      dato: false,
-      type: true,
-    });
-    setVisDetaljer(!visDetaljer);
-  };
-
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      talElementSamsvar: false,
-      talElementBrot: false,
-      id: false,
-      resultatId: false,
-      dato: false,
-      type: true,
-    });
-
   const [columns, setColumns] = useState<typeof defaultColumns>(() => [
     ...defaultColumns,
   ]);
@@ -109,6 +83,28 @@ const ResultatTable = <T extends object>({
     setRowSelection(rss);
   };
 
+  useEffect(() => {
+    setColumns([...defaultColumns]);
+  }, [defaultColumns]);
+  const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
+
+  const showDetails = () => {
+    setColumnVisibility({
+      talElementSamsvar: !visDetaljer,
+      talElementBrot: !visDetaljer,
+      idKontroll: !visDetaljer,
+      resultatId: false,
+    });
+    setVisDetaljer(!visDetaljer);
+  };
+
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({
+      talElementSamsvar: false,
+      talElementBrot: false,
+      resultatId: false,
+    });
+
   const table = resultTable(
     data,
     columns,
@@ -120,10 +116,6 @@ const ResultatTable = <T extends object>({
     setColumnFilters,
     setColumnVisibility
   );
-
-  useEffect(() => {
-    setColumns([...defaultColumns]);
-  }, [defaultColumns]);
 
   useEffect(() => {
     if (rowSelectionEnabled) {
@@ -153,18 +145,9 @@ const ResultatTable = <T extends object>({
   }
 
   const headerGroup = table.getHeaderGroups()[0];
-  const kontrollTypeColumn: Column<T, unknown> | undefined =
-    table.getColumn('type');
-  const dateColumn: Column<T, unknown> | undefined = table.getColumn('dato');
 
   return (
     <div className="testlab-table">
-      {kontrollTypeColumn && dateColumn && (
-        <ResultTableHeader
-          kontrollTypeColumn={kontrollTypeColumn}
-          dateColumn={dateColumn}
-        ></ResultTableHeader>
-      )}
       <Table
         className={classnames('testlab-table__table', 'resultat-table', {
           'table-error': !!actionRequiredError,
@@ -204,4 +187,4 @@ const ResultatTable = <T extends object>({
   );
 };
 
-export default ResultatTable;
+export default ResultatKontrollOverviewTable;

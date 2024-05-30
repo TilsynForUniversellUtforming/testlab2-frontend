@@ -95,4 +95,17 @@ class ResultatResource(
 
     return ResponseEntity.ok(resultatListElement)
   }
+
+  @GetMapping("kontroll/{idKontroll}")
+  fun getResultatKontroll(@PathVariable idKontroll: Int): ResponseEntity<List<Resultat>> {
+    val resultatListElement =
+        restTemplate.getList<Resultat>("$testresultatUrl/kontroll/$idKontroll").map { kontroll ->
+          kontroll.copy(
+              loeysingar =
+                  kontroll.loeysingar.map { loeysing ->
+                    loeysing.copy(score = loeysing.score.times(100).roundToInt().toDouble())
+                  })
+        }
+    return ResponseEntity.ok(resultatListElement)
+  }
 }
