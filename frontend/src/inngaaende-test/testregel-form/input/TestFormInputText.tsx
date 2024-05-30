@@ -33,6 +33,7 @@ const TestFormInputText = ({ steg, svar, onAnswer }: Props) => {
       value={svar ?? ''}
       onChange={handleValueChange}
       textArea={steg.multilinje}
+      debounce={1000}
     />
   );
 };
