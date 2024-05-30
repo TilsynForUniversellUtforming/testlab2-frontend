@@ -1,4 +1,5 @@
 import { Loeysing } from '@loeysingar/api/types';
+import { Bilde } from '@test/api/types';
 import { TestregelBase } from '@testreglar/api/types';
 
 export type CrawlParameters = {
@@ -122,4 +123,5 @@ export type TesterResult = {
   elementResultat: string;
   elementOmtale?: ElementOmtale;
   kommentar?: string;
+  bilder: Bilde[];
 };
