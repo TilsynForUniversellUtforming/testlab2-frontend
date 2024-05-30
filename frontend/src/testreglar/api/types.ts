@@ -9,6 +9,7 @@ export type TestregelBase = {
   namn: string;
   krav: Krav;
   modus: TestregelModus;
+  type: TestregelInnholdstype;
 };
 
 export type TestregelStatus =
@@ -39,12 +40,13 @@ export type InnhaldstypeTesting = {
 
 export type TestregelInnholdstype = 'app' | 'automat' | 'dokument' | 'nett';
 
+export type RegelsettInnholdstype = TestregelInnholdstype | 'kombinasjon';
+
 export type Testregel = TestregelBase & {
   testregelId: string;
   versjon: number;
   status: TestregelStatus;
   datoSistEndra: string;
-  type: TestregelInnholdstype;
   spraak: TestlabLocale;
   tema?: Tema;
   testobjekt?: Testobjekt;
@@ -59,7 +61,6 @@ export type TestregelInit = TestregelBase & {
   versjon: number;
   status: TestregelStatus;
   datoSistEndra: string;
-  type: TestregelInnholdstype;
   spraak: TestlabLocale;
   tema?: number;
   testobjekt?: number;
@@ -72,6 +73,7 @@ export type Regelsett = {
   id: number;
   namn: string;
   modus: TestregelModus;
+  type: RegelsettInnholdstype;
   standard: boolean;
   testregelList: TestregelBase[];
 };

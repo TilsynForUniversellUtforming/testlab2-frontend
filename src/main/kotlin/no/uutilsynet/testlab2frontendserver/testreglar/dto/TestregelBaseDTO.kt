@@ -5,4 +5,5 @@ data class TestregelBaseDTO(
     val namn: String,
     val kravId: Int,
     val modus: TestregelModus,
+    val type: TestregelInnholdstype,
 )
