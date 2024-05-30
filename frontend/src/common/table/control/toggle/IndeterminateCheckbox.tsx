@@ -1,7 +1,7 @@
 import { CheckboxSize } from '@common/types';
 import { Checkbox } from '@digdir/designsystemet-react';
 import { Row, Table } from '@tanstack/react-table';
-import React, { HTMLProps, useEffect, useRef } from 'react';
+import React, { HTMLProps } from 'react';
 
 interface Props {
   indeterminate?: boolean;
@@ -15,35 +15,25 @@ const IndeterminateCheckbox = ({
   onChange,
   ariaLabel,
   id,
-}: Props & HTMLProps<HTMLInputElement>) => {
-  const ref = useRef<HTMLInputElement>(null!);
-
-  useEffect(() => {
-    if (typeof indeterminate === 'boolean') {
-      ref.current.indeterminate = !checked && indeterminate;
-    }
-  }, [ref, indeterminate]);
-
-  return (
-    <>
-      <label className="sr-only" htmlFor={id}>
-        {ariaLabel}
-      </label>
-      <Checkbox
-        value={String(id)}
-        type="checkbox"
-        ref={ref}
-        checked={checked}
-        disabled={disabled}
-        onChange={onChange}
-        aria-label={ariaLabel}
-        id={id}
-        title={ariaLabel}
-        size={CheckboxSize.Small}
-      />
-    </>
-  );
-};
+}: Props & HTMLProps<HTMLInputElement>) => (
+  <>
+    <label className="sr-only" htmlFor={id}>
+      {ariaLabel}
+    </label>
+    <Checkbox
+      value={String(id)}
+      type="checkbox"
+      indeterminate={indeterminate}
+      checked={checked}
+      disabled={disabled}
+      onChange={onChange}
+      aria-label={ariaLabel}
+      id={id}
+      title={ariaLabel}
+      size={CheckboxSize.Small}
+    />
+  </>
+);
 
 export const HeaderCheckbox = <T extends object>({
   table,

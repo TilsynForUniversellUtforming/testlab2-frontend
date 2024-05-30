@@ -191,6 +191,12 @@ const TestlabTable = <T extends object>({
     }
   }, [rowSelection, rowSelectionEnabled]);
 
+  useEffect(() => {
+    table.setRowSelection(
+      Object.assign({}, selectedRows) as unknown as RowSelectionState
+    );
+  }, [selectedRows]);
+
   const onChangeGlobalFilter = useCallback((value: string) => {
     setGlobalFilter(value);
   }, []);
