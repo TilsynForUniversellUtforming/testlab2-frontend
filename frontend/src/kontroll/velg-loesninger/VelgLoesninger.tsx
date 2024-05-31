@@ -131,16 +131,23 @@ const VelgLoesninger = () => {
                 Eldre utvalg av løsninger
               </Heading>
               <ul className={classes.eldreUtvalg}>
-                {eldreUtvalg.map((u) => (
-                  <li key={u.id}>
-                    <button
-                      onClick={velgUtvalg(u)}
-                      className={classNames({ [classes.selected]: isValgt(u) })}
+                {eldreUtvalg.map((u) => {
+                  const valgt = isValgt(u);
+                  return (
+                    <li
+                      key={u.id}
+                      className={classNames({ [classes.selected]: valgt })}
                     >
-                      {u.namn}
-                    </button>
-                  </li>
-                ))}
+                      <button
+                        onClick={velgUtvalg(u)}
+                        className={classNames({ [classes.selected]: valgt })}
+                        title={u.namn}
+                      >
+                        {u.namn}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </>
           )}
