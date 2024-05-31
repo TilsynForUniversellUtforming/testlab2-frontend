@@ -1,5 +1,13 @@
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { Accordion, Button, Chip, Combobox, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
+import {
+  Accordion,
+  Button,
+  Chip,
+  Combobox,
+  Heading,
+  Paragraph,
+  Textfield,
+} from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
@@ -229,17 +237,15 @@ const SideutvalAccordion = ({
                       >
                         {sideutvalTypeLabel}
                       </Accordion.Header>
-                      <Accordion.Content className={classes.centered}>
-                        <div className={classes.typeFormWrapper}>
-                          <SideBegrunnelseForm
-                            sideutvalTypeLabel={sideutvalTypeLabel}
-                            sideutvalIndexedList={sideutvalIndexedList}
-                            setExpanded={handleSetExpanded}
-                            handleAddSide={handleAddSide}
-                            handleRemoveSide={handleRemoveSide}
-                            register={register}
-                          />
-                        </div>
+                      <Accordion.Content>
+                        <SideBegrunnelseForm
+                          sideutvalTypeLabel={sideutvalTypeLabel}
+                          sideutvalIndexedList={sideutvalIndexedList}
+                          setExpanded={handleSetExpanded}
+                          handleAddSide={handleAddSide}
+                          handleRemoveSide={handleRemoveSide}
+                          register={register}
+                        />
                       </Accordion.Content>
                     </Accordion.Item>
                   );

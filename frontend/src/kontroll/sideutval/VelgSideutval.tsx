@@ -1,13 +1,23 @@
 import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isDefined } from '@common/util/validationUtils';
-import { Alert, ErrorSummary, Heading, Paragraph, } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  ErrorSummary,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
 import { CrawlParameters } from '@maaling/api/types';
 import classNames from 'classnames';
-import { useState } from 'react';
-import { FieldErrors, FormProvider, useFieldArray, useForm, } from 'react-hook-form';
+import { useMemo, useState } from 'react';
+import {
+  FieldErrors,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
@@ -32,9 +42,19 @@ const VelgSideutval = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [neste, setNeste] = useState<boolean>(false);
 
+  const finished: Loeysing[] = useMemo(
+    () =>
+      loeysingList.filter((loeysing) =>
+        kontroll.sideutvalList.some(
+          (sideutval) => sideutval.loeysingId === loeysing.id
+        )
+      ),
+    [kontroll.sideutvalList, loeysingList]
+  );
+
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
-  >();
+  >(loeysingList.find((l) => !finished.includes(l)));
 
   const formMethods = useForm<SideutvalForm>({
     defaultValues: {
@@ -189,7 +209,7 @@ const VelgSideutval = () => {
             <LoeysingFilter
               heading={kontroll.tittel}
               loeysingList={loeysingList}
-              sideutvalKontroll={kontroll.sideutvalList}
+              finished={finished}
               onChangeLoeysing={handleChangeLoeysing}
               selectedLoeysing={selectedLoeysing}
             />

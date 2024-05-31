@@ -2,8 +2,12 @@ import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { Button, Heading } from '@digdir/designsystemet-react';
-import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
+import { Button, Card, Divider, Heading } from '@digdir/designsystemet-react';
+import {
+  MinusCircleIcon,
+  PlusCircleIcon,
+  TrashFillIcon,
+} from '@navikt/aksel-icons';
 import { UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
@@ -61,62 +65,74 @@ const SideBegrunnelseForm = ({
   };
 
   return (
-    <>
-      <Heading size="xsmall" level={5} spacing>
-        Legg til {sideutvalTypeLabel}
-      </Heading>
+    <div className={classes.lagreSideutvalForm}>
+      <div className={classes.typeFormWrapper}>
+        {sideutvalIndexedList.map((sideutvalIndexed) => {
+          const side = sideutvalIndexed.sideutval;
+          const index = sideutvalIndexed.index;
 
-      {sideutvalIndexedList.map((sideutvalIndexed) => {
-        const side = sideutvalIndexed.sideutval;
-        const index = sideutvalIndexed.index;
-
-        return (
-          <div key={`${side.typeId}_${index}`}>
-            <div
+          return (
+            <Card
+              key={`${side.typeId}_${index}`}
               className={classes.begrunnelseInputs}
             >
-              <input
-                type="hidden"
-                {...register(`sideutval.${index}.loeysingId` as const, {
-                  required: true,
-                })}
-                defaultValue={side.loeysingId}
-              />
-              <input
-                type="hidden"
-                defaultValue={side.typeId}
-                {...register(`sideutval.${index}.typeId` as const, {
-                  required: true,
-                })}
-              />
-              <input
-                type="hidden"
-                {...register(`sideutval.${index}.egendefinertType` as const)}
-                defaultValue={side.egendefinertType}
-              />
-              <TestlabFormTextArea
-                label="Begrunnelse for sideutval"
-                name={`sideutval.${index}.begrunnelse`}
-              />
-              <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
-            </div>
-            {hasMultipleItems && (
-              <div className={classes.taBortSideWrapper}>
-                <Button
-                  size={ButtonSize.Small}
-                  variant={ButtonVariant.Quiet}
-                  type="button"
-                  onClick={() => handleRemoveSide([index])}
-                  className={classes.taBortSide}
+              <Card.Header>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
                 >
-                  <MinusCircleIcon />
-                  Ta bort side
-                </Button>
-              </div>
-            )}
-          </div>
-        );
-      })}
+                  <Heading level={4} size="xsmall">
+                    {sideutvalTypeLabel} side {index}
+                  </Heading>
+                  {hasMultipleItems && (
+                    <Button
+                      variant="secondary"
+                      color="danger"
+                      size="sm"
+                      type="button"
+                      title="Ta bort side"
+                      onClick={() => handleRemoveSide([index])}
+                    >
+                      Fjern
+                      <TrashFillIcon aria-hidden fontSize="1.5rem" />
+                    </Button>
+                  )}
+                </div>
+              </Card.Header>
+              <Divider color="subtle" />
+              <Card.Content>
+                <input
+                  type="hidden"
+                  {...register(`sideutval.${index}.loeysingId` as const, {
+                    required: true,
+                  })}
+                  defaultValue={side.loeysingId}
+                />
+                <input
+                  type="hidden"
+                  defaultValue={side.typeId}
+                  {...register(`sideutval.${index}.typeId` as const, {
+                    required: true,
+                  })}
+                />
+                <input
+                  type="hidden"
+                  {...register(`sideutval.${index}.egendefinertType` as const)}
+                  defaultValue={side.egendefinertType}
+                />
+                <TestlabFormTextArea
+                  label="Begrunnelse for sideutval"
+                  name={`sideutval.${index}.begrunnelse`}
+                />
+                <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
+              </Card.Content>
+            </Card>
+          );
+        })}
+      </div>
       <div className={classes.lagreSideutvalNettside}>
         <ConfirmModalButton
           size={ButtonSize.Small}
@@ -148,7 +164,7 @@ const SideBegrunnelseForm = ({
           Legg til fleire sider innan {sideutvalTypeLabel}
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
