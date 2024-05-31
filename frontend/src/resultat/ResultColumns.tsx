@@ -1,5 +1,8 @@
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
+import { getSeverity } from '@common/table/util';
+import { Tag } from '@digdir/designsystemet-react';
 import { TesterResult } from '@maaling/api/types';
+import { ResultatOversiktLoeysing } from '@resultat/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +12,7 @@ import { Link } from 'react-router-dom';
  *
  * @returns {Array<ColumnDef<TesterResult>>} An array of column definitions.
  */
-export const getTestresultatColumns = (): Array<ColumnDef<TesterResult>> => [
+export const getViolationsColumns = (): Array<ColumnDef<TesterResult>> => [
   getCheckboxColumn((row: Row<TesterResult>) => `Velg ${row.original.side}`),
   {
     accessorFn: (row) => row.side,
@@ -52,4 +55,48 @@ export const getTestresultatColumns = (): Array<ColumnDef<TesterResult>> => [
   //     cell: (info) => info.getValue(),
   //     header: () => <>Kommentar</>,
   // },
+];
+
+export const getResultColumns = (): Array<
+  ColumnDef<ResultatOversiktLoeysing>
+> => [
+  {
+    accessorKey: 'krav',
+    header: 'Krav',
+  },
+  {
+    accessorKey: 'score',
+    header: 'Resultat',
+    enableGlobalFilter: false,
+    enableColumnFilter: false,
+    cell: ({ row }) => (
+      <Tag size="small" color={getSeverity(row.getValue('score'))}>
+        {row.getValue('score')}
+      </Tag>
+    ),
+  },
+  {
+    accessorKey: 'testar',
+    header: 'testar',
+    enableGlobalFilter: false,
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'talTestaElement',
+    header: 'talElementSamsvar',
+    enableGlobalFilter: false,
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'talElementSamsvar',
+    header: 'talElementSamsvar',
+    enableGlobalFilter: false,
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: 'talElementBrot',
+    header: 'talElementBrot',
+    enableGlobalFilter: false,
+    enableColumnFilter: false,
+  },
 ];

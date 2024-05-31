@@ -1,6 +1,6 @@
 import UserActionTable from '@common/table/UserActionTable';
 import { TesterResult } from '@maaling/api/types';
-import { getTestresultatColumns } from '@resultat/ResultColumns';
+import { getViolationsColumns } from '@resultat/ResultColumns';
 import React, { useMemo } from 'react';
 import { useLoaderData, useParams } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ const ViolationsList = () => {
 
   const testResults: TesterResult[] = useLoaderData() as TesterResult[];
 
-  const testResultatColumns = useMemo(() => getTestresultatColumns(), []);
+  const testResultatColumns = useMemo(() => getViolationsColumns(), []);
 
   return (
     <UserActionTable<TesterResult>

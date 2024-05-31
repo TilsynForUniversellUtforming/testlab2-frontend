@@ -18,6 +18,7 @@ import {
   Column,
   ColumnDef,
   ColumnFiltersState,
+  Row,
   RowSelectionState,
   VisibilityState,
 } from '@tanstack/react-table';
@@ -33,7 +34,7 @@ export interface TestlabTableProps<T extends object> {
   filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
   onSelectRows?: (rows: T[]) => void;
-  onClickRow?: (kontrollId: string) => void;
+  onClickRow?: (row: Row<T>, subRow: Row<T>) => void;
   onClickRetry?: () => void;
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
@@ -77,8 +78,7 @@ const ResultatTable = <T extends object>({
     setColumnVisibility({
       talElementSamsvar: !visDetaljer,
       talElementBrot: !visDetaljer,
-      idKontroll: !visDetaljer,
-      resultatId: false,
+      id: false,
       dato: false,
       type: true,
     });
@@ -90,7 +90,6 @@ const ResultatTable = <T extends object>({
       talElementSamsvar: false,
       talElementBrot: false,
       id: false,
-      resultatId: false,
       dato: false,
       type: true,
     });

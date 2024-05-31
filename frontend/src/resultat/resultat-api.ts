@@ -1,7 +1,7 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { TesterResult, TestResult } from '@maaling/api/types';
-import { Resultat } from '@resultat/types';
+import { Resultat, ResultatOversiktLoeysing } from '@resultat/types';
 
 export const fetchTestresultatAggregert = async (
   id: number
@@ -46,4 +46,14 @@ export function fetchKontrollResultat(idKontroll: number): Promise<Resultat[]> {
   return fetch(`/api/v1/testresultat/kontroll/${idKontroll}`, {}).then(
     (response) => responseToJson(response, 'Kunne ikkje hente resultat')
   );
+}
+
+export function fetchKontrollLoeysing(
+  idKontroll: number,
+  idLoeysing: number
+): Promise<ResultatOversiktLoeysing[]> {
+  return fetch(
+    `/api/v1/testresultat/kontroll/${idKontroll}/${idLoeysing}`,
+    {}
+  ).then((response) => responseToJson(response, 'Kunne ikkje hente resultat'));
 }

@@ -13,15 +13,27 @@ data class Resultat(
 )
 
 data class LoeysingResultat(
-    val id: Int,
-    val namnLoeysing: String,
-    val namnVerksemd: String,
+    val loeysingId: Int,
+    val loeysingNamn: String,
+    val verksemdNamn: String,
     val score: Double,
     val testType: TestgrunnlagType,
     val talElementSamsvar: Int,
     val talElementBrot: Int,
     val testar: List<String>,
     val progresjon: Int = 0,
+)
+
+data class ResultatOversiktLoeysing(
+    val loeysingId: Int,
+    val loeysingNamn: String,
+    val typeKontroll: String,
+    val testar: List<String>,
+    val score: Double,
+    val krav: String,
+    val talTestaElement: Int?,
+    val talElementBrot: Int,
+    val talElementSamsvar: Int,
 )
 
 enum class KontrollType {
