@@ -1,15 +1,5 @@
-import useAlert from '@common/alert/useAlert';
 import { ButtonSize, ButtonVariant } from '@common/types';
-import {
-  Accordion,
-  Alert,
-  Button,
-  Chip,
-  Combobox,
-  Heading,
-  Paragraph,
-  Textfield,
-} from '@digdir/designsystemet-react';
+import { Accordion, Button, Chip, Combobox, Heading, Paragraph, Textfield, } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
@@ -53,7 +43,9 @@ const SideutvalAccordion = ({
   >();
   const [egendefinertType, setEgendefinertType] = useState<string>('');
   const [expanded, setExpanded] = useState<string[]>([]);
-  const [alert, setAlert] = useAlert();
+  const [typeError, setTypeError] = useState<
+    { type?: string; egendefinert?: string } | undefined
+  >();
 
   const handleSetExpanded = (key: string) => {
     setExpanded((prevExpanded) =>
@@ -73,7 +65,7 @@ const SideutvalAccordion = ({
 
   const handleAddSideutvalType = () => {
     if (!sideutvalTypeToAdd) {
-      setAlert('danger', 'Ugylding sideutvalType');
+      setTypeError({ type: 'Ugyldig sidetype' });
       return;
     }
 
@@ -82,7 +74,9 @@ const SideutvalAccordion = ({
       sideutvalTypeToAdd.type.toLowerCase() === 'egendefinert' &&
       !egendefinertType
     ) {
-      setAlert('danger', 'Ugylding sideutvalType');
+      setTypeError({
+        egendefinert: 'Egendefinert sidetype kan ikkje vera tom',
+      });
       return;
     }
 
@@ -100,6 +94,7 @@ const SideutvalAccordion = ({
         egendefinertType
       );
       setSideutvalTypeToAdd(undefined);
+      setTypeError(undefined);
       setEgendefinertType('');
     }
   };
@@ -157,13 +152,16 @@ const SideutvalAccordion = ({
             <Chip.Toggle selected checkmark>
               Test av nettside
             </Chip.Toggle>
-            <Chip.Toggle disabled title="Test av mobil kommer">
+            <Chip.Toggle
+              disabled
+              title="Test av mobil er ikkje tilgjengelig ennå"
+            >
               Test av mobil
             </Chip.Toggle>
           </Chip.Group>
           <Paragraph size="medium">
-            Velg i nedtrekkslisten. Forside skal alltid med. 10% av utvalget
-            skal være egendefinert. Velg derfor egendefinert for disse sidene.
+            Vel i nedtrekklista. Forside skal alltid med. 10% av utvalet skal
+            vera eigendefinert. Vel derfor eigendefinert for desse sidene.
           </Paragraph>
         </div>
       </div>
@@ -180,6 +178,7 @@ const SideutvalAccordion = ({
               inputValue={
                 sideutvalTypeToAdd?.type ? String(sideutvalTypeToAdd.type) : ''
               }
+              error={typeError?.type}
             >
               <Combobox.Empty>Ingen treff</Combobox.Empty>
               {selectableSideutvalType.map((tl) => (
@@ -191,8 +190,10 @@ const SideutvalAccordion = ({
             {sideutvalTypeToAdd?.type?.toLowerCase() === 'egendefinert' && (
               <Textfield
                 label="Egendefinert sidetype"
+                size="small"
                 value={egendefinertType?.length !== 0 ? egendefinertType : ''}
                 onChange={(e) => setEgendefinertType(e.target.value)}
+                error={typeError?.egendefinert}
               />
             )}
             <Button
@@ -245,7 +246,6 @@ const SideutvalAccordion = ({
                 }
               )}
             </Accordion>
-            {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
           </div>
         </div>
       </div>

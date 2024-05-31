@@ -1,23 +1,13 @@
 import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Alert,
-  ErrorSummary,
-  Heading,
-  Paragraph,
-} from '@digdir/designsystemet-react';
+import { Alert, ErrorSummary, Heading, Paragraph, } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
 import { CrawlParameters } from '@maaling/api/types';
 import classNames from 'classnames';
 import { useState } from 'react';
-import {
-  FieldErrors,
-  FormProvider,
-  useFieldArray,
-  useForm,
-} from 'react-hook-form';
+import { FieldErrors, FormProvider, useFieldArray, useForm, } from 'react-hook-form';
 import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
@@ -158,10 +148,12 @@ const VelgSideutval = () => {
   return (
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
-      <Heading level={1} size="large">
-        Sideutval
-      </Heading>
-      <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
+      <div className={classes.velgTestreglarOverskrift}>
+        <Heading level={1} size="xlarge">
+          Sideutval
+        </Heading>
+        <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
+      </div>
       <div className={classes.automatiskEllerManuelt}>
         <button
           className={classNames({

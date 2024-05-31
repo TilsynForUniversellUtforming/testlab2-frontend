@@ -71,34 +71,35 @@ const SideBegrunnelseForm = ({
         const index = sideutvalIndexed.index;
 
         return (
-          <div
-            key={`${side.typeId}_${index}`}
-            className={classes.begrunnelseInputs}
-          >
-            <input
-              type="hidden"
-              {...register(`sideutval.${index}.loeysingId` as const, {
-                required: true,
-              })}
-              defaultValue={side.loeysingId}
-            />
-            <input
-              type="hidden"
-              defaultValue={side.typeId}
-              {...register(`sideutval.${index}.typeId` as const, {
-                required: true,
-              })}
-            />
-            <input
-              type="hidden"
-              {...register(`sideutval.${index}.egendefinertType` as const)}
-              defaultValue={side.egendefinertType}
-            />
-            <TestlabFormTextArea
-              label="Begrunnelse for sideutval"
-              name={`sideutval.${index}.begrunnelse`}
-            />
-            <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
+          <div key={`${side.typeId}_${index}`}>
+            <div
+              className={classes.begrunnelseInputs}
+            >
+              <input
+                type="hidden"
+                {...register(`sideutval.${index}.loeysingId` as const, {
+                  required: true,
+                })}
+                defaultValue={side.loeysingId}
+              />
+              <input
+                type="hidden"
+                defaultValue={side.typeId}
+                {...register(`sideutval.${index}.typeId` as const, {
+                  required: true,
+                })}
+              />
+              <input
+                type="hidden"
+                {...register(`sideutval.${index}.egendefinertType` as const)}
+                defaultValue={side.egendefinertType}
+              />
+              <TestlabFormTextArea
+                label="Begrunnelse for sideutval"
+                name={`sideutval.${index}.begrunnelse`}
+              />
+              <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
+            </div>
             {hasMultipleItems && (
               <div className={classes.taBortSideWrapper}>
                 <Button

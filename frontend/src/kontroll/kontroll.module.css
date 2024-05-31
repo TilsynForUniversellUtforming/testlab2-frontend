@@ -339,6 +339,10 @@
   }
 }
 
+.sideutval-alert {
+  margin: 1rem 0;
+}
+
 .ferdig-utval {
   display: flex;
   gap: 1rem;

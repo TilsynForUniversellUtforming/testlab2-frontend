@@ -1,6 +1,6 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
 import { formatDate } from '@common/util/stringutils';
-import { Alert, Heading } from '@digdir/designsystemet-react';
+import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import React from 'react';
@@ -81,9 +81,9 @@ const VelgLoesninger = () => {
       <KontrollStepper />
       <div className={classes.velgLoesningerOverskrift}>
         <Heading level={1} size="xlarge">
-          Velg løsninger
+          Vel løysingar
         </Heading>
-        <p>Velg hvilke løsninger du vil ha med i kontrollen</p>
+        <Paragraph>Vel kva løysingar du vil ha med i kontrollen</Paragraph>
       </div>
       <div className={classes.utvalgEllerManuelt}>
         <button

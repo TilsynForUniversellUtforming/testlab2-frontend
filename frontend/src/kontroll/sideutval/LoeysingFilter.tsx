@@ -55,7 +55,7 @@ const LoeysingFilter = ({
         {heading}
       </Heading>
       <Heading level={4} size="xsmall">
-        Vel løysing til sideutval
+        Vel sideutval for løysing
       </Heading>
       <Filter
         loeysingList={loeysingList}
