@@ -23,12 +23,6 @@ import TestregelFilter from './TestregelFilter';
 import TestregelSelector from './TestregelSelector';
 import { SelectionType, VelgTestreglarLoader } from './types';
 
-const modusHeaders: { [K in TestregelModus]: string } = {
-  automatisk: 'Vel automatiske testreglar',
-  manuell: 'Vel manuelle testreglar',
-  'semi-automatisk': 'Vel både manuelle og automatiske testreglar',
-};
-
 const VelgTestreglar = () => {
   const { kontroll, testregelList, regelsettList } =
     useLoaderData() as VelgTestreglarLoader;
@@ -206,55 +200,44 @@ const VelgTestreglar = () => {
           Vel testreglar sjølv
         </button>
       </div>
-      <TestregelFilter
-        regelsettSelected={regelsettSelected}
-        modus={modus}
-        type={type}
-        onChangeFilter={onChangeFilter}
-      />
-      <div className={classes.testreglarValgWrapper}>
-        <Heading level={2} size="large" spacing>
-          {regelsettSelected ? 'Vel testregelsett' : 'Vel testreglar sjølv'}
-        </Heading>
-        {!regelsettSelected && (
-          <>
-            <Heading size="small" level={4} spacing>
-              {modusHeaders[modus]}
-            </Heading>
-            <Paragraph size="medium" spacing>
-              Vel testreglar og sukesskriteriar som skal væra med i testen din
-            </Paragraph>
-          </>
-        )}
-        <div className={classes.testreglarValg}>
-          <ConditionalComponentContainer
-            condition={regelsettSelected}
-            conditionalComponent={
-              <RegelsettSelector
-                regelsettList={filteredRegelsettList}
-                onSelectRegelsett={onSelectRegelsett}
-                modus={modus}
-                isInngaaende={isInngaaende}
-                selectedRegelsettId={selectedRegelsettId}
-              />
-            }
-            otherComponent={
-              <TestregelSelector
-                testregelList={filteredTestregelList}
-                modus={modus}
-                selectedTestregelIdList={selectedTestregelIdList}
-                onSelectTestregelId={onSelectTestregelId}
-                isInngaaende={isInngaaende}
-              />
-            }
+      <div className={classes.testregelSelection}>
+        <TestregelFilter
+          regelsettSelected={regelsettSelected}
+          modus={modus}
+          type={type}
+          onChangeFilter={onChangeFilter}
+        />
+        <div className={classes.testreglarValgWrapper}>
+          <div className={classes.testreglarValg}>
+            <ConditionalComponentContainer
+              condition={regelsettSelected}
+              conditionalComponent={
+                <RegelsettSelector
+                  regelsettList={filteredRegelsettList}
+                  onSelectRegelsett={onSelectRegelsett}
+                  modus={modus}
+                  isInngaaende={isInngaaende}
+                  selectedRegelsettId={selectedRegelsettId}
+                />
+              }
+              otherComponent={
+                <TestregelSelector
+                  testregelList={filteredTestregelList}
+                  modus={modus}
+                  selectedTestregelIdList={selectedTestregelIdList}
+                  onSelectTestregelId={onSelectTestregelId}
+                  isInngaaende={isInngaaende}
+                />
+              }
+            />
+          </div>
+          {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
+          <LagreOgNeste
+            sistLagret={actionData?.sistLagret}
+            onClickLagreKontroll={lagreKontroll(false)}
+            onClickNeste={lagreKontroll(true)}
           />
         </div>
-        {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
-        <LagreOgNeste
-          sistLagret={actionData?.sistLagret}
-          onClickLagreKontroll={lagreKontroll(false)}
-          onClickNeste={lagreKontroll(true)}
-        />
       </div>
     </section>
   );
