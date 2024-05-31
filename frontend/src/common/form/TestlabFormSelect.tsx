@@ -1,7 +1,12 @@
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Combobox, ErrorMessage, Label, Radio, } from '@digdir/designsystemet-react';
+import {
+  Combobox,
+  ErrorMessage,
+  Label,
+  Radio,
+} from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -38,7 +43,7 @@ const TestlabFormSelect = <T extends object>({
   radio = false,
   size,
 }: TestlabInputSelectProps<T>): ReactNode => {
-  const { control, formState } = useFormContext<T>();
+  const { control, formState, register } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 
   if (radio) {
@@ -77,39 +82,30 @@ const TestlabFormSelect = <T extends object>({
   }
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, value } }) => (
-        <div className="testlab-form__select">
-          <Label htmlFor={name} className="testlab-form__input-label">
-            {label}
-            {required && <span className="asterisk-color">*</span>}
-            {description && (
-              <div className="testlab-form__input-sub-label">{description}</div>
-            )}
-          </Label>
-          <Combobox
-            id={name}
-            value={value ? [String(value)] : undefined}
-            onValueChange={(value) => onChange(value[0])}
-            error={isDefined(errorMessage)}
-            disabled={disabled}
-            label={label}
-            hideLabel
-          >
-            {options.map((o) => (
-              <Combobox.Option value={o.value} key={`${o.label}_${o.value}`}>
-                {o.label}
-              </Combobox.Option>
-            ))}
-          </Combobox>
-          {errorMessage && (
-            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
-          )}
-        </div>
-      )}
-    />
+    <div className="testlab-form__select">
+      <Label htmlFor={name} className="testlab-form__input-label">
+        {label}
+        {required && <span className="asterisk-color">*</span>}
+        {description && (
+          <div className="testlab-form__input-sub-label">{description}</div>
+        )}
+      </Label>
+      <Combobox
+        id={name}
+        {...register(name, { required: required })}
+        error={isDefined(errorMessage)}
+        disabled={disabled}
+        label={label}
+        hideLabel
+      >
+        {options.map((o) => (
+          <Combobox.Option value={o.value} key={`${o.label}_${o.value}`}>
+            {o.label}
+          </Combobox.Option>
+        ))}
+      </Combobox>
+      {errorMessage && <ErrorMessage size="small">{errorMessage}</ErrorMessage>}
+    </div>
   );
 };
 
