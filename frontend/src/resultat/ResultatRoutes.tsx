@@ -1,13 +1,12 @@
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import RestultatKontrollOversikt from '@resultat/kontroll_detaljer/RestultatKontrollOversikt';
 import ResultListApp from '@resultat/list/ResultListApp';
-import ViolationsList from '@resultat/ViolationsList';
 import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import resultatImg from '../assets/resultat.svg';
 import {
-  fetchDetaljertResultat,
+  fetchKontrollLoeysing,
   fetchKontrollResultat,
   fetchResultList,
 } from './resultat-api';
@@ -25,8 +24,8 @@ export const RESULTAT_KONTROLL: AppRoute = {
   parentRoute: RESULTAT_ROOT,
 };
 
-export const TESTRESULTAT_TESTGRUNNLAG: AppRoute = {
-  navn: 'Resultat testgrunnlag',
+export const TESTRESULTAT_LOEYSING: AppRoute = {
+  navn: 'Resultat løysing',
   path: ':loeysingId',
   parentRoute: RESULTAT_KONTROLL,
 };
@@ -34,7 +33,7 @@ export const TESTRESULTAT_TESTGRUNNLAG: AppRoute = {
 export const VIOLATION_LIST: AppRoute = {
   navn: 'Resultat testregel',
   path: ':testregelId/:loeysingId',
-  parentRoute: TESTRESULTAT_TESTGRUNNLAG,
+  parentRoute: TESTRESULTAT_LOEYSING,
 };
 
 export const ResultRoutes: RouteObject = {
@@ -49,32 +48,28 @@ export const ResultRoutes: RouteObject = {
     },
     {
       path: RESULTAT_KONTROLL.path,
-      element: <RestultatKontrollOversikt />,
+      element: <Outlet />,
       handle: { name: RESULTAT_KONTROLL.navn },
-      loader: ({ params }) =>
-        fetchKontrollResultat(parseInt(params.id as string)),
       children: [
         {
-          path: TESTRESULTAT_TESTGRUNNLAG.path,
+          index: true,
+          loader: ({ params }) =>
+            fetchKontrollResultat(parseInt(params.id as string)),
+          element: <RestultatKontrollOversikt />,
+        },
+        {
+          path: TESTRESULTAT_LOEYSING.path,
           element: <Outlet />,
-          handle: { name: TESTRESULTAT_TESTGRUNNLAG.navn },
+          handle: { name: TESTRESULTAT_LOEYSING.navn },
           children: [
             {
               index: true,
-              // loader: ({ params }) =>
-              //   fetchTestresultatAggregert(parseInt(params.id as string)),
-              element: <TestResultatApp />,
-            },
-            {
-              path: VIOLATION_LIST.path,
               loader: ({ params }) =>
-                fetchDetaljertResultat(
+                fetchKontrollLoeysing(
                   parseInt(params.id as string),
-                  params.testregelId as string,
                   parseInt(params.loeysingId as string)
                 ),
-              element: <ViolationsList />,
-              handle: { name: VIOLATION_LIST.navn },
+              element: <TestResultatApp />,
             },
           ],
         },

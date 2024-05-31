@@ -4,7 +4,7 @@ import { ButtonVariant } from '@common/types';
 import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
 import { Button, Heading, Tag } from '@digdir/designsystemet-react';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
-import { TESTRESULTAT_TESTGRUNNLAG } from '@resultat/ResultatRoutes';
+import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
 import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
     await createTestresultatAggregert(Number(testgrunnlagId))
       .then(() => {
         navigate(
-          getFullPath(TESTRESULTAT_TESTGRUNNLAG, {
+          getFullPath(TESTRESULTAT_LOEYSING, {
             pathParam: idPath,
             id: testgrunnlagId,
           } as IdReplacement)

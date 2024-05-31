@@ -8,11 +8,23 @@ export type Resultat = {
 };
 
 export type LoeysingResultat = {
-  id: number;
+  idLoeysing: number;
   namnLoeysing: string;
   namnVerksemd: string;
   score: number;
   testType: string;
   progress: number;
   testar: string[];
+};
+
+export type ResultatOversiktLoeysing = {
+  loeysingId: number;
+  loeysingNamn: string;
+  typeKontroll: string;
+  testar: string[];
+  score: number;
+  krav: string;
+  talTestaElement: number;
+  talElementBrot: number;
+  talElementSamsvar: number;
 };

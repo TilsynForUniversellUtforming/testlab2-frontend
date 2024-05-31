@@ -1,6 +1,5 @@
 import '@common/table/testlabTable.scss';
 import '../resultat.scss';
-import '@tanstack/react-table';
 
 import ErrorCard, { TestlabError } from '@common/error/ErrorCard';
 import PaginationContainer from '@common/table/control/pagination/PaginationContainer';
@@ -16,6 +15,7 @@ import { resultTable } from '@resultat/tableoptions';
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   RowSelectionState,
   VisibilityState,
 } from '@tanstack/react-table';
@@ -32,7 +32,7 @@ export interface TestlabTableProps<T extends object> {
   filterPreference?: TableFilterPreference;
   selectedRows?: boolean[];
   onSelectRows?: (rows: T[]) => void;
-  onClickRow?: (kontrollId: string) => void;
+  onClickRow?: (row: Row<T>, subRow: Row<T>) => void;
   onClickRetry?: () => void;
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
@@ -92,8 +92,8 @@ const ResultatKontrollOverviewTable = <T extends object>({
     setColumnVisibility({
       talElementSamsvar: !visDetaljer,
       talElementBrot: !visDetaljer,
-      idKontroll: !visDetaljer,
-      resultatId: false,
+      id: false,
+      loeysingId: false,
     });
     setVisDetaljer(!visDetaljer);
   };
@@ -102,7 +102,8 @@ const ResultatKontrollOverviewTable = <T extends object>({
     React.useState<VisibilityState>({
       talElementSamsvar: false,
       talElementBrot: false,
-      resultatId: false,
+      id: false,
+      loeysingId: false,
     });
 
   const table = resultTable(

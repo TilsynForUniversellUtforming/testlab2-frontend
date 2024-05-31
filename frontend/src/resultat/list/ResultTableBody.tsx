@@ -7,7 +7,7 @@ import React from 'react';
 
 export interface TableBodyProps<T> extends LoadingTableProps<T> {
   onClickCallback?: (row: Row<T>) => void;
-  onClickRow?: (kontrollId: string) => void;
+  onClickRow?: (row: Row<T>, subRow: Row<T>) => void;
 }
 
 const ResultTableBody = <T extends object>({
@@ -45,9 +45,9 @@ const ResultTableBody = <T extends object>({
     });
   }
 
-  function onRowClick(row: Row<T>) {
+  function onRowClick(row: Row<T>, subRow: Row<T>) {
     if (onClickRow) {
-      onClickRow(row.getValue('id'));
+      onClickRow(row, subRow);
     }
   }
 
@@ -75,7 +75,7 @@ const ResultTableBody = <T extends object>({
             <Table.Row
               key={subRow.id}
               className={getRowClassName(row)}
-              onClick={() => onRowClick(row)}
+              onClick={() => onRowClick(row, subRow)}
             >
               {filterKontrollCell(row, subRow.index).map((cell) => (
                 <Table.Cell

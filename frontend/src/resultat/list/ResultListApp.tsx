@@ -113,12 +113,12 @@ const ResultListApp = () => {
       enableColumnFilter: false,
     },
   ];
-  const onClickRow = (kontrollId: string) => {
-    console.log('onClickKontroll ' + kontrollId);
-
+  // eslint-disable-next-line
+  const onClickRow = <T extends object>(row: Row<T>, subRow: Row<T>) => {
+    const kontrollId = row.getValue('id');
     const path = getFullPath(RESULTAT_KONTROLL, {
       pathParam: idPath,
-      id: kontrollId,
+      id: String(kontrollId),
     });
     navigate(path);
   };

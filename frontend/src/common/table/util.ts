@@ -1,3 +1,4 @@
+import { TestlabSeverity } from '@common/types';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import { FilterMeta, Row } from '@tanstack/react-table';
 
@@ -38,4 +39,10 @@ export const fuzzyFilter = <T extends object>(
   });
 
   return itemRank.passed;
+};
+
+export const getSeverity = (percentage: number): TestlabSeverity => {
+  if (percentage < 60) return 'danger';
+  if (percentage < 90) return 'warning';
+  return 'success';
 };
