@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
@@ -63,24 +62,6 @@ class ResultatResource(
         }
   }
 
-  @GetMapping("resultat")
-  fun getDetaljertResultat(
-      @RequestParam sakId: Int?,
-      @RequestParam maalingId: Int?,
-      @RequestParam testregelNoekkel: String?,
-      @RequestParam loeysingId: Int?
-  ): List<TestResultat> {
-    logger.debug("Hent resultat for sakId: $sakId, maalingId: $maalingId")
-    return when {
-      sakId != null ->
-          restTemplate.getList<TestResultat>(
-              "$testresultatUrl?testgrunnlagId=$sakId&testregelNoekkel=$testregelNoekkel&loeysingId=$loeysingId")
-      maalingId != null ->
-          restTemplate.getList<TestResultat>("$testresultatUrl?maalingId=$maalingId")
-      else -> return emptyList()
-    }
-  }
-
   @GetMapping("list", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getListTest(): ResponseEntity<List<Resultat>> {
     val resultat = restTemplate.getList<Resultat>("$testresultatUrl/list")
@@ -123,5 +104,16 @@ class ResultatResource(
                   talTestaElement = krav.talElementBrot + krav.talElementSamsvar)
             }
     return ResponseEntity.ok(resultatListElement)
+  }
+
+  @GetMapping("kontroll/{idKontroll}/{idLoeysing}/{kravId}")
+  fun getDetaljertResultat(
+      @PathVariable idKontroll: Int,
+      @PathVariable idLoeysing: Int,
+      @PathVariable kravId: Int,
+  ): List<TestResultat> {
+    logger.debug("Hent resultat for kontrolkId: $idLoeysing, loeysingId: $idLoeysing")
+    return restTemplate.getList<TestResultat>(
+        "$testresultatUrl/kontroll/${idKontroll}/${idLoeysing}/${kravId}")
   }
 }

@@ -17,22 +17,17 @@ export const createTestresultatAggregert = async (id: number) =>
 
 export const fetchDetaljertResultat = async (
   id: number,
-  testregelNoekkel: string,
-  loeysingId: number
+  loeysingId: number,
+  testregelId: number
 ): Promise<TesterResult[]> => {
-  const params = new URLSearchParams();
-  params.append('sakId', id.toString());
-  params.append('testregelNoekkel', testregelNoekkel);
-  params.append('loeysingId', loeysingId.toString());
-  return fetch(`/api/v1/testresultat/resultat?${params.toString()}`, {}).then(
-    (response) =>
-      responseToJson(
-        response,
-        'Kunne ikkje hente for sakId ' +
-          id +
-          ' og testregel ' +
-          testregelNoekkel
-      )
+  return fetch(
+    `/api/v1/testresultat/kontroll/${id}/${loeysingId}/${testregelId}`,
+    {}
+  ).then((response) =>
+    responseToJson(
+      response,
+      'Kunne ikkje hente for kontrollId ' + id + ' og testregel ' + testregelId
+    )
   );
 };
 

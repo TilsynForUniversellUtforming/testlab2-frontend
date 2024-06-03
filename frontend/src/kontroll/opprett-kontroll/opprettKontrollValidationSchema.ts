@@ -20,7 +20,7 @@ export const opprettKontrollValidationSchema = z.object({
   saksbehandler: z.string().min(1, 'Saksbehandlar må fyllast ut'),
 
   sakstype: z.union([z.literal('forvaltningssak'), z.literal('arkivsak')], {
-    message: 'Du må velje ein sakstype',
+    description: 'Du må velje ein sakstype',
   }),
 
   arkivreferanse: z.string().optional(),
