@@ -94,21 +94,6 @@ const TestOverview = () => {
     }
   }
 
-  function viewTestType(etTestgrunnlag: Testgrunnlag) {
-    const normalized = sanitizeEnumLabel(etTestgrunnlag.type);
-    if (etTestgrunnlag.type === 'RETEST') {
-      const countTidligereRetester = testgrunnlag
-        .filter((t) => t.type === 'RETEST')
-        .filter(
-          (t) =>
-            Date.parse(t.datoOppretta) < Date.parse(etTestgrunnlag.datoOppretta)
-        ).length;
-      return `${normalized} ${countTidligereRetester + 1}`;
-    } else {
-      return normalized;
-    }
-  }
-
   return (
     <div className="manual-test-overview">
       {testgrunnlag.flatMap((etTestgrunnlag) => {
@@ -146,7 +131,7 @@ const TestOverview = () => {
                     Inngående kontroll
                   </Tag>
                   <Tag color="second" size="small">
-                    {viewTestType(etTestgrunnlag)}
+                    {viewTestType(etTestgrunnlag, etSideutval, testgrunnlag)}
                   </Tag>
                   <Tag color="info" size="small">
                     Nettsted
@@ -189,3 +174,23 @@ const TestOverview = () => {
 };
 
 export default TestOverview;
+
+export function viewTestType(
+  etTestgrunnlag: Testgrunnlag,
+  etSideutval: Sideutval,
+  alleTestgrunnlag: Testgrunnlag[]
+) {
+  const normalized = sanitizeEnumLabel(etTestgrunnlag.type);
+  if (etTestgrunnlag.type === 'RETEST') {
+    const countTidligereRetester = alleTestgrunnlag
+      .filter((t) => t.type === 'RETEST')
+      .filter((t) => t.sideutval.some((s) => s.id === etSideutval.id))
+      .filter(
+        (t) =>
+          Date.parse(t.datoOppretta) < Date.parse(etTestgrunnlag.datoOppretta)
+      ).length;
+    return `${normalized} ${countTidligereRetester + 1}`;
+  } else {
+    return normalized;
+  }
+}
