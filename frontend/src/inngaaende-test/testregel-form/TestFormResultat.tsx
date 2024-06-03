@@ -9,7 +9,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { TestregelResultat } from '@test/util/testregelParser';
 import DOMPurify from 'dompurify';
-import { useCallback } from 'react';
+import { useState } from 'react';
 
 interface Props {
   resultatId: number;
@@ -58,14 +58,13 @@ const TestFormResultat = ({
     __html: DOMPurify.sanitize(resultat.utfall || 'Inget resultat'),
   };
 
-  const onBlur = useCallback(
-    (nyKommentar?: string) => {
-      if (nyKommentar !== kommentar) {
-        onChangeKommentar(resultatId, nyKommentar);
-      }
-    },
-    [resultatId, kommentar]
-  );
+  const [nyKommentar, setNyKommentar] = useState<string | undefined>(kommentar);
+
+  const onBlur = () => {
+    if (nyKommentar !== kommentar) {
+      onChangeKommentar(resultatId, nyKommentar);
+    }
+  };
 
   return (
     <div className="test-form__result-card">
@@ -90,8 +89,9 @@ const TestFormResultat = ({
             ? 'Kommenter resultat'
             : 'Frivillig kommentar til resultatet'
         }
-        value={kommentar}
-        onBlur={(e) => onBlur(e.target.value)}
+        value={nyKommentar}
+        onBlur={onBlur}
+        onChange={(e) => setNyKommentar(e.target.value)}
       />
       <ImageUpload resultatId={resultatId} />
     </div>
