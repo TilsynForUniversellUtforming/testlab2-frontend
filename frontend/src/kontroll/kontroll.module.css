@@ -285,9 +285,13 @@
   }
 
   .begrunnelse-inputs {
+    width: 28rem;
+  }
+
+  .begrunnelse-inputs-header {
     display: flex;
-    flex-direction: column;
-    max-width: 32rem;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .ta-bort-side-wrapper {
@@ -296,21 +300,25 @@
     padding-bottom: 1.75rem;
   }
 
-  .ta-bort-side {
-    width: fit-content;
-  }
-
   .sideutvaltype-lagre {
     width: fit-content;
   }
 
+  .lagre-sideutval-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .type-form-wrapper {
-    padding: 2rem;
-    width: 750px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-bottom: 2rem;
   }
 
   .lagre-sideutval-nettside {
-    padding-top: 1rem;
+    width: 28rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -337,6 +345,10 @@
     gap: 1rem;
     padding-bottom: 1rem;
   }
+}
+
+.sideutval-alert {
+  margin: 1rem 0;
 }
 
 .ferdig-utval {
