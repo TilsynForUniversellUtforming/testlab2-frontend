@@ -1,11 +1,15 @@
-import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestlabSeverity } from '@common/types';
-import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
+import {
+  Heading,
+  Paragraph,
+  Tag,
+  Textarea,
+} from '@digdir/designsystemet-react';
 import { TestregelResultat } from '@test/util/testregelParser';
 import DOMPurify from 'dompurify';
-import { useCallback } from 'react';
+import { useState } from 'react';
 
 interface Props {
   resultatId: number;
@@ -54,14 +58,13 @@ const TestFormResultat = ({
     __html: DOMPurify.sanitize(resultat.utfall || 'Inget resultat'),
   };
 
-  const onChange = useCallback(
-    (nyKommentar?: string) => {
-      if (typeof nyKommentar === 'string' && nyKommentar !== kommentar) {
-        onChangeKommentar(resultatId, nyKommentar);
-      }
-    },
-    [resultatId, kommentar]
-  );
+  const [nyKommentar, setNyKommentar] = useState<string | undefined>(kommentar);
+
+  const onBlur = () => {
+    if (nyKommentar !== kommentar) {
+      onChangeKommentar(resultatId, nyKommentar);
+    }
+  };
 
   return (
     <div className="test-form__result-card">
@@ -80,15 +83,15 @@ const TestFormResultat = ({
         </Tag>
         <Paragraph dangerouslySetInnerHTML={cleanHTMLUtfall}></Paragraph>
       </div>
-      <DebouncedInput
+      <Textarea
         label={
           isElementSide
             ? 'Kommenter resultat'
             : 'Frivillig kommentar til resultatet'
         }
-        value={kommentar}
-        onChange={onChange}
-        textArea
+        value={nyKommentar}
+        onBlur={onBlur}
+        onChange={(e) => setNyKommentar(e.target.value)}
       />
       <ImageUpload resultatId={resultatId} />
     </div>
