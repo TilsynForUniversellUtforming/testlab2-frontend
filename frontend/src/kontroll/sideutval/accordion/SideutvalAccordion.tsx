@@ -220,6 +220,11 @@ const SideutvalAccordion = ({
                   const sideutvalIndexedList = sideutvalBySideutvalType.filter(
                     (su) => su.sideutval.loeysingId === selectedLoeysing.id
                   );
+
+                  const errors = formErrors.find(
+                    (fe) => fe.sideutvalType === sideutvalTypeLabel
+                  );
+
                   if (sideutvalIndexedList.length === 0) {
                     return null;
                   }
@@ -236,6 +241,7 @@ const SideutvalAccordion = ({
                         }
                       >
                         {sideutvalTypeLabel}
+                        {errors && <> ({errors.antallFeil} feil)</>}
                       </Accordion.Header>
                       <Accordion.Content>
                         <SideBegrunnelseForm
