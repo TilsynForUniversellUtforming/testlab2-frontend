@@ -2,7 +2,12 @@ import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
-import { Alert, Button, Heading, Paragraph, } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useActionData, useSubmit } from 'react-router-dom';
@@ -11,7 +16,10 @@ import classes from '../kontroll.module.css';
 import KontrollStepper from '../stepper/KontrollStepper';
 import { KontrollType, Sakstype } from '../types';
 import { Errors } from './OpprettKontrollRoute';
-import { CreateKontrollType, opprettKontrollValidationSchema, } from './opprettKontrollValidationSchema';
+import {
+  CreateKontrollType,
+  opprettKontrollValidationSchema,
+} from './opprettKontrollValidationSchema';
 
 export default function OpprettKontroll() {
   const submit = useSubmit();

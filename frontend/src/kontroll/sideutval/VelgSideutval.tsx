@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
 import { CrawlParameters } from '@maaling/api/types';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   FieldErrors,
   FormProvider,
@@ -42,9 +42,19 @@ const VelgSideutval = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [neste, setNeste] = useState<boolean>(false);
 
+  const finished: Loeysing[] = useMemo(
+    () =>
+      loeysingList.filter((loeysing) =>
+        kontroll.sideutvalList.some(
+          (sideutval) => sideutval.loeysingId === loeysing.id
+        )
+      ),
+    [kontroll.sideutvalList, loeysingList]
+  );
+
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
-  >();
+  >(loeysingList.find((l) => !finished.includes(l)));
 
   const formMethods = useForm<SideutvalForm>({
     defaultValues: {
@@ -158,10 +168,12 @@ const VelgSideutval = () => {
   return (
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
-      <Heading level={1} size="large">
-        Sideutval
-      </Heading>
-      <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
+      <div className={classes.velgTestreglarOverskrift}>
+        <Heading level={1} size="xlarge">
+          Sideutval
+        </Heading>
+        <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
+      </div>
       <div className={classes.automatiskEllerManuelt}>
         <button
           className={classNames({
@@ -197,7 +209,7 @@ const VelgSideutval = () => {
             <LoeysingFilter
               heading={kontroll.tittel}
               loeysingList={loeysingList}
-              sideutvalKontroll={kontroll.sideutvalList}
+              finished={finished}
               onChangeLoeysing={handleChangeLoeysing}
               selectedLoeysing={selectedLoeysing}
             />
