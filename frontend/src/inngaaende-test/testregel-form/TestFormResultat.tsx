@@ -1,8 +1,12 @@
-import DebouncedInput from '@common/debounced-input/DebouncedInput';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestlabSeverity } from '@common/types';
-import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
+import {
+  Heading,
+  Paragraph,
+  Tag,
+  Textarea,
+} from '@digdir/designsystemet-react';
 import { TestregelResultat } from '@test/util/testregelParser';
 import DOMPurify from 'dompurify';
 import { useCallback } from 'react';
@@ -54,9 +58,9 @@ const TestFormResultat = ({
     __html: DOMPurify.sanitize(resultat.utfall || 'Inget resultat'),
   };
 
-  const onChange = useCallback(
+  const onBlur = useCallback(
     (nyKommentar?: string) => {
-      if (typeof nyKommentar === 'string' && nyKommentar !== kommentar) {
+      if (nyKommentar !== kommentar) {
         onChangeKommentar(resultatId, nyKommentar);
       }
     },
@@ -80,16 +84,14 @@ const TestFormResultat = ({
         </Tag>
         <Paragraph dangerouslySetInnerHTML={cleanHTMLUtfall}></Paragraph>
       </div>
-      <DebouncedInput
+      <Textarea
         label={
           isElementSide
             ? 'Kommenter resultat'
             : 'Frivillig kommentar til resultatet'
         }
         value={kommentar}
-        onChange={onChange}
-        textArea
-        debounce={1000}
+        onBlur={(e) => onBlur(e.target.value)}
       />
       <ImageUpload resultatId={resultatId} />
     </div>
