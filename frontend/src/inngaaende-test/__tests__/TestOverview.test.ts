@@ -1,11 +1,7 @@
-import { faker } from '@faker-js/faker';
-import { viewTestType } from '@test/test-overview/TestOverview';
-import { Testgrunnlag } from '@test/types';
-import { Testregel } from '@testreglar/api/types';
 import { describe, expect, test } from 'vitest';
 
-import { Sideutval } from '../../kontroll/sideutval/types';
-import { Krav } from '../../krav/types';
+import { viewTestType } from '../test-overview/TestOverview';
+import { createOpprinneligTest, createRetest } from './testdata';
 
 describe('viewTestType', () => {
   test('retester skal navngis med løpenummer', () => {
@@ -54,77 +50,3 @@ describe('viewTestType', () => {
     );
   });
 });
-
-function createOpprinneligTest(): Testgrunnlag {
-  return {
-    id: faker.number.int(),
-    kontrollId: faker.number.int(),
-    namn: faker.lorem.word(),
-    testreglar: faker.helpers.multiple(createTestregel),
-    sideutval: faker.helpers.multiple(createSideutval),
-    type: 'OPPRINNELIG_TEST',
-    datoOppretta: faker.date.past().toISOString(),
-  };
-}
-
-function createRetest(opprinneligTest: Testgrunnlag): Testgrunnlag {
-  return {
-    ...opprinneligTest,
-    namn: `retest: ${opprinneligTest.namn}`,
-    type: 'RETEST',
-    sideutval: [faker.helpers.arrayElement(opprinneligTest.sideutval)],
-    datoOppretta: faker.date
-      .between({
-        from: opprinneligTest.datoOppretta,
-        to: new Date(),
-      })
-      .toISOString(),
-  };
-}
-
-function createTestregel(): Testregel {
-  return {
-    id: faker.number.int(),
-    namn: faker.lorem.word(),
-    krav: createKrav(),
-    modus: faker.helpers.arrayElement([
-      'automatisk',
-      'manuell',
-      'semi-automatisk',
-    ]),
-    type: faker.helpers.arrayElement(['app', 'automat', 'dokument', 'nett']),
-    testregelId: faker.string.uuid(),
-    versjon: faker.number.int(),
-    status: 'publisert',
-    datoSistEndra: faker.date.past().toISOString(),
-    spraak: faker.helpers.arrayElement(['en', 'nb', 'nn']),
-    testregelSchema: '',
-  };
-}
-
-function createKrav(): Krav {
-  return {
-    id: faker.number.int(),
-    tittel: faker.lorem.words(5),
-    status: 'krav status',
-    innhald: faker.lorem.paragraph(),
-    gjeldAutomat: faker.datatype.boolean(),
-    gjeldNettsider: faker.datatype.boolean(),
-    gjeldApp: faker.datatype.boolean(),
-    urlRettleiing: faker.internet.url(),
-    prinsipp: faker.lorem.word(),
-    retningslinje: faker.lorem.word(),
-    suksesskriterium: faker.lorem.word(),
-    samsvarsnivaa: faker.helpers.arrayElement(['A', 'AA', 'AAA']),
-  };
-}
-
-function createSideutval(): Sideutval {
-  return {
-    id: faker.number.int(),
-    loeysingId: faker.number.int(),
-    typeId: faker.number.int(),
-    begrunnelse: faker.lorem.words(),
-    url: faker.internet.url(),
-  };
-}
