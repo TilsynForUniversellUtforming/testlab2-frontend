@@ -67,7 +67,7 @@ const SideBegrunnelseForm = ({
   return (
     <div className={classes.lagreSideutvalForm}>
       <div className={classes.typeFormWrapper}>
-        {sideutvalIndexedList.map((sideutvalIndexed) => {
+        {sideutvalIndexedList.map((sideutvalIndexed, arrayIndex) => {
           const side = sideutvalIndexed.sideutval;
           const index = sideutvalIndexed.index;
 
@@ -77,15 +77,9 @@ const SideBegrunnelseForm = ({
               className={classes.begrunnelseInputs}
             >
               <Card.Header>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
+                <div className={classes.begrunnelseInputsHeader}>
                   <Heading level={4} size="xsmall">
-                    {sideutvalTypeLabel} side {index}
+                    {sideutvalTypeLabel} side {arrayIndex + 1}
                   </Heading>
                   {hasMultipleItems && (
                     <Button

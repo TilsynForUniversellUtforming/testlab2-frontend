@@ -288,6 +288,12 @@
     width: 28rem;
   }
 
+  .begrunnelse-inputs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .ta-bort-side-wrapper {
     display: flex;
     width: 100%;
