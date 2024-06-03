@@ -89,6 +89,7 @@ const TestFormResultat = ({
         value={kommentar}
         onChange={onChange}
         textArea
+        debounce={1000}
       />
       <ImageUpload resultatId={resultatId} />
     </div>
