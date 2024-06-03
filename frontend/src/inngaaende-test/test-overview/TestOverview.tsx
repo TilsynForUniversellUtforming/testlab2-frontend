@@ -94,16 +94,16 @@ const TestOverview = () => {
     }
   }
 
-  function viewTestType(testgrunnlag: Testgrunnlag) {
-    const normalized = sanitizeEnumLabel(testgrunnlag.type);
-    if (testgrunnlag.type === 'RETEST') {
-      const datoOppretta = Date.parse(testgrunnlag.datoOppretta);
-      const formatter = new Intl.DateTimeFormat('no-NO', {
-        month: 'long',
-        year: 'numeric',
-      });
-      const dateString = formatter.format(datoOppretta);
-      return `${normalized} ${dateString}`;
+  function viewTestType(etTestgrunnlag: Testgrunnlag) {
+    const normalized = sanitizeEnumLabel(etTestgrunnlag.type);
+    if (etTestgrunnlag.type === 'RETEST') {
+      const countTidligereRetester = testgrunnlag
+        .filter((t) => t.type === 'RETEST')
+        .filter(
+          (t) =>
+            Date.parse(t.datoOppretta) < Date.parse(etTestgrunnlag.datoOppretta)
+        ).length;
+      return `${normalized} ${countTidligereRetester + 1}`;
     } else {
       return normalized;
     }
