@@ -94,7 +94,7 @@ const VelgLoesninger = () => {
             [classes.selected]: isUtvalg(selectedOption),
           })}
         >
-          Velg løsninger fra utvalg
+          Vel løysingar frå utval
         </button>
         <button
           onClick={() => setSelectedOption({ t: 'løsning' })}
@@ -102,13 +102,13 @@ const VelgLoesninger = () => {
             [classes.selected]: selectedOption?.t === 'løsning',
           })}
         >
-          Velg løsninger selv
+          Vel løysingar sjølv
         </button>
       </div>
       {isUtvalg(selectedOption) && (
         <>
           <Heading level={2} size="large">
-            Nyeste utvalg av løsninger
+            Nyaste utval av løysingar
           </Heading>
           <div className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
@@ -128,7 +128,7 @@ const VelgLoesninger = () => {
           {!isEmpty(eldreUtvalg) && (
             <>
               <Heading level={2} size="large">
-                Eldre utvalg av løsninger
+                Eldre utval av løysingar
               </Heading>
               <ul className={classes.eldreUtvalg}>
                 {eldreUtvalg.map((u) => {
@@ -160,7 +160,7 @@ const VelgLoesninger = () => {
       )}
       {isLoesning(selectedOption) && (
         <Alert elevated severity="warning">
-          Manuelt valg av løsninger er ikke ferdig enda.
+          Manuelt val av løysingar er ikkke ferdig enda.
         </Alert>
       )}
     </section>

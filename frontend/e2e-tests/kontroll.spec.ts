@@ -24,10 +24,10 @@ test('opprett kontroll', async ({ page }) => {
   saveKontrollId(page);
 
   await expect(
-    page.getByRole('heading', { name: 'Velg løsninger' })
+    page.getByRole('heading', { name: 'Vel løysingar' })
   ).toBeVisible();
 
-  await page.getByRole('button', { name: 'Velg løsninger fra utvalg' }).click();
+  await page.getByRole('button', { name: 'Vel løysingar frå utval' }).click();
   await page.getByTestId('utvalg').first().click();
   await page.getByRole('button', { name: 'Neste' }).click();
 
