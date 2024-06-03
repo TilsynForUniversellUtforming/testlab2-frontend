@@ -1,7 +1,7 @@
 import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
-import { ButtonSize, ButtonVariant } from '@common/types';
+import { ButtonColor, ButtonSize, ButtonVariant } from '@common/types';
 import { Button, Card, Divider, Heading } from '@digdir/designsystemet-react';
 import {
   MinusCircleIcon,
@@ -83,9 +83,9 @@ const SideBegrunnelseForm = ({
                   </Heading>
                   {hasMultipleItems && (
                     <Button
-                      variant="secondary"
-                      color="danger"
-                      size="sm"
+                      variant={ButtonVariant.Quiet}
+                      color={ButtonColor.Danger}
+                      size={ButtonSize.Small}
                       type="button"
                       title="Ta bort side"
                       onClick={() => handleRemoveSide([index])}
