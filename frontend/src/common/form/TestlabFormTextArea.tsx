@@ -1,7 +1,8 @@
-import { getErrorMessage } from '@common/form/util';
 import { Textarea, TextareaProps } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
-import { Controller, Path, useFormContext } from 'react-hook-form';
+import { Path, useFormContext } from 'react-hook-form';
+
+import { getErrorMessage } from './util';
 
 export interface TestlabInputBaseProps<T extends object> extends TextareaProps {
   label: string;
@@ -35,36 +36,28 @@ const TestlabFormInput = <T extends object>({
   inputMode,
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
-  const { control, formState } = useFormContext<T>();
+  const { register, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <div className="testlab-form__input">
-          <label htmlFor={name} className="testlab-form__input-label">
-            {label}
-            {required && <span className="asterisk-color">*</span>}
-            {description && (
-              <div className="testlab-form__input-sub-label">{description}</div>
-            )}
-          </label>
-          <Textarea
-            {...rest}
-            value={value || ''}
-            id={name}
-            error={errorMessage}
-            onChange={onChange}
-            onBlur={onBlur}
-            name={name}
-            inputMode={inputMode}
-            size={size}
-          />
-        </div>
-      )}
-    />
+    <div className="testlab-form__input">
+      <label htmlFor={name} className="testlab-form__input-label">
+        {label}
+        {required && <span className="asterisk-color">*</span>}
+        {description && (
+          <div className="testlab-form__input-sub-label">{description}</div>
+        )}
+      </label>
+      <Textarea
+        {...register(name, {
+          required: required,
+        })}
+        {...rest}
+        error={errorMessage}
+        inputMode={inputMode}
+        size={size}
+      />
+    </div>
   );
 };
 
