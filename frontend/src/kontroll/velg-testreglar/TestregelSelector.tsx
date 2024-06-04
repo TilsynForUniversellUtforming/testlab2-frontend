@@ -65,6 +65,7 @@ const TestregelSelector = ({
               onChange={onSelectTestregelId}
               value={selectedTestregelIdList.map((id) => String(id))}
               size="small"
+              data-testid="manuell-testregel"
             >
               {testreglar.map((testregel) => (
                 <Checkbox
