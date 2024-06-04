@@ -7,12 +7,8 @@ export const sideutvalValidationSchema = z.object({
       .object({
         loeysingId: z.number().positive('Løysing er påkrevd'),
         typeId: z.number().positive('Type er pårkrevd'),
-        begrunnelse: z
-          .string()
-          .min(1, 'Sideutval må ha begrunnelse')
-          .optional()
-          .or(z.literal('')),
-        url: z.string().url('Ugyldig url').optional().or(z.literal('')),
+        begrunnelse: z.string().min(1, 'Sideutval må ha begrunnelse'),
+        url: z.string().url('Ugyldig url'),
         egendefinertType: z
           .string()
           .min(1, 'Ugyldig egendefinert type')
