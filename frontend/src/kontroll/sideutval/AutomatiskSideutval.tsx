@@ -72,6 +72,7 @@ const AutomatiskSideutval = ({
         description="Antal sider du ønskjer å teste"
         name="talLenker"
         type="number"
+        data-testid="automatisk-sideutval-netto"
       />
       <TestlabFormInput
         label="Bruttoutval"
