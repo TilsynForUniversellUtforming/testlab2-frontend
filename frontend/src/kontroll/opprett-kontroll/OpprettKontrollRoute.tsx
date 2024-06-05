@@ -1,8 +1,8 @@
-import { isNotDefined } from '@common/util/validationUtils';
 import { redirect, RouteObject } from 'react-router-dom';
 
-import { fetchKontroll } from '../kontroll-api';
+import { editKontroll, fetchKontroll } from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';
+import { Kontroll } from '../types';
 import { KontrollInit } from './kontrollInitValidationSchema';
 import OpprettKontroll from './OpprettKontroll';
 
@@ -32,7 +32,7 @@ export const OpprettKontrollRoute: RouteObject[] = [
         return redirect(`/kontroll/${kontrollId}/velg-losninger`);
       } else {
         errors.server =
-          'Klarte ikke å opprette en ny kontroll. Dette er en systemfeil som må undersøkes og rettes opp i før vi kommer videre.';
+          'Klarte ikkje å oppretta ein ny kontroll. Dette er ein systemfeil som må undersøkjast og rettast opp i før me kjem vidare.';
         return errors;
       }
     },
@@ -56,28 +56,13 @@ export const OpprettKontrollRoute: RouteObject[] = [
     action: async ({ request }) => {
       const errors: Errors = {};
 
-      const kontroll = (await request.json()) as KontrollInit;
-      const kontrollId = kontroll.id;
-
-      if (isNotDefined(kontrollId)) {
-        errors.server =
-          'Kan ikkje oppdatere kontroll, kunne ikkje hente kontroll';
-        return errors;
-      }
-
-      const response = await fetch(`/api/v1/kontroller/${kontrollId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(kontroll),
-      });
+      const kontrollEdit = (await request.json()) as Kontroll;
+      const response = await editKontroll(kontrollEdit);
       if (response.ok) {
-        const { kontrollId } = await response.json();
-        return redirect(`/kontroll/${kontrollId}/velg-losninger`);
+        return redirect(`/kontroll/${kontrollEdit.id}/velg-losninger`);
       } else {
         errors.server =
-          'Klarte ikke å opprette en ny kontroll. Dette er en systemfeil som må undersøkes og rettes opp i før vi kommer videre.';
+          'Klarte ikkje å endre kontrollen. Dette er ein systemfeil som må undersøkjast og rettast opp i før me kjem vidare.';
         return errors;
       }
     },

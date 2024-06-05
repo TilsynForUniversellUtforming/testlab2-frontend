@@ -42,6 +42,7 @@ const TestlabFormSelect = <T extends object>({
   disabled,
   radio = false,
   size,
+  ...rest
 }: TestlabInputSelectProps<T>): ReactNode => {
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
@@ -95,6 +96,7 @@ const TestlabFormSelect = <T extends object>({
             )}
           </Label>
           <Combobox
+            {...rest}
             id={name}
             value={value ? [String(value)] : undefined}
             onValueChange={(value) => onChange(value[0])}

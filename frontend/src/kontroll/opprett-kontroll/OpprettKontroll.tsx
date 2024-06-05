@@ -2,6 +2,7 @@ import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
+import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
   Button,
@@ -29,7 +30,8 @@ import { Errors } from './OpprettKontrollRoute';
 export default function OpprettKontroll() {
   const submit = useSubmit();
   const kontroll = useLoaderData() as Kontroll | undefined;
-  const { id: kontrollId } = useParams();
+  const { kontrollId } = useParams();
+  const editMode = isDefined(kontrollId);
 
   const formMethods = useForm<KontrollInit>({
     defaultValues: {
@@ -46,15 +48,22 @@ export default function OpprettKontroll() {
 
   const errors = useActionData() as Errors;
 
-  const onSubmit = (data: KontrollInit) => {
-    if (kontrollId) {
-      submit(JSON.stringify(data), {
+  const onSubmit = (formData: KontrollInit) => {
+    if (kontrollId && kontroll) {
+      const kontrollEdit = {
+        ...kontroll,
+        tittel: formData.tittel,
+        saksbehandler: formData.saksbehandler,
+        sakstype: formData.sakstype,
+        arkivreferanse: formData.arkivreferanse,
+      };
+      submit(JSON.stringify(kontrollEdit), {
         method: 'put',
         encType: 'application/json',
         action: `/kontroll/${kontrollId}`,
       });
     } else {
-      submit(JSON.stringify(data), {
+      submit(JSON.stringify(formData), {
         method: 'post',
         encType: 'application/json',
       });
@@ -102,6 +111,8 @@ export default function OpprettKontroll() {
             'anna',
           ])}
           required
+          disabled={editMode}
+          aria-label={editMode ? 'Kan ikkje endre kontrolltype' : ''}
         />
         <TestlabFormInput
           label="Tittel"
