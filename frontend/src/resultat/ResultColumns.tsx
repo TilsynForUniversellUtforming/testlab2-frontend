@@ -1,19 +1,26 @@
-import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import { getSeverity } from '@common/table/util';
 import { Tag } from '@digdir/designsystemet-react';
 import { TesterResult } from '@maaling/api/types';
-import { ResultatOversiktLoeysing } from '@resultat/types';
-import { ColumnDef, Row } from '@tanstack/react-table';
-import React from 'react';
-import { Link } from 'react-router-dom';
-
 /**
  * getTestresultatColumns function returns an array of column definitions for TestResultat.
  *
  * @returns {Array<ColumnDef<TesterResult>>} An array of column definitions.
  */
+import { FaceFrownIcon } from '@navikt/aksel-icons';
+import ImageGalleryResults from '@resultat/ImageGalleryResults';
+import { ResultatOversiktLoeysing } from '@resultat/types';
+import { ColumnDef } from '@tanstack/react-table';
+import { Bilde } from '@test/api/types';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+const getSmiley = (resulltat: string): string => {
+  if (resulltat.toLowerCase() === 'samsvar') {
+    return 'smiley-glad';
+  } else return 'smiley-sur';
+};
+
 export const getViolationsColumns = (): Array<ColumnDef<TesterResult>> => [
-  getCheckboxColumn((row: Row<TesterResult>) => `Velg ${row.original.side}`),
   {
     accessorFn: (row) => row.side,
     id: 'side',
@@ -22,39 +29,49 @@ export const getViolationsColumns = (): Array<ColumnDef<TesterResult>> => [
         {String(info.getValue())}
       </Link>
     ),
-    header: () => <>Nettside</>,
+    header: () => <>Side</>,
   },
   {
     accessorFn: (row) =>
-      row.elementOmtale?.description || row.elementOmtale?.pointer,
+      row.testregelNoekkel +
+      ' ' +
+      (row.elementOmtale?.description || row.elementOmtale?.pointer),
     id: 'element',
     cell: (info) => info.getValue(),
     header: () => <>Element</>,
   },
-  {
-    accessorFn: (row) => row.suksesskriterium.join(', '),
-    id: '_idSuksesskriterium',
-    cell: ({ row }) => <>{row.original.suksesskriterium.join(', ')}</>,
-    header: () => <>Suksesskriterium</>,
-  },
+
   {
     accessorFn: (row) => row.elementResultat,
-    id: 'testresultat',
-    cell: (info) => info.getValue(),
-    header: () => <>Testresultat</>,
+    id: 'resultat',
+    cell: (info) => (
+      <FaceFrownIcon
+        className={getSmiley(String(info.getValue()))}
+      ></FaceFrownIcon>
+    ),
+    header: () => <>Resultat</>,
+  },
+  {
+    accessorFn: (row) => row.bilde,
+    id: 'bilder',
+    cell: (info) => {
+      const bilder = info.getValue() as Bilde[];
+      return <ImageGalleryResults bilder={bilder} />;
+    },
+    header: () => <>Bilder</>,
   },
   {
     accessorFn: (row) => row.elementUtfall,
     id: 'utfall',
     cell: (info) => info.getValue(),
-    header: () => <>Testutfall</>,
+    header: () => <>Utfall</>,
   },
-  // {
-  //     accessorFn: (row) => row.kommentar,
-  //     id: 'kommentar',
-  //     cell: (info) => info.getValue(),
-  //     header: () => <>Kommentar</>,
-  // },
+  {
+    accessorFn: (row) => row.kommentar,
+    id: 'kommentar',
+    cell: (info) => info.getValue(),
+    header: () => <>Kommentar</>,
+  },
 ];
 
 export const getResultColumns = (): Array<

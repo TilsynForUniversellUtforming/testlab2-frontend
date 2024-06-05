@@ -42,7 +42,7 @@ const RestultatKontrollOversikt = () => {
       cell: ({ row }) => (
         <LoadingBar
           percentage={row.getValue('progresjon')}
-          ariaLabel={`${row.getValue('namnLoeysing')} har resultat på ${row.getValue('progresjon')}`}
+          ariaLabel={`${row.getValue('loeysingNamn')} har resultat på ${row.getValue('progresjon')}`}
         />
       ),
     },

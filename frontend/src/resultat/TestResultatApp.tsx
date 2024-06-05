@@ -34,7 +34,7 @@ const TestResultatApp = () => {
 
   return (
     <UserActionTable<ResultatOversiktLoeysing>
-      heading={`Resultat test ${id}`}
+      heading={`Resultatvisinig`}
       tableProps={{
         data: testResultList ?? [],
         defaultColumns: testResultatColumns,
