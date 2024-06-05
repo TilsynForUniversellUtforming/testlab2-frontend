@@ -48,10 +48,18 @@ const TestlabTableHeader = <T extends object>({
     sortDirection = 'descending';
   }
 
+  const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const toggleSortingHandler = header.column.getToggleSortingHandler();
+    if (toggleSortingHandler) {
+      toggleSortingHandler(e);
+    }
+  };
+
   return (
     <>
       <DSTable.HeaderCell
-        onSortClick={header.column.getToggleSortingHandler()}
+        onSortClick={handleSort}
         sort={sortDirection}
         colSpan={header.colSpan}
         sortable={column.getCanSort()}

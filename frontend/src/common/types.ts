@@ -32,7 +32,6 @@ export const ButtonColor = {
   Secondary: 'second',
   Success: 'success',
   Danger: 'danger',
-  Inverted: 'inverted',
 } as const;
 
 export type ButtonColorType = (typeof ButtonColor)[keyof typeof ButtonColor];
@@ -47,17 +46,17 @@ export type ButtonVariantType =
   (typeof ButtonVariant)[keyof typeof ButtonVariant];
 
 export const ButtonSize = {
-  Small: 'small',
-  Medium: 'medium',
-  Large: 'large',
+  Small: 'sm',
+  Medium: 'md',
+  Large: 'lg',
 } as const;
 
 export type ButtonSizeType = (typeof ButtonSize)[keyof typeof ButtonSize];
 
 export const CheckboxSize = {
-  Small: 'small',
-  Medium: 'medium',
-  Large: 'large',
+  Small: 'sm',
+  Medium: 'md',
+  Large: 'lg',
 } as const;
 
 export type CheckboxSizeType = (typeof CheckboxSize)[keyof typeof CheckboxSize];

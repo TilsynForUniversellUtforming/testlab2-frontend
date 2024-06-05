@@ -1,16 +1,15 @@
 import { Alert } from '@digdir/designsystemet-react';
-import { Regelsett } from '@testreglar/api/types';
+import { Regelsett, TestregelModus } from '@testreglar/api/types';
 import classNames from 'classnames';
 
 import classes from '../kontroll.module.css';
-import { ModusFilter } from './types';
 
 interface Props {
   regelsettList: Regelsett[];
   selectedRegelsettId: number | undefined;
   onSelectRegelsett: (regelsettId: number) => void;
   isInngaaende: boolean;
-  modus: ModusFilter;
+  modus: TestregelModus;
 }
 
 const RegelsettSelector = ({

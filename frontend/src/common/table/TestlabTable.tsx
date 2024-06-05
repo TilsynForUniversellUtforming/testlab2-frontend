@@ -100,7 +100,7 @@ const TestlabTable = <T extends object>({
   actionRequiredError,
   loading = false,
   filterPreference = 'all',
-  selectedRows = [],
+  selectedRows,
   onSelectRows,
   onClickRow,
   onClickRetry,
@@ -190,6 +190,14 @@ const TestlabTable = <T extends object>({
       onSelectRows?.(selectedTableRows);
     }
   }, [rowSelection, rowSelectionEnabled]);
+
+  useEffect(() => {
+    if (isDefined(selectedRows)) {
+      table.setRowSelection(
+        Object.assign({}, selectedRows) as unknown as RowSelectionState
+      );
+    }
+  }, [selectedRows]);
 
   const onChangeGlobalFilter = useCallback((value: string) => {
     setGlobalFilter(value);

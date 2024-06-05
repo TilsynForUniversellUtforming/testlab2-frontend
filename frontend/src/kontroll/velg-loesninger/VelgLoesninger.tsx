@@ -1,6 +1,6 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
 import { formatDate } from '@common/util/stringutils';
-import { Alert, Heading } from '@digdir/designsystemet-react';
+import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import React from 'react';
@@ -81,9 +81,9 @@ const VelgLoesninger = () => {
       <KontrollStepper />
       <div className={classes.velgLoesningerOverskrift}>
         <Heading level={1} size="xlarge">
-          Velg løsninger
+          Vel løysingar
         </Heading>
-        <p>Velg hvilke løsninger du vil ha med i kontrollen</p>
+        <Paragraph>Vel kva løysingar du vil ha med i kontrollen</Paragraph>
       </div>
       <div className={classes.utvalgEllerManuelt}>
         <button
@@ -94,7 +94,7 @@ const VelgLoesninger = () => {
             [classes.selected]: isUtvalg(selectedOption),
           })}
         >
-          Velg løsninger fra utvalg
+          Vel løysingar frå utval
         </button>
         <button
           onClick={() => setSelectedOption({ t: 'løsning' })}
@@ -102,13 +102,13 @@ const VelgLoesninger = () => {
             [classes.selected]: selectedOption?.t === 'løsning',
           })}
         >
-          Velg løsninger selv
+          Vel løysingar sjølv
         </button>
       </div>
       {isUtvalg(selectedOption) && (
         <>
           <Heading level={2} size="large">
-            Nyeste utvalg av løsninger
+            Nyaste utval av løysingar
           </Heading>
           <div className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
@@ -128,19 +128,26 @@ const VelgLoesninger = () => {
           {!isEmpty(eldreUtvalg) && (
             <>
               <Heading level={2} size="large">
-                Eldre utvalg av løsninger
+                Eldre utval av løysingar
               </Heading>
               <ul className={classes.eldreUtvalg}>
-                {eldreUtvalg.map((u) => (
-                  <li key={u.id}>
-                    <button
-                      onClick={velgUtvalg(u)}
-                      className={classNames({ [classes.selected]: isValgt(u) })}
+                {eldreUtvalg.map((u) => {
+                  const valgt = isValgt(u);
+                  return (
+                    <li
+                      key={u.id}
+                      className={classNames({ [classes.selected]: valgt })}
                     >
-                      {u.namn}
-                    </button>
-                  </li>
-                ))}
+                      <button
+                        onClick={velgUtvalg(u)}
+                        className={classNames({ [classes.selected]: valgt })}
+                        title={u.namn}
+                      >
+                        {u.namn}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </>
           )}
@@ -153,7 +160,7 @@ const VelgLoesninger = () => {
       )}
       {isLoesning(selectedOption) && (
         <Alert elevated severity="warning">
-          Manuelt valg av løsninger er ikke ferdig enda.
+          Manuelt val av løysingar er ikkke ferdig enda.
         </Alert>
       )}
     </section>

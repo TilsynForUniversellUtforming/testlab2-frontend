@@ -2,7 +2,7 @@ import { getErrorMessage } from '@common/form/util';
 import { Label, Textfield, TextfieldProps } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import React, { ReactNode } from 'react';
-import { Controller, Path, useFormContext } from 'react-hook-form';
+import { Path, useFormContext } from 'react-hook-form';
 
 export interface TestlabInputBaseProps<T extends object>
   extends TextfieldProps {
@@ -36,40 +36,34 @@ const TestlabFormInput = <T extends object>({
   type,
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
-  const { control, formState } = useFormContext<T>();
+  const { register, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <div
-          className={classNames('testlab-form__input', {
-            date: type === 'date',
-          })}
-        >
-          <Label htmlFor={name} className="testlab-form__input-label">
-            {label}
-            {required && <span className="asterisk-color">*</span>}
-            {description && (
-              <div className="testlab-form__input-sub-label">{description}</div>
-            )}
-          </Label>
-          <Textfield
-            {...rest}
-            value={value || ''}
-            id={name}
-            error={errorMessage}
-            onChange={onChange}
-            onBlur={onBlur}
-            name={name}
-            type={type}
-            size={size}
-          />
-        </div>
-      )}
-    />
+    <div
+      className={classNames('testlab-form__input', {
+        date: type === 'date',
+      })}
+    >
+      <Label htmlFor={name} className="testlab-form__input-label">
+        {label}
+        {required && <span className="asterisk-color">*</span>}
+        {description && (
+          <div className="testlab-form__input-sub-label">{description}</div>
+        )}
+      </Label>
+      <Textfield
+        {...rest}
+        {...register(name, {
+          required: required,
+        })}
+        id={name}
+        error={errorMessage}
+        name={name}
+        type={type}
+        size={size}
+      />
+    </div>
   );
 };
 

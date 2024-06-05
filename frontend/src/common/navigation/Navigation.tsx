@@ -1,6 +1,6 @@
 import './navigation.scss';
 
-import { ButtonColor, ButtonVariant } from '@common/types';
+import { ButtonVariant } from '@common/types';
 import classNames from 'classnames';
 import React, { useRef, useState } from 'react';
 
@@ -36,7 +36,6 @@ const Navigation = () => {
           className="link"
           icon={true}
           variant={ButtonVariant.Quiet}
-          color={ButtonColor.Inverted}
         >
           <img src={ROOT.imgSrc} alt={'Heim'} style={{ width: '100%' }} />
         </TestlabLinkButton>

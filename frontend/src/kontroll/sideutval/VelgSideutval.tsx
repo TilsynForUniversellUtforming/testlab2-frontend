@@ -1,6 +1,5 @@
 import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
-import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
   ErrorSummary,
@@ -11,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
 import { CrawlParameters } from '@maaling/api/types';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   FieldErrors,
   FormProvider,
@@ -42,9 +41,19 @@ const VelgSideutval = () => {
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [neste, setNeste] = useState<boolean>(false);
 
+  const finished: Loeysing[] = useMemo(
+    () =>
+      loeysingList.filter((loeysing) =>
+        kontroll.sideutvalList.some(
+          (sideutval) => sideutval.loeysingId === loeysing.id
+        )
+      ),
+    [kontroll.sideutvalList, loeysingList]
+  );
+
   const [selectedLoeysing, setSelectedLoesying] = useState<
     Loeysing | undefined
-  >();
+  >(loeysingList.find((l) => !finished.includes(l)));
 
   const formMethods = useForm<SideutvalForm>({
     defaultValues: {
@@ -61,24 +70,33 @@ const VelgSideutval = () => {
   const { register, control, handleSubmit } = formMethods;
 
   const onSubmitError = (errors: FieldErrors<SideutvalForm>) => {
-    const errorList: FormError[] = [];
-    const sideutvalErrors = errors.sideutval;
-    // Index på errors er lik som index på field
+    const errorMap = new Map<string, FormError>();
+
     fields.forEach((field, index) => {
-      if (sideutvalErrors && isDefined(sideutvalErrors[index])) {
+      if (errors.sideutval && errors.sideutval[index]) {
         const sideutvalTypeLabel = getSideutvalTypeLabel(
           sideutvalTypeList,
           field.typeId,
           field.egendefinertType
         );
 
-        errorList.push({
-          loeysingId: field.loeysingId,
-          sideutvalType: sideutvalTypeLabel,
-        });
+        const key = `${field.loeysingId}-${sideutvalTypeLabel}`;
+        const currentError = errorMap.get(key);
+
+        if (currentError) {
+          currentError.antallFeil += 1;
+          errorMap.set(key, currentError);
+        } else {
+          errorMap.set(key, {
+            loeysingId: field.loeysingId,
+            antallFeil: 1,
+            sideutvalType: sideutvalTypeLabel,
+          });
+        }
       }
     });
-    setFormErrors(errorList);
+    const aggregatedErrors = Array.from(errorMap.values());
+    setFormErrors(aggregatedErrors);
   };
 
   const { fields, append, remove } = useFieldArray({
@@ -158,10 +176,12 @@ const VelgSideutval = () => {
   return (
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
-      <Heading level={1} size="large">
-        Sideutval
-      </Heading>
-      <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
+      <div className={classes.velgTestreglarOverskrift}>
+        <Heading level={1} size="xlarge">
+          Sideutval
+        </Heading>
+        <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
+      </div>
       <div className={classes.automatiskEllerManuelt}>
         <button
           className={classNames({
@@ -197,7 +217,7 @@ const VelgSideutval = () => {
             <LoeysingFilter
               heading={kontroll.tittel}
               loeysingList={loeysingList}
-              sideutvalKontroll={kontroll.sideutvalList}
+              finished={finished}
               onChangeLoeysing={handleChangeLoeysing}
               selectedLoeysing={selectedLoeysing}
             />
@@ -208,16 +228,18 @@ const VelgSideutval = () => {
                     Det er feil med sideutval på føljande løysingar
                   </ErrorSummary.Heading>
                   <ErrorSummary.List>
-                    {[
-                      ...new Set(
-                        formErrors.map((formError) => formError.loeysingId)
-                      ),
-                    ].map((loeyingId) => (
+                    {formErrors.map((formError) => (
                       <ErrorSummary.Item
-                        href={`#loeysing-${loeyingId}`}
-                        key={loeyingId}
+                        href={`#loeysing-${formError.loeysingId}`}
+                        key={`${formError.loeysingId}_${formError.sideutvalType}`}
                       >
-                        {loeysingList.find((ll) => ll.id === loeyingId)?.namn}
+                        {
+                          loeysingList.find(
+                            (ll) => ll.id === formError.loeysingId
+                          )?.namn
+                        }{' '}
+                        - {formError.sideutvalType} ({formError.antallFeil}{' '}
+                        feil)
                       </ErrorSummary.Item>
                     ))}
                   </ErrorSummary.List>

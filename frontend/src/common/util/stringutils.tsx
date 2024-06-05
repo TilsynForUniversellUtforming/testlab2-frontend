@@ -38,9 +38,8 @@ function asciiSafeCharactersToNorwegian(s: string): string {
  */
 export const sanitizeEnumLabel = (label: string): string => {
   function isCamelCase(s: string): boolean {
-    const noWhitespace = /\S+/.test(s.trim());
-    const onlyLetters = /^[a-zA-ZæøåÆØÅ]+$/.test(s.trim());
-    return noWhitespace && onlyLetters;
+    const camelCaseRegex = /^[a-z]+(?:[A-Z][a-z0-9]*)*$/;
+    return camelCaseRegex.test(s);
   }
 
   let enumLabel = '';
@@ -53,7 +52,9 @@ export const sanitizeEnumLabel = (label: string): string => {
       .map((word, i) => (i === 0 ? capitalize(word) : word.toLowerCase()))
       .join(' ');
   } else {
-    enumLabel = capitalize(label.replaceAll('_', ' ').replaceAll('-', ' '));
+    enumLabel = capitalize(
+      label.toLocaleLowerCase('no-NO').replaceAll('_', ' ').replaceAll('-', ' ')
+    );
   }
 
   return asciiSafeCharactersToNorwegian(enumLabel);

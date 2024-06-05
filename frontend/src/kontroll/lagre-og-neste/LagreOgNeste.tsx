@@ -53,29 +53,37 @@ export default function LagreOgNeste({
     }
   }, [feilet]);
 
+  const handleSave = () => {
+    if (!feilet) {
+      setInternalSaveState({ t: 'saving', timestamp: new Date() });
+      onClickLagreKontroll();
+    }
+  };
+
+  const handleSaveNeste = () => {
+    if (!feilet) {
+      setInternalSaveState({ t: 'saving', timestamp: new Date() });
+      onClickNeste();
+    }
+  };
+
   return (
     <div className={classes.lagreOgNeste}>
       <Button
         variant="secondary"
-        onClick={() => {
-          setInternalSaveState({ t: 'saving', timestamp: new Date() });
-          onClickLagreKontroll();
-        }}
+        onClick={handleSave}
         type={submitOnSave ? 'submit' : 'button'}
         aria-disabled={isSaving(internalSaveState)}
       >
-        Lagre kontroll
+        Lagre til seinare
       </Button>
       <Button
         variant="primary"
-        onClick={() => {
-          setInternalSaveState({ t: 'saving', timestamp: new Date() });
-          onClickNeste();
-        }}
+        onClick={handleSaveNeste}
         aria-disabled={isSaving(internalSaveState)}
         type={submitOnSave ? 'submit' : 'button'}
       >
-        Neste
+        Lagre og gå til neste
       </Button>
       {isSaving(internalSaveState) && (
         <Spinner title={'Lagrer...'} size="small" />

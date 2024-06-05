@@ -1,6 +1,6 @@
 import './dropdown.scss';
 
-import { ButtonColor, ButtonSize, ButtonVariant } from '@common/types';
+import { ButtonSize, ButtonVariant } from '@common/types';
 import { DropdownMenu } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
@@ -40,7 +40,6 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
             setShow((show) => !show);
           }}
           variant={ButtonVariant.Quiet}
-          color={ButtonColor.Inverted}
           aria-haspopup="true"
           aria-expanded={show}
           id={navn}

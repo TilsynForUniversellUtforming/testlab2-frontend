@@ -1,12 +1,8 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
+import { Testgrunnlag } from '@test/types';
 
-import {
-  Bilde,
-  CreateTestResultat,
-  ResultatManuellKontroll,
-  TestgrunnlagListElement,
-} from './types';
+import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
@@ -109,7 +105,23 @@ export const deleteBilde = async (
 
 export const listTestgrunnlag = async (
   kontrollId: number
-): Promise<TestgrunnlagListElement[]> =>
-  await fetch(`/api/v2/testgrunnlag/list/${kontrollId}`).then((response) =>
-    responseToJson(response, 'Kunne ikke hente liste med testgrunnlag')
+): Promise<Testgrunnlag[]> =>
+  await fetch(`/api/v1/kontroller/${kontrollId}/testgrunnlag`).then(
+    (response) =>
+      responseToJson(response, 'Klarte ikke å hente liste med testgrunnlag')
   );
+
+export const postTestgrunnlag = async (nyttTestgrunnlag: {
+  kontrollId: number;
+}) => {
+  return await fetchWrapper(
+    `/api/v1/kontroller/${nyttTestgrunnlag.kontrollId}/testgrunnlag`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(nyttTestgrunnlag),
+    }
+  );
+};

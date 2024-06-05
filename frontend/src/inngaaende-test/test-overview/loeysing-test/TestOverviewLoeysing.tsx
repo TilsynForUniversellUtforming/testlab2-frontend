@@ -9,7 +9,12 @@ import {
   updateTestResultat,
   updateTestResultatMany,
 } from '@test/api/testing-api';
-import { CreateTestResultat, ResultatManuellKontroll, ResultatStatus, toElementResultat, } from '@test/api/types';
+import {
+  CreateTestResultat,
+  ResultatManuellKontroll,
+  ResultatStatus,
+  toElementResultat,
+} from '@test/api/types';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
