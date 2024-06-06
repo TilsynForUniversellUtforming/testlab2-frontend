@@ -586,7 +586,9 @@ const TestOverviewLoeysing = () => {
     }
   }, [alert]);
 
-  const loeysingNamn = contextKontroll.loeysingList[0].namn;
+  const loeysingNamn =
+    contextKontroll.loeysingList.find((l) => l.id === Number(loeysingId))
+      ?.namn ?? '';
 
   return (
     <div className="manual-test-container">
