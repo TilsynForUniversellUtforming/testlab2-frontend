@@ -17,15 +17,16 @@ export function createOpprinneligTest(): Testgrunnlag {
   };
 }
 
-export function createRetest(opprinneligTest: Testgrunnlag): Testgrunnlag {
+export function createRetest(forrigeTest: Testgrunnlag): Testgrunnlag {
   return {
-    ...opprinneligTest,
-    namn: `retest: ${opprinneligTest.namn}`,
+    ...forrigeTest,
+    id: faker.number.int(),
+    namn: `retest: ${forrigeTest.namn}`,
     type: 'RETEST',
-    sideutval: [faker.helpers.arrayElement(opprinneligTest.sideutval)],
+    sideutval: [faker.helpers.arrayElement(forrigeTest.sideutval)],
     datoOppretta: faker.date
       .between({
-        from: opprinneligTest.datoOppretta,
+        from: forrigeTest.datoOppretta,
         to: new Date(),
       })
       .toISOString(),
