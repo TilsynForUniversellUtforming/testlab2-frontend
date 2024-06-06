@@ -8,6 +8,10 @@ export function first<T>(array: T[]): T | undefined {
   return array[0];
 }
 
+export function last<T>(array: T[]): T | undefined {
+  return array[array.length - 1];
+}
+
 export function drop<T>(array: T[], n: number): T[] {
   return array.slice(n);
 }

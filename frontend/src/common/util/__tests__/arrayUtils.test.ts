@@ -1,5 +1,5 @@
-import { first, hasSameItems, search } from '@common/util/arrayUtils';
-import { describe, expect, it } from 'vitest';
+import { first, hasSameItems, last, search } from '@common/util/arrayUtils';
+import { describe, expect, it, test } from 'vitest';
 
 describe('arrayUtils', () => {
   describe('hasSameItems', () => {
@@ -46,5 +46,25 @@ describe('search', () => {
     const ts = ['Trine tester', 'Trine tester 2', 'Tilsyn Verdens Gang AS'];
     const result = search('trine tester 2', (t) => t, ts);
     expect(first(result)).toBe('Trine tester 2');
+  });
+});
+
+describe('last', () => {
+  test('should return the last element of an array', () => {
+    const array = [1, 2, 3, 4, 5];
+    const result = last(array);
+    expect(result).toBe(5);
+  });
+
+  test('should return undefined if the array is empty', () => {
+    const array: number[] = [];
+    const result = last(array);
+    expect(result).toBeUndefined();
+  });
+
+  test('should return the only element if the array has one element', () => {
+    const array = ['singleElement'];
+    const result = last(array);
+    expect(result).toBe('singleElement');
   });
 });

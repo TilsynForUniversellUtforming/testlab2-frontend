@@ -1,7 +1,7 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
-import { isEmpty } from '@common/util/arrayUtils';
+import { isEmpty, last } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Button, Heading, Tag } from '@digdir/designsystemet-react';
@@ -27,6 +27,23 @@ export type TestOverviewLoaderData = {
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
 };
+
+export function visRetestKnapp(
+  testgrunnlag: Testgrunnlag,
+  status: ManuellTestStatus,
+  alleTestgrunnlag: Testgrunnlag[]
+) {
+  const testgrunnlagForKontroll = alleTestgrunnlag
+    .filter((t) => t.kontrollId === testgrunnlag.kontrollId)
+    .toSorted((a, b) => {
+      const aTime = Date.parse(a.datoOppretta);
+      const bTime = Date.parse(b.datoOppretta);
+      return aTime - bTime;
+    });
+  return (
+    status === 'ferdig' && last(testgrunnlagForKontroll)?.id === testgrunnlag.id
+  );
+}
 
 const TestOverview = () => {
   const { id } = useParams();
@@ -154,7 +171,7 @@ const TestOverview = () => {
                         ? 'Start testing'
                         : 'Fortsett testing'}
                     </Button>
-                    {status === 'ferdig' && (
+                    {visRetestKnapp(etTestgrunnlag, status, testgrunnlag) && (
                       <Button
                         variant="secondary"
                         onClick={() => retest(etTestgrunnlag)}
