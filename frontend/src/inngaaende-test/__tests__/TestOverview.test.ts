@@ -9,12 +9,12 @@ describe('viewTestType', () => {
     const retest1 = createRetest(opprinneligTest);
     const retest2 = createRetest(retest1);
     const alleTestgrunnlag = [opprinneligTest, retest1, retest2];
-    expect(viewTestType(retest1, retest1.sideutval[0], alleTestgrunnlag)).toBe(
-      'Retest 1'
-    );
-    expect(viewTestType(retest2, retest2.sideutval[0], alleTestgrunnlag)).toBe(
-      'Retest 2'
-    );
+    expect(
+      viewTestType(retest1, [retest1.sideutval[0].id], alleTestgrunnlag)
+    ).toBe('Retest 1');
+    expect(
+      viewTestType(retest2, [retest2.sideutval[0].id], alleTestgrunnlag)
+    ).toBe('Retest 2');
   });
 
   test('retester som hører til forskjellige kontroller skal ha egne nummer', () => {
@@ -24,10 +24,18 @@ describe('viewTestType', () => {
     const retest2 = createRetest(opprinneligTest2);
 
     expect(
-      viewTestType(retest1, retest1.sideutval[0], [opprinneligTest1, retest1])
+      viewTestType(
+        retest1,
+        [retest1.sideutval[0].id],
+        [opprinneligTest1, retest1]
+      )
     ).toBe('Retest 1');
     expect(
-      viewTestType(retest2, retest2.sideutval[0], [opprinneligTest2, retest2])
+      viewTestType(
+        retest2,
+        [retest2.sideutval[0].id],
+        [opprinneligTest2, retest2]
+      )
     ).toBe('Retest 1');
   });
 
@@ -42,11 +50,11 @@ describe('viewTestType', () => {
     });
     const alleTestgrunnlag = [opprinneligTest, retest1, retest2];
 
-    expect(viewTestType(retest1, retest1.sideutval[0], alleTestgrunnlag)).toBe(
-      'Retest 1'
-    );
-    expect(viewTestType(retest2, retest2.sideutval[0], alleTestgrunnlag)).toBe(
-      'Retest 1'
-    );
+    expect(
+      viewTestType(retest1, [retest1.sideutval[0].id], alleTestgrunnlag)
+    ).toBe('Retest 1');
+    expect(
+      viewTestType(retest2, [retest2.sideutval[0].id], alleTestgrunnlag)
+    ).toBe('Retest 1');
   });
 });
