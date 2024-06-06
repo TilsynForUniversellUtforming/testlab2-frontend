@@ -21,7 +21,6 @@ import {
   useSubmit,
 } from 'react-router-dom';
 
-import { Sideutval } from '../../kontroll/sideutval/types';
 import classes from './test-overview.module.css';
 
 export type TestOverviewLoaderData = {
@@ -39,9 +38,9 @@ const TestOverview = () => {
   const submit = useSubmit();
 
   const onChangeLoeysing = useCallback(
-    async (testgrunnlag: Testgrunnlag, sideutval: Sideutval) => {
+    async (testgrunnlag: Testgrunnlag, loeysingId: number) => {
       const loeysing = contextKontroll.loeysingList.find(
-        (l) => l.id === sideutval.loeysingId
+        (l) => l.id === loeysingId
       );
       if (!loeysing || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
@@ -52,7 +51,7 @@ const TestOverview = () => {
             { pathParam: idPath, id: id },
             {
               pathParam: ':loeysingId',
-              id: String(sideutval.loeysingId),
+              id: String(loeysingId),
             },
             { pathParam: ':testgrunnlagId', id: String(testgrunnlag.id) }
           )
@@ -97,70 +96,78 @@ const TestOverview = () => {
   return (
     <div className="manual-test-overview">
       {testgrunnlag.flatMap((etTestgrunnlag) => {
-        return etTestgrunnlag.sideutval.map((etSideutval) => {
-          const namn =
-            contextKontroll.loeysingList.find(
-              (loeysing) => loeysing.id === etSideutval.loeysingId
-            )?.namn ?? '';
-          const status = teststatus(
-            resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
-          );
+        const loeysingTestgrunnlag = Object.groupBy(
+          etTestgrunnlag.sideutval,
+          ({ loeysingId }) => loeysingId
+        );
 
-          return (
-            <div
-              key={etSideutval.loeysingId}
-              className="manual-test__loeysing-button"
-            >
-              <div className="tag-wrapper">
-                <TestlabStatusTag<ManuellTestStatus>
-                  status={status}
-                  colorMapping={{
-                    second: ['under-arbeid'],
-                    info: ['ikkje-starta'],
-                    first: ['ferdig'],
-                  }}
-                  size="small"
-                />
-              </div>
-              <div className="content-wrapper">
-                <div className="content">
-                  <Heading size="medium" level={4} spacing>
-                    {namn}
-                  </Heading>
-                  <Tag color="second" size="small">
-                    Inngående kontroll
-                  </Tag>
-                  <Tag color="second" size="small">
-                    {viewTestType(etTestgrunnlag, etSideutval, testgrunnlag)}
-                  </Tag>
-                  <Tag color="info" size="small">
-                    Nettsted
-                  </Tag>
+        return Object.entries(loeysingTestgrunnlag).map(
+          ([loeysingIdKey, sideutval]) => {
+            const loeysingId = Number(loeysingIdKey);
+            const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
+
+            const namn =
+              contextKontroll.loeysingList.find(
+                (loeysing) => loeysing.id === loeysingId
+              )?.namn ?? '';
+
+            const status = teststatus(
+              resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
+            );
+
+            return (
+              <div key={loeysingId} className="manual-test__loeysing-button">
+                <div className="tag-wrapper">
+                  <TestlabStatusTag<ManuellTestStatus>
+                    status={status}
+                    colorMapping={{
+                      second: ['under-arbeid'],
+                      info: ['ikkje-starta'],
+                      first: ['ferdig'],
+                    }}
+                    size="small"
+                  />
                 </div>
-                <div className={classes.buttons}>
-                  <Button
-                    title="Start testing"
-                    onClick={() =>
-                      onChangeLoeysing(etTestgrunnlag, etSideutval)
-                    }
-                  >
-                    {status === 'ikkje-starta'
-                      ? 'Start testing'
-                      : 'Fortsett testing'}
-                  </Button>
-                  {status === 'ferdig' && (
+                <div className="content-wrapper">
+                  <div className="content">
+                    <Heading size="medium" level={4} spacing>
+                      {namn}
+                    </Heading>
+                    <Tag color="second" size="small">
+                      Inngående kontroll
+                    </Tag>
+                    <Tag color="second" size="small">
+                      {viewTestType(etTestgrunnlag, sideutvalIds, testgrunnlag)}
+                    </Tag>
+                    <Tag color="info" size="small">
+                      Nettsted
+                    </Tag>
+                  </div>
+                  <div className={classes.buttons}>
                     <Button
-                      variant="secondary"
-                      onClick={() => retest(etTestgrunnlag)}
+                      title="Start testing"
+                      onClick={() =>
+                        onChangeLoeysing(etTestgrunnlag, loeysingId)
+                      }
                     >
-                      Retest
+                      {status === 'ikkje-starta'
+                        ? 'Start testing'
+                        : 'Fortsett testing'}
                     </Button>
-                  )}
+                    {status === 'ferdig' && (
+                      <Button
+                        variant="secondary"
+                        onClick={() => retest(etTestgrunnlag)}
+                      >
+                        Retest
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        });
+            );
+          }
+        );
       })}
       {alert && (
         <AlertTimed
@@ -177,14 +184,14 @@ export default TestOverview;
 
 export function viewTestType(
   etTestgrunnlag: Testgrunnlag,
-  etSideutval: Sideutval,
+  etSideutvalIds: number[],
   alleTestgrunnlag: Testgrunnlag[]
 ) {
   const normalized = sanitizeEnumLabel(etTestgrunnlag.type);
   if (etTestgrunnlag.type === 'RETEST') {
     const countTidligereRetester = alleTestgrunnlag
       .filter((t) => t.type === 'RETEST')
-      .filter((t) => t.sideutval.some((s) => s.id === etSideutval.id))
+      .filter((t) => t.sideutval.some((s) => etSideutvalIds.includes(s.id)))
       .filter(
         (t) =>
           Date.parse(t.datoOppretta) < Date.parse(etTestgrunnlag.datoOppretta)
