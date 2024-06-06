@@ -46,7 +46,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
-  const { testgrunnlagId: testgrunnlagId, loeysingId } = useParams();
+  const { testgrunnlagId: testgrunnlagId, loeysingId: loeysingIdParam } =
+    useParams();
   const {
     contextKontroll,
     innhaldstypeList,
@@ -55,19 +56,25 @@ const TestOverviewLoeysing = () => {
   const [innhaldstype, setInnhaldstype] =
     useState<InnhaldstypeTesting>(innhaldstypeAlle);
   const { results } = useLoaderData() as TestOverviewLoaderResponse;
+  const loeysingId = Number(loeysingIdParam);
 
   const [testResults, setTestResults] =
     useState<ResultatManuellKontroll[]>(results);
   const [activeTest, setActiveTest] = useState<ActiveTest>();
   const [alert, setAlert, modalRef] = useAlertModal();
-  const [testFerdig, setTestFerdig] = useState(false);
+  const [testFerdig, setTestFerdig] = useState(
+    isTestFinished(
+      testResults,
+      contextKontroll.testregelList.map((tr) => tr.id),
+      loeysingId,
+      contextKontroll.sideutvalList
+        .filter((l) => loeysingId === l.loeysingId)
+        .map((su) => `${su.typeId}_${su.egendefinertType ?? ''}`).length
+    )
+  );
 
   const [sideutvalOptionList, setSideutvalOptionList] = useState<OptionType[]>(
-    getSideutvalOptionList(
-      contextKontroll,
-      sideutvalTypeList,
-      Number(loeysingId)
-    )
+    getSideutvalOptionList(contextKontroll, sideutvalTypeList, loeysingId)
   );
   const [pageType, setPageType] = useState<PageType>(
     getInitialPageTypeKontroll(contextKontroll.sideutvalList, sideutvalTypeList)
@@ -79,7 +86,7 @@ const TestOverviewLoeysing = () => {
       results,
       pageType.sideId,
       innhaldstype,
-      Number(loeysingId)
+      loeysingId
     )
   );
   const [testregelList, setTestregelList] = useState(
@@ -90,7 +97,7 @@ const TestOverviewLoeysing = () => {
       testregelList,
       results,
       Number(testgrunnlagId),
-      Number(loeysingId),
+      loeysingId,
       pageType.sideId
     )
   );
@@ -169,7 +176,7 @@ const TestOverviewLoeysing = () => {
   };
 
   const createNewTestResult = async (activeTest: ActiveTest) => {
-    const numericLoeysingId = Number(loeysingId);
+    const numericLoeysingId = loeysingId;
 
     const nyttTestresultat: CreateTestResultat = {
       testgrunnlagId: Number(testgrunnlagId),
@@ -203,7 +210,7 @@ const TestOverviewLoeysing = () => {
         processData(
           contextKontroll,
           testResults,
-          Number(loeysingId),
+          loeysingId,
           nextSideutvalTestside,
           innhaldstype
         );
@@ -231,7 +238,7 @@ const TestOverviewLoeysing = () => {
         processData(
           contextKontroll,
           testResults,
-          Number(loeysingId),
+          loeysingId,
           pageType,
           innhaldstype
         );
@@ -259,7 +266,7 @@ const TestOverviewLoeysing = () => {
         }
 
         const testgrunnlagIdNumeric = Number(testgrunnlagId);
-        const loeysingIdNumeric = Number(loeysingId);
+        const loeysingIdNumeric = loeysingId;
 
         const statusKey = toTestregelStatusKey(
           testgrunnlagIdNumeric,
@@ -280,7 +287,7 @@ const TestOverviewLoeysing = () => {
           processData(
             contextKontroll,
             testResults,
-            Number(loeysingId),
+            loeysingId,
             pageType,
             innhaldstype,
             nextTestregel
@@ -302,7 +309,7 @@ const TestOverviewLoeysing = () => {
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
       const testgrunnlagIdNumeric = Number(testgrunnlagId);
-      const loeysingIdNumeric = Number(loeysingId);
+      const loeysingIdNumeric = loeysingId;
 
       const testregel = contextKontroll.testregelList.find(
         (tr) => tr.id === testregelId
@@ -425,7 +432,7 @@ const TestOverviewLoeysing = () => {
       const { resultatId, alleSvar, resultat, elementOmtale, kommentar } =
         testResultUpdate;
       const testgrunnlagIdNumeric = Number(testgrunnlagId);
-      const loeysingIdNumeric = Number(loeysingId);
+      const loeysingIdNumeric = loeysingId;
 
       const activeTestResult = testResults.find(
         (testResult) => testResult.id === resultatId
@@ -516,7 +523,7 @@ const TestOverviewLoeysing = () => {
       processData(
         contextKontroll,
         alleResultater,
-        Number(loeysingId),
+        loeysingId,
         pageType,
         innhaldstype,
         activeTest.testregel
@@ -545,7 +552,7 @@ const TestOverviewLoeysing = () => {
         processData(
           contextKontroll,
           updatedTestResults,
-          Number(loeysingId),
+          loeysingId,
           pageType,
           innhaldstype
         );
@@ -587,8 +594,7 @@ const TestOverviewLoeysing = () => {
   }, [alert]);
 
   const loeysingNamn =
-    contextKontroll.loeysingList.find((l) => l.id === Number(loeysingId))
-      ?.namn ?? '';
+    contextKontroll.loeysingList.find((l) => l.id === loeysingId)?.namn ?? '';
 
   return (
     <div className="manual-test-container">
@@ -602,9 +608,9 @@ const TestOverviewLoeysing = () => {
         innhaldstype={innhaldstype}
         onChangeInnhaldstype={onChangeInnhaldstype}
       />
-      <div className="manual-test-buttons">
-        {testFerdig && <TestFerdig loeysingNamn={loeysingNamn} />}
-        {!testFerdig && (
+      {testFerdig && <TestFerdig loeysingNamn={loeysingNamn} />}
+      <div className="manual-test-wrapper">
+        <div className="manual-test-buttons">
           <LoeysingTestContent
             pageType={pageType}
             innhaldstype={innhaldstype}
@@ -621,17 +627,17 @@ const TestOverviewLoeysing = () => {
             toggleShowHelpText={toggleShowHelpText}
             showHelpText={showHelpText}
           />
+        </div>
+        {alert && (
+          <AlertModal
+            ref={modalRef}
+            severity={alert.severity}
+            title={alert.title}
+            message={alert.message}
+            clearMessage={alert.clearMessage}
+          />
         )}
       </div>
-      {alert && (
-        <AlertModal
-          ref={modalRef}
-          severity={alert.severity}
-          title={alert.title}
-          message={alert.message}
-          clearMessage={alert.clearMessage}
-        />
-      )}
     </div>
   );
 };
