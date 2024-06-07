@@ -1,7 +1,10 @@
 import { redirect, RouteObject } from 'react-router-dom';
 
+import { editKontroll, fetchKontroll } from '../kontroll-api';
+import { getKontrollIdFromParams } from '../kontroll-utils';
+import { Kontroll } from '../types';
+import { KontrollInit } from './kontrollInitValidationSchema';
 import OpprettKontroll from './OpprettKontroll';
-import { CreateKontrollType } from './opprettKontrollValidationSchema';
 
 export type Errors = {
   server?: string;
@@ -14,7 +17,7 @@ export const OpprettKontrollRoute: RouteObject = {
   action: async ({ request }) => {
     const errors: Errors = {};
 
-    const kontroll = (await request.json()) as CreateKontrollType;
+    const kontroll = (await request.json()) as KontrollInit;
 
     const response = await fetch('/api/v1/kontroller', {
       method: 'POST',
@@ -28,7 +31,38 @@ export const OpprettKontrollRoute: RouteObject = {
       return redirect(`/kontroll/${kontrollId}/velg-losninger`);
     } else {
       errors.server =
-        'Klarte ikke å opprette en ny kontroll. Dette er en systemfeil som må undersøkes og rettes opp i før vi kommer videre.';
+        'Klarte ikkje å oppretta ein ny kontroll. Dette er ein systemfeil som må undersøkjast og rettast opp i før me kjem vidare.';
+      return errors;
+    }
+  },
+};
+
+export const EditKontrollRoute: RouteObject = {
+  path: ':kontrollId',
+  element: <OpprettKontroll />,
+  handle: { name: 'Opprett Kontroll' },
+  loader: async ({ params }) => {
+    const kontrollId = getKontrollIdFromParams(params.kontrollId);
+    const response = await fetchKontroll(kontrollId);
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+      } else {
+        throw new Error('Klarte ikke å hente kontrollen.');
+      }
+    }
+    return await response.json();
+  },
+  action: async ({ request }) => {
+    const errors: Errors = {};
+
+    const kontrollEdit = (await request.json()) as Kontroll;
+    const response = await editKontroll(kontrollEdit);
+    if (response.ok) {
+      return redirect(`/kontroll/${kontrollEdit.id}/velg-losninger`);
+    } else {
+      errors.server =
+        'Klarte ikkje å endre kontrollen. Dette er ein systemfeil som må undersøkjast og rettast opp i før me kjem vidare.';
       return errors;
     }
   },

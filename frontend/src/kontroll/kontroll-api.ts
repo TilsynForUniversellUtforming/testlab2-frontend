@@ -9,7 +9,17 @@ export function fetchKontroll(kontrollId: number): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontrollId}`);
 }
 
-export function updateKontroll(
+export function editKontroll(kontroll: Kontroll): Promise<Response> {
+  return fetchWrapper(`/api/v1/kontroller/${kontroll.id}`, {
+    method: 'put',
+    body: JSON.stringify({
+      kontroll,
+      kontrollSteg: 'edit',
+    }),
+  });
+}
+
+export function updateKontrollUtval(
   kontroll: Kontroll,
   utval: Utval
 ): Promise<Response> {

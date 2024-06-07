@@ -2,6 +2,7 @@ import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
+import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
   Button,
@@ -10,40 +11,66 @@ import {
 } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useActionData, useSubmit } from 'react-router-dom';
+import {
+  useActionData,
+  useLoaderData,
+  useParams,
+  useSubmit,
+} from 'react-router-dom';
 
 import classes from '../kontroll.module.css';
 import KontrollStepper from '../stepper/KontrollStepper';
-import { KontrollType, Sakstype } from '../types';
-import { Errors } from './OpprettKontrollRoute';
+import { Kontroll, KontrollType, Sakstype } from '../types';
 import {
-  CreateKontrollType,
-  opprettKontrollValidationSchema,
-} from './opprettKontrollValidationSchema';
+  KontrollInit,
+  kontrollInitValidationSchema,
+} from './kontrollInitValidationSchema';
+import { Errors } from './OpprettKontrollRoute';
 
 export default function OpprettKontroll() {
   const submit = useSubmit();
+  const kontroll = useLoaderData() as Kontroll | undefined;
+  const { kontrollId } = useParams();
+  const editMode = isDefined(kontrollId);
 
-  const formMethods = useForm<CreateKontrollType>({
+  const formMethods = useForm<KontrollInit>({
     defaultValues: {
-      kontrolltype: 'inngaaende-kontroll',
-      tittel: '',
-      saksbehandler: '',
-      sakstype: 'forvaltningssak',
-      arkivreferanse: '',
+      id: kontroll?.id ?? undefined,
+      kontrolltype: kontroll?.kontrolltype ?? 'inngaaende-kontroll',
+      tittel: kontroll?.tittel ?? '',
+      saksbehandler: kontroll?.saksbehandler ?? '',
+      sakstype: kontroll?.sakstype ?? 'forvaltningssak',
+      arkivreferanse: kontroll?.arkivreferanse ?? '',
     },
     mode: 'onBlur',
-    resolver: zodResolver(opprettKontrollValidationSchema),
+    resolver: zodResolver(kontrollInitValidationSchema),
   });
 
   const errors = useActionData() as Errors;
 
-  const onSubmit = (data: CreateKontrollType) => {
-    submit(JSON.stringify(data), {
-      method: 'post',
-      encType: 'application/json',
-    });
+  const onSubmit = (formData: KontrollInit) => {
+    if (kontrollId && kontroll) {
+      const kontrollEdit = {
+        ...kontroll,
+        tittel: formData.tittel,
+        saksbehandler: formData.saksbehandler,
+        sakstype: formData.sakstype,
+        arkivreferanse: formData.arkivreferanse,
+      };
+      submit(JSON.stringify(kontrollEdit), {
+        method: 'put',
+        encType: 'application/json',
+        action: `/kontroll/${kontrollId}`,
+      });
+    } else {
+      submit(JSON.stringify(formData), {
+        method: 'post',
+        encType: 'application/json',
+      });
+    }
   };
+
+  const { register } = formMethods;
 
   return (
     <section className={classes.kontrollSection}>
@@ -69,6 +96,7 @@ export default function OpprettKontroll() {
             Felter markert med stjerne er obligatoriske
           </Paragraph>
         </div>
+        <input type="hidden" {...register('id' as const)} />
         <TestlabFormSelect
           className={classes.comboBox}
           label="Velg kontrolltype"
@@ -83,6 +111,8 @@ export default function OpprettKontroll() {
             'anna',
           ])}
           required
+          disabled={editMode}
+          aria-label={editMode ? 'Kan ikkje endre kontrolltype' : ''}
         />
         <TestlabFormInput
           label="Tittel"

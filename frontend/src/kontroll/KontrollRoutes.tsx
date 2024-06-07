@@ -10,7 +10,10 @@ import {
 import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';
 import { KontrollListRoute } from './list/KontrollListRoute';
-import { OpprettKontrollRoute } from './opprett-kontroll/OpprettKontrollRoute';
+import {
+  EditKontrollRoute,
+  OpprettKontrollRoute,
+} from './opprett-kontroll/OpprettKontrollRoute';
 import { OppsummeringRoute } from './oppsummering/OppsummeringRoute';
 import { SideutvalRoute } from './sideutval/SideutvalRoute';
 import { VelgLoesningerRoute } from './velg-loesninger/VelgLoesningerRoute';
@@ -39,6 +42,7 @@ export const KontrollRoutes: RouteObject = {
   errorElement: <ErrorElement />,
   children: [
     OpprettKontrollRoute,
+    EditKontrollRoute,
     KontrollListRoute,
     VelgLoesningerRoute,
     VelgTestreglarRoute,
