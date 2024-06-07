@@ -1,5 +1,5 @@
 import usePathName from '@common/app-container/hooks/usePathName';
-import { isNotDefined } from '@common/util/validationUtils';
+import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Paragraph } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import { Link, useParams } from 'react-router-dom';
@@ -13,7 +13,11 @@ const KontrollStepper = () => {
   const { kontrollId } = useParams();
 
   const getPath = (path: string) => {
-    if (path === '..' || isNotDefined(kontrollId)) {
+    if (
+      path === '..' ||
+      isNotDefined(kontrollId) ||
+      (currentPathName === 'Opprett Kontroll' && isDefined(kontrollId))
+    ) {
       return path;
     }
     return `../${path}`;
@@ -29,7 +33,9 @@ const KontrollStepper = () => {
             })}
             key={step.name}
           >
-            {[currentPathName, step.name].includes('Opprett Kontroll') ? (
+            {([currentPathName, step.name].includes('Opprett Kontroll') &&
+              isNotDefined(kontrollId)) ||
+            currentPathName === step.name ? (
               <Paragraph size="small">{step.name}</Paragraph>
             ) : (
               <Link to={getPath(step.relativePath)} relative="path">
