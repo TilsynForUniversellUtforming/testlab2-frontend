@@ -44,7 +44,7 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
           {loeysingNamn} er ferdig testa!
         </Heading>
         <Paragraph spacing>
-          Du har no testa alle innholdstypar for alle sideutval og kan gå vidare
+          Du har no testa alle innhaldstypar for alle sideutval og kan gå vidare
           for å sjå resultatet.
         </Paragraph>
         <Button
