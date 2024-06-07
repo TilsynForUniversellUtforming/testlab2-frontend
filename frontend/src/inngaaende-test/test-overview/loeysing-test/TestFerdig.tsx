@@ -1,19 +1,23 @@
-import AlertTimed from '@common/alert/AlertTimed';
-import useAlert from '@common/alert/useAlert';
-import { ButtonVariant } from '@common/types';
+import AlertModal from '@common/alert/AlertModal';
+import useAlertModal from '@common/alert/useAlertModal';
+import { ButtonColor } from '@common/types';
 import { getFullPath, idPath, IdReplacement } from '@common/util/routeUtils';
-import { Button, Heading, Tag } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { TESTRESULTAT_TESTGRUNNLAG } from '@resultat/ResultatRoutes';
-import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
-  const { id, testgrunnlagId: testgrunnlagId } = useParams();
+  const { testgrunnlagId: testgrunnlagId } = useParams();
   const navigate = useNavigate();
-  const [alert, setAlert] = useAlert();
+  const [alert, setAlert, modalRef] = useAlertModal();
 
-  const onFerdigTest = useCallback(async () => {
+  const onFerdigTest = async () => {
     await createTestresultatAggregert(Number(testgrunnlagId))
       .then(() => {
         navigate(
@@ -25,29 +29,37 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
       })
       .catch((error) => {
         console.error(error);
-        setAlert('danger', 'Kunne ikke lagre aggregert testresultat');
+        setAlert(
+          'danger',
+          'Feil med lagring',
+          'Kunne ikke lagre aggregert testresultat'
+        );
       });
-  }, [id]);
+  };
 
   return (
-    <div className="statusFerdig">
-      <div className={'test-param-selection'}>
-        <Heading size="small" level={6}>
-          Ferdig testa
+    <div className="status-ferdig">
+      <Alert severity="success">
+        <Heading level={5} size="xs" spacing>
+          {loeysingNamn} er ferdig testa!
         </Heading>
-        <Tag color="success" size="medium">
-          {loeysingNamn}
-        </Tag>
-        Du har no testa alle innholdstypar og alle sideutval for {loeysingNamn}.
-      </div>
-      <div className={'teststatus-buttons'}>
-        <Button variant={ButtonVariant.Outline} onClick={onFerdigTest}>
-          Sjå resultat
+        <Paragraph spacing>
+          Du har no testa alle innhaldstypar for alle sideutval og kan gå vidare
+          for å sjå resultatet.
+        </Paragraph>
+        <Button
+          color={ButtonColor.Success}
+          onClick={onFerdigTest}
+          className="status-ferdig__button"
+        >
+          Gå til resultat
         </Button>
-      </div>
+      </Alert>
       {alert && (
-        <AlertTimed
+        <AlertModal
+          ref={modalRef}
           severity={alert.severity}
+          title={alert.title}
           message={alert.message}
           clearMessage={alert.clearMessage}
         />

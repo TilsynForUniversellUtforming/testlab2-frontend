@@ -115,54 +115,56 @@ const LoeysingTestContent = ({
         showHelpText={showHelpText}
         url={pageType.url}
       />
-      {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
-        <div className="testregel-row" key={rowIndex}>
-          <div className="testregel-container">
-            {row.map((tr) => (
-              <TestregelButton
-                isActive={tr.id === Number(activeTest?.testregel.id)}
-                key={tr.id}
-                testregel={tr}
-                onClick={onChangeTestregel}
-                status={
-                  testStatusMap.get(
-                    toTestregelStatusKey(
-                      Number(testgrunnlagId),
-                      Number(loeysingId),
-                      tr.id,
-                      pageType.sideId
-                    )
-                  ) || 'ikkje-starta'
-                }
-                onChangeStatus={onChangeStatus}
-              />
-            ))}
-          </div>
-          {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
-            activeTest && (
-              <div className="testregel-form-wrapper">
-                <TestForm
-                  testregel={activeTest.testregel}
-                  resultater={activeTest.testResultList}
-                  onResultat={doUpdateTestResult}
-                  showHelpText={showHelpText}
-                  slettTestelement={(resultatId) =>
-                    slettTestelement(activeTest, resultatId)
+      <div>
+        {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
+          <div className="testregel-row" key={rowIndex}>
+            <div className="testregel-container">
+              {row.map((tr) => (
+                <TestregelButton
+                  isActive={tr.id === Number(activeTest?.testregel.id)}
+                  key={tr.id}
+                  testregel={tr}
+                  onClick={onChangeTestregel}
+                  status={
+                    testStatusMap.get(
+                      toTestregelStatusKey(
+                        Number(testgrunnlagId),
+                        Number(loeysingId),
+                        tr.id,
+                        pageType.sideId
+                      )
+                    ) || 'ikkje-starta'
                   }
+                  onChangeStatus={onChangeStatus}
                 />
-                <div className="testregel-form-buttons">
-                  <Button
-                    variant={ButtonVariant.Outline}
-                    onClick={leggTilFlereTestelementer}
-                  >
-                    Legg til flere testelementer
-                  </Button>
-                  <Button onClick={onClickSave}>Lagre og lukk</Button>
+              ))}
+            </div>
+            {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
+              activeTest && (
+                <div className="testregel-form-wrapper">
+                  <TestForm
+                    testregel={activeTest.testregel}
+                    resultater={activeTest.testResultList}
+                    onResultat={doUpdateTestResult}
+                    showHelpText={showHelpText}
+                    slettTestelement={(resultatId) =>
+                      slettTestelement(activeTest, resultatId)
+                    }
+                  />
+                  <div className="testregel-form-buttons">
+                    <Button
+                      variant={ButtonVariant.Outline}
+                      onClick={leggTilFlereTestelementer}
+                    >
+                      Legg til flere testelementer
+                    </Button>
+                    <Button onClick={onClickSave}>Lagre og lukk</Button>
+                  </div>
                 </div>
-              </div>
-            )}
-        </div>
-      ))}
+              )}
+          </div>
+        ))}
+      </div>
       <AlertModal
         ref={alertRef}
         severity="warning"
