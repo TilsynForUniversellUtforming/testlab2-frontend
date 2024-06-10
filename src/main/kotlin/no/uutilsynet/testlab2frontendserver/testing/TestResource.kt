@@ -13,21 +13,17 @@ import org.springframework.http.ResponseEntity
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MimeTypeUtils
 import org.springframework.util.MultiValueMap
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("api/v1/testing")
-class TestResource(val restTemplate: RestTemplate, testingApiProperties: TestingApiProperties) {
+class TestResource(
+    val testresultatAPIClient: ITestresultatAPIClient,
+    val restTemplate: RestTemplate,
+    testingApiProperties: TestingApiProperties
+) {
   val logger: Logger = LoggerFactory.getLogger(TestResource::class.java)
 
   val testresultUrl = "${testingApiProperties.url}/testresultat"
@@ -37,20 +33,22 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
   fun getResultatManuellKontroll(
       @PathVariable testgrunnlagId: Int
   ): ResponseEntity<List<ResultatManuellKontroll>> =
-      runCatching {
-            val testResults: TestresultatForKontroll? =
-                restTemplate.getForObject(
-                    "$testresultUrl?testgrunnlagId=$testgrunnlagId",
-                    TestresultatForKontroll::class.java)
-            if (testResults != null) {
-              return ResponseEntity.ok(testResults.resultat)
-            } else {
-              throw IllegalArgumentException("Feil ved henting av testresultat")
+      testresultatAPIClient
+          .getResultatForTestgrunnlag(testgrunnlagId)
+          .map { ResponseEntity.ok(it) }
+          .getOrElse { throwable ->
+            when (throwable) {
+              is IllegalArgumentException -> {
+                logger.error(throwable.message, throwable)
+                ResponseEntity.badRequest().build()
+              }
+              else -> {
+                logger.error(
+                    "Feila da vi prøvde å hente testresultat for testgrunnlag $testgrunnlagId",
+                    throwable)
+                ResponseEntity.internalServerError().build()
+              }
             }
-          }
-          .getOrElse {
-            logger.error("Kunne ikkje hente testresultat for testgrunnlag $testgrunnlagId")
-            throw it
           }
 
   @PostMapping
@@ -60,7 +58,7 @@ class TestResource(val restTemplate: RestTemplate, testingApiProperties: Testing
       runCatching {
             logger.debug(
                 "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}, testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
-            restTemplate.postForEntity(testresultUrl, createTestResultat, Int::class.java)
+            testresultatAPIClient.createTestResultat(createTestResultat)
             getResultatManuellKontroll(createTestResultat.testgrunnlagId)
           }
           .getOrElse {
