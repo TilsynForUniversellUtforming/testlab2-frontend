@@ -52,6 +52,13 @@
             <artifactId>testlab2-security-lib</artifactId>
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
