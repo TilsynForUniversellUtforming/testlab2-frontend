@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
-import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
@@ -8,15 +7,9 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
+import java.time.Instant
 
 typealias Orgnummer = String
 
@@ -33,6 +26,7 @@ data class KontrollListItem(
 @RestController
 @RequestMapping("api/v1/kontroller")
 class KontrollResource(
+    val testgrunnlagAPIClient: ITestgrunnlagAPIClient,
     val restTemplate: RestTemplate,
     val testingApiProperties: TestingApiProperties,
 ) {
@@ -107,31 +101,29 @@ class KontrollResource(
 
   @GetMapping("{kontrollId}/testgrunnlag")
   fun testgrunnlagForKontroll(@PathVariable kontrollId: Int): List<TestgrunnlagDTO> {
-    return runCatching {
-          restTemplate.getList<TestgrunnlagDTO>(
-              "${testingApiProperties.url}/testgrunnlag/kontroll/list/$kontrollId")
-        }
-        .getOrElse {
-          logger.error("Klarte ikke å hente testgrunnlag for kontroll $kontrollId")
-          throw it
-        }
+    return testgrunnlagAPIClient
+        .getTestgrunnlag(kontrollId)
+        .fold(
+            { it },
+            {
+              logger.error("Klarte ikkje å henta testgrunnlag for kontroll $kontrollId: $it")
+              throw it
+            })
   }
 
   @PostMapping("{kontrollId}/testgrunnlag")
   fun nyttTestgrunnlag(
       @PathVariable kontrollId: Int,
-      @RequestBody nyttTestgrunnlag: NyttTestgrunnlag
+      @RequestBody nyttTestgrunnlag: TestgrunnlagAPIClient.NyttTestgrunnlag
   ): ResponseEntity<Unit> {
-    return runCatching {
-          val location =
-              restTemplate.postForLocation(
-                  "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag)
-          ResponseEntity.created(location!!).build<Unit>()
-        }
-        .getOrElse {
-          logger.error("Klarte ikke å lage et nytt testgrunnlag")
-          throw it
-        }
+    return testgrunnlagAPIClient
+        .createTestgrunnlag(nyttTestgrunnlag)
+        .fold(
+            { ResponseEntity.created(it).build() },
+            {
+              logger.error("Klarte ikkje å opprette testgrunnlag: $it")
+              ResponseEntity.internalServerError().build()
+            })
   }
 
   data class SideutvalType(
@@ -155,13 +147,5 @@ class KontrollResource(
       val sideutval: List<Sideutval> = emptyList(),
       val type: TestgrunnlagType,
       val datoOppretta: Instant
-  )
-
-  data class NyttTestgrunnlag(
-      val kontrollId: Int,
-      val namn: String,
-      val type: TestgrunnlagType,
-      val sideutval: List<Sideutval>,
-      val testregelIdList: List<Int>
   )
 }
