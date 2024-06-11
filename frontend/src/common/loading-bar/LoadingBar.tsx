@@ -56,6 +56,7 @@ const LoadingBar = ({
       <Label
         className={classnames('loading-bar__label', textPlacement)}
         size={size}
+        htmlFor="progresjon"
       >
         {customText ? customText : `${percentage}%`}
       </Label>
@@ -65,6 +66,7 @@ const LoadingBar = ({
         max="100"
         aria-label={ariaLabel}
         aria-valuenow={percentage}
+        id="progresjon"
       />
     </div>
   );
