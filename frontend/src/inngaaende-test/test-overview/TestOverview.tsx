@@ -133,7 +133,10 @@ const TestOverview = () => {
             );
 
             return (
-              <div key={loeysingId} className="manual-test__loeysing-button">
+              <div
+                key={`${etTestgrunnlag.id}/${loeysingId}`}
+                className="manual-test__loeysing-button"
+              >
                 <div className="tag-wrapper">
                   <TestlabStatusTag<ManuellTestStatus>
                     status={status}
