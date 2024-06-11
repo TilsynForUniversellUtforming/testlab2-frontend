@@ -74,6 +74,7 @@ class TestResource(
             val missingKommentar =
                 resultatManuellKontrollList.any { resultatManuellKontroll ->
                   resultatManuellKontroll.elementOmtale == "Side" &&
+                      resultatManuellKontroll.status == ResultatManuellKontroll.Status.Ferdig &&
                       resultatManuellKontroll.kommentar.isNullOrBlank()
                 }
             if (missingKommentar) {
