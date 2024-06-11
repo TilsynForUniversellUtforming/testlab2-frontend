@@ -79,11 +79,11 @@ const VerksemdEdit = () => {
           } finally {
             setLoading(false);
           }
-          console.log(verksemd);
+          console.info(verksemd);
         }
       };
       doEditVerksemd();
-      console.log(verksemdEdit);
+      console.info(verksemdEdit);
     },
     [verksemdList]
   );

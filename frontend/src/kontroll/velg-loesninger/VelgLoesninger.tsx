@@ -76,9 +76,13 @@ const VelgLoesninger = () => {
     };
   }
 
+  const isDirty =
+    selectedOption?.t === 'utvalg' &&
+    selectedOption.valgtUtvalg?.id !== kontroll.utval?.id;
+
   return (
     <section className={classes.kontrollSection}>
-      <KontrollStepper />
+      <KontrollStepper isDirty={isDirty} />
       <div className={classes.velgLoesningerOverskrift}>
         <Heading level={1} size="xlarge">
           Vel løysingar

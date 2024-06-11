@@ -34,12 +34,13 @@ const VelgTestreglar = () => {
   const initRegelsettId = kontroll?.testreglar?.regelsettId;
   const [selectedRegelsettId, setSelectedRegelsettId] = useState<
     number | undefined
-  >(initRegelsettId);
+  >(initRegelsettId ?? undefined);
 
   /* Manuelt valgte testregler */
-  const initTestregelIdList = initRegelsettId
-    ? []
-    : kontroll?.testreglar?.testregelList?.map((tr) => tr.id) || [];
+  const kontrollTestregelList =
+    kontroll?.testreglar?.testregelList?.map((tr) => tr.id) || [];
+
+  const initTestregelIdList = initRegelsettId ? [] : kontrollTestregelList;
   const [selectedTestregelIdList, setSelectedTestregelIdList] =
     useState<number[]>(initTestregelIdList);
 
@@ -171,9 +172,15 @@ const VelgTestreglar = () => {
     });
   };
 
+  const isDirty =
+    (kontroll.testreglar?.regelsettId ?? undefined) !== selectedRegelsettId ||
+    !selectedTestregelIdList.every((str) =>
+      kontrollTestregelList.includes(str)
+    );
+
   return (
     <section className={classes.kontrollSection}>
-      <KontrollStepper />
+      <KontrollStepper isDirty={isDirty} />
       <div className={classes.velgTestreglarOverskrift}>
         <Heading level={1} size="xlarge" data-testid="testreglar-heading">
           Vel testreglar

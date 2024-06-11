@@ -15,6 +15,7 @@ export type ConfirmModalProps = {
   onConfirm: () => void;
   disabled?: boolean;
   buttonIcon?: JSX.Element;
+  customHeader?: string;
 };
 
 const ConfirmModalButton = ({
@@ -28,6 +29,7 @@ const ConfirmModalButton = ({
   variant,
   size,
   icon,
+  customHeader,
 }: ConfirmModalProps & ButtonProps) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const onConfirmModal = useCallback(() => {
@@ -47,11 +49,15 @@ const ConfirmModalButton = ({
         variant={variant}
         title={icon ? title : undefined}
       >
-        {buttonIcon}
-        {icon ? null : title}
+        <>
+          {buttonIcon}
+          {icon ? null : title}
+        </>
       </Button>
       <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
-        <Modal.Header closeButton={false}>{title}</Modal.Header>
+        <Modal.Header closeButton={false}>
+          {customHeader ? customHeader : title}
+        </Modal.Header>
         <Divider color="subtle" />
         <Modal.Content>
           <Paragraph>{message}</Paragraph>

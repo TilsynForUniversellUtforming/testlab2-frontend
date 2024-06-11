@@ -1,5 +1,6 @@
 import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
+import { isDefined } from '@common/util/validationUtils';
 import {
   Alert,
   ErrorSummary,
@@ -67,7 +68,12 @@ const VelgSideutval = () => {
     resolver: zodResolver(sideutvalValidationSchema),
   });
 
-  const { register, control, handleSubmit } = formMethods;
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { dirtyFields },
+  } = formMethods;
 
   const onSubmitError = (errors: FieldErrors<SideutvalForm>) => {
     const errorMap = new Map<string, FormError>();
@@ -175,7 +181,7 @@ const VelgSideutval = () => {
 
   return (
     <section className={classes.sideutvalSection}>
-      <KontrollStepper />
+      <KontrollStepper isDirty={isDefined(dirtyFields)} />
       <div className={classes.velgTestreglarOverskrift}>
         <Heading level={1} size="xlarge">
           Sideutval

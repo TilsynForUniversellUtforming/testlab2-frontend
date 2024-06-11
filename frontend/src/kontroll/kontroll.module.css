@@ -2,60 +2,76 @@
   margin: 0 auto;
   max-width: 900px;
 }
+.stepper {
+  ol {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6rem;
+    padding: 0;
+    position: relative;
 
-.stepper ol {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 0 6rem 0;
-  padding: 0;
-  position: relative;
-}
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: calc(50% - 0.5px);
+      height: 1px;
+      width: 100%;
+      background-color: var(--fds-semantic-surface-first-dark);
+    }
 
-.stepper ol::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  top: calc(50% - 0.5px);
-  height: 1px;
-  width: 100%;
-  background-color: var(--fds-semantic-surface-first-dark);
-}
+    li {
+      list-style: none;
+      background-color: var(--fds-semantic-surface-first-light);
+      border-radius: 10px;
+      border: 2px solid transparent;
 
-.stepper ol li {
-  list-style: none;
-  background-color: var(--fds-semantic-surface-first-light);
-  border-radius: 10px;
-  border: 2px solid transparent;
-
-  &:hover {
-    background-color: var(--fds-semantic-surface-first-light-hover);
+      &:hover {
+        background-color: var(--fds-semantic-surface-first-light-hover);
+      }
+    }
   }
-}
-
-.stepper .selected {
-  background-color: var(--fds-semantic-surface-first-light-active);
-  border: 2px solid var(--fds-semantic-surface-first-dark);
 
   p {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+  }
+
+  .unselectable {
+    background-color: var(--fds-semantic-surface-neutral-subtle);
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-neutral-subtle);
+    }
+
+    p {
+      cursor: not-allowed;
+    }
+  }
+
+  .selected {
+    background-color: var(--fds-semantic-surface-first-light-active);
+    border-color: var(--fds-semantic-surface-first-dark);
+
+    &:hover {
+      background-color: var(--fds-semantic-surface-first-light-hover);
+    }
+
+    p {
+      color: var(--fds-semantic-surface-neutral-default);
+      cursor: pointer;
+    }
+  }
+
+  a {
+    background: none;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    width: 100%;
     color: var(--fds-semantic-surface-neutral-default);
   }
-
-  &:hover {
-    background-color: var(--fds-semantic-surface-first-light-hover);
-  }
-}
-
-.stepper a {
-  background: none;
-  text-decoration: none;
-  margin: 0;
-  border-radius: 10px;
-  width: 100%;
-}
-
-.stepper p {
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
 }
 
 .ingress {

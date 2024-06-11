@@ -74,7 +74,7 @@ export default function OpprettKontroll() {
 
   return (
     <section className={classes.kontrollSection}>
-      <KontrollStepper />
+      <KontrollStepper isDirty={false} />
       <Heading level={1} size="xlarge">
         Bygg kontroll
       </Heading>
