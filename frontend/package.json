@@ -18,8 +18,8 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@digdir/designsystemet-css": "^0.9.0",
-    "@digdir/designsystemet-react": "^0.62.0",
+    "@digdir/designsystemet-css": "^0.10.0",
+    "@digdir/designsystemet-react": "^0.63.0",
     "@digdir/designsystemet-theme": "^0.15.3",
     "@hookform/resolvers": "^3.6.0",
     "@navikt/aksel-icons": "^6.10.1",
@@ -37,15 +37,15 @@
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@playwright/test": "^1.44.1",
-    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/dompurify": "3.0.5",
     "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.12.0",
-    "@typescript-eslint/parser": "^7.12.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "@vitest/coverage-v8": "^1.6.0",
     "@vitest/ui": "^1.6.0",
@@ -60,10 +60,10 @@
     "husky": "^9.0.11",
     "jsdom": "^24.1.0",
     "lint-staged": "^15.2.5",
-    "prettier": "^3.3.1",
+    "prettier": "^3.3.2",
     "sass": "^1.77.4",
     "typescript": "^5.4.5",
-    "vite": "^5.2.12",
+    "vite": "^5.2.13",
     "vitest": "^1.6.0"
   },
   "husky": {
