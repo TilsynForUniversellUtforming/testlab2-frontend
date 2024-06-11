@@ -125,3 +125,12 @@ export const postTestgrunnlag = async (nyttTestgrunnlag: {
     }
   );
 };
+
+export const deleteTestgrunnlag = async (testgrunnlag: Testgrunnlag) => {
+  return await fetchWrapper(
+    `/api/v1/kontroller/${testgrunnlag.kontrollId}/testgrunnlag/${testgrunnlag.id}`,
+    {
+      method: 'DELETE',
+    }
+  );
+};
