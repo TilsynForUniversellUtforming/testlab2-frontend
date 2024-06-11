@@ -14,6 +14,7 @@ import {
 } from '@test/types';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
+import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -117,7 +118,12 @@ const LoeysingTestContent = ({
       />
       <div>
         {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
-          <div className="testregel-row" key={rowIndex}>
+          <div
+            className={classNames('testregel-row', {
+              single: testregelList.length === 1,
+            })}
+            key={rowIndex}
+          >
             <div className="testregel-container">
               {row.map((tr) => (
                 <TestregelButton
@@ -141,7 +147,11 @@ const LoeysingTestContent = ({
             </div>
             {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
               activeTest && (
-                <div className="testregel-form-wrapper">
+                <div
+                  className={classNames('testregel-form-wrapper', {
+                    single: testregelList.length === 1,
+                  })}
+                >
                   <TestForm
                     testregel={activeTest.testregel}
                     resultater={activeTest.testResultList}
