@@ -1,6 +1,7 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import {
+  deleteTestgrunnlag,
   getTestResults,
   listTestgrunnlag,
   postTestgrunnlag,
@@ -8,7 +9,11 @@ import {
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
-import { ContextKontroll, TestOverviewLoaderResponse } from '@test/types';
+import {
+  ContextKontroll,
+  Testgrunnlag,
+  TestOverviewLoaderResponse,
+} from '@test/types';
 import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
 import {
   listInnhaldstype,
@@ -153,8 +158,16 @@ export const TestingRoutes: RouteObject = {
             };
           },
           action: async ({ request }) => {
-            const jsonData = await request.json();
-            return await postTestgrunnlag(jsonData);
+            switch (request.method) {
+              case 'POST': {
+                const nyttTestgrunnlag = await request.json();
+                return await postTestgrunnlag(nyttTestgrunnlag);
+              }
+              case 'DELETE': {
+                const testgrunnlag: Testgrunnlag = await request.json();
+                return await deleteTestgrunnlag(testgrunnlag);
+              }
+            }
           },
         },
         {

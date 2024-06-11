@@ -45,6 +45,10 @@ export function visRetestKnapp(
   );
 }
 
+function visSlettKnapp(status: ManuellTestStatus): boolean {
+  return status === 'ikkje-starta';
+}
+
 const TestOverview = () => {
   const { id } = useParams();
   const { contextKontroll }: TestContextKontroll = useOutletContext();
@@ -108,6 +112,10 @@ const TestOverview = () => {
       };
       submit(nyttTestgrunnlag, { method: 'post', encType: 'application/json' });
     }
+  }
+
+  function slett(etTestgrunnlag: Testgrunnlag): void {
+    submit(etTestgrunnlag, { method: 'delete', encType: 'application/json' });
   }
 
   return (
@@ -180,6 +188,15 @@ const TestOverview = () => {
                         onClick={() => retest(etTestgrunnlag)}
                       >
                         Retest
+                      </Button>
+                    )}
+                    {visSlettKnapp(status) && (
+                      <Button
+                        variant="secondary"
+                        color="danger"
+                        onClick={() => slett(etTestgrunnlag)}
+                      >
+                        Slett
                       </Button>
                     )}
                   </div>
