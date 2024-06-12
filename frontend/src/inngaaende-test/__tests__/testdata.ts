@@ -70,6 +70,7 @@ function createSideutval(): Sideutval {
 
 export function createResultatManuellKontroll(
   testgrunnlag: Testgrunnlag,
+  loeysingId: number,
   status: ResultatStatus,
   elementResultat?: ElementResultat
 ): ResultatManuellKontroll {
@@ -92,7 +93,7 @@ export function createResultatManuellKontroll(
         svar: [],
         status: 'IkkjePaabegynt',
         testgrunnlagId: testgrunnlag.id,
-        loeysingId: testgrunnlag.sideutval[0].loeysingId,
+        loeysingId: loeysingId,
         testregelId: testgrunnlag.testreglar[0].id,
         sideutvalId: testgrunnlag.sideutval[0].id,
       };
@@ -105,7 +106,7 @@ export function createResultatManuellKontroll(
         })),
         status: 'UnderArbeid',
         testgrunnlagId: testgrunnlag.id,
-        loeysingId: testgrunnlag.sideutval[0].loeysingId,
+        loeysingId: loeysingId,
         testregelId: testgrunnlag.testreglar[0].id,
         sideutvalId: testgrunnlag.sideutval[0].id,
       };
@@ -118,7 +119,7 @@ export function createResultatManuellKontroll(
         })),
         status: 'Ferdig',
         testgrunnlagId: testgrunnlag.id,
-        loeysingId: testgrunnlag.sideutval[0].loeysingId,
+        loeysingId: loeysingId,
         testregelId: testgrunnlag.testreglar[0].id,
         sideutvalId: testgrunnlag.sideutval[0].id,
         elementOmtale: faker.lorem.word(),
