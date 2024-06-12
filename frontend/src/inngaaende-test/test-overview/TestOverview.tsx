@@ -61,7 +61,7 @@ export function visRetestKnapp(
       return aTime - bTime;
     });
   const resultaterForLoeysing = resultater.filter(
-    (r) => r.loeysingId === loeysingId
+    (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
   return (
     teststatus(resultaterForLoeysing) === 'ferdig' &&
