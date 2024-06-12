@@ -62,8 +62,11 @@ export function visRetestKnapp(
   );
 }
 
-function visSlettKnapp(status: ManuellTestStatus): boolean {
-  return status === 'ikkje-starta';
+function visSlettKnapp(
+  testgrunnlag: Testgrunnlag,
+  status: ManuellTestStatus
+): boolean {
+  return testgrunnlag.type === 'RETEST' && status === 'ikkje-starta';
 }
 
 const TestOverview = () => {
@@ -199,7 +202,7 @@ const TestOverview = () => {
                         Retest
                       </Button>
                     )}
-                    {visSlettKnapp(status) && (
+                    {visSlettKnapp(etTestgrunnlag, status) && (
                       <Button
                         variant="secondary"
                         color="danger"
