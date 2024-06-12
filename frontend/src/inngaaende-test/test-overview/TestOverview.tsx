@@ -4,7 +4,13 @@ import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { isEmpty, last } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Button, Heading, Tag } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import {
@@ -14,6 +20,7 @@ import {
 } from '@test/types';
 import { useCallback } from 'react';
 import {
+  Link,
   useLoaderData,
   useNavigate,
   useOutletContext,
@@ -128,6 +135,17 @@ const TestOverview = () => {
 
   return (
     <div className="manual-test-overview">
+      {testgrunnlag.length === 0 && (
+        <Alert severity="warning">
+          <Heading level={3} size="xs" spacing>
+            Ingen testgrunnlag for test
+          </Heading>
+          <Paragraph>
+            Sjå over kontrollen og sjekk at alle parametrar er fylt ut{' '}
+            <Link to={`../../kontroll/${String(id)}`}>her</Link>
+          </Paragraph>
+        </Alert>
+      )}
       {testgrunnlag.flatMap((etTestgrunnlag) => {
         const loeysingTestgrunnlag = Object.groupBy(
           etTestgrunnlag.sideutval,
