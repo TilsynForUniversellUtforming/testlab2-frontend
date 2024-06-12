@@ -1,40 +1,41 @@
+import { ResultatManuellKontroll } from '@test/api/types';
 import { describe, expect, test } from 'vitest';
 
 import { viewTestType, visRetestKnapp } from '../test-overview/TestOverview';
-import { createOpprinneligTest, createRetest } from './testdata';
+import {
+  createOpprinneligTest,
+  createResultatManuellKontroll,
+  createRetest,
+} from './testdata';
 
 describe('visRetestKnapp', () => {
   const testgrunnlag = createOpprinneligTest(); // Replace with a valid Testgrunnlag object
   const alleTestgrunnlag = [testgrunnlag]; // Replace with an array of Testgrunnlag objects
 
   test('should return true when status is "ferdig"', () => {
-    const status = 'ferdig';
+    const resultater = [
+      createResultatManuellKontroll(testgrunnlag, 'Ferdig', 'brot'),
+    ];
 
-    const result = visRetestKnapp(testgrunnlag, status, alleTestgrunnlag);
+    const result = visRetestKnapp(testgrunnlag, alleTestgrunnlag, resultater);
 
     expect(result).toBe(true);
   });
 
-  test('should return false when status is "ikkje-starta"', () => {
-    const status = 'ikkje-starta';
+  test('should return false when there are no results', () => {
+    const resultater: ResultatManuellKontroll[] = [];
 
-    const result = visRetestKnapp(testgrunnlag, status, alleTestgrunnlag);
-
-    expect(result).toBe(false);
-  });
-
-  test('should return false when status is "deaktivert"', () => {
-    const status = 'deaktivert';
-
-    const result = visRetestKnapp(testgrunnlag, status, alleTestgrunnlag);
+    const result = visRetestKnapp(testgrunnlag, alleTestgrunnlag, resultater);
 
     expect(result).toBe(false);
   });
 
-  test('should return false when status is "under-arbeid"', () => {
-    const status = 'under-arbeid';
+  test('should return false when there are some results, but none are finished', () => {
+    const resultater = [
+      createResultatManuellKontroll(testgrunnlag, 'UnderArbeid'),
+    ];
 
-    const result = visRetestKnapp(testgrunnlag, status, alleTestgrunnlag);
+    const result = visRetestKnapp(testgrunnlag, alleTestgrunnlag, resultater);
 
     expect(result).toBe(false);
   });
@@ -45,11 +46,34 @@ describe('visRetestKnapp', () => {
     const retest2 = createRetest(retest1);
     const alleTestgrunnlag = [testgrunnlag, retest1, retest2];
 
-    expect(visRetestKnapp(testgrunnlag, 'ferdig', alleTestgrunnlag)).toBe(
-      false
-    );
-    expect(visRetestKnapp(retest1, 'ferdig', alleTestgrunnlag)).toBe(false);
-    expect(visRetestKnapp(retest2, 'ferdig', alleTestgrunnlag)).toBe(true);
+    expect(
+      visRetestKnapp(testgrunnlag, alleTestgrunnlag, [
+        createResultatManuellKontroll(testgrunnlag, 'Ferdig'),
+      ])
+    ).toBe(false);
+    expect(
+      visRetestKnapp(retest1, alleTestgrunnlag, [
+        createResultatManuellKontroll(retest1, 'Ferdig'),
+      ])
+    ).toBe(false);
+    expect(
+      visRetestKnapp(retest2, alleTestgrunnlag, [
+        createResultatManuellKontroll(retest2, 'Ferdig', 'brot'),
+      ])
+    ).toBe(true);
+  });
+
+  test('retest skal ikke vises hvis det ikke er noen brudd', () => {
+    const opprinneligTest = createOpprinneligTest();
+    const retest1 = createRetest(opprinneligTest);
+    const alleTestgrunnlag = [opprinneligTest, retest1];
+    const resultater = [
+      createResultatManuellKontroll(opprinneligTest, 'Ferdig', 'brot'),
+      createResultatManuellKontroll(retest1, 'Ferdig', 'samsvar'),
+      createResultatManuellKontroll(retest1, 'Ferdig', 'ikkjeForekomst'),
+    ];
+
+    expect(visRetestKnapp(retest1, alleTestgrunnlag, resultater)).toBe(false);
   });
 });
 
