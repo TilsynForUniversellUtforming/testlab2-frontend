@@ -28,10 +28,22 @@ export type TestOverviewLoaderData = {
   testgrunnlag: Testgrunnlag[];
 };
 
+export function teststatus(
+  resultater: ResultatManuellKontroll[]
+): ManuellTestStatus {
+  if (resultater.length === 0) {
+    return 'ikkje-starta';
+  } else if (resultater.every((r) => r.status === 'Ferdig')) {
+    return 'ferdig';
+  } else {
+    return 'under-arbeid';
+  }
+}
+
 export function visRetestKnapp(
   testgrunnlag: Testgrunnlag,
-  status: ManuellTestStatus,
-  alleTestgrunnlag: Testgrunnlag[]
+  alleTestgrunnlag: Testgrunnlag[],
+  resultater: ResultatManuellKontroll[]
 ) {
   const testgrunnlagForKontroll = alleTestgrunnlag
     .filter((t) => t.kontrollId === testgrunnlag.kontrollId)
@@ -40,8 +52,13 @@ export function visRetestKnapp(
       const bTime = Date.parse(b.datoOppretta);
       return aTime - bTime;
     });
+  const resultaterForTestgrunnlag = resultater.filter(
+    (r) => r.testgrunnlagId === testgrunnlag.id
+  );
   return (
-    status === 'ferdig' && last(testgrunnlagForKontroll)?.id === testgrunnlag.id
+    teststatus(resultater) === 'ferdig' &&
+    resultaterForTestgrunnlag.some((r) => r.elementResultat === 'brot') &&
+    last(testgrunnlagForKontroll)?.id === testgrunnlag.id
   );
 }
 
@@ -81,18 +98,6 @@ const TestOverview = () => {
     },
     [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
-
-  function teststatus(
-    resultater: ResultatManuellKontroll[]
-  ): ManuellTestStatus {
-    if (resultater.length === 0) {
-      return 'ikkje-starta';
-    } else if (resultater.every((r) => r.status === 'Ferdig')) {
-      return 'ferdig';
-    } else {
-      return 'under-arbeid';
-    }
-  }
 
   function retest(testgrunnlag: Testgrunnlag) {
     const res = resultater
@@ -182,7 +187,11 @@ const TestOverview = () => {
                         ? 'Start testing'
                         : 'Fortsett testing'}
                     </Button>
-                    {visRetestKnapp(etTestgrunnlag, status, testgrunnlag) && (
+                    {visRetestKnapp(
+                      etTestgrunnlag,
+                      testgrunnlag,
+                      resultater
+                    ) && (
                       <Button
                         variant="secondary"
                         onClick={() => retest(etTestgrunnlag)}
