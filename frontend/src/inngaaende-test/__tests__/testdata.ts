@@ -1,4 +1,9 @@
 import { faker } from '@faker-js/faker';
+import {
+  ElementResultat,
+  ResultatManuellKontroll,
+  ResultatStatus,
+} from '@test/api/types';
 import { Testgrunnlag } from '@test/types';
 import { Testregel } from '@testreglar/api/types';
 
@@ -61,4 +66,68 @@ function createSideutval(): Sideutval {
     begrunnelse: faker.lorem.words(),
     url: faker.internet.url(),
   };
+}
+
+export function createResultatManuellKontroll(
+  testgrunnlag: Testgrunnlag,
+  status: ResultatStatus,
+  elementResultat?: ElementResultat
+): ResultatManuellKontroll {
+  function createStegNummer(): string {
+    return (
+      faker.number.int({ min: 1, max: 9 }).toString() +
+      '.' +
+      faker.number.int({ min: 1, max: 9 }).toString()
+    );
+  }
+
+  function createSvar(): string {
+    return faker.helpers.arrayElement(['Ja', 'Nei']);
+  }
+
+  switch (status) {
+    case 'IkkjePaabegynt':
+      return {
+        id: faker.number.int(),
+        svar: [],
+        status: 'IkkjePaabegynt',
+        testgrunnlagId: testgrunnlag.id,
+        loeysingId: testgrunnlag.sideutval[0].loeysingId,
+        testregelId: testgrunnlag.testreglar[0].id,
+        sideutvalId: testgrunnlag.sideutval[0].id,
+      };
+    case 'UnderArbeid':
+      return {
+        id: faker.number.int(),
+        svar: [1, 2, 3].map(() => ({
+          steg: createStegNummer(),
+          svar: createSvar(),
+        })),
+        status: 'UnderArbeid',
+        testgrunnlagId: testgrunnlag.id,
+        loeysingId: testgrunnlag.sideutval[0].loeysingId,
+        testregelId: testgrunnlag.testreglar[0].id,
+        sideutvalId: testgrunnlag.sideutval[0].id,
+      };
+    default:
+      return {
+        id: faker.number.int(),
+        svar: [1, 2, 3, 4, 5, 6].map(() => ({
+          steg: createStegNummer(),
+          svar: createSvar(),
+        })),
+        status: 'Ferdig',
+        testgrunnlagId: testgrunnlag.id,
+        loeysingId: testgrunnlag.sideutval[0].loeysingId,
+        testregelId: testgrunnlag.testreglar[0].id,
+        sideutvalId: testgrunnlag.sideutval[0].id,
+        elementOmtale: faker.lorem.word(),
+        elementResultat:
+          elementResultat ??
+          faker.helpers.arrayElement(['samsvar', 'ikkjeForekomst', 'brot']),
+        elementUtfall: faker.lorem.word(),
+        testVartUtfoert: faker.date.recent().toISOString(),
+        kommentar: faker.lorem.words(),
+      };
+  }
 }
