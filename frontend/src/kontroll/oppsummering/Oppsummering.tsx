@@ -9,29 +9,28 @@ import {
   Paragraph,
   Tag,
 } from '@digdir/designsystemet-react';
-import { Loeysing, Utval } from '@loeysingar/api/types';
+import { Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
 import kontrollClasses from '../kontroll.module.css';
-import { Kontroll, steps } from '../types';
+import { steps } from '../types';
 import classes from './oppsummering.module.css';
+import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
 
 export function Oppsummering() {
-  const kontroll = useLoaderData() as Kontroll;
+  const { kontroll, verksemdLoesyingList } =
+    useLoaderData() as OppsummeringLoadingType;
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   const elementsPerPage = 7;
   const totalPages = Math.ceil(
-    (kontroll.utval?.loeysingar?.length ?? 0) / elementsPerPage
+    (verksemdLoesyingList.length ?? 0) / elementsPerPage
   );
 
-  function listeElement(loeysing: Loeysing) {
-    const nettsteder = kontroll.sideutvalList.filter(
-      (sideutval) => sideutval.loeysingId === loeysing.id
-    ).length;
+  function listeElement(oppsummeringsItem: VerksemdLoeysing) {
     const mobilapper: number = 0;
 
     function chooseIcon(antall: number) {
@@ -43,14 +42,15 @@ export function Oppsummering() {
     }
 
     return (
-      <li className={classes.listeelement} key={loeysing.id}>
+      <li className={classes.listeelement} key={oppsummeringsItem.namn}>
         <Heading level={3} size="small" className={classes.navn}>
-          {loeysing.namn}
+          {oppsummeringsItem.namn}
         </Heading>
         <div className={classes.nettstederOgMobilapper}>
           <div className={classes.nettsteder}>
-            {chooseIcon(nettsteder)}
-            {nettsteder} {nettsteder === 1 ? 'nettsted' : 'nettsteder'}
+            {chooseIcon(oppsummeringsItem.loeysingCount)}
+            {oppsummeringsItem.loeysingCount}{' '}
+            {oppsummeringsItem.loeysingCount === 1 ? 'nettsted' : 'nettsteder'}
           </div>
           <div className={classes.mobilapper}>
             {chooseIcon(mobilapper)}
@@ -71,16 +71,16 @@ export function Oppsummering() {
   }
 
   function getPage(
-    loeysingar: Loeysing[] | undefined,
+    verksemdLoesyingList: VerksemdLoeysing[],
     currentPage: number
-  ): Loeysing[] {
-    if (!loeysingar || loeysingar.length === 0) {
+  ): VerksemdLoeysing[] {
+    if (verksemdLoesyingList.length === 0) {
       return [];
     }
 
     const start = (currentPage - 1) * elementsPerPage;
     const end = start + elementsPerPage;
-    return loeysingar.slice(start, end);
+    return verksemdLoesyingList.slice(start, end);
   }
 
   function lagreOgLukk() {
@@ -151,7 +151,7 @@ export function Oppsummering() {
           <Tag color="first">{viewUtvalNamn(kontroll.utval)}</Tag>
         </div>
         <ul className={classes.liste}>
-          {getPage(kontroll.utval?.loeysingar, currentPage).map(listeElement)}
+          {getPage(verksemdLoesyingList, currentPage).map(listeElement)}
         </ul>
         {totalPages > 1 && (
           <Pagination
