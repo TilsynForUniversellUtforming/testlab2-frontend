@@ -222,7 +222,9 @@ const SideutvalAccordion = ({
                   );
 
                   const errors = formErrors.find(
-                    (fe) => fe.sideutvalType === sideutvalTypeLabel
+                    (fe) =>
+                      fe.sideutvalType === sideutvalTypeLabel &&
+                      fe.loeysingId === selectedLoeysing.id
                   );
 
                   if (sideutvalIndexedList.length === 0) {
