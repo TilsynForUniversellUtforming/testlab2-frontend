@@ -207,7 +207,9 @@ const TestOverview = () => {
                     >
                       {status === 'ikkje-starta'
                         ? 'Start testing'
-                        : 'Fortsett testing'}
+                        : status === 'under-arbeid'
+                          ? 'Fortsett testing'
+                          : 'Vis testen'}
                     </Button>
                     {visRetestKnapp(
                       etTestgrunnlag,
