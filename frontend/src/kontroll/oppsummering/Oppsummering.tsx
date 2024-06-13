@@ -9,8 +9,9 @@ import {
   Paragraph,
   Tag,
 } from '@digdir/designsystemet-react';
-import { Utval } from '@loeysingar/api/types';
+import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
+import { Verksemd } from '@verksemder/api/types';
 import { useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
@@ -20,8 +21,13 @@ import classes from './oppsummering.module.css';
 import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
 
 export function Oppsummering() {
-  const { kontroll, verksemdLoesyingList } =
-    useLoaderData() as OppsummeringLoadingType;
+  const { kontroll, verksemdList } = useLoaderData() as OppsummeringLoadingType;
+
+  const verksemdLoesyingList = summarizeLoeysingar(
+    kontroll?.utval?.loeysingar ?? [],
+    verksemdList
+  );
+
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -29,6 +35,32 @@ export function Oppsummering() {
   const totalPages = Math.ceil(
     (verksemdLoesyingList.length ?? 0) / elementsPerPage
   );
+
+  function summarizeLoeysingar(
+    loeysingar: Loeysing[],
+    verksemdar: Verksemd[]
+  ): VerksemdLoeysing[] {
+    const verksemdIdName = new Map<number, string>();
+    verksemdar.forEach((verksemd) =>
+      verksemdIdName.set(verksemd.id, verksemd.namn)
+    );
+
+    const countMap: Record<string, number> = {};
+
+    loeysingar.forEach((loeysing) => {
+      const namn = isDefined(loeysing.verksemdId)
+        ? verksemdIdName.get(loeysing.verksemdId) ?? loeysing.orgnummer
+        : loeysing.orgnummer;
+      if (namn) {
+        countMap[namn] = (countMap[namn] || 0) + 1;
+      }
+    });
+
+    return Object.entries(countMap).map(([namn, loeysingCount]) => ({
+      namn,
+      loeysingCount,
+    }));
+  }
 
   function listeElement(oppsummeringsItem: VerksemdLoeysing) {
     const mobilapper: number = 0;

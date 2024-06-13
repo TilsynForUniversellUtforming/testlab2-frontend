@@ -1,3 +1,5 @@
+import { Verksemd } from '@verksemder/api/types';
+
 import { Kontroll } from '../types';
 
 export type VerksemdLoeysing = {
@@ -7,5 +9,5 @@ export type VerksemdLoeysing = {
 
 export type OppsummeringLoadingType = {
   kontroll: Kontroll;
-  verksemdLoesyingList: VerksemdLoeysing[];
+  verksemdList: Verksemd[];
 };
