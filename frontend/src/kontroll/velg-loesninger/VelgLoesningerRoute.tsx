@@ -2,7 +2,11 @@ import { Utval } from '@loeysingar/api/types';
 import { fetchUtvalList } from '@loeysingar/api/utval-api';
 import { redirect, RouteObject } from 'react-router-dom';
 
-import { fetchKontroll, updateKontrollUtval } from '../kontroll-api';
+import {
+  fetchKontroll,
+  getTestStatus,
+  updateKontrollUtval,
+} from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';
 import { Kontroll, steps } from '../types';
 import VelgLoesninger from './VelgLoesninger';
@@ -16,17 +20,27 @@ export const VelgLoesningerRoute: RouteObject = {
     if (isNaN(kontrollId)) {
       throw new Error('Id-en i URL-en er ikke et tall');
     }
-    const response = await fetchKontroll(kontrollId);
-    if (!response.ok) {
-      if (response.status === 404) {
+    const kontrollResponse = await fetchKontroll(kontrollId);
+    const testStatusResponse = await getTestStatus(kontrollId);
+
+    if (!kontrollResponse.ok) {
+      if (kontrollResponse.status === 404) {
         throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
       } else {
         throw new Error('Klarte ikke å hente kontrollen.');
       }
     }
 
+    if (!testStatusResponse.ok) {
+      throw new Error('Klarte ikke å hente teststatus for kontrollen.');
+    }
+
     const utval = await fetchUtvalList();
-    return { kontroll: await response.json(), utval };
+    return {
+      kontroll: await kontrollResponse.json(),
+      utval,
+      testStatus: await testStatusResponse.json(),
+    };
   },
   action: async ({ request }) => {
     const { kontroll, utval, neste } = (await request.json()) as {

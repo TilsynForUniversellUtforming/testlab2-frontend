@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.kontroll
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestStatus
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
 import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
@@ -11,7 +12,14 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 
 typealias Orgnummer = String
@@ -163,6 +171,17 @@ class KontrollResource(
                     }
               }
             })
+  }
+
+  @GetMapping("/test-status/{kontrollId}")
+  fun getTestStatus(
+      @PathVariable kontrollId: Int,
+  ): ResponseEntity<TestStatus> {
+    val responseEntity =
+        restTemplate.getForEntity(
+            testingApiProperties.url + "/kontroller/test-status/$kontrollId",
+            TestStatus::class.java)
+    return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {

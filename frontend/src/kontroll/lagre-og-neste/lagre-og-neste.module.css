@@ -5,6 +5,10 @@
   align-items: center;
 }
 
+.lagreOgNesteAlert {
+  width: fit-content;
+}
+
 .lagret {
   display: flex;
   color: var(--fds-semantic-surface-success-default);

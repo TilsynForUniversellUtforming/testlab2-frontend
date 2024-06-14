@@ -1,4 +1,10 @@
-import { Button, Spinner } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+  Spinner,
+} from '@digdir/designsystemet-react';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import React, { useEffect } from 'react';
 
@@ -19,6 +25,7 @@ type Props = {
   sistLagret: Date | undefined;
   onClickLagreKontroll: () => void;
   onClickNeste: () => void;
+  testStarta: boolean;
   submitOnSave?: boolean;
   feilet?: boolean;
 };
@@ -27,6 +34,7 @@ export default function LagreOgNeste({
   sistLagret,
   onClickLagreKontroll,
   onClickNeste,
+  testStarta,
   submitOnSave = false,
   feilet = false,
 }: Props) {
@@ -68,31 +76,47 @@ export default function LagreOgNeste({
   };
 
   return (
-    <div className={classes.lagreOgNeste}>
-      <Button
-        variant="secondary"
-        onClick={handleSave}
-        type={submitOnSave ? 'submit' : 'button'}
-        aria-disabled={isSaving(internalSaveState)}
-      >
-        Lagre til seinare
-      </Button>
-      <Button
-        variant="primary"
-        onClick={handleSaveNeste}
-        aria-disabled={isSaving(internalSaveState)}
-        type={submitOnSave ? 'submit' : 'button'}
-      >
-        Lagre og gå til neste
-      </Button>
-      {isSaving(internalSaveState) && (
-        <Spinner title={'Lagrer...'} size="small" />
+    <>
+      {testStarta && (
+        <Alert severity="warning" className={classes.lagreOgNesteAlert}>
+          <Heading level={4} size="xs" spacing>
+            Test starta
+          </Heading>
+          <Paragraph>
+            Du kan ikkje endra på kontrollen, det er starta ein test for dette
+            testgrunnlaget
+          </Paragraph>
+        </Alert>
       )}
-      {internalSaveState.t === 'saved' && (
-        <span className={classes.lagret}>
-          Lagret <CheckmarkIcon fontSize="1.5rem" />
-        </span>
-      )}
-    </div>
+
+      <div className={classes.lagreOgNeste}>
+        <Button
+          variant="secondary"
+          onClick={handleSave}
+          type={submitOnSave ? 'submit' : 'button'}
+          aria-disabled={isSaving(internalSaveState) || testStarta}
+          disabled={testStarta}
+        >
+          Lagre til seinare
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSaveNeste}
+          aria-disabled={isSaving(internalSaveState) || testStarta}
+          type={submitOnSave ? 'submit' : 'button'}
+          disabled={testStarta}
+        >
+          Lagre og gå til neste
+        </Button>
+        {isSaving(internalSaveState) && (
+          <Spinner title={'Lagrer...'} size="small" />
+        )}
+        {internalSaveState.t === 'saved' && (
+          <span className={classes.lagret}>
+            Lagret <CheckmarkIcon fontSize="1.5rem" />
+          </span>
+        )}
+      </div>
+    </>
   );
 }

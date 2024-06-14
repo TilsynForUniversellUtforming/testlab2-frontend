@@ -2,7 +2,11 @@ import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { redirect, RouteObject } from 'react-router-dom';
 
-import { fetchKontroll, updateKontrollTestreglar } from '../kontroll-api';
+import {
+  fetchKontroll,
+  getTestStatus,
+  updateKontrollTestreglar,
+} from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';
 import { steps, UpdateKontrollTestregel } from '../types';
 import { VelgTestreglarLoader } from './types';
@@ -14,9 +18,11 @@ export const VelgTestreglarRoute: RouteObject = {
   handle: { name: steps.testregel.name },
   loader: async ({ params }): Promise<VelgTestreglarLoader> => {
     const kontrollId = getKontrollIdFromParams(params.kontrollId);
-    const kontroll = await fetchKontroll(kontrollId);
-    if (!kontroll.ok) {
-      if (kontroll.status === 404) {
+    const kontrollResponse = await fetchKontroll(kontrollId);
+    const testStatusResponse = await getTestStatus(kontrollId);
+
+    if (!kontrollResponse.ok) {
+      if (kontrollResponse.status === 404) {
         throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
       } else {
         throw new Error('Klarte ikke å hente kontrollen.');
@@ -36,9 +42,10 @@ export const VelgTestreglarRoute: RouteObject = {
     }
 
     return {
-      kontroll: await kontroll.json(),
+      kontroll: await kontrollResponse.json(),
       testregelList: testregelList.value,
       regelsettList: regelsett.value,
+      testStatus: await testStatusResponse.json(),
     };
   },
   action: async ({ request }) => {

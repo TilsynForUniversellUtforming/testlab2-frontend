@@ -84,6 +84,7 @@ const AutomatiskSideutval = ({
         sistLagret={sistLagret}
         onClickNeste={onClickNeste}
         onClickLagreKontroll={onClickLagreKontroll}
+        testStarta={false}
         feilet={Object.keys(errors).length > 0}
         submitOnSave
       />
