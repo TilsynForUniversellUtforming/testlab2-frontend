@@ -83,6 +83,15 @@ export const fetchVerksemdList = async (): Promise<Verksemd[]> =>
     responseToJson(response, 'Kunne ikkje hente løysingar')
   );
 
+export const fetchVerksemdMany = async (
+  kontrollVerksemdIds: number[]
+): Promise<Verksemd[]> =>
+  await fetch(`/api/v1/verksemd?idList=${kontrollVerksemdIds.join(',')}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente verksemder')
+  );
+
 export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
   await fetchWrapper('/api/v1/verksemd', {
     method: 'PUT',
