@@ -5,7 +5,7 @@ export type Loeysing = {
   namn: string;
   url: string;
   orgnummer: string;
-  verksemdId: number;
+  verksemdId?: number;
 };
 
 export type LoeysingInit = {

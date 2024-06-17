@@ -5,9 +5,16 @@ import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
 
 @RestController
 @RequestMapping("api/v1/verksemd")
@@ -42,8 +49,14 @@ class VerksemdResource(
   }
 
   @GetMapping
-  fun getVerksemder(): List<Verksemd> {
-    return restTemplate.getList(verksemdUrl)
+  fun getVerksemder(
+      @RequestParam("idList", required = false) idList: List<Int>? = null
+  ): List<Verksemd> {
+    val verksemdList = restTemplate.getList<Verksemd>(verksemdUrl)
+    if (idList != null) {
+      return verksemdList.filter { v -> idList.contains(v.id) }
+    }
+    return verksemdList
   }
 
   @GetMapping("/{id}")
