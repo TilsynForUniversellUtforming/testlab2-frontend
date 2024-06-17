@@ -1,6 +1,7 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 
+import { Krav } from '../../krav/types';
 import {
   InnhaldstypeTesting,
   Tema,
@@ -90,3 +91,9 @@ export const deleteTestregelList = async (
   }).then((response) =>
     responseToJson(response, 'Kunne ikke slette testregel')
   );
+
+export const getKrav = async (idKrav: number): Promise<Krav> => {
+  return fetch(`/api/v1/testreglar/krav/${idKrav}`, {}).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente krav')
+  );
+};

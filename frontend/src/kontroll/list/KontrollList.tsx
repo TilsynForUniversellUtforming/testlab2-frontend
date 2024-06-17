@@ -1,4 +1,5 @@
 import { search } from '@common/util/arrayUtils';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import {
   Button,
   Heading,
@@ -10,23 +11,6 @@ import { Link, useLoaderData } from 'react-router-dom';
 
 import { KontrollListItem, KontrollType, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';
-
-function viewFilter(filter: KontrollType) {
-  switch (filter) {
-    case 'tilsyn':
-      return 'Tilsyn';
-    case 'inngaaende-kontroll':
-      return 'Inngående kontroll';
-    case 'uttalesak':
-      return 'Uttale';
-    case 'forenkla-kontroll':
-      return 'Forenkla kontroll';
-    case 'statusmaaling':
-      return 'Statusmåling';
-    case 'anna':
-      return 'Anna';
-  }
-}
 
 const KontrollList = () => {
   const filters: KontrollType[] = [
@@ -64,7 +48,7 @@ const KontrollList = () => {
       <div className={classes.filter}>
         {filters.map((s) => (
           <label key={s}>
-            {viewFilter(s)}
+            {sanitizeEnumLabel(s)}
             <input
               id={`filter-${s}`}
               type="radio"

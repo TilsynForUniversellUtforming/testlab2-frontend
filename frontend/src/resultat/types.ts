@@ -1,17 +1,47 @@
+import { TesterResult } from '@maaling/api/types';
+
+import { KontrollType } from '../kontroll/types';
+import { Krav } from '../krav/types';
+
 export type Resultat = {
   id: number;
   namn: string;
-  type: string;
+  type: KontrollType;
   testar: string;
   dato: string;
   loeysingar: LoeysingResultat[];
 };
 
 export type LoeysingResultat = {
-  id: number;
-  namnLoeysing: string;
+  loeysingId: number;
+  loeysingNamn: string;
+  verksemdNamn: string;
   score: number;
   testType: string;
   progress: number;
   testar: string[];
 };
+
+export type ResultatOversiktLoeysing = {
+  loeysingId: number;
+  loeysingNamn: string;
+  typeKontroll: KontrollType;
+  kontrollNamn: string;
+  testar: string[];
+  score: number;
+  kravId: number;
+  talTestaElement: number;
+  talElementBrot: number;
+  talElementSamsvar: number;
+};
+
+export type ViolationsData = {
+  detaljerResultat: TesterResult[];
+  kontrollData: ResultatOversiktLoeysing[];
+  krav: Krav;
+};
+
+export enum TypeKontroll {
+  InngaaendeKontroll = 'InngaaendeKontroll',
+  ForenklaKontroll = 'ForenklaKontroll',
+}
