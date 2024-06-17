@@ -68,6 +68,27 @@ function createSideutval(): Sideutval {
   };
 }
 
+export function createResultatManuellKontrollForLoeysing(
+  testgrunnlag: Testgrunnlag,
+  loeysingId: number,
+  status: ResultatStatus,
+  elementResultat?: ElementResultat
+): ResultatManuellKontroll[] {
+  return [
+    ...Array(
+      testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId)
+        .length * testgrunnlag.testreglar.length
+    ),
+  ].map(() =>
+    createResultatManuellKontroll(
+      testgrunnlag,
+      loeysingId,
+      status,
+      elementResultat
+    )
+  );
+}
+
 export function createResultatManuellKontroll(
   testgrunnlag: Testgrunnlag,
   loeysingId: number,
