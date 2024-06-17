@@ -1,7 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
 import java.net.URI
-import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
@@ -65,28 +64,14 @@ class ResultatResource(
   @GetMapping("list", produces = [MediaType.APPLICATION_JSON_VALUE])
   fun getListTest(): ResponseEntity<List<Resultat>> {
     val resultat = restTemplate.getList<Resultat>("$testresultatUrl/list")
-    val resultatListElement =
-        resultat.map { kontroll ->
-          kontroll.copy(
-              loeysingar =
-                  kontroll.loeysingar.map { loeysing ->
-                    loeysing.copy(score = loeysing.score.times(100).roundToInt().toDouble())
-                  })
-        }
 
-    return ResponseEntity.ok(resultatListElement)
+    return ResponseEntity.ok(resultat)
   }
 
   @GetMapping("kontroll/{idKontroll}")
   fun getResultatKontroll(@PathVariable idKontroll: Int): ResponseEntity<List<Resultat>> {
     val resultatListElement =
-        restTemplate.getList<Resultat>("$testresultatUrl/kontroll/$idKontroll").map { kontroll ->
-          kontroll.copy(
-              loeysingar =
-                  kontroll.loeysingar.map { loeysing ->
-                    loeysing.copy(score = loeysing.score.times(100).roundToInt().toDouble())
-                  })
-        }
+        restTemplate.getList<Resultat>("$testresultatUrl/kontroll/$idKontroll")
     return ResponseEntity.ok(resultatListElement)
   }
 
