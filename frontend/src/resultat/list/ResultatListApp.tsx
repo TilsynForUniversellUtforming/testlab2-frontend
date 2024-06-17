@@ -104,20 +104,27 @@ const ResultatListApp = () => {
     },
     {
       accessorKey: 'testar',
-      header: 'testar',
+      header: 'Testar',
+      enableGlobalFilter: false,
+      enableColumnFilter: false,
+    },
+
+    {
+      accessorKey: 'talTestaElement',
+      header: 'Tal testa element',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
 
     {
       accessorKey: 'talElementSamsvar',
-      header: 'talElementSamsvar',
+      header: 'Tal samsvar',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
     {
       accessorKey: 'talElementBrot',
-      header: 'talElementBrot',
+      header: 'Tal brot',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
@@ -134,6 +141,7 @@ const ResultatListApp = () => {
 
   const visibilityState = (visDetaljer: boolean): VisibilityState => {
     return {
+      talTestaElement: visDetaljer,
       talElementSamsvar: visDetaljer,
       talElementBrot: visDetaljer,
       id: false,

@@ -103,7 +103,7 @@ export const getResultColumns = (): Array<
   },
   {
     accessorKey: 'talTestaElement',
-    header: 'talElementSamsvar',
+    header: 'talTestaElement',
     enableGlobalFilter: false,
     enableColumnFilter: false,
   },
