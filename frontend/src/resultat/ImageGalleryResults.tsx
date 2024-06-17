@@ -1,28 +1,14 @@
-import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
-import TestlabDivider from '@common/divider/TestlabDivider';
-import { ButtonColor, ButtonVariant } from '@common/types';
+import { ButtonVariant } from '@common/types';
 import { formatDateString } from '@common/util/stringutils';
-import {
-  Button,
-  Heading,
-  Modal,
-  Paragraph,
-} from '@digdir/designsystemet-react';
-import { XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Modal, Paragraph } from '@digdir/designsystemet-react';
 import { Bilde } from '@test/api/types';
 import { useRef, useState } from 'react';
 
 interface Props {
-  onDeleteBilde?: (bildeId: number) => void;
   bilder: Bilde[];
-  heading?: string;
 }
 
-const ImageGallery = ({
-  onDeleteBilde,
-  bilder,
-  heading = 'Bilder til resultat',
-}: Props) => {
+const ImageGalleryResults = ({ bilder }: Props) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [activeBilde, setActiveBilde] = useState<Bilde | undefined>();
 
@@ -37,12 +23,6 @@ const ImageGallery = ({
 
   return (
     <>
-      <TestlabDivider />
-      {heading && (
-        <Heading size="small" level={5} spacing>
-          Bilder til resultat
-        </Heading>
-      )}
       <div className="image-gallery">
         {bilder.map((bilde, index) => (
           <div className="image-gallery-item" key={bilde.thumbnailURI}>
@@ -56,30 +36,12 @@ const ImageGallery = ({
             >
               <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
             </Button>
-            {heading && (
-              <div className="image-gallery-item__delete">
-                <ConfirmModalButton
-                  title="Slett bilde"
-                  icon
-                  onConfirm={() =>
-                    onDeleteBilde ? onDeleteBilde(bilde.id) : undefined
-                  }
-                  message="Vil du slette bildet, dette kan ikkje angrast?"
-                  buttonIcon={<XMarkIcon />}
-                  color={ButtonColor.Secondary}
-                />
-              </div>
-            )}
           </div>
         ))}
         <Modal
           ref={modalRef}
           onInteractOutside={() => modalRef.current?.close()}
           onClose={() => setActiveBilde(undefined)}
-          style={{
-            maxWidth: '1200px',
-            width: 'fit-content',
-          }}
         >
           <Modal.Header>Resultat</Modal.Header>
           <Modal.Content>
@@ -94,4 +56,4 @@ const ImageGallery = ({
   );
 };
 
-export default ImageGallery;
+export default ImageGalleryResults;

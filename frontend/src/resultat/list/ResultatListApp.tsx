@@ -1,16 +1,24 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
+import { scoreToPercentage } from '@common/table/util';
 import { TestlabSeverity } from '@common/types';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
-import ResultTable from '@resultat/list/ResultTable';
+import { RESULTAT_KONTROLL } from '@resultat/ResultatRoutes';
+import ResultatTable from '@resultat/ResultatTable';
 import { Resultat } from '@resultat/types';
-import { ColumnDef, FilterFn, Row } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  FilterFn,
+  Row,
+  VisibilityState,
+} from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
-const ResultListApp = () => {
+const ResultatListApp = () => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
-  useNavigate();
+  const navigate = useNavigate();
 
   const getSeverity = (percentage: number): TestlabSeverity => {
     if (percentage < 60) return 'danger';
@@ -63,7 +71,7 @@ const ResultListApp = () => {
     },
 
     {
-      accessorKey: 'namnLoeysing',
+      accessorKey: 'loeysingNamn',
       header: 'Løysing',
       enableColumnFilter: false,
       enableGlobalFilter: false,
@@ -76,7 +84,7 @@ const ResultListApp = () => {
       cell: ({ row }) => (
         <LoadingBar
           percentage={row.getValue('progresjon')}
-          ariaLabel={`${row.getValue('namnLoeysing')} har resultat på ${row.getValue('progresjon')}`}
+          ariaLabel={`${row.getValue('loeysingNamn')} har resultat på ${row.getValue('progresjon')}`}
         />
       ),
     },
@@ -86,8 +94,11 @@ const ResultListApp = () => {
       enableGlobalFilter: false,
       enableColumnFilter: false,
       cell: ({ row }) => (
-        <Tag size="small" color={getSeverity(row.getValue('score'))}>
-          {row.getValue('score')}
+        <Tag
+          size="small"
+          color={getSeverity(scoreToPercentage(row.getValue('score')))}
+        >
+          {scoreToPercentage(row.getValue('score'))}
         </Tag>
       ),
     },
@@ -111,10 +122,37 @@ const ResultListApp = () => {
       enableColumnFilter: false,
     },
   ];
+  // eslint-disable-next-line
+  const onClickRow = <T extends object>(row?: Row<T>) => {
+    const kontrollId = row?.getValue('id');
+    const path = getFullPath(RESULTAT_KONTROLL, {
+      pathParam: idPath,
+      id: String(kontrollId),
+    });
+    navigate(path);
+  };
+
+  const visibilityState = (visDetaljer: boolean): VisibilityState => {
+    return {
+      talElementSamsvar: visDetaljer,
+      talElementBrot: visDetaljer,
+      id: false,
+      dato: false,
+      type: true,
+    };
+  };
+
   return (
     <div className="sak-list">
-      <ResultTable data={resultat} defaultColumns={columns} />
+      <ResultatTable
+        data={resultat}
+        defaultColumns={columns}
+        onClickRow={onClickRow}
+        visibilityState={visibilityState}
+        topLevelList={true}
+        hasFilter={true}
+      />
     </div>
   );
 };
-export default ResultListApp;
+export default ResultatListApp;

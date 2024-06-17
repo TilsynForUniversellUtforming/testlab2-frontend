@@ -1,16 +1,18 @@
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import ResultListApp from '@resultat/list/ResultListApp';
-import ViolationsList from '@resultat/ViolationsList';
+import ResultatKontrollOversikt from '@resultat/kontroll_detaljer/ResultatKontrollOversikt';
+import ViolationsList from '@resultat/kontroll_loeysing/ViolationsList';
+import ResultatListApp from '@resultat/list/ResultatListApp';
 import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import resultatImg from '../assets/resultat.svg';
+import TestResultatApp from './kontroll_loeysing/TestResultatApp';
 import {
-  fetchDetaljertResultat,
+  fetchKontrollLoeysing,
+  fetchKontrollResultat,
   fetchResultList,
-  fetchTestresultatAggregert,
+  fetchViolationsData,
 } from './resultat-api';
-import TestResultatApp from './TestResultatApp';
 
 export const RESULTAT_ROOT: AppRoute = {
   navn: 'Resultat',
@@ -18,16 +20,22 @@ export const RESULTAT_ROOT: AppRoute = {
   imgSrc: resultatImg,
 };
 
-export const TESTRESULTAT_TESTGRUNNLAG: AppRoute = {
-  navn: 'Resultat testgrunnlag',
+export const RESULTAT_KONTROLL: AppRoute = {
+  navn: 'Resultat kontroll',
   path: idPath,
   parentRoute: RESULTAT_ROOT,
 };
 
+export const TESTRESULTAT_LOEYSING: AppRoute = {
+  navn: 'Resultat løysing',
+  path: ':loeysingId',
+  parentRoute: RESULTAT_KONTROLL,
+};
+
 export const VIOLATION_LIST: AppRoute = {
   navn: 'Resultat testregel',
-  path: ':testregelId/:loeysingId',
-  parentRoute: TESTRESULTAT_TESTGRUNNLAG,
+  path: ':kravId',
+  parentRoute: TESTRESULTAT_LOEYSING,
 };
 
 export const ResultRoutes: RouteObject = {
@@ -38,29 +46,45 @@ export const ResultRoutes: RouteObject = {
     {
       index: true,
       loader: fetchResultList,
-      element: <ResultListApp />,
+      element: <ResultatListApp />,
     },
     {
-      path: TESTRESULTAT_TESTGRUNNLAG.path,
+      path: RESULTAT_KONTROLL.path,
       element: <Outlet />,
-      handle: { name: TESTRESULTAT_TESTGRUNNLAG.navn },
+      handle: { name: RESULTAT_KONTROLL.navn },
       children: [
         {
           index: true,
           loader: ({ params }) =>
-            fetchTestresultatAggregert(parseInt(params.id as string)),
-          element: <TestResultatApp />,
+            fetchKontrollResultat(parseInt(params.id as string)),
+          element: <ResultatKontrollOversikt />,
         },
         {
-          path: VIOLATION_LIST.path,
-          loader: ({ params }) =>
-            fetchDetaljertResultat(
-              parseInt(params.id as string),
-              params.testregelId as string,
-              parseInt(params.loeysingId as string)
-            ),
-          element: <ViolationsList />,
-          handle: { name: VIOLATION_LIST.navn },
+          path: TESTRESULTAT_LOEYSING.path,
+          element: <Outlet />,
+          handle: { name: TESTRESULTAT_LOEYSING.navn },
+          children: [
+            {
+              index: true,
+              loader: ({ params }) =>
+                fetchKontrollLoeysing(
+                  parseInt(params.id as string),
+                  parseInt(params.loeysingId as string)
+                ),
+              element: <TestResultatApp />,
+            },
+            {
+              path: VIOLATION_LIST.path,
+              loader: ({ params }) =>
+                fetchViolationsData(
+                  parseInt(params.id as string),
+                  parseInt(params.loeysingId as string),
+                  parseInt(params.kravId as string)
+                ),
+              element: <ViolationsList />,
+              handle: { name: VIOLATION_LIST.navn },
+            },
+          ],
         },
       ],
     },
