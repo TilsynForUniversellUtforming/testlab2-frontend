@@ -1,17 +1,19 @@
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { Button, DropdownMenu, Heading } from '@digdir/designsystemet-react';
-import { ArrowDownIcon } from '@navikt/aksel-icons';
+import { ArrowDownIcon, CaretDownFillIcon } from '@navikt/aksel-icons';
 import {
   elementOmtaleSide,
   ElementResultat,
   findElementOmtale,
   Svar,
 } from '@test/api/types';
+import SistLagra from '@test/test-overview/loeysing-test/SistLagra';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
 import TestFormStepWrapper from '@test/testregel-form/TestFormStepWrapper';
 import {
   resultatFromSkjemaMedSvar,
   SkjemaMedSvar,
+  TestresultatDetaljer,
 } from '@test/testregel-form/types';
 import { Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
@@ -27,9 +29,10 @@ type Props = {
     resultatId: number,
     kommentar: string | undefined
   ) => void;
-  kommentarMap: Map<number, string>;
+  detaljerMap: Map<number, TestresultatDetaljer>;
   slettTestelement: (resultatId: number) => void;
   showHelpText: boolean;
+  isLoading: boolean;
 };
 
 export function TestFormAccordion({
@@ -37,9 +40,10 @@ export function TestFormAccordion({
   skjemaerMedSvar,
   onAnswer,
   onChangeKommentar,
-  kommentarMap,
+  detaljerMap,
   slettTestelement,
   showHelpText,
+  isLoading,
 }: Readonly<Props>) {
   function initState() {
     const lastElement = skjemaerMedSvar[skjemaerMedSvar.length - 1];
@@ -67,7 +71,7 @@ export function TestFormAccordion({
     index: number,
     elementOmtale: string | undefined
   ) {
-    const kommentar = kommentarMap.get(resultatId) || '';
+    const detlajer = detaljerMap.get(resultatId);
     const isElementSide = elementOmtale === elementOmtaleSide;
 
     return (
@@ -87,7 +91,7 @@ export function TestFormAccordion({
           <TestFormResultat
             resultat={skjemaMedSvar.skjema.resultat}
             onChangeKommentar={onChangeKommentar}
-            kommentar={kommentar}
+            kommentar={detlajer?.kommentar ?? ''}
             resultatId={resultatId}
             isElementSide={isElementSide}
           />
@@ -105,6 +109,7 @@ export function TestFormAccordion({
       <DropdownMenu placement="bottom-start" size="small">
         <DropdownMenu.Trigger size="small" className={classes.copyButton}>
           Kopier svar fra tidligere test
+          <CaretDownFillIcon />
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
           {skjemaerMedSvar.map((kilde, i) => {
@@ -124,19 +129,6 @@ export function TestFormAccordion({
           })}
         </DropdownMenu.Content>
       </DropdownMenu>
-    );
-  }
-
-  function removeElement(resultatId: number) {
-    return (
-      <Button
-        className={classes.removeButton}
-        variant="secondary"
-        size="small"
-        onClick={() => slettTestelement(resultatId)}
-      >
-        Slett dette testelementet
-      </Button>
     );
   }
 
@@ -190,8 +182,17 @@ export function TestFormAccordion({
     const skjemaMedSvar = skjemaerMedSvar[0];
     const resultatId = skjemaMedSvar.resultatId;
     const elementOmtale = findElementOmtale(testregel, skjemaMedSvar.svar);
+    const testresultatDetails = detaljerMap.get(resultatId);
 
-    return renderForm(resultatId, skjemaMedSvar, 0, elementOmtale);
+    return (
+      <>
+        {renderForm(resultatId, skjemaMedSvar, 0, elementOmtale)}
+        <SistLagra
+          sistLagra={testresultatDetails?.sistLagra ?? ''}
+          isLoading={isLoading}
+        />
+      </>
+    );
   } else {
     return (
       <div className={classes.skjemaer}>
@@ -201,14 +202,15 @@ export function TestFormAccordion({
             skjemaMedSvar.svar
           );
           const resultatId = skjemaMedSvar.resultatId;
-          const kommentar = kommentarMap.get(resultatId);
+          const testresultatDetails = detaljerMap.get(resultatId);
+
           return (
             <div key={skjemaMedSvar.resultatId}>
               {accordionButton(
                 skjemaMedSvar,
                 resultatId,
                 elementOmtale,
-                kommentar,
+                testresultatDetails?.kommentar,
                 index
               )}
               {showForm[resultatId] && (
@@ -223,7 +225,20 @@ export function TestFormAccordion({
 
                   {index !== 0 && dropdownMenu(index)}
                   {renderForm(resultatId, skjemaMedSvar, index, elementOmtale)}
-                  {removeElement(resultatId)}
+                  <div className={classes.accordionFooter}>
+                    <Button
+                      className={classes.removeButton}
+                      variant="secondary"
+                      size="small"
+                      onClick={() => slettTestelement(resultatId)}
+                    >
+                      Slett dette testelementet
+                    </Button>
+                    <SistLagra
+                      sistLagra={testresultatDetails?.sistLagra ?? ''}
+                      isLoading={isLoading}
+                    />
+                  </div>
                 </div>
               )}
             </div>

@@ -89,6 +89,13 @@
         }
       }
 
+      &-form-button-wrapper {
+        width: 100%;
+        max-width: 48rem;
+        display: flex;
+        justify-content: space-between;
+      }
+
       &-form-buttons {
         display: flex;
         flex-direction: column;
@@ -107,7 +114,7 @@
 
   &-wrapper {
     min-width: 400px;
-    width: 100vw;
+    width: calc(100vw - 20px);
     margin-bottom: auto;
     background-color: var(--fds-semantic-surface-action-subtle);
     padding: 2rem 0;
@@ -120,7 +127,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding: 2rem 0;
+    padding: 2rem;
     margin: 0 auto;
 
     .test-param-selection {
@@ -151,6 +158,13 @@
       padding-bottom: 1rem;
       max-width: 16rem;
     }
+  }
+}
+
+.sist-lagra {
+  align-self: flex-end;
+  @media (max-width: 828px) {
+    align-self: flex-start;
   }
 }
 
@@ -194,7 +208,6 @@
     display: flex;
     flex-direction: column;
     gap: 3rem;
-    padding-bottom: 2rem;
 
     &-result {
       display: flex;

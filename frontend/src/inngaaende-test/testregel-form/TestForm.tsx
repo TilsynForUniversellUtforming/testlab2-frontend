@@ -7,9 +7,10 @@ import {
 } from '@test/api/types';
 import { TestFormAccordion } from '@test/testregel-form/TestFormAccordion';
 import {
-  initKommentarMap,
   initSkjemaMedSvar,
   SkjemaMedSvar,
+  TestresultatDetaljer,
+  toTestresultatDetaljerMap,
 } from '@test/testregel-form/types';
 import { TestResultUpdate } from '@test/types';
 import { Steg } from '@test/util/testregel-interface/Steg';
@@ -27,6 +28,7 @@ interface Props {
   showHelpText: boolean;
   onResultat: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (resultatId: number) => void;
+  isLoading: boolean;
 }
 
 function isEqual(a: Svar, b: Svar) {
@@ -39,13 +41,14 @@ const TestForm = ({
   showHelpText,
   onResultat,
   slettTestelement,
+  isLoading,
 }: Props) => {
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
   );
-  const [kommentarMap, setKommentarMap] = useState<Map<number, string>>(
-    initKommentarMap(resultater)
-  );
+  const [detaljerMap, setDetaljerMap] = useState<
+    Map<number, TestresultatDetaljer>
+  >(toTestresultatDetaljerMap(resultater));
 
   const testregelSchema = JSON.parse(testregel.testregelSchema);
 
@@ -101,7 +104,7 @@ const TestForm = ({
 
   useEffect(() => {
     setSkjemaerMedSvar(initSkjemaMedSvar(resultater, testregel));
-    setKommentarMap(initKommentarMap(resultater));
+    setDetaljerMap(toTestresultatDetaljerMap(resultater));
   }, [testregel, resultater]);
 
   const onResultatUpdate = (
@@ -169,7 +172,8 @@ const TestForm = ({
         slettTestelement={slettTestelement}
         showHelpText={showHelpText}
         onChangeKommentar={onKommentar}
-        kommentarMap={kommentarMap}
+        detaljerMap={detaljerMap}
+        isLoading={isLoading}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.fakes
 
 import java.net.URI
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.testing.CreateTestResultat
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
 import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
@@ -24,7 +25,8 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
             emptyList(),
             null,
             ResultatManuellKontroll.Status.IkkjePaabegynt,
-            null)
+            null,
+            sistLagra = Instant.now())
     database[id] = testResultat
     return Result.success(URI.create("http://localhost:8080/testresultat/$id"))
   }

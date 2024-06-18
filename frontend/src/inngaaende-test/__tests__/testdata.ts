@@ -117,6 +117,7 @@ export function createResultatManuellKontroll(
         loeysingId: loeysingId,
         testregelId: testgrunnlag.testreglar[0].id,
         sideutvalId: testgrunnlag.sideutval[0].id,
+        sistLagra: faker.date.recent().toISOString(),
       };
     case 'UnderArbeid':
       return {
@@ -130,6 +131,7 @@ export function createResultatManuellKontroll(
         loeysingId: loeysingId,
         testregelId: testgrunnlag.testreglar[0].id,
         sideutvalId: testgrunnlag.sideutval[0].id,
+        sistLagra: faker.date.recent().toISOString(),
       };
     default:
       return {
@@ -150,6 +152,7 @@ export function createResultatManuellKontroll(
         elementUtfall: faker.lorem.word(),
         testVartUtfoert: faker.date.recent().toISOString(),
         kommentar: faker.lorem.words(),
+        sistLagra: faker.date.recent().toISOString(),
       };
   }
 }
