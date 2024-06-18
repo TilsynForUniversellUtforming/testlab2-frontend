@@ -83,8 +83,7 @@ export default function LagreOgNeste({
             Test starta
           </Heading>
           <Paragraph>
-            Du kan ikkje endra på kontrollen, det er starta ein test for dette
-            testgrunnlaget
+            Testing er starta for denne kontrollen, derfor kan han ikkje endrast
           </Paragraph>
         </Alert>
       )}

@@ -4,7 +4,7 @@ import { redirect, RouteObject } from 'react-router-dom';
 
 import {
   fetchKontroll,
-  getTestStatus,
+  fetchTestStatus,
   updateKontrollTestreglar,
 } from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';
@@ -19,7 +19,7 @@ export const VelgTestreglarRoute: RouteObject = {
   loader: async ({ params }): Promise<VelgTestreglarLoader> => {
     const kontrollId = getKontrollIdFromParams(params.kontrollId);
     const kontrollResponse = await fetchKontroll(kontrollId);
-    const testStatusResponse = await getTestStatus(kontrollId);
+    const testStatusResponse = await fetchTestStatus(kontrollId);
 
     if (!kontrollResponse.ok) {
       if (kontrollResponse.status === 404) {

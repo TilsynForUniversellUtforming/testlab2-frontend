@@ -9,7 +9,7 @@ import { redirect, RouteObject } from 'react-router-dom';
 
 import {
   fetchKontroll,
-  getTestStatus,
+  fetchTestStatus,
   listSideutvalType,
   updateKontrollSideutval,
 } from '../kontroll-api';
@@ -25,7 +25,7 @@ export const SideutvalRoute: RouteObject = {
   loader: async ({ params }): Promise<SideutvalLoader> => {
     const kontrollId = getKontrollIdFromParams(params.kontrollId);
     const kontrollResponse = await fetchKontroll(kontrollId);
-    const testStatusResponse = await getTestStatus(kontrollId);
+    const testStatusResponse = await fetchTestStatus(kontrollId);
 
     if (!kontrollResponse.ok) {
       if (kontrollResponse.status === 404) {

@@ -4,7 +4,7 @@ import { redirect, RouteObject } from 'react-router-dom';
 
 import {
   fetchKontroll,
-  getTestStatus,
+  fetchTestStatus,
   updateKontrollUtval,
 } from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';
@@ -21,7 +21,7 @@ export const VelgLoesningerRoute: RouteObject = {
       throw new Error('Id-en i URL-en er ikke et tall');
     }
     const kontrollResponse = await fetchKontroll(kontrollId);
-    const testStatusResponse = await getTestStatus(kontrollId);
+    const testStatusResponse = await fetchTestStatus(kontrollId);
 
     if (!kontrollResponse.ok) {
       if (kontrollResponse.status === 404) {
