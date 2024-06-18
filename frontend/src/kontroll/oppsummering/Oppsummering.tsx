@@ -1,14 +1,6 @@
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Alert,
-  Button,
-  Heading,
-  Ingress,
-  Pagination,
-  Paragraph,
-  Tag,
-} from '@digdir/designsystemet-react';
+import { Alert, Button, Heading, Ingress, Pagination, Paragraph, Tag, } from '@digdir/designsystemet-react';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { Verksemd } from '@verksemder/api/types';
@@ -19,6 +11,7 @@ import kontrollClasses from '../kontroll.module.css';
 import { steps } from '../types';
 import classes from './oppsummering.module.css';
 import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
+import StyringsdataModal from './styringsdata/StyringsdataModal';
 
 export function Oppsummering() {
   const { kontroll, verksemdList } = useLoaderData() as OppsummeringLoadingType;
@@ -78,6 +71,7 @@ export function Oppsummering() {
         <Heading level={3} size="small" className={classes.navn}>
           {oppsummeringsItem.namn}
         </Heading>
+        <div className={classes.listeelementData}>
         <div className={classes.nettstederOgMobilapper}>
           <div className={classes.nettsteder}>
             {chooseIcon(oppsummeringsItem.loeysingCount)}
@@ -88,6 +82,8 @@ export function Oppsummering() {
             {chooseIcon(mobilapper)}
             {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
           </div>
+        </div>
+          <StyringsdataModal styringsdata={oppsummeringsItem.styringsdata}/>
         </div>
       </li>
     );

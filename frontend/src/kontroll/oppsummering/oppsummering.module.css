@@ -43,6 +43,14 @@
   list-style: none;
   padding: 0;
 
+  .listeelement-data {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    padding-right: 2rem;
+  }
+
   .listeelement {
     display: flex;
     align-items: center;
