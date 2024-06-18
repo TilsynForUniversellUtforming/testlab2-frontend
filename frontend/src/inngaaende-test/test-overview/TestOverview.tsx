@@ -35,12 +35,31 @@ export type TestOverviewLoaderData = {
   testgrunnlag: Testgrunnlag[];
 };
 
+export function antallTester(
+  testgrunnlag: Testgrunnlag,
+  loeysingId: number
+): number {
+  const antallTestregler = testgrunnlag.testreglar.length;
+  const antallSideutval = testgrunnlag.sideutval.filter(
+    (su) => su.loeysingId === loeysingId
+  ).length;
+  return antallTestregler * antallSideutval;
+}
+
 export function teststatus(
-  resultater: ResultatManuellKontroll[]
+  resultatliste: ResultatManuellKontroll[],
+  testgrunnlag: Testgrunnlag,
+  loeysingId: number
 ): ManuellTestStatus {
+  const tester = antallTester(testgrunnlag, loeysingId);
+  const resultater = resultatliste.filter((r) => r.loeysingId === loeysingId);
+
   if (resultater.length === 0) {
     return 'ikkje-starta';
-  } else if (resultater.every((r) => r.status === 'Ferdig')) {
+  } else if (
+    resultater.length === tester &&
+    resultater.every((r) => r.status === 'Ferdig')
+  ) {
     return 'ferdig';
   } else {
     return 'under-arbeid';
@@ -64,7 +83,7 @@ export function visRetestKnapp(
     (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
   return (
-    teststatus(resultaterForLoeysing) === 'ferdig' &&
+    teststatus(resultaterForLoeysing, testgrunnlag, loeysingId) === 'ferdig' &&
     resultaterForLoeysing.some((r) => r.elementResultat === 'brot') &&
     last(testgrunnlagForKontroll)?.id === testgrunnlag.id
   );
@@ -164,7 +183,9 @@ const TestOverview = () => {
               )?.namn ?? '';
 
             const status = teststatus(
-              resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id)
+              resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id),
+              etTestgrunnlag,
+              loeysingId
             );
 
             return (
