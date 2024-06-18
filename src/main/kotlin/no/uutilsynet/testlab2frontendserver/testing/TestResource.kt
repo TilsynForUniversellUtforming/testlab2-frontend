@@ -6,16 +6,14 @@ import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MimeTypeUtils
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("api/v1/testing")
@@ -54,16 +52,17 @@ class TestResource(
   @PostMapping
   fun createTestResultat(
       @RequestBody createTestResultat: CreateTestResultat
-  ): ResponseEntity<List<ResultatManuellKontroll>> =
+  ): ResultatManuellKontroll =
       runCatching {
             logger.debug(
                 "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}, testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
-            testresultatAPIClient.createTestResultat(createTestResultat)
-            getResultatManuellKontroll(createTestResultat.testgrunnlagId)
+            val testResultat =
+                testresultatAPIClient.createTestResultat(createTestResultat).getOrThrow()
+            testResultat
           }
           .getOrElse {
             logger.error("Kunne ikkje opprette testresultat", it)
-            throw it
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
           }
 
   @PutMapping
