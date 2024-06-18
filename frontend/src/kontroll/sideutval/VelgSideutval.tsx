@@ -31,8 +31,13 @@ import { sideutvalValidationSchema } from './sideutvalValidationSchema';
 import { FormError, SideutvalForm, SideutvalLoader } from './types';
 
 const VelgSideutval = () => {
-  const { kontroll, sideutvalTypeList, loeysingList, crawlParameters } =
-    useLoaderData() as SideutvalLoader;
+  const {
+    kontroll,
+    sideutvalTypeList,
+    loeysingList,
+    crawlParameters,
+    testStatus,
+  } = useLoaderData() as SideutvalLoader;
   const actionData = useActionData() as { sistLagret: Date };
   const submit = useSubmit();
 
@@ -279,6 +284,7 @@ const VelgSideutval = () => {
                           sistLagret={actionData?.sistLagret}
                           feilet={formErrors.length > 0}
                           onClickNeste={() => setNeste(true)}
+                          testStarta={testStatus === 'Started'}
                           onClickLagreKontroll={() => setNeste(false)}
                           submitOnSave
                         />

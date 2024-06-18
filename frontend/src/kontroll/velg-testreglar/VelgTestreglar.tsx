@@ -24,7 +24,7 @@ import TestregelSelector from './TestregelSelector';
 import { SelectionType, VelgTestreglarLoader } from './types';
 
 const VelgTestreglar = () => {
-  const { kontroll, testregelList, regelsettList } =
+  const { kontroll, testregelList, regelsettList, testStatus } =
     useLoaderData() as VelgTestreglarLoader;
   const submit = useSubmit();
   const actionData = useActionData() as { sistLagret: Date };
@@ -233,6 +233,7 @@ const VelgTestreglar = () => {
           </div>
           {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
           <LagreOgNeste
+            testStarta={testStatus === 'Started'}
             sistLagret={actionData?.sistLagret}
             onClickLagreKontroll={lagreKontroll(false)}
             onClickNeste={lagreKontroll(true)}
