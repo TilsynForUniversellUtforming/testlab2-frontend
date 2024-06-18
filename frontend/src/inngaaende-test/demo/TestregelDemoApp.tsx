@@ -64,6 +64,7 @@ const TestregelDemoApp = () => {
       onResultat={onResultat}
       slettTestelement={slettTestelement}
       showHelpText={true}
+      isLoading={false}
     />
   );
 };
@@ -79,5 +80,6 @@ function createResultat(testregel: Testregel): ResultatManuellKontroll {
     loeysingId: 1,
     testregelId: testregel.id,
     sideutvalId: 1,
+    sistLagra: '2000-01-01',
   };
 }
