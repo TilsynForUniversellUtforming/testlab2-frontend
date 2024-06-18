@@ -63,3 +63,5 @@ export const steps = {
   sideutval: { name: 'Gjennomfør sideutval', relativePath: 'sideutval' },
   oppsummering: { name: 'Oppsummering', relativePath: 'oppsummering' },
 };
+
+export type TestStatus = 'Pending' | 'Started';

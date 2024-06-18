@@ -9,6 +9,10 @@ export function fetchKontroll(kontrollId: number): Promise<Response> {
   return fetch(`/api/v1/kontroller/${kontrollId}`);
 }
 
+export function fetchTestStatus(kontrollId: number): Promise<Response> {
+  return fetch(`/api/v1/kontroller/test-status/${kontrollId}`);
+}
+
 export function editKontroll(kontroll: Kontroll): Promise<Response> {
   return fetchWrapper(`/api/v1/kontroller/${kontroll.id}`, {
     method: 'put',

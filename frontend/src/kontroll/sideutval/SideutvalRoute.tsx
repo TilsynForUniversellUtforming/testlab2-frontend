@@ -9,6 +9,7 @@ import { redirect, RouteObject } from 'react-router-dom';
 
 import {
   fetchKontroll,
+  fetchTestStatus,
   listSideutvalType,
   updateKontrollSideutval,
 } from '../kontroll-api';
@@ -24,6 +25,8 @@ export const SideutvalRoute: RouteObject = {
   loader: async ({ params }): Promise<SideutvalLoader> => {
     const kontrollId = getKontrollIdFromParams(params.kontrollId);
     const kontrollResponse = await fetchKontroll(kontrollId);
+    const testStatusResponse = await fetchTestStatus(kontrollId);
+
     if (!kontrollResponse.ok) {
       if (kontrollResponse.status === 404) {
         throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
@@ -31,6 +34,11 @@ export const SideutvalRoute: RouteObject = {
         throw new Error('Klarte ikke å hente kontrollen.');
       }
     }
+
+    if (!testStatusResponse.ok) {
+      throw new Error('Klarte ikke å hente teststatus for kontrollen.');
+    }
+
     const kontroll: Kontroll = await kontrollResponse.json();
     const utvalId = kontroll?.utval?.id;
 
@@ -64,6 +72,7 @@ export const SideutvalRoute: RouteObject = {
         sideutvalTypeList: sideutvalTypeList.value,
         loeysingList: loeysingList,
         crawlParameters: crawlParameters,
+        testStatus: 'Pending',
       };
     }
 
@@ -72,6 +81,7 @@ export const SideutvalRoute: RouteObject = {
       sideutvalTypeList: sideutvalTypeList.value,
       loeysingList: loeysingList,
       crawlParameters: undefined,
+      testStatus: await testStatusResponse.json(),
     };
   },
   action: async ({ request }) => {
