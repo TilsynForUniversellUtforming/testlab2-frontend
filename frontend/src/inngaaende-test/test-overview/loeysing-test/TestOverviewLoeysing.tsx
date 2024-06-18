@@ -6,6 +6,7 @@ import { createTestresultatAggregert } from '@resultat/resultat-api';
 import {
   createTestResultat,
   deleteTestResultat,
+  getTestResults,
   updateTestResultat,
   updateTestResultatMany,
 } from '@test/api/testing-api';
@@ -184,7 +185,8 @@ const TestOverviewLoeysing = () => {
       testregelId: activeTest.testregel.id,
       sideutvalId: pageType.sideId,
     };
-    const alleResultater = await createTestResultat(nyttTestresultat);
+    await createTestResultat(nyttTestresultat);
+    const alleResultater = await getTestResults(Number(testgrunnlagId));
     setTestResults(alleResultater);
     processData(
       contextKontroll,
@@ -404,11 +406,12 @@ const TestOverviewLoeysing = () => {
         };
 
         try {
-          const createdTestResults = await createTestResultat(testResult);
-          setTestResults(createdTestResults);
+          await createTestResultat(testResult);
+          const results = await getTestResults(testgrunnlagId);
+          setTestResults(results);
           processData(
             contextKontroll,
-            createdTestResults,
+            results,
             loeysingId,
             pageType,
             innhaldstype,
