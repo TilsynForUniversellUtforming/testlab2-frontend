@@ -18,7 +18,7 @@ export const getTestResults = async (
 
 export const createTestResultat = async (
   testResultat: CreateTestResultat
-): Promise<ResultatManuellKontroll[]> => {
+): Promise<ResultatManuellKontroll> => {
   return await fetchWrapper(testingApiBaseUrl, {
     method: 'POST',
     headers: {

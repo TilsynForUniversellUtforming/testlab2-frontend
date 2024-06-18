@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.fakes
 
-import java.net.URI
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.testing.CreateTestResultat
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
@@ -9,7 +8,9 @@ import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
 object FakeTestresultatAPIClient : ITestresultatAPIClient {
   private val database = mutableMapOf<Int, ResultatManuellKontroll>()
 
-  override fun createTestResultat(createTestResultat: CreateTestResultat): Result<URI> {
+  override fun createTestResultat(
+      createTestResultat: CreateTestResultat
+  ): Result<ResultatManuellKontroll> {
     val id = fakeId()
     val testResultat =
         ResultatManuellKontroll(
@@ -28,7 +29,7 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
             null,
             sistLagra = Instant.now())
     database[id] = testResultat
-    return Result.success(URI.create("http://localhost:8080/testresultat/$id"))
+    return Result.success(testResultat)
   }
 
   override fun getResultatForTestgrunnlag(

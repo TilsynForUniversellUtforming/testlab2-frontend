@@ -1,13 +1,13 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
-import java.net.URI
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.testing.TestResource.TestresultatForKontroll
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForObject
 
 interface ITestresultatAPIClient {
-  fun createTestResultat(createTestResultat: CreateTestResultat): Result<URI>
+  fun createTestResultat(createTestResultat: CreateTestResultat): Result<ResultatManuellKontroll>
 
   fun getResultatForTestgrunnlag(testgrunnlagId: Int): Result<List<ResultatManuellKontroll>>
 }
@@ -19,11 +19,14 @@ class TestresultatAPIClient(
 ) : ITestresultatAPIClient {
   private val testresultUrl = "${testingApiProperties.url}/testresultat"
 
-  override fun createTestResultat(createTestResultat: CreateTestResultat): Result<URI> =
-      runCatching {
+  override fun createTestResultat(
+      createTestResultat: CreateTestResultat
+  ): Result<ResultatManuellKontroll> = runCatching {
+    val location =
         restTemplate.postForLocation(testresultUrl, createTestResultat)
             ?: throw IllegalStateException("Vi fikk ikkje location fra $testresultUrl")
-      }
+    restTemplate.getForObject(location)
+  }
 
   override fun getResultatForTestgrunnlag(
       testgrunnlagId: Int
