@@ -26,12 +26,17 @@ export function initSkjemaMedSvar(
   });
 }
 
-export function initKommentarMap(
+export type TestresultatDetaljer = {
+  kommentar: string;
+  sistLagra: string;
+};
+
+export function toTestresultatDetaljerMap(
   resultater: ResultatManuellKontroll[]
-): Map<number, string> {
+): Map<number, TestresultatDetaljer> {
   return resultater.reduce(
-    (entryMap, { id, kommentar }) =>
-      entryMap.set(id, entryMap.get(id) || kommentar),
+    (entryMap, { id, kommentar, sistLagra }) =>
+      entryMap.set(id, entryMap.get(id) || { kommentar, sistLagra }),
     new Map()
   );
 }

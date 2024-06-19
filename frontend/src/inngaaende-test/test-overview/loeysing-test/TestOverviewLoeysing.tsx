@@ -366,6 +366,7 @@ const TestOverviewLoeysing = () => {
                 svar: testResult.svar,
                 status: newStatus,
                 kommentar: testResult.kommentar,
+                sistLagra: testResult.sistLagra,
               }));
 
             doUpdateTestResultStatus(updatedtestResults);
@@ -457,6 +458,7 @@ const TestOverviewLoeysing = () => {
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
           kommentar: kommentar,
+          sistLagra: activeTestResult.sistLagra,
         };
 
         try {
