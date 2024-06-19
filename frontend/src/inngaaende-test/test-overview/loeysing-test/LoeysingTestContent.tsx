@@ -1,4 +1,5 @@
 import AlertModal from '@common/alert/AlertModal';
+import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
@@ -78,6 +79,7 @@ const LoeysingTestContent = ({
   const { loeysingId, testgrunnlagId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
   const alertRef = useRef<HTMLDialogElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const onClickSave = () => {
     clearActiveTestregel();
@@ -105,6 +107,15 @@ const LoeysingTestContent = ({
       alertRef?.current?.showModal();
     }
   }
+
+  const handleUpdateResult = (testresultUpdate: TestResultUpdate) => {
+    setLoading(true);
+    doUpdateTestResult(testresultUpdate);
+  };
+
+  useEffect(() => {
+    setLoading(false);
+  }, [activeTest?.testResultList]);
 
   return (
     <>
@@ -155,20 +166,24 @@ const LoeysingTestContent = ({
                   <TestForm
                     testregel={activeTest.testregel}
                     resultater={activeTest.testResultList}
-                    onResultat={doUpdateTestResult}
+                    onResultat={handleUpdateResult}
                     showHelpText={showHelpText}
                     slettTestelement={(resultatId) =>
                       slettTestelement(activeTest, resultatId)
                     }
+                    isLoading={loading}
                   />
-                  <div className="testregel-form-buttons">
-                    <Button
-                      variant={ButtonVariant.Outline}
-                      onClick={leggTilFlereTestelementer}
-                    >
-                      Legg til flere testelementer
-                    </Button>
-                    <Button onClick={onClickSave}>Lagre og lukk</Button>
+                  <TestlabDivider />
+                  <div className="testregel-form-button-wrapper">
+                    <div className="testregel-form-buttons">
+                      <Button
+                        variant={ButtonVariant.Outline}
+                        onClick={leggTilFlereTestelementer}
+                      >
+                        Legg til flere testelementer
+                      </Button>
+                      <Button onClick={onClickSave}>Lagre og lukk</Button>
+                    </div>
                   </div>
                 </div>
               )}
