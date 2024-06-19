@@ -80,6 +80,6 @@ function createResultat(testregel: Testregel): ResultatManuellKontroll {
     loeysingId: 1,
     testregelId: testregel.id,
     sideutvalId: 1,
-    sistLagra: '2000-01-01',
+    sistLagra: '2024-06-19T10:10:10.100Z',
   };
 }

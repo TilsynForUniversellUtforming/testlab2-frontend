@@ -71,7 +71,7 @@ export function TestFormAccordion({
     index: number,
     elementOmtale: string | undefined
   ) {
-    const detlajer = detaljerMap.get(resultatId);
+    const detaljer = detaljerMap.get(resultatId);
     const isElementSide = elementOmtale === elementOmtaleSide;
 
     return (
@@ -91,7 +91,7 @@ export function TestFormAccordion({
           <TestFormResultat
             resultat={skjemaMedSvar.skjema.resultat}
             onChangeKommentar={onChangeKommentar}
-            kommentar={detlajer?.kommentar ?? ''}
+            kommentar={detaljer?.kommentar ?? ''}
             resultatId={resultatId}
             isElementSide={isElementSide}
           />
