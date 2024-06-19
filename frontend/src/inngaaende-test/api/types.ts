@@ -29,6 +29,7 @@ export type ResultatManuellKontroll = {
   id: number;
   svar: Svar[];
   status: ResultatStatus;
+  sistLagra: string;
 } & CreateTestResultat;
 
 export type ResultatStatus =
