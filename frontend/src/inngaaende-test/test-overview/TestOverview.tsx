@@ -129,11 +129,12 @@ const TestOverview = () => {
     [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
-  function retest(testgrunnlag: Testgrunnlag) {
-    const res = resultater
+  function retest(testgrunnlag: Testgrunnlag, loeysingId: number) {
+    const rs = resultater
       .filter((r) => r.testgrunnlagId === testgrunnlag.id)
+      .filter((r) => r.loeysingId === loeysingId)
       .filter((r) => r.elementResultat === 'brot');
-    if (isEmpty(res)) {
+    if (isEmpty(rs)) {
       console.debug('ingen brot');
     } else {
       const nyttTestgrunnlag = {
@@ -141,9 +142,9 @@ const TestOverview = () => {
         namn: `Retest for kontroll ${contextKontroll.id}`,
         type: 'RETEST',
         sideutval: testgrunnlag.sideutval.filter((s) =>
-          res.map((r) => r.loeysingId).includes(s.loeysingId)
+          rs.map((r) => r.loeysingId).includes(s.loeysingId)
         ),
-        testregelIdList: res.map((r) => r.testregelId),
+        testregelIdList: rs.map((r) => r.testregelId),
       };
       submit(nyttTestgrunnlag, { method: 'post', encType: 'application/json' });
     }
@@ -240,7 +241,7 @@ const TestOverview = () => {
                     ) && (
                       <Button
                         variant="secondary"
-                        onClick={() => retest(etTestgrunnlag)}
+                        onClick={() => retest(etTestgrunnlag, loeysingId)}
                       >
                         Retest
                       </Button>
