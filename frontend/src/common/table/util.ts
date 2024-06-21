@@ -1,6 +1,7 @@
 import { TestlabSeverity } from '@common/types';
+import { Resultat } from '@resultat/types';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
-import { FilterMeta, Row } from '@tanstack/react-table';
+import { FilterFn, FilterMeta, Row } from '@tanstack/react-table';
 
 /**
  * Function for adding sorting-prefix to the accessorFn for the react-table,
@@ -49,3 +50,17 @@ export const getSeverity = (percentage: number): TestlabSeverity => {
 
 export const scoreToPercentage = (score: number): number =>
   Math.round(score * 100);
+
+export const dateRangeFilter: FilterFn<Resultat> = (
+  row: Row<Resultat>,
+  columnId: string,
+  filterValue: [number, number]
+) => {
+  const [min, max] = filterValue;
+  const rowValue = Date.parse(row.getValue('dato'));
+
+  const before = max ? rowValue < max : true;
+  const after = min ? rowValue > min : true;
+
+  return before && after;
+};

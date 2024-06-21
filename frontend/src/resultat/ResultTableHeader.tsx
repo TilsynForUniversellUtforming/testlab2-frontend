@@ -4,7 +4,7 @@ import { TypeKontroll } from '@resultat/types';
 import { Column } from '@tanstack/react-table';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 
-interface Props<T extends object> {
+export interface HeaderProps<T extends object> {
   filterColumns?: Column<T, unknown>[];
   kontrollNamn?: string;
   loeysingNamn?: string;
@@ -18,7 +18,7 @@ const ResultTableHeader = <T extends object>({
   typeKontroll,
   loeysingNamn,
   subHeader,
-}: Props<T>) => {
+}: HeaderProps<T>) => {
   const [searchValue, setSearchValue] = useState('');
   const [beforeDate, setBeforeDate] = useState<Date | undefined>();
   const [afterDate, setafterDate] = useState<Date | undefined>();
@@ -81,7 +81,7 @@ const ResultTableHeader = <T extends object>({
     ) {
       return 'Inngående kontroll';
     } else if (
-      searchValue.length > 3 &&
+      searchValue.length > 2 &&
       TypeKontroll.ForenklaKontroll.toString()
         .toLowerCase()
         .startsWith(searchValue.toLowerCase())
