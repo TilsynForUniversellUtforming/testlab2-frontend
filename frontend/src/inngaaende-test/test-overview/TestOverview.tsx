@@ -12,6 +12,7 @@ import {
   Tag,
 } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
+import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import {
   ManuellTestStatus,
@@ -29,6 +30,7 @@ import {
 } from 'react-router-dom';
 
 import classes from './test-overview.module.css';
+import TestStatusChart from './TestStatusChart';
 
 export type TestOverviewLoaderData = {
   resultater: ResultatManuellKontroll[];
@@ -155,7 +157,7 @@ const TestOverview = () => {
   }
 
   return (
-    <div className="manual-test-overview">
+    <div className={classes.manualTestContainer}>
       {testgrunnlag.length === 0 && (
         <Alert severity="warning">
           <Heading level={3} size="xs" spacing>
@@ -192,20 +194,31 @@ const TestOverview = () => {
             return (
               <div
                 key={`${etTestgrunnlag.id}/${loeysingId}`}
-                className="manual-test__loeysing-button"
+                className={classes.loeysingButton}
               >
-                <div className="tag-wrapper">
+                <div className={classes.loeysingButtonTag}>
                   <TestlabStatusTag<ManuellTestStatus>
                     status={status}
                     colorMapping={{
                       second: ['under-arbeid'],
                       info: ['ikkje-starta'],
-                      first: ['ferdig'],
+                      success: ['ferdig'],
                     }}
                     size="small"
                   />
+                  <TestStatusChart
+                    testgrunnlag={etTestgrunnlag}
+                    resultater={resultater}
+                    loeysingId={loeysingId}
+                  />
+                  <TestStatistics
+                    kontroll={contextKontroll}
+                    resultatliste={resultater}
+                    loeysingId={loeysingId}
+                    testgrunnlag={etTestgrunnlag}
+                  />
                 </div>
-                <div className="content-wrapper">
+                <div className={classes.loeysingButtonInnhold}>
                   <div className="content">
                     <Heading size="medium" level={4} spacing>
                       {namn}

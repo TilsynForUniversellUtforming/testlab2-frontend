@@ -317,7 +317,8 @@ const TestOverviewLoeysing = () => {
         (tr) => tr.id === testregelId
       );
       const selectedTestresultat = testResults.filter(
-        (tr) => tr.testregelId === testregelId
+        (tr) =>
+          tr.testregelId === testregelId && tr.sideutvalId === pageType.sideId
       );
       const newStatus = mapStatus(status);
 

@@ -1,11 +1,84 @@
 import { OptionType } from '@common/types';
 import { isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll } from '@test/api/types';
-import { ContextKontroll, PageType } from '@test/types';
+import { ContextKontroll, PageType, Testgrunnlag } from '@test/types';
 import { filterTestregelByInnhaldstype } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
+
+export const progressionForTestgrunnlagSideutval = (
+  kontroll: ContextKontroll,
+  testResults: ResultatManuellKontroll[],
+  loeysingId: number
+): number => {
+  const testregelIdList =
+    kontroll.testreglar?.testregelList.map((tr) => tr.id) ?? [];
+  const numSideutval = kontroll.sideutvalList.filter(
+    (su) => su.loeysingId === loeysingId
+  ).length;
+
+  const finishedTestIdentifierArray = testResults
+    .filter(
+      (tr) =>
+        testregelIdList.includes(tr.testregelId) &&
+        tr.loeysingId === loeysingId &&
+        tr.status === 'Ferdig'
+    )
+    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
+
+  const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
+
+  const numContentTestregel = testregelIdList.length * numSideutval;
+
+  if (numContentTestregel > 0) {
+    return Math.round((numFinishedTestResults / numContentTestregel) * 100);
+  }
+
+  // No testregel with current innhaldstype
+  return 0;
+};
+
+export const progressionForTestgrunnlagInnhaldstype = (
+  testgrunnlag: Testgrunnlag,
+  testResults: ResultatManuellKontroll[],
+  loeysingId: number
+): number => {
+  const sideutvalIds = testgrunnlag.sideutval
+    .filter((su) => su.loeysingId === loeysingId)
+    .map((su) => su.id);
+  const innhaldstypeIds = new Set(
+    testgrunnlag.testreglar.map((tr) => (tr.innhaldstypeTesting ?? 0) as number)
+  );
+  const finishedTestIdentifierArray = testResults
+    .filter((tr) => tr.loeysingId === loeysingId && tr.status === 'Ferdig')
+    .map((tr) => `${tr.sideutvalId}_${tr.testregelId}`);
+
+  let completed = 0;
+  innhaldstypeIds.forEach((innhaldstypeId) => {
+    // Tester som skal gjøres for denne innhaldstypen
+    const testsForInnhaldstype = testgrunnlag.testreglar
+      .filter(
+        (tr) => ((tr.innhaldstypeTesting ?? 0) as number) === innhaldstypeId
+      )
+      .flatMap((tr) =>
+        sideutvalIds.map((sideutvalId) => `${sideutvalId}_${tr.id}`)
+      );
+
+    if (testsForInnhaldstype.length !== 0) {
+      // Ferdige tester for denne innhaldstypen
+      const numFinished = testsForInnhaldstype.filter((testIdentifier) =>
+        finishedTestIdentifierArray.includes(testIdentifier)
+      ).length;
+
+      const percentFinished = numFinished / testsForInnhaldstype.length;
+
+      completed += percentFinished / innhaldstypeIds.size;
+    }
+  });
+
+  return Math.round(completed * 100);
+};
 
 export const progressionForLoeysingNettsideKontroll = (
   kontroll: ContextKontroll,
@@ -40,6 +113,7 @@ export const progressionForLoeysingNettsideKontroll = (
   // No testregel with current innhaldstype
   return 0;
 };
+
 export const getSideutvalOptionList = (
   kontroll: ContextKontroll,
   sideutvalType: SideutvalType[],
