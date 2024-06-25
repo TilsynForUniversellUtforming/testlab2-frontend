@@ -4,6 +4,7 @@ import { TesterResult, TestResult } from '@maaling/api/types';
 import {
   Resultat,
   ResultatOversiktLoeysing,
+  ResultatTema,
   ViolationsData,
 } from '@resultat/types';
 
@@ -81,4 +82,10 @@ export function fetchViolationsData(
       krav: values[2],
     };
   });
+}
+
+export function fetchResultatPrTema(): Promise<ResultatTema[]> {
+  return fetch(`/api/v1/testresultat/tema`, {}).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente resultat')
+  );
 }

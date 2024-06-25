@@ -12,6 +12,7 @@ import TestResultatApp from './kontroll_loeysing/TestResultatApp';
 import {
   fetchKontrollLoeysing,
   fetchKontrollResultat,
+  fetchResultatPrTema,
   fetchResultList,
   fetchViolationsData,
 } from './resultat-api';
@@ -64,10 +65,12 @@ export const ResultRoutes: RouteObject = {
     },
     {
       path: RESULTAT_TEMA_LIST.path,
+      loader: fetchResultatPrTema,
       element: <ResultatListTemaApp />,
     },
     {
       path: RESULTAT_KRAV_LIST.path,
+      loader: fetchResultatPrTema,
       element: <ResultatListKravApp />,
     },
     {

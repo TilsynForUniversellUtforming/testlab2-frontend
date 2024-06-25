@@ -1,3 +1,4 @@
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Heading, List } from '@digdir/designsystemet-react';
 import ResultatTableFilter from '@resultat/ResultatListFilter';
 import { TypeKontroll } from '@resultat/types';
@@ -10,6 +11,7 @@ export interface HeaderProps<T extends object> {
   loeysingNamn?: string;
   typeKontroll?: string;
   subHeader?: string;
+  onSubmitCallback?: (value: string) => void;
 }
 
 const ResultTableHeader = <T extends object>({
@@ -18,14 +20,22 @@ const ResultTableHeader = <T extends object>({
   typeKontroll,
   loeysingNamn,
   subHeader,
+  onSubmitCallback,
 }: HeaderProps<T>) => {
   const [searchValue, setSearchValue] = useState('');
   const [beforeDate, setBeforeDate] = useState<Date | undefined>();
   const [afterDate, setafterDate] = useState<Date | undefined>();
 
+  const onSearchClick = (value: string) => {
+    if (onSubmitCallback) {
+      onSubmitCallback(value);
+    } else {
+      onSubmit(value);
+    }
+  };
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
-    filterColumn(e.target.value);
   };
 
   const kontrollTypeColumn = filterColumns ? filterColumns[0] : undefined;
@@ -44,7 +54,8 @@ const ResultTableHeader = <T extends object>({
   const filterColumn = useCallback(
     (searchValue: string) => {
       if (kontrollTypeColumn) {
-        kontrollTypeColumn.setFilterValue(searchValue);
+        const typeKontroll = findTypeKontroll(searchValue) ?? searchValue;
+        kontrollTypeColumn.setFilterValue(typeKontroll);
       }
     },
     [searchValue]
@@ -72,24 +83,34 @@ const ResultTableHeader = <T extends object>({
     setSearchValue('');
   };
 
-  const typeMaaling = (): string => {
-    if (
-      searchValue.length > 2 &&
-      TypeKontroll.InngaaendeKontroll.toString()
-        .toLowerCase()
-        .startsWith(searchValue.toLowerCase())
-    ) {
-      return 'Inngående kontroll';
-    } else if (
-      searchValue.length > 2 &&
-      TypeKontroll.ForenklaKontroll.toString()
-        .toLowerCase()
-        .startsWith(searchValue.toLowerCase())
-    ) {
-      return 'Forenkla kontroll';
-    } else return typeKontroll ? typeKontroll : '';
+  const onSubmit = (value: string) => {
+    filterColumn(value);
   };
 
+  const typeMaaling = (): string => {
+    if (searchValue.length > 2) {
+      return sanitizeEnumLabel(String(findTypeKontroll(searchValue))) ?? '';
+    }
+    return typeKontroll ? typeKontroll : '';
+  };
+
+  const findTypeKontroll = (value: string): TypeKontroll | undefined => {
+    if (
+      value.length > 2 &&
+      TypeKontroll.InngaaendeKontroll.toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase())
+    ) {
+      return TypeKontroll.InngaaendeKontroll;
+    } else if (
+      value.length > 2 &&
+      TypeKontroll.ForenklaKontroll.toString()
+        .toLowerCase()
+        .startsWith(value.toLowerCase())
+    ) {
+      return TypeKontroll.ForenklaKontroll;
+    }
+  };
   const periode = (): string => {
     return (
       (afterDate ? afterDate.toLocaleDateString() : ' ') +
@@ -99,7 +120,7 @@ const ResultTableHeader = <T extends object>({
   };
 
   const isTopPage = (): boolean => {
-    return dateColumn !== undefined;
+    return dateColumn !== undefined || onSubmitCallback !== undefined;
   };
 
   return (
@@ -120,6 +141,7 @@ const ResultTableHeader = <T extends object>({
           onClear={onClear}
           onChangeBeforeDate={onChangeBeforeDate}
           onChangeAfterDate={onChangeAfterDate}
+          onSubmit={onSearchClick}
         />
       )}
       <div className="resultat-header-status">
@@ -137,11 +159,9 @@ const ResultTableHeader = <T extends object>({
               <strong>Type måling:</strong> {typeMaaling()}
             </List.Item>
             {isTopPage() && (
-              <>
-                <List.Item>
-                  <strong>Periode:</strong> {periode()}
-                </List.Item>
-              </>
+              <List.Item>
+                <strong>Periode:</strong> {periode()}
+              </List.Item>
             )}
             {kontrollNamn && (
               <List.Item>

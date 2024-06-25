@@ -42,6 +42,7 @@ export interface ResultTableProps<T extends object> {
   loeysingNamn?: string;
   hasFilter?: boolean;
   subHeader?: string;
+  onSubmitCallback?: (value: string) => void;
 }
 
 /**
@@ -78,6 +79,7 @@ const ResultatTable = <T extends object>({
   loeysingNamn,
   hasFilter = false,
   subHeader,
+  onSubmitCallback,
 }: ResultTableProps<T>): ReactElement => {
   const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
   const navigate = useNavigate();
@@ -137,7 +139,7 @@ const ResultatTable = <T extends object>({
   }
 
   function getFilterColumns(): Column<T, unknown>[] | undefined {
-    if (topLevelList && hasFilter) {
+    if (hasFilter && topLevelList) {
       const kontrollTypeColumn: Column<T, unknown> | undefined =
         table.getColumn('type');
       const dateColumn: Column<T, unknown> | undefined =
@@ -152,6 +154,8 @@ const ResultatTable = <T extends object>({
 
   const headerGroup = table.getHeaderGroups()[0];
 
+  console.log('Is top level ' + topLevelList);
+
   return (
     <div className="testlab-table">
       <ResultTableHeader
@@ -160,6 +164,7 @@ const ResultatTable = <T extends object>({
         kontrollNamn={kontrollNamn}
         loeysingNamn={loeysingNamn}
         subHeader={subHeader}
+        onSubmitCallback={onSubmitCallback}
       ></ResultTableHeader>
       <Tabs value={activeTab} onChange={onChangeTabs}>
         <Tabs.List>

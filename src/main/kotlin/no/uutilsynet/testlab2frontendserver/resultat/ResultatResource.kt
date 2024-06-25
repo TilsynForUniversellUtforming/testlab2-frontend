@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
 import java.net.URI
+import java.time.LocalDate
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
@@ -8,11 +9,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResul
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
 @RestController
@@ -95,5 +92,15 @@ class ResultatResource(
     logger.debug("Hent resultat for kontrolkId: $idLoeysing, loeysingId: $idLoeysing")
     return restTemplate.getList<TestResultat>(
         "$testresultatUrl/kontroll/${idKontroll}/loeysing/${idLoeysing}/krav/${kravId}")
+  }
+
+  @GetMapping("tema")
+  fun getResultatPrTema(
+      @RequestParam kontrollId: Int?,
+      @RequestParam kontrollType: String?,
+      @RequestParam fraDato: LocalDate?,
+      @RequestParam tilDato: LocalDate?
+  ): List<ResultatTema> {
+    return restTemplate.getList<ResultatTema>("$testresultatUrl/tema")
   }
 }

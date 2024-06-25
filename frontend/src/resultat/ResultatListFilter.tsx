@@ -3,10 +3,11 @@ import { ChangeEvent } from 'react';
 
 interface Props {
   searchValue: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onClear: () => void;
   onChangeBeforeDate: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeAfterDate: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (value: string) => void;
 }
 const ResultatTableFilter = ({
   searchValue,
@@ -14,6 +15,7 @@ const ResultatTableFilter = ({
   onClear,
   onChangeBeforeDate,
   onChangeAfterDate,
+  onSubmit,
 }: Props) => {
   return (
     <div className="resultat-header-search">
@@ -27,8 +29,10 @@ const ResultatTableFilter = ({
           value={searchValue}
           onChange={onChange}
           onClear={onClear}
+          onSearchClick={onSubmit}
           size="medium"
-          variant="simple"
+          variant="primary"
+          searchButtonLabel="Filtrer"
         />
       </div>
       <div id="kontrollDateFilter">
