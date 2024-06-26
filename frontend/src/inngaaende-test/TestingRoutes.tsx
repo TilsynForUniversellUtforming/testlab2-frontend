@@ -1,33 +1,21 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import {
-  deleteTestgrunnlag,
-  getTestResults,
-  listTestgrunnlag,
-  postTestgrunnlag,
-} from '@test/api/testing-api';
+import { deleteTestgrunnlag, getTestResults, listTestgrunnlag, postTestgrunnlag, } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
-import {
-  ContextKontroll,
-  Testgrunnlag,
-  TestOverviewLoaderResponse,
-} from '@test/types';
+import { ContextKontroll, Testgrunnlag, TestOverviewLoaderResponse, } from '@test/types';
 import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
-import {
-  listInnhaldstype,
-  listTestreglarWithMetadata,
-} from '@testreglar/api/testreglar-api';
+import { listInnhaldstype, listTestreglarWithMetadata, } from '@testreglar/api/testreglar-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
 import InngaaendeTestApp from './InngaaendeTestApp';
-import TestOverview, {
-  TestOverviewLoaderData,
-} from './test-overview/TestOverview';
+import TestOverview, { TestOverviewLoaderData, } from './test-overview/TestOverview';
+import StyringsdataForm from '@test/styringsdata/StyringsdataForm';
+import { Styringsdata, StyringsdataLoaderData } from '@test/styringsdata/types';
 
 export const TEST_ROOT: AppRoute = {
   navn: 'Tester',
@@ -42,8 +30,14 @@ export const TEST: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
+export const TEST_STYRINGSDATA: AppRoute = {
+  navn: 'Styringsdata for løysing',
+  path: ':loeysingId/styringsdata',
+  parentRoute: TEST,
+};
+
 export const TEST_LOEYSING_KONTROLL: AppRoute = {
-  navn: 'Test løysing testgrunnlag',
+  navn: 'Test løysing',
   path: ':loeysingId/:testgrunnlagId',
   parentRoute: TEST,
 };
@@ -180,7 +174,47 @@ export const TestingRoutes: RouteObject = {
             );
             return { results: testResults };
           },
-        },
+        },{
+        path: TEST_STYRINGSDATA.path,
+          element: <StyringsdataForm />,
+          handle: { name: TEST_STYRINGSDATA.navn },
+          loader: async ({ params }): Promise<StyringsdataLoaderData> => {
+            const kontrollId = Number(params?.id);
+            const [
+              kontrollPromise,
+              styringsdataPromise,
+            ] = await Promise.allSettled([
+              fetchKontroll(kontrollId),
+              fetchStyringsdata_dummy()
+            ]);
+
+
+            if (kontrollPromise.status === 'rejected') {
+              throw new Error(`Kunne ikkje hente kontroll med id ${kontrollId}`);
+            }
+
+            const kontrollResponse = kontrollPromise.value;
+
+            if (!kontrollResponse.ok) {
+              if (kontrollResponse.status === 404) {
+                throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+              } else {
+                throw new Error('Klarte ikke å hente kontrollen.');
+              }
+            }
+            const kontroll: Kontroll = await kontrollResponse.json();
+
+            if (styringsdataPromise.status === 'rejected') {
+              throw new Error(`Kunne ikkje hente styringsdata for kontroll med id ${kontrollId}`);
+            }
+
+
+            return {
+              kontroll: kontroll,
+              styringsdata: styringsdataPromise.value
+            }
+          }
+        }
       ],
     },
     {
@@ -190,3 +224,5 @@ export const TestingRoutes: RouteObject = {
     },
   ],
 };
+
+const fetchStyringsdata_dummy = (): Styringsdata | undefined => undefined

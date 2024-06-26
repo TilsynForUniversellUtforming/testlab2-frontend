@@ -90,10 +90,6 @@
       }
     }
 
-    .styringsdata {
-      margin: 0 auto;
-    }
-
     .slett {
       display: flex;
       flex-direction: column;

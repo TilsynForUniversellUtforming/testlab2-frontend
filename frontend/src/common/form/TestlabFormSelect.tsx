@@ -1,12 +1,7 @@
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Combobox,
-  ErrorMessage,
-  Label,
-  Radio,
-} from '@digdir/designsystemet-react';
+import { Combobox, ErrorMessage, Label, Radio, } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -17,6 +12,7 @@ export interface TestlabInputSelectProps<T extends object>
   extends TestlabInputBaseProps<T> {
   options: OptionType[];
   radio?: boolean;
+  radioInline?: boolean;
 }
 
 /**
@@ -41,6 +37,7 @@ const TestlabFormSelect = <T extends object>({
   required = false,
   disabled,
   radio = false,
+  radioInline = false,
   size,
   ...rest
 }: TestlabInputSelectProps<T>): ReactNode => {
@@ -61,9 +58,10 @@ const TestlabFormSelect = <T extends object>({
               description={description}
               error={errorMessage}
               onChange={onChange}
-              value={value}
+              value={typeof value === 'undefined' ? undefined : String(value)}
               size={size}
               disabled={disabled}
+              inline={radioInline}
             >
               {options.map(({ label, value, title, disabled }) => (
                 <Radio

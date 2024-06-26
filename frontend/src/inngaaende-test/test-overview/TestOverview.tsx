@@ -4,29 +4,12 @@ import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { isEmpty, last } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import {
-  Alert,
-  Button,
-  Heading,
-  Paragraph,
-  Tag,
-} from '@digdir/designsystemet-react';
+import { Alert, Button, Heading, Paragraph, Tag, } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import {
-  ManuellTestStatus,
-  TestContextKontroll,
-  Testgrunnlag,
-} from '@test/types';
+import { ManuellTestStatus, TestContextKontroll, Testgrunnlag, } from '@test/types';
 import { useCallback } from 'react';
-import {
-  Link,
-  useLoaderData,
-  useNavigate,
-  useOutletContext,
-  useParams,
-  useSubmit,
-} from 'react-router-dom';
+import { Link, useLoaderData, useNavigate, useOutletContext, useParams, useSubmit, } from 'react-router-dom';
 
 import classes from './test-overview.module.css';
 
@@ -254,6 +237,11 @@ const TestOverview = () => {
                         Slett
                       </Button>
                     )}
+                    <Link to={`${loeysingId}/styringsdata`}>
+                      <Button >
+
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </div>

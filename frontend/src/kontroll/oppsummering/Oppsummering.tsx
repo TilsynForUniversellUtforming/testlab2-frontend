@@ -11,7 +11,6 @@ import kontrollClasses from '../kontroll.module.css';
 import { steps } from '../types';
 import classes from './oppsummering.module.css';
 import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
-import StyringsdataModal from './styringsdata/StyringsdataModal';
 
 export function Oppsummering() {
   const { kontroll, verksemdList } = useLoaderData() as OppsummeringLoadingType;
@@ -83,7 +82,6 @@ export function Oppsummering() {
             {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
           </div>
         </div>
-          <StyringsdataModal styringsdata={oppsummeringsItem.styringsdata}/>
         </div>
       </li>
     );
