@@ -46,8 +46,8 @@ import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 const TestOverviewLoeysing = () => {
   const { testgrunnlagId: testgrunnlagIdParam, loeysingId: loeysingIdParam } =
     useParams();
-  const loeysingIdNumeric = Number(loeysingIdParam);
-  const testgrunnlagIdNumeric = Number(testgrunnlagIdParam);
+  const loeysingId = Number(loeysingIdParam);
+  const testgrunnlagId = Number(testgrunnlagIdParam);
 
   const { innhaldstypeList, sideutvalTypeList }: TestContextKontroll =
     useOutletContext();
@@ -100,7 +100,7 @@ const TestOverviewLoeysing = () => {
     toTestregelStatus(
       testregelListElements,
       testResultatForLoeysing,
-      testgrunnlagIdNumeric,
+      testgrunnlagId,
       pageType.sideId
     )
   );
@@ -116,11 +116,16 @@ const TestOverviewLoeysing = () => {
   }, []);
 
   const processData = (
-    testResultsLoeysing: ResultatManuellKontroll[],
+    testResults: ResultatManuellKontroll[],
     pageType: PageType,
     innhaldstype: InnhaldstypeTesting,
     activeTestregel?: Testregel
   ) => {
+    const testResultsLoeysing = testResults.filter(
+      (tr) => tr.loeysingId === loeysingId
+    );
+    setTestResults(testResultsLoeysing);
+
     const testregelListElements = mapTestregelOverviewElements(
       testreglarForLoeysing,
       innhaldstype
@@ -146,7 +151,7 @@ const TestOverviewLoeysing = () => {
       toTestregelStatus(
         testregelListElements,
         testResultsLoeysing,
-        testgrunnlagIdNumeric,
+        testgrunnlagId,
         pageType.sideId
       )
     );
@@ -163,7 +168,7 @@ const TestOverviewLoeysing = () => {
         testregel: activeTestregel,
         testResultList: findActiveTestResults(
           testResultsLoeysing,
-          testgrunnlagIdNumeric,
+          testgrunnlagId,
           activeTestregel.id,
           pageType.sideId
         ),
@@ -173,14 +178,13 @@ const TestOverviewLoeysing = () => {
 
   const createNewTestResult = async (activeTest: ActiveTest) => {
     const nyttTestresultat: CreateTestResultat = {
-      testgrunnlagId: testgrunnlagIdNumeric,
-      loeysingId: loeysingIdNumeric,
+      testgrunnlagId: testgrunnlagId,
+      loeysingId: loeysingId,
       testregelId: activeTest.testregel.id,
       sideutvalId: pageType.sideId,
     };
     await createTestResultat(nyttTestresultat);
-    const alleResultater = await fetchTestResults(testgrunnlagIdNumeric);
-    setTestResults(alleResultater);
+    const alleResultater = await fetchTestResults(testgrunnlagId);
     processData(alleResultater, pageType, innhaldstype, activeTest.testregel);
   };
 
@@ -236,7 +240,7 @@ const TestOverviewLoeysing = () => {
         }
 
         const statusKey = toTestregelStatusKey(
-          testgrunnlagIdNumeric,
+          testgrunnlagId,
           nextTestregel.id,
           pageType.sideId
         );
@@ -293,8 +297,8 @@ const TestOverviewLoeysing = () => {
             const updatedtestResults: ResultatManuellKontroll[] =
               selectedTestresultat.map((testResult) => ({
                 id: testResult.id,
-                testgrunnlagId: testgrunnlagIdNumeric,
-                loeysingId: loeysingIdNumeric,
+                testgrunnlagId: testgrunnlagId,
+                loeysingId: loeysingId,
                 testregelId: testregelId,
                 sideutvalId: testResult.sideutvalId,
                 elementOmtale: testResult.elementOmtale,
@@ -323,16 +327,15 @@ const TestOverviewLoeysing = () => {
     async (activeTestregel: Testregel, sideutvalId: number | undefined) => {
       if (activeTestregel && sideutvalId) {
         const testResult: CreateTestResultat = {
-          testgrunnlagId: testgrunnlagIdNumeric,
-          loeysingId: loeysingIdNumeric,
+          testgrunnlagId: testgrunnlagId,
+          loeysingId: loeysingId,
           testregelId: activeTestregel.id,
           sideutvalId: sideutvalId,
         };
 
         try {
           await createTestResultat(testResult);
-          const results = await fetchTestResults(testgrunnlagIdNumeric);
-          setTestResults(results);
+          const results = await fetchTestResults(testgrunnlagId);
           processData(results, pageType, innhaldstype, activeTestregel);
         } catch (e) {
           setAlert('danger', 'Kunne ikkje lagre', 'Opprett testresultat feila');
@@ -357,16 +360,16 @@ const TestOverviewLoeysing = () => {
       );
 
       if (
-        isDefined(testgrunnlagIdNumeric) &&
-        isDefined(loeysingIdNumeric) &&
+        isDefined(testgrunnlagId) &&
+        isDefined(loeysingId) &&
         activeTest &&
         pageType.sideId &&
         activeTestResult
       ) {
         const testResult: ResultatManuellKontroll = {
           id: activeTestResult.id,
-          testgrunnlagId: testgrunnlagIdNumeric,
-          loeysingId: loeysingIdNumeric,
+          testgrunnlagId: testgrunnlagId,
+          loeysingId: loeysingId,
           testregelId: activeTest.testregel?.id,
           sideutvalId: pageType.sideId,
           elementOmtale,
@@ -380,16 +383,13 @@ const TestOverviewLoeysing = () => {
 
         try {
           const updatedTestResults = await updateTestResultat(testResult);
-          await createTestresultatAggregert(testgrunnlagIdNumeric).catch(
-            (e) => {
-              setAlert(
-                'danger',
-                'Kunne ikkje oppdatere aggregert resultat',
-                `Oppdatering av aggregert resultat feila ${e}`
-              );
-            }
-          );
-          setTestResults(updatedTestResults);
+          await createTestresultatAggregert(testgrunnlagId).catch((e) => {
+            setAlert(
+              'danger',
+              'Kunne ikkje oppdatere aggregert resultat',
+              `Oppdatering av aggregert resultat feila ${e}`
+            );
+          });
           processData(
             updatedTestResults,
             pageType,
@@ -429,7 +429,6 @@ const TestOverviewLoeysing = () => {
     }
     try {
       const alleResultater = await deleteTestResultat(resultat);
-      setTestResults(alleResultater);
       processData(alleResultater, pageType, innhaldstype, activeTest.testregel);
     } catch (e) {
       setAlert(
@@ -444,14 +443,13 @@ const TestOverviewLoeysing = () => {
     async (testResultat: ResultatManuellKontroll[]) => {
       try {
         const updatedTestResults = await updateTestResultatMany(testResultat);
-        await createTestresultatAggregert(testgrunnlagIdNumeric).catch((e) => {
+        await createTestresultatAggregert(testgrunnlagId).catch((e) => {
           setAlert(
             'danger',
             'Kunne ikkje oppdatere aggregert resultat',
             `Oppdatering av aggregert resultat feila ${e}`
           );
         });
-        setTestResults(updatedTestResults);
         processData(updatedTestResults, pageType, innhaldstype);
       } catch (e) {
         setAlert(
