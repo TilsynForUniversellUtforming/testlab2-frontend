@@ -5,6 +5,7 @@ import {
   Resultat,
   ResultatOversiktLoeysing,
   ResultatTema,
+  TypeKontroll,
   ViolationsData,
 } from '@resultat/types';
 
@@ -85,7 +86,32 @@ export function fetchViolationsData(
 }
 
 export function fetchResultatPrTema(): Promise<ResultatTema[]> {
-  return fetch(`/api/v1/testresultat/tema`, {}).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente resultat')
+  return fetchResultatPrTemaFilter(undefined, undefined, undefined, undefined);
+}
+
+export async function fetchResultatPrTemaFilter(
+  kontrollId?: number,
+  kontrollType?: TypeKontroll,
+  fraDato?: string,
+  tilDato?: string
+): Promise<ResultatTema[]> {
+  const params = new URLSearchParams();
+  if (kontrollId) {
+    params.append('kontrollId', String(kontrollId));
+  }
+  if (kontrollType) {
+    params.append('kontrollType', kontrollType.valueOf());
+  }
+  if (fraDato) {
+    params.append('fraDato', fraDato);
+  }
+  if (tilDato) {
+    params.append('tilDato', tilDato);
+  }
+
+  const response = await fetch(
+    `/api/v1/testresultat/tema?` + params.toString(),
+    {}
   );
+  return await responseToJson(response, 'Kunne ikkje hente resultat');
 }

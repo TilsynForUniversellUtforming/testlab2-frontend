@@ -23,7 +23,7 @@ import { resultTable } from '@resultat/tableoptions';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export interface ResultTableProps<T extends object> {
   data: T[];
@@ -91,6 +91,8 @@ const ResultatTable = <T extends object>({
     setColumnVisibility(visibilityState(visDetaljer));
   };
 
+  const location = useLocation();
+
   const getPath = (tab: string) => {
     switch (tab) {
       case 'resultat':
@@ -104,7 +106,11 @@ const ResultatTable = <T extends object>({
     }
   };
 
-  const [activeTab, setActiveTab] = useState<string>('resultat');
+  function getCurrentPath() {
+    return location.pathname.split('/').pop() ?? 'resultat';
+  }
+
+  const [activeTab, setActiveTab] = useState<string>(getCurrentPath());
   const onChangeTabs = useCallback((tab: string) => {
     setActiveTab(tab);
     navigate(getPath(tab));
@@ -153,8 +159,6 @@ const ResultatTable = <T extends object>({
   const filterColumns = getFilterColumns();
 
   const headerGroup = table.getHeaderGroups()[0];
-
-  console.log('Is top level ' + topLevelList);
 
   return (
     <div className="testlab-table">

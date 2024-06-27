@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("api/v1/testresultat")
@@ -97,10 +98,18 @@ class ResultatResource(
   @GetMapping("tema")
   fun getResultatPrTema(
       @RequestParam kontrollId: Int?,
-      @RequestParam kontrollType: String?,
+      @RequestParam kontrollType: KontrollType?,
       @RequestParam fraDato: LocalDate?,
       @RequestParam tilDato: LocalDate?
   ): List<ResultatTema> {
-    return restTemplate.getList<ResultatTema>("$testresultatUrl/tema")
+    val uriComponents = UriComponentsBuilder.fromUriString(testresultatUrl)
+    uriComponents.path("/tema")
+    kontrollId?.let { uriComponents.queryParam("kontrollId", it) }
+    kontrollType?.let { uriComponents.queryParam("kontrollType", it) }
+    fraDato?.let { uriComponents.queryParam("fraDato", it) }
+    tilDato?.let { uriComponents.queryParam("tilDato", it) }
+    uriComponents.build().toUriString()
+
+    return restTemplate.getList<ResultatTema>(uriComponents.build().toUriString())
   }
 }

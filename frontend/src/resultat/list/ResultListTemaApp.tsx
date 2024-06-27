@@ -1,13 +1,20 @@
-import { getSeverity, scoreToPercentage } from '@common/table/util';
+import {
+  findTypeKontroll,
+  getSeverity,
+  scoreToPercentage,
+} from '@common/table/util';
 import { Tag } from '@digdir/designsystemet-react';
+import { fetchResultatPrTemaFilter } from '@resultat/resultat-api';
 import ResultatTable from '@resultat/ResultatTable';
-import { ResultatTema } from '@resultat/types';
+import { ResultatTema, TypeKontroll } from '@resultat/types';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 const ResultatListTemaApp = () => {
   const data: Array<ResultatTema> = useLoaderData() as Array<ResultatTema>;
+
+  const [resultat, setResultat] = React.useState<ResultatTema[]>(data);
 
   const columns: Array<ColumnDef<ResultatTema>> = [
     {
@@ -55,19 +62,28 @@ const ResultatListTemaApp = () => {
     return {};
   };
 
-  const onChangeFilter = (value: string) => {
-    console.log('On change' + value);
+  const getNewResult = useCallback(async (kontrollType: TypeKontroll) => {
+    const newResult = await fetchResultatPrTemaFilter(undefined, kontrollType);
+    setResultat(newResult);
+  }, []);
+
+  const onSubmitFilter = (value: string) => {
+    const kontrollType = findTypeKontroll(value);
+
+    if (kontrollType) {
+      getNewResult(kontrollType);
+    }
   };
 
   return (
     <div className="sak-list">
       <ResultatTable
-        data={data}
+        data={resultat}
         defaultColumns={columns}
         visibilityState={visibilityState}
         topLevelList={false}
         hasFilter={false}
-        onSubmitCallback={onChangeFilter}
+        onSubmitCallback={onSubmitFilter}
       />
     </div>
   );

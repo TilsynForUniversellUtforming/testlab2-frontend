@@ -1,5 +1,5 @@
 import { TestlabSeverity } from '@common/types';
-import { Resultat } from '@resultat/types';
+import { Resultat, TypeKontroll } from '@resultat/types';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import { FilterFn, FilterMeta, Row } from '@tanstack/react-table';
 
@@ -63,4 +63,28 @@ export const dateRangeFilter: FilterFn<Resultat> = (
   const after = min ? rowValue > min : true;
 
   return before && after;
+};
+
+export const findTypeKontroll = (value: string): TypeKontroll | undefined => {
+  if (value.length < 2) return undefined;
+
+  const types: TypeKontroll[] = [
+    TypeKontroll.InngaaendeKontroll,
+    TypeKontroll.ForenklaKontroll,
+    TypeKontroll.Tilsyn,
+    TypeKontroll.Statusmaaling,
+    TypeKontroll.UttaleSak,
+    TypeKontroll.Anna,
+  ];
+
+  return types
+    .filter((type) => compareSearchStringTypeKontroll(value, type))
+    .pop();
+};
+
+const compareSearchStringTypeKontroll = (
+  value: string,
+  typeKontroll: TypeKontroll
+): boolean => {
+  return typeKontroll.toLowerCase().startsWith(value.toLowerCase());
 };

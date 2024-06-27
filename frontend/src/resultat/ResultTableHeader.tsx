@@ -1,7 +1,7 @@
+import { findTypeKontroll } from '@common/table/util';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Heading, List } from '@digdir/designsystemet-react';
 import ResultatTableFilter from '@resultat/ResultatListFilter';
-import { TypeKontroll } from '@resultat/types';
 import { Column } from '@tanstack/react-table';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 
@@ -54,8 +54,7 @@ const ResultTableHeader = <T extends object>({
   const filterColumn = useCallback(
     (searchValue: string) => {
       if (kontrollTypeColumn) {
-        const typeKontroll = findTypeKontroll(searchValue) ?? searchValue;
-        kontrollTypeColumn.setFilterValue(typeKontroll);
+        kontrollTypeColumn.setFilterValue(searchValue);
       }
     },
     [searchValue]
@@ -91,26 +90,9 @@ const ResultTableHeader = <T extends object>({
     if (searchValue.length > 2) {
       return sanitizeEnumLabel(String(findTypeKontroll(searchValue))) ?? '';
     }
-    return typeKontroll ? typeKontroll : '';
+    return typeKontroll ?? '';
   };
 
-  const findTypeKontroll = (value: string): TypeKontroll | undefined => {
-    if (
-      value.length > 2 &&
-      TypeKontroll.InngaaendeKontroll.toString()
-        .toLowerCase()
-        .startsWith(value.toLowerCase())
-    ) {
-      return TypeKontroll.InngaaendeKontroll;
-    } else if (
-      value.length > 2 &&
-      TypeKontroll.ForenklaKontroll.toString()
-        .toLowerCase()
-        .startsWith(value.toLowerCase())
-    ) {
-      return TypeKontroll.ForenklaKontroll;
-    }
-  };
   const periode = (): string => {
     return (
       (afterDate ? afterDate.toLocaleDateString() : ' ') +

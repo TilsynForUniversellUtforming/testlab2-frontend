@@ -52,6 +52,10 @@ export type ViolationsData = {
 };
 
 export enum TypeKontroll {
-  InngaaendeKontroll = 'inngaaende-kontroll',
-  ForenklaKontroll = 'forenkla-kontroll',
+  InngaaendeKontroll = 'InngaaendeKontroll',
+  ForenklaKontroll = 'ForenklaKontroll',
+  Tilsyn = 'Tilsyn',
+  Statusmaaling = 'Statusmaaling',
+  UttaleSak = 'UttaleSak',
+  Anna = 'Anna',
 }
