@@ -6,7 +6,7 @@ import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
-export const getTestResults = async (
+export const fetchTestResults = async (
   testgrunnlagId: number
 ): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`${testingApiBaseUrl}/${testgrunnlagId}`, {

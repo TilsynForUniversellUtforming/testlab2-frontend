@@ -2,19 +2,18 @@ import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import {
   deleteTestgrunnlag,
-  getTestResults,
+  fetchTestResults,
   listTestgrunnlag,
   postTestgrunnlag,
 } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
+import { Testgrunnlag, TestOverviewLoaderResponse } from '@test/types';
 import {
-  ContextKontroll,
-  Testgrunnlag,
-  TestOverviewLoaderResponse,
-} from '@test/types';
-import { getInnhaldstypeInTest } from '@test/util/testregelUtils';
+  getIdFromParams,
+  getInnhaldstypeInTest,
+} from '@test/util/testregelUtils';
 import {
   listInnhaldstype,
   listTestreglarWithMetadata,
@@ -110,14 +109,6 @@ export const TestingRoutes: RouteObject = {
         }
         const kontroll: Kontroll = await kontrollResponse.json();
 
-        const loeysingWithSideutvalIds = kontroll.sideutvalList.map(
-          (su) => su.loeysingId
-        );
-        const loeysingWithSideutval =
-          kontroll.utval?.loeysingar.filter((l) =>
-            loeysingWithSideutvalIds.includes(l.id)
-          ) ?? [];
-
         const kontrollTestregelIdList =
           kontroll.testreglar?.testregelList?.map((tr) => tr.id) ?? [];
 
@@ -125,16 +116,8 @@ export const TestingRoutes: RouteObject = {
           kontrollTestregelIdList.includes(tr.id)
         );
 
-        const contextKontroll: ContextKontroll = {
-          ...kontroll,
-          loeysingList: loeysingWithSideutval,
-          testregelList: kontrollTestreglar,
-        };
-
         const innhaldstypeList = innhaldstypePromise.value;
-
         return defer({
-          kontroll: contextKontroll,
           sideutvalTypeList: sideutvalTypePromise.value,
           innhaldstypeTestingList: getInnhaldstypeInTest(
             kontrollTestreglar,
@@ -148,11 +131,48 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverview />,
           loader: async ({ params }): Promise<TestOverviewLoaderData> => {
             const kontrollId = Number(params?.id);
-            const testgrunnlag = await listTestgrunnlag(kontrollId);
+            const [kontrollPromise, testgrunnlagPromise] =
+              await Promise.allSettled([
+                fetchKontroll(kontrollId),
+                listTestgrunnlag(kontrollId),
+              ]);
+
+            if (testgrunnlagPromise.status === 'rejected') {
+              throw new Error(`Kunne ikkje hente testgrunnlag`);
+            }
+
+            if (kontrollPromise.status === 'rejected') {
+              throw new Error(`Fann ikkje kontroll med id ${kontrollId}`);
+            }
+
+            const kontrollResponse = kontrollPromise.value;
+
+            if (!kontrollResponse.ok) {
+              if (kontrollResponse.status === 404) {
+                throw new Error(
+                  'Det finnes ikke en kontroll med id ' + kontrollId
+                );
+              } else {
+                throw new Error('Klarte ikke å hente kontrollen.');
+              }
+            }
+            const kontroll: Kontroll = await kontrollResponse.json();
+            const testgrunnlag = testgrunnlagPromise.value;
+
             const resultater: ResultatManuellKontroll[][] = await Promise.all(
-              testgrunnlag.map((t) => getTestResults(t.id))
+              testgrunnlag.map((t) => fetchTestResults(t.id))
             );
+
+            const loeysingWithSideutvalIds = kontroll.sideutvalList.map(
+              (su) => su.loeysingId
+            );
+            const loeysingWithSideutval =
+              kontroll.utval?.loeysingar.filter((l) =>
+                loeysingWithSideutvalIds.includes(l.id)
+              ) ?? [];
+
             return {
+              loeysingList: loeysingWithSideutval,
               resultater: resultater.flat(),
               testgrunnlag,
             };
@@ -175,10 +195,72 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverviewLoeysing />,
           handle: { name: TEST_LOEYSING_KONTROLL.navn },
           loader: async ({ params }): Promise<TestOverviewLoaderResponse> => {
-            const testResults = await getTestResults(
-              Number(params?.testgrunnlagId)
+            const kontrollId = getIdFromParams(params?.id);
+            const testgrunnlagId = getIdFromParams(params?.testgrunnlagId);
+            const loeysingId = getIdFromParams(params?.loeysingId);
+
+            const [kontrollPromise, testResults, testreglarPromise] =
+              await Promise.allSettled([
+                fetchKontroll(kontrollId),
+                fetchTestResults(testgrunnlagId),
+                listTestreglarWithMetadata(),
+              ]);
+
+            if (testResults.status === 'rejected') {
+              throw new Error(
+                `Kunne ikkje hente testresutlat for id ${testgrunnlagId}`
+              );
+            }
+
+            if (testreglarPromise.status === 'rejected') {
+              throw new Error(`Kunne ikkje hente testreglar`);
+            }
+
+            if (kontrollPromise.status === 'rejected') {
+              throw new Error(`Fann ikkje kontroll med id ${kontrollId}`);
+            }
+
+            const kontrollResponse = kontrollPromise.value;
+
+            if (!kontrollResponse.ok) {
+              if (kontrollResponse.status === 404) {
+                throw new Error(
+                  'Det finnes ikke en kontroll med id ' + kontrollId
+                );
+              } else {
+                throw new Error('Klarte ikke å hente kontrollen.');
+              }
+            }
+            const kontroll: Kontroll = await kontrollResponse.json();
+
+            const testResultsForLoeysing = testResults.value.filter(
+              (tr) => tr.loeysingId === loeysingId
             );
-            return { results: testResults };
+            const sideutvalForLoeysing = kontroll.sideutvalList.filter(
+              (su) => su.loeysingId === loeysingId
+            );
+            const kontrollTestregelIdList =
+              kontroll.testreglar?.testregelList?.map((tr) => tr.id) ?? [];
+
+            const kontrollTestreglar = testreglarPromise.value.filter((tr) =>
+              kontrollTestregelIdList.includes(tr.id)
+            );
+
+            const activeLoeysing = kontroll.utval?.loeysingar?.find(
+              (l) => l.id === loeysingId
+            );
+
+            if (!activeLoeysing) {
+              throw new Error(`Ugyldig løysing for id ${loeysingId}`);
+            }
+
+            return {
+              testResultatForLoeysing: testResultsForLoeysing,
+              sideutvalForLoeysing: sideutvalForLoeysing,
+              testreglarForLoeysing: kontrollTestreglar,
+              activeLoeysing: activeLoeysing,
+              kontrollTitle: kontroll.tittel,
+            };
           },
         },
       ],

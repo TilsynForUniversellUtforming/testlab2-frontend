@@ -3,7 +3,6 @@ import { TestregelResultat } from '@test/util/testregelParser';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../kontroll/sideutval/types';
-import { Kontroll } from '../kontroll/types';
 import {
   ResultatManuellKontroll,
   Svar,
@@ -44,27 +43,23 @@ export type TestResultUpdate = {
 };
 
 export type TestOverviewLoaderResponse = {
-  results: ResultatManuellKontroll[];
+  testResultatForLoeysing: ResultatManuellKontroll[];
+  sideutvalForLoeysing: Sideutval[];
+  testreglarForLoeysing: Testregel[];
+  activeLoeysing: Loeysing;
+  kontrollTitle: string;
 };
 
 /* Kontroll */
 export interface TestContextKontroll {
-  contextKontroll: ContextKontroll;
   testgrunnlag: TestgrunnlagListElement[];
   sideutvalTypeList: SideutvalType[];
   innhaldstypeList: InnhaldstypeTesting[];
 }
 
 export type InngaaendeTestLoadingResponseKontroll = {
-  kontroll: ContextKontroll;
-  testgrunnlag: TestgrunnlagListElement[];
   sideutvalTypeList: SideutvalType[];
   innhaldstypeTestingList: InnhaldstypeTesting[];
-};
-
-export type ContextKontroll = Kontroll & {
-  loeysingList: Loeysing[];
-  testregelList: Testregel[];
 };
 
 export type Testgrunnlag = {
