@@ -73,9 +73,12 @@ export const getSideutvalOptionList = (
 };
 
 export const getInitialPageTypeKontroll = (
-  sideutval: Sideutval[],
-  sideutvalTypeList: SideutvalType[]
+  sideutvalList: Sideutval[],
+  sideutvalTypeList: SideutvalType[],
+  loeysingId: number
 ): PageType => {
+  const sideutval = sideutvalList.filter((su) => su.loeysingId === loeysingId);
+
   const firstInSideutval = sideutval[0];
   if (isNotDefined(firstInSideutval)) {
     throw Error('Det finns ikkje sideutval for test');
@@ -99,10 +102,13 @@ export const getInitialPageTypeKontroll = (
 };
 
 export const toSideutvalTestside = (
-  sideutval: Sideutval[],
+  sideutvalList: Sideutval[],
   sideutvalTypeList: SideutvalType[],
+  loeysingId: number,
   sideutvalId: number
 ): PageType => {
+  const sideutval = sideutvalList.filter((su) => su.loeysingId === loeysingId);
+
   const firstInSideutval = sideutval[0];
   if (isNotDefined(firstInSideutval)) {
     throw Error('Det finns ikkje sideutval for test');

@@ -78,7 +78,11 @@ const TestOverviewLoeysing = () => {
     getSideutvalOptionList(contextKontroll, sideutvalTypeList, loeysingId)
   );
   const [pageType, setPageType] = useState<PageType>(
-    getInitialPageTypeKontroll(contextKontroll.sideutvalList, sideutvalTypeList)
+    getInitialPageTypeKontroll(
+      contextKontroll.sideutvalList,
+      sideutvalTypeList,
+      loeysingId
+    )
   );
 
   const [progressionPercent, setProgressionPercent] = useState(
@@ -205,6 +209,7 @@ const TestOverviewLoeysing = () => {
         const nextSideutvalTestside = toSideutvalTestside(
           contextKontroll.sideutvalList,
           sideutvalTypeList,
+          loeysingId,
           sideutvalIdNumeric
         );
         setPageType(nextSideutvalTestside);
