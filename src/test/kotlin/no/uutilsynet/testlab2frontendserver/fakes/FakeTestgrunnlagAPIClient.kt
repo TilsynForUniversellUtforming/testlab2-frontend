@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.fakes
 
-import java.net.URI
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
@@ -15,7 +14,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
 
   override fun createTestgrunnlag(
       nyttTestgrunnlag: TestgrunnlagAPIClient.NyttTestgrunnlag
-  ): Result<URI> {
+  ): Result<KontrollResource.TestgrunnlagDTO> {
     val id = fakeId()
     val testgrunnlag =
         KontrollResource.TestgrunnlagDTO(
@@ -45,7 +44,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
                 },
             datoOppretta = Instant.now())
     database[id] = testgrunnlag
-    return Result.success(URI.create("http://localhost:8080/testgrunnlag/$id"))
+    return Result.success(testgrunnlag)
   }
 
   override fun getTestgrunnlag(kontrollId: Int): Result<List<KontrollResource.TestgrunnlagDTO>> {

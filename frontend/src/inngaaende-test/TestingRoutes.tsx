@@ -1,12 +1,19 @@
 import ErrorCard from '@common/error/ErrorCard';
+import { take } from '@common/util/arrayUtils';
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import {
+  createTestResultat,
   deleteTestgrunnlag,
   getTestResults,
   listTestgrunnlag,
   postTestgrunnlag,
+  updateTestResultat,
 } from '@test/api/testing-api';
-import { ResultatManuellKontroll } from '@test/api/types';
+import {
+  CreateTestResultat,
+  ResultatManuellKontroll,
+  Svar,
+} from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import {
@@ -53,6 +60,20 @@ export const TESTREGEL_DEMO: AppRoute = {
   path: `demo/${idPath}`,
   parentRoute: TEST_ROOT,
 };
+
+function finnSvarTilNyttResultat(resultat: ResultatManuellKontroll): Svar[] {
+  if (!resultat.elementOmtale) {
+    return [];
+  }
+
+  const index = resultat.svar.findIndex(
+    (s) => s.svar === resultat.elementOmtale
+  );
+  if (index === -1) {
+    return [];
+  }
+  return take(resultat.svar, index + 1);
+}
 
 export const TestingRoutes: RouteObject = {
   path: TEST_ROOT.path,
@@ -160,8 +181,25 @@ export const TestingRoutes: RouteObject = {
           action: async ({ request }) => {
             switch (request.method) {
               case 'POST': {
-                const nyttTestgrunnlag = await request.json();
-                return await postTestgrunnlag(nyttTestgrunnlag);
+                const { nyttTestgrunnlag, resultater } = await request.json();
+                const opprettetTestgrunnlag =
+                  await postTestgrunnlag(nyttTestgrunnlag);
+
+                const resultaterPromises = resultater.map(
+                  async (r: ResultatManuellKontroll) => {
+                    const nyttResultat: CreateTestResultat = {
+                      testgrunnlagId: opprettetTestgrunnlag.id,
+                      loeysingId: r.loeysingId,
+                      testregelId: r.testregelId,
+                      sideutvalId: r.sideutvalId,
+                    };
+                    const testResultat = await createTestResultat(nyttResultat);
+                    const svar = finnSvarTilNyttResultat(r);
+                    const medSvar = { ...testResultat, svar };
+                    await updateTestResultat(medSvar);
+                  }
+                );
+                return await Promise.all(resultaterPromises);
               }
               case 'DELETE': {
                 const testgrunnlag: Testgrunnlag = await request.json();

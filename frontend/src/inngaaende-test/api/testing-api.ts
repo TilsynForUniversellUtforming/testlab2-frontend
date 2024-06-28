@@ -113,7 +113,7 @@ export const listTestgrunnlag = async (
 
 export const postTestgrunnlag = async (nyttTestgrunnlag: {
   kontrollId: number;
-}) => {
+}): Promise<Testgrunnlag> => {
   return await fetchWrapper(
     `/api/v1/kontroller/${nyttTestgrunnlag.kontrollId}/testgrunnlag`,
     {
@@ -123,6 +123,8 @@ export const postTestgrunnlag = async (nyttTestgrunnlag: {
       },
       body: JSON.stringify(nyttTestgrunnlag),
     }
+  ).then((response) =>
+    responseToJson(response, 'Kunne ikkje opprette testgrunnlag')
   );
 };
 

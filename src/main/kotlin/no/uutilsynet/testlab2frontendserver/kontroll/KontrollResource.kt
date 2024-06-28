@@ -127,11 +127,11 @@ class KontrollResource(
   fun nyttTestgrunnlag(
       @PathVariable kontrollId: Int,
       @RequestBody nyttTestgrunnlag: TestgrunnlagAPIClient.NyttTestgrunnlag
-  ): ResponseEntity<Unit> {
+  ): ResponseEntity<TestgrunnlagDTO> {
     return testgrunnlagAPIClient
         .createTestgrunnlag(nyttTestgrunnlag)
         .fold(
-            { ResponseEntity.created(it).build() },
+            { ResponseEntity.ok(it) },
             {
               logger.error("Klarte ikkje å opprette testgrunnlag: $it")
               ResponseEntity.internalServerError().build()
@@ -185,7 +185,7 @@ class KontrollResource(
   }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
-    return resultat.isEmpty()
+    return resultat.all { it.status == ResultatManuellKontroll.Status.IkkjePaabegynt }
   }
 
   data class SideutvalType(

@@ -35,34 +35,35 @@ export type TestOverviewLoaderData = {
   testgrunnlag: Testgrunnlag[];
 };
 
-export function antallTester(
-  testgrunnlag: Testgrunnlag,
-  loeysingId: number
-): number {
-  const antallTestregler = testgrunnlag.testreglar.length;
-  const antallSideutval = testgrunnlag.sideutval.filter(
-    (su) => su.loeysingId === loeysingId
-  ).length;
-  return antallTestregler * antallSideutval;
-}
-
 export function teststatus(
   resultatliste: ResultatManuellKontroll[],
   testgrunnlag: Testgrunnlag,
   loeysingId: number
 ): ManuellTestStatus {
-  const tester = antallTester(testgrunnlag, loeysingId);
   const resultater = resultatliste.filter((r) => r.loeysingId === loeysingId);
+  const kombinasjoner = testgrunnlag.testreglar.flatMap((tr) =>
+    testgrunnlag.sideutval
+      .filter((s) => s.loeysingId === loeysingId)
+      .map((s) => [tr.id, s.id])
+  );
 
-  if (resultater.length === 0) {
+  if (resultater.every((r) => r.status === 'IkkjePaabegynt')) {
     return 'ikkje-starta';
-  } else if (
-    resultater.length === tester &&
-    resultater.every((r) => r.status === 'Ferdig')
-  ) {
-    return 'ferdig';
   } else {
-    return 'under-arbeid';
+    if (
+      kombinasjoner.every(([testregelId, sideutvalId]) =>
+        resultater.some(
+          (r) =>
+            r.testregelId === testregelId &&
+            r.sideutvalId === sideutvalId &&
+            r.status === 'Ferdig'
+        )
+      )
+    ) {
+      return 'ferdig';
+    } else {
+      return 'under-arbeid';
+    }
   }
 }
 
@@ -72,8 +73,8 @@ export function visRetestKnapp(
   alleTestgrunnlag: Testgrunnlag[],
   resultater: ResultatManuellKontroll[]
 ) {
-  const testgrunnlagForKontroll = alleTestgrunnlag
-    .filter((t) => t.kontrollId === testgrunnlag.kontrollId)
+  const testgrunnlagForLoeysing = alleTestgrunnlag
+    .filter((t) => t.sideutval.some((s) => s.loeysingId === loeysingId))
     .toSorted((a, b) => {
       const aTime = Date.parse(a.datoOppretta);
       const bTime = Date.parse(b.datoOppretta);
@@ -85,7 +86,7 @@ export function visRetestKnapp(
   return (
     teststatus(resultaterForLoeysing, testgrunnlag, loeysingId) === 'ferdig' &&
     resultaterForLoeysing.some((r) => r.elementResultat === 'brot') &&
-    last(testgrunnlagForKontroll)?.id === testgrunnlag.id
+    last(testgrunnlagForLoeysing)?.id === testgrunnlag.id
   );
 }
 
@@ -146,7 +147,10 @@ const TestOverview = () => {
         ),
         testregelIdList: rs.map((r) => r.testregelId),
       };
-      submit(nyttTestgrunnlag, { method: 'post', encType: 'application/json' });
+      submit(
+        { nyttTestgrunnlag, resultater: rs },
+        { method: 'post', encType: 'application/json' }
+      );
     }
   }
 
