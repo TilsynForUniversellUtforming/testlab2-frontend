@@ -1,8 +1,4 @@
-import {
-  findTypeKontroll,
-  getSeverity,
-  scoreToPercentage,
-} from '@common/table/util';
+import { getSeverity, scoreToPercentage } from '@common/table/util';
 import { Tag } from '@digdir/designsystemet-react';
 import { fetchResultatPrTemaFilter } from '@resultat/resultat-api';
 import ResultatTable from '@resultat/ResultatTable';
@@ -62,14 +58,36 @@ const ResultatListTemaApp = () => {
     return {};
   };
 
-  const getNewResult = useCallback(async (kontrollType?: TypeKontroll) => {
-    const newResult = await fetchResultatPrTemaFilter(undefined, kontrollType);
-    setResultat(newResult);
-  }, []);
+  const getNewResult = useCallback(
+    async (
+      kontrollId?: number,
+      kontrollType?: TypeKontroll,
+      fraDato?: string,
+      tilDato?: string
+    ) => {
+      const newResult = await fetchResultatPrTemaFilter(
+        undefined,
+        kontrollType,
+        fraDato,
+        tilDato
+      );
+      setResultat(newResult);
+    },
+    []
+  );
 
-  const onSubmitFilter = (value: string) => {
-    const kontrollType = findTypeKontroll(value);
-    getNewResult(kontrollType);
+  const onSubmitFilter = (
+    kontrollId?: number,
+    kontrollType?: TypeKontroll,
+    fraDato?: Date,
+    tilDato?: Date
+  ) => {
+    getNewResult(
+      kontrollId,
+      kontrollType,
+      fraDato?.toISOString().split('T')?.[0],
+      tilDato?.toISOString().split('T')?.[0]
+    );
   };
 
   return (

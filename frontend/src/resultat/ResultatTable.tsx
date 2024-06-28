@@ -20,6 +20,7 @@ import {
 } from '@resultat/ResultatRoutes';
 import ResultTableHeader from '@resultat/ResultTableHeader';
 import { resultTable } from '@resultat/tableoptions';
+import { TypeKontroll } from '@resultat/types';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useState } from 'react';
@@ -42,7 +43,12 @@ export interface ResultTableProps<T extends object> {
   loeysingNamn?: string;
   hasFilter?: boolean;
   subHeader?: string;
-  onSubmitCallback?: (value: string) => void;
+  onSubmitCallback?: (
+    kontrollId?: number,
+    kontrollType?: TypeKontroll,
+    fraDato?: Date,
+    tilDato?: Date
+  ) => void;
 }
 
 /**
