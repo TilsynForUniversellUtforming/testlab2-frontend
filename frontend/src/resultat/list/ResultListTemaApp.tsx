@@ -62,17 +62,14 @@ const ResultatListTemaApp = () => {
     return {};
   };
 
-  const getNewResult = useCallback(async (kontrollType: TypeKontroll) => {
+  const getNewResult = useCallback(async (kontrollType?: TypeKontroll) => {
     const newResult = await fetchResultatPrTemaFilter(undefined, kontrollType);
     setResultat(newResult);
   }, []);
 
   const onSubmitFilter = (value: string) => {
     const kontrollType = findTypeKontroll(value);
-
-    if (kontrollType) {
-      getNewResult(kontrollType);
-    }
+    getNewResult(kontrollType);
   };
 
   return (

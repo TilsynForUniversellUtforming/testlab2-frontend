@@ -98,7 +98,7 @@ class ResultatResource(
   @GetMapping("tema")
   fun getResultatPrTema(
       @RequestParam kontrollId: Int?,
-      @RequestParam kontrollType: KontrollType?,
+      @RequestParam kontrollType: String?,
       @RequestParam fraDato: LocalDate?,
       @RequestParam tilDato: LocalDate?
   ): List<ResultatTema> {

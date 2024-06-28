@@ -79,6 +79,9 @@ const ResultTableHeader = <T extends object>({
   );
 
   const onClear = () => {
+    if (onSubmitCallback) {
+      onSubmitCallback('');
+    }
     setSearchValue('');
   };
 
