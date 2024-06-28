@@ -20,11 +20,10 @@ const KlageInputs = ({ klageType }: { klageType: KlageType }) => {
 
   return (
     <>
-      <input type="hidden" value={klageType} name={`${klageName}.klageType`} />
-      <TestlabFormInput<Styringsdata> label="Klage mottatt dato" name={`${klageName}.klageMottattDato`} type="date" required />
+      <TestlabFormInput<Styringsdata> label="Klage mottatt dato" name={`${klageName}.klageMottattDato`} type="date" />
       <TestlabFormInput<Styringsdata> label="Klage avgjort dato" name={`${klageName}.klageAvgjortDato`} type="date" />
       <TestlabFormSelect<Styringsdata> options={options} label="Resultat klage tilsynet" name={`${klageName}.resultatKlageTilsyn`} />
-      <TestlabFormInput<Styringsdata> label="Klage mottatt departement dato" name={`${klageName}.klageDatoDepartement`} type="date" />
+      <TestlabFormInput<Styringsdata> label="Klage sendt til departementet" name={`${klageName}.klageDatoDepartement`} type="date" />
       <TestlabFormSelect<Styringsdata> options={options} label="Resultat klage departement" name={`${klageName}.resultatKlageDepartement`} />
     </>
     )
@@ -35,14 +34,40 @@ const StyringsdataForm = () => {
   const { kontroll, styringsdata } = useLoaderData() as StyringsdataLoaderData;
   const formMethods = useForm<Styringsdata>({
     defaultValues: {
-      ansvarlig: styringsdata?.ansvarlig ?? '',
-      opprettet: styringsdata?.opprettet,
+      ansvarleg: styringsdata?.ansvarleg ?? '',
+      oppretta: styringsdata?.oppretta,
       frist: styringsdata?.frist,
-      reaksjon: styringsdata?.reaksjon ?? false,
-      bot: styringsdata?.bot ?? undefined,
-      botKlage: styringsdata?.botKlage ?? undefined,
-      paalegg: styringsdata?.paalegg ?? undefined,
-      paaleggKlage: styringsdata?.paaleggKlage ?? undefined
+      reaksjon: styringsdata?.reaksjon ?? 'ingen-reaksjon',
+      paalegg: styringsdata?.paalegg ?? {
+        frist: undefined,
+        vedtakDato: undefined,
+      },
+      paaleggKlage: styringsdata?.paaleggKlage ?? {
+        klageType: undefined,
+        klageMottattDato: undefined,
+        klageAvgjortDato: undefined,
+        resultatKlageTilsyn: undefined,
+        klageDatoDepartement: undefined,
+        resultatKlageDepartement: undefined,
+      },
+      bot: styringsdata?.bot ?? {
+        beloepDag: undefined,
+        oekingEtterDager: undefined,
+        oekningType: 'kroner',
+        oekingSats: undefined,
+        vedtakDato: undefined,
+        startDato: undefined,
+        sluttDato: undefined,
+        kommentar: undefined,
+      },
+      botKlage: styringsdata?.botKlage ?? {
+        klageType: undefined,
+        klageMottattDato: undefined,
+        klageAvgjortDato: undefined,
+        resultatKlageTilsyn: undefined,
+        klageDatoDepartement: undefined,
+        resultatKlageDepartement: undefined,
+      },
     },
     mode: 'onBlur',
     resolver: zodResolver(styringsdataValidationSchema),
@@ -51,14 +76,12 @@ const StyringsdataForm = () => {
   const { watch, formState } = formMethods;
 
   const onSubmit = (data: Styringsdata) => {
-    console.log(data)
+    console.log('SUBMIT:',data)
   }
 
-  const reaksjon = watch("reaksjon", false);
+  const reaksjon = watch("reaksjon", 'ingen-reaksjon');
 
   console.log(formState.errors)
-
-
 
   return (
     <div className={classes.styringsdata}>
@@ -76,8 +99,8 @@ const StyringsdataForm = () => {
         className={classes.styringsdataForm}
         hasRequiredFields
       >
-        <TestlabFormInput<Styringsdata> label="Ansvarlig" name="ansvarlig" required/>
-        <TestlabFormInput<Styringsdata> label="Opprettet" name="opprettet" type="date" required/>
+        <TestlabFormInput<Styringsdata> label="Ansvarleg" name="ansvarleg" required/>
+        <TestlabFormInput<Styringsdata> label="Oppretta" name="oppretta" type="date" required/>
         <TestlabFormInput<Styringsdata> label="Frist for gjennomføring" name="frist" type="date" required/>
         <Heading level={3} size="small">
           Saksbehandling
@@ -91,9 +114,9 @@ const StyringsdataForm = () => {
         <TestlabFormSelect<Styringsdata>
           label="Aktivitet"
           description="Er det forventet å bruke reaksjoner til denne løsningen?"
-          options={[{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }]}
+          options={[{ value: 'reaksjon', label: 'Ja' }, { value: 'ingen-reaksjon', label: 'Nei' }]}
           name="reaksjon" radio/>
-        {String(reaksjon) === 'true' && <Accordion
+        {reaksjon === 'reaksjon' && <Accordion
           color="first"
           border
         >
@@ -103,8 +126,8 @@ const StyringsdataForm = () => {
             </Accordion.Header>
             <Accordion.Content>
               <TestlabFormInput<Styringsdata> label="Pålegg vedtak dato" name="paalegg.vedtakDato" type="date"
-                                              required/>
-              <TestlabFormInput<Styringsdata> label="Pålegg frist" name="paalegg.frist" type="date" required/>
+                                              />
+              <TestlabFormInput<Styringsdata> label="Pålegg frist" name="paalegg.frist" type="date" />
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item>
@@ -120,18 +143,18 @@ const StyringsdataForm = () => {
               Bot
             </Accordion.Header>
             <Accordion.Content>
-              <TestlabFormInput<Styringsdata> label="Tvangsmulkt beløp" name="bot.beloepDag" required/>
-              <TestlabFormInput<Styringsdata> label="Antall dager før økning" name="bot.oekingEtterDater" required/>
+              <TestlabFormInput<Styringsdata> label="Bot (tvangsmulkt) beløp" name="bot.beloepDag" />
+              <TestlabFormInput<Styringsdata> label="Antall dager før økning" name="bot.oekingEtterDager" />
               <div className={classes.oekingType}>
-                <TestlabFormInput<Styringsdata> label="Økning pr dag" name="bot.oekingSats" required/>
+                <TestlabFormInput<Styringsdata> label="Økning pr dag" name="bot.oekingSats" />
                 <TestlabFormSelect<Styringsdata>
                   label={''}
                   options={[{ value: 'kroner', label: 'NOK' }, { value: 'prosent', label: '%' }]}
                   name="bot.oekningType" radio radioInline/>
               </div>
-              <TestlabFormInput<Styringsdata> label="Når ble vedtak om mulkt iverksatt?" name="bot.vedakDato" required/>
-              <TestlabFormInput<Styringsdata> label="Startdato for mulkt" name="bot.startDato" required/>
-              <TestlabFormInput<Styringsdata> label="Sluttdato for tvangsmulkt" name="bot.sluttDato" required/>
+              <TestlabFormInput<Styringsdata> label="Når ble vedtak om bot iverksatt?" name="bot.vedtakDato" type="date" />
+              <TestlabFormInput<Styringsdata> label="Startdato for bot" name="bot.startDato" type="date" />
+              <TestlabFormInput<Styringsdata> label="Sluttdato for bot" name="bot.sluttDato" type="date" />
               <TestlabFormTextArea<Styringsdata> label="Kommentar" name="bot.kommentar"/>
             </Accordion.Content>
           </Accordion.Item>

@@ -6,6 +6,8 @@ export type KlageType = 'paalegg' | 'bot';
 
 export type BotOekningType = 'kroner' | 'prosent' | 'ikkje-relevant';
 
+export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
+
 export type Paalegg = {
   vedtakDato: Date;
   frist: Date;
@@ -22,20 +24,20 @@ export type Klage = {
 
 type Bot = {
   beloepDag: number;
-  oekingEtterDater: number;
+  oekingEtterDager: number;
   oekningType: BotOekningType;
   oekingSats: number;
-  vedakDato: Date;
+  vedtakDato: Date;
   startDato: Date;
   sluttDato: Date;
   kommentar?: string;
 };
 
 export type Styringsdata = {
-  ansvarlig: string;
-  opprettet: Date;
+  ansvarleg: string;
+  oppretta: Date;
   frist: Date;
-  reaksjon: boolean;
+  reaksjon: ReaksjonsType;
   paalegg?: Paalegg;
   paaleggKlage?: Klage;
   bot?: Bot;

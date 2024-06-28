@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isDefined } from '@common/util/validationUtils';
 
 const resultatKlageSchema = z.union([
   z.literal('stadfesta'),
@@ -7,68 +8,160 @@ const resultatKlageSchema = z.union([
   z.literal('oppheva')
 ]);
 
-const klageTypeSchema = z.union([
-  z.literal('paalegg'),
-  z.literal('bot')
-]);
-
-const botOekingShema = z.union([
+const botOekingSchema = z.union([
   z.literal('kroner'),
   z.literal('prosent'),
   z.literal('ikkje-relevant')
 ]);
 
-const paaleggShema = z.object({
+const reaksjonsType = z.union([
+  z.literal('reaksjon'),
+  z.literal('ingen-reaksjon'),
+]);
+
+const styringsdataBaseScehma = z.object({
+  ansvarleg: z.string().min(1, 'Ansvarleg manglar'),
+  oppretta: z.string().date('Ugyldig dato'),
+  frist: z.string().date('Ugyldig dato'),
+  reaksjon: reaksjonsType,
+});
+
+const paaleggSchema = z.object({
   vedtakDato: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
   frist: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
-}).superRefine((data, ctx) => {
-  if (!!data.vedtakDato !== !!data.frist) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'Både vedtak og frist må settes',
-      path: [`${!!data.vedtakDato ? 'frist' : 'vedtakDato'}`]
-    });
-  }
-
-  if (data.frist < data.vedtakDato) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'Frist må være etter vedtaksdato',
+}).refine((data) =>
+  data.frist && data.vedtakDato && data.frist > data.vedtakDato, {
+      message: 'Frist må vera etter vedtaksdato',
       path: ['frist']
-    });
   }
-})
+);
 
 const botSchema = z.object({
-  beloepDag: z.coerce.number().positive('Bot må vera positiv'),
-  oekingEtterDater: z.coerce.number().positive('Øking må vera positiv'),
-  oekningType: botOekingShema,
-  oekingSats: z.coerce.number().positive('Sats må vera positiv'),
-  vedakDato: z.string().date('Ugyldig dato'),
-  startDato: z.string().date('Ugyldig dato'),
-  sluttDato: z.string().date('Ugyldig dato'),
+  beloepDag: z.coerce.number().positive('Bot må vera positiv').or(z.literal('')),
+  oekingEtterDager: z.coerce.number().positive('Øking må vera positiv').or(z.literal('')),
+  oekningType: botOekingSchema.optional().or(z.literal('')),
+  oekingSats: z.coerce.number().positive('Sats må vera positiv').or(z.literal('')),
+  vedtakDato: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
+  startDato: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
+  sluttDato: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
   kommentar: z.string().optional(),
+}).superRefine((data, ctx) => {
+
+  const {
+    beloepDag,
+    oekingEtterDager,
+    oekingSats,
+    vedtakDato,
+    startDato,
+    sluttDato,
+  } = data;
+
+  if ((beloepDag || oekingSats) && !oekingEtterDager) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Øking manglar',
+      path: ['oekingEtterDager']
+    });
+  }
+
+  if ((oekingEtterDager || oekingSats) && !beloepDag) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Beløp manglar',
+      path: ['beloepDag']
+    });
+  }
+
+  if ((oekingEtterDager || beloepDag) && !oekingSats) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Sats manglar',
+      path: ['oekingSats']
+    });
+  }
+
+  if (startDato && vedtakDato && startDato < vedtakDato) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Startdato kan ikkje vera før vedtaket',
+      path: ['startDato']
+    });
+  }
+
+  if (sluttDato && vedtakDato && sluttDato < vedtakDato) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Sluttdato kan ikkje vera før vedtaket',
+      path: ['sluttDato']
+    });
+  }
 });
 
 const klageSchema = z.object({
-  klageType: klageTypeSchema,
-  klageMottattDato: z.string().date('Ugyldig dato'),
-  klageAvgjortDato: z.string().date('Ugyldig dato').optional()
-    .or(z.literal('')),
-  resultatKlageTilsyn: resultatKlageSchema.optional(),
-  klageDatoDepartement: z.string().date('Ugyldig dato').optional()
-    .or(z.literal('')),
-  resultatKlageDepartement: resultatKlageSchema.optional(),
+  klageMottattDato: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
+  klageAvgjortDato: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
+  resultatKlageTilsyn: resultatKlageSchema.optional().or(z.literal('')),
+  klageDatoDepartement: z.coerce.date({ message: 'Ugyldig dato' }).or(z.literal('')),
+  resultatKlageDepartement: resultatKlageSchema.optional().or(z.literal('')),
+}).superRefine((data, ctx) => {
+  const {
+    klageMottattDato,
+    klageAvgjortDato,
+    resultatKlageTilsyn,
+    klageDatoDepartement,
+    resultatKlageDepartement
+  } = data;
+
+  if (klageAvgjortDato && !klageMottattDato) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Mottat dato er påkrevd',
+      path: ['klageMottattDato']
+    });
+  }
+
+  if (klageMottattDato && klageAvgjortDato && klageAvgjortDato < klageMottattDato) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Dato for avgjort klage må vera etter klagedato',
+      path: ['klageAvgjortDato']
+    });
+  }
+
+  if (klageAvgjortDato && !resultatKlageTilsyn) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Resultat manglar',
+      path: ['resultatKlageTilsyn']
+    });
+  }
+
+  if (resultatKlageTilsyn && !klageAvgjortDato) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Avgjort dato manglar',
+      path: ['klageAvgjortDato']
+    });
+  }
+
+  if (resultatKlageDepartement && !klageDatoDepartement) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'Sendt dato manglar',
+      path: ['klageDatoDepartement']
+    });
+  }
 });
 
 export const styringsdataValidationSchema = z.object({
-  ansvarlig: z.string().min(1, 'Mangler ansvarlig'),
-  opprettet: z.string().date('Ugyldig dato'),
+  ansvarleg: z.string().min(1, 'Ansvarleg manglar'),
+  oppretta: z.string().date('Ugyldig dato'),
   frist: z.string().date('Ugyldig dato'),
-  reaksjon: z.coerce.boolean(),
-  paalegg: paaleggShema,
+  reaksjon: reaksjonsType,
+  paalegg: paaleggSchema.optional(),
   paaleggKlage: klageSchema.optional(),
   bot: botSchema.optional(),
   botKlage: klageSchema.optional(),
-})
-
+}).superRefine((data, ctx) => {
+  console.log(isDefined(data.paalegg))
+});
