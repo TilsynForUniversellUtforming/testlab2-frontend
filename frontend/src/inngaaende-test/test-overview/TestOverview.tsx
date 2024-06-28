@@ -4,16 +4,30 @@ import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { isEmpty, last } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import { Alert, Button, Heading, Paragraph, Tag, } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
+import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import { ManuellTestStatus, TestContextKontroll, Testgrunnlag, } from '@test/types';
+import { ManuellTestStatus, Testgrunnlag } from '@test/types';
 import { useCallback } from 'react';
-import { Link, useLoaderData, useNavigate, useOutletContext, useParams, useSubmit, } from 'react-router-dom';
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from 'react-router-dom';
 
 import classes from './test-overview.module.css';
 
 export type TestOverviewLoaderData = {
+  loeysingList: Loeysing[];
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
 };
@@ -81,18 +95,17 @@ function visSlettKnapp(
 
 const TestOverview = () => {
   const { id } = useParams();
-  const { contextKontroll }: TestContextKontroll = useOutletContext();
+  const kontrollId = Number(id);
+
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const { resultater, testgrunnlag } =
+  const { loeysingList, resultater, testgrunnlag } =
     useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
   const onChangeLoeysing = useCallback(
     async (testgrunnlag: Testgrunnlag, loeysingId: number) => {
-      const loeysing = contextKontroll.loeysingList.find(
-        (l) => l.id === loeysingId
-      );
+      const loeysing = loeysingList.find((l) => l.id === loeysingId);
       if (!loeysing || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
       } else {
@@ -109,24 +122,25 @@ const TestOverview = () => {
         );
       }
     },
-    [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
+    [loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
-  function retest(testgrunnlag: Testgrunnlag) {
-    const res = resultater
+  function retest(testgrunnlag: Testgrunnlag, loeysingId: number) {
+    const rs = resultater
       .filter((r) => r.testgrunnlagId === testgrunnlag.id)
+      .filter((r) => r.loeysingId === loeysingId)
       .filter((r) => r.elementResultat === 'brot');
-    if (isEmpty(res)) {
+    if (isEmpty(rs)) {
       console.debug('ingen brot');
     } else {
       const nyttTestgrunnlag = {
-        kontrollId: contextKontroll.id,
-        namn: `Retest for kontroll ${contextKontroll.id}`,
+        kontrollId: kontrollId,
+        namn: `Retest for kontroll ${kontrollId}`,
         type: 'RETEST',
         sideutval: testgrunnlag.sideutval.filter((s) =>
-          res.map((r) => r.loeysingId).includes(s.loeysingId)
+          rs.map((r) => r.loeysingId).includes(s.loeysingId)
         ),
-        testregelIdList: res.map((r) => r.testregelId),
+        testregelIdList: rs.map((r) => r.testregelId),
       };
       submit(nyttTestgrunnlag, { method: 'post', encType: 'application/json' });
     }
@@ -161,9 +175,8 @@ const TestOverview = () => {
             const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
 
             const namn =
-              contextKontroll.loeysingList.find(
-                (loeysing) => loeysing.id === loeysingId
-              )?.namn ?? '';
+              loeysingList.find((loeysing) => loeysing.id === loeysingId)
+                ?.namn ?? '';
 
             const status = teststatus(
               resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id),
@@ -223,7 +236,7 @@ const TestOverview = () => {
                     ) && (
                       <Button
                         variant="secondary"
-                        onClick={() => retest(etTestgrunnlag)}
+                        onClick={() => retest(etTestgrunnlag, loeysingId)}
                       >
                         Retest
                       </Button>
@@ -238,9 +251,7 @@ const TestOverview = () => {
                       </Button>
                     )}
                     <Link to={`${loeysingId}/styringsdata`}>
-                      <Button >
-
-                      </Button>
+                      <Button>Styringsdata</Button>
                     </Link>
                   </div>
                 </div>
