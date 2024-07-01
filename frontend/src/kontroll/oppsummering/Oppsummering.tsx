@@ -1,6 +1,14 @@
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import { Alert, Button, Heading, Ingress, Pagination, Paragraph, Tag, } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Heading,
+  Ingress,
+  Pagination,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { Verksemd } from '@verksemder/api/types';
@@ -71,17 +79,19 @@ export function Oppsummering() {
           {oppsummeringsItem.namn}
         </Heading>
         <div className={classes.listeelementData}>
-        <div className={classes.nettstederOgMobilapper}>
-          <div className={classes.nettsteder}>
-            {chooseIcon(oppsummeringsItem.loeysingCount)}
-            {oppsummeringsItem.loeysingCount}{' '}
-            {oppsummeringsItem.loeysingCount === 1 ? 'nettsted' : 'nettsteder'}
+          <div className={classes.nettstederOgMobilapper}>
+            <div className={classes.nettsteder}>
+              {chooseIcon(oppsummeringsItem.loeysingCount)}
+              {oppsummeringsItem.loeysingCount}{' '}
+              {oppsummeringsItem.loeysingCount === 1
+                ? 'nettsted'
+                : 'nettsteder'}
+            </div>
+            <div className={classes.mobilapper}>
+              {chooseIcon(mobilapper)}
+              {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
+            </div>
           </div>
-          <div className={classes.mobilapper}>
-            {chooseIcon(mobilapper)}
-            {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
-          </div>
-        </div>
         </div>
       </li>
     );

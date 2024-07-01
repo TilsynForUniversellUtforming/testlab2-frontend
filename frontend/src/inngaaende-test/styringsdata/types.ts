@@ -1,6 +1,8 @@
-import { Kontroll } from '../../kontroll/types';
-
-export type ResultatKlage = 'stadfesta' | 'delvis-omgjort' | 'omgjort' | 'oppheva';
+export type ResultatKlage =
+  | 'stadfesta'
+  | 'delvis-omgjort'
+  | 'omgjort'
+  | 'oppheva';
 
 export type KlageType = 'paalegg' | 'bot';
 
@@ -11,7 +13,7 @@ export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
 export type Paalegg = {
   vedtakDato: Date;
   frist: Date;
-}
+};
 
 export type Klage = {
   klageType: KlageType;
@@ -20,7 +22,7 @@ export type Klage = {
   resultatKlageTilsyn?: ResultatKlage;
   klageDatoDepartement?: Date;
   resultatKlageDepartement?: ResultatKlage;
-}
+};
 
 type Bot = {
   beloepDag: number;
@@ -42,9 +44,12 @@ export type Styringsdata = {
   paaleggKlage?: Klage;
   bot?: Bot;
   botKlage?: Klage;
-}
+};
 
 export type StyringsdataLoaderData = {
-  kontroll: Kontroll,
+  kontrollTittel: string;
+  arkivreferanse: string;
+  loeysingNamn: string;
+  verksemdNamn: string;
   styringsdata: Styringsdata | undefined;
-}
+};

@@ -10,6 +10,15 @@
   width: 75vw;
   max-width: 42rem;
 }
+.buttons,
+.styringsdata-tags {
+  display: flex;
+  gap: 1rem;
+}
+
+.buttons {
+  padding-top: 1rem;
+}
 
 .oeking-type {
   display: flex;

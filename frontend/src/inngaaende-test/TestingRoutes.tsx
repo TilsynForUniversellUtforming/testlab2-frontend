@@ -20,6 +20,7 @@ import {
   listInnhaldstype,
   listTestreglarWithMetadata,
 } from '@testreglar/api/testreglar-api';
+import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
@@ -275,8 +276,15 @@ export const TestingRoutes: RouteObject = {
           path: TEST_STYRINGSDATA.path,
           element: <StyringsdataForm />,
           handle: { name: TEST_STYRINGSDATA.navn },
+          action: async ({ request }) => {
+            const styringsdata = (await request.json()) as Styringsdata;
+            console.log(styringsdata);
+            return null;
+          },
           loader: async ({ params }): Promise<StyringsdataLoaderData> => {
-            const kontrollId = Number(params?.id);
+            const kontrollId = getIdFromParams(params?.id);
+            const loeysingId = getIdFromParams(params?.loeysingId);
+
             const [kontrollPromise, styringsdataPromise] =
               await Promise.allSettled([
                 fetchKontroll(kontrollId),
@@ -308,9 +316,21 @@ export const TestingRoutes: RouteObject = {
               );
             }
 
+            const loeysing = kontroll.utval?.loeysingar?.find(
+              (l) => l.id === loeysingId
+            );
+            let verksemdNamn = loeysing?.orgnummer ?? '';
+            if (loeysing?.verksemdId) {
+              const verksemd = await fetchVerksemd(loeysing.verksemdId);
+              verksemdNamn = verksemd.namn;
+            }
+
             return {
-              kontroll: kontroll,
+              kontrollTittel: kontroll.tittel,
+              arkivreferanse: kontroll.arkivreferanse,
+              loeysingNamn: loeysing?.namn ?? '',
               styringsdata: styringsdataPromise.value,
+              verksemdNamn: verksemdNamn,
             };
           },
         },

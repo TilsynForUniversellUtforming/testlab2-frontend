@@ -41,10 +41,12 @@ export const isNotDefined = <T>(
  * Checks if an object is valid (not null, undefined, and has at least one key).
  * @template T - The type of the object to check.
  * @param {T | undefined | null} objectToCheck - The object to validate.
+ * @param {boolean} strict - If all object keys should have values
  * @returns {boolean} True if the object is valid, otherwise false.
  */
 export const isValidObject = <T extends Record<string, unknown>>(
-  objectToCheck?: T
+  objectToCheck?: T,
+  strict: boolean = true
 ): boolean => {
   if (typeof objectToCheck !== 'object' || objectToCheck === null) {
     return false;
@@ -55,10 +57,17 @@ export const isValidObject = <T extends Record<string, unknown>>(
     return false;
   }
 
-  return keys.every((key) => {
-    const value = objectToCheck[key];
-    return value !== null && value !== undefined && value !== '';
-  });
+  if (strict) {
+    return keys.every((key) => {
+      const value = objectToCheck[key];
+      return value !== null && value !== undefined && value !== '';
+    });
+  } else {
+    return keys.some((key) => {
+      const value = objectToCheck[key];
+      return value !== null && value !== undefined && value !== '';
+    });
+  }
 };
 
 /**

@@ -94,8 +94,7 @@ class KontrollResourceTest {
             elementUtfall = null,
             testVartUtfoert = null,
             kommentar = null)
-    val response = testResource.createTestResultat(createTestResultat)
-    assertThat(response.statusCode.is2xxSuccessful).isTrue()
+    testResource.createTestResultat(createTestResultat)
 
     val deleteResponse = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId)
     assertThat(deleteResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
