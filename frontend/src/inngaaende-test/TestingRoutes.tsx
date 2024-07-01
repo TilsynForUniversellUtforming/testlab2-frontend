@@ -2,6 +2,7 @@ import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import {
   deleteTestgrunnlag,
+  fetchStyringsdata,
   fetchTestResults,
   listTestgrunnlag,
   postTestgrunnlag,
@@ -20,7 +21,6 @@ import {
   listInnhaldstype,
   listTestreglarWithMetadata,
 } from '@testreglar/api/testreglar-api';
-import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 import { defer, Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
@@ -281,58 +281,11 @@ export const TestingRoutes: RouteObject = {
             console.log(styringsdata);
             return null;
           },
-          loader: async ({ params }): Promise<StyringsdataLoaderData> => {
-            const kontrollId = getIdFromParams(params?.id);
-            const loeysingId = getIdFromParams(params?.loeysingId);
-
-            const [kontrollPromise, styringsdataPromise] =
-              await Promise.allSettled([
-                fetchKontroll(kontrollId),
-                fetchStyringsdata_dummy(),
-              ]);
-
-            if (kontrollPromise.status === 'rejected') {
-              throw new Error(
-                `Kunne ikkje hente kontroll med id ${kontrollId}`
-              );
-            }
-
-            const kontrollResponse = kontrollPromise.value;
-
-            if (!kontrollResponse.ok) {
-              if (kontrollResponse.status === 404) {
-                throw new Error(
-                  'Det finnes ikke en kontroll med id ' + kontrollId
-                );
-              } else {
-                throw new Error('Klarte ikke å hente kontrollen.');
-              }
-            }
-            const kontroll: Kontroll = await kontrollResponse.json();
-
-            if (styringsdataPromise.status === 'rejected') {
-              throw new Error(
-                `Kunne ikkje hente styringsdata for kontroll med id ${kontrollId}`
-              );
-            }
-
-            const loeysing = kontroll.utval?.loeysingar?.find(
-              (l) => l.id === loeysingId
-            );
-            let verksemdNamn = loeysing?.orgnummer ?? '';
-            if (loeysing?.verksemdId) {
-              const verksemd = await fetchVerksemd(loeysing.verksemdId);
-              verksemdNamn = verksemd.namn;
-            }
-
-            return {
-              kontrollTittel: kontroll.tittel,
-              arkivreferanse: kontroll.arkivreferanse,
-              loeysingNamn: loeysing?.namn ?? '',
-              styringsdata: styringsdataPromise.value,
-              verksemdNamn: verksemdNamn,
-            };
-          },
+          loader: async ({ params }): Promise<StyringsdataLoaderData> =>
+            fetchStyringsdata(
+              getIdFromParams(params?.id),
+              getIdFromParams(params?.loeysingId)
+            ),
         },
       ],
     },
@@ -343,5 +296,3 @@ export const TestingRoutes: RouteObject = {
     },
   ],
 };
-
-const fetchStyringsdata_dummy = (): Styringsdata | undefined => undefined;
