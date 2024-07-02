@@ -1,7 +1,9 @@
 import { TestlabSeverity } from '@common/types';
-import { Resultat, TypeKontroll } from '@resultat/types';
+import { Resultat } from '@resultat/types';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
 import { FilterFn, FilterMeta, Row } from '@tanstack/react-table';
+
+import { KontrollType } from '../../kontroll/types';
 
 /**
  * Function for adding sorting-prefix to the accessorFn for the react-table,
@@ -65,16 +67,16 @@ export const dateRangeFilter: FilterFn<Resultat> = (
   return before && after;
 };
 
-export const findTypeKontroll = (value: string): TypeKontroll | undefined => {
+export const findTypeKontroll = (value: string): KontrollType | undefined => {
   if (value.length < 2) return undefined;
 
-  const types: TypeKontroll[] = [
-    TypeKontroll.InngaaendeKontroll,
-    TypeKontroll.ForenklaKontroll,
-    TypeKontroll.Tilsyn,
-    TypeKontroll.Statusmaaling,
-    TypeKontroll.UttaleSak,
-    TypeKontroll.Anna,
+  const types: KontrollType[] = [
+    KontrollType.InngaaendeKontroll,
+    KontrollType.ForenklaKontroll,
+    KontrollType.Tilsyn,
+    KontrollType.Statusmaaling,
+    KontrollType.UttaleSak,
+    KontrollType.Anna,
   ];
 
   return types
@@ -84,7 +86,7 @@ export const findTypeKontroll = (value: string): TypeKontroll | undefined => {
 
 const compareSearchStringTypeKontroll = (
   value: string,
-  typeKontroll: TypeKontroll
+  typeKontroll: KontrollType
 ): boolean => {
   return typeKontroll.toLowerCase().startsWith(value.toLowerCase());
 };

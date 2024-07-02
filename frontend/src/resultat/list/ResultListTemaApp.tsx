@@ -2,10 +2,12 @@ import { getSeverity, scoreToPercentage } from '@common/table/util';
 import { Tag } from '@digdir/designsystemet-react';
 import { fetchResultatPrTemaFilter } from '@resultat/resultat-api';
 import ResultatTable from '@resultat/ResultatTable';
-import { ResultatTema, TypeKontroll } from '@resultat/types';
+import { ResultatTema } from '@resultat/types';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
 import React, { useCallback } from 'react';
 import { useLoaderData } from 'react-router-dom';
+
+import { KontrollType } from '../../kontroll/types';
 
 const ResultatListTemaApp = () => {
   const data: Array<ResultatTema> = useLoaderData() as Array<ResultatTema>;
@@ -61,7 +63,7 @@ const ResultatListTemaApp = () => {
   const getNewResult = useCallback(
     async (
       kontrollId?: number,
-      kontrollType?: TypeKontroll,
+      kontrollType?: KontrollType,
       fraDato?: string,
       tilDato?: string
     ) => {
@@ -78,7 +80,7 @@ const ResultatListTemaApp = () => {
 
   const onSubmitFilter = (
     kontrollId?: number,
-    kontrollType?: TypeKontroll,
+    kontrollType?: KontrollType,
     fraDato?: Date,
     tilDato?: Date
   ) => {

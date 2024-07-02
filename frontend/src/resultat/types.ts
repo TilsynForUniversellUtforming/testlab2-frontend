@@ -50,12 +50,3 @@ export type ViolationsData = {
   kontrollData: ResultatOversiktLoeysing[];
   krav: Krav;
 };
-
-export enum TypeKontroll {
-  InngaaendeKontroll = 'InngaaendeKontroll',
-  ForenklaKontroll = 'ForenklaKontroll',
-  Tilsyn = 'Tilsyn',
-  Statusmaaling = 'Statusmaaling',
-  UttaleSak = 'UttaleSak',
-  Anna = 'Anna',
-}

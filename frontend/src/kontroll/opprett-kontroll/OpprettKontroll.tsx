@@ -36,7 +36,7 @@ export default function OpprettKontroll() {
   const formMethods = useForm<KontrollInit>({
     defaultValues: {
       id: kontroll?.id ?? undefined,
-      kontrolltype: kontroll?.kontrolltype ?? 'inngaaende-kontroll',
+      kontrolltype: kontroll?.kontrolltype ?? KontrollType.InngaaendeKontroll,
       tittel: kontroll?.tittel ?? '',
       saksbehandler: kontroll?.saksbehandler ?? '',
       sakstype: kontroll?.sakstype ?? 'forvaltningssak',
@@ -102,14 +102,7 @@ export default function OpprettKontroll() {
           label="Velg kontrolltype"
           name="kontrolltype"
           id="kontrolltype"
-          options={createOptionsFromLiteral<KontrollType>([
-            'inngaaende-kontroll',
-            'forenkla-kontroll',
-            'tilsyn',
-            'statusmaaling',
-            'uttalesak',
-            'anna',
-          ])}
+          options={createOptionsFromLiteral<string>(Object.keys(KontrollType))}
           required
           disabled={editMode}
           aria-label={editMode ? 'Kan ikkje endre kontrolltype' : ''}

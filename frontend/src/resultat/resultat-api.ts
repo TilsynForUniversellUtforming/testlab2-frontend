@@ -5,10 +5,10 @@ import {
   Resultat,
   ResultatOversiktLoeysing,
   ResultatTema,
-  TypeKontroll,
   ViolationsData,
 } from '@resultat/types';
 
+import { KontrollType } from '../kontroll/types';
 import { Krav } from '../krav/types';
 
 export const fetchTestresultatAggregert = async (
@@ -91,16 +91,17 @@ export function fetchResultatPrTema(): Promise<ResultatTema[]> {
 
 export async function fetchResultatPrTemaFilter(
   kontrollId?: number,
-  kontrollType?: TypeKontroll,
+  kontrollType?: KontrollType,
   fraDato?: string,
   tilDato?: string
 ): Promise<ResultatTema[]> {
   const params = new URLSearchParams();
+
   if (kontrollId) {
     params.append('kontrollId', String(kontrollId));
   }
-  if (kontrollType) {
-    params.append('kontrollType', kontrollType.valueOf());
+  if (kontrollType && keyInEnum(kontrollType)) {
+    params.append('kontrollType', <string>keyInEnum(kontrollType));
   }
   if (fraDato) {
     params.append('fraDato', fraDato);
@@ -114,4 +115,13 @@ export async function fetchResultatPrTemaFilter(
     {}
   );
   return await responseToJson(response, 'Kunne ikkje hente resultat');
+}
+
+function keyInEnum(type: KontrollType): string | undefined {
+  const enumKey = Object.entries(KontrollType)
+    .filter(([, value]) => value === type)
+    .pop();
+  if (enumKey) {
+    return enumKey[0];
+  }
 }

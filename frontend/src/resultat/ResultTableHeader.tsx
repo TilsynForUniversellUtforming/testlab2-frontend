@@ -2,9 +2,10 @@ import { findTypeKontroll } from '@common/table/util';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Heading, List } from '@digdir/designsystemet-react';
 import ResultatTableFilter from '@resultat/ResultatListFilter';
-import { TypeKontroll } from '@resultat/types';
 import { Column } from '@tanstack/react-table';
 import React, { ChangeEvent, useCallback, useState } from 'react';
+
+import { KontrollType } from '../kontroll/types';
 
 export interface HeaderProps<T extends object> {
   filterColumns?: Column<T, unknown>[];
@@ -14,7 +15,7 @@ export interface HeaderProps<T extends object> {
   subHeader?: string;
   onSubmitCallback?: (
     kontrollId?: number,
-    kontrollType?: TypeKontroll,
+    kontrollType?: KontrollType,
     fraDato?: Date,
     tilDato?: Date
   ) => void;
@@ -31,7 +32,7 @@ const ResultTableHeader = <T extends object>({
   const [searchValue, setSearchValue] = useState('');
   const [beforeDate, setBeforeDate] = useState<Date | undefined>();
   const [afterDate, setAfterDate] = useState<Date | undefined>();
-  const [kontrollType, setKontrollType] = useState<TypeKontroll | undefined>();
+  const [kontrollType, setKontrollType] = useState<KontrollType | undefined>();
 
   const onSearchClick = (value: string) => {
     setKontrollType(findTypeKontroll(searchValue));
