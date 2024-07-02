@@ -250,6 +250,9 @@ const TestOverview = () => {
                         Slett
                       </Button>
                     )}
+                    <Link to={`${loeysingId}/styringsdata`}>
+                      <Button>Styringsdata</Button>
+                    </Link>
                   </div>
                 </div>
               </div>

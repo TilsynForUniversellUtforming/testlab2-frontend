@@ -2,12 +2,15 @@ import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
 import {
   deleteTestgrunnlag,
+  fetchStyringsdata,
   fetchTestResults,
   listTestgrunnlag,
   postTestgrunnlag,
 } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
+import StyringsdataForm from '@test/styringsdata/StyringsdataForm';
+import { Styringsdata, StyringsdataLoaderData } from '@test/styringsdata/types';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import { Testgrunnlag, TestOverviewLoaderResponse } from '@test/types';
 import {
@@ -41,8 +44,14 @@ export const TEST: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
+export const TEST_STYRINGSDATA: AppRoute = {
+  navn: 'Styringsdata for løysing',
+  path: ':loeysingId/styringsdata',
+  parentRoute: TEST,
+};
+
 export const TEST_LOEYSING_KONTROLL: AppRoute = {
-  navn: 'Test løysing testgrunnlag',
+  navn: 'Test løysing',
   path: ':loeysingId/:testgrunnlagId',
   parentRoute: TEST,
 };
@@ -262,6 +271,21 @@ export const TestingRoutes: RouteObject = {
               kontrollTitle: kontroll.tittel,
             };
           },
+        },
+        {
+          path: TEST_STYRINGSDATA.path,
+          element: <StyringsdataForm />,
+          handle: { name: TEST_STYRINGSDATA.navn },
+          action: async ({ request }) => {
+            const styringsdata = (await request.json()) as Styringsdata;
+            console.log(styringsdata);
+            return null;
+          },
+          loader: async ({ params }): Promise<StyringsdataLoaderData> =>
+            fetchStyringsdata(
+              getIdFromParams(params?.id),
+              getIdFromParams(params?.loeysingId)
+            ),
         },
       ],
     },
