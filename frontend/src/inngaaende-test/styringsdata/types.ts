@@ -1,0 +1,55 @@
+export type ResultatKlage =
+  | 'stadfesta'
+  | 'delvis-omgjort'
+  | 'omgjort'
+  | 'oppheva';
+
+export type KlageType = 'paalegg' | 'bot';
+
+export type BotOekningType = 'kroner' | 'prosent' | 'ikkje-relevant';
+
+export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
+
+export type Paalegg = {
+  vedtakDato: Date;
+  frist: Date;
+};
+
+export type Klage = {
+  klageType: KlageType;
+  klageMottattDato: Date;
+  klageAvgjortDato?: Date;
+  resultatKlageTilsyn?: ResultatKlage;
+  klageDatoDepartement?: Date;
+  resultatKlageDepartement?: ResultatKlage;
+};
+
+type Bot = {
+  beloepDag: number;
+  oekingEtterDager: number;
+  oekningType: BotOekningType;
+  oekingSats: number;
+  vedtakDato: Date;
+  startDato: Date;
+  sluttDato: Date;
+  kommentar?: string;
+};
+
+export type Styringsdata = {
+  ansvarleg: string;
+  oppretta: Date;
+  frist: Date;
+  reaksjon: ReaksjonsType;
+  paalegg?: Paalegg;
+  paaleggKlage?: Klage;
+  bot?: Bot;
+  botKlage?: Klage;
+};
+
+export type StyringsdataLoaderData = {
+  kontrollTittel: string;
+  arkivreferanse: string;
+  loeysingNamn: string;
+  verksemdNamn: string;
+  styringsdata: Styringsdata | undefined;
+};
