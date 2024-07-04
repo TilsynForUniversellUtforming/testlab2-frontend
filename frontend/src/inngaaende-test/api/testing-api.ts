@@ -1,12 +1,16 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
+import { Styringsdata } from '@test/styringsdata/types';
 import { Testgrunnlag } from '@test/types';
+import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 
+import { fetchKontroll } from '../../kontroll/kontroll-api';
+import { Kontroll } from '../../kontroll/types';
 import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
 
-export const getTestResults = async (
+export const fetchTestResults = async (
   testgrunnlagId: number
 ): Promise<ResultatManuellKontroll[]> => {
   return await fetch(`${testingApiBaseUrl}/${testgrunnlagId}`, {
@@ -134,3 +138,51 @@ export const deleteTestgrunnlag = async (testgrunnlag: Testgrunnlag) => {
     }
   );
 };
+
+export const fetchStyringsdata = async (
+  kontrollId: number,
+  loeysingId: number
+) => {
+  const [kontrollPromise, styringsdataPromise] = await Promise.allSettled([
+    fetchKontroll(kontrollId),
+    fetchStyringsdata_dummy(),
+  ]);
+
+  if (kontrollPromise.status === 'rejected') {
+    throw new Error(`Kunne ikkje hente kontroll med id ${kontrollId}`);
+  }
+
+  const kontrollResponse = kontrollPromise.value;
+
+  if (!kontrollResponse.ok) {
+    if (kontrollResponse.status === 404) {
+      throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+    } else {
+      throw new Error('Klarte ikke å hente kontrollen.');
+    }
+  }
+  const kontroll: Kontroll = await kontrollResponse.json();
+
+  if (styringsdataPromise.status === 'rejected') {
+    throw new Error(
+      `Kunne ikkje hente styringsdata for kontroll med id ${kontrollId}`
+    );
+  }
+
+  const loeysing = kontroll.utval?.loeysingar?.find((l) => l.id === loeysingId);
+  let verksemdNamn = loeysing?.orgnummer ?? '';
+  if (loeysing?.verksemdId) {
+    const verksemd = await fetchVerksemd(loeysing.verksemdId);
+    verksemdNamn = verksemd.namn;
+  }
+
+  return {
+    kontrollTittel: kontroll.tittel,
+    arkivreferanse: kontroll.arkivreferanse,
+    loeysingNamn: loeysing?.namn ?? '',
+    styringsdata: styringsdataPromise.value,
+    verksemdNamn: verksemdNamn,
+  };
+};
+
+const fetchStyringsdata_dummy = (): Styringsdata | undefined => undefined;

@@ -11,20 +11,16 @@ import {
   Paragraph,
   Tag,
 } from '@digdir/designsystemet-react';
+import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import {
-  ManuellTestStatus,
-  TestContextKontroll,
-  Testgrunnlag,
-} from '@test/types';
+import { ManuellTestStatus, Testgrunnlag } from '@test/types';
 import { useCallback } from 'react';
 import {
   Link,
   useLoaderData,
   useNavigate,
-  useOutletContext,
   useParams,
   useSubmit,
 } from 'react-router-dom';
@@ -33,6 +29,7 @@ import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
 
 export type TestOverviewLoaderData = {
+  loeysingList: Loeysing[];
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
 };
@@ -100,18 +97,17 @@ function visSlettKnapp(
 
 const TestOverview = () => {
   const { id } = useParams();
-  const { contextKontroll }: TestContextKontroll = useOutletContext();
+  const kontrollId = Number(id);
+
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const { resultater, testgrunnlag } =
+  const { loeysingList, resultater, testgrunnlag } =
     useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
   const onChangeLoeysing = useCallback(
     async (testgrunnlag: Testgrunnlag, loeysingId: number) => {
-      const loeysing = contextKontroll.loeysingList.find(
-        (l) => l.id === loeysingId
-      );
+      const loeysing = loeysingList.find((l) => l.id === loeysingId);
       if (!loeysing || !id) {
         setAlert('danger', 'Det oppstod ein feil ved ending av løysing');
       } else {
@@ -128,7 +124,7 @@ const TestOverview = () => {
         );
       }
     },
-    [contextKontroll.loeysingList, testgrunnlag, id, navigate, setAlert]
+    [loeysingList, testgrunnlag, id, navigate, setAlert]
   );
 
   function retest(testgrunnlag: Testgrunnlag, loeysingId: number) {
@@ -140,8 +136,8 @@ const TestOverview = () => {
       console.debug('ingen brot');
     } else {
       const nyttTestgrunnlag = {
-        kontrollId: contextKontroll.id,
-        namn: `Retest for kontroll ${contextKontroll.id}`,
+        kontrollId: kontrollId,
+        namn: `Retest for kontroll ${kontrollId}`,
         type: 'RETEST',
         sideutval: testgrunnlag.sideutval.filter((s) =>
           rs.map((r) => r.loeysingId).includes(s.loeysingId)
@@ -181,9 +177,8 @@ const TestOverview = () => {
             const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
 
             const namn =
-              contextKontroll.loeysingList.find(
-                (loeysing) => loeysing.id === loeysingId
-              )?.namn ?? '';
+              loeysingList.find((loeysing) => loeysing.id === loeysingId)
+                ?.namn ?? '';
 
             const status = teststatus(
               resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id),
@@ -268,6 +263,9 @@ const TestOverview = () => {
                         Slett
                       </Button>
                     )}
+                    <Link to={`${loeysingId}/styringsdata`}>
+                      <Button>Styringsdata</Button>
+                    </Link>
                   </div>
                 </div>
               </div>
