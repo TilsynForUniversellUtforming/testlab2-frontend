@@ -31,7 +31,7 @@ type Bot = {
   oekingSats: number;
   vedtakDato: Date;
   startDato: Date;
-  sluttDato: Date;
+  sluttDato?: Date;
   kommentar?: string;
 };
 
@@ -44,6 +44,20 @@ export type Styringsdata = {
   paaleggKlage?: Klage;
   bot?: Bot;
   botKlage?: Klage;
+};
+
+export type StyringsdataListElement = {
+  id: number;
+  kontrollId: number;
+  loeysingId: number;
+  ansvarleg: string;
+  oppretta: string;
+  frist: string;
+  reaksjon: ReaksjonsType;
+  paaleggId?: number;
+  paaleggKlageId?: number;
+  botId?: number;
+  botKlageId?: number;
 };
 
 export type StyringsdataLoaderData = {

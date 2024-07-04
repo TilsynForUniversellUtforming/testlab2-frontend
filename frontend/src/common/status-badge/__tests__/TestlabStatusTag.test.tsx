@@ -30,11 +30,11 @@ describe('<TestlabStatusTag />', () => {
   it('renders correctly with default props', () => {
     render(
       <TestlabStatusTag<TestlabTestStatus>
-        status="test-second"
+        status="InngaaendeKontroll"
         colorMapping={colorMapping}
       />
     );
-    const sanitisedLabel = sanitizeEnumLabel('test-second');
+    const sanitisedLabel = sanitizeEnumLabel('InngaaendeKontroll');
     const tagElement = screen.getByText(sanitisedLabel);
     expect(tagElement).toBeInTheDocument();
   });

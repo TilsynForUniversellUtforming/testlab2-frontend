@@ -13,6 +13,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
+import { StyringsdataListElement } from '@test/styringsdata/types';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag } from '@test/types';
 import { useCallback } from 'react';
@@ -30,6 +31,7 @@ export type TestOverviewLoaderData = {
   loeysingList: Loeysing[];
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
+  styringsdata: StyringsdataListElement[];
 };
 
 export function antallTester(
@@ -99,7 +101,7 @@ const TestOverview = () => {
 
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const { loeysingList, resultater, testgrunnlag } =
+  const { loeysingList, resultater, testgrunnlag, styringsdata } =
     useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
@@ -173,6 +175,9 @@ const TestOverview = () => {
           ([loeysingIdKey, sideutval]) => {
             const loeysingId = Number(loeysingIdKey);
             const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
+            const styringsdataId = styringsdata.find(
+              (s) => s.loeysingId === loeysingId
+            );
 
             const namn =
               loeysingList.find((loeysing) => loeysing.id === loeysingId)
@@ -250,7 +255,9 @@ const TestOverview = () => {
                         Slett
                       </Button>
                     )}
-                    <Link to={`${loeysingId}/styringsdata`}>
+                    <Link
+                      to={`${loeysingId}/styringsdata?styringsdataId=${styringsdataId}`}
+                    >
                       <Button>Styringsdata</Button>
                     </Link>
                   </div>
