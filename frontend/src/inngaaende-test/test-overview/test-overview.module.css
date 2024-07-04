@@ -73,3 +73,14 @@
   padding: 1rem;
   min-width: 65%;
 }
+
+.tag-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.test-tags {
+  display: flex;
+  gap: 1rem;
+}

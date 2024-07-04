@@ -213,19 +213,27 @@ const TestOverview = () => {
                   />
                 </div>
                 <div className={classes.loeysingButtonInnhold}>
-                  <div className="content">
+                  <div>
                     <Heading size="medium" level={4} spacing>
                       {namn}
                     </Heading>
-                    <Tag color="second" size="small">
-                      Inngående kontroll
-                    </Tag>
-                    <Tag color="second" size="small">
-                      {viewTestType(etTestgrunnlag, sideutvalIds, testgrunnlag)}
-                    </Tag>
-                    <Tag color="info" size="small">
-                      Nettsted
-                    </Tag>
+                    <div className={classes.tagWrapper}>
+                      <div className={classes.testTags}>
+                        <Tag color="second" size="small">
+                          Inngående kontroll
+                        </Tag>
+                        <Tag color="second" size="small">
+                          {viewTestType(
+                            etTestgrunnlag,
+                            sideutvalIds,
+                            testgrunnlag
+                          )}
+                        </Tag>
+                      </div>
+                      <Tag color="info" size="small">
+                        Nettsted
+                      </Tag>
+                    </div>
                   </div>
                   <div className={classes.buttons}>
                     <Button
