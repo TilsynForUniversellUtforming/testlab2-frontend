@@ -207,7 +207,6 @@ const TestOverview = () => {
                     loeysingId={loeysingId}
                   />
                   <TestStatistics
-                    kontroll={contextKontroll}
                     resultatliste={resultater}
                     loeysingId={loeysingId}
                     testgrunnlag={etTestgrunnlag}

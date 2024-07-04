@@ -1,30 +1,24 @@
 import { Tag } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
 import classes from '@test/test-overview/test-overview.module.css';
-import { ContextKontroll, Testgrunnlag } from '@test/types';
+import { Testgrunnlag } from '@test/types';
 import {
   progressionForTestgrunnlagInnhaldstype,
   progressionForTestgrunnlagSideutval,
-} from '@test/util/testregelUtilsKontroll';
+} from '@test/util/testregelUtils';
 
 interface Props {
-  kontroll: ContextKontroll;
   resultatliste: ResultatManuellKontroll[];
   loeysingId: number;
   testgrunnlag: Testgrunnlag;
 }
 
-const TestStatistics = ({
-  kontroll,
-  resultatliste,
-  loeysingId,
-  testgrunnlag,
-}: Props) => {
+const TestStatistics = ({ resultatliste, loeysingId, testgrunnlag }: Props) => {
   const resultat = resultatliste.filter(
     (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
   const percentSideutval = progressionForTestgrunnlagSideutval(
-    kontroll,
+    testgrunnlag,
     resultat,
     loeysingId
   );
