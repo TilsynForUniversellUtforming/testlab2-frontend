@@ -199,8 +199,14 @@ const klageSchema = z
 export const styringsdataValidationSchema = z
   .object({
     ansvarleg: z.string().min(1, 'Ansvarleg manglar'),
-    oppretta: z.string().date('Ugyldig dato'),
-    frist: z.string().date('Ugyldig dato'),
+    oppretta: z.coerce
+      .date({ message: 'Ugyldig dato' })
+      .optional()
+      .or(z.literal('')),
+    frist: z.coerce
+      .date({ message: 'Ugyldig dato' })
+      .optional()
+      .or(z.literal('')),
     reaksjon: reaksjonsType,
     paalegg: paaleggSchema.optional(),
     paaleggKlage: klageSchema.optional(),
@@ -208,6 +214,16 @@ export const styringsdataValidationSchema = z
     botKlage: klageSchema.optional(),
   })
   .superRefine((data, ctx) => {
+    const { oppretta, frist } = data;
+
+    if (frist && oppretta && frist < oppretta) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Frist må vera etter oppretta dato',
+        path: ['frist'],
+      });
+    }
+
     if (
       !isValidObject(data.paalegg) &&
       isValidObject(data.paaleggKlage, false)

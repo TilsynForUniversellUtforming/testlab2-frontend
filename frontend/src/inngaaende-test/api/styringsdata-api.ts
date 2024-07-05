@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import {
   Styringsdata,
@@ -25,3 +26,27 @@ export const fetchStyringsdataListElements = async (
     responseToJson(response, 'Kunne ikkje hente liste med styringsdata')
   );
 };
+
+export const updateStyringsdata = async (
+  styringsdata: Styringsdata
+): Promise<Styringsdata> =>
+  await fetchWrapper(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(styringsdata),
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje oppdatere styringsdata')
+  );
+
+export const createStyringsdata = async (styringsdata: Styringsdata) =>
+  await fetchWrapper(styringsdataApiBaseUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(styringsdata),
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje opprette styringsdata')
+  );

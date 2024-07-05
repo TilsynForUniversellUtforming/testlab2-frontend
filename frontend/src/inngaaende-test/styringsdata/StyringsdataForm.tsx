@@ -20,14 +20,22 @@ import {
   KlageType,
   ResultatKlage,
   Styringsdata,
+  StyringsdataFormData,
   StyringsdataLoaderData,
 } from '@test/styringsdata/types';
-import { useForm } from 'react-hook-form';
-import { Link, useLoaderData, useSubmit } from 'react-router-dom';
+import { getIdFromParams } from '@test/util/testregelUtils';
+import { useForm, UseFormRegister } from 'react-hook-form';
+import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
 
 import classes from './styringsdata.module.css';
 
-const KlageInputs = ({ klageType }: { klageType: KlageType }) => {
+const KlageInputs = ({
+  klageType,
+  register,
+}: {
+  klageType: KlageType;
+  register: UseFormRegister<StyringsdataFormData>;
+}) => {
   const klageName = klageType === 'bot' ? 'botKlage' : 'paaleggKlage';
   const options = createOptionsFromLiteral<ResultatKlage>([
     'stadfesta',
@@ -38,27 +46,28 @@ const KlageInputs = ({ klageType }: { klageType: KlageType }) => {
 
   return (
     <>
-      <TestlabFormInput<Styringsdata>
+      <input type="hidden" {...register(`${klageName}.id` as const)} />
+      <TestlabFormInput<StyringsdataFormData>
         label="Klage mottatt dato"
         name={`${klageName}.klageMottattDato`}
         type="date"
       />
-      <TestlabFormInput<Styringsdata>
+      <TestlabFormInput<StyringsdataFormData>
         label="Klage avgjort dato"
         name={`${klageName}.klageAvgjortDato`}
         type="date"
       />
-      <TestlabFormSelect<Styringsdata>
+      <TestlabFormSelect<StyringsdataFormData>
         options={options}
         label="Resultat klage tilsynet"
         name={`${klageName}.resultatKlageTilsyn`}
       />
-      <TestlabFormInput<Styringsdata>
+      <TestlabFormInput<StyringsdataFormData>
         label="Klage sendt til departementet"
         name={`${klageName}.klageDatoDepartement`}
         type="date"
       />
-      <TestlabFormSelect<Styringsdata>
+      <TestlabFormSelect<StyringsdataFormData>
         options={options}
         label="Resultat klage departement"
         name={`${klageName}.resultatKlageDepartement`}
@@ -76,9 +85,15 @@ const StyringsdataForm = () => {
     styringsdata,
   } = useLoaderData() as StyringsdataLoaderData;
 
+  const { id: kontrollIdParam, loeysingId: loeysingIdParam } = useParams();
+  const kontrollId = getIdFromParams(kontrollIdParam);
+  const loeysingId = getIdFromParams(loeysingIdParam);
+
+  const isEdit = isDefined(styringsdata);
+
   const submit = useSubmit();
 
-  const formMethods = useForm<Styringsdata>({
+  const formMethods = useForm<StyringsdataFormData>({
     defaultValues: {
       ansvarleg: styringsdata?.ansvarleg ?? '',
       oppretta: styringsdata?.oppretta,
@@ -121,17 +136,33 @@ const StyringsdataForm = () => {
 
   const { watch, formState } = formMethods;
 
-  const onSubmit = (data: Styringsdata) => {
-    submit(JSON.stringify(data), {
-      method: 'post',
-      encType: 'application/json',
-    });
+  const onSubmit = (formData: StyringsdataFormData) => {
+    const data: Styringsdata = {
+      id: formData?.id,
+      kontrollId: kontrollId,
+      loeysingId: loeysingId,
+      ...formData,
+    };
+
+    if (isEdit) {
+      submit(JSON.stringify(data), {
+        method: 'put',
+        encType: 'application/json',
+      });
+    } else {
+      submit(JSON.stringify(data), {
+        method: 'POST',
+        encType: 'application/json',
+      });
+    }
   };
 
   const reaksjon = watch('reaksjon', 'ingen-reaksjon');
 
   const paaleggError = isDefined(getErrorMessage(formState, 'paalegg'));
   const botError = isDefined(getErrorMessage(formState, 'bot'));
+
+  const { register } = formMethods;
 
   return (
     <div className={classes.styringsdata}>
@@ -146,24 +177,25 @@ const StyringsdataForm = () => {
           <Tag color="second">{verksemdNamn}</Tag>
         </div>
         {arkivreferanse && <Tag>{arkivreferanse}</Tag>}
-        <TestlabForm<Styringsdata>
+        <TestlabForm<StyringsdataFormData>
           formMethods={formMethods}
           onSubmit={onSubmit}
           className={classes.styringsdataForm}
           hasRequiredFields
         >
-          <TestlabFormInput<Styringsdata>
+          <input type="hidden" {...register('id' as const)} />
+          <TestlabFormInput<StyringsdataFormData>
             label="Ansvarleg"
             name="ansvarleg"
             required
           />
-          <TestlabFormInput<Styringsdata>
+          <TestlabFormInput<StyringsdataFormData>
             label="Oppretta"
             name="oppretta"
             type="date"
             required
           />
-          <TestlabFormInput<Styringsdata>
+          <TestlabFormInput<StyringsdataFormData>
             label="Frist for gjennomføring"
             name="frist"
             type="date"
@@ -179,7 +211,7 @@ const StyringsdataForm = () => {
             Desse felta triggar inga handling, det er berre for intern oversikt.
             Dialog med part går føre seg i andre kanalar.
           </Paragraph>
-          <TestlabFormSelect<Styringsdata>
+          <TestlabFormSelect<StyringsdataFormData>
             label="Aktivitet"
             description="Er det forventet å bruke reaksjoner til denne løsningen?"
             options={[
@@ -194,12 +226,13 @@ const StyringsdataForm = () => {
               <Accordion.Item>
                 <Accordion.Header level={3}>Pålegg</Accordion.Header>
                 <Accordion.Content>
-                  <TestlabFormInput<Styringsdata>
+                  <input type="hidden" {...register('paalegg.id' as const)} />
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Pålegg vedtak dato"
                     name="paalegg.vedtakDato"
                     type="date"
                   />
-                  <TestlabFormInput<Styringsdata>
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Pålegg frist"
                     name="paalegg.frist"
                     type="date"
@@ -209,26 +242,27 @@ const StyringsdataForm = () => {
               <Accordion.Item>
                 <Accordion.Header level={3}>Pålegg klage</Accordion.Header>
                 <Accordion.Content>
-                  <KlageInputs klageType={'paalegg'} />
+                  <KlageInputs klageType={'paalegg'} register={register} />
                 </Accordion.Content>
               </Accordion.Item>
               <Accordion.Item open={botError}>
                 <Accordion.Header level={3}>Bot</Accordion.Header>
                 <Accordion.Content>
-                  <TestlabFormInput<Styringsdata>
+                  <input type="hidden" {...register('bot.id' as const)} />
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Bot (tvangsmulkt) beløp"
                     name="bot.beloepDag"
                   />
-                  <TestlabFormInput<Styringsdata>
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Antall dager før økning"
                     name="bot.oekingEtterDager"
                   />
                   <div className={classes.oekingType}>
-                    <TestlabFormInput<Styringsdata>
+                    <TestlabFormInput<StyringsdataFormData>
                       label="Økning pr dag"
                       name="bot.oekingSats"
                     />
-                    <TestlabFormSelect<Styringsdata>
+                    <TestlabFormSelect<StyringsdataFormData>
                       label={''}
                       options={[
                         { value: 'kroner', label: 'NOK' },
@@ -239,22 +273,22 @@ const StyringsdataForm = () => {
                       radioInline
                     />
                   </div>
-                  <TestlabFormInput<Styringsdata>
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Når ble vedtak om bot iverksatt?"
                     name="bot.vedtakDato"
                     type="date"
                   />
-                  <TestlabFormInput<Styringsdata>
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Startdato for bot"
                     name="bot.startDato"
                     type="date"
                   />
-                  <TestlabFormInput<Styringsdata>
+                  <TestlabFormInput<StyringsdataFormData>
                     label="Sluttdato for bot"
                     name="bot.sluttDato"
                     type="date"
                   />
-                  <TestlabFormTextArea<Styringsdata>
+                  <TestlabFormTextArea<StyringsdataFormData>
                     label="Kommentar"
                     name="bot.kommentar"
                   />
@@ -263,7 +297,7 @@ const StyringsdataForm = () => {
               <Accordion.Item>
                 <Accordion.Header level={3}>Bot klage</Accordion.Header>
                 <Accordion.Content>
-                  <KlageInputs klageType={'bot'} />
+                  <KlageInputs klageType={'bot'} register={register} />
                 </Accordion.Content>
               </Accordion.Item>
             </Accordion>

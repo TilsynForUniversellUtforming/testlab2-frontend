@@ -1,5 +1,9 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
+import {
+  createStyringsdata,
+  updateStyringsdata,
+} from '@test/api/styringsdata-api';
 import { deleteTestgrunnlag, postTestgrunnlag } from '@test/api/testing-api';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import StyringsdataForm from '@test/styringsdata/StyringsdataForm';
@@ -90,8 +94,14 @@ export const TestingRoutes: RouteObject = {
           handle: { name: TEST_STYRINGSDATA.navn },
           action: async ({ request }) => {
             const styringsdata = (await request.json()) as Styringsdata;
-            console.log(styringsdata);
-            return null;
+            switch (request.method) {
+              case 'POST': {
+                return await createStyringsdata(styringsdata);
+              }
+              case 'PUT': {
+                return await updateStyringsdata(styringsdata);
+              }
+            }
           },
           loader: styringsdataLoader,
         },

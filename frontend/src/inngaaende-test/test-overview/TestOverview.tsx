@@ -1,6 +1,7 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
+import { ButtonVariant } from '@common/types';
 import { isEmpty, last } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
@@ -177,7 +178,7 @@ const TestOverview = () => {
           ([loeysingIdKey, sideutval]) => {
             const loeysingId = Number(loeysingIdKey);
             const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
-            const styringsdataId = styringsdata.find(
+            const loesysingStyringsdata = styringsdata.find(
               (s) => s.loeysingId === loeysingId
             );
 
@@ -190,6 +191,10 @@ const TestOverview = () => {
               etTestgrunnlag,
               loeysingId
             );
+
+            const styringsdataSearchParams = loesysingStyringsdata
+              ? `?styringsdataId=${loesysingStyringsdata.id}`
+              : '';
 
             return (
               <div
@@ -276,9 +281,13 @@ const TestOverview = () => {
                       </Button>
                     )}
                     <Link
-                      to={`${loeysingId}/styringsdata?styringsdataId=${styringsdataId}`}
+                      to={`${loeysingId}/styringsdata${styringsdataSearchParams}`}
                     >
-                      <Button>Styringsdata</Button>
+                      <Button variant={ButtonVariant.Outline}>
+                        {loesysingStyringsdata
+                          ? 'Endre styringsdata'
+                          : 'Legg til styringsdata'}
+                      </Button>
                     </Link>
                   </div>
                 </div>
