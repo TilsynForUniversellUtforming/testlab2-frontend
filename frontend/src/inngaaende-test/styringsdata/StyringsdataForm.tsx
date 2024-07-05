@@ -4,12 +4,24 @@ import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonVariant } from '@common/types';
-import { createOptionsFromLiteral, removeTimeFromDateString } from '@common/util/stringutils';
+import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import { Accordion, Button, ErrorSummary, Heading, Paragraph, Tag, } from '@digdir/designsystemet-react';
+import {
+  Accordion,
+  Button,
+  ErrorSummary,
+  Heading,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { styringsdataValidationSchema } from '@test/styringsdata/styringsdataValidationSchema';
-import { KlageType, ResultatKlage, Styringsdata, StyringsdataLoaderData, } from '@test/styringsdata/types';
+import {
+  KlageType,
+  ResultatKlage,
+  Styringsdata,
+  StyringsdataLoaderData,
+} from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm, UseFormRegister } from 'react-hook-form';
 import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
@@ -85,44 +97,7 @@ const StyringsdataForm = () => {
       id: styringsdata?.id ?? undefined,
       kontrollId: kontrollId,
       loeysingId: loeysingId,
-      ansvarleg: styringsdata?.ansvarleg ?? '',
-      oppretta: removeTimeFromDateString(styringsdata?.oppretta),
-      frist: removeTimeFromDateString(styringsdata?.frist),
-      reaksjon: styringsdata?.reaksjon ?? 'ingen-reaksjon',
-      paalegg: styringsdata?.paalegg ?? {
-        id: styringsdata?.paalegg?.id ?? undefined,
-        frist: removeTimeFromDateString(styringsdata?.paalegg?.frist) ?? undefined,
-        vedtakDato: removeTimeFromDateString(styringsdata?.paalegg?.vedtakDato) ?? undefined,
-      },
-      paaleggKlage: styringsdata?.paaleggKlage ?? {
-        id: styringsdata?.paaleggKlage?.id ?? undefined,
-        klageType: styringsdata?.paaleggKlage?.klageType ?? undefined,
-        klageMottattDato: removeTimeFromDateString(styringsdata?.paaleggKlage?.klageMottattDato) ?? undefined,
-        klageAvgjortDato: removeTimeFromDateString(styringsdata?.paaleggKlage?.klageAvgjortDato) ?? undefined,
-        resultatKlageTilsyn: styringsdata?.paaleggKlage?.resultatKlageTilsyn ?? undefined,
-        klageDatoDepartement: removeTimeFromDateString(styringsdata?.paaleggKlage?.klageDatoDepartement) ?? undefined,
-        resultatKlageDepartement: styringsdata?.paaleggKlage?.resultatKlageDepartement ?? undefined,
-      },
-      bot: styringsdata?.bot ?? {
-        id: styringsdata?.bot?.id ?? undefined,
-        beloepDag: styringsdata?.bot?.beloepDag ?? undefined,
-        oekingEtterDager: styringsdata?.bot?.oekingEtterDager ?? undefined,
-        oekningType: styringsdata?.bot?.oekningType ?? 'kroner',
-        oekingSats: styringsdata?.bot?.oekingSats ?? undefined,
-        vedtakDato: removeTimeFromDateString(styringsdata?.bot?.vedtakDato) ?? undefined,
-        startDato: removeTimeFromDateString(styringsdata?.bot?.startDato) ?? undefined,
-        sluttDato: removeTimeFromDateString(styringsdata?.bot?.sluttDato) ?? undefined,
-        kommentar: styringsdata?.bot?.kommentar ?? undefined,
-      },
-      botKlage: styringsdata?.botKlage ?? {
-        id: styringsdata?.botKlage?.id ?? undefined,
-        klageType: styringsdata?.botKlage?.klageType ?? undefined,
-        klageMottattDato: removeTimeFromDateString(styringsdata?.botKlage?.klageMottattDato) ?? undefined,
-        klageAvgjortDato: removeTimeFromDateString(styringsdata?.botKlage?.klageAvgjortDato) ?? undefined,
-        resultatKlageTilsyn: styringsdata?.botKlage?.resultatKlageTilsyn ?? undefined,
-        klageDatoDepartement: removeTimeFromDateString(styringsdata?.botKlage?.klageDatoDepartement) ?? undefined,
-        resultatKlageDepartement: styringsdata?.botKlage?.resultatKlageDepartement ?? undefined,
-      },
+      ...styringsdata,
     },
     mode: 'onBlur',
     resolver: zodResolver(styringsdataValidationSchema),
@@ -131,18 +106,17 @@ const StyringsdataForm = () => {
   const { watch, formState } = formMethods;
 
   const onSubmit = (data: Styringsdata) => {
-    console.log(data)
-    // if (isEdit) {
-    //   submit(JSON.stringify(data), {
-    //     method: 'put',
-    //     encType: 'application/json',
-    //   });
-    // } else {
-    //   submit(JSON.stringify(data), {
-    //     method: 'POST',
-    //     encType: 'application/json',
-    //   });
-    // }
+    if (isEdit) {
+      submit(JSON.stringify(data), {
+        method: 'put',
+        encType: 'application/json',
+      });
+    } else {
+      submit(JSON.stringify(data), {
+        method: 'POST',
+        encType: 'application/json',
+      });
+    }
   };
 
   const reaksjon = watch('reaksjon', 'ingen-reaksjon');
@@ -233,7 +207,7 @@ const StyringsdataForm = () => {
                   <KlageInputs klageType={'paalegg'} register={register} />
                 </Accordion.Content>
               </Accordion.Item>
-              <Accordion.Item open={botError}>
+              <Accordion.Item>
                 <Accordion.Header level={3}>Bot</Accordion.Header>
                 <Accordion.Content>
                   <input type="hidden" {...register('bot.id' as const)} />

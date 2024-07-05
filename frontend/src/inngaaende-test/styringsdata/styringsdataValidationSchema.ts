@@ -44,17 +44,15 @@ const paaleggSchema = z
 
 const botSchema = z
   .object({
-    beloepDag: z.coerce
-      .number()
-      .positive('Bot må vera positiv')
-      .optional()
-      .or(z.literal('')),
+    beloepDag: z
+      .literal('')
+      .or(z.coerce.number().positive('Bot må vera positiv').optional()),
     oekingEtterDager: z.coerce
       .number()
       .positive('Øking må vera positiv')
       .optional()
       .or(z.literal('')),
-    oekningType: botOekingSchema.optional().or(z.literal('')),
+    oekningType: z.nullable(botOekingSchema.optional().or(z.literal(''))),
     oekingSats: z.coerce
       .number()
       .positive('Sats må vera positiv')
@@ -135,12 +133,16 @@ const klageSchema = z
       .date({ message: 'Ugyldig dato' })
       .optional()
       .or(z.literal('')),
-    resultatKlageTilsyn: resultatKlageSchema.optional().or(z.literal('')),
+    resultatKlageTilsyn: z.nullable(
+      resultatKlageSchema.optional().or(z.literal(''))
+    ),
     klageDatoDepartement: z.coerce
       .date({ message: 'Ugyldig dato' })
       .optional()
       .or(z.literal('')),
-    resultatKlageDepartement: resultatKlageSchema.optional().or(z.literal('')),
+    resultatKlageDepartement: z.nullable(
+      resultatKlageSchema.optional().or(z.literal(''))
+    ),
   })
   .superRefine((data, ctx) => {
     const {
@@ -208,14 +210,15 @@ export const styringsdataValidationSchema = z
       .optional()
       .or(z.literal('')),
     reaksjon: reaksjonsType,
-    paalegg: paaleggSchema.optional(),
-    paaleggKlage: klageSchema.optional(),
-    bot: botSchema.optional(),
-    botKlage: klageSchema.optional(),
+    paalegg: z.nullable(paaleggSchema.optional()),
+    paaleggKlage: z.nullable(klageSchema.optional()),
+    bot: z.nullable(botSchema.optional()),
+    botKlage: z.nullable(klageSchema.optional()),
   })
   .passthrough()
   .superRefine((data, ctx) => {
-    const { oppretta, frist } = data;
+    const { oppretta, frist, paalegg, paaleggKlage, bot, botKlage } = data;
+    console.log('REF', data);
 
     if (frist && oppretta && frist < oppretta) {
       ctx.addIssue({
@@ -225,17 +228,14 @@ export const styringsdataValidationSchema = z
       });
     }
 
-    if (
-      !isValidObject(data.paalegg) &&
-      isValidObject(data.paaleggKlage, false)
-    ) {
+    if (!isValidObject(paalegg, false) && isValidObject(paaleggKlage, false)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Vedtaksdato manglar',
         path: ['paalegg'],
       });
     }
-    if (!isValidObject(data.bot) && isValidObject(data.botKlage, false)) {
+    if (!isValidObject(bot, false) && isValidObject(botKlage, false)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Vedtaksdato manglar',
