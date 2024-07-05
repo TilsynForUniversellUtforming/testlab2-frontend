@@ -33,26 +33,30 @@
     overflow: hidden;
     border-radius: 15px;
 
-    &.info &::-webkit-progress-value,
-    &::-moz-progress-bar {
-      background: var(--fds-semantic-surface-third-light-active);
+    &.info {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-info-subtle);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-info-subtle);
+      }
     }
 
     &.danger {
       &::-webkit-progress-value {
-        background: var(--fds-semantic-surface-danger-no_fill-active);
+        background: var(--fds-semantic-surface-danger-subtle);
       }
       &::-moz-progress-bar {
-        background: var(--fds-semantic-surface-danger-no_fill-active);
+        background: var(--fds-semantic-surface-danger-subtle);
       }
     }
 
     &.warning {
       &::-webkit-progress-value {
-        background: var(--fds-semantic-surface-warning-default);
+        background: var(--fds-semantic-surface-warning-subtle);
       }
       &::-moz-progress-bar {
-        background: var(--fds-semantic-surface-warning-default);
+        background: var(--fds-semantic-surface-warning-subtle);
       }
     }
 
@@ -74,8 +78,35 @@
       }
     }
 
+    &.first {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-first-light);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-first-light);
+      }
+    }
+
+    &.second {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-second-light);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-second-light);
+      }
+    }
+
+    &.third {
+      &::-webkit-progress-value {
+        background: var(--fds-semantic-surface-third-light);
+      }
+      &::-moz-progress-bar {
+        background: var(--fds-semantic-surface-third-light);
+      }
+    }
+
     &::-webkit-progress-bar {
-      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      background-color: var(--fds-semantic-surface-action-first-subtle);
       border-radius: 10px;
     }
   }
