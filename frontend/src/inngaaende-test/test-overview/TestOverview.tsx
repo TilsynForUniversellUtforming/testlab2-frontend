@@ -13,6 +13,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
+import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag } from '@test/types';
 import { useCallback } from 'react';
@@ -25,6 +26,7 @@ import {
 } from 'react-router-dom';
 
 import classes from './test-overview.module.css';
+import TestStatusChart from './TestStatusChart';
 
 export type TestOverviewLoaderData = {
   loeysingList: Loeysing[];
@@ -151,7 +153,7 @@ const TestOverview = () => {
   }
 
   return (
-    <div className="manual-test-overview">
+    <div className={classes.manualTestContainer}>
       {testgrunnlag.length === 0 && (
         <Alert severity="warning">
           <Heading level={3} size="xs" spacing>
@@ -187,33 +189,51 @@ const TestOverview = () => {
             return (
               <div
                 key={`${etTestgrunnlag.id}/${loeysingId}`}
-                className="manual-test__loeysing-button"
+                className={classes.loeysingButton}
               >
-                <div className="tag-wrapper">
+                <div className={classes.loeysingButtonTag}>
                   <TestlabStatusTag<ManuellTestStatus>
                     status={status}
                     colorMapping={{
                       second: ['under-arbeid'],
                       info: ['ikkje-starta'],
-                      first: ['ferdig'],
+                      success: ['ferdig'],
                     }}
                     size="small"
                   />
+                  <TestStatusChart
+                    testgrunnlag={etTestgrunnlag}
+                    resultater={resultater}
+                    loeysingId={loeysingId}
+                  />
+                  <TestStatistics
+                    resultatliste={resultater}
+                    loeysingId={loeysingId}
+                    testgrunnlag={etTestgrunnlag}
+                  />
                 </div>
-                <div className="content-wrapper">
-                  <div className="content">
+                <div className={classes.loeysingButtonInnhold}>
+                  <div>
                     <Heading size="medium" level={4} spacing>
                       {namn}
                     </Heading>
-                    <Tag color="second" size="small">
-                      Inngående kontroll
-                    </Tag>
-                    <Tag color="second" size="small">
-                      {viewTestType(etTestgrunnlag, sideutvalIds, testgrunnlag)}
-                    </Tag>
-                    <Tag color="info" size="small">
-                      Nettsted
-                    </Tag>
+                    <div className={classes.tagWrapper}>
+                      <div className={classes.testTags}>
+                        <Tag color="second" size="small">
+                          Inngående kontroll
+                        </Tag>
+                        <Tag color="second" size="small">
+                          {viewTestType(
+                            etTestgrunnlag,
+                            sideutvalIds,
+                            testgrunnlag
+                          )}
+                        </Tag>
+                      </div>
+                      <Tag color="info" size="small">
+                        Nettsted
+                      </Tag>
+                    </div>
                   </div>
                   <div className={classes.buttons}>
                     <Button
