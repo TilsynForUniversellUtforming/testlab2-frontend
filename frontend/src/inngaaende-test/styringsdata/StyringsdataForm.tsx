@@ -4,25 +4,12 @@ import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonVariant } from '@common/types';
-import { createOptionsFromLiteral } from '@common/util/stringutils';
+import { createOptionsFromLiteral, removeTimeFromDateString } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Accordion,
-  Button,
-  ErrorSummary,
-  Heading,
-  Paragraph,
-  Tag,
-} from '@digdir/designsystemet-react';
+import { Accordion, Button, ErrorSummary, Heading, Paragraph, Tag, } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { styringsdataValidationSchema } from '@test/styringsdata/styringsdataValidationSchema';
-import {
-  KlageType,
-  ResultatKlage,
-  Styringsdata,
-  StyringsdataFormData,
-  StyringsdataLoaderData,
-} from '@test/styringsdata/types';
+import { KlageType, ResultatKlage, Styringsdata, StyringsdataLoaderData, } from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm, UseFormRegister } from 'react-hook-form';
 import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
@@ -34,7 +21,7 @@ const KlageInputs = ({
   register,
 }: {
   klageType: KlageType;
-  register: UseFormRegister<StyringsdataFormData>;
+  register: UseFormRegister<Styringsdata>;
 }) => {
   const klageName = klageType === 'bot' ? 'botKlage' : 'paaleggKlage';
   const options = createOptionsFromLiteral<ResultatKlage>([
@@ -47,27 +34,27 @@ const KlageInputs = ({
   return (
     <>
       <input type="hidden" {...register(`${klageName}.id` as const)} />
-      <TestlabFormInput<StyringsdataFormData>
+      <TestlabFormInput<Styringsdata>
         label="Klage mottatt dato"
         name={`${klageName}.klageMottattDato`}
         type="date"
       />
-      <TestlabFormInput<StyringsdataFormData>
+      <TestlabFormInput<Styringsdata>
         label="Klage avgjort dato"
         name={`${klageName}.klageAvgjortDato`}
         type="date"
       />
-      <TestlabFormSelect<StyringsdataFormData>
+      <TestlabFormSelect<Styringsdata>
         options={options}
         label="Resultat klage tilsynet"
         name={`${klageName}.resultatKlageTilsyn`}
       />
-      <TestlabFormInput<StyringsdataFormData>
+      <TestlabFormInput<Styringsdata>
         label="Klage sendt til departementet"
         name={`${klageName}.klageDatoDepartement`}
         type="date"
       />
-      <TestlabFormSelect<StyringsdataFormData>
+      <TestlabFormSelect<Styringsdata>
         options={options}
         label="Resultat klage departement"
         name={`${klageName}.resultatKlageDepartement`}
@@ -93,41 +80,48 @@ const StyringsdataForm = () => {
 
   const submit = useSubmit();
 
-  const formMethods = useForm<StyringsdataFormData>({
+  const formMethods = useForm<Styringsdata>({
     defaultValues: {
+      id: styringsdata?.id ?? undefined,
+      kontrollId: kontrollId,
+      loeysingId: loeysingId,
       ansvarleg: styringsdata?.ansvarleg ?? '',
-      oppretta: styringsdata?.oppretta,
-      frist: styringsdata?.frist,
+      oppretta: removeTimeFromDateString(styringsdata?.oppretta),
+      frist: removeTimeFromDateString(styringsdata?.frist),
       reaksjon: styringsdata?.reaksjon ?? 'ingen-reaksjon',
       paalegg: styringsdata?.paalegg ?? {
-        frist: undefined,
-        vedtakDato: undefined,
+        id: styringsdata?.paalegg?.id ?? undefined,
+        frist: removeTimeFromDateString(styringsdata?.paalegg?.frist) ?? undefined,
+        vedtakDato: removeTimeFromDateString(styringsdata?.paalegg?.vedtakDato) ?? undefined,
       },
       paaleggKlage: styringsdata?.paaleggKlage ?? {
-        klageType: undefined,
-        klageMottattDato: undefined,
-        klageAvgjortDato: undefined,
-        resultatKlageTilsyn: undefined,
-        klageDatoDepartement: undefined,
-        resultatKlageDepartement: undefined,
+        id: styringsdata?.paaleggKlage?.id ?? undefined,
+        klageType: styringsdata?.paaleggKlage?.klageType ?? undefined,
+        klageMottattDato: removeTimeFromDateString(styringsdata?.paaleggKlage?.klageMottattDato) ?? undefined,
+        klageAvgjortDato: removeTimeFromDateString(styringsdata?.paaleggKlage?.klageAvgjortDato) ?? undefined,
+        resultatKlageTilsyn: styringsdata?.paaleggKlage?.resultatKlageTilsyn ?? undefined,
+        klageDatoDepartement: removeTimeFromDateString(styringsdata?.paaleggKlage?.klageDatoDepartement) ?? undefined,
+        resultatKlageDepartement: styringsdata?.paaleggKlage?.resultatKlageDepartement ?? undefined,
       },
       bot: styringsdata?.bot ?? {
-        beloepDag: undefined,
-        oekingEtterDager: undefined,
-        oekningType: 'kroner',
-        oekingSats: undefined,
-        vedtakDato: undefined,
-        startDato: undefined,
-        sluttDato: undefined,
-        kommentar: undefined,
+        id: styringsdata?.bot?.id ?? undefined,
+        beloepDag: styringsdata?.bot?.beloepDag ?? undefined,
+        oekingEtterDager: styringsdata?.bot?.oekingEtterDager ?? undefined,
+        oekningType: styringsdata?.bot?.oekningType ?? 'kroner',
+        oekingSats: styringsdata?.bot?.oekingSats ?? undefined,
+        vedtakDato: removeTimeFromDateString(styringsdata?.bot?.vedtakDato) ?? undefined,
+        startDato: removeTimeFromDateString(styringsdata?.bot?.startDato) ?? undefined,
+        sluttDato: removeTimeFromDateString(styringsdata?.bot?.sluttDato) ?? undefined,
+        kommentar: styringsdata?.bot?.kommentar ?? undefined,
       },
       botKlage: styringsdata?.botKlage ?? {
-        klageType: undefined,
-        klageMottattDato: undefined,
-        klageAvgjortDato: undefined,
-        resultatKlageTilsyn: undefined,
-        klageDatoDepartement: undefined,
-        resultatKlageDepartement: undefined,
+        id: styringsdata?.botKlage?.id ?? undefined,
+        klageType: styringsdata?.botKlage?.klageType ?? undefined,
+        klageMottattDato: removeTimeFromDateString(styringsdata?.botKlage?.klageMottattDato) ?? undefined,
+        klageAvgjortDato: removeTimeFromDateString(styringsdata?.botKlage?.klageAvgjortDato) ?? undefined,
+        resultatKlageTilsyn: styringsdata?.botKlage?.resultatKlageTilsyn ?? undefined,
+        klageDatoDepartement: removeTimeFromDateString(styringsdata?.botKlage?.klageDatoDepartement) ?? undefined,
+        resultatKlageDepartement: styringsdata?.botKlage?.resultatKlageDepartement ?? undefined,
       },
     },
     mode: 'onBlur',
@@ -136,25 +130,19 @@ const StyringsdataForm = () => {
 
   const { watch, formState } = formMethods;
 
-  const onSubmit = (formData: StyringsdataFormData) => {
-    const data: Styringsdata = {
-      id: formData?.id,
-      kontrollId: kontrollId,
-      loeysingId: loeysingId,
-      ...formData,
-    };
-
-    if (isEdit) {
-      submit(JSON.stringify(data), {
-        method: 'put',
-        encType: 'application/json',
-      });
-    } else {
-      submit(JSON.stringify(data), {
-        method: 'POST',
-        encType: 'application/json',
-      });
-    }
+  const onSubmit = (data: Styringsdata) => {
+    console.log(data)
+    // if (isEdit) {
+    //   submit(JSON.stringify(data), {
+    //     method: 'put',
+    //     encType: 'application/json',
+    //   });
+    // } else {
+    //   submit(JSON.stringify(data), {
+    //     method: 'POST',
+    //     encType: 'application/json',
+    //   });
+    // }
   };
 
   const reaksjon = watch('reaksjon', 'ingen-reaksjon');
@@ -177,25 +165,25 @@ const StyringsdataForm = () => {
           <Tag color="second">{verksemdNamn}</Tag>
         </div>
         {arkivreferanse && <Tag>{arkivreferanse}</Tag>}
-        <TestlabForm<StyringsdataFormData>
+        <TestlabForm<Styringsdata>
           formMethods={formMethods}
           onSubmit={onSubmit}
           className={classes.styringsdataForm}
           hasRequiredFields
         >
           <input type="hidden" {...register('id' as const)} />
-          <TestlabFormInput<StyringsdataFormData>
+          <TestlabFormInput<Styringsdata>
             label="Ansvarleg"
             name="ansvarleg"
             required
           />
-          <TestlabFormInput<StyringsdataFormData>
+          <TestlabFormInput<Styringsdata>
             label="Oppretta"
             name="oppretta"
             type="date"
             required
           />
-          <TestlabFormInput<StyringsdataFormData>
+          <TestlabFormInput<Styringsdata>
             label="Frist for gjennomføring"
             name="frist"
             type="date"
@@ -211,7 +199,7 @@ const StyringsdataForm = () => {
             Desse felta triggar inga handling, det er berre for intern oversikt.
             Dialog med part går føre seg i andre kanalar.
           </Paragraph>
-          <TestlabFormSelect<StyringsdataFormData>
+          <TestlabFormSelect<Styringsdata>
             label="Aktivitet"
             description="Er det forventet å bruke reaksjoner til denne løsningen?"
             options={[
@@ -227,12 +215,12 @@ const StyringsdataForm = () => {
                 <Accordion.Header level={3}>Pålegg</Accordion.Header>
                 <Accordion.Content>
                   <input type="hidden" {...register('paalegg.id' as const)} />
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Pålegg vedtak dato"
                     name="paalegg.vedtakDato"
                     type="date"
                   />
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Pålegg frist"
                     name="paalegg.frist"
                     type="date"
@@ -249,20 +237,20 @@ const StyringsdataForm = () => {
                 <Accordion.Header level={3}>Bot</Accordion.Header>
                 <Accordion.Content>
                   <input type="hidden" {...register('bot.id' as const)} />
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Bot (tvangsmulkt) beløp"
                     name="bot.beloepDag"
                   />
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Antall dager før økning"
                     name="bot.oekingEtterDager"
                   />
                   <div className={classes.oekingType}>
-                    <TestlabFormInput<StyringsdataFormData>
+                    <TestlabFormInput<Styringsdata>
                       label="Økning pr dag"
                       name="bot.oekingSats"
                     />
-                    <TestlabFormSelect<StyringsdataFormData>
+                    <TestlabFormSelect<Styringsdata>
                       label={''}
                       options={[
                         { value: 'kroner', label: 'NOK' },
@@ -273,22 +261,22 @@ const StyringsdataForm = () => {
                       radioInline
                     />
                   </div>
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Når ble vedtak om bot iverksatt?"
                     name="bot.vedtakDato"
                     type="date"
                   />
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Startdato for bot"
                     name="bot.startDato"
                     type="date"
                   />
-                  <TestlabFormInput<StyringsdataFormData>
+                  <TestlabFormInput<Styringsdata>
                     label="Sluttdato for bot"
                     name="bot.sluttDato"
                     type="date"
                   />
-                  <TestlabFormTextArea<StyringsdataFormData>
+                  <TestlabFormTextArea<Styringsdata>
                     label="Kommentar"
                     name="bot.kommentar"
                   />

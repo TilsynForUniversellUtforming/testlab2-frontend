@@ -239,3 +239,23 @@ export function substrings(n: number, s: string): string[] {
   result.push(remaining);
   return result;
 }
+
+/**
+ * Removes time from string ISO-dates if dateString is date is valid
+ * @param dateString - A date string (or date object).
+ * @returns A string value of the date without time in YYYY-MM-DD format.
+ */
+export const removeTimeFromDateString = (dateString: string | Date | undefined): string | undefined => {
+  if (!dateString) {
+    return undefined;
+  }
+
+  try {
+    const dateObj = new Date(dateString);
+
+    return dateObj.toISOString().split('T')[0];
+
+  } catch (e) {
+    return undefined;
+  }
+}

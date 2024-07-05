@@ -213,6 +213,7 @@ export const styringsdataValidationSchema = z
     bot: botSchema.optional(),
     botKlage: klageSchema.optional(),
   })
+  .passthrough()
   .superRefine((data, ctx) => {
     const { oppretta, frist } = data;
 

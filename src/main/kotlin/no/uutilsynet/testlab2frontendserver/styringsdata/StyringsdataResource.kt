@@ -49,6 +49,7 @@ class StyringsdataResource(
               ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
             },
             { exception ->
+              logger.error("Kunne ikkje hente styringsdata", exception)
               when (exception) {
                 is HttpClientErrorException -> {
                   if (exception.statusCode == HttpStatus.NOT_FOUND) {
@@ -64,7 +65,7 @@ class StyringsdataResource(
   }
 
   @PostMapping
-  fun createStyringsdataForLoeysing(@RequestBody styringsdata: Styringsdata): Styringsdata =
+  fun createStyringsdata(@RequestBody styringsdata: Styringsdata): Styringsdata =
       runCatching {
             val location =
                 restTemplate.postForLocation(styringsdataUrl, styringsdata)
@@ -80,5 +81,10 @@ class StyringsdataResource(
   fun updateStyringsdataForLoeysing(
       @PathVariable("styringsdataId") styringsdataId: Int,
       @RequestBody styringsdata: Styringsdata
-  ) = runCatching { restTemplate.put("$styringsdataUrl/$styringsdataId", styringsdata) }
+  ) =
+      runCatching { restTemplate.put("$styringsdataUrl/$styringsdataId", styringsdata) }
+          .getOrElse {
+            logger.error("Oppretting av kontroll feilet", it)
+            throw RuntimeException(it)
+          }
 }

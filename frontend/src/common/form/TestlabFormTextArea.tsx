@@ -1,4 +1,4 @@
-import { Textarea, TextareaProps } from '@digdir/designsystemet-react';
+import { Label, Textarea, TextareaProps } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Path, useFormContext } from 'react-hook-form';
 
@@ -27,7 +27,7 @@ export interface TestlabInputBaseProps<T extends object> extends TextareaProps {
  * @param {TextareaProps} rest - Other textarea props
  * @returns {ReactNode}
  */
-const TestlabFormInput = <T extends object>({
+const TestlabFormTextArea = <T extends object>({
   label,
   description,
   name,
@@ -41,14 +41,15 @@ const TestlabFormInput = <T extends object>({
 
   return (
     <div className="testlab-form__input">
-      <label htmlFor={name} className="testlab-form__input-label">
+      <Label htmlFor={name} className="testlab-form__input-label">
         {label}
         {required && <span className="asterisk-color">*</span>}
         {description && (
           <div className="testlab-form__input-sub-label">{description}</div>
         )}
-      </label>
+      </Label>
       <Textarea
+        id={name}
         {...register(name, {
           required: required,
         })}
@@ -61,4 +62,4 @@ const TestlabFormInput = <T extends object>({
   );
 };
 
-export default TestlabFormInput;
+export default TestlabFormTextArea;

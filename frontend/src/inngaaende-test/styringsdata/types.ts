@@ -12,17 +12,17 @@ export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
 
 export type Paalegg = {
   id?: number;
-  vedtakDato: Date;
-  frist: Date;
+  vedtakDato: string;
+  frist: string;
 };
 
 export type Klage = {
   id?: number;
   klageType: KlageType;
-  klageMottattDato: Date;
-  klageAvgjortDato?: Date;
+  klageMottattDato: string;
+  klageAvgjortDato?: string;
   resultatKlageTilsyn?: ResultatKlage;
-  klageDatoDepartement?: Date;
+  klageDatoDepartement?: string;
   resultatKlageDepartement?: ResultatKlage;
 };
 
@@ -32,9 +32,9 @@ type Bot = {
   oekingEtterDager: number;
   oekningType: BotOekningType;
   oekingSats: number;
-  vedtakDato: Date;
-  startDato: Date;
-  sluttDato?: Date;
+  vedtakDato: string;
+  startDato: string;
+  sluttDato?: string;
   kommentar?: string;
 };
 
@@ -43,20 +43,8 @@ export type Styringsdata = {
   loeysingId: number;
   kontrollId: number;
   ansvarleg: string;
-  oppretta: Date;
-  frist: Date;
-  reaksjon: ReaksjonsType;
-  paalegg?: Paalegg;
-  paaleggKlage?: Klage;
-  bot?: Bot;
-  botKlage?: Klage;
-};
-
-export type StyringsdataFormData = {
-  id?: number;
-  ansvarleg: string;
-  oppretta: Date;
-  frist: Date;
+  oppretta: string;
+  frist: string;
   reaksjon: ReaksjonsType;
   paalegg?: Paalegg;
   paaleggKlage?: Klage;
