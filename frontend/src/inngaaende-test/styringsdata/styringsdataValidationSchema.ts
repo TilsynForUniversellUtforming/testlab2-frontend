@@ -218,7 +218,6 @@ export const styringsdataValidationSchema = z
   .passthrough()
   .superRefine((data, ctx) => {
     const { oppretta, frist, paalegg, paaleggKlage, bot, botKlage } = data;
-    console.log('REF', data);
 
     if (frist && oppretta && frist < oppretta) {
       ctx.addIssue({

@@ -15,6 +15,7 @@ import {
   Tag,
 } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import SaveButton from '@test/styringsdata/SaveButton';
 import { styringsdataValidationSchema } from '@test/styringsdata/styringsdataValidationSchema';
 import {
   KlageType,
@@ -23,6 +24,7 @@ import {
   StyringsdataLoaderData,
 } from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
+import { useEffect } from 'react';
 import { useForm, UseFormRegister } from 'react-hook-form';
 import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
 
@@ -97,13 +99,14 @@ const StyringsdataForm = () => {
       id: styringsdata?.id ?? undefined,
       kontrollId: kontrollId,
       loeysingId: loeysingId,
+      reaksjon: 'ingen-reaksjon',
       ...styringsdata,
     },
     mode: 'onBlur',
     resolver: zodResolver(styringsdataValidationSchema),
   });
 
-  const { watch, formState } = formMethods;
+  const { watch, formState, setValue } = formMethods;
 
   const onSubmit = (data: Styringsdata) => {
     if (isEdit) {
@@ -119,7 +122,15 @@ const StyringsdataForm = () => {
     }
   };
 
-  const reaksjon = watch('reaksjon', 'ingen-reaksjon');
+  const [reaksjon, oekingType] = watch(['reaksjon', 'bot.oekningType']);
+
+  useEffect(() => {
+    if (reaksjon === 'reaksjon' && !oekingType) {
+      setValue('bot.oekningType', 'kroner');
+    } else if (reaksjon === 'ingen-reaksjon') {
+      setValue('bot.oekningType', undefined);
+    }
+  }, [reaksjon]);
 
   const paaleggError = isDefined(getErrorMessage(formState, 'paalegg'));
   const botError = isDefined(getErrorMessage(formState, 'bot'));
@@ -285,7 +296,7 @@ const StyringsdataForm = () => {
             <Link to={'..'}>
               <Button variant={ButtonVariant.Outline}>Tilbake</Button>
             </Link>
-            <Button type="submit">Lagre</Button>
+            <SaveButton />
           </div>
         </TestlabForm>
       </div>

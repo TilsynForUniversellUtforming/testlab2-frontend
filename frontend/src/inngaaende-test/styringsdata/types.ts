@@ -30,7 +30,7 @@ type Bot = {
   id?: number;
   beloepDag: number;
   oekingEtterDager: number;
-  oekningType: BotOekningType;
+  oekningType?: BotOekningType;
   oekingSats: number;
   vedtakDato: string;
   startDato: string;
@@ -50,6 +50,7 @@ export type Styringsdata = {
   paaleggKlage?: Klage;
   bot?: Bot;
   botKlage?: Klage;
+  sistLagra?: string;
 };
 
 export type StyringsdataListElement = {
@@ -64,6 +65,7 @@ export type StyringsdataListElement = {
   paaleggKlageId?: number;
   botId?: number;
   botKlageId?: number;
+  sistLagra?: string;
 };
 
 export type StyringsdataLoaderData = {

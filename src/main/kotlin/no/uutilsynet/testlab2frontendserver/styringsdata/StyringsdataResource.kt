@@ -28,7 +28,7 @@ class StyringsdataResource(
   val styringsdataUrl = "${testingApiProperties.url}/styringsdata"
 
   @GetMapping
-  fun getStyringsdata(@RequestParam("kontrollId") kontrollId: Int): List<StyringsdataListElement> =
+  fun getStyringsdata(@RequestParam kontrollId: Int): List<StyringsdataListElement> =
       runCatching {
             restTemplate.getList<StyringsdataListElement>("$styringsdataUrl?kontrollId=$kontrollId")
           }
@@ -82,7 +82,10 @@ class StyringsdataResource(
       @PathVariable("styringsdataId") styringsdataId: Int,
       @RequestBody styringsdata: Styringsdata
   ) =
-      runCatching { restTemplate.put("$styringsdataUrl/$styringsdataId", styringsdata) }
+      runCatching {
+            restTemplate.put("$styringsdataUrl/$styringsdataId", styringsdata)
+            getStyringsdataForLoeysing(styringsdataId)
+          }
           .getOrElse {
             logger.error("Oppretting av kontroll feilet", it)
             throw RuntimeException(it)
