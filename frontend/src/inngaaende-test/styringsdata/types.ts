@@ -46,6 +46,10 @@ export type Styringsdata = {
   oppretta: string;
   frist: string;
   reaksjon: ReaksjonsType;
+  paaleggReaksjon: ReaksjonsType;
+  paaleggKlageReaksjon: ReaksjonsType;
+  botReaksjon: ReaksjonsType;
+  botKlageReaksjon: ReaksjonsType;
   paalegg?: Paalegg;
   paaleggKlage?: Klage;
   bot?: Bot;
@@ -61,6 +65,10 @@ export type StyringsdataListElement = {
   oppretta: string;
   frist: string;
   reaksjon: ReaksjonsType;
+  paaleggReaksjon: ReaksjonsType;
+  paaleggKlageReaksjon: ReaksjonsType;
+  botReaksjon: ReaksjonsType;
+  botKlageReaksjon: ReaksjonsType;
   paaleggId?: number;
   paaleggKlageId?: number;
   botId?: number;

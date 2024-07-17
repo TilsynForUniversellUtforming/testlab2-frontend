@@ -65,15 +65,24 @@ class StyringsdataResource(
   }
 
   @PostMapping
-  fun createStyringsdata(@RequestBody styringsdata: Styringsdata): Styringsdata =
+  fun createStyringsdata(@RequestBody styringsdata: Styringsdata): ResponseEntity<Styringsdata> =
       runCatching {
+            val styringsdataList =
+                restTemplate.getList<StyringsdataListElement>(
+                    "$styringsdataUrl?kontrollId=${styringsdata.kontrollId}")
+            val existingStyringsdata =
+                styringsdataList.find { sl -> sl.loeysingId == styringsdata.loeysingId }
+            if (existingStyringsdata != null) {
+              return ResponseEntity.badRequest().build()
+            }
+
             val location =
                 restTemplate.postForLocation(styringsdataUrl, styringsdata)
                     ?: throw IllegalStateException("Vi fikk ikkje location fra $styringsdataUrl")
-            restTemplate.getForObject<Styringsdata>(location)
+            ResponseEntity.ok(restTemplate.getForObject<Styringsdata>(location))
           }
           .getOrElse {
-            logger.error("Oppretting av kontroll feilet", it)
+            logger.error("Oppretting av styringsdata feilet", it)
             throw RuntimeException(it)
           }
 

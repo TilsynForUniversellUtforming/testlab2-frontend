@@ -47,6 +47,9 @@ export const createStyringsdata = async (styringsdata: Styringsdata) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(styringsdata),
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikkje opprette styringsdata')
-  );
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error('Styringsdata finns allereie');
+    }
+    return responseToJson(response, 'Kunne ikkje opprette styringsdata');
+  });

@@ -109,6 +109,19 @@ export const formatDateString = (
   }
 };
 
+/**
+ * Checks if a given string represents a valid date.
+ *
+ * @param {string} dateString - The date string to validate.
+ * @returns {boolean} Returns true if the dateString is a valid date, false otherwise.
+ */
+export const isValidStringDate = (dateString: string | undefined): boolean => {
+  if (!dateString) {
+    return false;
+  }
+  return !isNaN(Date.parse(dateString));
+};
+
 export function formatDate(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -245,7 +258,9 @@ export function substrings(n: number, s: string): string[] {
  * @param dateString - A date string (or date object).
  * @returns A string value of the date without time in YYYY-MM-DD format.
  */
-export const removeTimeFromDateString = (dateString: string | Date | undefined): string | undefined => {
+export const removeTimeFromDateString = (
+  dateString: string | Date | undefined
+): string | undefined => {
   if (!dateString) {
     return undefined;
   }
@@ -254,8 +269,7 @@ export const removeTimeFromDateString = (dateString: string | Date | undefined):
     const dateObj = new Date(dateString);
 
     return dateObj.toISOString().split('T')[0];
-
   } catch (e) {
     return undefined;
   }
-}
+};

@@ -16,7 +16,7 @@ import {
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
 import { Testgrunnlag } from '@test/types';
-import { Outlet, RouteObject } from 'react-router-dom';
+import { Outlet, redirect, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import InngaaendeTestApp from './InngaaendeTestApp';
@@ -93,13 +93,14 @@ export const TestingRoutes: RouteObject = {
           element: <StyringsdataForm />,
           handle: { name: TEST_STYRINGSDATA.navn },
           action: async ({ request }) => {
-            const styringsdata = (await request.json()) as Styringsdata;
+            const formData = (await request.json()) as Styringsdata;
             switch (request.method) {
               case 'POST': {
-                return await createStyringsdata(styringsdata);
+                const styringsdata = await createStyringsdata(formData);
+                return redirect(`?styringsdataId=${styringsdata.id}`);
               }
               case 'PUT': {
-                return await updateStyringsdata(styringsdata);
+                return await updateStyringsdata(formData);
               }
             }
           },

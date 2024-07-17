@@ -24,11 +24,15 @@ import {
   StyringsdataLoaderData,
 } from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
-import { useEffect } from 'react';
 import { useForm, UseFormRegister } from 'react-hook-form';
 import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
 
 import classes from './styringsdata.module.css';
+
+const reaksjonOptions = [
+  { value: 'reaksjon', label: 'Ja' },
+  { value: 'ingen-reaksjon', label: 'Nei' },
+];
 
 const KlageInputs = ({
   klageType,
@@ -99,14 +103,19 @@ const StyringsdataForm = () => {
       id: styringsdata?.id ?? undefined,
       kontrollId: kontrollId,
       loeysingId: loeysingId,
-      reaksjon: 'ingen-reaksjon',
+      reaksjon: styringsdata?.reaksjon ?? 'ingen-reaksjon',
+      paaleggReaksjon: styringsdata?.paaleggReaksjon ?? 'ingen-reaksjon',
+      paaleggKlageReaksjon:
+        styringsdata?.paaleggKlageReaksjon ?? 'ingen-reaksjon',
+      botReaksjon: styringsdata?.botReaksjon ?? 'ingen-reaksjon',
+      botKlageReaksjon: styringsdata?.botKlageReaksjon ?? 'ingen-reaksjon',
       ...styringsdata,
     },
     mode: 'onBlur',
     resolver: zodResolver(styringsdataValidationSchema),
   });
 
-  const { watch, formState, setValue } = formMethods;
+  const { watch, formState } = formMethods;
 
   const onSubmit = (data: Styringsdata) => {
     if (isEdit) {
@@ -122,15 +131,21 @@ const StyringsdataForm = () => {
     }
   };
 
-  const [reaksjon, oekingType] = watch(['reaksjon', 'bot.oekningType']);
+  const [
+    reaksjon,
+    paaleggReaksjon,
+    paaleggKlageReaksjon,
+    botReaksjon,
+    botKlageReaksjon,
+  ] = watch([
+    'reaksjon',
+    'paaleggReaksjon',
+    'paaleggKlageReaksjon',
+    'botReaksjon',
+    'botKlageReaksjon',
 
-  useEffect(() => {
-    if (reaksjon === 'reaksjon' && !oekingType) {
-      setValue('bot.oekningType', 'kroner');
-    } else if (reaksjon === 'ingen-reaksjon') {
-      setValue('bot.oekningType', undefined);
-    }
-  }, [reaksjon]);
+    'bot.oekningType',
+  ]);
 
   const paaleggError = isDefined(getErrorMessage(formState, 'paalegg'));
   const botError = isDefined(getErrorMessage(formState, 'bot'));
@@ -187,10 +202,7 @@ const StyringsdataForm = () => {
           <TestlabFormSelect<Styringsdata>
             label="Aktivitet"
             description="Er det forventet å bruke reaksjoner til denne løsningen?"
-            options={[
-              { value: 'reaksjon', label: 'Ja' },
-              { value: 'ingen-reaksjon', label: 'Nei' },
-            ]}
+            options={reaksjonOptions}
             name="reaksjon"
             radio
           />
@@ -199,78 +211,118 @@ const StyringsdataForm = () => {
               <Accordion.Item>
                 <Accordion.Header level={3}>Pålegg</Accordion.Header>
                 <Accordion.Content>
-                  <input type="hidden" {...register('paalegg.id' as const)} />
-                  <TestlabFormInput<Styringsdata>
-                    label="Pålegg vedtak dato"
-                    name="paalegg.vedtakDato"
-                    type="date"
+                  <TestlabFormSelect
+                    options={reaksjonOptions}
+                    label="Skal det gis pålegg om retting"
+                    name="paaleggReaksjon"
+                    radio
                   />
-                  <TestlabFormInput<Styringsdata>
-                    label="Pålegg frist"
-                    name="paalegg.frist"
-                    type="date"
-                  />
+                  {paaleggReaksjon === 'reaksjon' && (
+                    <>
+                      <input
+                        type="hidden"
+                        {...register('paalegg.id' as const)}
+                      />
+                      <TestlabFormInput<Styringsdata>
+                        label="Pålegg vedtak dato"
+                        name="paalegg.vedtakDato"
+                        type="date"
+                      />
+                      <TestlabFormInput<Styringsdata>
+                        label="Pålegg frist"
+                        name="paalegg.frist"
+                        type="date"
+                      />
+                    </>
+                  )}
                 </Accordion.Content>
               </Accordion.Item>
               <Accordion.Item>
                 <Accordion.Header level={3}>Pålegg klage</Accordion.Header>
                 <Accordion.Content>
-                  <KlageInputs klageType={'paalegg'} register={register} />
+                  <TestlabFormSelect
+                    options={reaksjonOptions}
+                    label="Er det klage på pålegg?"
+                    name="paaleggKlageReaksjon"
+                    radio
+                  />
+                  {paaleggKlageReaksjon === 'reaksjon' && (
+                    <KlageInputs klageType={'paalegg'} register={register} />
+                  )}
                 </Accordion.Content>
               </Accordion.Item>
               <Accordion.Item>
                 <Accordion.Header level={3}>Bot</Accordion.Header>
                 <Accordion.Content>
-                  <input type="hidden" {...register('bot.id' as const)} />
-                  <TestlabFormInput<Styringsdata>
-                    label="Bot (tvangsmulkt) beløp"
-                    name="bot.beloepDag"
+                  <TestlabFormSelect
+                    options={reaksjonOptions}
+                    label="Skal det gis bot (tvangsmulkt)?"
+                    name="botReaksjon"
+                    radio
                   />
-                  <TestlabFormInput<Styringsdata>
-                    label="Antall dager før økning"
-                    name="bot.oekingEtterDager"
-                  />
-                  <div className={classes.oekingType}>
-                    <TestlabFormInput<Styringsdata>
-                      label="Økning pr dag"
-                      name="bot.oekingSats"
-                    />
-                    <TestlabFormSelect<Styringsdata>
-                      label={''}
-                      options={[
-                        { value: 'kroner', label: 'NOK' },
-                        { value: 'prosent', label: '%' },
-                      ]}
-                      name="bot.oekningType"
-                      radio
-                      radioInline
-                    />
-                  </div>
-                  <TestlabFormInput<Styringsdata>
-                    label="Når ble vedtak om bot iverksatt?"
-                    name="bot.vedtakDato"
-                    type="date"
-                  />
-                  <TestlabFormInput<Styringsdata>
-                    label="Startdato for bot"
-                    name="bot.startDato"
-                    type="date"
-                  />
-                  <TestlabFormInput<Styringsdata>
-                    label="Sluttdato for bot"
-                    name="bot.sluttDato"
-                    type="date"
-                  />
-                  <TestlabFormTextArea<Styringsdata>
-                    label="Kommentar"
-                    name="bot.kommentar"
-                  />
+                  {botReaksjon === 'reaksjon' && (
+                    <>
+                      <input type="hidden" {...register('bot.id' as const)} />
+
+                      <TestlabFormInput<Styringsdata>
+                        label="Bot (tvangsmulkt) beløp"
+                        name="bot.beloepDag"
+                      />
+                      <TestlabFormInput<Styringsdata>
+                        label="Antall dager før økning"
+                        name="bot.oekingEtterDager"
+                      />
+                      <div className={classes.oekingType}>
+                        <TestlabFormInput<Styringsdata>
+                          label="Økning pr dag"
+                          name="bot.oekingSats"
+                        />
+                        <TestlabFormSelect<Styringsdata>
+                          label={''}
+                          options={[
+                            { value: 'kroner', label: 'NOK' },
+                            { value: 'prosent', label: '%' },
+                          ]}
+                          name="bot.oekningType"
+                          radio
+                          radioInline
+                        />
+                      </div>
+                      <TestlabFormInput<Styringsdata>
+                        label="Når ble vedtak om bot iverksatt?"
+                        name="bot.vedtakDato"
+                        type="date"
+                      />
+                      <TestlabFormInput<Styringsdata>
+                        label="Startdato for bot"
+                        name="bot.startDato"
+                        type="date"
+                      />
+                      <TestlabFormInput<Styringsdata>
+                        label="Sluttdato for bot"
+                        name="bot.sluttDato"
+                        type="date"
+                      />
+                      <TestlabFormTextArea<Styringsdata>
+                        label="Kommentar"
+                        name="bot.kommentar"
+                      />
+                    </>
+                  )}
                 </Accordion.Content>
               </Accordion.Item>
               <Accordion.Item>
                 <Accordion.Header level={3}>Bot klage</Accordion.Header>
                 <Accordion.Content>
-                  <KlageInputs klageType={'bot'} register={register} />
+                  <TestlabFormSelect
+                    options={reaksjonOptions}
+                    label="Er det klage på bot?"
+                    name="botKlageReaksjon"
+                    radio
+                  />
+                  {botKlageReaksjon === 'reaksjon' && (
+                    <KlageInputs klageType={'bot'} register={register} />
+                  )}
                 </Accordion.Content>
               </Accordion.Item>
             </Accordion>

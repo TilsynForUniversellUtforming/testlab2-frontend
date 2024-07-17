@@ -12,6 +12,10 @@ data class StyringsdataListElement(
     val oppretta: LocalDate,
     val frist: LocalDate,
     val reaksjon: Reaksjonstype,
+    val paaleggReaksjon: Reaksjonstype,
+    val paaleggKlageReaksjon: Reaksjonstype,
+    val botReaksjon: Reaksjonstype,
+    val botKlageReaksjon: Reaksjonstype,
     val paaleggId: Int?,
     val paaleggKlageId: Int?,
     val botId: Int?,
@@ -27,11 +31,15 @@ data class Styringsdata(
     val oppretta: LocalDate,
     val frist: LocalDate,
     val reaksjon: Reaksjonstype,
+    val paaleggReaksjon: Reaksjonstype,
+    val paaleggKlageReaksjon: Reaksjonstype,
+    val botReaksjon: Reaksjonstype,
+    val botKlageReaksjon: Reaksjonstype,
     val paalegg: Paalegg?,
     val paaleggKlage: Klage?,
     val bot: Bot?,
     val botKlage: Klage?,
-    val sistLagra: Instant
+    val sistLagra: Instant?
 )
 
 data class Paalegg(
