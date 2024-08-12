@@ -115,11 +115,34 @@ export const formatDateString = (
  * @param {string} dateString - The date string to validate.
  * @returns {boolean} Returns true if the dateString is a valid date, false otherwise.
  */
-export const isValidStringDate = (dateString: string | undefined): boolean => {
+export const isValidInputDate = (
+  dateString: string | undefined | null
+): dateString is string => {
   if (!dateString) {
     return false;
   }
   return !isNaN(Date.parse(dateString));
+};
+
+/**
+ * Compares two dates and checks if the second date is before the first date.
+ *
+ * @param {string | Date} targetDate - The date to compare against. This is the reference date.
+ * @param {string | Date} dateToCompare - The date to check if it is before the targetDate.
+ * @return {boolean} Returns true if dateToCompare is before targetDate. Returns false if either date is invalid.
+ */
+export const dateIsBefore = (
+  targetDate: string | Date,
+  dateToCompare: string | Date
+): boolean => {
+  const firstDate = new Date(targetDate);
+  const secondDate = new Date(dateToCompare);
+
+  if (isNaN(firstDate.getTime()) || isNaN(secondDate.getTime())) {
+    return false;
+  }
+
+  return secondDate < firstDate;
 };
 
 export function formatDate(date: Date): string {

@@ -1,3 +1,4 @@
+import { dateIsBefore, isValidInputDate } from '@common/util/stringutils';
 import { isValidObject } from '@common/util/validationUtils';
 import { z } from 'zod';
 
@@ -21,19 +22,15 @@ const reaksjonsType = z.union([
 
 const paaleggSchema = z
   .object({
-    vedtakDato: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
-    frist: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
+    vedtakDato: z.nullable(z.string()).optional().or(z.literal('')),
+    frist: z.nullable(z.string()).optional().or(z.literal('')),
   })
   .superRefine((data, ctx) => {
     const { vedtakDato, frist } = data;
+    const validVedtakDato = isValidInputDate(vedtakDato);
+    const validFrist = isValidInputDate(frist);
 
-    if (frist && vedtakDato && frist < vedtakDato) {
+    if (validVedtakDato && validFrist && dateIsBefore(vedtakDato, frist)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Frist må vera etter vedtaksdato',
@@ -58,19 +55,10 @@ const botSchema = z
       .positive('Sats må vera positiv')
       .optional()
       .or(z.literal('')),
-    vedtakDato: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
-    startDato: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
-    sluttDato: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
-    kommentar: z.string().optional(),
+    vedtakDato: z.nullable(z.string()).optional().or(z.literal('')),
+    startDato: z.nullable(z.string()).optional().or(z.literal('')),
+    sluttDato: z.nullable(z.string()).optional().or(z.literal('')),
+    kommentar: z.nullable(z.string().optional()),
   })
   .superRefine((data, ctx) => {
     const {
@@ -106,7 +94,24 @@ const botSchema = z
       });
     }
 
-    if (startDato && vedtakDato && startDato < vedtakDato) {
+    if (beloepDag || oekingEtterDager || oekingSats) {
+      if (!vedtakDato) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Vedtakdato manglar',
+          path: ['vedtakDato'],
+        });
+      }
+      if (!startDato) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Startdato manglar',
+          path: ['startDato'],
+        });
+      }
+    }
+
+    if (startDato && vedtakDato && dateIsBefore(vedtakDato, startDato)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Startdato kan ikkje vera før vedtaket',
@@ -114,7 +119,7 @@ const botSchema = z
       });
     }
 
-    if (sluttDato && vedtakDato && sluttDato < vedtakDato) {
+    if (sluttDato && vedtakDato && dateIsBefore(vedtakDato, sluttDato)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Sluttdato kan ikkje vera før vedtaket',
@@ -125,21 +130,12 @@ const botSchema = z
 
 const klageSchema = z
   .object({
-    klageMottattDato: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
-    klageAvgjortDato: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
+    klageMottattDato: z.nullable(z.string()).optional().or(z.literal('')),
+    klageAvgjortDato: z.nullable(z.string()).optional().or(z.literal('')),
     resultatKlageTilsyn: z.nullable(
       resultatKlageSchema.optional().or(z.literal(''))
     ),
-    klageDatoDepartement: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
+    klageDatoDepartement: z.nullable(z.string()).optional().or(z.literal('')),
     resultatKlageDepartement: z.nullable(
       resultatKlageSchema.optional().or(z.literal(''))
     ),
@@ -153,7 +149,11 @@ const klageSchema = z
       resultatKlageDepartement,
     } = data;
 
-    if (klageAvgjortDato && !klageMottattDato) {
+    const validMottattDato = isValidInputDate(klageMottattDato);
+    const validAvgjortDato = isValidInputDate(klageAvgjortDato);
+    const validDatoDepartement = isValidInputDate(klageDatoDepartement);
+
+    if (validAvgjortDato && !validMottattDato) {
       ctx.addIssue({
         code: 'custom',
         message: 'Mottat dato er påkrevd',
@@ -162,9 +162,9 @@ const klageSchema = z
     }
 
     if (
-      klageMottattDato &&
-      klageAvgjortDato &&
-      klageAvgjortDato < klageMottattDato
+      validMottattDato &&
+      validAvgjortDato &&
+      dateIsBefore(klageMottattDato, klageAvgjortDato)
     ) {
       ctx.addIssue({
         code: 'custom',
@@ -173,7 +173,7 @@ const klageSchema = z
       });
     }
 
-    if (klageAvgjortDato && !resultatKlageTilsyn) {
+    if (validAvgjortDato && !resultatKlageTilsyn) {
       ctx.addIssue({
         code: 'custom',
         message: 'Resultat manglar',
@@ -181,7 +181,7 @@ const klageSchema = z
       });
     }
 
-    if (resultatKlageTilsyn && !klageAvgjortDato) {
+    if (resultatKlageTilsyn && !validAvgjortDato) {
       ctx.addIssue({
         code: 'custom',
         message: 'Avgjort dato manglar',
@@ -189,11 +189,19 @@ const klageSchema = z
       });
     }
 
-    if (resultatKlageDepartement && !klageDatoDepartement) {
+    if (resultatKlageDepartement && !validDatoDepartement) {
       ctx.addIssue({
         code: 'custom',
         message: 'Sendt dato manglar',
         path: ['klageDatoDepartement'],
+      });
+    }
+
+    if (validDatoDepartement && !resultatKlageDepartement) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Resultat manglar',
+        path: ['resultatKlageDepartement'],
       });
     }
   });
@@ -201,15 +209,13 @@ const klageSchema = z
 export const styringsdataValidationSchema = z
   .object({
     ansvarleg: z.string().min(1, 'Ansvarleg manglar'),
-    oppretta: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
-    frist: z.coerce
-      .date({ message: 'Ugyldig dato' })
-      .optional()
-      .or(z.literal('')),
+    oppretta: z.nullable(z.string()).optional().or(z.literal('')),
+    frist: z.nullable(z.string()).optional().or(z.literal('')),
     reaksjon: reaksjonsType,
+    paaleggReaksjon: z.nullable(reaksjonsType.optional()),
+    paaleggKlageReaksjon: z.nullable(reaksjonsType.optional()),
+    botReaksjon: z.nullable(reaksjonsType.optional()),
+    botKlageReaksjon: z.nullable(reaksjonsType.optional()),
     paalegg: z.nullable(paaleggSchema.optional()),
     paaleggKlage: z.nullable(klageSchema.optional()),
     bot: z.nullable(botSchema.optional()),
@@ -217,9 +223,28 @@ export const styringsdataValidationSchema = z
   })
   .passthrough()
   .superRefine((data, ctx) => {
-    const { oppretta, frist, paalegg, paaleggKlage, bot, botKlage } = data;
+    const {
+      oppretta,
+      frist,
+      paalegg,
+      paaleggKlage,
+      bot,
+      botKlage,
+      paaleggReaksjon,
+      paaleggKlageReaksjon,
+      botReaksjon,
+      botKlageReaksjon,
+    } = data;
 
-    if (frist && oppretta && frist < oppretta) {
+    const hasPaaleggReaksjon = paaleggReaksjon === 'reaksjon';
+    const hasPaaleggKlageReaksjon = paaleggKlageReaksjon === 'reaksjon';
+    const hasBotReaksjon = botReaksjon === 'reaksjon';
+    const hasBotKlageReaksjon = botKlageReaksjon === 'reaksjon';
+
+    const validOppretta = isValidInputDate(oppretta);
+    const validFrist = isValidInputDate(frist);
+
+    if (validOppretta && validFrist && dateIsBefore(oppretta, frist)) {
       ctx.addIssue({
         code: 'custom',
         message: 'Frist må vera etter oppretta dato',
@@ -239,6 +264,50 @@ export const styringsdataValidationSchema = z
         code: 'custom',
         message: 'Vedtaksdato manglar',
         path: ['bot'],
+      });
+    }
+
+    if (
+      (hasPaaleggKlageReaksjon || hasBotReaksjon || hasBotKlageReaksjon) &&
+      !hasPaaleggReaksjon
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message:
+          'Pålegg om retting manglar, kan ikkje legge inn andre reaksjonar',
+        path: ['paaleggReaksjon'],
+      });
+
+      if (hasPaaleggKlageReaksjon) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Pålegg om retting manglar',
+          path: ['paaleggKlageReaksjon'],
+        });
+      }
+
+      if (hasBotReaksjon) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Pålegg om retting manglar',
+          path: ['botReaksjon'],
+        });
+      }
+
+      if (hasBotKlageReaksjon) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'Pålegg om retting manglar',
+          path: ['botKlageReaksjon'],
+        });
+      }
+    }
+
+    if (hasBotKlageReaksjon && !hasBotReaksjon) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Det må liggja føre bot før klage',
+        path: ['botReaksjon'],
       });
     }
   });

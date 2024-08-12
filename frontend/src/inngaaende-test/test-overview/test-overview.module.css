@@ -34,7 +34,7 @@
   align-items: flex-start;
   background: var(--fds-brand-alt1-200);
   padding: 1rem;
-  min-width: 35%;
+  width: 35%;
   @media (max-width: 829px) {
     align-items: center;
   }
@@ -71,13 +71,23 @@
   text-align: center;
   gap: 2rem;
   padding: 1rem;
-  min-width: 65%;
+  width: 65%;
 }
 
 .tag-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.heading-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.loeysing-test-metadata {
+  width: 100%;
 }
 
 .test-tags {

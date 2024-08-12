@@ -18,7 +18,6 @@ export type Paalegg = {
 
 export type Klage = {
   id?: number;
-  klageType: KlageType;
   klageMottattDato: string;
   klageAvgjortDato?: string;
   resultatKlageTilsyn?: ResultatKlage;
@@ -74,6 +73,8 @@ export type StyringsdataListElement = {
   botId?: number;
   botKlageId?: number;
   sistLagra?: string;
+  isPaalegg: boolean;
+  isBot: boolean;
 };
 
 export type StyringsdataLoaderData = {

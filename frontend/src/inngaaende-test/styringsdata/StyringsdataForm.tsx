@@ -3,7 +3,7 @@ import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { getErrorMessage } from '@common/form/util';
-import { ButtonVariant } from '@common/types';
+import { ButtonSize, ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import {
@@ -24,7 +24,7 @@ import {
   StyringsdataLoaderData,
 } from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
-import { useForm, UseFormRegister } from 'react-hook-form';
+import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
 
 import classes from './styringsdata.module.css';
@@ -33,6 +33,27 @@ const reaksjonOptions = [
   { value: 'reaksjon', label: 'Ja' },
   { value: 'ingen-reaksjon', label: 'Nei' },
 ];
+
+const ClearReaksjonButton = ({
+  setValue,
+  field,
+}: {
+  setValue: UseFormSetValue<Styringsdata>;
+  field: 'paalegg' | 'paaleggKlage' | 'bot' | 'botKlage';
+}) => {
+  const onClick = () => {
+    // Clear data for reaksjon
+    setValue(field, undefined);
+    // Toggle off reajonstype
+    setValue(`${field}Reaksjon`, 'ingen-reaksjon');
+  };
+
+  return (
+    <Button onClick={onClick} size={ButtonSize.Small}>
+      Tøm
+    </Button>
+  );
+};
 
 const KlageInputs = ({
   klageType,
@@ -115,7 +136,7 @@ const StyringsdataForm = () => {
     resolver: zodResolver(styringsdataValidationSchema),
   });
 
-  const { watch, formState } = formMethods;
+  const { watch, formState, setValue } = formMethods;
 
   const onSubmit = (data: Styringsdata) => {
     if (isEdit) {
@@ -233,6 +254,10 @@ const StyringsdataForm = () => {
                         name="paalegg.frist"
                         type="date"
                       />
+                      <ClearReaksjonButton
+                        field="paalegg"
+                        setValue={setValue}
+                      />
                     </>
                   )}
                 </Accordion.Content>
@@ -247,7 +272,13 @@ const StyringsdataForm = () => {
                     radio
                   />
                   {paaleggKlageReaksjon === 'reaksjon' && (
-                    <KlageInputs klageType={'paalegg'} register={register} />
+                    <>
+                      <KlageInputs klageType={'paalegg'} register={register} />
+                      <ClearReaksjonButton
+                        field="paaleggKlage"
+                        setValue={setValue}
+                      />
+                    </>
                   )}
                 </Accordion.Content>
               </Accordion.Item>
@@ -307,6 +338,7 @@ const StyringsdataForm = () => {
                         label="Kommentar"
                         name="bot.kommentar"
                       />
+                      <ClearReaksjonButton field="bot" setValue={setValue} />
                     </>
                   )}
                 </Accordion.Content>
@@ -321,7 +353,13 @@ const StyringsdataForm = () => {
                     radio
                   />
                   {botKlageReaksjon === 'reaksjon' && (
-                    <KlageInputs klageType={'bot'} register={register} />
+                    <>
+                      <KlageInputs klageType={'bot'} register={register} />
+                      <ClearReaksjonButton
+                        field="botKlage"
+                        setValue={setValue}
+                      />
+                    </>
                   )}
                 </Accordion.Content>
               </Accordion.Item>

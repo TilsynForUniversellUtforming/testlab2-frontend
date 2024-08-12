@@ -21,7 +21,13 @@ data class StyringsdataListElement(
     val botId: Int?,
     val botKlageId: Int?,
     val sistLagra: Instant
-)
+) {
+  val isPaalegg: Boolean
+    get() = paaleggReaksjon == Reaksjonstype.reaksjon
+
+  val isBot: Boolean
+    get() = botReaksjon == Reaksjonstype.reaksjon
+}
 
 data class Styringsdata(
     val id: Int?,
@@ -50,7 +56,6 @@ data class Paalegg(
 
 data class Klage(
     val id: Int?,
-    val klageType: Klagetype,
     val klageMottattDato: LocalDate,
     val klageAvgjortDato: LocalDate?,
     val resultatKlageTilsyn: ResultatKlage?,
@@ -69,11 +74,6 @@ data class Bot(
     val sluttDato: LocalDate?,
     val kommentar: String?,
 )
-
-enum class Klagetype {
-  paalegg,
-  bot
-}
 
 enum class Reaksjonstype {
   @JsonProperty("reaksjon") reaksjon,

@@ -14,7 +14,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
-import { StyringsdataListElement } from '@test/styringsdata/types';
+import { KlageType, StyringsdataListElement } from '@test/styringsdata/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag } from '@test/types';
@@ -196,6 +196,13 @@ const TestOverview = () => {
               ? `?styringsdataId=${loesysingStyringsdata.id}`
               : '';
 
+            let styringsdataStatus: string | undefined = undefined;
+            if (loesysingStyringsdata?.isBot) {
+              styringsdataStatus = 'bot';
+            } else if (loesysingStyringsdata?.isPaalegg) {
+              styringsdataStatus = 'paalegg';
+            }
+
             return (
               <div
                 key={`${etTestgrunnlag.id}/${loeysingId}`}
@@ -223,10 +230,22 @@ const TestOverview = () => {
                   />
                 </div>
                 <div className={classes.loeysingButtonInnhold}>
-                  <div>
-                    <Heading size="medium" level={4} spacing>
-                      {namn}
-                    </Heading>
+                  <div className={classes.loeysingTestMetadata}>
+                    <div className={classes.headingWrapper}>
+                      <Heading size="medium" level={4} spacing>
+                        {namn}
+                      </Heading>
+                      {styringsdataStatus && (
+                        <TestlabStatusTag<KlageType>
+                          status={styringsdataStatus}
+                          colorMapping={{
+                            danger: ['bot'],
+                            warning: ['paalegg'],
+                          }}
+                          size="small"
+                        />
+                      )}
+                    </div>
                     <div className={classes.tagWrapper}>
                       <div className={classes.testTags}>
                         <Tag color="second" size="small">
