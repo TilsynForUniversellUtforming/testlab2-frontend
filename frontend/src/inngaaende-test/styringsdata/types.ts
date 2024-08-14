@@ -11,39 +11,70 @@ export type BotOekningType = 'kroner' | 'prosent' | 'ikkje-relevant';
 export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
 
 export type Paalegg = {
-  vedtakDato: Date;
-  frist: Date;
+  id?: number;
+  vedtakDato: string;
+  frist: string;
 };
 
 export type Klage = {
-  klageType: KlageType;
-  klageMottattDato: Date;
-  klageAvgjortDato?: Date;
+  id?: number;
+  klageMottattDato: string;
+  klageAvgjortDato?: string;
   resultatKlageTilsyn?: ResultatKlage;
-  klageDatoDepartement?: Date;
+  klageDatoDepartement?: string;
   resultatKlageDepartement?: ResultatKlage;
 };
 
 type Bot = {
+  id?: number;
   beloepDag: number;
   oekingEtterDager: number;
-  oekningType: BotOekningType;
+  oekningType?: BotOekningType;
   oekingSats: number;
-  vedtakDato: Date;
-  startDato: Date;
-  sluttDato: Date;
+  vedtakDato: string;
+  startDato: string;
+  sluttDato?: string;
   kommentar?: string;
 };
 
 export type Styringsdata = {
+  id?: number;
+  loeysingId: number;
+  kontrollId: number;
   ansvarleg: string;
-  oppretta: Date;
-  frist: Date;
+  oppretta: string;
+  frist: string;
   reaksjon: ReaksjonsType;
+  paaleggReaksjon: ReaksjonsType;
+  paaleggKlageReaksjon: ReaksjonsType;
+  botReaksjon: ReaksjonsType;
+  botKlageReaksjon: ReaksjonsType;
   paalegg?: Paalegg;
   paaleggKlage?: Klage;
   bot?: Bot;
   botKlage?: Klage;
+  sistLagra?: string;
+};
+
+export type StyringsdataListElement = {
+  id: number;
+  kontrollId: number;
+  loeysingId: number;
+  ansvarleg: string;
+  oppretta: string;
+  frist: string;
+  reaksjon: ReaksjonsType;
+  paaleggReaksjon: ReaksjonsType;
+  paaleggKlageReaksjon: ReaksjonsType;
+  botReaksjon: ReaksjonsType;
+  botKlageReaksjon: ReaksjonsType;
+  paaleggId?: number;
+  paaleggKlageId?: number;
+  botId?: number;
+  botKlageId?: number;
+  sistLagra?: string;
+  isPaalegg: boolean;
+  isBot: boolean;
 };
 
 export type StyringsdataLoaderData = {

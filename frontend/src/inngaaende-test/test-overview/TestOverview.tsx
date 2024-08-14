@@ -1,6 +1,7 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
+import { ButtonVariant } from '@common/types';
 import { isEmpty, last } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
@@ -13,6 +14,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
+import { KlageType, StyringsdataListElement } from '@test/styringsdata/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag } from '@test/types';
@@ -32,6 +34,7 @@ export type TestOverviewLoaderData = {
   loeysingList: Loeysing[];
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
+  styringsdata: StyringsdataListElement[];
 };
 
 export function antallTester(
@@ -101,7 +104,7 @@ const TestOverview = () => {
 
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const { loeysingList, resultater, testgrunnlag } =
+  const { loeysingList, resultater, testgrunnlag, styringsdata } =
     useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
@@ -153,143 +156,176 @@ const TestOverview = () => {
   }
 
   return (
-    <div className={classes.manualTestContainer}>
-      {testgrunnlag.length === 0 && (
-        <Alert severity="warning">
-          <Heading level={3} size="xs" spacing>
-            Ingen testgrunnlag for test
-          </Heading>
-          <Paragraph>
-            Sjå over kontrollen og sjekk at alle parametrar er fylt ut{' '}
-            <Link to={`../../kontroll/${String(id)}`}>her</Link>
-          </Paragraph>
-        </Alert>
-      )}
-      {testgrunnlag.flatMap((etTestgrunnlag) => {
-        const loeysingTestgrunnlag = Object.groupBy(
-          etTestgrunnlag.sideutval,
-          ({ loeysingId }) => loeysingId
-        );
+    <div className={classes.testContainer}>
+      <div className={classes.testWrapper}>
+        {testgrunnlag.length === 0 && (
+          <Alert severity="warning">
+            <Heading level={3} size="xs" spacing>
+              Ingen testgrunnlag for test
+            </Heading>
+            <Paragraph>
+              Sjå over kontrollen og sjekk at alle parametrar er fylt ut{' '}
+              <Link to={`../../kontroll/${String(id)}`}>her</Link>
+            </Paragraph>
+          </Alert>
+        )}
+        {testgrunnlag.flatMap((etTestgrunnlag) => {
+          const loeysingTestgrunnlag = Object.groupBy(
+            etTestgrunnlag.sideutval,
+            ({ loeysingId }) => loeysingId
+          );
 
-        return Object.entries(loeysingTestgrunnlag).map(
-          ([loeysingIdKey, sideutval]) => {
-            const loeysingId = Number(loeysingIdKey);
-            const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
+          return Object.entries(loeysingTestgrunnlag).map(
+            ([loeysingIdKey, sideutval]) => {
+              const loeysingId = Number(loeysingIdKey);
+              const sideutvalIds = sideutval?.map((su) => su.id) ?? [];
+              const loesysingStyringsdata = styringsdata.find(
+                (s) => s.loeysingId === loeysingId
+              );
 
-            const namn =
-              loeysingList.find((loeysing) => loeysing.id === loeysingId)
-                ?.namn ?? '';
+              const namn =
+                loeysingList.find((loeysing) => loeysing.id === loeysingId)
+                  ?.namn ?? '';
 
-            const status = teststatus(
-              resultater.filter((r) => r.testgrunnlagId === etTestgrunnlag.id),
-              etTestgrunnlag,
-              loeysingId
-            );
+              const status = teststatus(
+                resultater.filter(
+                  (r) => r.testgrunnlagId === etTestgrunnlag.id
+                ),
+                etTestgrunnlag,
+                loeysingId
+              );
 
-            return (
-              <div
-                key={`${etTestgrunnlag.id}/${loeysingId}`}
-                className={classes.loeysingButton}
-              >
-                <div className={classes.loeysingButtonTag}>
-                  <TestlabStatusTag<ManuellTestStatus>
-                    status={status}
-                    colorMapping={{
-                      second: ['under-arbeid'],
-                      info: ['ikkje-starta'],
-                      success: ['ferdig'],
-                    }}
-                    size="small"
-                  />
-                  <TestStatusChart
-                    testgrunnlag={etTestgrunnlag}
-                    resultater={resultater}
-                    loeysingId={loeysingId}
-                  />
-                  <TestStatistics
-                    resultatliste={resultater}
-                    loeysingId={loeysingId}
-                    testgrunnlag={etTestgrunnlag}
-                  />
-                </div>
-                <div className={classes.loeysingButtonInnhold}>
-                  <div>
-                    <Heading size="medium" level={4} spacing>
-                      {namn}
-                    </Heading>
-                    <div className={classes.tagWrapper}>
-                      <div className={classes.testTags}>
-                        <Tag color="second" size="small">
-                          Inngående kontroll
-                        </Tag>
-                        <Tag color="second" size="small">
-                          {viewTestType(
-                            etTestgrunnlag,
-                            sideutvalIds,
-                            testgrunnlag
-                          )}
+              const styringsdataSearchParams = loesysingStyringsdata
+                ? `?styringsdataId=${loesysingStyringsdata.id}`
+                : '';
+
+              let styringsdataStatus: string | undefined = undefined;
+              if (loesysingStyringsdata?.isBot) {
+                styringsdataStatus = 'bot';
+              } else if (loesysingStyringsdata?.isPaalegg) {
+                styringsdataStatus = 'paalegg';
+              }
+
+              return (
+                <div
+                  key={`${etTestgrunnlag.id}/${loeysingId}`}
+                  className={classes.loeysingButton}
+                >
+                  <div className={classes.loeysingButtonTag}>
+                    <TestlabStatusTag<ManuellTestStatus>
+                      status={status}
+                      colorMapping={{
+                        second: ['under-arbeid'],
+                        info: ['ikkje-starta'],
+                        success: ['ferdig'],
+                      }}
+                      size="small"
+                    />
+                    <TestStatusChart
+                      testgrunnlag={etTestgrunnlag}
+                      resultater={resultater}
+                      loeysingId={loeysingId}
+                    />
+                    <TestStatistics
+                      resultatliste={resultater}
+                      loeysingId={loeysingId}
+                      testgrunnlag={etTestgrunnlag}
+                    />
+                  </div>
+                  <div className={classes.loeysingButtonInnhold}>
+                    <div className={classes.loeysingTestMetadata}>
+                      <div className={classes.headingWrapper}>
+                        <Heading size="medium" level={4}>
+                          {namn}
+                        </Heading>
+                        {styringsdataStatus && (
+                          <TestlabStatusTag<KlageType>
+                            status={styringsdataStatus}
+                            colorMapping={{
+                              danger: ['bot'],
+                              warning: ['paalegg'],
+                            }}
+                            size="small"
+                          />
+                        )}
+                      </div>
+                      <div className={classes.tagWrapper}>
+                        <div className={classes.testTags}>
+                          <Tag color="second" size="small">
+                            Inngående kontroll
+                          </Tag>
+                          <Tag color="second" size="small">
+                            {viewTestType(
+                              etTestgrunnlag,
+                              sideutvalIds,
+                              testgrunnlag
+                            )}
+                          </Tag>
+                        </div>
+                        <Tag color="info" size="small">
+                          Nettsted
                         </Tag>
                       </div>
-                      <Tag color="info" size="small">
-                        Nettsted
-                      </Tag>
+                    </div>
+                    <div className={classes.buttons}>
+                      <Button
+                        title="Start testing"
+                        onClick={() =>
+                          onChangeLoeysing(etTestgrunnlag, loeysingId)
+                        }
+                      >
+                        {status === 'ikkje-starta'
+                          ? 'Start testing'
+                          : status === 'under-arbeid'
+                            ? 'Fortsett testing'
+                            : 'Vis testen'}
+                      </Button>
+                      {visRetestKnapp(
+                        etTestgrunnlag,
+                        loeysingId,
+                        testgrunnlag,
+                        resultater
+                      ) && (
+                        <Button
+                          variant="secondary"
+                          onClick={() => retest(etTestgrunnlag, loeysingId)}
+                        >
+                          Retest
+                        </Button>
+                      )}
+                      {visSlettKnapp(etTestgrunnlag, status) && (
+                        <Button
+                          variant="secondary"
+                          color="danger"
+                          onClick={() => slett(etTestgrunnlag)}
+                        >
+                          Slett
+                        </Button>
+                      )}
+                      <Link
+                        to={`${loeysingId}/styringsdata${styringsdataSearchParams}`}
+                      >
+                        <Button variant={ButtonVariant.Outline}>
+                          {loesysingStyringsdata
+                            ? 'Endre styringsdata'
+                            : 'Legg til styringsdata'}
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                  <div className={classes.buttons}>
-                    <Button
-                      title="Start testing"
-                      onClick={() =>
-                        onChangeLoeysing(etTestgrunnlag, loeysingId)
-                      }
-                    >
-                      {status === 'ikkje-starta'
-                        ? 'Start testing'
-                        : status === 'under-arbeid'
-                          ? 'Fortsett testing'
-                          : 'Vis testen'}
-                    </Button>
-                    {visRetestKnapp(
-                      etTestgrunnlag,
-                      loeysingId,
-                      testgrunnlag,
-                      resultater
-                    ) && (
-                      <Button
-                        variant="secondary"
-                        onClick={() => retest(etTestgrunnlag, loeysingId)}
-                      >
-                        Retest
-                      </Button>
-                    )}
-                    {visSlettKnapp(etTestgrunnlag, status) && (
-                      <Button
-                        variant="secondary"
-                        color="danger"
-                        onClick={() => slett(etTestgrunnlag)}
-                      >
-                        Slett
-                      </Button>
-                    )}
-                    <Button
-                      disabled
-                      title="Styringsdata er ikkje tilgjengelig ennå"
-                    >
-                      Styringsdata
-                    </Button>
-                  </div>
                 </div>
-              </div>
-            );
-          }
-        );
-      })}
-      {alert && (
-        <AlertTimed
-          severity={alert.severity}
-          message={alert.message}
-          clearMessage={alert.clearMessage}
-        />
-      )}
+              );
+            }
+          );
+        })}
+        {alert && (
+          <AlertTimed
+            severity={alert.severity}
+            message={alert.message}
+            clearMessage={alert.clearMessage}
+          />
+        )}
+      </div>
     </div>
   );
 };
