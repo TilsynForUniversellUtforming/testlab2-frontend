@@ -44,7 +44,7 @@ export const isNotDefined = <T>(
  * @param {boolean} strict - If all object keys should have values
  * @returns {boolean} True if the object is valid, otherwise false.
  */
-export const isValidObject = <T extends Record<string, unknown>>(
+export const isValidObject = <T extends Record<string, unknown> | null>(
   objectToCheck?: T,
   strict: boolean = true
 ): boolean => {
