@@ -21,9 +21,17 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  min-width: 75vw;
+  width: 75vw;
+  max-width: 80rem;
+  min-width: 48rem;
   background: var(--fds-semantic-background-default);
-  max-width: 72rem;
+  max-height: 20rem;
+
+  @media (max-width: 829px) {
+    flex-direction: column-reverse;
+    max-height: 36rem;
+    min-width: fit-content;
+  }
 }
 
 .loeysing-button-tag {
@@ -33,10 +41,11 @@
   gap: 1rem;
   align-items: flex-start;
   background: var(--fds-brand-alt1-200);
-  padding: 1rem;
-  min-width: 35%;
+  padding: 1rem 2rem;
+  width: 35%;
   @media (max-width: 829px) {
     align-items: center;
+    width: auto;
   }
 }
 
@@ -70,8 +79,11 @@
   align-items: flex-start;
   text-align: center;
   gap: 2rem;
-  padding: 1rem;
-  min-width: 65%;
+  padding: 1rem 3rem;
+  width: 65%;
+  @media (max-width: 829px) {
+    width: auto;
+  }
 }
 
 .tag-wrapper {
@@ -80,7 +92,40 @@
   gap: 0.75rem;
 }
 
+.heading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.loeysing-test-metadata {
+  width: 100%;
+}
+
 .test-tags {
   display: flex;
   gap: 1rem;
+}
+
+.test-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 64px - 72px - 2rem);
+}
+
+.test-wrapper {
+  min-width: 400px;
+  width: calc(100vw - 20px);
+  margin-bottom: auto;
+  background-color: var(--fds-semantic-surface-action-subtle);
+  padding: 2rem 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-direction: column;
 }
