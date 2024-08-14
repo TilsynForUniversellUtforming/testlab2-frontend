@@ -78,15 +78,19 @@ export function Oppsummering() {
         <Heading level={3} size="small" className={classes.navn}>
           {oppsummeringsItem.namn}
         </Heading>
-        <div className={classes.nettstederOgMobilapper}>
-          <div className={classes.nettsteder}>
-            {chooseIcon(oppsummeringsItem.loeysingCount)}
-            {oppsummeringsItem.loeysingCount}{' '}
-            {oppsummeringsItem.loeysingCount === 1 ? 'nettsted' : 'nettsteder'}
-          </div>
-          <div className={classes.mobilapper}>
-            {chooseIcon(mobilapper)}
-            {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
+        <div className={classes.listeelementData}>
+          <div className={classes.nettstederOgMobilapper}>
+            <div className={classes.nettsteder}>
+              {chooseIcon(oppsummeringsItem.loeysingCount)}
+              {oppsummeringsItem.loeysingCount}{' '}
+              {oppsummeringsItem.loeysingCount === 1
+                ? 'nettsted'
+                : 'nettsteder'}
+            </div>
+            <div className={classes.mobilapper}>
+              {chooseIcon(mobilapper)}
+              {mobilapper} {mobilapper === 1 ? 'mobilapp' : 'mobilapper'}
+            </div>
           </div>
         </div>
       </li>
