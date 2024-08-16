@@ -1,44 +1,22 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
-import { scoreToPercentage } from '@common/table/util';
-import { TestlabSeverity } from '@common/types';
+import {
+  dateRangeFilter,
+  getSeverity,
+  scoreToPercentage,
+} from '@common/table/util';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
 import { RESULTAT_KONTROLL } from '@resultat/ResultatRoutes';
 import ResultatTable from '@resultat/ResultatTable';
 import { Resultat } from '@resultat/types';
-import {
-  ColumnDef,
-  FilterFn,
-  Row,
-  VisibilityState,
-} from '@tanstack/react-table';
+import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
 const ResultatListApp = () => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
   const navigate = useNavigate();
-
-  const getSeverity = (percentage: number): TestlabSeverity => {
-    if (percentage < 60) return 'danger';
-    if (percentage < 90) return 'warning';
-    return 'success';
-  };
-
-  const dateRangeFilter: FilterFn<Resultat> = (
-    row: Row<Resultat>,
-    columnId: string,
-    filterValue: [number, number]
-  ) => {
-    const [min, max] = filterValue;
-    const rowValue = Date.parse(row.getValue('dato'));
-
-    const before = max ? rowValue < max : true;
-    const after = min ? rowValue > min : true;
-
-    return before && after;
-  };
 
   const columns: Array<ColumnDef<Resultat>> = [
     {
@@ -104,20 +82,27 @@ const ResultatListApp = () => {
     },
     {
       accessorKey: 'testar',
-      header: 'testar',
+      header: 'Testar',
+      enableGlobalFilter: false,
+      enableColumnFilter: false,
+    },
+
+    {
+      accessorKey: 'talTestaElement',
+      header: 'Tal testa element',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
 
     {
       accessorKey: 'talElementSamsvar',
-      header: 'talElementSamsvar',
+      header: 'Tal samsvar',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
     {
       accessorKey: 'talElementBrot',
-      header: 'talElementBrot',
+      header: 'Tal brot',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
@@ -134,6 +119,7 @@ const ResultatListApp = () => {
 
   const visibilityState = (visDetaljer: boolean): VisibilityState => {
     return {
+      talTestaElement: visDetaljer,
       talElementSamsvar: visDetaljer,
       talElementBrot: visDetaljer,
       id: false,

@@ -13,18 +13,11 @@ import { KontrollListItem, KontrollType, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';
 
 const KontrollList = () => {
-  const filters: KontrollType[] = [
-    'tilsyn',
-    'inngaaende-kontroll',
-    'uttalesak',
-    'forenkla-kontroll',
-    'statusmaaling',
-    'anna',
-  ];
+  const filters: string[] = Object.keys(KontrollType);
 
   const kontroller = useLoaderData() as KontrollListItem[];
   const [kontrollFilter, setKontrollFilter] = useState<KontrollType>(
-    filters[1]
+    KontrollType.InngaaendeKontroll
   );
   const [searchResult, setSearchResult] =
     useState<KontrollListItem[]>(kontroller);

@@ -1,7 +1,7 @@
 import { fuzzyFilter } from '@common/table/util';
 import {
   ColumnDef,
-  ColumnFilter,
+  ColumnFiltersState,
   FilterFn,
   getCoreRowModel,
   getExpandedRowModel,
@@ -16,6 +16,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { TableOptions } from '@tanstack/table-core';
+import { useState } from 'react';
 
 // eslint-disable-next-line
 const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
@@ -25,18 +26,23 @@ const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
 export function resultTable<T>(
   data: T[],
   columns: ColumnDef<T>[],
-  columnFilters: ColumnFilter[],
-  rowSelection: RowSelectionState,
   columnVisibility: VisibilityState,
-  rowSelectionEnabled: boolean,
-  handleRowSelection: (rss: RowSelectionState) => void,
-  setColumnFilters: (
-    value: ((prevState: ColumnFilter[]) => ColumnFilter[]) | ColumnFilter[]
-  ) => void,
   setColumnVisibility: (
     value: ((prevState: VisibilityState) => VisibilityState) | VisibilityState
-  ) => void
+  ) => void,
+  selectedRows: boolean[] = []
 ) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
+    selectedRows.reduce((acc, b, index) => ({ ...acc, [index]: b }), {})
+  );
+
+  const rowSelectionEnabled = false;
+
+  const handleRowSelection = (rss: RowSelectionState) => {
+    setRowSelection(rss);
+  };
+
   const tableOptions: TableOptions<T> = {
     data: data,
     columns: columns,

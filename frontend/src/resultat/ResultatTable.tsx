@@ -5,21 +5,27 @@ import ErrorCard, { TestlabError } from '@common/error/ErrorCard';
 import PaginationContainer from '@common/table/control/pagination/PaginationContainer';
 import TestlabTableBody from '@common/table/TestlabTableBody';
 import TestlabTableHeader from '@common/table/TestlabTableHeader';
-import { Button, ErrorMessage, Table } from '@digdir/designsystemet-react';
+import { getFullPath } from '@common/util/routeUtils';
+import {
+  Button,
+  ErrorMessage,
+  Table,
+  Tabs,
+} from '@digdir/designsystemet-react';
 import ResultatListTableBody from '@resultat/ResultatListTableBody';
+import {
+  RESULTAT_KRAV_LIST,
+  RESULTAT_ROOT,
+  RESULTAT_TEMA_LIST,
+} from '@resultat/ResultatRoutes';
 import ResultTableHeader from '@resultat/ResultTableHeader';
 import { resultTable } from '@resultat/tableoptions';
-import {
-  Column,
-  ColumnDef,
-  ColumnFiltersState,
-  Row,
-  RowModel,
-  RowSelectionState,
-  VisibilityState,
-} from '@tanstack/react-table';
+import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import classnames from 'classnames';
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { KontrollType } from '../kontroll/types';
 
 export interface ResultTableProps<T extends object> {
   data: T[];
@@ -38,6 +44,12 @@ export interface ResultTableProps<T extends object> {
   loeysingNamn?: string;
   hasFilter?: boolean;
   subHeader?: string;
+  onSubmitCallback?: (
+    kontrollId?: number,
+    kontrollType?: KontrollType,
+    fraDato?: Date,
+    tilDato?: Date
+  ) => void;
 }
 
 /**
@@ -65,8 +77,6 @@ const ResultatTable = <T extends object>({
   displayError,
   actionRequiredError,
   loading = false,
-  selectedRows = [],
-  onSelectRows,
   onClickRow,
   onClickRetry,
   visibilityState,
@@ -76,8 +86,10 @@ const ResultatTable = <T extends object>({
   loeysingNamn,
   hasFilter = false,
   subHeader,
+  onSubmitCallback,
 }: ResultTableProps<T>): ReactElement => {
   const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
+  const navigate = useNavigate();
 
   const columns = [...defaultColumns];
 
@@ -86,38 +98,40 @@ const ResultatTable = <T extends object>({
     setColumnVisibility(visibilityState(visDetaljer));
   };
 
+  const location = useLocation();
+
+  const getPath = (tab: string) => {
+    switch (tab) {
+      case 'resultat':
+        return getFullPath(RESULTAT_ROOT);
+      case 'tema':
+        return getFullPath(RESULTAT_TEMA_LIST);
+      case 'krav':
+        return getFullPath(RESULTAT_KRAV_LIST);
+      default:
+        return 'resultat';
+    }
+  };
+
+  function getCurrentPath() {
+    return location.pathname.split('/').pop() ?? 'resultat';
+  }
+
+  const [activeTab, setActiveTab] = useState<string>(getCurrentPath());
+  const onChangeTabs = useCallback((tab: string) => {
+    setActiveTab(tab);
+    navigate(getPath(tab));
+  }, []);
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>(visibilityState(visDetaljer));
-
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
-    selectedRows.reduce((acc, b, index) => ({ ...acc, [index]: b }), {})
-  );
-
-  const rowSelectionEnabled = typeof onSelectRows !== 'undefined';
-
-  const handleRowSelection = (rss: RowSelectionState) => {
-    setRowSelection(rss);
-  };
 
   const table = resultTable(
     data,
     columns,
-    columnFilters,
-    rowSelection,
     columnVisibility,
-    rowSelectionEnabled,
-    handleRowSelection,
-    setColumnFilters,
     setColumnVisibility
   );
-
-  const getOnSelectRows = (rowModel: RowModel<T>) => {
-    if (rowSelectionEnabled) {
-      onSelectRows?.(rowModel.flatRows.map((fr) => fr.original));
-    }
-  };
-  getOnSelectRows(table.getSelectedRowModel());
 
   const handleClickRetry = () => {
     table.toggleAllRowsSelected(false);
@@ -138,7 +152,7 @@ const ResultatTable = <T extends object>({
   }
 
   function getFilterColumns(): Column<T, unknown>[] | undefined {
-    if (topLevelList && hasFilter) {
+    if (hasFilter && topLevelList) {
       const kontrollTypeColumn: Column<T, unknown> | undefined =
         table.getColumn('type');
       const dateColumn: Column<T, unknown> | undefined =
@@ -161,53 +175,63 @@ const ResultatTable = <T extends object>({
         kontrollNamn={kontrollNamn}
         loeysingNamn={loeysingNamn}
         subHeader={subHeader}
+        onSubmitCallback={onSubmitCallback}
       ></ResultTableHeader>
-      <Table
-        className={classnames('testlab-table__table', 'resultat-table', {
-          'table-error': !!actionRequiredError,
-        })}
-      >
-        <Table.Head>
-          <Table.Row>
-            {headerGroup.headers.map((header) => (
-              <TestlabTableHeader<T>
-                header={header}
-                loading={loading}
-                key={header.column.id}
-              />
-            ))}
-            <Table.HeaderCell>
+      <Tabs value={activeTab} onChange={onChangeTabs}>
+        <Tabs.List>
+          <Tabs.Tab value={'resultat'}>Resultat</Tabs.Tab>
+          <Tabs.Tab value={'tema'}>Sortert på tema</Tabs.Tab>
+          <Tabs.Tab value={'krav'}>Sortert på krav</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Content value={activeTab}>
+          <Table
+            className={classnames('testlab-table__table', 'resultat-table', {
+              'table-error': !!actionRequiredError,
+            })}
+          >
+            <Table.Head>
+              <Table.Row>
+                {headerGroup.headers.map((header) => (
+                  <TestlabTableHeader<T>
+                    header={header}
+                    loading={loading}
+                    key={header.column.id}
+                  />
+                ))}
+                <Table.HeaderCell>
+                  {topLevelList && (
+                    <Button onClick={showDetails} className="vis-detaljer">
+                      {' '}
+                      Vis detaljer
+                    </Button>
+                  )}
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Head>
+            <Table.Body>
               {topLevelList && (
-                <Button onClick={showDetails} className="vis-detaljer">
-                  {' '}
-                  Vis detaljer
-                </Button>
+                <ResultatListTableBody<T>
+                  table={table}
+                  loading={loading}
+                  onClickRow={onClickRow}
+                />
               )}
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Head>
-        <Table.Body>
-          {topLevelList && (
-            <ResultatListTableBody<T>
-              table={table}
-              loading={loading}
-              onClickRow={onClickRow}
-            />
-          )}
-          {!topLevelList && (
-            <TestlabTableBody<T>
-              table={table}
-              loading={loading}
-              onClickCallback={onClickRow}
-            />
-          )}
-        </Table.Body>
-        <Table.Head>
-          <Table.Row className="testlab-table__footer">
-            <PaginationContainer table={table} loading={loading} />
-          </Table.Row>
-        </Table.Head>
-      </Table>
+              {!topLevelList && (
+                <TestlabTableBody<T>
+                  table={table}
+                  loading={loading}
+                  onClickCallback={onClickRow}
+                />
+              )}
+            </Table.Body>
+            <Table.Head>
+              <Table.Row className="testlab-table__footer">
+                <PaginationContainer table={table} loading={loading} />
+              </Table.Row>
+            </Table.Head>
+          </Table>
+        </Tabs.Content>
+      </Tabs>
       {actionRequiredError && (
         <ErrorMessage size="small">{actionRequiredError}</ErrorMessage>
       )}

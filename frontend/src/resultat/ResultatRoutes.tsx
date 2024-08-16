@@ -2,6 +2,8 @@ import { AppRoute, idPath } from '@common/util/routeUtils';
 import ResultatKontrollOversikt from '@resultat/kontroll_detaljer/ResultatKontrollOversikt';
 import ViolationsList from '@resultat/kontroll_loeysing/ViolationsList';
 import ResultatListApp from '@resultat/list/ResultatListApp';
+import ResultatListKravApp from '@resultat/list/ResultListKravApp';
+import ResultatListTemaApp from '@resultat/list/ResultListTemaApp';
 import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
@@ -10,6 +12,7 @@ import TestResultatApp from './kontroll_loeysing/TestResultatApp';
 import {
   fetchKontrollLoeysing,
   fetchKontrollResultat,
+  fetchResultatPrTema,
   fetchResultList,
   fetchViolationsData,
 } from './resultat-api';
@@ -18,6 +21,18 @@ export const RESULTAT_ROOT: AppRoute = {
   navn: 'Resultat',
   path: 'resultat',
   imgSrc: resultatImg,
+};
+
+export const RESULTAT_TEMA_LIST: AppRoute = {
+  navn: 'Resultat tema',
+  path: 'tema',
+  parentRoute: RESULTAT_ROOT,
+};
+
+export const RESULTAT_KRAV_LIST: AppRoute = {
+  navn: 'Resultat krav',
+  path: 'krav',
+  parentRoute: RESULTAT_ROOT,
 };
 
 export const RESULTAT_KONTROLL: AppRoute = {
@@ -47,6 +62,16 @@ export const ResultRoutes: RouteObject = {
       index: true,
       loader: fetchResultList,
       element: <ResultatListApp />,
+    },
+    {
+      path: RESULTAT_TEMA_LIST.path,
+      loader: fetchResultatPrTema,
+      element: <ResultatListTemaApp />,
+    },
+    {
+      path: RESULTAT_KRAV_LIST.path,
+      loader: fetchResultatPrTema,
+      element: <ResultatListKravApp />,
     },
     {
       path: RESULTAT_KONTROLL.path,
