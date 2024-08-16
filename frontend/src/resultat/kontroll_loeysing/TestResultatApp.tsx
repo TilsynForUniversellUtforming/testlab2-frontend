@@ -1,4 +1,5 @@
 import { getFullPath, idPath } from '@common/util/routeUtils';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { getResultColumns } from '@resultat/kontroll_loeysing/ResultColumns';
 import { VIOLATION_LIST } from '@resultat/ResultatRoutes';
 import ResultatTable from '@resultat/ResultatTable';
@@ -6,8 +7,6 @@ import { ResultatOversiktLoeysing } from '@resultat/types';
 import { Row, VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
-
-import { viewFilter } from '../../kontroll/kontroll-utils';
 
 const TestResultatApp = () => {
   const { id, loeysingId } = useParams();
@@ -37,7 +36,9 @@ const TestResultatApp = () => {
 
   const onClickRow = <T extends object>(row?: Row<T>) => {
     const resultatRow = row as Row<ResultatOversiktLoeysing>;
-    navigate(getPathViolations(resultatRow?.original.kravId ?? ''));
+    if (resultatRow?.original.kravId != undefined) {
+      navigate(getPathViolations(resultatRow?.original.kravId as number));
+    }
   };
 
   const getLoeysingNamn = (): string => {
@@ -47,7 +48,7 @@ const TestResultatApp = () => {
 
   const getTypeKontroll = (): string => {
     const resultat = testResultList[0] as ResultatOversiktLoeysing;
-    return viewFilter(resultat.typeKontroll);
+    return sanitizeEnumLabel(resultat.typeKontroll);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

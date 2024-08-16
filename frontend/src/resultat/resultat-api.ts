@@ -4,9 +4,11 @@ import { TesterResult, TestResult } from '@maaling/api/types';
 import {
   Resultat,
   ResultatOversiktLoeysing,
+  ResultatTema,
   ViolationsData,
 } from '@resultat/types';
 
+import { KontrollType } from '../kontroll/types';
 import { Krav } from '../krav/types';
 
 export const fetchTestresultatAggregert = async (
@@ -81,4 +83,45 @@ export function fetchViolationsData(
       krav: values[2],
     };
   });
+}
+
+export function fetchResultatPrTema(): Promise<ResultatTema[]> {
+  return fetchResultatPrTemaFilter(undefined, undefined, undefined, undefined);
+}
+
+export async function fetchResultatPrTemaFilter(
+  kontrollId?: number,
+  kontrollType?: KontrollType,
+  fraDato?: string,
+  tilDato?: string
+): Promise<ResultatTema[]> {
+  const params = new URLSearchParams();
+
+  if (kontrollId) {
+    params.append('kontrollId', String(kontrollId));
+  }
+  if (kontrollType && keyInEnum(kontrollType)) {
+    params.append('kontrollType', <string>keyInEnum(kontrollType));
+  }
+  if (fraDato) {
+    params.append('fraDato', fraDato);
+  }
+  if (tilDato) {
+    params.append('tilDato', tilDato);
+  }
+
+  const response = await fetch(
+    `/api/v1/testresultat/tema?` + params.toString(),
+    {}
+  );
+  return await responseToJson(response, 'Kunne ikkje hente resultat');
+}
+
+function keyInEnum(type: KontrollType): string | undefined {
+  const enumKey = Object.entries(KontrollType)
+    .filter(([, value]) => value === type)
+    .pop();
+  if (enumKey) {
+    return enumKey[0];
+  }
 }

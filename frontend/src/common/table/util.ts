@@ -1,6 +1,9 @@
 import { TestlabSeverity } from '@common/types';
+import { Resultat } from '@resultat/types';
 import { RankingInfo, rankings, rankItem } from '@tanstack/match-sorter-utils';
-import { FilterMeta, Row } from '@tanstack/react-table';
+import { FilterFn, FilterMeta, Row } from '@tanstack/react-table';
+
+import { KontrollType } from '../../kontroll/types';
 
 /**
  * Function for adding sorting-prefix to the accessorFn for the react-table,
@@ -49,3 +52,41 @@ export const getSeverity = (percentage: number): TestlabSeverity => {
 
 export const scoreToPercentage = (score: number): number =>
   Math.round(score * 100);
+
+export const dateRangeFilter: FilterFn<Resultat> = (
+  row: Row<Resultat>,
+  columnId: string,
+  filterValue: [number, number]
+) => {
+  const [min, max] = filterValue;
+  const rowValue = Date.parse(row.getValue('dato'));
+
+  const before = max ? rowValue < max : true;
+  const after = min ? rowValue > min : true;
+
+  return before && after;
+};
+
+export const findTypeKontroll = (value: string): KontrollType | undefined => {
+  if (value.length < 2) return undefined;
+
+  const types: KontrollType[] = [
+    KontrollType.InngaaendeKontroll,
+    KontrollType.ForenklaKontroll,
+    KontrollType.Tilsyn,
+    KontrollType.Statusmaaling,
+    KontrollType.UttaleSak,
+    KontrollType.Anna,
+  ];
+
+  return types
+    .filter((type) => compareSearchStringTypeKontroll(value, type))
+    .pop();
+};
+
+const compareSearchStringTypeKontroll = (
+  value: string,
+  typeKontroll: KontrollType
+): boolean => {
+  return typeKontroll.toLowerCase().startsWith(value.toLowerCase());
+};

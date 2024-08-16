@@ -35,13 +35,18 @@ export type ResultatOversiktLoeysing = {
   talElementSamsvar: number;
 };
 
+export type ResultatTema = {
+  temaNamn: string;
+  score: number;
+  talTestaElement: number;
+  talElementBrot: number;
+  talElementSamsvar: number;
+  talIkkjeTestbar: number;
+  talIkkjeForekomst: number;
+};
+
 export type ViolationsData = {
   detaljerResultat: TesterResult[];
   kontrollData: ResultatOversiktLoeysing[];
   krav: Krav;
 };
-
-export enum TypeKontroll {
-  InngaaendeKontroll = 'InngaaendeKontroll',
-  ForenklaKontroll = 'ForenklaKontroll',
-}

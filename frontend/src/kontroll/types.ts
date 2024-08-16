@@ -46,13 +46,22 @@ export type UpdateKontrollSideutval = {
   neste: boolean;
 };
 
-export type KontrollType =
-  | 'inngaaende-kontroll'
-  | 'forenkla-kontroll'
-  | 'tilsyn'
-  | 'statusmaaling'
-  | 'uttalesak'
-  | 'anna';
+// export type KontrollType =
+//   | 'inngaaende-kontroll'
+//   | 'forenkla-kontroll'
+//   | 'tilsyn'
+//   | 'statusmaaling'
+//   | 'uttalesak'
+//   | 'anna';
+
+export enum KontrollType {
+  InngaaendeKontroll = 'inngaaende-kontroll',
+  ForenklaKontroll = 'forenkla-kontroll',
+  Tilsyn = 'tilsyn',
+  Statusmaaling = 'statusmaaling',
+  UttaleSak = 'uttalesak',
+  Anna = 'anna',
+}
 
 export type Sakstype = 'forvaltningssak' | 'arkivsak';
 
