@@ -15,7 +15,7 @@ const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
     (su) => su.loeysingId === loeysingId
   );
   const loeysingResultat = resultater.filter(
-    (r) => r.loeysingId === loeysingId
+    (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
 
   const total = loeysingSideutval.length * testgrunnlag.testreglar.length;
