@@ -137,5 +137,17 @@ export function genererWordRapport(id: number, loeysingId: number) {
       },
     },
     false
-  ).then((response) => response.body);
+  )
+    .then((response) => response.blob())
+    .then((blob) => {
+      if (blob != null) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tilsynsrapport.docx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+    });
 }

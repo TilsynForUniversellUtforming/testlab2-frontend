@@ -13,7 +13,7 @@ const ResultTableActions = () => {
   return (
     <div className={'resultat-actions'}>
       <Button
-        variant="secondary"
+        variant="primary"
         onClick={genererRapport}
         download
         target="_blank"
