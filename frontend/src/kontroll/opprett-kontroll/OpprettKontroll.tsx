@@ -102,7 +102,9 @@ export default function OpprettKontroll() {
           label="Velg kontrolltype"
           name="kontrolltype"
           id="kontrolltype"
-          options={createOptionsFromLiteral<string>(Object.keys(KontrollType))}
+          options={createOptionsFromLiteral<KontrollType>(
+            Object.values(KontrollType)
+          )}
           required
           disabled={editMode}
           aria-label={editMode ? 'Kan ikkje endre kontrolltype' : ''}
