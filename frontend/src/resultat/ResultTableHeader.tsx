@@ -1,15 +1,24 @@
+import { findTypeKontroll } from '@common/table/util';
+import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Heading, List } from '@digdir/designsystemet-react';
 import ResultatTableFilter from '@resultat/ResultatListFilter';
-import { TypeKontroll } from '@resultat/types';
 import { Column } from '@tanstack/react-table';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 
-interface Props<T extends object> {
+import { KontrollType } from '../kontroll/types';
+
+export interface HeaderProps<T extends object> {
   filterColumns?: Column<T, unknown>[];
   kontrollNamn?: string;
   loeysingNamn?: string;
   typeKontroll?: string;
   subHeader?: string;
+  onSubmitCallback?: (
+    kontrollId?: number,
+    kontrollType?: KontrollType,
+    fraDato?: Date,
+    tilDato?: Date
+  ) => void;
 }
 
 const ResultTableHeader = <T extends object>({
@@ -18,14 +27,30 @@ const ResultTableHeader = <T extends object>({
   typeKontroll,
   loeysingNamn,
   subHeader,
-}: Props<T>) => {
+  onSubmitCallback,
+}: HeaderProps<T>) => {
   const [searchValue, setSearchValue] = useState('');
   const [beforeDate, setBeforeDate] = useState<Date | undefined>();
-  const [afterDate, setafterDate] = useState<Date | undefined>();
+  const [afterDate, setAfterDate] = useState<Date | undefined>();
+  const [kontrollType, setKontrollType] = useState<KontrollType | undefined>();
+
+  const onSearchClick = (value: string) => {
+    setKontrollType(findTypeKontroll(searchValue));
+
+    if (onSubmitCallback) {
+      onSubmitCallback(
+        undefined,
+        findTypeKontroll(searchValue),
+        beforeDate,
+        afterDate
+      );
+    } else {
+      onSubmit(value);
+    }
+  };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
-    filterColumn(e.target.value);
   };
 
   const kontrollTypeColumn = filterColumns ? filterColumns[0] : undefined;
@@ -33,12 +58,30 @@ const ResultTableHeader = <T extends object>({
 
   const onChangeBeforeDate = (e: ChangeEvent<HTMLInputElement>) => {
     setBeforeDate(new Date(e.target.value));
-    filterBeforeDate(new Date(e.target.value));
+    if (onSubmitCallback) {
+      onSubmitCallback(
+        undefined,
+        kontrollType,
+        new Date(e.target.value),
+        afterDate
+      );
+    } else {
+      filterBeforeDate(new Date(e.target.value));
+    }
   };
 
   const onChangeAfterDate = (e: ChangeEvent<HTMLInputElement>) => {
-    setafterDate(new Date(e.target.value));
-    filterAfterDate(new Date(e.target.value));
+    setAfterDate(new Date(e.target.value));
+    if (onSubmitCallback) {
+      onSubmitCallback(
+        undefined,
+        kontrollType,
+        beforeDate,
+        new Date(e.target.value)
+      );
+    } else {
+      filterAfterDate(new Date(e.target.value));
+    }
   };
 
   const filterColumn = useCallback(
@@ -69,25 +112,21 @@ const ResultTableHeader = <T extends object>({
   );
 
   const onClear = () => {
+    if (onSubmitCallback) {
+      onSubmitCallback();
+    }
     setSearchValue('');
   };
 
-  const typeMaaling = (): string => {
-    if (
-      searchValue.length > 2 &&
-      TypeKontroll.InngaaendeKontroll.toString()
-        .toLowerCase()
-        .startsWith(searchValue.toLowerCase())
-    ) {
-      return 'Inngående kontroll';
-    } else if (
-      searchValue.length > 3 &&
-      TypeKontroll.ForenklaKontroll.toString()
-        .toLowerCase()
-        .startsWith(searchValue.toLowerCase())
-    ) {
-      return 'Forenkla kontroll';
-    } else return typeKontroll ? typeKontroll : '';
+  const onSubmit = (value: string) => {
+    filterColumn(value);
+  };
+
+  const typeKontrollLabel = (): string => {
+    if (searchValue.length > 2) {
+      return sanitizeEnumLabel(String(kontrollType)) ?? '';
+    }
+    return typeKontroll ?? '';
   };
 
   const periode = (): string => {
@@ -99,7 +138,7 @@ const ResultTableHeader = <T extends object>({
   };
 
   const isTopPage = (): boolean => {
-    return dateColumn !== undefined;
+    return dateColumn !== undefined || onSubmitCallback !== undefined;
   };
 
   return (
@@ -120,6 +159,7 @@ const ResultTableHeader = <T extends object>({
           onClear={onClear}
           onChangeBeforeDate={onChangeBeforeDate}
           onChangeAfterDate={onChangeAfterDate}
+          onSubmit={onSearchClick}
         />
       )}
       <div className="resultat-header-status">
@@ -134,14 +174,12 @@ const ResultTableHeader = <T extends object>({
             }}
           >
             <List.Item>
-              <strong>Type måling:</strong> {typeMaaling()}
+              <strong>Type måling:</strong> {typeKontrollLabel()}
             </List.Item>
             {isTopPage() && (
-              <>
-                <List.Item>
-                  <strong>Periode:</strong> {periode()}
-                </List.Item>
-              </>
+              <List.Item>
+                <strong>Periode:</strong> {periode()}
+              </List.Item>
             )}
             {kontrollNamn && (
               <List.Item>

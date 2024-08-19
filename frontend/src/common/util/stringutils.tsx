@@ -56,6 +56,9 @@ export const sanitizeEnumLabel = (label: string): string => {
       label.toLocaleLowerCase('no-NO').replaceAll('_', ' ').replaceAll('-', ' ')
     );
   }
+  if (enumLabel.includes('kontroll') && !enumLabel.includes(' ')) {
+    enumLabel = enumLabel.replace('kontroll', ' kontroll');
+  }
 
   return asciiSafeCharactersToNorwegian(enumLabel);
 };
