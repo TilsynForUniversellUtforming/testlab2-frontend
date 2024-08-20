@@ -51,6 +51,7 @@ export interface ResultTableProps<T extends object> {
     fraDato?: Date,
     tilDato?: Date
   ) => void;
+  rapportButton?: boolean;
 }
 
 /**
@@ -88,6 +89,7 @@ const ResultatTable = <T extends object>({
   hasFilter = false,
   subHeader,
   onSubmitCallback,
+  rapportButton = false,
 }: ResultTableProps<T>): ReactElement => {
   const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
   const navigate = useNavigate();
@@ -178,7 +180,7 @@ const ResultatTable = <T extends object>({
         subHeader={subHeader}
         onSubmitCallback={onSubmitCallback}
       ></ResultTableHeader>
-      <ResultTableActions />
+      {rapportButton && <ResultTableActions />}
       <Tabs value={activeTab} onChange={onChangeTabs}>
         <Tabs.List>
           <Tabs.Tab value={'resultat'}>Resultat</Tabs.Tab>
