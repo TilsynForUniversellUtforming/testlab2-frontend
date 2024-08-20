@@ -13,7 +13,11 @@ import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
-  const { testgrunnlagId: testgrunnlagId } = useParams();
+  const {
+    testgrunnlagId: testgrunnlagId,
+    id: id,
+    loeysingId: loeysingId,
+  } = useParams();
   const navigate = useNavigate();
   const [alert, setAlert, modalRef] = useAlertModal();
 
@@ -21,10 +25,14 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
     await createTestresultatAggregert(Number(testgrunnlagId))
       .then(() => {
         navigate(
-          getFullPath(TESTRESULTAT_LOEYSING, {
-            pathParam: idPath,
-            id: testgrunnlagId,
-          } as IdReplacement)
+          getFullPath(
+            TESTRESULTAT_LOEYSING,
+            { pathParam: idPath, id: id } as IdReplacement,
+            {
+              pathParam: ':loeysingId',
+              id: String(loeysingId),
+            }
+          )
         );
       })
       .catch((error) => {
