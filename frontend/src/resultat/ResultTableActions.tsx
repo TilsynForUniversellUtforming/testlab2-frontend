@@ -6,18 +6,12 @@ const ResultTableActions = () => {
   const { id, loeysingId } = useParams();
 
   const genererRapport = () => {
-    console.log('Generer rapport');
     genererWordRapport(Number(id), Number(loeysingId));
   };
 
   return (
     <div className={'resultat-actions'}>
-      <Button
-        variant="primary"
-        onClick={genererRapport}
-        download
-        target="_blank"
-      >
+      <Button variant="primary" onClick={genererRapport}>
         Generer wordrapport
       </Button>
     </div>
