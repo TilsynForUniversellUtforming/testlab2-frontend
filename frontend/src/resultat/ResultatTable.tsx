@@ -18,6 +18,7 @@ import {
   RESULTAT_ROOT,
   RESULTAT_TEMA_LIST,
 } from '@resultat/ResultatRoutes';
+import ResultTableActions from '@resultat/ResultTableActions';
 import ResultTableHeader from '@resultat/ResultTableHeader';
 import { resultTable } from '@resultat/tableoptions';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
@@ -177,6 +178,7 @@ const ResultatTable = <T extends object>({
         subHeader={subHeader}
         onSubmitCallback={onSubmitCallback}
       ></ResultTableHeader>
+      <ResultTableActions />
       <Tabs value={activeTab} onChange={onChangeTabs}>
         <Tabs.List>
           <Tabs.Tab value={'resultat'}>Resultat</Tabs.Tab>

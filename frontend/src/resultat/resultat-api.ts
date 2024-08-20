@@ -125,3 +125,29 @@ function keyInEnum(type: KontrollType): string | undefined {
     return enumKey[0];
   }
 }
+
+export function genererWordRapport(id: number, loeysingId: number) {
+  fetchWrapper(
+    `/api/v1/testresultat/rapport/kontroll/${id}/loeysing/${loeysingId}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type':
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      },
+    },
+    false
+  )
+    .then((response) => response.blob())
+    .then((blob) => {
+      if (blob != null) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tilsynsrapport.docx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+    });
+}
