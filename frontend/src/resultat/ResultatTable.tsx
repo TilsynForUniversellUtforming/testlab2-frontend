@@ -51,7 +51,7 @@ export interface ResultTableProps<T extends object> {
     fraDato?: Date,
     tilDato?: Date
   ) => void;
-  rapportButton: boolean;
+  rapportButton?: boolean;
 }
 
 /**
