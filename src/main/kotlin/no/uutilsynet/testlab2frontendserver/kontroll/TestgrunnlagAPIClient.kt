@@ -3,6 +3,7 @@ package no.uutilsynet.testlab2frontendserver.kontroll
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
+import no.uutilsynet.testlab2frontendserver.testing.Retest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -12,6 +13,8 @@ interface ITestgrunnlagAPIClient {
   fun createTestgrunnlag(
       nyttTestgrunnlag: TestgrunnlagAPIClient.NyttTestgrunnlag
   ): Result<KontrollResource.TestgrunnlagDTO>
+
+  fun createRetest(retest: Retest): Result<KontrollResource.TestgrunnlagDTO>
 
   fun getTestgrunnlag(kontrollId: Int): Result<List<KontrollResource.TestgrunnlagDTO>>
 
@@ -41,6 +44,17 @@ class TestgrunnlagAPIClient(
               "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje.")
     }
   }
+
+  override fun createRetest(retest: Retest): Result<KontrollResource.TestgrunnlagDTO> =
+      runCatching {
+        val location =
+            restTemplate.postForLocation(
+                "${testingApiProperties.url}/testgrunnlag/kontroll/retest", retest)
+                ?: throw IllegalStateException("Vi fikk ikkje location fra $testingApiProperties")
+        restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
+            ?: throw IllegalStateException(
+                "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje.")
+      }
 
   override fun getTestgrunnlag(kontrollId: Int): Result<List<KontrollResource.TestgrunnlagDTO>> {
     logger.info("Hentar testgrunnlag for kontroll $kontrollId")

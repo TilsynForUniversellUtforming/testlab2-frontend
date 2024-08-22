@@ -7,6 +7,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestStatu
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
 import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
+import no.uutilsynet.testlab2frontendserver.testing.Retest
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -138,6 +139,47 @@ class KontrollResource(
             })
   }
 
+  @PostMapping("{kontrollId}/testgrunnlag/retest")
+  fun createRetest(
+      @PathVariable kontrollId: Int,
+      @RequestBody retest: Retest
+  ): ResponseEntity<TestgrunnlagDTO> =
+      runCatching {
+            val (originalTestgrunnlagId, loeysingId) = retest
+
+            logger.debug(
+                "Oppretter retest for løysing $loeysingId i kontroll $kontrollId med opprinnelig testgrunnlag $originalTestgrunnlagId")
+
+            val resultat =
+                testresultatAPIClient
+                    .getResultatForTestgrunnlag(originalTestgrunnlagId)
+                    .getOrThrow()
+
+            if (okToRetest(resultat)) {
+              val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
+              ResponseEntity.ok(testgrunnlagDTO)
+            } else {
+              throw IllegalStateException(
+                  "Testgrunnlag kan ikkje retestes før alle tester er ferdig")
+            }
+          }
+          .getOrElse { throwable ->
+            when (throwable) {
+              is IllegalArgumentException ->
+                  ResponseEntity.badRequest().build<TestgrunnlagDTO?>().also {
+                    logger.warn(throwable.message)
+                  }
+              is IllegalStateException ->
+                  ResponseEntity.status(HttpStatus.FORBIDDEN).build<TestgrunnlagDTO?>().also {
+                    logger.warn(throwable.message)
+                  }
+              else ->
+                  ResponseEntity.internalServerError().build<TestgrunnlagDTO?>().also {
+                    logger.error("Klarte ikkje å starte retest: ${throwable.message}")
+                  }
+            }
+          }
+
   @DeleteMapping("{kontrollId}/testgrunnlag/{testgrunnlagId}")
   fun slettTestgrunnlag(
       @PathVariable kontrollId: Int,
@@ -186,6 +228,10 @@ class KontrollResource(
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
     return resultat.all { it.status == ResultatManuellKontroll.Status.IkkjePaabegynt }
+  }
+
+  private fun okToRetest(resultat: List<ResultatManuellKontroll>): Boolean {
+    return resultat.all { it.status == ResultatManuellKontroll.Status.Ferdig }
   }
 
   data class SideutvalType(

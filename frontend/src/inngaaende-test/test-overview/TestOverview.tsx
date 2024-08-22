@@ -13,7 +13,7 @@ import {
   Tag,
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
-import { ResultatManuellKontroll } from '@test/api/types';
+import { ResultatManuellKontroll, RetestRequest } from '@test/api/types';
 import { KlageType, StyringsdataListElement } from '@test/styringsdata/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
@@ -139,19 +139,13 @@ const TestOverview = () => {
     if (isEmpty(rs)) {
       console.debug('ingen brot');
     } else {
-      const nyttTestgrunnlag = {
+      const retestRequest: RetestRequest = {
+        originalTestgrunnlagId: testgrunnlag.id,
         kontrollId: kontrollId,
-        namn: `Retest for kontroll ${kontrollId}`,
-        type: 'RETEST',
-        sideutval: testgrunnlag.sideutval.filter((s) =>
-          rs.map((r) => r.loeysingId).includes(s.loeysingId)
-        ),
-        testregelIdList: rs.map((r) => r.testregelId),
+        loeysingId: loeysingId,
       };
-      submit(
-        { nyttTestgrunnlag, resultater: rs },
-        { method: 'post', encType: 'application/json' }
-      );
+
+      submit(retestRequest, { method: 'post', encType: 'application/json' });
     }
   }
 
