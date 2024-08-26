@@ -60,6 +60,7 @@ const TestOverviewLoeysing = () => {
     testreglarForLoeysing,
     activeLoeysing,
     kontrollTitle,
+    testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
 
   const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>(
@@ -69,13 +70,7 @@ const TestOverviewLoeysing = () => {
   const [activeTest, setActiveTest] = useState<ActiveTest>();
   const [alert, setAlert, modalRef] = useAlertModal();
   const [testFerdig, setTestFerdig] = useState(
-    isTestFinished(
-      testResults,
-      testreglarForLoeysing.map((tr) => tr.id),
-      sideutvalForLoeysing.map(
-        (su) => `${su.typeId}_${su.egendefinertType ?? ''}`
-      ).length
-    )
+    isTestFinished(testResults, testKeys)
   );
 
   const [sideutvalOptionList, setSideutvalOptionList] = useState<OptionType[]>(
@@ -156,11 +151,7 @@ const TestOverviewLoeysing = () => {
       )
     );
 
-    const finished = isTestFinished(
-      testResultsLoeysing,
-      testreglarForLoeysing.map((tr) => tr.id),
-      sideutvalOptions.length
-    );
+    const finished = isTestFinished(testResultsLoeysing, testKeys);
     setTestFerdig(finished);
 
     if (activeTestregel) {

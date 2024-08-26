@@ -18,7 +18,14 @@ const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
     (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
 
-  const total = loeysingSideutval.length * testgrunnlag.testreglar.length;
+  const numTestregelResultat = new Set(
+    loeysingResultat.map((lr) => `${lr.sideutvalId}_${lr.testregelId}`)
+  ).size;
+
+  const total =
+    testgrunnlag.type === 'RETEST'
+      ? numTestregelResultat
+      : loeysingSideutval.length * testgrunnlag.testreglar.length;
   const finished = new Set(
     loeysingResultat
       .filter((r) => r.status === 'Ferdig')
@@ -26,9 +33,10 @@ const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
   ).size;
   const testing = new Set(
     loeysingResultat
-      .filter((r) => r.status !== 'Ferdig')
+      .filter((r) => r.status === 'UnderArbeid')
       .map((r) => `${r.sideutvalId}_${r.testregelId}`)
   ).size;
+
   const pending = total - (finished + testing);
 
   const percentage = (count: number) => Math.round((count / total) * 100);

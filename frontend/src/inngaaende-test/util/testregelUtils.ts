@@ -1,4 +1,5 @@
 import { OptionType } from '@common/types';
+import { toUnique } from '@common/util/arrayUtils';
 import { capitalize } from '@common/util/stringutils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll, ResultatStatus } from '@test/api/types';
@@ -205,18 +206,13 @@ export const innhaldstypeAlle: InnhaldstypeTesting = {
 
 export const isTestFinished = (
   testResults: ResultatManuellKontroll[],
-  testregelIdList: number[],
-  numSideutval: number
+  testKeys: string[]
 ): boolean => {
-  const finishedTestIdentifierArray = testResults
-    .filter(
-      (tr) => testregelIdList.includes(tr.testregelId) && tr.status === 'Ferdig'
-    )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
-
-  const totalTestregelToTest = testregelIdList.length * numSideutval;
-
-  return new Set(finishedTestIdentifierArray).size === totalTestregelToTest;
+  const finishedTestIdentifierArray = toFinishedTestresultKeys(testResults);
+  return (
+    JSON.stringify(testKeys.sort()) ===
+    JSON.stringify(finishedTestIdentifierArray.sort())
+  );
 };
 
 export const toTestregelStatusKey = (
@@ -346,3 +342,29 @@ export const getIdFromParams = (idString: string | undefined): number => {
   }
   return kontrollId;
 };
+
+const toFinishedTestresultKeys = (testresultater: ResultatManuellKontroll[]) =>
+  toUnique(
+    testresultater
+      .filter((tr) => tr.status === 'Ferdig')
+      .map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
+  );
+
+// Lager nøkler for alle kobinasjoner av testregler og sideutval som skal testes slik at alle tester har en unik nøkkel
+export const toTestKeys = (
+  testgrunnlag: Testgrunnlag,
+  testresultat: ResultatManuellKontroll[]
+) => {
+  if (testgrunnlag.type === 'RETEST') {
+    return toUnique(
+      testresultat.map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
+    );
+  }
+
+  return testgrunnlag.testreglar.flatMap((tr) =>
+    testgrunnlag.sideutval.map((su) => toTestKey(tr.id, su.id))
+  );
+};
+
+export const toTestKey = (testregelId: number, sideutvalId: number): string =>
+  `${testregelId}_${sideutvalId}`;
