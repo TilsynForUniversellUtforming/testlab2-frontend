@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { ButtonVariant } from '@common/types';
-import { isEmpty, last } from '@common/util/arrayUtils';
+import { isEmpty } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import {
@@ -74,22 +74,26 @@ export function visRetestKnapp(
   loeysingId: number,
   alleTestgrunnlag: Testgrunnlag[],
   resultater: ResultatManuellKontroll[]
-) {
-  const testgrunnlagForLoeysing = alleTestgrunnlag
+): boolean {
+  const newestTestgrunnlag = alleTestgrunnlag
     .filter((t) => t.sideutval.some((s) => s.loeysingId === loeysingId))
-    .toSorted((a, b) => {
-      const aTime = Date.parse(a.datoOppretta);
-      const bTime = Date.parse(b.datoOppretta);
-      return aTime - bTime;
-    });
+    .reduce((newest, current) => (current.id > newest.id ? current : newest));
+
+  if (newestTestgrunnlag.id !== testgrunnlag.id) {
+    return false;
+  }
+
   const resultaterForLoeysing = resultater.filter(
     (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
-  return (
-    teststatus(resultaterForLoeysing, testgrunnlag, loeysingId) === 'ferdig' &&
-    resultaterForLoeysing.some((r) => r.elementResultat === 'brot') &&
-    last(testgrunnlagForLoeysing)?.id === testgrunnlag.id
+
+  const isFinished =
+    teststatus(resultaterForLoeysing, testgrunnlag, loeysingId) === 'ferdig';
+  const hasBrot = resultaterForLoeysing.some(
+    (r) => r.elementResultat === 'brot'
   );
+
+  return isFinished && hasBrot;
 }
 
 function visSlettKnapp(

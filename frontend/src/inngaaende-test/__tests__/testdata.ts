@@ -25,7 +25,10 @@ export function createOpprinneligTest(): Testgrunnlag {
 export function createRetest(forrigeTest: Testgrunnlag): Testgrunnlag {
   return {
     ...forrigeTest,
-    id: faker.number.int(),
+    id: faker.number.int({
+      min: forrigeTest.id + 1,
+      max: forrigeTest.id + 1000,
+    }),
     namn: `retest: ${forrigeTest.namn}`,
     type: 'RETEST',
     sideutval: [faker.helpers.arrayElement(forrigeTest.sideutval)],
