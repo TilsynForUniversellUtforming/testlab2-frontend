@@ -10,10 +10,10 @@ import {
 } from './testdata';
 
 describe('visRetestKnapp', () => {
-  const testgrunnlag = createOpprinneligTest(); // Replace with a valid Testgrunnlag object
-  const alleTestgrunnlag = [testgrunnlag]; // Replace with an array of Testgrunnlag objects
-
   test('should return true when status is "ferdig"', () => {
+    const testgrunnlag = createOpprinneligTest();
+    const alleTestgrunnlag = [testgrunnlag];
+
     const resultater = createResultatManuellKontrollForLoeysing(
       testgrunnlag,
       testgrunnlag.sideutval[0].loeysingId,
@@ -32,6 +32,8 @@ describe('visRetestKnapp', () => {
 
   test('should return false when there are no results', () => {
     const resultater: ResultatManuellKontroll[] = [];
+    const testgrunnlag = createOpprinneligTest();
+    const alleTestgrunnlag = [testgrunnlag];
 
     const result = visRetestKnapp(
       testgrunnlag,
@@ -44,6 +46,9 @@ describe('visRetestKnapp', () => {
   });
 
   test('should return false when there are some results, but none are finished', () => {
+    const testgrunnlag = createOpprinneligTest();
+    const alleTestgrunnlag = [testgrunnlag];
+
     const resultater = createResultatManuellKontrollForLoeysing(
       testgrunnlag,
       testgrunnlag.sideutval[0].loeysingId,
