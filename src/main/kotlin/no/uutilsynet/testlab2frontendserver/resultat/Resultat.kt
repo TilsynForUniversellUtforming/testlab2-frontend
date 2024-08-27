@@ -50,6 +50,16 @@ data class ResultatTema(
     val talIkkjeForekomst: Int,
 )
 
+data class ResultatKrav(
+    val suksesskriterium: String,
+    val score: Int,
+    val talTestaElement: Int,
+    val talElementBrot: Int,
+    val talElementSamsvar: Int,
+    val talElementVarsel: Int,
+    val talElementIkkjeForekomst: Int,
+)
+
 enum class KontrollType {
   @JsonProperty("inngaaende-kontroll") InngaaendeKontroll,
   @JsonProperty("forenkla-kontroll") ForenklaKontroll
