@@ -115,20 +115,23 @@ describe('visRetestKnapp', () => {
     const resultater = [
       createResultatManuellKontroll(
         opprinneligTest,
-        testgrunnlag.sideutval[0].loeysingId,
+        opprinneligTest.sideutval[0].loeysingId,
         'Ferdig',
+        0,
         'brot'
       ),
       createResultatManuellKontroll(
         retest1,
-        testgrunnlag.sideutval[0].loeysingId,
+        retest1.sideutval[0].loeysingId,
         'Ferdig',
+        0,
         'samsvar'
       ),
       createResultatManuellKontroll(
         retest1,
-        testgrunnlag.sideutval[0].loeysingId,
+        retest1.sideutval[0].loeysingId,
         'Ferdig',
+        0,
         'ikkjeForekomst'
       ),
     ];
