@@ -20,7 +20,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props {
-  pageType: PageType;
+  sideutval: PageType;
   innhaldstype: InnhaldstypeTesting;
   progressionPercent: number;
   testStatusMap: Map<string, ManuellTestStatus>;
@@ -61,7 +61,7 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
 }
 
 const LoeysingTestContent = ({
-  pageType,
+  sideutval,
   innhaldstype,
   progressionPercent,
   testregelList,
@@ -120,12 +120,12 @@ const LoeysingTestContent = ({
   return (
     <>
       <TestRegelParamSelection
-        pageType={pageType.pageType}
+        pageType={sideutval.pageType}
         innhaldstype={innhaldstype.innhaldstype}
         progressionPercent={progressionPercent}
         toggleShowHelpText={toggleShowHelpText}
         showHelpText={showHelpText}
-        url={pageType.url}
+        url={sideutval.url}
       />
       <div>
         {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
@@ -147,7 +147,7 @@ const LoeysingTestContent = ({
                       toTestregelStatusKey(
                         Number(testgrunnlagId),
                         tr.id,
-                        pageType.sideId
+                        sideutval.sideId
                       )
                     ) || 'ikkje-starta'
                   }

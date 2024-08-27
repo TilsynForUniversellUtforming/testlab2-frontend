@@ -6,8 +6,8 @@ import { useState } from 'react';
 
 interface Props {
   title: string;
-  typeId: string;
-  onChangeType: (typeId: string) => void;
+  typeId: number;
+  onChangeType: (typeId: number) => void;
   options: OptionType[];
 }
 
@@ -16,7 +16,7 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
 
   const handleButtonClick = (typeId: string) => {
     setShow(false);
-    onChangeType(typeId);
+    onChangeType(Number(typeId));
   };
 
   return (
@@ -47,7 +47,7 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
               <DropdownMenu.Item
                 key={value}
                 onClick={() => handleButtonClick(value)}
-                className={classnames({ active: value === typeId })}
+                className={classnames({ active: value === String(typeId) })}
               >
                 {label}
               </DropdownMenu.Item>

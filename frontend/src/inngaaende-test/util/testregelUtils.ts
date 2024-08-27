@@ -1,4 +1,3 @@
-import { OptionType } from '@common/types';
 import { toUnique } from '@common/util/arrayUtils';
 import { capitalize } from '@common/util/stringutils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
@@ -116,21 +115,21 @@ export const progressionForSelection = (
   // No testregel with current innhaldstype
   return 0;
 };
-export const getSideutvalOptionList = (
+export const getPageTypeList = (
   sideutvalList: Sideutval[],
   sideutvalType: SideutvalType[]
-): OptionType[] => {
-  return sideutvalList.reduce((acc: OptionType[], su) => {
+): PageType[] => {
+  return sideutvalList.reduce((acc: PageType[], su) => {
     let label: string;
     if (su.egendefinertType && su.egendefinertType.length > 0) {
       label = `Egendefinert: ${su.egendefinertType}`;
     } else {
       const type =
         sideutvalType.find((sut) => sut.id === su.typeId)?.type || '';
-      const existingType = acc.find((item) => item.label.startsWith(type));
+      const existingType = acc.find((item) => item.pageType.startsWith(type));
       if (existingType) {
         const typeCount =
-          acc.filter((item) => item.label.startsWith(type)).length + 1;
+          acc.filter((item) => item.pageType.startsWith(type)).length + 1;
         label = `${type} ${typeCount}`;
       } else {
         label = type;
@@ -138,37 +137,25 @@ export const getSideutvalOptionList = (
     }
 
     acc.push({
-      label: label,
-      value: String(su.id),
+      sideId: su.id,
+      pageType: label,
+      url: su.url,
     });
     return acc;
   }, []);
 };
 
-export const getInitialPageType = (
-  sideutval: Sideutval[],
-  sideutvalTypeList: SideutvalType[]
-): PageType => {
-  const firstInSideutval = sideutval[0];
+export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
+  const firstInSideutval = pageTypeList[0];
   if (isNotDefined(firstInSideutval)) {
     throw Error('Det finns ikkje sideutval for test');
   }
 
-  const forside = sideutvalTypeList.find(
-    (su) => su.type.toLowerCase() === 'forside'
+  const forside = pageTypeList.find(
+    (su) => su.pageType.toLowerCase() === 'forside'
   );
 
-  if (isNotDefined(forside)) {
-    throw Error('Det finns ikkje påkrevd forside for test');
-  }
-
-  const property = sideutval.find((su) => su.typeId === forside.id);
-
-  if (isNotDefined(property)) {
-    throw Error('Det finns ikkje påkrevd forside for test');
-  }
-
-  return { sideId: property.id, pageType: forside.type, url: property.url };
+  return forside ?? firstInSideutval;
 };
 
 export const toSideutvalTestside = (
@@ -287,11 +274,20 @@ export const filterTestregelByInnhaldstype = (
 
 export const mapTestregelOverviewElements = (
   testregelList: Testregel[],
-  innhaldstype: InnhaldstypeTesting
-) =>
-  filterTestregelByInnhaldstype(testregelList, innhaldstype).map((tr) =>
-    toTestregelOverviewElement(tr)
+  innhaldstype: InnhaldstypeTesting,
+  sideutvalId: number,
+  testKeys: string[]
+) => {
+  const testregelByInnhaldstype = filterTestregelByInnhaldstype(
+    testregelList,
+    innhaldstype
   );
+  const testreglarInTest = testregelByInnhaldstype.filter((tr) =>
+    testKeys.includes(toTestKey(tr.id, sideutvalId))
+  );
+
+  return testreglarInTest.map((tr) => toTestregelOverviewElement(tr));
+};
 
 export function findActiveTestResults(
   testResults: ResultatManuellKontroll[],
