@@ -55,9 +55,8 @@ class KontrollResourceTest {
             sideutval = emptyList(),
             testregelIdList = emptyList(),
         )
-    val location = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).headers.location
-    val testgrunnlagId = location?.path?.substringAfterLast("/")?.toInt()!!
-    val response = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId)
+    val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body!!
+    val response = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlag.id)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
   }
