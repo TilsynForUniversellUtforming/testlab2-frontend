@@ -7,6 +7,7 @@ data class Resultat(
     val id: Int,
     val namn: String,
     val type: KontrollType,
+    val testType: TestgrunnlagType,
     val dato: LocalDate,
     val loeysingar: List<LoeysingResultat>,
     val subRows: List<LoeysingResultat>?
