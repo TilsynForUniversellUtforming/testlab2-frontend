@@ -7,6 +7,7 @@ export type Resultat = {
   id: number;
   namn: string;
   type: KontrollType;
+  testType: string;
   testar: string;
   dato: string;
   loeysingar: LoeysingResultat[];
