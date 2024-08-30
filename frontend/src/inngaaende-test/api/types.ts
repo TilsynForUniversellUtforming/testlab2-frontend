@@ -80,3 +80,9 @@ export type TestgrunnlagListElement = {
   id: number;
   loeysingId: number;
 };
+
+export type RetestRequest = {
+  originalTestgrunnlagId: number;
+  kontrollId: number;
+  loeysingId: number;
+};

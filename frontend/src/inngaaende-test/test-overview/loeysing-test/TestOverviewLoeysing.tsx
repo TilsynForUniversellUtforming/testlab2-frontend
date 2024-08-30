@@ -1,6 +1,5 @@
 import AlertModal from '@common/alert/AlertModal';
 import useAlertModal from '@common/alert/useAlertModal';
-import { OptionType } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import {
@@ -29,18 +28,17 @@ import {
 import {
   findActiveTestResults,
   getInitialPageType,
-  getSideutvalOptionList,
+  getPageTypeList,
   innhaldstypeAlle,
   isTestFinished,
   mapStatus,
   mapTestregelOverviewElements,
   progressionForSelection,
-  toSideutvalTestside,
   toTestregelStatus,
   toTestregelStatusKey,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
@@ -60,6 +58,7 @@ const TestOverviewLoeysing = () => {
     testreglarForLoeysing,
     activeLoeysing,
     kontrollTitle,
+    testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
 
   const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>(
@@ -69,20 +68,16 @@ const TestOverviewLoeysing = () => {
   const [activeTest, setActiveTest] = useState<ActiveTest>();
   const [alert, setAlert, modalRef] = useAlertModal();
   const [testFerdig, setTestFerdig] = useState(
-    isTestFinished(
-      testResults,
-      testreglarForLoeysing.map((tr) => tr.id),
-      sideutvalForLoeysing.map(
-        (su) => `${su.typeId}_${su.egendefinertType ?? ''}`
-      ).length
-    )
+    isTestFinished(testResults, testKeys)
   );
 
-  const [sideutvalOptionList, setSideutvalOptionList] = useState<OptionType[]>(
-    getSideutvalOptionList(sideutvalForLoeysing, sideutvalTypeList)
+  const pageTypeList = useMemo(
+    () => getPageTypeList(sideutvalForLoeysing, sideutvalTypeList),
+    [sideutvalForLoeysing, sideutvalTypeList]
   );
+
   const [pageType, setPageType] = useState<PageType>(
-    getInitialPageType(sideutvalForLoeysing, sideutvalTypeList)
+    getInitialPageType(pageTypeList)
   );
 
   const [progressionPercent, setProgressionPercent] = useState(
@@ -94,7 +89,12 @@ const TestOverviewLoeysing = () => {
     )
   );
   const [testregelListElements, setTestregelListElements] = useState(
-    mapTestregelOverviewElements(testreglarForLoeysing, innhaldstype)
+    mapTestregelOverviewElements(
+      testreglarForLoeysing,
+      innhaldstype,
+      pageType.sideId,
+      testKeys
+    )
   );
   const [testStatusMap, setTestStatusMap] = useState(
     toTestregelStatus(
@@ -128,16 +128,12 @@ const TestOverviewLoeysing = () => {
 
     const testregelListElements = mapTestregelOverviewElements(
       testreglarForLoeysing,
-      innhaldstype
-    );
-
-    const sideutvalOptions = getSideutvalOptionList(
-      sideutvalForLoeysing,
-      sideutvalTypeList
+      innhaldstype,
+      pageType.sideId,
+      testKeys
     );
 
     setTestregelListElements(testregelListElements);
-    setSideutvalOptionList(sideutvalOptions);
     setProgressionPercent(
       progressionForSelection(
         testreglarForLoeysing,
@@ -156,11 +152,7 @@ const TestOverviewLoeysing = () => {
       )
     );
 
-    const finished = isTestFinished(
-      testResultsLoeysing,
-      testreglarForLoeysing.map((tr) => tr.id),
-      sideutvalOptions.length
-    );
+    const finished = isTestFinished(testResultsLoeysing, testKeys);
     setTestFerdig(finished);
 
     if (activeTestregel) {
@@ -188,37 +180,40 @@ const TestOverviewLoeysing = () => {
     processData(alleResultater, pageType, innhaldstype, activeTest.testregel);
   };
 
-  const onChangePageType = useCallback(
-    (sideutvalId?: string) => {
-      const sideutvalIdNumeric = Number(sideutvalId);
-      if (isDefined(sideutvalIdNumeric)) {
-        const nextSideutvalTestside = toSideutvalTestside(
-          sideutvalForLoeysing,
-          sideutvalTypeList,
-          sideutvalIdNumeric
-        );
+  const onChangeSideutval = useCallback(
+    (sideutvalId: number) => {
+      const nextSideutvalTestside = pageTypeList.find(
+        (pt) => pt.sideId === sideutvalId
+      );
+      if (nextSideutvalTestside) {
         setPageType(nextSideutvalTestside);
         setActiveTest(undefined);
         processData(testResults, nextSideutvalTestside, innhaldstype);
       } else {
-        setAlert('danger', 'Kan ikkje byta side', 'Ugylig nettside');
+        setAlert('danger', 'Kan ikkje velje sideutval', 'Ugylig sideutval');
       }
     },
-    [sideutvalForLoeysing, testResults, sideutvalOptionList, innhaldstype]
+    [testResults, innhaldstype]
   );
 
   const onChangeInnhaldstype = useCallback(
-    (innhaldstypeId: string) => {
-      const innhaldstype = innhaldstypeList.find(
+    (innhaldstypeId: number) => {
+      const nextInnhaldstype = innhaldstypeList.find(
         (it) => it.id === Number(innhaldstypeId)
       );
-      if (innhaldstype) {
-        setInnhaldstype(innhaldstype);
+      if (nextInnhaldstype) {
+        setInnhaldstype(nextInnhaldstype);
         setActiveTest(undefined);
-        processData(testResults, pageType, innhaldstype);
+        processData(testResults, pageType, nextInnhaldstype);
+      } else {
+        setAlert(
+          'danger',
+          'Kan ikkje velje innhaldstype',
+          'Ugylig innhaldstype'
+        );
       }
     },
-    [testResults, sideutvalOptionList, pageType]
+    [testResults, pageType]
   );
 
   const onChangeTestregel = useCallback(
@@ -476,9 +471,9 @@ const TestOverviewLoeysing = () => {
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={loeysingNamn}
-        sideutvalOptionList={sideutvalOptionList}
-        pageType={pageType}
-        onChangePageType={onChangePageType}
+        sideutvalList={pageTypeList}
+        sideutval={pageType}
+        onChangeSideutval={onChangeSideutval}
         innhaldstypeList={innhaldstypeList}
         innhaldstype={innhaldstype}
         onChangeInnhaldstype={onChangeInnhaldstype}
@@ -487,7 +482,7 @@ const TestOverviewLoeysing = () => {
       <div className="manual-test-wrapper">
         <div className="manual-test-buttons">
           <LoeysingTestContent
-            pageType={pageType}
+            sideutval={pageType}
             innhaldstype={innhaldstype}
             progressionPercent={progressionPercent}
             testStatusMap={testStatusMap}

@@ -4,7 +4,8 @@ import {
   createStyringsdata,
   updateStyringsdata,
 } from '@test/api/styringsdata-api';
-import { deleteTestgrunnlag, postTestgrunnlag } from '@test/api/testing-api';
+import { createRetest, deleteTestgrunnlag } from '@test/api/testing-api';
+import { RetestRequest } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import StyringsdataForm from '@test/styringsdata/StyringsdataForm';
 import { Styringsdata } from '@test/styringsdata/types';
@@ -72,8 +73,8 @@ export const TestingRoutes: RouteObject = {
           action: async ({ request }) => {
             switch (request.method) {
               case 'POST': {
-                const nyttTestgrunnlag = await request.json();
-                return await postTestgrunnlag(nyttTestgrunnlag);
+                const retestRequest = (await request.json()) as RetestRequest;
+                return await createRetest(retestRequest);
               }
               case 'DELETE': {
                 const testgrunnlag: Testgrunnlag = await request.json();

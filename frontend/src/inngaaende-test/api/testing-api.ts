@@ -2,9 +2,16 @@ import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
 import { Testgrunnlag } from '@test/types';
 
-import { Bilde, CreateTestResultat, ResultatManuellKontroll } from './types';
+import {
+  Bilde,
+  CreateTestResultat,
+  ResultatManuellKontroll,
+  RetestRequest,
+} from './types';
 
 const testingApiBaseUrl = '/api/v1/testing';
+
+const kontrollApiBaseUrl = '/api/v1/kontroller';
 
 export const fetchTestResults = async (
   testgrunnlagId: number
@@ -106,16 +113,31 @@ export const deleteBilde = async (
 export const listTestgrunnlag = async (
   kontrollId: number
 ): Promise<Testgrunnlag[]> =>
-  await fetch(`/api/v1/kontroller/${kontrollId}/testgrunnlag`).then(
+  await fetch(`${kontrollApiBaseUrl}/${kontrollId}/testgrunnlag`).then(
     (response) =>
       responseToJson(response, 'Klarte ikke å hente liste med testgrunnlag')
   );
 
+export const createRetest = async (
+  retestParams: RetestRequest
+): Promise<Testgrunnlag> => {
+  return await fetchWrapper(
+    `${kontrollApiBaseUrl}/${retestParams.kontrollId}/testgrunnlag/retest`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(retestParams),
+    }
+  ).then((response) => responseToJson(response, 'Kunne ikkje opprette retest'));
+};
+
 export const postTestgrunnlag = async (nyttTestgrunnlag: {
   kontrollId: number;
-}) => {
+}): Promise<Testgrunnlag> => {
   return await fetchWrapper(
-    `/api/v1/kontroller/${nyttTestgrunnlag.kontrollId}/testgrunnlag`,
+    `${kontrollApiBaseUrl}/${nyttTestgrunnlag.kontrollId}/testgrunnlag`,
     {
       method: 'POST',
       headers: {
@@ -123,12 +145,14 @@ export const postTestgrunnlag = async (nyttTestgrunnlag: {
       },
       body: JSON.stringify(nyttTestgrunnlag),
     }
+  ).then((response) =>
+    responseToJson(response, 'Kunne ikkje opprette testgrunnlag')
   );
 };
 
 export const deleteTestgrunnlag = async (testgrunnlag: Testgrunnlag) => {
   return await fetchWrapper(
-    `/api/v1/kontroller/${testgrunnlag.kontrollId}/testgrunnlag/${testgrunnlag.id}`,
+    `${kontrollApiBaseUrl}/${testgrunnlag.kontrollId}/testgrunnlag/${testgrunnlag.id}`,
     {
       method: 'DELETE',
     }

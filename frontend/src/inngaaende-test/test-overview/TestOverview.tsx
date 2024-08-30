@@ -2,7 +2,7 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { ButtonVariant } from '@common/types';
-import { isEmpty, last } from '@common/util/arrayUtils';
+import { isEmpty } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import {
@@ -13,7 +13,7 @@ import {
   Tag,
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
-import { ResultatManuellKontroll } from '@test/api/types';
+import { ResultatManuellKontroll, RetestRequest } from '@test/api/types';
 import { KlageType, StyringsdataListElement } from '@test/styringsdata/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
@@ -37,34 +37,35 @@ export type TestOverviewLoaderData = {
   styringsdata: StyringsdataListElement[];
 };
 
-export function antallTester(
-  testgrunnlag: Testgrunnlag,
-  loeysingId: number
-): number {
-  const antallTestregler = testgrunnlag.testreglar.length;
-  const antallSideutval = testgrunnlag.sideutval.filter(
-    (su) => su.loeysingId === loeysingId
-  ).length;
-  return antallTestregler * antallSideutval;
-}
-
 export function teststatus(
   resultatliste: ResultatManuellKontroll[],
   testgrunnlag: Testgrunnlag,
   loeysingId: number
 ): ManuellTestStatus {
-  const tester = antallTester(testgrunnlag, loeysingId);
   const resultater = resultatliste.filter((r) => r.loeysingId === loeysingId);
+  const kombinasjoner = testgrunnlag.testreglar.flatMap((tr) =>
+    testgrunnlag.sideutval
+      .filter((s) => s.loeysingId === loeysingId)
+      .map((s) => [tr.id, s.id])
+  );
 
-  if (resultater.length === 0) {
+  if (resultater.every((r) => r.status === 'IkkjePaabegynt')) {
     return 'ikkje-starta';
-  } else if (
-    resultater.length === tester &&
-    resultater.every((r) => r.status === 'Ferdig')
-  ) {
-    return 'ferdig';
   } else {
-    return 'under-arbeid';
+    if (
+      kombinasjoner.every(([testregelId, sideutvalId]) =>
+        resultater.some(
+          (r) =>
+            r.testregelId === testregelId &&
+            r.sideutvalId === sideutvalId &&
+            r.status === 'Ferdig'
+        )
+      )
+    ) {
+      return 'ferdig';
+    } else {
+      return 'under-arbeid';
+    }
   }
 }
 
@@ -73,22 +74,26 @@ export function visRetestKnapp(
   loeysingId: number,
   alleTestgrunnlag: Testgrunnlag[],
   resultater: ResultatManuellKontroll[]
-) {
-  const testgrunnlagForKontroll = alleTestgrunnlag
-    .filter((t) => t.kontrollId === testgrunnlag.kontrollId)
-    .toSorted((a, b) => {
-      const aTime = Date.parse(a.datoOppretta);
-      const bTime = Date.parse(b.datoOppretta);
-      return aTime - bTime;
-    });
+): boolean {
+  const newestTestgrunnlag = alleTestgrunnlag
+    .filter((t) => t.sideutval.some((s) => s.loeysingId === loeysingId))
+    .reduce((newest, current) => (current.id > newest.id ? current : newest));
+
+  if (newestTestgrunnlag.id !== testgrunnlag.id) {
+    return false;
+  }
+
   const resultaterForLoeysing = resultater.filter(
     (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
   );
-  return (
-    teststatus(resultaterForLoeysing, testgrunnlag, loeysingId) === 'ferdig' &&
-    resultaterForLoeysing.some((r) => r.elementResultat === 'brot') &&
-    last(testgrunnlagForKontroll)?.id === testgrunnlag.id
+
+  const isFinished =
+    teststatus(resultaterForLoeysing, testgrunnlag, loeysingId) === 'ferdig';
+  const hasBrot = resultaterForLoeysing.some(
+    (r) => r.elementResultat === 'brot'
   );
+
+  return isFinished && hasBrot;
 }
 
 function visSlettKnapp(
@@ -138,16 +143,13 @@ const TestOverview = () => {
     if (isEmpty(rs)) {
       console.debug('ingen brot');
     } else {
-      const nyttTestgrunnlag = {
+      const retestRequest: RetestRequest = {
+        originalTestgrunnlagId: testgrunnlag.id,
         kontrollId: kontrollId,
-        namn: `Retest for kontroll ${kontrollId}`,
-        type: 'RETEST',
-        sideutval: testgrunnlag.sideutval.filter((s) =>
-          rs.map((r) => r.loeysingId).includes(s.loeysingId)
-        ),
-        testregelIdList: rs.map((r) => r.testregelId),
+        loeysingId: loeysingId,
       };
-      submit(nyttTestgrunnlag, { method: 'post', encType: 'application/json' });
+
+      submit(retestRequest, { method: 'post', encType: 'application/json' });
     }
   }
 

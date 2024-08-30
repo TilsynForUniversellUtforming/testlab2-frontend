@@ -46,6 +46,7 @@ export type TestOverviewLoaderResponse = {
   testResultatForLoeysing: ResultatManuellKontroll[];
   sideutvalForLoeysing: Sideutval[];
   testreglarForLoeysing: Testregel[];
+  testKeys: string[];
   activeLoeysing: Loeysing;
   kontrollTitle: string;
 };
