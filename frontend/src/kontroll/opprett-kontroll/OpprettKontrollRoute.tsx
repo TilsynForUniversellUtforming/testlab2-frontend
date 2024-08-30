@@ -1,3 +1,4 @@
+import { fetchWrapper } from '@common/form/util';
 import { redirect, RouteObject } from 'react-router-dom';
 
 import { editKontroll, fetchKontroll } from '../kontroll-api';
@@ -19,7 +20,7 @@ export const OpprettKontrollRoute: RouteObject = {
 
     const kontroll = (await request.json()) as KontrollInit;
 
-    const response = await fetch('/api/v1/kontroller', {
+    const response = await fetchWrapper('/api/v1/kontroller', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
