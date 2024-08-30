@@ -2,21 +2,21 @@ import { isDefined } from '@common/util/validationUtils';
 import {
   fetchStyringsdata,
   fetchStyringsdataListElements,
+  fetchStyringsdataVerksemd,
 } from '@test/api/styringsdata-api';
 import { fetchTestResults, listTestgrunnlag } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
-import { Styringsdata, StyringsdataLoaderData } from '@test/styringsdata/types';
+import {
+  Styringsdata,
+  StyringsdataLoaderData,
+  StyringsdataVerksemd,
+  StyringsdataVerksemdLoaderData
+} from '@test/styringsdata/types';
 import { TestOverviewLoaderData } from '@test/test-overview/TestOverview';
 import { TestOverviewLoaderResponse } from '@test/types';
-import {
-  getIdFromParams,
-  getInnhaldstypeInTest,
-} from '@test/util/testregelUtils';
-import {
-  listInnhaldstype,
-  listTestreglarWithMetadata,
-} from '@testreglar/api/testreglar-api';
-import { fetchVerksemd } from '@verksemder/api/verksemd-api';
+import { getIdFromParams, getInnhaldstypeInTest, } from '@test/util/testregelUtils';
+import { listInnhaldstype, listTestreglarWithMetadata, } from '@testreglar/api/testreglar-api';
+import { fetchVerksemd, findVerksemdByOrgnummer } from '@verksemder/api/verksemd-api';
 import { defer, LoaderFunctionArgs } from 'react-router-dom';
 
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
@@ -207,12 +207,55 @@ export const testOverviewLoeysingLoader = async ({
   };
 };
 
+export const styringsdataLoaderVerksemd = async ({
+  params,
+  request,
+}: LoaderFunctionArgs): Promise<StyringsdataVerksemdLoaderData> => {
+  const kontrollId = getIdFromParams(params?.id);
+  const orgnr = params?.orgnr;
+  if (!orgnr) {
+    throw Error('Orgnr manglar');
+  }
+
+  const url = new URL(request.url);
+  const styringsdataParam = url.searchParams.get('styringsdataId');
+
+  const kontrollResponse = await fetchKontroll(kontrollId);
+
+  if (!kontrollResponse.ok) {
+    if (kontrollResponse.status === 404) {
+      throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+    } else {
+      throw new Error('Klarte ikke å hente kontrollen.');
+    }
+  }
+  const kontroll: Kontroll = await kontrollResponse.json();
+  const verksemdList = await findVerksemdByOrgnummer(orgnr);
+  const verksemdNamn = verksemdList[0]?.namn ?? orgnr;
+
+  let styringsdataVerksemd: StyringsdataVerksemd | undefined = undefined;
+  if (isDefined(styringsdataParam)) {
+    const styringsdataId = Number(styringsdataParam);
+    styringsdataVerksemd = await fetchStyringsdataVerksemd(styringsdataId);
+  }
+
+  return {
+    kontrollTittel: kontroll.tittel,
+    arkivreferanse: kontroll.arkivreferanse,
+    verksemdNamn: verksemdNamn,
+    styringsdata: styringsdataVerksemd,
+  };
+};
+
+
 export const styringsdataLoader = async ({
   params,
   request,
 }: LoaderFunctionArgs): Promise<StyringsdataLoaderData> => {
   const kontrollId = getIdFromParams(params?.id);
   const loeysingId = getIdFromParams(params?.loeysingId);
+  const verksemdId = params?.verksemdId;
+
   const url = new URL(request.url);
   const styringsdataParam = url.searchParams.get('styringsdataId');
 
@@ -229,13 +272,13 @@ export const styringsdataLoader = async ({
 
   const loeysing = kontroll.utval?.loeysingar?.find((l) => l.id === loeysingId);
   let verksemdNamn = loeysing?.orgnummer ?? '';
-  if (loeysing?.verksemdId) {
-    const verksemd = await fetchVerksemd(loeysing.verksemdId);
+  if (loeysing?.verksemdId || isDefined(verksemdId)) {
+    const verksemd = await fetchVerksemd(loeysing?.verksemdId ?? Number(verksemdId));
     verksemdNamn = verksemd.namn;
   }
 
   let styringsdata: Styringsdata | undefined = undefined;
-  if (isDefined(styringsdataParam)) {
+  if (isDefined(Number(styringsdataParam))) {
     const styringsdataId = Number(styringsdataParam);
     styringsdata = await fetchStyringsdata(styringsdataId);
   }

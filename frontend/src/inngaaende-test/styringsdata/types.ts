@@ -10,6 +10,13 @@ export type BotOekningType = 'kroner' | 'prosent' | 'ikkje-relevant';
 
 export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
 
+export type StyringsdataKontrollStatus =
+'planlagt' |
+'paagar' |
+'avslutta' |
+'ikkje-aktuell' |
+'forsinka';
+
 export type Paalegg = {
   id?: number;
   vedtakDato: string;
@@ -36,6 +43,19 @@ type Bot = {
   sluttDato?: string;
   kommentar?: string;
 };
+
+export type StyringsdataVerksemd = {
+  ansvarleg: string;
+  oppretta: string;
+  frist: string;
+  varselSendtDato: string;
+  status: StyringsdataKontrollStatus;
+  foerebelsRapportSendtDato: string;
+  svarFoerebelsRapportDato: string;
+  endeligRapportDato: string;
+  kontrollAvsluttaDato: string;
+  rapportPublisertDato: string;
+}
 
 export type Styringsdata = {
   id?: number;
@@ -83,4 +103,12 @@ export type StyringsdataLoaderData = {
   loeysingNamn: string;
   verksemdNamn: string;
   styringsdata: Styringsdata | undefined;
+};
+
+
+export type StyringsdataVerksemdLoaderData = {
+  kontrollTittel: string;
+  arkivreferanse: string;
+  verksemdNamn: string;
+  styringsdata: StyringsdataVerksemd | undefined;
 };

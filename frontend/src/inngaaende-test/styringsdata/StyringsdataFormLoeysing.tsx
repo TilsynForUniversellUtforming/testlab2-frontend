@@ -6,23 +6,11 @@ import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Accordion,
-  Button,
-  ErrorSummary,
-  Heading,
-  Paragraph,
-  Tag,
-} from '@digdir/designsystemet-react';
+import { Accordion, Button, ErrorSummary, Heading, Paragraph, Tag, } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import SaveButton from '@test/styringsdata/SaveButton';
 import { styringsdataValidationSchema } from '@test/styringsdata/styringsdataValidationSchema';
-import {
-  KlageType,
-  ResultatKlage,
-  Styringsdata,
-  StyringsdataLoaderData,
-} from '@test/styringsdata/types';
+import { KlageType, ResultatKlage, Styringsdata, StyringsdataLoaderData, } from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
@@ -102,7 +90,7 @@ const KlageInputs = ({
   );
 };
 
-const StyringsdataForm = () => {
+const StyringsdataFormLoeysing = () => {
   const {
     kontrollTittel,
     arkivreferanse,
@@ -394,4 +382,4 @@ const StyringsdataForm = () => {
   );
 };
 
-export default StyringsdataForm;
+export default StyringsdataFormLoeysing;

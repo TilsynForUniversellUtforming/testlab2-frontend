@@ -1,6 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
-import { Loeysing } from '@loeysingar/api/types';
 import { LoeysingNettsideRelation } from '@maaling/types';
 
 import { Verksemd, VerksemdInit } from './types';
@@ -38,16 +37,6 @@ const verksemdLoeysingRelation_dummy_response: LoeysingNettsideRelation[] = [
 
 const getVerksemdList_dummy = async () => {
   return verksemdList_dummy_response;
-};
-
-export const getVerksemdLoeysingRelations_dummy = async (
-  verksemd: Loeysing
-): Promise<LoeysingNettsideRelation[]> => {
-  if (verksemd.id === 1) {
-    return verksemdLoeysingRelation_dummy_response;
-  } else {
-    return [];
-  }
 };
 
 export default getVerksemdList_dummy;

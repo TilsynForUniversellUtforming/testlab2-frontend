@@ -37,12 +37,41 @@ class StyringsdataResource(
             throw RuntimeException(it)
           }
 
-  @GetMapping("{styringsdataId}")
+  @GetMapping("loeysing/{loeysingStyringsdataId}")
   fun getStyringsdataForLoeysing(
-      @PathVariable("styringsdataId") styringsdataId: Int,
+      @PathVariable("loeysingStyringsdataId") loeysingStyringsdataId: Int,
   ): ResponseEntity<Styringsdata?> {
     return runCatching {
-          restTemplate.getForEntity("$styringsdataUrl/$styringsdataId", Styringsdata::class.java)
+          restTemplate.getForEntity(
+              "$styringsdataUrl/loeysing/$loeysingStyringsdataId", Styringsdata::class.java)
+        }
+        .fold(
+            { responseEntity ->
+              ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
+            },
+            { exception ->
+              logger.error("Kunne ikkje hente styringsdata", exception)
+              when (exception) {
+                is HttpClientErrorException -> {
+                  if (exception.statusCode == HttpStatus.NOT_FOUND) {
+                    ResponseEntity.notFound().build<Styringsdata?>()
+                  } else {
+                    ResponseEntity.status(exception.statusCode).build<Styringsdata?>()
+                  }
+                }
+                else ->
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build<Styringsdata?>()
+              }
+            })
+  }
+
+  @GetMapping("loeysing/{verksemdStyringsdataId}")
+  fun getStyringsdataForVerksemd(
+      @PathVariable("verksemdStyringsdataId") verksemdStyringsdataId: Int,
+  ): ResponseEntity<StyringsdataVerksemd?> {
+    return runCatching {
+          restTemplate.getForEntity(
+              "$styringsdataUrl/verksemd/$verksemdStyringsdataId", StyringsdataVerksemd::class.java)
         }
         .fold(
             { responseEntity ->

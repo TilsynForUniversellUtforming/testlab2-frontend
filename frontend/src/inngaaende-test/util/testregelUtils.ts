@@ -2,12 +2,7 @@ import { OptionType } from '@common/types';
 import { capitalize } from '@common/util/stringutils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll, ResultatStatus } from '@test/api/types';
-import {
-  ManuellTestStatus,
-  PageType,
-  Testgrunnlag,
-  TestregelOverviewElement,
-} from '@test/types';
+import { ManuellTestStatus, PageType, Testgrunnlag, TestregelOverviewElement, } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
@@ -340,9 +335,9 @@ export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
 };
 
 export const getIdFromParams = (idString: string | undefined): number => {
-  const kontrollId = parseInt(idString ?? '', 10);
-  if (isNaN(kontrollId)) {
+  const id = parseInt(idString ?? '', 10);
+  if (isNaN(id)) {
     throw new Error('Id-en i URL-en er ikke et tall');
   }
-  return kontrollId;
+  return id;
 };

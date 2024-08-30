@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.Instant
 import java.time.LocalDate
 
+data class StyringsdataVerksemd()
+
 data class StyringsdataListElement(
     val id: Int,
     val kontrollId: Int,
