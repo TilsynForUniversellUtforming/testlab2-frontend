@@ -32,6 +32,13 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
     return Result.success(testResultat)
   }
 
+  override fun updateResultatManuellKontroll(
+      resultatManuellKontrollList: List<ResultatManuellKontroll>
+  ): Result<List<ResultatManuellKontroll>> {
+    resultatManuellKontrollList.forEach { database[it.id] = it }
+    return Result.success(resultatManuellKontrollList)
+  }
+
   override fun getResultatForTestgrunnlag(
       testgrunnlagId: Int
   ): Result<List<ResultatManuellKontroll>> {

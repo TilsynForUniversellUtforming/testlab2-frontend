@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
 import java.net.URI
+import java.time.Instant
 import kotlin.properties.Delegates
 import no.uutilsynet.testlab2frontendserver.common.Brukar
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
@@ -10,6 +11,9 @@ import no.uutilsynet.testlab2frontendserver.fakes.fakeId
 import no.uutilsynet.testlab2frontendserver.fakes.faker
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.CreateTestResultat
+import no.uutilsynet.testlab2frontendserver.testing.ElementResultat
+import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
+import no.uutilsynet.testlab2frontendserver.testing.Retest
 import no.uutilsynet.testlab2frontendserver.testing.TestResource
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -51,9 +55,8 @@ class KontrollResourceTest {
             sideutval = emptyList(),
             testregelIdList = emptyList(),
         )
-    val location = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).headers.location
-    val testgrunnlagId = location?.path?.substringAfterLast("/")?.toInt()!!
-    val response = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId)
+    val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body!!
+    val response = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlag.id)
 
     assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
   }
@@ -79,8 +82,8 @@ class KontrollResourceTest {
                         sideutvalId)),
             testregelIdList = listOf(testregelId),
         )
-    val location = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).headers.location
-    val testgrunnlagId = location?.path?.substringAfterLast("/")?.toInt()!!
+    val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body
+    val testgrunnlagId = testgrunnlag?.id!!
 
     val createTestResultat =
         CreateTestResultat(
@@ -94,9 +97,119 @@ class KontrollResourceTest {
             elementUtfall = null,
             testVartUtfoert = null,
             kommentar = null)
-    testResource.createTestResultat(createTestResultat)
+    val testResult = testResource.createTestResultat(createTestResultat)
+    testResource.updateResultatManuellKontroll(
+        listOf(
+            testResult.copy(
+                kommentar = "Ferdig",
+                elementOmtale = faker.lorem().sentence(),
+                elementResultat = ElementResultat.brot,
+                elementUtfall = faker.lorem().word(),
+                testVartUtfoert = Instant.now(),
+                status = ResultatManuellKontroll.Status.Ferdig)))
 
     val deleteResponse = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId)
     assertThat(deleteResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
+  }
+
+  @Test
+  fun `vi kan reteste et testgrunnlag, hvis den er ferdig`() {
+    val loeysingId = fakeId()
+    val testregelId = fakeId()
+    val sideutvalId = fakeId()
+    val nyttTestgrunnlag =
+        TestgrunnlagAPIClient.NyttTestgrunnlag(
+            kontrollId = kontrollId,
+            namn = faker.lorem().sentence(),
+            type = TestgrunnlagType.RETEST,
+            sideutval =
+                listOf(
+                    Sideutval(
+                        loeysingId,
+                        fakeId(),
+                        faker.lorem().sentence(),
+                        URI(faker.internet().url()),
+                        null,
+                        sideutvalId)),
+            testregelIdList = listOf(testregelId),
+        )
+    val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body
+    val testgrunnlagId = testgrunnlag?.id!!
+
+    val createTestResultat =
+        CreateTestResultat(
+            testgrunnlagId = testgrunnlagId,
+            loeysingId = loeysingId,
+            testregelId = testregelId,
+            sideutvalId = sideutvalId,
+            brukar = Brukar(faker.internet().emailAddress(), faker.name().fullName()),
+            elementOmtale = null,
+            elementResultat = null,
+            elementUtfall = null,
+            testVartUtfoert = null,
+            kommentar = null)
+
+    val testResult = testResource.createTestResultat(createTestResultat)
+
+    testResource.updateResultatManuellKontroll(
+        listOf(
+            testResult.copy(
+                kommentar = "Ferdig",
+                elementOmtale = faker.lorem().sentence(),
+                elementResultat = ElementResultat.brot,
+                elementUtfall = faker.lorem().word(),
+                testVartUtfoert = Instant.now(),
+                status = ResultatManuellKontroll.Status.Ferdig)))
+
+    val retestResponse =
+        kontrollResource.createRetest(kontrollId, Retest(testgrunnlagId, loeysingId))
+
+    assertThat(retestResponse.statusCode).isEqualTo(HttpStatus.OK)
+  }
+
+  @Test
+  fun `vi får ikke lov til å slette et testgrunnlag, hvis ikkje alle testresultat er ferdig`() {
+    val loeysingId = fakeId()
+    val testregelId = fakeId()
+    val sideutvalId = fakeId()
+    val nyttTestgrunnlag =
+        TestgrunnlagAPIClient.NyttTestgrunnlag(
+            kontrollId = kontrollId,
+            namn = faker.lorem().sentence(),
+            type = TestgrunnlagType.RETEST,
+            sideutval =
+                listOf(
+                    Sideutval(
+                        loeysingId,
+                        fakeId(),
+                        faker.lorem().sentence(),
+                        URI(faker.internet().url()),
+                        null,
+                        sideutvalId)),
+            testregelIdList = listOf(testregelId),
+        )
+    val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body
+    val testgrunnlagId = testgrunnlag?.id!!
+
+    val createTestResultat =
+        CreateTestResultat(
+            testgrunnlagId = testgrunnlagId,
+            loeysingId = loeysingId,
+            testregelId = testregelId,
+            sideutvalId = sideutvalId,
+            brukar = Brukar(faker.internet().emailAddress(), faker.name().fullName()),
+            elementOmtale = null,
+            elementResultat = null,
+            elementUtfall = null,
+            testVartUtfoert = null,
+            kommentar = null)
+
+    // Status ikkje starta
+    testResource.createTestResultat(createTestResultat)
+
+    val retestResponse =
+        kontrollResource.createRetest(kontrollId, Retest(testgrunnlagId, loeysingId))
+
+    assertThat(retestResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
   }
 }

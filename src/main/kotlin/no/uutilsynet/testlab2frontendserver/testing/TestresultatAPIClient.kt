@@ -9,6 +9,10 @@ import org.springframework.web.client.getForObject
 interface ITestresultatAPIClient {
   fun createTestResultat(createTestResultat: CreateTestResultat): Result<ResultatManuellKontroll>
 
+  fun updateResultatManuellKontroll(
+      resultatManuellKontrollList: List<ResultatManuellKontroll>
+  ): Result<List<ResultatManuellKontroll>>
+
   fun getResultatForTestgrunnlag(testgrunnlagId: Int): Result<List<ResultatManuellKontroll>>
 }
 
@@ -26,6 +30,14 @@ class TestresultatAPIClient(
         restTemplate.postForLocation(testresultUrl, createTestResultat)
             ?: throw IllegalStateException("Vi fikk ikkje location fra $testresultUrl")
     restTemplate.getForObject(location)
+  }
+
+  override fun updateResultatManuellKontroll(
+      resultatManuellKontrollList: List<ResultatManuellKontroll>
+  ): Result<List<ResultatManuellKontroll>> {
+    resultatManuellKontrollList.forEach { restTemplate.put("$testresultUrl/${it.id}", it) }
+
+    return getResultatForTestgrunnlag(resultatManuellKontrollList.first().testgrunnlagId)
   }
 
   override fun getResultatForTestgrunnlag(
