@@ -72,6 +72,7 @@ const TestResultatApp = () => {
       typeKontroll={getTypeKontroll()}
       loeysingNamn={getLoeysingNamn()}
       subHeader={getLoeysingNamn()}
+      rapportButton={true}
     />
   );
 };

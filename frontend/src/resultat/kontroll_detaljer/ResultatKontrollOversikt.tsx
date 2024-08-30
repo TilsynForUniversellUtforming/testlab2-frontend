@@ -34,6 +34,20 @@ const ResultatKontrollOversikt = () => {
       header: 'Løysing',
       enableColumnFilter: false,
       enableGlobalFilter: false,
+      cell: ({ row }) => (
+        <>
+          {row.getValue('loeysingNamn')}
+          {row.getValue('testType') == 'RETEST' && (
+            <Tag color="info">{row.getValue('testType')}</Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      accessorKey: 'testType',
+      header: 'Testtype',
+      enableColumnFilter: false,
+      enableGlobalFilter: false,
     },
     {
       accessorKey: 'progresjon',
@@ -112,6 +126,7 @@ const ResultatKontrollOversikt = () => {
       loeysingId: false,
       dato: false,
       type: false,
+      testType: false,
     };
   };
 

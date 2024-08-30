@@ -53,6 +53,20 @@ const ResultatListApp = () => {
       header: 'Løysing',
       enableColumnFilter: false,
       enableGlobalFilter: false,
+      cell: ({ row }) => (
+        <>
+          {row.getValue('loeysingNamn')}
+          {row.getValue('testType') == 'RETEST' && (
+            <Tag color="info">{row.getValue('testType')}</Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      accessorKey: 'testType',
+      header: 'Testtype',
+      enableColumnFilter: false,
+      enableGlobalFilter: false,
     },
     {
       accessorKey: 'progresjon',
@@ -125,6 +139,7 @@ const ResultatListApp = () => {
       id: false,
       dato: false,
       type: true,
+      testType: false,
     };
   };
 
