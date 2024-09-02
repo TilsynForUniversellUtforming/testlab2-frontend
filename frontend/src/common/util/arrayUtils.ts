@@ -93,3 +93,7 @@ export function search<T>(
     )
     .map(({ element }) => element);
 }
+
+export const toUnique = <T>(input: T[]): T[] => {
+  return Array.from(new Set(input));
+};

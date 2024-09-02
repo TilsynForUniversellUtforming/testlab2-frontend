@@ -10,13 +10,23 @@ import {
   Styringsdata,
   StyringsdataLoaderData,
   StyringsdataVerksemd,
-  StyringsdataVerksemdLoaderData
+  StyringsdataVerksemdLoaderData,
 } from '@test/styringsdata/types';
 import { TestOverviewLoaderData } from '@test/test-overview/TestOverview';
 import { TestOverviewLoaderResponse } from '@test/types';
-import { getIdFromParams, getInnhaldstypeInTest, } from '@test/util/testregelUtils';
-import { listInnhaldstype, listTestreglarWithMetadata, } from '@testreglar/api/testreglar-api';
-import { fetchVerksemd, findVerksemdByOrgnummer } from '@verksemder/api/verksemd-api';
+import {
+  getIdFromParams,
+  getInnhaldstypeInTest,
+  toTestKeys,
+} from '@test/util/testregelUtils';
+import {
+  listInnhaldstype,
+  listTestreglarWithMetadata,
+} from '@testreglar/api/testreglar-api';
+import {
+  fetchVerksemd,
+  findVerksemdByOrgnummer,
+} from '@verksemder/api/verksemd-api';
 import { defer, LoaderFunctionArgs } from 'react-router-dom';
 
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
@@ -147,12 +157,27 @@ export const testOverviewLoeysingLoader = async ({
   const testgrunnlagId = getIdFromParams(params?.testgrunnlagId);
   const loeysingId = getIdFromParams(params?.loeysingId);
 
-  const [kontrollPromise, testResults, testreglarPromise] =
+  const [kontrollPromise, testgrunnlagPromise, testResults, testreglarPromise] =
     await Promise.allSettled([
       fetchKontroll(kontrollId),
+      listTestgrunnlag(kontrollId),
       fetchTestResults(testgrunnlagId),
       listTestreglarWithMetadata(),
     ]);
+
+  if (testgrunnlagPromise.status === 'rejected') {
+    throw new Error(
+      `Kunne ikkje hente testgrunnlag for kontrollid ${kontrollId}`
+    );
+  }
+
+  const testgrunnlag = testgrunnlagPromise.value.find(
+    (tg) => tg.id === testgrunnlagId
+  );
+
+  if (!testgrunnlag) {
+    throw new Error('Testgrunnlag finns ikkje for kontroll');
+  }
 
   if (testResults.status === 'rejected') {
     throw new Error(`Kunne ikkje hente testresutlat for id ${testgrunnlagId}`);
@@ -178,16 +203,17 @@ export const testOverviewLoeysingLoader = async ({
   const kontroll: Kontroll = await kontrollResponse.json();
 
   const testResultsForLoeysing = testResults.value.filter(
-    (tr) => tr.loeysingId === loeysingId
+    (tr) => tr.loeysingId === loeysingId && tr.testgrunnlagId === testgrunnlagId
   );
-  const sideutvalForLoeysing = kontroll.sideutvalList.filter(
-    (su) => su.loeysingId === loeysingId
-  );
-  const kontrollTestregelIdList =
-    kontroll.testreglar?.testregelList?.map((tr) => tr.id) ?? [];
 
-  const kontrollTestreglar = testreglarPromise.value.filter((tr) =>
-    kontrollTestregelIdList.includes(tr.id)
+  const testgrunnlagSideutvalIds = testgrunnlag.sideutval.map((su) => su.id);
+  const sideutvalForLoeysing = kontroll.sideutvalList.filter((su) =>
+    testgrunnlagSideutvalIds.includes(su.id)
+  );
+
+  const testgrunnlagTestregelIds = testgrunnlag.testreglar.map((tr) => tr.id);
+  const testreglarForLoeysing = testreglarPromise.value.filter((tr) =>
+    testgrunnlagTestregelIds.includes(tr.id)
   );
 
   const activeLoeysing = kontroll.utval?.loeysingar?.find(
@@ -201,7 +227,8 @@ export const testOverviewLoeysingLoader = async ({
   return {
     testResultatForLoeysing: testResultsForLoeysing,
     sideutvalForLoeysing: sideutvalForLoeysing,
-    testreglarForLoeysing: kontrollTestreglar,
+    testreglarForLoeysing: testreglarForLoeysing,
+    testKeys: toTestKeys(testgrunnlag, testResultsForLoeysing),
     activeLoeysing: activeLoeysing,
     kontrollTitle: kontroll.tittel,
   };
@@ -247,7 +274,6 @@ export const styringsdataLoaderVerksemd = async ({
   };
 };
 
-
 export const styringsdataLoader = async ({
   params,
   request,
@@ -273,7 +299,9 @@ export const styringsdataLoader = async ({
   const loeysing = kontroll.utval?.loeysingar?.find((l) => l.id === loeysingId);
   let verksemdNamn = loeysing?.orgnummer ?? '';
   if (loeysing?.verksemdId || isDefined(verksemdId)) {
-    const verksemd = await fetchVerksemd(loeysing?.verksemdId ?? Number(verksemdId));
+    const verksemd = await fetchVerksemd(
+      loeysing?.verksemdId ?? Number(verksemdId)
+    );
     verksemdNamn = verksemd.namn;
   }
 

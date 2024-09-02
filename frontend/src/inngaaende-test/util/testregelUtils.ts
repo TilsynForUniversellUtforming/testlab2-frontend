@@ -1,8 +1,13 @@
-import { OptionType } from '@common/types';
+import { toUnique } from '@common/util/arrayUtils';
 import { capitalize } from '@common/util/stringutils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll, ResultatStatus } from '@test/api/types';
-import { ManuellTestStatus, PageType, Testgrunnlag, TestregelOverviewElement, } from '@test/types';
+import {
+  ManuellTestStatus,
+  PageType,
+  Testgrunnlag,
+  TestregelOverviewElement,
+} from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
@@ -110,21 +115,21 @@ export const progressionForSelection = (
   // No testregel with current innhaldstype
   return 0;
 };
-export const getSideutvalOptionList = (
+export const getPageTypeList = (
   sideutvalList: Sideutval[],
   sideutvalType: SideutvalType[]
-): OptionType[] => {
-  return sideutvalList.reduce((acc: OptionType[], su) => {
+): PageType[] => {
+  return sideutvalList.reduce((acc: PageType[], su) => {
     let label: string;
     if (su.egendefinertType && su.egendefinertType.length > 0) {
       label = `Egendefinert: ${su.egendefinertType}`;
     } else {
       const type =
         sideutvalType.find((sut) => sut.id === su.typeId)?.type || '';
-      const existingType = acc.find((item) => item.label.startsWith(type));
+      const existingType = acc.find((item) => item.pageType.startsWith(type));
       if (existingType) {
         const typeCount =
-          acc.filter((item) => item.label.startsWith(type)).length + 1;
+          acc.filter((item) => item.pageType.startsWith(type)).length + 1;
         label = `${type} ${typeCount}`;
       } else {
         label = type;
@@ -132,37 +137,25 @@ export const getSideutvalOptionList = (
     }
 
     acc.push({
-      label: label,
-      value: String(su.id),
+      sideId: su.id,
+      pageType: label,
+      url: su.url,
     });
     return acc;
   }, []);
 };
 
-export const getInitialPageType = (
-  sideutval: Sideutval[],
-  sideutvalTypeList: SideutvalType[]
-): PageType => {
-  const firstInSideutval = sideutval[0];
+export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
+  const firstInSideutval = pageTypeList[0];
   if (isNotDefined(firstInSideutval)) {
     throw Error('Det finns ikkje sideutval for test');
   }
 
-  const forside = sideutvalTypeList.find(
-    (su) => su.type.toLowerCase() === 'forside'
+  const forside = pageTypeList.find(
+    (su) => su.pageType.toLowerCase() === 'forside'
   );
 
-  if (isNotDefined(forside)) {
-    throw Error('Det finns ikkje påkrevd forside for test');
-  }
-
-  const property = sideutval.find((su) => su.typeId === forside.id);
-
-  if (isNotDefined(property)) {
-    throw Error('Det finns ikkje påkrevd forside for test');
-  }
-
-  return { sideId: property.id, pageType: forside.type, url: property.url };
+  return forside ?? firstInSideutval;
 };
 
 export const toSideutvalTestside = (
@@ -200,18 +193,13 @@ export const innhaldstypeAlle: InnhaldstypeTesting = {
 
 export const isTestFinished = (
   testResults: ResultatManuellKontroll[],
-  testregelIdList: number[],
-  numSideutval: number
+  testKeys: string[]
 ): boolean => {
-  const finishedTestIdentifierArray = testResults
-    .filter(
-      (tr) => testregelIdList.includes(tr.testregelId) && tr.status === 'Ferdig'
-    )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
-
-  const totalTestregelToTest = testregelIdList.length * numSideutval;
-
-  return new Set(finishedTestIdentifierArray).size === totalTestregelToTest;
+  const finishedTestIdentifierArray = toFinishedTestresultKeys(testResults);
+  return (
+    JSON.stringify(testKeys.sort()) ===
+    JSON.stringify(finishedTestIdentifierArray.sort())
+  );
 };
 
 export const toTestregelStatusKey = (
@@ -286,11 +274,20 @@ export const filterTestregelByInnhaldstype = (
 
 export const mapTestregelOverviewElements = (
   testregelList: Testregel[],
-  innhaldstype: InnhaldstypeTesting
-) =>
-  filterTestregelByInnhaldstype(testregelList, innhaldstype).map((tr) =>
-    toTestregelOverviewElement(tr)
+  innhaldstype: InnhaldstypeTesting,
+  sideutvalId: number,
+  testKeys: string[]
+) => {
+  const testregelByInnhaldstype = filterTestregelByInnhaldstype(
+    testregelList,
+    innhaldstype
   );
+  const testreglarInTest = testregelByInnhaldstype.filter((tr) =>
+    testKeys.includes(toTestKey(tr.id, sideutvalId))
+  );
+
+  return testreglarInTest.map((tr) => toTestregelOverviewElement(tr));
+};
 
 export function findActiveTestResults(
   testResults: ResultatManuellKontroll[],
@@ -341,3 +338,29 @@ export const getIdFromParams = (idString: string | undefined): number => {
   }
   return id;
 };
+
+const toFinishedTestresultKeys = (testresultater: ResultatManuellKontroll[]) =>
+  toUnique(
+    testresultater
+      .filter((tr) => tr.status === 'Ferdig')
+      .map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
+  );
+
+// Lager nøkler for alle kobinasjoner av testregler og sideutval som skal testes slik at alle tester har en unik nøkkel
+export const toTestKeys = (
+  testgrunnlag: Testgrunnlag,
+  testresultat: ResultatManuellKontroll[]
+) => {
+  if (testgrunnlag.type === 'RETEST') {
+    return toUnique(
+      testresultat.map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
+    );
+  }
+
+  return testgrunnlag.testreglar.flatMap((tr) =>
+    testgrunnlag.sideutval.map((su) => toTestKey(tr.id, su.id))
+  );
+};
+
+export const toTestKey = (testregelId: number, sideutvalId: number): string =>
+  `${testregelId}_${sideutvalId}`;

@@ -10,16 +10,16 @@ import {
 } from './testdata';
 
 describe('visRetestKnapp', () => {
-  const testgrunnlag = createOpprinneligTest(); // Replace with a valid Testgrunnlag object
-  const alleTestgrunnlag = [testgrunnlag]; // Replace with an array of Testgrunnlag objects
-
   test('should return true when status is "ferdig"', () => {
+    const testgrunnlag = createOpprinneligTest();
+    const alleTestgrunnlag = [testgrunnlag];
     const resultater = createResultatManuellKontrollForLoeysing(
       testgrunnlag,
       testgrunnlag.sideutval[0].loeysingId,
       'Ferdig',
       'brot'
     );
+
     const result = visRetestKnapp(
       testgrunnlag,
       testgrunnlag.sideutval[0].loeysingId,
@@ -31,6 +31,8 @@ describe('visRetestKnapp', () => {
   });
 
   test('should return false when there are no results', () => {
+    const testgrunnlag = createOpprinneligTest();
+    const alleTestgrunnlag = [testgrunnlag];
     const resultater: ResultatManuellKontroll[] = [];
 
     const result = visRetestKnapp(
@@ -44,6 +46,8 @@ describe('visRetestKnapp', () => {
   });
 
   test('should return false when there are some results, but none are finished', () => {
+    const testgrunnlag = createOpprinneligTest();
+    const alleTestgrunnlag = [testgrunnlag];
     const resultater = createResultatManuellKontrollForLoeysing(
       testgrunnlag,
       testgrunnlag.sideutval[0].loeysingId,
@@ -64,46 +68,52 @@ describe('visRetestKnapp', () => {
     const testgrunnlag = createOpprinneligTest();
     const retest1 = createRetest(testgrunnlag);
     const retest2 = createRetest(retest1);
+
+    const retestLoeysingId = retest2.sideutval[0].loeysingId;
+
+    const testresultatTestgrunnlag = createResultatManuellKontrollForLoeysing(
+      testgrunnlag,
+      retestLoeysingId,
+      'Ferdig'
+    );
+    const testresultatRetest1 = createResultatManuellKontrollForLoeysing(
+      retest1,
+      retestLoeysingId,
+      'Ferdig'
+    );
+    const testresultatRetest2 = createResultatManuellKontrollForLoeysing(
+      retest2,
+      retestLoeysingId,
+      'Ferdig',
+      'brot'
+    );
+
     const alleTestgrunnlag = [testgrunnlag, retest1, retest2];
 
     expect(
       visRetestKnapp(
         testgrunnlag,
-        testgrunnlag.sideutval[0].loeysingId,
+        retestLoeysingId,
         alleTestgrunnlag,
-
-        createResultatManuellKontrollForLoeysing(
-          testgrunnlag,
-          testgrunnlag.sideutval[0].loeysingId,
-          'Ferdig'
-        )
+        testresultatTestgrunnlag
       )
     ).toBe(false);
+
     expect(
       visRetestKnapp(
         retest1,
-        retest1.sideutval[0].loeysingId,
+        retestLoeysingId,
         alleTestgrunnlag,
-
-        createResultatManuellKontrollForLoeysing(
-          retest1,
-          retest1.sideutval[0].loeysingId,
-          'Ferdig'
-        )
+        testresultatRetest1
       )
     ).toBe(false);
+
     expect(
       visRetestKnapp(
         retest2,
-        retest2.sideutval[0].loeysingId,
+        retestLoeysingId,
         alleTestgrunnlag,
-
-        createResultatManuellKontrollForLoeysing(
-          retest2,
-          retest2.sideutval[0].loeysingId,
-          'Ferdig',
-          'brot'
-        )
+        testresultatRetest2
       )
     ).toBe(true);
   });
@@ -115,20 +125,23 @@ describe('visRetestKnapp', () => {
     const resultater = [
       createResultatManuellKontroll(
         opprinneligTest,
-        testgrunnlag.sideutval[0].loeysingId,
+        opprinneligTest.sideutval[0].loeysingId,
         'Ferdig',
+        0,
         'brot'
       ),
       createResultatManuellKontroll(
         retest1,
-        testgrunnlag.sideutval[0].loeysingId,
+        retest1.sideutval[0].loeysingId,
         'Ferdig',
+        0,
         'samsvar'
       ),
       createResultatManuellKontroll(
         retest1,
-        testgrunnlag.sideutval[0].loeysingId,
+        retest1.sideutval[0].loeysingId,
         'Ferdig',
+        0,
         'ikkjeForekomst'
       ),
     ];

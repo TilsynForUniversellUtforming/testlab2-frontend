@@ -1,4 +1,3 @@
-import { OptionType } from '@common/types';
 import { Heading, Ingress, Tag } from '@digdir/designsystemet-react';
 import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
 import { PageType } from '@test/types';
@@ -8,28 +7,23 @@ export interface Props {
   title: string;
   currentLoeysingName: string;
   innhaldstypeList: InnhaldstypeTesting[];
-  sideutvalOptionList: OptionType[];
-  pageType: PageType;
-  onChangePageType: (sideutvalId: string) => void;
+  sideutvalList: PageType[];
+  sideutval: PageType;
+  onChangeSideutval: (sideutvalId: number) => void;
   innhaldstype: InnhaldstypeTesting;
-  onChangeInnhaldstype: (innhaldstypeId: string) => void;
+  onChangeInnhaldstype: (innhaldstypeId: number) => void;
 }
 
 const LoeysingTestHeading = ({
   title,
   currentLoeysingName,
-  sideutvalOptionList,
-  pageType,
-  onChangePageType,
+  sideutvalList,
+  sideutval,
+  onChangeSideutval,
   innhaldstype,
   onChangeInnhaldstype,
   innhaldstypeList,
 }: Props) => {
-  const innhaldstypeOptions = innhaldstypeList.map(({ id, innhaldstype }) => ({
-    value: String(id),
-    label: innhaldstype,
-  }));
-
   return (
     <div className="manual-test-heading">
       <Heading spacing size="xlarge" level={2}>
@@ -42,11 +36,11 @@ const LoeysingTestHeading = ({
         <Tag color="second">{currentLoeysingName}</Tag>
       </div>
       <PageTypeSelector
-        nettsideOptions={sideutvalOptionList}
-        sideId={String(pageType.sideId)}
-        onChangeSide={onChangePageType}
-        innhaldstypeOptions={innhaldstypeOptions}
-        innhaldstypeId={String(innhaldstype.id)}
+        sideutvalList={sideutvalList}
+        sideutvalId={sideutval.sideId}
+        onChangeSideutval={onChangeSideutval}
+        innhaldstypeList={innhaldstypeList}
+        innhaldstypeId={innhaldstype.id}
         onChangeType={onChangeInnhaldstype}
       />
     </div>

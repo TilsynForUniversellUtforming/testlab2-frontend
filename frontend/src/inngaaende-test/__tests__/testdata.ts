@@ -25,7 +25,10 @@ export function createOpprinneligTest(): Testgrunnlag {
 export function createRetest(forrigeTest: Testgrunnlag): Testgrunnlag {
   return {
     ...forrigeTest,
-    id: faker.number.int(),
+    id: faker.number.int({
+      min: forrigeTest.id + 1,
+      max: forrigeTest.id + 1000,
+    }),
     namn: `retest: ${forrigeTest.namn}`,
     type: 'RETEST',
     sideutval: [faker.helpers.arrayElement(forrigeTest.sideutval)],
@@ -79,11 +82,12 @@ export function createResultatManuellKontrollForLoeysing(
       testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId)
         .length * testgrunnlag.testreglar.length
     ),
-  ].map(() =>
+  ].map((_, idx) =>
     createResultatManuellKontroll(
       testgrunnlag,
       loeysingId,
       status,
+      idx,
       elementResultat
     )
   );
@@ -93,6 +97,7 @@ export function createResultatManuellKontroll(
   testgrunnlag: Testgrunnlag,
   loeysingId: number,
   status: ResultatStatus,
+  testregelIndex: number,
   elementResultat?: ElementResultat
 ): ResultatManuellKontroll {
   function createStegNummer(): string {
@@ -107,6 +112,10 @@ export function createResultatManuellKontroll(
     return faker.helpers.arrayElement(['Ja', 'Nei']);
   }
 
+  const sideutvalIdForLoeysingId = testgrunnlag.sideutval.find(
+    (su) => su.loeysingId === loeysingId
+  )!.id;
+
   switch (status) {
     case 'IkkjePaabegynt':
       return {
@@ -115,8 +124,8 @@ export function createResultatManuellKontroll(
         status: 'IkkjePaabegynt',
         testgrunnlagId: testgrunnlag.id,
         loeysingId: loeysingId,
-        testregelId: testgrunnlag.testreglar[0].id,
-        sideutvalId: testgrunnlag.sideutval[0].id,
+        testregelId: testgrunnlag.testreglar[testregelIndex].id,
+        sideutvalId: sideutvalIdForLoeysingId,
         sistLagra: faker.date.recent().toISOString(),
       };
     case 'UnderArbeid':
@@ -129,8 +138,8 @@ export function createResultatManuellKontroll(
         status: 'UnderArbeid',
         testgrunnlagId: testgrunnlag.id,
         loeysingId: loeysingId,
-        testregelId: testgrunnlag.testreglar[0].id,
-        sideutvalId: testgrunnlag.sideutval[0].id,
+        testregelId: testgrunnlag.testreglar[testregelIndex].id,
+        sideutvalId: sideutvalIdForLoeysingId,
         sistLagra: faker.date.recent().toISOString(),
       };
     default:
@@ -143,8 +152,8 @@ export function createResultatManuellKontroll(
         status: 'Ferdig',
         testgrunnlagId: testgrunnlag.id,
         loeysingId: loeysingId,
-        testregelId: testgrunnlag.testreglar[0].id,
-        sideutvalId: testgrunnlag.sideutval[0].id,
+        testregelId: testgrunnlag.testreglar[testregelIndex].id,
+        sideutvalId: sideutvalIdForLoeysingId,
         elementOmtale: faker.lorem.word(),
         elementResultat:
           elementResultat ??
