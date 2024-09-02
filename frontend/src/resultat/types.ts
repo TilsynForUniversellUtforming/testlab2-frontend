@@ -46,6 +46,16 @@ export type ResultatTema = {
   talIkkjeForekomst: number;
 };
 
+export type ResultatKrav = {
+  suksesskriterium: string;
+  score: number;
+  talTestaElement: number;
+  talElementBrot: number;
+  talElementSamsvar: number;
+  talIkkjeTestbar: number;
+  talIkkjeForekomst: number;
+};
+
 export type ViolationsData = {
   detaljerResultat: TesterResult[];
   kontrollData: ResultatOversiktLoeysing[];

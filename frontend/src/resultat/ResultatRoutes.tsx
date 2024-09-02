@@ -2,7 +2,7 @@ import { AppRoute, idPath } from '@common/util/routeUtils';
 import ResultatKontrollOversikt from '@resultat/kontroll_detaljer/ResultatKontrollOversikt';
 import ViolationsList from '@resultat/kontroll_loeysing/ViolationsList';
 import ResultatListApp from '@resultat/list/ResultatListApp';
-import ResultatListKravApp from '@resultat/list/ResultListKravApp';
+import ResultatListKravApp from '@resultat/list/ResultatListKravApp';
 import ResultatListTemaApp from '@resultat/list/ResultListTemaApp';
 import React from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
@@ -12,6 +12,7 @@ import TestResultatApp from './kontroll_loeysing/TestResultatApp';
 import {
   fetchKontrollLoeysing,
   fetchKontrollResultat,
+  fetchResultatPrKrav,
   fetchResultatPrTema,
   fetchResultList,
   fetchViolationsData,
@@ -70,7 +71,7 @@ export const ResultRoutes: RouteObject = {
     },
     {
       path: RESULTAT_KRAV_LIST.path,
-      loader: fetchResultatPrTema,
+      loader: fetchResultatPrKrav,
       element: <ResultatListKravApp />,
     },
     {

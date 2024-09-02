@@ -102,14 +102,37 @@ class ResultatResource(
       @RequestParam fraDato: LocalDate?,
       @RequestParam tilDato: LocalDate?
   ): List<ResultatTema> {
+    val uriComponents = uriComponentsResultat("/tema", kontrollId, kontrollType, fraDato, tilDato)
+
+    return restTemplate.getList<ResultatTema>(uriComponents.build().toUriString())
+  }
+
+  @GetMapping("krav")
+  fun getResultatPrKrav(
+      @RequestParam kontrollId: Int?,
+      @RequestParam kontrollType: String?,
+      @RequestParam fraDato: LocalDate?,
+      @RequestParam tilDato: LocalDate?
+  ): List<ResultatKrav> {
+    val uriComponents = uriComponentsResultat("/krav", kontrollId, kontrollType, fraDato, tilDato)
+
+    return restTemplate.getList<ResultatKrav>(uriComponents.build().toUriString())
+  }
+
+  private fun uriComponentsResultat(
+      url: String,
+      kontrollId: Int?,
+      kontrollType: String?,
+      fraDato: LocalDate?,
+      tilDato: LocalDate?
+  ): UriComponentsBuilder {
     val uriComponents = UriComponentsBuilder.fromUriString(testresultatUrl)
-    uriComponents.path("/tema")
+    uriComponents.path(url)
     kontrollId?.let { uriComponents.queryParam("kontrollId", it) }
     kontrollType?.let { uriComponents.queryParam("kontrollType", it) }
     fraDato?.let { uriComponents.queryParam("fraDato", it) }
     tilDato?.let { uriComponents.queryParam("tilDato", it) }
     uriComponents.build().toUriString()
-
-    return restTemplate.getList<ResultatTema>(uriComponents.build().toUriString())
+    return uriComponents
   }
 }
