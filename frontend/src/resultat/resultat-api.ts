@@ -3,6 +3,7 @@ import { responseToJson } from '@common/util/apiUtils';
 import { TesterResult, TestResult } from '@maaling/api/types';
 import {
   Resultat,
+  ResultatKrav,
   ResultatOversiktLoeysing,
   ResultatTema,
   ViolationsData,
@@ -89,12 +90,44 @@ export function fetchResultatPrTema(): Promise<ResultatTema[]> {
   return fetchResultatPrTemaFilter(undefined, undefined, undefined, undefined);
 }
 
+export function fetchResultatPrKrav(): Promise<ResultatKrav[]> {
+  return fetchResultatPrKravFilter(undefined, undefined, undefined, undefined);
+}
+
 export async function fetchResultatPrTemaFilter(
   kontrollId?: number,
   kontrollType?: KontrollType,
   fraDato?: string,
   tilDato?: string
 ): Promise<ResultatTema[]> {
+  const params = resultatTableParams(
+    kontrollId,
+    kontrollType,
+    fraDato,
+    tilDato
+  );
+
+  const response = await fetch(
+    `/api/v1/testresultat/tema?` + params.toString(),
+    {}
+  );
+  return await responseToJson(response, 'Kunne ikkje hente resultat');
+}
+
+function resultatTableParams(
+  kontrollId: number | undefined,
+  kontrollType:
+    | KontrollType
+    | undefined
+    | KontrollType.InngaaendeKontroll
+    | KontrollType.ForenklaKontroll
+    | KontrollType.Tilsyn
+    | KontrollType.Statusmaaling
+    | KontrollType.UttaleSak
+    | KontrollType.Anna,
+  fraDato: string | undefined,
+  tilDato: string | undefined
+) {
   const params = new URLSearchParams();
 
   if (kontrollId) {
@@ -109,9 +142,24 @@ export async function fetchResultatPrTemaFilter(
   if (tilDato) {
     params.append('tilDato', tilDato);
   }
+  return params;
+}
+
+export async function fetchResultatPrKravFilter(
+  kontrollId?: number,
+  kontrollType?: KontrollType,
+  fraDato?: string,
+  tilDato?: string
+): Promise<ResultatKrav[]> {
+  const params = resultatTableParams(
+    kontrollId,
+    kontrollType,
+    fraDato,
+    tilDato
+  );
 
   const response = await fetch(
-    `/api/v1/testresultat/tema?` + params.toString(),
+    `/api/v1/testresultat/krav?` + params.toString(),
     {}
   );
   return await responseToJson(response, 'Kunne ikkje hente resultat');
