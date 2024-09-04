@@ -7,17 +7,21 @@ import { TesterResult } from '@maaling/api/types';
  *
  * @returns {Array<ColumnDef<TesterResult>>} An array of column definitions.
  */
-import { FaceFrownIcon } from '@navikt/aksel-icons';
+import { FaceFrownIcon, FaceIcon, FaceSmileIcon } from '@navikt/aksel-icons';
 import { ResultatOversiktLoeysing } from '@resultat/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { Bilde } from '@test/api/types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const getSmiley = (resultat: string): string => {
+const getSmiley = (resultat: string): React.JSX.Element => {
   if (resultat.toLowerCase() === 'samsvar') {
-    return 'smiley-glad';
-  } else return 'smiley-sur';
+    return <FaceSmileIcon className="smiley-glad"></FaceSmileIcon>;
+  }
+  if (resultat.toLowerCase() === 'brot') {
+    return <FaceFrownIcon className="smiley-sur"></FaceFrownIcon>;
+  }
+  return <FaceIcon className={'smiley-noytral'}></FaceIcon>;
 };
 
 export const getViolationsColumns = (): Array<ColumnDef<TesterResult>> => [
@@ -44,11 +48,7 @@ export const getViolationsColumns = (): Array<ColumnDef<TesterResult>> => [
   {
     accessorFn: (row) => row.elementResultat,
     id: 'resultat',
-    cell: (info) => (
-      <FaceFrownIcon
-        className={getSmiley(String(info.getValue()))}
-      ></FaceFrownIcon>
-    ),
+    cell: (info) => getSmiley(String(info.getValue())),
     header: () => <>Resultat</>,
   },
   {
@@ -97,25 +97,25 @@ export const getResultColumns = (): Array<
   },
   {
     accessorKey: 'testar',
-    header: 'testar',
+    header: 'Testar',
     enableGlobalFilter: false,
     enableColumnFilter: false,
   },
   {
     accessorKey: 'talTestaElement',
-    header: 'talTestaElement',
+    header: 'Tal testa element',
     enableGlobalFilter: false,
     enableColumnFilter: false,
   },
   {
     accessorKey: 'talElementSamsvar',
-    header: 'talElementSamsvar',
+    header: 'Tal element samsvar',
     enableGlobalFilter: false,
     enableColumnFilter: false,
   },
   {
     accessorKey: 'talElementBrot',
-    header: 'talElementBrot',
+    header: 'Tal element brot',
     enableGlobalFilter: false,
     enableColumnFilter: false,
   },
