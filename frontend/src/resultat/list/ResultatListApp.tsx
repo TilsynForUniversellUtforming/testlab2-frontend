@@ -28,7 +28,7 @@ const ResultatListApp = () => {
 
     {
       accessorKey: 'namn',
-      header: 'Saker',
+      header: 'Kontrollar',
       enableGlobalFilter: false,
       enableColumnFilter: false,
     },
