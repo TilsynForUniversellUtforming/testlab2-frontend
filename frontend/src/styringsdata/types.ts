@@ -44,8 +44,11 @@ type Bot = {
   kommentar?: string;
 };
 
+export type StyringsdataType = 'kontroll' | 'loeysing';
+
 export type StyringsdataKontroll = {
   id?: number;
+  type: StyringsdataType;
   kontrollId: number;
   ansvarleg: string;
   oppretta: string;
@@ -61,6 +64,7 @@ export type StyringsdataKontroll = {
 
 export type StyringsdataLoeysing = {
   id?: number;
+  type: StyringsdataType;
   loeysingId: number;
   kontrollId: number;
   ansvarleg: string;
@@ -110,6 +114,10 @@ export type StyringsdataLoaderData = {
 export type StyringsdataKontrollLoaderData = {
   kontrollTittel: string;
   arkivreferanse: string;
-  verksemdNamn: string;
   styringsdata: StyringsdataKontroll | undefined;
+};
+
+export type StyringsdataResult = {
+  styringsdataKontrollId?: number;
+  styrinsdataLoeysing: StyringsdataListElement[];
 };

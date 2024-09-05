@@ -11,16 +11,19 @@ import { KontrollListItem, KontrollType } from '../types';
 import classes from './kontroll-list.module.css';
 
 const StyringsdataLinkButton = ({
+  kontrollId,
   styringsdataId,
 }: {
+  kontrollId: number;
   styringsdataId?: number;
 }) => {
-  const uri = styringsdataId
-    ? `../styringsdata/${styringsdataId}`
-    : '../styringsdata';
+  const styringsdataParam = styringsdataId
+    ? `?styringsdataId=${styringsdataId}`
+    : '';
+
   const text = styringsdataId ? 'Endre styringsdata' : 'Legg til styringsdata';
   return (
-    <Link to={uri}>
+    <Link to={`../../styringsdata/${kontrollId}${styringsdataParam}`}>
       <Button size={ButtonSize.Small}>{text}</Button>
     </Link>
   );
@@ -108,6 +111,7 @@ const KontrollList = () => {
               id: `${CellCheckboxId} styringsdataId`,
               cell: ({ row }) => (
                 <StyringsdataLinkButton
+                  kontrollId={row.original.id}
                   styringsdataId={row.original.styringsdataId}
                 />
               ),

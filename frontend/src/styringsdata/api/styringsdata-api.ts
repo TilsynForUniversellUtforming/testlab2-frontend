@@ -3,15 +3,15 @@ import { responseToJson } from '@common/util/apiUtils';
 
 import {
   StyringsdataKontroll,
-  StyringsdataListElement,
   StyringsdataLoeysing,
+  StyringsdataResult,
 } from '../types';
 
 const styringsdataApiBaseUrl = '/api/v1/styringsdata';
 
-export const fetchStyringsdataListElements = async (
+export const findStyringsdataForKontroll = async (
   kontrollId: number
-): Promise<StyringsdataListElement[]> => {
+): Promise<StyringsdataResult> => {
   return await fetch(`${styringsdataApiBaseUrl}?kontrollId=${kontrollId}`, {
     method: 'GET',
   }).then((response) =>
@@ -53,7 +53,7 @@ export const createStyringsdataLoeysing = async (
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(styringsdata),
+    body: JSON.stringify({ ...styringsdata, type: 'loeysing' }),
   }).then((response) => {
     if (response.status === 400) {
       throw new Error('Styringsdata finns allereie');
@@ -92,7 +92,7 @@ export const createStyringsdataKontroll = async (
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(styringsdata),
+    body: JSON.stringify({ ...styringsdata, type: 'kontroll' }),
   }).then((response) => {
     if (response.status === 400) {
       throw new Error('Styringsdata finns allereie');

@@ -1,22 +1,16 @@
+import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import {
-  Button,
-  Card,
-  Divider,
-  Heading,
-  Tag,
-} from '@digdir/designsystemet-react';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Card, Divider, Heading, Tag } from '@digdir/designsystemet-react';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm } from 'react-hook-form';
-import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
+import { useLoaderData, useParams, useSubmit } from 'react-router-dom';
 
-import { styringsdataValidationSchema } from '../loeysing/styringsdataValidationSchema';
+import { KONTROLL_LISTE } from '../../kontroll/KontrollRoutes';
 import SaveButton from '../SaveButton';
 import classes from '../styringsdata.module.css';
 import {
@@ -31,7 +25,7 @@ const StyringsdataFormKontroll = () => {
 
   const submit = useSubmit();
 
-  const { id: kontrollIdParam } = useParams();
+  const { kontrollId: kontrollIdParam } = useParams();
   const kontrollId = getIdFromParams(kontrollIdParam);
 
   const isEdit = isDefined(styringsdata);
@@ -43,7 +37,6 @@ const StyringsdataFormKontroll = () => {
       ...styringsdata,
     },
     mode: 'onBlur',
-    resolver: zodResolver(styringsdataValidationSchema), // TODO - Egen
   });
 
   const onSubmit = (data: StyringsdataKontroll) => {
@@ -69,14 +62,14 @@ const StyringsdataFormKontroll = () => {
           {' '}
           Styringsdata {kontrollTittel}
         </Heading>
-        {arkivreferanse && <Tag>{arkivreferanse}</Tag>}
+        {arkivreferanse && <Tag>Arkivreferanse {arkivreferanse}</Tag>}
         <TestlabForm<StyringsdataKontroll>
           formMethods={formMethods}
           onSubmit={onSubmit}
           className={classes.styringsdataForm}
           hasRequiredFields
         >
-          <Card>
+          <Card color="second">
             <Card.Header>
               <div
                 style={{
@@ -110,7 +103,6 @@ const StyringsdataFormKontroll = () => {
               />
               <TestlabFormSelect<StyringsdataKontroll>
                 label="Status"
-                description="Er det forventet å bruke reaksjoner til denne løsningen?"
                 options={createOptionsFromLiteral<StyringsdataKontrollStatus>([
                   'planlagt',
                   'paagar',
@@ -127,7 +119,7 @@ const StyringsdataFormKontroll = () => {
               />
             </Card.Content>
           </Card>
-          <Card>
+          <Card color="second">
             <Card.Header>
               <div
                 style={{
@@ -160,7 +152,7 @@ const StyringsdataFormKontroll = () => {
               />
             </Card.Content>
           </Card>
-          <Card>
+          <Card color="second">
             <Card.Header>
               <div
                 style={{
@@ -194,9 +186,13 @@ const StyringsdataFormKontroll = () => {
             </Card.Content>
           </Card>
           <div className={classes.buttons}>
-            <Link to={'..'}>
-              <Button variant={ButtonVariant.Outline}>Tilbake</Button>
-            </Link>
+            <TestlabLinkButton
+              variant={ButtonVariant.Outline}
+              route={KONTROLL_LISTE}
+              title="Naviger tilbake"
+            >
+              Tilbake
+            </TestlabLinkButton>
             <SaveButton />
           </div>
         </TestlabForm>

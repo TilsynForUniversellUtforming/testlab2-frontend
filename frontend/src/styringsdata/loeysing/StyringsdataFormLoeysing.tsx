@@ -1,9 +1,11 @@
+import TestlabLinkButton from '@common/button/TestlabLinkButton';
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
+import { idPath } from '@common/util/routeUtils';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import {
@@ -15,14 +17,10 @@ import {
   Tag,
 } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TEST } from '@test/TestingRoutes';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useSubmit,
-} from 'react-router-dom';
+import { useLoaderData, useParams, useSubmit } from 'react-router-dom';
 
 import SaveButton from '../SaveButton';
 import classes from '../styringsdata.module.css';
@@ -115,8 +113,6 @@ const StyringsdataFormLoeysing = () => {
     verksemdNamn,
     styringsdata,
   } = useLoaderData() as StyringsdataLoaderData;
-
-  const navigate = useNavigate();
 
   const { kontrollId: kontrollIdParam, loeysingId: loeysingIdParam } =
     useParams();
@@ -391,14 +387,14 @@ const StyringsdataFormLoeysing = () => {
             </ErrorSummary.Root>
           )}
           <div className={classes.buttons}>
-            <Button
+            <TestlabLinkButton
               variant={ButtonVariant.Outline}
-              onClick={() => {
-                navigate(-1);
-              }}
+              route={TEST}
+              ids={[{ pathParam: idPath, id: String(kontrollId) }]}
+              title="Naviger tilbake"
             >
               Tilbake
-            </Button>
+            </TestlabLinkButton>
             <SaveButton />
           </div>
         </TestlabForm>

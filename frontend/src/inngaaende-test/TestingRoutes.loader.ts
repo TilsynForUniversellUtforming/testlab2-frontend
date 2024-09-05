@@ -15,7 +15,7 @@ import { defer, LoaderFunctionArgs } from 'react-router-dom';
 
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
-import { fetchStyringsdataListElements } from '../styringsdata/api/styringsdata-api';
+import { findStyringsdataForKontroll } from '../styringsdata/api/styringsdata-api';
 
 export const testLoader = async ({ params }: LoaderFunctionArgs) => {
   const kontrollId = Number(params?.id);
@@ -88,7 +88,7 @@ export const testOverviewLoader = async ({
     await Promise.allSettled([
       fetchKontroll(kontrollId),
       listTestgrunnlag(kontrollId),
-      fetchStyringsdataListElements(kontrollId),
+      findStyringsdataForKontroll(kontrollId),
     ]);
 
   if (testgrunnlagPromise.status === 'rejected') {
@@ -131,7 +131,7 @@ export const testOverviewLoader = async ({
     loeysingList: loeysingWithSideutval,
     resultater: resultater.flat(),
     testgrunnlag: testgrunnlag,
-    styringsdata: styringsdataListPromise.value,
+    styringsdata: styringsdataListPromise.value.styrinsdataLoeysing,
   };
 };
 

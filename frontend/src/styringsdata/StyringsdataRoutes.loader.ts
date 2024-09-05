@@ -1,9 +1,6 @@
 import { isDefined } from '@common/util/validationUtils';
 import { getIdFromParams } from '@test/util/testregelUtils';
-import {
-  fetchVerksemd,
-  findVerksemdByOrgnummer,
-} from '@verksemder/api/verksemd-api';
+import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 import { LoaderFunctionArgs } from 'react-router-dom';
 
 import { fetchKontroll } from '../kontroll/kontroll-api';
@@ -23,11 +20,7 @@ export const styringsdataLoaderKontroll = async ({
   params,
   request,
 }: LoaderFunctionArgs): Promise<StyringsdataKontrollLoaderData> => {
-  const kontrollId = getIdFromParams(params?.id);
-  const orgnr = params?.orgnr;
-  if (!orgnr) {
-    throw Error('Orgnr manglar');
-  }
+  const kontrollId = getIdFromParams(params?.kontrollId);
 
   const url = new URL(request.url);
   const styringsdataParam = url.searchParams.get('styringsdataId');
@@ -42,8 +35,6 @@ export const styringsdataLoaderKontroll = async ({
     }
   }
   const kontroll: Kontroll = await kontrollResponse.json();
-  const verksemdList = await findVerksemdByOrgnummer(orgnr);
-  const verksemdNamn = verksemdList[0]?.namn ?? orgnr;
 
   let styringsdataKontroll: StyringsdataKontroll | undefined = undefined;
   if (isDefined(styringsdataParam)) {
@@ -54,7 +45,6 @@ export const styringsdataLoaderKontroll = async ({
   return {
     kontrollTittel: kontroll.tittel,
     arkivreferanse: kontroll.arkivreferanse,
-    verksemdNamn: verksemdNamn,
     styringsdata: styringsdataKontroll,
   };
 };
