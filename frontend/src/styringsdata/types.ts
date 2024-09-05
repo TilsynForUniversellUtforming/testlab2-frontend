@@ -10,6 +10,13 @@ export type BotOekningType = 'kroner' | 'prosent' | 'ikkje-relevant';
 
 export type ReaksjonsType = 'reaksjon' | 'ingen-reaksjon';
 
+export type StyringsdataKontrollStatus =
+  | 'planlagt'
+  | 'paagar'
+  | 'avslutta'
+  | 'ikkje-aktuell'
+  | 'forsinka';
+
 export type Paalegg = {
   id?: number;
   vedtakDato: string;
@@ -37,8 +44,27 @@ type Bot = {
   kommentar?: string;
 };
 
-export type Styringsdata = {
+export type StyringsdataType = 'kontroll' | 'loeysing';
+
+export type StyringsdataKontroll = {
   id?: number;
+  type: StyringsdataType;
+  kontrollId: number;
+  ansvarleg: string;
+  oppretta: string;
+  frist: string;
+  varselSendtDato: string;
+  status: StyringsdataKontrollStatus;
+  foerebelsRapportSendtDato: string;
+  svarFoerebelsRapportDato: string;
+  endeligRapportDato: string;
+  kontrollAvsluttaDato: string;
+  rapportPublisertDato: string;
+};
+
+export type StyringsdataLoeysing = {
+  id?: number;
+  type: StyringsdataType;
   loeysingId: number;
   kontrollId: number;
   ansvarleg: string;
@@ -82,5 +108,16 @@ export type StyringsdataLoaderData = {
   arkivreferanse: string;
   loeysingNamn: string;
   verksemdNamn: string;
-  styringsdata: Styringsdata | undefined;
+  styringsdata: StyringsdataLoeysing | undefined;
+};
+
+export type StyringsdataKontrollLoaderData = {
+  kontrollTittel: string;
+  arkivreferanse: string;
+  styringsdata: StyringsdataKontroll | undefined;
+};
+
+export type StyringsdataResult = {
+  styringsdataKontrollId?: number;
+  styringsdataLoeysing: StyringsdataListElement[];
 };

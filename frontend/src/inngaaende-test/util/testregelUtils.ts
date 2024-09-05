@@ -332,11 +332,11 @@ export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
 };
 
 export const getIdFromParams = (idString: string | undefined): number => {
-  const kontrollId = parseInt(idString ?? '', 10);
-  if (isNaN(kontrollId)) {
+  const id = parseInt(idString ?? '', 10);
+  if (isNaN(id)) {
     throw new Error('Id-en i URL-en er ikke et tall');
   }
-  return kontrollId;
+  return id;
 };
 
 const toFinishedTestresultKeys = (testresultater: ResultatManuellKontroll[]) =>

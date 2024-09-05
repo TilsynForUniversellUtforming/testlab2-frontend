@@ -1,23 +1,16 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import {
-  createStyringsdata,
-  updateStyringsdata,
-} from '@test/api/styringsdata-api';
 import { createRetest, deleteTestgrunnlag } from '@test/api/testing-api';
 import { RetestRequest } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
-import StyringsdataForm from '@test/styringsdata/StyringsdataForm';
-import { Styringsdata } from '@test/styringsdata/types';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import {
-  styringsdataLoader,
   testLoader,
   testOverviewLoader,
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
 import { Testgrunnlag } from '@test/types';
-import { Outlet, redirect, RouteObject } from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import InngaaendeTestApp from './InngaaendeTestApp';
@@ -34,12 +27,6 @@ export const TEST: AppRoute = {
   navn: 'Test',
   path: idPath,
   parentRoute: TEST_ROOT,
-};
-
-export const TEST_STYRINGSDATA: AppRoute = {
-  navn: 'Styringsdata for løysing',
-  path: ':loeysingId/styringsdata',
-  parentRoute: TEST,
 };
 
 export const TEST_LOEYSING_KONTROLL: AppRoute = {
@@ -88,24 +75,6 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverviewLoeysing />,
           handle: { name: TEST_LOEYSING_KONTROLL.navn },
           loader: testOverviewLoeysingLoader,
-        },
-        {
-          path: TEST_STYRINGSDATA.path,
-          element: <StyringsdataForm />,
-          handle: { name: TEST_STYRINGSDATA.navn },
-          action: async ({ request }) => {
-            const formData = (await request.json()) as Styringsdata;
-            switch (request.method) {
-              case 'POST': {
-                const styringsdata = await createStyringsdata(formData);
-                return redirect(`?styringsdataId=${styringsdata.id}`);
-              }
-              case 'PUT': {
-                return await updateStyringsdata(formData);
-              }
-            }
-          },
-          loader: styringsdataLoader,
         },
       ],
     },

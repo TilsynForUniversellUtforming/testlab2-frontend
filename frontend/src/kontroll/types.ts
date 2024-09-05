@@ -14,6 +14,7 @@ export type KontrollListItem = {
   arkivreferanse: string;
   kontrolltype: KontrollType;
   virksomheter: Orgnummer[];
+  styringsdataId?: number;
 };
 
 export type Kontroll = {
@@ -45,14 +46,6 @@ export type UpdateKontrollSideutval = {
   crawlParameters: CrawlParameters | undefined;
   neste: boolean;
 };
-
-// export type KontrollType =
-//   | 'inngaaende-kontroll'
-//   | 'forenkla-kontroll'
-//   | 'tilsyn'
-//   | 'statusmaaling'
-//   | 'uttalesak'
-//   | 'anna';
 
 export enum KontrollType {
   InngaaendeKontroll = 'inngaaende-kontroll',

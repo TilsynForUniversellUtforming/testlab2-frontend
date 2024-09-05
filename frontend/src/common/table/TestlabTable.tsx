@@ -72,6 +72,7 @@ export interface TestlabTableProps<T extends object> {
   onClickRetry?: () => void;
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
+  classNames?: string[];
 }
 
 /**
@@ -108,6 +109,7 @@ const TestlabTable = <T extends object>({
     small: false,
   },
   rowActions,
+  classNames,
 }: TestlabTableProps<T>): ReactElement => {
   const isLoading = loading ?? false;
   const [columns, setColumns] = useState<typeof defaultColumns>(() => [
@@ -217,7 +219,7 @@ const TestlabTable = <T extends object>({
         rowActions={rowActions}
       />
       <Table
-        className={classnames('testlab-table__table', {
+        className={classnames(classNames, 'testlab-table__table', {
           'table-error': !!actionRequiredError,
         })}
       >

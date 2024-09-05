@@ -14,7 +14,6 @@ import {
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll, RetestRequest } from '@test/api/types';
-import { KlageType, StyringsdataListElement } from '@test/styringsdata/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag } from '@test/types';
@@ -27,6 +26,8 @@ import {
   useSubmit,
 } from 'react-router-dom';
 
+import { STYRINGSDATA_LOEYSING } from '../../styringsdata/StyringsdataRoutes';
+import { KlageType, StyringsdataListElement } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
 
@@ -197,16 +198,27 @@ const TestOverview = () => {
                 loeysingId
               );
 
-              const styringsdataSearchParams = loesysingStyringsdata
-                ? `?styringsdataId=${loesysingStyringsdata.id}`
-                : '';
-
               let styringsdataStatus: string | undefined = undefined;
               if (loesysingStyringsdata?.isBot) {
                 styringsdataStatus = 'bot';
               } else if (loesysingStyringsdata?.isPaalegg) {
                 styringsdataStatus = 'paalegg';
               }
+
+              const styringsdataLoeysingPath = getFullPath(
+                STYRINGSDATA_LOEYSING,
+                { pathParam: ':kontrollId', id: String(kontrollId) },
+                {
+                  pathParam: ':loeysingId',
+                  id: String(loeysingId),
+                }
+              );
+
+              const styringsdataSearchParams = loesysingStyringsdata
+                ? `?styringsdataId=${loesysingStyringsdata.id}`
+                : '';
+
+              const styringsdataPath = `${styringsdataLoeysingPath}${styringsdataSearchParams}`;
 
               return (
                 <div
@@ -304,9 +316,7 @@ const TestOverview = () => {
                           Slett
                         </Button>
                       )}
-                      <Link
-                        to={`${loeysingId}/styringsdata${styringsdataSearchParams}`}
-                      >
+                      <Link to={styringsdataPath}>
                         <Button variant={ButtonVariant.Outline}>
                           {loesysingStyringsdata
                             ? 'Endre styringsdata'

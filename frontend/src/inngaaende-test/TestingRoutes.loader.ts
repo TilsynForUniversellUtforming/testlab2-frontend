@@ -1,11 +1,5 @@
-import { isDefined } from '@common/util/validationUtils';
-import {
-  fetchStyringsdata,
-  fetchStyringsdataListElements,
-} from '@test/api/styringsdata-api';
 import { fetchTestResults, listTestgrunnlag } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
-import { Styringsdata, StyringsdataLoaderData } from '@test/styringsdata/types';
 import { TestOverviewLoaderData } from '@test/test-overview/TestOverview';
 import { TestOverviewLoaderResponse } from '@test/types';
 import {
@@ -17,11 +11,11 @@ import {
   listInnhaldstype,
   listTestreglarWithMetadata,
 } from '@testreglar/api/testreglar-api';
-import { fetchVerksemd } from '@verksemder/api/verksemd-api';
 import { defer, LoaderFunctionArgs } from 'react-router-dom';
 
 import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
+import { findStyringsdataForKontroll } from '../styringsdata/api/styringsdata-api';
 
 export const testLoader = async ({ params }: LoaderFunctionArgs) => {
   const kontrollId = Number(params?.id);
@@ -94,7 +88,7 @@ export const testOverviewLoader = async ({
     await Promise.allSettled([
       fetchKontroll(kontrollId),
       listTestgrunnlag(kontrollId),
-      fetchStyringsdataListElements(kontrollId),
+      findStyringsdataForKontroll(kontrollId),
     ]);
 
   if (testgrunnlagPromise.status === 'rejected') {
@@ -137,7 +131,7 @@ export const testOverviewLoader = async ({
     loeysingList: loeysingWithSideutval,
     resultater: resultater.flat(),
     testgrunnlag: testgrunnlag,
-    styringsdata: styringsdataListPromise.value,
+    styringsdata: styringsdataListPromise.value.styringsdataLoeysing,
   };
 };
 
@@ -222,47 +216,5 @@ export const testOverviewLoeysingLoader = async ({
     testKeys: toTestKeys(testgrunnlag, testResultsForLoeysing),
     activeLoeysing: activeLoeysing,
     kontrollTitle: kontroll.tittel,
-  };
-};
-
-export const styringsdataLoader = async ({
-  params,
-  request,
-}: LoaderFunctionArgs): Promise<StyringsdataLoaderData> => {
-  const kontrollId = getIdFromParams(params?.id);
-  const loeysingId = getIdFromParams(params?.loeysingId);
-  const url = new URL(request.url);
-  const styringsdataParam = url.searchParams.get('styringsdataId');
-
-  const kontrollResponse = await fetchKontroll(kontrollId);
-
-  if (!kontrollResponse.ok) {
-    if (kontrollResponse.status === 404) {
-      throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
-    } else {
-      throw new Error('Klarte ikke å hente kontrollen.');
-    }
-  }
-  const kontroll: Kontroll = await kontrollResponse.json();
-
-  const loeysing = kontroll.utval?.loeysingar?.find((l) => l.id === loeysingId);
-  let verksemdNamn = loeysing?.orgnummer ?? '';
-  if (loeysing?.verksemdId) {
-    const verksemd = await fetchVerksemd(loeysing.verksemdId);
-    verksemdNamn = verksemd.namn;
-  }
-
-  let styringsdata: Styringsdata | undefined = undefined;
-  if (isDefined(styringsdataParam)) {
-    const styringsdataId = Number(styringsdataParam);
-    styringsdata = await fetchStyringsdata(styringsdataId);
-  }
-
-  return {
-    kontrollTittel: kontroll.tittel,
-    arkivreferanse: kontroll.arkivreferanse,
-    loeysingNamn: loeysing?.namn ?? '',
-    styringsdata: styringsdata,
-    verksemdNamn: verksemdNamn,
   };
 };
