@@ -14,7 +14,6 @@ import {
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll, RetestRequest } from '@test/api/types';
-import { KlageType, StyringsdataListElement } from '@test/styringsdata/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag } from '@test/types';
@@ -27,6 +26,7 @@ import {
   useSubmit,
 } from 'react-router-dom';
 
+import { KlageType, StyringsdataListElement } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
 
@@ -305,7 +305,7 @@ const TestOverview = () => {
                         </Button>
                       )}
                       <Link
-                        to={`${loeysingId}/styringsdata${styringsdataSearchParams}`}
+                        to={`../../styringsdata/${kontrollId}/${loeysingId}${styringsdataSearchParams}`}
                       >
                         <Button variant={ButtonVariant.Outline}>
                           {loesysingStyringsdata

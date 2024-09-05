@@ -1,6 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
 import { responseToJson } from '@common/util/apiUtils';
-import { LoeysingNettsideRelation } from '@maaling/types';
 
 import { Verksemd, VerksemdInit } from './types';
 
@@ -9,29 +8,6 @@ const verksemdList_dummy_response = [
     id: 1,
     namn: 'Testverksemd',
     organisasjonsnummer: '123456789',
-  },
-];
-
-const verksemdLoeysingRelation_dummy_response: LoeysingNettsideRelation[] = [
-  {
-    loeysing: {
-      id: 2,
-      namn: 'digdir.no',
-      url: 'https://www.digdir.no/',
-      orgnummer: '991825827',
-      verksemdId: 0,
-    },
-    properties: [],
-  },
-  {
-    loeysing: {
-      id: 4,
-      namn: 'Demoside',
-      url: 'https://www.tutorialspoint.com/',
-      orgnummer: '000000000',
-      verksemdId: 0,
-    },
-    properties: [],
   },
 ];
 

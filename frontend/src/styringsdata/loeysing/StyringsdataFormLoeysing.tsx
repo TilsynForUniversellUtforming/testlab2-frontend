@@ -6,16 +6,33 @@ import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import { Accordion, Button, ErrorSummary, Heading, Paragraph, Tag, } from '@digdir/designsystemet-react';
+import {
+  Accordion,
+  Button,
+  ErrorSummary,
+  Heading,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import SaveButton from '@test/styringsdata/SaveButton';
-import { styringsdataValidationSchema } from '@test/styringsdata/styringsdataValidationSchema';
-import { KlageType, ResultatKlage, Styringsdata, StyringsdataLoaderData, } from '@test/styringsdata/types';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import { Link, useLoaderData, useParams, useSubmit } from 'react-router-dom';
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from 'react-router-dom';
 
-import classes from './styringsdata.module.css';
+import SaveButton from '../SaveButton';
+import classes from '../styringsdata.module.css';
+import {
+  KlageType,
+  ResultatKlage,
+  StyringsdataLoaderData,
+  StyringsdataLoeysing,
+} from '../types';
+import { styringsdataValidationSchema } from './styringsdataValidationSchema';
 
 const reaksjonOptions = [
   { value: 'reaksjon', label: 'Ja' },
@@ -26,7 +43,7 @@ const ClearReaksjonButton = ({
   setValue,
   field,
 }: {
-  setValue: UseFormSetValue<Styringsdata>;
+  setValue: UseFormSetValue<StyringsdataLoeysing>;
   field: 'paalegg' | 'paaleggKlage' | 'bot' | 'botKlage';
 }) => {
   const onClick = () => {
@@ -48,7 +65,7 @@ const KlageInputs = ({
   register,
 }: {
   klageType: KlageType;
-  register: UseFormRegister<Styringsdata>;
+  register: UseFormRegister<StyringsdataLoeysing>;
 }) => {
   const klageName = klageType === 'bot' ? 'botKlage' : 'paaleggKlage';
   const options = createOptionsFromLiteral<ResultatKlage>([
@@ -61,27 +78,27 @@ const KlageInputs = ({
   return (
     <>
       <input type="hidden" {...register(`${klageName}.id` as const)} />
-      <TestlabFormInput<Styringsdata>
+      <TestlabFormInput<StyringsdataLoeysing>
         label="Klage mottatt dato"
         name={`${klageName}.klageMottattDato`}
         type="date"
       />
-      <TestlabFormInput<Styringsdata>
+      <TestlabFormInput<StyringsdataLoeysing>
         label="Klage avgjort dato"
         name={`${klageName}.klageAvgjortDato`}
         type="date"
       />
-      <TestlabFormSelect<Styringsdata>
+      <TestlabFormSelect<StyringsdataLoeysing>
         options={options}
         label="Resultat klage tilsynet"
         name={`${klageName}.resultatKlageTilsyn`}
       />
-      <TestlabFormInput<Styringsdata>
+      <TestlabFormInput<StyringsdataLoeysing>
         label="Klage sendt til departementet"
         name={`${klageName}.klageDatoDepartement`}
         type="date"
       />
-      <TestlabFormSelect<Styringsdata>
+      <TestlabFormSelect<StyringsdataLoeysing>
         options={options}
         label="Resultat klage departement"
         name={`${klageName}.resultatKlageDepartement`}
@@ -99,7 +116,10 @@ const StyringsdataFormLoeysing = () => {
     styringsdata,
   } = useLoaderData() as StyringsdataLoaderData;
 
-  const { id: kontrollIdParam, loeysingId: loeysingIdParam } = useParams();
+  const navigate = useNavigate();
+
+  const { kontrollId: kontrollIdParam, loeysingId: loeysingIdParam } =
+    useParams();
   const kontrollId = getIdFromParams(kontrollIdParam);
   const loeysingId = getIdFromParams(loeysingIdParam);
 
@@ -107,7 +127,7 @@ const StyringsdataFormLoeysing = () => {
 
   const submit = useSubmit();
 
-  const formMethods = useForm<Styringsdata>({
+  const formMethods = useForm<StyringsdataLoeysing>({
     defaultValues: {
       id: styringsdata?.id ?? undefined,
       kontrollId: kontrollId,
@@ -126,7 +146,7 @@ const StyringsdataFormLoeysing = () => {
 
   const { watch, formState, setValue } = formMethods;
 
-  const onSubmit = (data: Styringsdata) => {
+  const onSubmit = (data: StyringsdataLoeysing) => {
     if (isEdit) {
       submit(JSON.stringify(data), {
         method: 'put',
@@ -174,25 +194,25 @@ const StyringsdataFormLoeysing = () => {
           <Tag color="second">{verksemdNamn}</Tag>
         </div>
         {arkivreferanse && <Tag>{arkivreferanse}</Tag>}
-        <TestlabForm<Styringsdata>
+        <TestlabForm<StyringsdataLoeysing>
           formMethods={formMethods}
           onSubmit={onSubmit}
           className={classes.styringsdataForm}
           hasRequiredFields
         >
           <input type="hidden" {...register('id' as const)} />
-          <TestlabFormInput<Styringsdata>
+          <TestlabFormInput<StyringsdataLoeysing>
             label="Ansvarleg"
             name="ansvarleg"
             required
           />
-          <TestlabFormInput<Styringsdata>
+          <TestlabFormInput<StyringsdataLoeysing>
             label="Oppretta"
             name="oppretta"
             type="date"
             required
           />
-          <TestlabFormInput<Styringsdata>
+          <TestlabFormInput<StyringsdataLoeysing>
             label="Frist for gjennomføring"
             name="frist"
             type="date"
@@ -208,7 +228,7 @@ const StyringsdataFormLoeysing = () => {
             Desse felta triggar inga handling, det er berre for intern oversikt.
             Dialog med part går føre seg i andre kanalar.
           </Paragraph>
-          <TestlabFormSelect<Styringsdata>
+          <TestlabFormSelect<StyringsdataLoeysing>
             label="Aktivitet"
             description="Er det forventet å bruke reaksjoner til denne løsningen?"
             options={reaksjonOptions}
@@ -232,12 +252,12 @@ const StyringsdataFormLoeysing = () => {
                         type="hidden"
                         {...register('paalegg.id' as const)}
                       />
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Pålegg vedtak dato"
                         name="paalegg.vedtakDato"
                         type="date"
                       />
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Pålegg frist"
                         name="paalegg.frist"
                         type="date"
@@ -283,20 +303,20 @@ const StyringsdataFormLoeysing = () => {
                     <>
                       <input type="hidden" {...register('bot.id' as const)} />
 
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Bot (tvangsmulkt) beløp"
                         name="bot.beloepDag"
                       />
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Antall dager før økning"
                         name="bot.oekingEtterDager"
                       />
                       <div className={classes.oekingType}>
-                        <TestlabFormInput<Styringsdata>
+                        <TestlabFormInput<StyringsdataLoeysing>
                           label="Økning pr dag"
                           name="bot.oekingSats"
                         />
-                        <TestlabFormSelect<Styringsdata>
+                        <TestlabFormSelect<StyringsdataLoeysing>
                           label={''}
                           options={[
                             { value: 'kroner', label: 'NOK' },
@@ -307,22 +327,22 @@ const StyringsdataFormLoeysing = () => {
                           radioInline
                         />
                       </div>
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Når ble vedtak om bot iverksatt?"
                         name="bot.vedtakDato"
                         type="date"
                       />
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Startdato for bot"
                         name="bot.startDato"
                         type="date"
                       />
-                      <TestlabFormInput<Styringsdata>
+                      <TestlabFormInput<StyringsdataLoeysing>
                         label="Sluttdato for bot"
                         name="bot.sluttDato"
                         type="date"
                       />
-                      <TestlabFormTextArea<Styringsdata>
+                      <TestlabFormTextArea<StyringsdataLoeysing>
                         label="Kommentar"
                         name="bot.kommentar"
                       />
@@ -371,9 +391,14 @@ const StyringsdataFormLoeysing = () => {
             </ErrorSummary.Root>
           )}
           <div className={classes.buttons}>
-            <Link to={'..'}>
-              <Button variant={ButtonVariant.Outline}>Tilbake</Button>
-            </Link>
+            <Button
+              variant={ButtonVariant.Outline}
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              Tilbake
+            </Button>
             <SaveButton />
           </div>
         </TestlabForm>

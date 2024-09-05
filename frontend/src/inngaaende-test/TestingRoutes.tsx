@@ -1,25 +1,16 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import {
-  createStyringsdata,
-  updateStyringsdata,
-} from '@test/api/styringsdata-api';
 import { createRetest, deleteTestgrunnlag } from '@test/api/testing-api';
 import { RetestRequest } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
-import StyringsdataFormLoeysing from '@test/styringsdata/StyringsdataFormLoeysing';
-import StyringsdataFormVerksemd from '@test/styringsdata/StyringsdataFormVerksemd';
-import { Styringsdata } from '@test/styringsdata/types';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import {
-  styringsdataLoader,
-  styringsdataLoaderVerksemd,
   testLoader,
   testOverviewLoader,
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
 import { Testgrunnlag } from '@test/types';
-import { Outlet, redirect, RouteObject } from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import InngaaendeTestApp from './InngaaendeTestApp';
@@ -36,18 +27,6 @@ export const TEST: AppRoute = {
   navn: 'Test',
   path: idPath,
   parentRoute: TEST_ROOT,
-};
-
-export const TEST_STYRINGSDATA_VERKSEMD: AppRoute = {
-  navn: 'Styringsdata for verksemd',
-  path: 'styringsdata/verksemd/:orgnr',
-  parentRoute: TEST,
-};
-
-export const TEST_STYRINGSDATA_LOEYSING: AppRoute = {
-  navn: 'Styringsdata for løysing',
-  path: 'styringsdata/loeysing/:loeysingId',
-  parentRoute: TEST,
 };
 
 export const TEST_LOEYSING_KONTROLL: AppRoute = {
@@ -96,42 +75,6 @@ export const TestingRoutes: RouteObject = {
           element: <TestOverviewLoeysing />,
           handle: { name: TEST_LOEYSING_KONTROLL.navn },
           loader: testOverviewLoeysingLoader,
-        },
-        {
-          path: TEST_STYRINGSDATA_VERKSEMD.path,
-          element: <StyringsdataFormVerksemd />,
-          handle: { name: TEST_STYRINGSDATA_VERKSEMD.navn },
-          action: async ({ request }) => {
-            const formData = (await request.json()) as Styringsdata;
-            switch (request.method) {
-              case 'POST': {
-                const styringsdata = await createStyringsdata(formData);
-                return redirect(`?styringsdataId=${styringsdata.id}`);
-              }
-              case 'PUT': {
-                return await updateStyringsdata(formData);
-              }
-            }
-          },
-          loader: styringsdataLoaderVerksemd,
-        },
-        {
-          path: TEST_STYRINGSDATA_LOEYSING.path,
-          element: <StyringsdataFormLoeysing />,
-          handle: { name: TEST_STYRINGSDATA_LOEYSING.navn },
-          action: async ({ request }) => {
-            const formData = (await request.json()) as Styringsdata;
-            switch (request.method) {
-              case 'POST': {
-                const styringsdata = await createStyringsdata(formData);
-                return redirect(`?styringsdataId=${styringsdata.id}`);
-              }
-              case 'PUT': {
-                return await updateStyringsdata(formData);
-              }
-            }
-          },
-          loader: styringsdataLoader,
         },
       ],
     },

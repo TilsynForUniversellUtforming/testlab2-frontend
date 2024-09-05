@@ -1,116 +1,150 @@
-import { search } from '@common/util/arrayUtils';
+import { CellCheckboxId } from '@common/table/types';
+import UserActionTable from '@common/table/UserActionTable';
+import { ButtonSize } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
-import {
-  Button,
-  Heading,
-  Table,
-  Textfield,
-} from '@digdir/designsystemet-react';
-import React, { ChangeEvent, useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Button } from '@digdir/designsystemet-react';
+import { Row } from '@tanstack/react-table';
+import React, { useEffect, useState } from 'react';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 
-import { KontrollListItem, KontrollType, Orgnummer } from '../types';
+import { KontrollListItem, KontrollType } from '../types';
 import classes from './kontroll-list.module.css';
 
+const StyringsdataLinkButton = ({
+  styringsdataId,
+}: {
+  styringsdataId?: number;
+}) => {
+  const uri = styringsdataId
+    ? `../styringsdata/${styringsdataId}`
+    : '../styringsdata';
+  const text = styringsdataId ? 'Endre styringsdata' : 'Legg til styringsdata';
+  return (
+    <Link to={uri}>
+      <Button size={ButtonSize.Small}>{text}</Button>
+    </Link>
+  );
+};
+
 const KontrollList = () => {
-  const filters: string[] = Object.values(KontrollType);
+  const filters: KontrollType[] = [
+    KontrollType.InngaaendeKontroll,
+    KontrollType.ForenklaKontroll,
+    KontrollType.Tilsyn,
+    KontrollType.Statusmaaling,
+    KontrollType.UttaleSak,
+    KontrollType.Anna,
+  ];
 
   const kontroller = useLoaderData() as KontrollListItem[];
+  const [kontrollList, setKontrollList] = useState<KontrollListItem[]>(
+    kontroller ?? []
+  );
   const [kontrollFilter, setKontrollFilter] = useState<KontrollType>(
     KontrollType.InngaaendeKontroll
   );
-  const [searchResult, setSearchResult] =
-    useState<KontrollListItem[]>(kontroller);
 
-  function searchForKontroller(event: ChangeEvent<HTMLInputElement>): void {
-    const searchTerm = event.target.value;
-    const hits = search(searchTerm, (kontroll) => kontroll.tittel, kontroller);
-    setSearchResult(hits);
-  }
+  useEffect(() => {
+    if (kontroller) {
+      setKontrollList(
+        kontroller.filter((k) => k.kontrolltype === kontrollFilter)
+      );
+    }
+  }, [kontrollFilter]);
+
+  const navigate = useNavigate();
 
   return (
     <section className={classes.kontrollList}>
-      <Heading level={1} size="xlarge">
-        Alle kontroller
-      </Heading>
-      <Textfield
-        className={classes.soek}
-        label="Hvilken kontroll leter du etter?"
-        onChange={searchForKontroller}
-      />
-      <div className={classes.filter}>
-        {filters.map((s) => (
-          <label key={s}>
-            {sanitizeEnumLabel(s)}
-            <input
-              id={`filter-${s}`}
-              type="radio"
-              name="kontroller-filter"
-              hidden
-              value={s}
-              defaultChecked={s === kontrollFilter}
-              onChange={(event) =>
-                setKontrollFilter(event.target.value as KontrollType)
-              }
-            />
-          </label>
-        ))}
-      </div>
-      <Table className={classes.kontrollerTabell}>
-        <Table.Head>
-          <Table.Row>
-            <Table.HeaderCell>Tittel</Table.HeaderCell>
-            <Table.HeaderCell>Virksomhet</Table.HeaderCell>
-            <Table.HeaderCell>Ansvarlig</Table.HeaderCell>
-            <Table.HeaderCell>Frister</Table.HeaderCell>
-            <Table.HeaderCell>Progresjon</Table.HeaderCell>
-            <Table.HeaderCell>Merknad</Table.HeaderCell>
-            <Table.HeaderCell>Testtype</Table.HeaderCell>
-          </Table.Row>
-        </Table.Head>
-        <Table.Body>
-          {searchResult
-            .filter((k) => kontrollFilter === k.kontrolltype)
-            .map((kontroll) => (
-              <Table.Row key={kontroll.id}>
-                <Table.Cell>
-                  <Link
-                    to={
-                      kontrollFilter === 'forenkla-kontroll'
-                        ? `/maaling?kontrollId=${kontroll.id}`
-                        : `/kontroll/${kontroll.id}/oppsummering`
-                    }
-                  >
-                    {kontroll.tittel}
-                  </Link>
-                </Table.Cell>
-                <Table.Cell>
-                  {viewVirksomheter(kontroll.virksomheter)}
-                </Table.Cell>
-                <Table.Cell>{kontroll.saksbehandler}</Table.Cell>
-                <Table.Cell></Table.Cell>
-                <Table.Cell></Table.Cell>
-                <Table.Cell>
-                  <Button variant="tertiary">Ny merknad</Button>
-                </Table.Cell>
-                <Table.Cell>{kontroll.kontrolltype}.</Table.Cell>
-              </Table.Row>
-            ))}
-        </Table.Body>
-      </Table>
+      <UserActionTable<KontrollListItem>
+        heading="Alle kontroller"
+        tableProps={{
+          classNames: [classes.kontrollerTabell],
+          data: kontrollList,
+          defaultColumns: [
+            {
+              accessorFn: (row) => row.tittel,
+              id: 'tittel',
+              cell: ({ getValue }) => getValue(),
+              header: () => <>Tittel</>,
+            },
+            {
+              accessorFn: (row) => row.virksomheter.join(','),
+              id: 'virksomhet',
+              cell: ({ row }) =>
+                row.original.virksomheter.length > 1
+                  ? `${row.original.virksomheter.length} virksomheter`
+                  : row.original.virksomheter[0],
+              header: () => <>Virksomhet</>,
+            },
+            {
+              accessorFn: (row) => row.saksbehandler,
+              id: 'saksbehandler',
+              cell: (info) => info.getValue(),
+              header: () => <>Ansvarlig</>,
+            },
+            {
+              id: 'frister',
+              cell: () => '',
+              header: () => <>Frister</>,
+            },
+            {
+              id: 'progresjon',
+              cell: () => '',
+              header: () => <>Progresjon</>,
+            },
+            {
+              id: `${CellCheckboxId} merknad`,
+              cell: () => <Button variant="tertiary">Ny merknad</Button>,
+              header: () => <>Merknad</>,
+            },
+            {
+              accessorFn: (row) => row.kontrolltype,
+              id: 'kontrolltype',
+              cell: (info) => sanitizeEnumLabel(String(info.getValue())),
+              header: () => <>Testtype</>,
+            },
+            {
+              id: `${CellCheckboxId} styringsdataId`,
+              cell: ({ row }) => (
+                <StyringsdataLinkButton
+                  styringsdataId={row.original.styringsdataId}
+                />
+              ),
+              header: () => <>Styringsdata</>,
+            },
+          ],
+          onClickRow: (row?: Row<KontrollListItem>) =>
+            row
+              ? navigate(
+                  kontrollFilter === 'forenkla-kontroll'
+                    ? `/maaling?kontrollId=${row.original.id}`
+                    : `/kontroll/${row.original.id}/oppsummering`
+                )
+              : null,
+        }}
+      >
+        <div className={classes.filter}>
+          {filters.map((s) => (
+            <label key={s}>
+              {sanitizeEnumLabel(s)}
+              <input
+                id={`filter-${s}`}
+                type="radio"
+                name="kontroller-filter"
+                hidden
+                value={s}
+                defaultChecked={s === kontrollFilter}
+                onChange={(event) =>
+                  setKontrollFilter(event.target.value as KontrollType)
+                }
+              />
+            </label>
+          ))}
+        </div>
+      </UserActionTable>
     </section>
   );
 };
 
 export default KontrollList;
-
-function viewVirksomheter(virksomheter: Orgnummer[]) {
-  switch (virksomheter.length) {
-    case 0:
-      return '';
-    case 1:
-      return virksomheter[0];
-    default:
-      return `${virksomheter.length} virksomheter`;
-  }
-}
