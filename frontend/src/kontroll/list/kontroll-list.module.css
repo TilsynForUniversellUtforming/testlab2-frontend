@@ -6,7 +6,6 @@
   .filter {
     display: flex;
     gap: 0.5rem;
-    padding-bottom: 2rem;
 
     label {
       flex-grow: 1;
@@ -42,7 +41,6 @@
 
 .kontroller-tabell {
   width: 100%;
-  tr {
-    height: 4rem;
-  }
+  margin-top: 4rem;
+  margin-bottom: 4rem;
 }
