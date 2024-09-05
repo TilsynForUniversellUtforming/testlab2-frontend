@@ -1,3 +1,4 @@
+import { ButtonSize } from '@common/types';
 import { search } from '@common/util/arrayUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import {
@@ -11,6 +12,25 @@ import { Link, useLoaderData } from 'react-router-dom';
 
 import { KontrollListItem, KontrollType, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';
+
+const StyringsdataLinkButton = ({
+  kontrollId,
+  styringsdataId,
+}: {
+  kontrollId: number;
+  styringsdataId?: number;
+}) => {
+  const styringsdataParam = styringsdataId
+    ? `?styringsdataId=${styringsdataId}`
+    : '';
+
+  const text = styringsdataId ? 'Endre styringsdata' : 'Legg til styringsdata';
+  return (
+    <Link to={`../../styringsdata/${kontrollId}${styringsdataParam}`}>
+      <Button size={ButtonSize.Small}>{text}</Button>
+    </Link>
+  );
+};
 
 const KontrollList = () => {
   const filters: string[] = Object.values(KontrollType);
@@ -66,6 +86,7 @@ const KontrollList = () => {
             <Table.HeaderCell>Progresjon</Table.HeaderCell>
             <Table.HeaderCell>Merknad</Table.HeaderCell>
             <Table.HeaderCell>Testtype</Table.HeaderCell>
+            <Table.HeaderCell>Styringsdata</Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
@@ -94,6 +115,13 @@ const KontrollList = () => {
                   <Button variant="tertiary">Ny merknad</Button>
                 </Table.Cell>
                 <Table.Cell>{kontroll.kontrolltype}.</Table.Cell>
+                <Table.Cell>
+                  {' '}
+                  <StyringsdataLinkButton
+                    kontrollId={kontroll.id}
+                    styringsdataId={kontroll.styringsdataId}
+                  />
+                </Table.Cell>
               </Table.Row>
             ))}
         </Table.Body>

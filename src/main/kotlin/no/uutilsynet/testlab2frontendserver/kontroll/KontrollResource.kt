@@ -32,7 +32,8 @@ data class KontrollListItem(
     val sakstype: String,
     val arkivreferanse: String,
     val kontrolltype: String,
-    val virksomheter: List<Orgnummer>
+    val virksomheter: List<Orgnummer>,
+    val styringsdataId: Int?
 )
 
 @RestController
