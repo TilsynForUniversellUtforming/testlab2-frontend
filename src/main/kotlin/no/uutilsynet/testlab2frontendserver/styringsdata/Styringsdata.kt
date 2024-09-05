@@ -1,4 +1,4 @@
-package no.uutilsynet.testlab2testing.styringsdata
+package no.uutilsynet.testlab2frontendserver.styringsdata
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes

@@ -119,5 +119,5 @@ export type StyringsdataKontrollLoaderData = {
 
 export type StyringsdataResult = {
   styringsdataKontrollId?: number;
-  styrinsdataLoeysing: StyringsdataListElement[];
+  styringsdataLoeysing: StyringsdataListElement[];
 };

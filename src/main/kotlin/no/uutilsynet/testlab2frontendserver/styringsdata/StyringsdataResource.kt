@@ -1,9 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.styringsdata
 
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2testing.styringsdata.Styringsdata
-import no.uutilsynet.testlab2testing.styringsdata.StyringsdataListElement
-import no.uutilsynet.testlab2testing.styringsdata.StyringsdataType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -119,7 +116,7 @@ class StyringsdataResource(
 
 data class StyringsdataResult(
     val styringsdataKontrollId: Int?,
-    val styrinsdataLoeysing: List<StyringsdataListElement>?
+    val styringsdataLoeysing: List<StyringsdataListElement> = emptyList()
 )
 
 private fun validateStyringsdata(
@@ -129,7 +126,7 @@ private fun validateStyringsdata(
   val duplicate =
       when (styringsdata) {
         is Styringsdata.Loeysing -> {
-          styringsdataResult?.styrinsdataLoeysing?.any {
+          styringsdataResult?.styringsdataLoeysing?.any {
             it.loeysingId == styringsdata.loeysingId
           } == true
         }
