@@ -131,7 +131,7 @@ export const testOverviewLoader = async ({
     loeysingList: loeysingWithSideutval,
     resultater: resultater.flat(),
     testgrunnlag: testgrunnlag,
-    styringsdata: styringsdataListPromise.value.styrinsdataLoeysing,
+    styringsdata: styringsdataListPromise.value.styringsdataLoeysing,
   };
 };
 
