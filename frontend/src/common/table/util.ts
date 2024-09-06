@@ -45,6 +45,7 @@ export const fuzzyFilter = <T extends object>(
 };
 
 export const getSeverity = (percentage?: number): TestlabSeverity => {
+  if (percentage == undefined) return 'neutral';
   if (percentage < 60) return 'danger';
   if (percentage < 90) return 'warning';
   if (percentage > 90) return 'success';
