@@ -21,7 +21,10 @@ const getSmiley = (resultat: string): React.JSX.Element => {
   if (resultat.toLowerCase() === 'brot') {
     return <FaceFrownIcon className="smiley-sur"></FaceFrownIcon>;
   }
-  return <FaceIcon className={'smiley-noytral'}></FaceIcon>;
+  if (resultat.toLowerCase() === 'varsel') {
+    return <FaceIcon className={'smiley-noytral'}></FaceIcon>;
+  }
+  return <FaceIcon className={'smiley-ikkje-forekomst'}></FaceIcon>;
 };
 
 export const getViolationsColumns = (): Array<ColumnDef<TesterResult>> => [
@@ -91,7 +94,7 @@ export const getResultColumns = (): Array<
         size="small"
         color={getSeverity(scoreToPercentage(row.getValue('score')))}
       >
-        {scoreToPercentage(row.getValue('score'))}
+        {scoreToPercentage(row.getValue('score')) ?? 'Ikkje forekomst'}
       </Tag>
     ),
   },

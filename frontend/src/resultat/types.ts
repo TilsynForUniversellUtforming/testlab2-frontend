@@ -29,7 +29,7 @@ export type ResultatOversiktLoeysing = {
   typeKontroll: KontrollType;
   kontrollNamn: string;
   testar: string[];
-  score: number;
+  score?: number;
   kravId: number;
   talTestaElement: number;
   talElementBrot: number;
