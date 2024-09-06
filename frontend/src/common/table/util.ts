@@ -44,14 +44,17 @@ export const fuzzyFilter = <T extends object>(
   return itemRank.passed;
 };
 
-export const getSeverity = (percentage: number): TestlabSeverity => {
+export const getSeverity = (percentage?: number): TestlabSeverity => {
   if (percentage < 60) return 'danger';
   if (percentage < 90) return 'warning';
-  return 'success';
+  if (percentage > 90) return 'success';
+  return 'neutral';
 };
 
-export const scoreToPercentage = (score: number): number =>
-  Math.round(score * 100);
+export const scoreToPercentage = (score?: number): number | undefined => {
+  if (score != undefined) return Math.round(score * 100);
+  return undefined;
+};
 
 export const dateRangeFilter: FilterFn<Resultat> = (
   row: Row<Resultat>,
