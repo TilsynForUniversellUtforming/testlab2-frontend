@@ -238,8 +238,8 @@ function insertDelutfall(
     typeof resultat.utfall === 'string'
       ? resultat.utfall
       : fasit === 'Ja'
-        ? resultat.utfall.ja ?? ''
-        : resultat.utfall.nei ?? '';
+        ? (resultat.utfall.ja ?? '')
+        : (resultat.utfall.nei ?? '');
   const utfallMedDelutfall = Object.entries(delutfall).reduce(
     (endeligUtfall, [_nr, etDelutfall]) => {
       return endeligUtfall
