@@ -31,8 +31,11 @@ class StyringsdataResource(
       @RequestParam kontrollId: Int
   ): ResponseEntity<StyringsdataResult> =
       runCatching {
-            restTemplate.getForEntity(
-                "$styringsdataUrl?kontrollId=$kontrollId", StyringsdataResult::class.java)
+            val result =
+                restTemplate.getForEntity(
+                    "$styringsdataUrl?kontrollId=$kontrollId", StyringsdataResult::class.java)
+            logger.info("result fra styringsdata ${result.body?.toString()}")
+            result
           }
           .getOrElse {
             logger.error("Hent styringsdata feila", it)
