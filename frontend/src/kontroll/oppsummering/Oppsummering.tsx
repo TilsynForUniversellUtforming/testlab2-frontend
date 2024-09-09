@@ -49,7 +49,7 @@ export function Oppsummering() {
 
     loeysingar.forEach((loeysing) => {
       const namn = isDefined(loeysing.verksemdId)
-        ? (verksemdIdName.get(loeysing.verksemdId) ?? loeysing.orgnummer)
+        ? verksemdIdName.get(loeysing.verksemdId) ?? loeysing.orgnummer
         : loeysing.orgnummer;
       if (namn) {
         countMap[namn] = (countMap[namn] || 0) + 1;
