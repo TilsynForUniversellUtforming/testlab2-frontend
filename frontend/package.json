@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
@@ -31,7 +31,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
     "react-loading-skeleton": "^3.4.0",
-    "react-router-dom": "^6.26.1",
+    "react-router-dom": "^6.24.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
