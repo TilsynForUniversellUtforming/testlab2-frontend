@@ -12,11 +12,12 @@ const styringsdataApiBaseUrl = '/api/v1/styringsdata';
 export const findStyringsdataForKontroll = async (
   kontrollId: number
 ): Promise<StyringsdataResult> => {
-  return await fetch(`${styringsdataApiBaseUrl}?kontrollId=${kontrollId}`, {
+  return await fetch(`${styringsdataApiBaseUrl}/${kontrollId}`, {
     method: 'GET',
-  }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente liste med styringsdata')
-  );
+  }).then((response) => {
+    console.log(response);
+    return responseToJson(response, 'Kunne ikkje hente liste med styringsdata');
+  });
 };
 
 export const fetchStyringsdataLoeysing = async (
