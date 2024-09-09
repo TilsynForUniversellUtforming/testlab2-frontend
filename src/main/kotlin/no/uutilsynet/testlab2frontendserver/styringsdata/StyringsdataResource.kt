@@ -20,133 +20,125 @@ import org.springframework.web.client.getForObject
 @RestController
 @RequestMapping("api/v1/styring")
 class StyringsdataResource(
-  val restTemplate: RestTemplate,
-  val testingApiProperties: TestingApiProperties,
+    val restTemplate: RestTemplate,
+    val testingApiProperties: TestingApiProperties,
 ) {
   private val logger: Logger = LoggerFactory.getLogger(StyringsdataResource::class.java)
   val styringsdataUrl = "${testingApiProperties.url}/styringsdata"
 
   @GetMapping
   fun findStyringsdataForKontroll(
-    @RequestParam kontrollId: Int
+      @RequestParam kontrollId: Int
   ): ResponseEntity<StyringsdataResult> =
-    runCatching {
-      restTemplate.getForEntity(
-        "$styringsdataUrl?kontrollId=$kontrollId", StyringsdataResult::class.java
-      )
-    }
-      .getOrElse {
-        logger.error("Hent styringsdata feila", it)
-        throw RuntimeException(it)
-      }
+      runCatching {
+            restTemplate.getForEntity(
+                "$styringsdataUrl?kontrollId=$kontrollId", StyringsdataResult::class.java)
+          }
+          .getOrElse {
+            logger.error("Hent styringsdata feila", it)
+            throw RuntimeException(it)
+          }
 
   @GetMapping("{stryingsdataType}/{styringsdataId}")
   fun getStyringsdata(
-    @PathVariable("stryingsdataType") styringsdataType: StyringsdataType,
-    @PathVariable("styringsdataId") styringsdataId: Int,
+      @PathVariable("stryingsdataType") styringsdataType: StyringsdataType,
+      @PathVariable("styringsdataId") styringsdataId: Int,
   ): ResponseEntity<Styringsdata?> {
     return runCatching {
-      restTemplate.getForEntity(
-        "$styringsdataUrl/${styringsdataType.name}/$styringsdataId", Styringsdata::class.java
-      )
-    }
-      .fold(
-        { responseEntity ->
-          ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
-        },
-        { exception ->
-          logger.error("Kunne ikkje hente styringsdata", exception)
-          when (exception) {
-            is HttpClientErrorException -> {
-              if (exception.statusCode == HttpStatus.NOT_FOUND) {
-                ResponseEntity.notFound().build<Styringsdata?>()
-              } else {
-                ResponseEntity.status(exception.statusCode).build<Styringsdata?>()
+          restTemplate.getForEntity(
+              "$styringsdataUrl/${styringsdataType.name}/$styringsdataId", Styringsdata::class.java)
+        }
+        .fold(
+            { responseEntity ->
+              ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
+            },
+            { exception ->
+              logger.error("Kunne ikkje hente styringsdata", exception)
+              when (exception) {
+                is HttpClientErrorException -> {
+                  if (exception.statusCode == HttpStatus.NOT_FOUND) {
+                    ResponseEntity.notFound().build<Styringsdata?>()
+                  } else {
+                    ResponseEntity.status(exception.statusCode).build<Styringsdata?>()
+                  }
+                }
+                else ->
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build<Styringsdata?>()
               }
-            }
-
-            else ->
-              ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build<Styringsdata?>()
-          }
-        })
+            })
   }
 
   @PostMapping
   fun createStyringsdata(@RequestBody styringsdata: Styringsdata): ResponseEntity<Styringsdata> =
-    runCatching {
-      val styringsdataResult =
-        restTemplate
-          .getForEntity(
-            "$styringsdataUrl?kontrollId=${styringsdata.kontrollId}",
-            StyringsdataResult::class.java
-          )
-          .body
+      runCatching {
+            val styringsdataResult =
+                restTemplate
+                    .getForEntity(
+                        "$styringsdataUrl?kontrollId=${styringsdata.kontrollId}",
+                        StyringsdataResult::class.java)
+                    .body
 
-      val validated = validateStyringsdata(styringsdata, styringsdataResult)
+            val validated = validateStyringsdata(styringsdata, styringsdataResult)
 
-      val location =
-        restTemplate.postForLocation(styringsdataUrl, validated)
-          ?: throw IllegalStateException("Vi fikk ikkje location fra $styringsdataUrl")
-      ResponseEntity.ok(restTemplate.getForObject<Styringsdata>(location))
-    }
-      .getOrElse {
-        if (it is IllegalArgumentException) {
-          return ResponseEntity.badRequest().build()
-        }
+            val location =
+                restTemplate.postForLocation(styringsdataUrl, validated)
+                    ?: throw IllegalStateException("Vi fikk ikkje location fra $styringsdataUrl")
+            ResponseEntity.ok(restTemplate.getForObject<Styringsdata>(location))
+          }
+          .getOrElse {
+            if (it is IllegalArgumentException) {
+              return ResponseEntity.badRequest().build()
+            }
 
-        logger.error("Oppretting av styringsdata feilet", it)
-        return ResponseEntity.internalServerError().build()
-      }
+            logger.error("Oppretting av styringsdata feilet", it)
+            return ResponseEntity.internalServerError().build()
+          }
 
   @PutMapping("{styringsdataId}")
   fun updateStyringsdataForLoeysing(
-    @PathVariable("styringsdataId") styringsdataId: Int,
-    @RequestBody styringsdata: Styringsdata
+      @PathVariable("styringsdataId") styringsdataId: Int,
+      @RequestBody styringsdata: Styringsdata
   ) =
-    runCatching {
-      val styringsdataType =
-        if (styringsdata is Styringsdata.Loeysing) StyringsdataType.loeysing
-        else StyringsdataType.kontroll
+      runCatching {
+            val styringsdataType =
+                if (styringsdata is Styringsdata.Loeysing) StyringsdataType.loeysing
+                else StyringsdataType.kontroll
 
-      restTemplate.put(
-        "$styringsdataUrl/${styringsdataType.name}/$styringsdataId", styringsdata
-      )
-      getStyringsdata(styringsdataType, styringsdataId)
-    }
-      .getOrElse {
-        logger.error("Endring av styringsdata feila", it)
-        throw RuntimeException(it)
-      }
+            restTemplate.put(
+                "$styringsdataUrl/${styringsdataType.name}/$styringsdataId", styringsdata)
+            getStyringsdata(styringsdataType, styringsdataId)
+          }
+          .getOrElse {
+            logger.error("Endring av styringsdata feila", it)
+            throw RuntimeException(it)
+          }
 }
 
 data class StyringsdataResult(
-  val styringsdataKontrollId: Int?,
-  val styringsdataLoeysing: List<StyringsdataListElement> = emptyList()
+    val styringsdataKontrollId: Int?,
+    val styringsdataLoeysing: List<StyringsdataListElement> = emptyList()
 )
 
 private fun validateStyringsdata(
-  styringsdata: Styringsdata,
-  styringsdataResult: StyringsdataResult?
+    styringsdata: Styringsdata,
+    styringsdataResult: StyringsdataResult?
 ): Styringsdata {
   val duplicate =
-    when (styringsdata) {
-      is Styringsdata.Loeysing -> {
-        styringsdataResult?.styringsdataLoeysing?.any {
-          it.loeysingId == styringsdata.loeysingId
-        } == true
+      when (styringsdata) {
+        is Styringsdata.Loeysing -> {
+          styringsdataResult?.styringsdataLoeysing?.any {
+            it.loeysingId == styringsdata.loeysingId
+          } == true
+        }
+        is Styringsdata.Kontroll -> {
+          styringsdataResult?.styringsdataKontrollId != null
+        }
+        else -> true
       }
-
-      is Styringsdata.Kontroll -> {
-        styringsdataResult?.styringsdataKontrollId != null
-      }
-
-      else -> true
-    }
 
   if (duplicate) {
     throw IllegalArgumentException(
-      "Styringsdata for kontroll ${styringsdata.kontrollId} finnes allereie"
-    )
+        "Styringsdata for kontroll ${styringsdata.kontrollId} finnes allereie")
   }
 
   return styringsdata
