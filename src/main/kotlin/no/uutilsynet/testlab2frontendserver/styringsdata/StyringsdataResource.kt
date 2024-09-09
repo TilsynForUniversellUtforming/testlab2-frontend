@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -25,9 +26,9 @@ class StyringsdataResource(
   private val logger: Logger = LoggerFactory.getLogger(StyringsdataResource::class.java)
   val styringsdataUrl = "${testingApiProperties.url}/styringsdata"
 
-  @GetMapping("{kontrollId}")
+  @GetMapping
   fun findStyringsdataForKontroll(
-      @PathVariable kontrollId: Int
+      @RequestParam kontrollId: Int
   ): ResponseEntity<StyringsdataResult> =
       runCatching {
             restTemplate.getForEntity(

@@ -84,7 +84,7 @@ export const testOverviewLoader = async ({
   params,
 }: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
   const kontrollId = getIdFromParams(params?.id);
-  const [kontrollPromise, testgrunnlagPromise, styringsdataListPromise] =
+  const [kontrollPromise, testgrunnlagPromise, styringsdataPromise] =
     await Promise.allSettled([
       fetchKontroll(kontrollId),
       listTestgrunnlag(kontrollId),
@@ -95,7 +95,8 @@ export const testOverviewLoader = async ({
     throw new Error(`Kunne ikkje hente testgrunnlag`);
   }
 
-  if (styringsdataListPromise.status === 'rejected') {
+  if (styringsdataPromise.status === 'rejected') {
+    console.info('styringsdataPromise er rejected', styringsdataPromise.reason);
     throw new Error('Henting av styringsdata feila');
   }
 
@@ -127,11 +128,14 @@ export const testOverviewLoader = async ({
       loeysingWithSideutvalIds.includes(l.id)
     ) ?? [];
 
+  const styringsdataResult = styringsdataPromise.value;
+  console.info('styringsdataresult', styringsdataResult);
+
   return {
     loeysingList: loeysingWithSideutval,
     resultater: resultater.flat(),
     testgrunnlag: testgrunnlag,
-    styringsdata: styringsdataListPromise.value.styringsdataLoeysing,
+    styringsdata: styringsdataResult.styringsdataLoeysing,
   };
 };
 
