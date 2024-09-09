@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
- mvn spotless:apply
+mvn spotless:apply
 
 cd frontend && npx lint-staged
