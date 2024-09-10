@@ -95,11 +95,6 @@ export const testOverviewLoader = async ({
     throw new Error(`Kunne ikkje hente testgrunnlag`);
   }
 
-  if (styringsdataPromise.status === 'rejected') {
-    console.info('styringsdataPromise er rejected', styringsdataPromise.reason);
-    throw new Error('Henting av styringsdata feila');
-  }
-
   if (kontrollPromise.status === 'rejected') {
     throw new Error(`Fann ikkje kontroll med id ${kontrollId}`);
   }
@@ -128,14 +123,17 @@ export const testOverviewLoader = async ({
       loeysingWithSideutvalIds.includes(l.id)
     ) ?? [];
 
-  const styringsdataResult = styringsdataPromise.value;
-  console.info('styringsdataresult', styringsdataResult);
+  const styringsdataRejected = styringsdataPromise.status === 'rejected';
+  const styringsdataLoeysing = styringsdataRejected
+    ? []
+    : styringsdataPromise.value.styringsdataLoeysing;
 
   return {
     loeysingList: loeysingWithSideutval,
     resultater: resultater.flat(),
     testgrunnlag: testgrunnlag,
-    styringsdata: styringsdataResult.styringsdataLoeysing,
+    styringsdata: styringsdataLoeysing,
+    styringsdataError: styringsdataRejected,
   };
 };
 

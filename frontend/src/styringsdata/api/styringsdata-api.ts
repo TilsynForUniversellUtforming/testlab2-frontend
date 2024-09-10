@@ -14,13 +14,9 @@ export const findStyringsdataForKontroll = async (
 ): Promise<StyringsdataResult> => {
   return await fetch(`${styringsdataApiBaseUrl}?kontrollId=${kontrollId}`, {
     method: 'GET',
-  }).then((response) => {
-    console.info('Response fra styringsdata', response);
-    return responseToJson(
-      response,
-      'Kunne ikkje hente styringsdata for kontroll'
-    );
-  });
+  }).then((response) =>
+    responseToJson(response, 'Kunne ikkje hente styringsdata for kontroll')
+  );
 };
 
 export const fetchStyringsdataLoeysing = async (
