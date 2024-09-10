@@ -10,6 +10,7 @@ interface Props {
   onSelectTestregelId: (testregelIdList: string[]) => void;
   modus: TestregelModus;
   isInngaaende: boolean;
+  isForenkla: boolean;
 }
 
 const TestregelSelector = ({
@@ -17,7 +18,7 @@ const TestregelSelector = ({
   selectedTestregelIdList,
   onSelectTestregelId,
   modus,
-  isInngaaende,
+  isForenkla,
 }: Props) => {
   const groupedTestreglar = useMemo(() => {
     const groups = new Map<string, TestregelBase[]>();
@@ -31,10 +32,7 @@ const TestregelSelector = ({
     return new Map([...groups.entries()].sort());
   }, [testregelList]);
 
-  if (
-    (isInngaaende && modus !== 'manuell') ||
-    (!isInngaaende && modus !== 'automatisk')
-  ) {
+  if (isForenkla && modus !== 'automatisk') {
     return (
       <Alert severity="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå

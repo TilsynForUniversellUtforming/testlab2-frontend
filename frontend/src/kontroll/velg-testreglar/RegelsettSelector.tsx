@@ -9,6 +9,7 @@ interface Props {
   selectedRegelsettId: number | undefined;
   onSelectRegelsett: (regelsettId: number) => void;
   isInngaaende: boolean;
+  isForenkla: boolean;
   modus: TestregelModus;
 }
 
@@ -16,13 +17,10 @@ const RegelsettSelector = ({
   onSelectRegelsett,
   selectedRegelsettId,
   regelsettList,
-  isInngaaende,
+  isForenkla,
   modus,
 }: Props) => {
-  if (
-    (isInngaaende && modus !== 'manuell') ||
-    (!isInngaaende && modus !== 'automatisk')
-  ) {
+  if (isForenkla && modus !== 'automatisk') {
     return (
       <Alert severity="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå

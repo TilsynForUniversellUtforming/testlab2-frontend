@@ -40,8 +40,7 @@ const VelgSideutval = () => {
   } = useLoaderData() as SideutvalLoader;
   const actionData = useActionData() as { sistLagret: Date };
   const submit = useSubmit();
-
-  const isInngaaende = kontroll.kontrolltype === 'inngaaende-kontroll';
+  const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
   const [neste, setNeste] = useState<boolean>(false);
@@ -190,11 +189,11 @@ const VelgSideutval = () => {
       <div className={classes.automatiskEllerManuelt}>
         <button
           className={classNames({
-            [classes.selected]: isInngaaende,
+            [classes.selected]: !isForenkla,
           })}
-          disabled={!isInngaaende}
+          disabled={isForenkla}
           title={
-            !isInngaaende
+            isForenkla
               ? 'Manuelt sideutval er ikkje tilgjengelig for forenkla kontroll'
               : 'Vel manuelt'
           }
@@ -203,11 +202,11 @@ const VelgSideutval = () => {
         </button>
         <button
           className={classNames({
-            [classes.selected]: !isInngaaende,
+            [classes.selected]: isForenkla,
           })}
-          disabled={isInngaaende}
+          disabled={!isForenkla}
           title={
-            isInngaaende
+            !isForenkla
               ? 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
               : 'Vel automatisk'
           }
@@ -216,7 +215,7 @@ const VelgSideutval = () => {
         </button>
       </div>
       <ConditionalComponentContainer
-        condition={isInngaaende}
+        condition={!isForenkla}
         conditionalComponent={
           <>
             <LoeysingFilter

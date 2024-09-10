@@ -5,19 +5,14 @@ export const kontrollInitValidationSchema = z.object({
     .union([z.string(), z.number()])
     .transform((d) => Number(d))
     .optional(),
-  kontrolltype: z
-    .union([
-      z.literal('inngaaende-kontroll'),
-      z.literal('forenkla-kontroll'),
-      z.literal('tilsyn'),
-      z.literal('statusmaaling'),
-      z.literal('uttalesak'),
-      z.literal('anna'),
-    ])
-    .refine(
-      (val) => val === 'inngaaende-kontroll' || val === 'forenkla-kontroll',
-      { message: 'Kontrolltype må væra inngående eller forenkla kontroll' }
-    ),
+  kontrolltype: z.union([
+    z.literal('inngaaende-kontroll'),
+    z.literal('forenkla-kontroll'),
+    z.literal('tilsyn'),
+    z.literal('statusmaaling'),
+    z.literal('uttalesak'),
+    z.literal('anna'),
+  ]),
 
   tittel: z.string().min(1, 'Tittel må fyllast ut'),
 
