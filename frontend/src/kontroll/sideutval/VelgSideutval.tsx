@@ -189,7 +189,7 @@ const VelgSideutval = () => {
       <div className={classes.automatiskEllerManuelt}>
         <button
           className={classNames({
-            [classes.selected]: isForenkla,
+            [classes.selected]: !isForenkla,
           })}
           disabled={isForenkla}
           title={
@@ -202,7 +202,7 @@ const VelgSideutval = () => {
         </button>
         <button
           className={classNames({
-            [classes.selected]: !isForenkla,
+            [classes.selected]: isForenkla,
           })}
           disabled={!isForenkla}
           title={
