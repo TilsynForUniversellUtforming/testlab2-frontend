@@ -62,7 +62,10 @@ data class ResultatKrav(
 
 enum class KontrollType {
   @JsonProperty("inngaaende-kontroll") InngaaendeKontroll,
-  @JsonProperty("forenkla-kontroll") ForenklaKontroll
+  @JsonProperty("forenkla-kontroll") ForenklaKontroll,
+  @JsonProperty("tilsyn") Tilsyn,
+  @JsonProperty("statusmaaling") Statusmaaling,
+  @JsonProperty("uttalesak") Uttalesak,
 }
 
 enum class TestgrunnlagType {
