@@ -36,6 +36,7 @@ export type TestOverviewLoaderData = {
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
   styringsdata: StyringsdataListElement[];
+  styringsdataError: boolean;
 };
 
 export function teststatus(
@@ -110,8 +111,13 @@ const TestOverview = () => {
 
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const { loeysingList, resultater, testgrunnlag, styringsdata } =
-    useLoaderData() as TestOverviewLoaderData;
+  const {
+    loeysingList,
+    resultater,
+    testgrunnlag,
+    styringsdata,
+    styringsdataError,
+  } = useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
   const onChangeLoeysing = useCallback(
@@ -161,6 +167,9 @@ const TestOverview = () => {
   return (
     <div className={classes.testContainer}>
       <div className={classes.testWrapper}>
+        {styringsdataError && (
+          <Alert severity="danger">Kunne ikkje hente styringsdata</Alert>
+        )}
         {testgrunnlag.length === 0 && (
           <Alert severity="warning">
             <Heading level={3} size="xs" spacing>
@@ -323,13 +332,18 @@ const TestOverview = () => {
                           Slett
                         </Button>
                       )}
-                      <Link to={styringsdataPath}>
-                        <Button variant={ButtonVariant.Outline}>
-                          {loesysingStyringsdata
-                            ? 'Endre styringsdata'
-                            : 'Legg til styringsdata'}
-                        </Button>
-                      </Link>
+                      {
+                        <Link to={styringsdataPath}>
+                          <Button
+                            variant={ButtonVariant.Outline}
+                            disabled={styringsdataError}
+                          >
+                            {loesysingStyringsdata
+                              ? 'Endre styringsdata'
+                              : 'Legg til styringsdata'}
+                          </Button>
+                        </Link>
+                      }
                     </div>
                   </div>
                 </div>
