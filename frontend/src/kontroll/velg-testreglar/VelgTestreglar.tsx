@@ -51,8 +51,9 @@ const VelgTestreglar = () => {
 
   /* Oppsett av type test man skal kjøre */
   const isInngaaende = kontroll.kontrolltype === 'inngaaende-kontroll';
+  const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
   const [modus, setModus] = useState<TestregelModus>(
-    isInngaaende ? 'manuell' : 'automatisk'
+    isForenkla ? 'automatisk' : 'manuell'
   );
 
   const initType =
@@ -217,6 +218,7 @@ const VelgTestreglar = () => {
                   onSelectRegelsett={onSelectRegelsett}
                   modus={modus}
                   isInngaaende={isInngaaende}
+                  isForenkla={isForenkla}
                   selectedRegelsettId={selectedRegelsettId}
                 />
               }
@@ -227,6 +229,7 @@ const VelgTestreglar = () => {
                   selectedTestregelIdList={selectedTestregelIdList}
                   onSelectTestregelId={onSelectTestregelId}
                   isInngaaende={isInngaaende}
+                  isForenkla={isForenkla}
                 />
               }
             />
