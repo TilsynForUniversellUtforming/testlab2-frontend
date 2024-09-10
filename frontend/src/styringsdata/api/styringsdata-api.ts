@@ -7,7 +7,7 @@ import {
   StyringsdataResult,
 } from '../types';
 
-const styringsdataApiBaseUrl = '/api/v1/styring';
+const styringsdataApiBaseUrl = '/api/v1/styringsdata';
 
 export const findStyringsdataForKontroll = async (
   kontrollId: number

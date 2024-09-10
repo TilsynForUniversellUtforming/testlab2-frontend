@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForObject
 
 @RestController
-@RequestMapping("api/v1/styring")
+@RequestMapping("api/v1/styringsdata")
 class StyringsdataResource(
     val restTemplate: RestTemplate,
     val testingApiProperties: TestingApiProperties,
@@ -31,11 +31,10 @@ class StyringsdataResource(
       @RequestParam kontrollId: Int
   ): ResponseEntity<StyringsdataResult> =
       runCatching {
-            val result =
+            val responseEntity =
                 restTemplate.getForEntity(
                     "$styringsdataUrl?kontrollId=$kontrollId", StyringsdataResult::class.java)
-            logger.info("result fra styringsdata ${result.body?.toString()}")
-            result
+            return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
           }
           .getOrElse {
             logger.error("Hent styringsdata feila", it)
