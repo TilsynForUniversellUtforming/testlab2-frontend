@@ -172,10 +172,17 @@ const TestOverview = () => {
             </Paragraph>
           </Alert>
         )}
-        {testgrunnlag.flatMap((etTestgrunnlag) => {
-          const loeysingTestgrunnlag = Object.groupBy(
-            etTestgrunnlag.sideutval,
-            ({ loeysingId }) => loeysingId
+        {testgrunnlag.flatMap((etTestgrunnlag: Testgrunnlag) => {
+          const loeysingTestgrunnlag = etTestgrunnlag.sideutval.reduce(
+            (result, currentValue) => {
+              const groupKey = currentValue.loeysingId;
+              if (!result[groupKey]) {
+                result[groupKey] = [];
+              }
+              result[groupKey].push(currentValue);
+              return result;
+            },
+            {} as Record<string, typeof etTestgrunnlag.sideutval>
           );
 
           return Object.entries(loeysingTestgrunnlag).map(
