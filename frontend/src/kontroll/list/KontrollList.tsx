@@ -114,7 +114,9 @@ const KontrollList = () => {
                 <Table.Cell>
                   <Button variant="tertiary">Ny merknad</Button>
                 </Table.Cell>
-                <Table.Cell>{kontroll.kontrolltype}.</Table.Cell>
+                <Table.Cell>
+                  {sanitizeEnumLabel(kontroll.kontrolltype)}
+                </Table.Cell>
                 <Table.Cell>
                   {' '}
                   <StyringsdataLinkButton
