@@ -13,4 +13,18 @@ export type Krav = {
   samsvarsnivaa: Samsvarsnivaa;
 };
 
+export type KravInit = {
+  tittel: string;
+  status: string;
+  innhald?: string;
+  gjeldAutomat: boolean;
+  gjeldNettsider: boolean;
+  gjeldApp: boolean;
+  urlRettleiing?: string;
+  prinsipp: string;
+  retningslinje: string;
+  suksesskriterium: string;
+  samsvarsnivaa: Samsvarsnivaa;
+};
+
 export type Samsvarsnivaa = 'A' | 'AA' | 'AAA';

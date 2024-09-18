@@ -1,13 +1,16 @@
 import UserActionTable from '@common/table/UserActionTable';
+import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Checkbox } from '@digdir/designsystemet-react';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 
+import { KRAV_EDIT } from './KravRoutes';
 import { Krav } from './types';
 
 const KravApp = () => {
   const kravliste = useLoaderData() as Krav[];
+  const navigate = useNavigate();
 
   console.log(JSON.stringify(kravliste));
 
@@ -20,6 +23,13 @@ const KravApp = () => {
       tableProps={{
         data: kravliste,
         defaultColumns: kravColumns,
+        onClickRow: (row) =>
+          navigate(
+            getFullPath(KRAV_EDIT, {
+              pathParam: idPath,
+              id: String(row?.original.id),
+            })
+          ),
       }}
     />
   );

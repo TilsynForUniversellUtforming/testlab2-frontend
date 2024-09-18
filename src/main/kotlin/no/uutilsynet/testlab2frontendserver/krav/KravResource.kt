@@ -6,6 +6,7 @@ import no.uutilsynet.testlab2frontendserver.krav.dto.KravApi
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestClientException
@@ -28,4 +29,13 @@ class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiPro
         logger.error("Klarte ikke å hente krav", e)
         throw Error("Klarte ikke å hente krav")
       }
+
+  @GetMapping("/{id}")
+  override fun getKrav(@PathVariable id: Int): Krav {
+    println("Henter krav med id $id")
+    restTemplate.getForObject("$kravUrl/wcag2krav/$id", Krav::class.java)?.let {
+      return it
+    }
+        ?: throw Error("Klarte ikke å hente krav med id $id")
+  }
 }
