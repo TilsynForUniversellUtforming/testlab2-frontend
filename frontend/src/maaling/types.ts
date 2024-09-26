@@ -24,8 +24,6 @@ export interface MaalingContext extends AppContext {
   handleStartPublish: (maaling: Maaling) => void;
   testStatus: MaalingTestStatus;
   clearTestStatus: () => void;
-  pollMaaling: boolean;
-  setPollMaaling: (pollMaaling: boolean) => void;
   loadingMaaling: boolean;
 }
 
