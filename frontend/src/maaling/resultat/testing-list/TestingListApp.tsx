@@ -3,7 +3,6 @@ import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
-import useInterval from '@common/hooks/useInterval';
 import { TableRowAction } from '@common/table/types';
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
@@ -40,7 +39,6 @@ const TestingListApp = () => {
   const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState(loadingMaaling);
-  const [pollMaaling, setPollMaaling] = useState(maaling?.status === 'testing');
   const [testRowSelection, setTestRowSelection] = useState<TestResult[]>([]);
 
   const testResultatColumns = useMemo(
@@ -85,7 +83,6 @@ const TestingListApp = () => {
   useEffect(() => {
     if (maaling) {
       setLoading(false);
-      setPollMaaling(maaling?.status === 'testing');
       setTestResult(maaling?.testResult ?? []);
     }
   }, [maaling]);
@@ -130,7 +127,6 @@ const TestingListApp = () => {
 
       doRestart().finally(() => {
         setLoading(false);
-        setPollMaaling(true);
       });
     },
     [maaling]
@@ -146,10 +142,6 @@ const TestingListApp = () => {
           setError(new Error('Fann ikkje måling'));
         }
 
-        if (refreshedMaaling.status !== 'testing') {
-          setPollMaaling(false);
-        }
-
         setMaaling(refreshedMaaling);
         setTestResult(refreshedMaaling.testResult);
       } else if (!maalingId || (!maaling && !loading)) {
@@ -160,7 +152,15 @@ const TestingListApp = () => {
     }
   }, [loading]);
 
-  useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
+  useEffect(() => {
+    if (maaling?.status === 'testing') {
+      const pollingInterval = setTimeout(() => {
+        doFetchData();
+      }, 60000);
+
+      return () => clearTimeout(pollingInterval);
+    }
+  }, [maaling?.status]);
 
   if (loeysingId) {
     return <Outlet context={maalingContext} />;
@@ -232,7 +232,9 @@ const TestingListApp = () => {
             severity: 'danger',
           }}
           show={!loading}
-          loadingStateStatus={pollMaaling ? 'Utfører testing...' : undefined}
+          loadingStateStatus={
+            maaling?.status === 'testing' ? 'Utfører testing...' : undefined
+          }
         />
       </UserActionTable>
     </>

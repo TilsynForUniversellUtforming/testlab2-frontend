@@ -4,7 +4,6 @@ import ErrorCard from '@common/error/ErrorCard';
 import toError from '@common/error/util';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useError from '@common/hooks/useError';
-import useInterval from '@common/hooks/useInterval';
 import { isNotDefined } from '@common/util/validationUtils';
 import { fetchMaaling, restart } from '@maaling/api/maaling-api';
 import { CrawlResultat, Maaling, RestartRequest } from '@maaling/api/types';
@@ -40,14 +39,10 @@ const SideutvalApp = () => {
   const [alert, setAlert] = useAlert();
   const [error, setError] = useError(contextError);
   const [loading, setLoading] = useState(loadingMaaling);
-  const [pollMaaling, setPollMaaling] = useState(
-    maaling?.status === 'crawling'
-  );
 
   useEffect(() => {
     if (maaling) {
       setLoading(false);
-      setPollMaaling(maaling.status === 'crawling');
       setCrawlResult(maalingToCrawlResultat(maaling));
     }
   }, [maaling]);
@@ -64,9 +59,6 @@ const SideutvalApp = () => {
           setError(new Error('Fann ikkje måling'));
         }
 
-        if (refreshedMaaling.status !== 'crawling') {
-          setPollMaaling(false);
-        }
         setMaaling(refreshedMaaling);
         setCrawlResult(maalingToCrawlResultat(refreshedMaaling));
       } else if (!id || (!maaling && !loading)) {
@@ -77,7 +69,15 @@ const SideutvalApp = () => {
     }
   }, [loading]);
 
-  useInterval(() => doFetchData(), pollMaaling ? 15000 : null);
+  useEffect(() => {
+    if (maaling?.status === 'crawling') {
+      const pollingInterval = setTimeout(() => {
+        doFetchData();
+      }, 60000);
+
+      return () => clearTimeout(pollingInterval);
+    }
+  }, [maaling?.status]);
 
   const onClickRestart = useCallback(
     (crawlRowSelection: CrawlResultat[]) => {
@@ -147,7 +147,7 @@ const SideutvalApp = () => {
         refresh={doFetchData}
         loading={loading}
         error={error}
-        refreshing={pollMaaling}
+        refreshing={maaling?.status === 'crawling'}
       />
     </>
   );

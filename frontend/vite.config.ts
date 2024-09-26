@@ -31,7 +31,6 @@ export default defineConfig({
       '@maaling': '/src/maaling',
       '@loeysingar': '/src/loeysingar',
       '@verksemder': '/src/verksemder',
-      '@sak': '/src/sak',
       '@testreglar': '/src/testreglar',
       '@test': '/src/inngaaende-test',
       '@resultat': '/src/resultat',
