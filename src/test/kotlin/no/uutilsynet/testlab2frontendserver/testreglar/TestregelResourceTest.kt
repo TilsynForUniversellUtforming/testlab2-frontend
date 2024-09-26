@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Instant
+import no.uutilsynet.testlab2.constants.KravStatus
+import no.uutilsynet.testlab2.constants.WcagPrinsipp
+import no.uutilsynet.testlab2.constants.WcagRetninglinje
 import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
@@ -260,14 +263,14 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
       Krav(
           1,
           "1.1.1 Ikke-tekstlig innhold,Gjeldande",
-          "I bruk",
+          KravStatus.gjeldande,
           "Innhald",
           false,
           false,
           false,
           "https://www.uutilsynet.no/wcag-standarden/111-ikke-tekstlig-innhold-niva/87",
-          "1. Mulig å oppfatte",
-          "1.2 Tidsbasert media",
+          WcagPrinsipp.mulig_aa_oppfatte,
+          WcagRetninglinje.tidsbasert_media,
           "1.1.1",
           WcagSamsvarsnivaa.A)
 
