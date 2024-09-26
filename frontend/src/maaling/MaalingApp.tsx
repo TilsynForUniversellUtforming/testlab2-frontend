@@ -40,9 +40,6 @@ const MaalingApp = () => {
   const [advisorList, setAdvisorList] = useState<User[]>([]);
   const [utvalList, setUtvalList] = useState<Utval[]>([]);
   const [maalingList, setMaalingList] = useState<Maaling[]>([]);
-  const [pollMaaling, setPollMaaling] = useState(
-    maaling?.status === 'crawling' || maaling?.status === 'testing'
-  );
 
   const handleSetMaalingList = useCallback((maalingList: Maaling[]) => {
     setMaalingList(maalingList);
@@ -65,10 +62,6 @@ const MaalingApp = () => {
 
   const clearTestStatus = useCallback(() => {
     setTestStatus({ loading: false, message: undefined });
-  }, []);
-
-  const handleRefreshing = useCallback((pollMaaling: boolean) => {
-    setPollMaaling(pollMaaling);
   }, []);
 
   const doStartCrawling = useCallback((maaling: Maaling) => {
@@ -146,9 +139,6 @@ const MaalingApp = () => {
       async () => {
         if (id) {
           const maaling = await fetchMaaling(Number(id));
-          setPollMaaling(
-            maaling?.status === 'crawling' || maaling?.status === 'testing'
-          );
           setLoadingMaaling(false);
           return maaling;
         } else {
@@ -318,8 +308,6 @@ const MaalingApp = () => {
     advisors: advisorList,
     testStatus: testStatus,
     clearTestStatus: clearTestStatus,
-    pollMaaling: pollMaaling,
-    setPollMaaling: handleRefreshing,
     loadingMaaling: loadingMaaling,
   };
 
