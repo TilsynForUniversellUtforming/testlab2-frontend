@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const kravValidationSchema = z.object({
-  title: z.string().min(1, 'Tittel kan ikkje vera tomt'),
+  tittel: z.string().min(1, 'Tittel kan ikkje vera tomt'),
   suksesskriterium: z
     .string()
     .min(1, 'Suksesskriterium kan ikkje vera tomt')

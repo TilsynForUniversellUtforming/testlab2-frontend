@@ -12,8 +12,6 @@ const KravApp = () => {
   const kravliste = useLoaderData() as Krav[];
   const navigate = useNavigate();
 
-  console.log(JSON.stringify(kravliste));
-
   const kravColumns = kravColumnDefs();
 
   return (

@@ -8,10 +8,11 @@ import {
   createOptionsFromLiteral,
 } from '@common/util/stringutils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLoaderData } from 'react-router-dom';
 
+import { updateKrav } from './api/krav-api';
 import { kravValidationSchema } from './kravValidationSchema';
 import {
   Krav,
@@ -22,7 +23,9 @@ import {
 } from './types';
 
 const KravApp = () => {
-  const krav = useLoaderData() as Krav;
+  const kravInit = useLoaderData() as Krav;
+
+  const [krav, setKrav] = useState<Krav>(kravInit);
 
   const formMethods = useForm<Krav>({
     defaultValues: {
@@ -42,7 +45,15 @@ const KravApp = () => {
     resolver: zodResolver(kravValidationSchema),
   });
 
-  const onSubmit = () => {};
+  const onSubmit = useCallback((data: Krav) => {
+    console.log(data);
+
+    const update = async () => {
+      data.id = krav.id;
+      updateKrav(data).then((response) => setKrav(response));
+    };
+    update();
+  }, []);
 
   return (
     <div className={'krav-form'}>

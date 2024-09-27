@@ -16,7 +16,7 @@ export const getKrav = async (id: number): Promise<Krav> => {
   return await krav.json();
 };
 
-export const updateKrav = async (krav: Krav): Promise<Krav[]> => {
+export const updateKrav = async (krav: Krav): Promise<Krav> => {
   const updatedKrav = await fetch(`/api/v1/krav/${krav.id}`, {
     method: 'PUT',
     headers: {
