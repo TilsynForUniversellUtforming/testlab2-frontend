@@ -16,8 +16,8 @@ const KravApp = () => {
 
   return (
     <UserActionTable<Krav>
-      heading="Verksemder"
-      subHeading="Liste over alle verksemder"
+      heading="Krav"
+      subHeading="Liste over alle krav"
       tableProps={{
         data: kravliste,
         defaultColumns: kravColumns,
