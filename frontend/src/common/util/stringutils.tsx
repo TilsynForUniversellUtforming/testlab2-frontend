@@ -209,6 +209,18 @@ export const createOptionsFromLiteral = <T extends string>(
   }));
 };
 
+/*
+Creates a list of OptionType from a enum type
+ */
+export const createOptionsFormEnum = <T extends Record<string, string>>(
+  enumType: T
+): OptionType[] => {
+  return Object.entries(enumType).map(([key, value]) => ({
+    value: key,
+    label: value,
+  }));
+};
+
 /**
  * Converts a string of HTML to a ReactNode.
  */

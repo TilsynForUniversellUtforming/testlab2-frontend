@@ -43,7 +43,8 @@ class RapportResource(
                 MediaType.valueOf(
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
             .retrieve()
-            .onStatus(HttpStatusCode::isError) { _, errorResponse ->
+            .onStatus(HttpStatusCode::isError) { _, _,
+              ->
               throw RuntimeException("Feil ved generering av rapport")
             }
             .body(ByteArray::class.java)
