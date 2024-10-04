@@ -1,7 +1,10 @@
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { TesterResult } from '@maaling/api/types';
 import { getViolationsColumns } from '@resultat/kontroll_loeysing/ResultColumns';
-import ResultatTable, { TableParams } from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
 import { ViolationsData } from '@resultat/types';
 import { VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
@@ -37,14 +40,16 @@ const ViolationsList = <T extends object>() => {
     visibilityState: visibilityState,
   };
 
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: false, hasFilter: false },
+    typeKontroll: typeKontroll,
+    kontrollNamn: kontrollNamn,
+    loeysingNamn: loeysing,
+    subHeader: krav,
+  };
+
   return (
-    <ResultatTable
-      tableParams={tableParams}
-      typeKontroll={typeKontroll}
-      kontrollNamn={kontrollNamn}
-      loeysingNamn={loeysing}
-      subHeader={krav}
-    />
+    <ResultatTable tableParams={tableParams} headerParams={headerParams} />
   );
 };
 

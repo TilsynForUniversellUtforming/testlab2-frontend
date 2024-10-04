@@ -18,7 +18,9 @@ import {
   RESULTAT_ROOT,
   RESULTAT_TEMA_LIST,
 } from '@resultat/ResultatRoutes';
-import ResultTableActions from '@resultat/ResultTableActions';
+import ResultTableActions, {
+  TableActionsProps,
+} from '@resultat/ResultTableActions';
 import ResultTableHeader from '@resultat/ResultTableHeader';
 import { resultTable } from '@resultat/tableoptions';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
@@ -30,6 +32,7 @@ import { KontrollType } from '../kontroll/types';
 
 export interface ResultTableProps<T extends object> {
   tableParams: TableParams<T>;
+  headerParams: TableHeaderParams;
   topLevelList?: boolean;
   typeKontroll?: string;
   kontrollNamn?: string;
@@ -56,20 +59,29 @@ export interface TableParams<T extends object> {
   loading?: boolean;
 }
 
-// export interface tableHeaderParams<T extends object> {
-//
-// }
+export interface TableHeaderParams {
+  filterParams: HeaderFilterParams;
+  typeKontroll?: string;
+  kontrollNamn?: string;
+  loeysingNamn?: string;
+  subHeader?: string;
+  reportActions?: TableActionsProps;
+}
+
+interface HeaderFilterParams {
+  hasFilter: boolean;
+  topLevelList: boolean;
+}
+
 const ResultatTable = <T extends object>({
   tableParams,
-  topLevelList = false,
-  typeKontroll,
-  kontrollNamn,
-  loeysingNamn,
-  hasFilter = false,
-  subHeader,
+  headerParams,
   onSubmitCallback,
-  rapportButton = false,
 }: ResultTableProps<T>): ReactElement => {
+  const reportActions = headerParams.reportActions;
+
+  const topLevelList = headerParams.filterParams.topLevelList ?? false;
+
   const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -133,8 +145,10 @@ const ResultatTable = <T extends object>({
     );
   }
 
-  function getFilterColumns(): Column<T, unknown>[] | undefined {
-    if (hasFilter && topLevelList) {
+  function getFilterColumns(
+    filterParams: HeaderFilterParams
+  ): Column<T, unknown>[] | undefined {
+    if (filterParams.hasFilter && filterParams.topLevelList) {
       const kontrollTypeColumn: Column<T, unknown> | undefined =
         table.getColumn('type');
       const dateColumn: Column<T, unknown> | undefined =
@@ -145,7 +159,7 @@ const ResultatTable = <T extends object>({
     }
   }
 
-  const filterColumns = getFilterColumns();
+  const filterColumns = getFilterColumns(headerParams.filterParams);
 
   const headerGroup = table.getHeaderGroups()[0];
 
@@ -153,13 +167,19 @@ const ResultatTable = <T extends object>({
     <div className="testlab-table">
       <ResultTableHeader
         filterColumns={filterColumns}
-        typeKontroll={typeKontroll}
-        kontrollNamn={kontrollNamn}
-        loeysingNamn={loeysingNamn}
-        subHeader={subHeader}
+        typeKontroll={headerParams.typeKontroll}
+        kontrollNamn={headerParams.kontrollNamn}
+        loeysingNamn={headerParams.loeysingNamn}
+        subHeader={headerParams.subHeader}
         onSubmitCallback={onSubmitCallback}
       ></ResultTableHeader>
-      {rapportButton && <ResultTableActions />}
+      {reportActions && (
+        <ResultTableActions
+          actionFunction={reportActions.actionFunction}
+          isActive={reportActions.isActive}
+          actionsLabel={reportActions.actionsLabel}
+        />
+      )}
       <Tabs value={activeTab} onChange={onChangeTabs}>
         <Tabs.List>
           <Tabs.Tab value={'resultat'}>Resultat</Tabs.Tab>
@@ -195,14 +215,14 @@ const ResultatTable = <T extends object>({
               {topLevelList && (
                 <ResultatListTableBody<T>
                   table={table}
-                  loading={tableParams.loading}
+                  loading={tableParams.loading as boolean}
                   onClickRow={tableParams.onClickRow}
                 />
               )}
               {!topLevelList && (
                 <TestlabTableBody<T>
                   table={table}
-                  loading={tableParams.loading}
+                  loading={tableParams.loading as boolean}
                   onClickCallback={tableParams.onClickRow}
                 />
               )}
@@ -211,7 +231,7 @@ const ResultatTable = <T extends object>({
               <Table.Row className="testlab-table__footer">
                 <PaginationContainer
                   table={table}
-                  loading={tableParams.loading}
+                  loading={tableParams.loading as boolean}
                 />
               </Table.Row>
             </Table.Head>

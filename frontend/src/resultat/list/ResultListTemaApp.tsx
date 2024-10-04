@@ -1,7 +1,10 @@
 import { getSeverity, scoreToPercentage } from '@common/table/util';
 import { Tag } from '@digdir/designsystemet-react';
 import { fetchResultatPrTemaFilter } from '@resultat/resultat-api';
-import ResultatTable from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
 import { ResultatTema } from '@resultat/types';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
 import React, { useCallback } from 'react';
@@ -9,7 +12,7 @@ import { useLoaderData } from 'react-router-dom';
 
 import { KontrollType } from '../../kontroll/types';
 
-const ResultatListTemaApp = () => {
+const ResultatListTemaApp = <T extends object>() => {
   const data: Array<ResultatTema> = useLoaderData() as Array<ResultatTema>;
 
   const [resultat, setResultat] = React.useState<ResultatTema[]>(data);
@@ -92,14 +95,22 @@ const ResultatListTemaApp = () => {
     );
   };
 
+  const tableParams: TableParams<T> = {
+    data: resultat as T[],
+    defaultColumns: columns,
+    onClickRow: undefined,
+    visibilityState: visibilityState,
+  };
+
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: false, hasFilter: false },
+  };
+
   return (
     <div className="sak-list">
       <ResultatTable
-        data={resultat}
-        defaultColumns={columns}
-        visibilityState={visibilityState}
-        topLevelList={false}
-        hasFilter={false}
+        tableParams={tableParams}
+        headerParams={headerParams}
         onSubmitCallback={onSubmitFilter}
       />
     </div>

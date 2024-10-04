@@ -4,7 +4,10 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
 import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
-import ResultatTable, { TableParams } from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
@@ -147,24 +150,16 @@ const ResultatKontrollOversikt = <T extends object>() => {
     visibilityState: visibilityState,
   };
 
-  // const tableParams = {
-  //   data: resultat,
-  //   defaultColumns: columns,
-  //   visibilityState: visibilityState,
-  //   onClickRow: onClickRow,
-  // };
-
-  console.log(JSON.stringify(tableParams));
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: true, hasFilter: false },
+    typeKontroll: getTypeKontroll(),
+    kontrollNamn: getKontrollNamn(),
+    subHeader: getKontrollNamn(),
+  };
 
   return (
     <div className="sak-list">
-      <ResultatTable
-        tableParams={tableParams}
-        topLevelList={true}
-        typeKontroll={getTypeKontroll()}
-        kontrollNamn={getKontrollNamn()}
-        subHeader={getKontrollNamn()}
-      />
+      <ResultatTable tableParams={tableParams} headerParams={headerParams} />
     </div>
   );
 };

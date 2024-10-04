@@ -1,12 +1,18 @@
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { getResultColumns } from '@resultat/kontroll_loeysing/ResultColumns';
+import { genererWordRapport } from '@resultat/resultat-api';
 import { VIOLATION_LIST } from '@resultat/ResultatRoutes';
-import ResultatTable, { TableParams } from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
+import { TableActionsProps } from '@resultat/ResultTableActions';
 import { ResultatOversiktLoeysing } from '@resultat/types';
 import { Row, VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { undefined } from 'zod';
 
 const TestResultatApp = <T extends object>() => {
   const { id, loeysingId } = useParams();
@@ -70,12 +76,28 @@ const TestResultatApp = <T extends object>() => {
     visibilityState: visibilityState,
   };
 
+  const genererRapport = () => {
+    genererWordRapport(Number(id), Number(loeysingId));
+  };
+
+  const tableActions: TableActionsProps = {
+    actionFunction: genererRapport,
+    actionsLabel: { activate: 'Generer wordrapport' },
+    isActive: false,
+  };
+
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: false, hasFilter: false },
+    typeKontroll: getTypeKontroll(),
+    loeysingNamn: getLoeysingNamn(),
+    subHeader: getLoeysingNamn(),
+    reportActions: tableActions,
+  };
+
   return (
     <ResultatTable
       tableParams={tableParams}
-      typeKontroll={getTypeKontroll()}
-      loeysingNamn={getLoeysingNamn()}
-      subHeader={getLoeysingNamn()}
+      headerParams={headerParams}
       rapportButton={true}
     />
   );

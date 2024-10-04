@@ -8,7 +8,10 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
 import { RESULTAT_KONTROLL } from '@resultat/ResultatRoutes';
-import ResultatTable, { TableParams } from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
@@ -150,13 +153,13 @@ const ResultatListApp = <T extends object>() => {
     visibilityState: visibilityState,
   };
 
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: true, hasFilter: true },
+  };
+
   return (
     <div className="sak-list">
-      <ResultatTable
-        tableParams={tableParams}
-        topLevelList={true}
-        hasFilter={true}
-      />
+      <ResultatTable tableParams={tableParams} headerParams={headerParams} />
     </div>
   );
 };
