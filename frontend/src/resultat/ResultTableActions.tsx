@@ -9,12 +9,23 @@ const ResultTableActions = () => {
     genererWordRapport(Number(id), Number(loeysingId));
   };
 
+  const publiserRapport = () => {
+    console.log('Publiserer rapport');
+  };
+
   return (
-    <div className={'resultat-actions'}>
-      <Button variant="primary" onClick={genererRapport}>
-        Generer wordrapport
-      </Button>
-    </div>
+    <>
+      <div className={'resultat-actions'}>
+        <Button variant="primary" onClick={genererRapport}>
+          Generer wordrapport
+        </Button>
+      </div>
+      <div className={'publish-actions'}>
+        <Button variant="primary" onClick={publiserRapport}>
+          Publiser
+        </Button>
+      </div>
+    </>
   );
 };
 

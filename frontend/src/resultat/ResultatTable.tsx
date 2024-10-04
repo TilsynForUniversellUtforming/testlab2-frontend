@@ -29,16 +29,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { KontrollType } from '../kontroll/types';
 
 export interface ResultTableProps<T extends object> {
-  data: T[];
-  defaultColumns: ColumnDef<T>[];
-  displayError?: TestlabError;
-  actionRequiredError?: string;
-  loading?: boolean;
-  selectedRows?: boolean[];
-  onSelectRows?: (rows: T[]) => void;
-  onClickRow?: (row?: Row<T>, subRow?: Row<T>) => void;
-  onClickRetry?: () => void;
-  visibilityState: (visDetaljer: boolean) => VisibilityState;
+  tableParams: TableParams<T>;
   topLevelList?: boolean;
   typeKontroll?: string;
   kontrollNamn?: string;
@@ -54,34 +45,22 @@ export interface ResultTableProps<T extends object> {
   rapportButton?: boolean;
 }
 
-/**
- * A TanStack table component for displaying and manipulating data.
- *
- * @template T - The type of data displayed in the table.
- * @param {object} props - The props for the component.
- * @param {T[]} props.data - The data to be displayed in the table.
- * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
- * @param {TestlabError} props.displayError - The error to show in the error card.
- * @param {string} props.actionRequiredError - Optional error message to display if a table requires a user action.
- * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
- * @param {TableFilterPreference} [props.filterPreference='all'] - The default filter preference.
- * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
- * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected. If defined the row selection is implicitly active
- * @param {(row?: Row<T>) => void} [props.onClickRow] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
- * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
- * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
- * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
- * @returns {ReactElement} - The React component for the TestlabTable.
- */
+export interface TableParams<T extends object> {
+  data: T[];
+  defaultColumns: ColumnDef<T>[];
+  onClickRow?: (row?: Row<T>, subRow?: Row<T>) => void;
+  onClickRetry?: () => void;
+  visibilityState: (visDetaljer: boolean) => VisibilityState;
+  displayError?: TestlabError;
+  actionRequiredError?: string;
+  loading?: boolean;
+}
+
+// export interface tableHeaderParams<T extends object> {
+//
+// }
 const ResultatTable = <T extends object>({
-  data,
-  defaultColumns,
-  displayError,
-  actionRequiredError,
-  loading = false,
-  onClickRow,
-  onClickRetry,
-  visibilityState,
+  tableParams,
   topLevelList = false,
   typeKontroll,
   kontrollNamn,
@@ -94,11 +73,11 @@ const ResultatTable = <T extends object>({
   const [visDetaljer, setVisDetaljer] = React.useState<boolean>(false);
   const navigate = useNavigate();
 
-  const columns = [...defaultColumns];
+  const columns = [...tableParams.defaultColumns];
 
   const showDetails = () => {
     setVisDetaljer(!visDetaljer);
-    setColumnVisibility(visibilityState(visDetaljer));
+    setColumnVisibility(tableParams.visibilityState(visDetaljer));
   };
 
   const location = useLocation();
@@ -127,10 +106,10 @@ const ResultatTable = <T extends object>({
   }, []);
 
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(visibilityState(visDetaljer));
+    React.useState<VisibilityState>(tableParams.visibilityState(visDetaljer));
 
   const table = resultTable(
-    data,
+    tableParams.data,
     columns,
     columnVisibility,
     setColumnVisibility
@@ -138,18 +117,18 @@ const ResultatTable = <T extends object>({
 
   const handleClickRetry = () => {
     table.toggleAllRowsSelected(false);
-    if (onClickRetry) {
-      onClickRetry();
+    if (tableParams.onClickRetry) {
+      tableParams.onClickRetry();
     }
   };
 
-  if (displayError?.error) {
+  if (tableParams.displayError?.error) {
     return (
       <ErrorCard
-        errorHeader={displayError.errorHeader}
-        error={displayError.error}
-        onClick={displayError.onClick ?? handleClickRetry}
-        buttonText={displayError.buttonText ?? 'Prøv igjen'}
+        errorHeader={tableParams.displayError.errorHeader}
+        error={tableParams.displayError.error}
+        onClick={tableParams.displayError.onClick ?? handleClickRetry}
+        buttonText={tableParams.displayError.buttonText ?? 'Prøv igjen'}
       />
     );
   }
@@ -190,7 +169,7 @@ const ResultatTable = <T extends object>({
         <Tabs.Content value={activeTab}>
           <Table
             className={classnames('testlab-table__table', 'resultat-table', {
-              'table-error': !!actionRequiredError,
+              'table-error': !!tableParams.actionRequiredError,
             })}
           >
             <Table.Head>
@@ -198,7 +177,7 @@ const ResultatTable = <T extends object>({
                 {headerGroup.headers.map((header) => (
                   <TestlabTableHeader<T>
                     header={header}
-                    loading={loading}
+                    loading={tableParams.loading}
                     key={header.column.id}
                   />
                 ))}
@@ -216,28 +195,33 @@ const ResultatTable = <T extends object>({
               {topLevelList && (
                 <ResultatListTableBody<T>
                   table={table}
-                  loading={loading}
-                  onClickRow={onClickRow}
+                  loading={tableParams.loading}
+                  onClickRow={tableParams.onClickRow}
                 />
               )}
               {!topLevelList && (
                 <TestlabTableBody<T>
                   table={table}
-                  loading={loading}
-                  onClickCallback={onClickRow}
+                  loading={tableParams.loading}
+                  onClickCallback={tableParams.onClickRow}
                 />
               )}
             </Table.Body>
             <Table.Head>
               <Table.Row className="testlab-table__footer">
-                <PaginationContainer table={table} loading={loading} />
+                <PaginationContainer
+                  table={table}
+                  loading={tableParams.loading}
+                />
               </Table.Row>
             </Table.Head>
           </Table>
         </Tabs.Content>
       </Tabs>
-      {actionRequiredError && (
-        <ErrorMessage size="small">{actionRequiredError}</ErrorMessage>
+      {tableParams.actionRequiredError && (
+        <ErrorMessage size="small">
+          {tableParams.actionRequiredError}
+        </ErrorMessage>
       )}
     </div>
   );

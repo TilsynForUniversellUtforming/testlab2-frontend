@@ -2,13 +2,13 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { getResultColumns } from '@resultat/kontroll_loeysing/ResultColumns';
 import { VIOLATION_LIST } from '@resultat/ResultatRoutes';
-import ResultatTable from '@resultat/ResultatTable';
+import ResultatTable, { TableParams } from '@resultat/ResultatTable';
 import { ResultatOversiktLoeysing } from '@resultat/types';
 import { Row, VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
-const TestResultatApp = () => {
+const TestResultatApp = <T extends object>() => {
   const { id, loeysingId } = useParams();
   const navigate = useNavigate();
 
@@ -63,12 +63,16 @@ const TestResultatApp = () => {
     };
   };
 
+  const tableParams: TableParams<T> = {
+    data: testResultList as T[],
+    defaultColumns: testResultatColumns,
+    onClickRow: onClickRow,
+    visibilityState: visibilityState,
+  };
+
   return (
     <ResultatTable
-      data={testResultList}
-      defaultColumns={testResultatColumns}
-      onClickRow={onClickRow}
-      visibilityState={visibilityState}
+      tableParams={tableParams}
       typeKontroll={getTypeKontroll()}
       loeysingNamn={getLoeysingNamn()}
       subHeader={getLoeysingNamn()}

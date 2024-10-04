@@ -1,13 +1,13 @@
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { TesterResult } from '@maaling/api/types';
 import { getViolationsColumns } from '@resultat/kontroll_loeysing/ResultColumns';
-import ResultatTable from '@resultat/ResultatTable';
+import ResultatTable, { TableParams } from '@resultat/ResultatTable';
 import { ViolationsData } from '@resultat/types';
 import { VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
-const ViolationsList = () => {
+const ViolationsList = <T extends object>() => {
   const violationsData = useLoaderData() as ViolationsData;
 
   const testResults: TesterResult[] = violationsData.detaljerResultat;
@@ -31,11 +31,15 @@ const ViolationsList = () => {
     };
   };
 
+  const tableParams: TableParams<T> = {
+    data: testResults as T[],
+    defaultColumns: testResultatColumns,
+    visibilityState: visibilityState,
+  };
+
   return (
     <ResultatTable
-      data={testResults}
-      defaultColumns={testResultatColumns}
-      visibilityState={visibilityState}
+      tableParams={tableParams}
       typeKontroll={typeKontroll}
       kontrollNamn={kontrollNamn}
       loeysingNamn={loeysing}

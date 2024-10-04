@@ -4,13 +4,13 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
 import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
-import ResultatTable from '@resultat/ResultatTable';
+import ResultatTable, { TableParams } from '@resultat/ResultatTable';
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
-const ResultatKontrollOversikt = () => {
+const ResultatKontrollOversikt = <T extends object>() => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
   const navigate = useNavigate();
   const { id } = useParams();
@@ -140,13 +140,26 @@ const ResultatKontrollOversikt = () => {
     return first.namn;
   };
 
+  const tableParams: TableParams<T> = {
+    data: resultat as T[],
+    defaultColumns: columns,
+    onClickRow: onClickRow,
+    visibilityState: visibilityState,
+  };
+
+  // const tableParams = {
+  //   data: resultat,
+  //   defaultColumns: columns,
+  //   visibilityState: visibilityState,
+  //   onClickRow: onClickRow,
+  // };
+
+  console.log(JSON.stringify(tableParams));
+
   return (
     <div className="sak-list">
       <ResultatTable
-        data={resultat}
-        defaultColumns={columns}
-        onClickRow={onClickRow}
-        visibilityState={visibilityState}
+        tableParams={tableParams}
         topLevelList={true}
         typeKontroll={getTypeKontroll()}
         kontrollNamn={getKontrollNamn()}
