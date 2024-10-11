@@ -62,7 +62,6 @@ export type AggregatedTestresult = {
   loeysing: Loeysing;
   testregelId: string;
   suksesskriterium: string;
-  fleireSuksesskriterium: string[];
   talElementSamsvar: number;
   talElementBrot: number;
   talElementVarsel: number;

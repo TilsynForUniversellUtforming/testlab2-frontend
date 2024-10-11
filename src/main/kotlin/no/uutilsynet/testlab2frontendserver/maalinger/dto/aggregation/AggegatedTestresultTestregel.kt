@@ -6,7 +6,6 @@ data class AggegatedTestresultTestregel(
     val loeysing: Loeysing,
     val testregelId: String,
     val suksesskriterium: String,
-    val fleireSuksesskriterium: List<String>,
     val talElementSamsvar: Int,
     val talElementBrot: Int,
     val talElementVarsel: Int,
