@@ -76,7 +76,6 @@ fun mergeLists(
               loeysing = result.loeysing,
               testregelId = result.testregelId,
               suksesskriterium = result.suksesskriterium,
-              fleireSuksesskriterium = result.fleireSuksesskriterium,
               talElementSamsvar = result.talElementSamsvar,
               talElementBrot = result.talElementBrot,
               talElementVarsel = result.talElementVarsel,
