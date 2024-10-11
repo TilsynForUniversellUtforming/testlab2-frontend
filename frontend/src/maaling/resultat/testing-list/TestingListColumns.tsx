@@ -1,8 +1,8 @@
-import LoadingBar from '@common/loading-bar/LoadingBar';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
-import headingWithSorting from '@common/table/util';
+import headingWithSorting, { getSeverity } from '@common/table/util';
 import { isDefined } from '@common/util/validationUtils';
+import { Tag } from '@digdir/designsystemet-react';
 import { JobStatus, MaalingStatus, TestResult } from '@maaling/api/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
@@ -39,11 +39,12 @@ export const getTestingListColumns = (
     id: 'compliancePercent',
     cell: ({ row }) =>
       maalingStatus === 'testing_ferdig' && (
-        <LoadingBar
-          percentage={row.original.compliancePercent}
-          ariaLabel={`${row.original.loeysing.namn} har resultat på ${row.original.compliancePercent}`}
-          show={row.original.tilstand === 'ferdig'}
-        />
+        <Tag
+          size="small"
+          color={getSeverity(row.getValue('compliancePercent'))}
+        >
+          {row.getValue('compliancePercent') ?? 'Ikkje forekomst'}
+        </Tag>
       ),
     header: () => <>Resultat</>,
   },
