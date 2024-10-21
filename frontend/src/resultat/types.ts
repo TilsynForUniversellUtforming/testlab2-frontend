@@ -10,6 +10,7 @@ export type Resultat = {
   testType: string;
   testar: string;
   dato: string;
+  publisert: boolean;
   loeysingar: LoeysingResultat[];
 };
 

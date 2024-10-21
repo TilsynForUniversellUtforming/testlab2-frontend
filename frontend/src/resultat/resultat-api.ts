@@ -199,3 +199,12 @@ export function genererWordRapport(id: number, loeysingId: number) {
       }
     });
 }
+
+export async function publiserResultat(kontrollId: number) {
+  await fetchWrapper(
+    `/api/v1/testresultat/rapport/publiser/kontroll/${kontrollId}`,
+    {
+      method: 'PUT',
+    }
+  );
+}

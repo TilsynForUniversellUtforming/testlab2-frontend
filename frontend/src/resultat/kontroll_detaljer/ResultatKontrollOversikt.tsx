@@ -3,11 +3,13 @@ import { getSeverity, scoreToPercentage } from '@common/table/util';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
+import { publiserResultat } from '@resultat/resultat-api';
 import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
 import ResultatTable, {
   TableHeaderParams,
   TableParams,
 } from '@resultat/ResultatTable';
+import { TableActionsProps } from '@resultat/ResultTableActions';
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
@@ -17,7 +19,11 @@ const ResultatKontrollOversikt = <T extends object>() => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
   const navigate = useNavigate();
   const { id } = useParams();
+  const [publiseringStatus, setPubliseringStatus] = React.useState<boolean>(
+    resultat[0].publisert
+  );
 
+  console.log('Publiseringsstatus: ' + publiseringStatus);
   const columns: Array<ColumnDef<Resultat>> = [
     {
       accessorKey: 'loeysingId',
@@ -143,6 +149,20 @@ const ResultatKontrollOversikt = <T extends object>() => {
     return first.namn;
   };
 
+  const publiserResultatEksternt = () => {
+    publiserResultat(Number(id));
+    setPubliseringStatus(!publiseringStatus);
+  };
+
+  const tableActions: TableActionsProps = {
+    actionFunction: publiserResultatEksternt,
+    actionsLabel: {
+      activate: 'Publiser resultat',
+      deactivate: 'Avpubliser resultat',
+    },
+    isActive: publiseringStatus,
+  };
+
   const tableParams: TableParams<T> = {
     data: resultat as T[],
     defaultColumns: columns,
@@ -155,11 +175,16 @@ const ResultatKontrollOversikt = <T extends object>() => {
     typeKontroll: getTypeKontroll(),
     kontrollNamn: getKontrollNamn(),
     subHeader: getKontrollNamn(),
+    reportActions: tableActions,
   };
 
   return (
     <div className="sak-list">
-      <ResultatTable tableParams={tableParams} headerParams={headerParams} />
+      <ResultatTable
+        tableParams={tableParams}
+        headerParams={headerParams}
+        rapportButton={true}
+      />
     </div>
   );
 };
