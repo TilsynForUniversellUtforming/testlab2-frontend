@@ -1,5 +1,6 @@
 .testregel-button-wrapper {
   position: relative;
+  list-style-type: none;
   &.active:after {
     content: '';
     position: absolute;

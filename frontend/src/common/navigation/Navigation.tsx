@@ -28,7 +28,7 @@ const Navigation = () => {
   });
 
   return (
-    <div className="navigation" ref={navRef}>
+    <nav className="navigation" ref={navRef}>
       <div className="home">
         <TestlabLinkButton
           title=""
@@ -58,7 +58,7 @@ const Navigation = () => {
           <NavigationLinksDropdown navn="Anna" routes={anna} />
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

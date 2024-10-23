@@ -77,7 +77,7 @@ export function TestFormAccordion({
     return (
       <div key={resultatId} className={classes.form}>
         {skjemaMedSvar.skjema.steg.map((etSteg) => (
-          <div key={etSteg.stegnr}>
+          <section key={etSteg.stegnr} className={'steg'}>
             <TestFormStepWrapper
               steg={etSteg}
               alleSvar={skjemaMedSvar.svar}
@@ -85,7 +85,7 @@ export function TestFormAccordion({
               onAnswer={(svar) => onAnswer([svar], index)}
               showHelpText={showHelpText}
             />
-          </div>
+          </section>
         ))}
         {skjemaMedSvar.skjema.resultat && (
           <TestFormResultat

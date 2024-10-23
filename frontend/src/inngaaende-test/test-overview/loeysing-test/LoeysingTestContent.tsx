@@ -135,7 +135,7 @@ const LoeysingTestContent = ({
             })}
             key={rowIndex}
           >
-            <div className="testregel-container">
+            <ul className="testregel-container">
               {row.map((tr) => (
                 <TestregelButton
                   isActive={tr.id === Number(activeTest?.testregel.id)}
@@ -154,7 +154,7 @@ const LoeysingTestContent = ({
                   onChangeStatus={onChangeStatus}
                 />
               ))}
-            </div>
+            </ul>
             {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
               activeTest && (
                 <div

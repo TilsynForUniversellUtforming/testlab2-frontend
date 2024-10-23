@@ -20,21 +20,19 @@ const TestFormInputRadio = ({ steg, svar, index, onAnswer }: Props) => {
   const options = steg.type === 'jaNei' ? ['Ja', 'Nei'] : steg.svarArray;
 
   return (
-    <div>
-      <Radio.Group
-        legend={htmlToReactNode(spm)}
-        value={svar ?? 'ikke_svart'} // default må være noe annet enn tom streng, pga. en bug i designsystemet
-        onChange={handleValueChange}
-        name={`${stegnr}-${index}`}
-        description={htmlToReactNode(ht)}
-      >
-        {options.map((svaralternativ) => (
-          <Radio value={svaralternativ} key={svaralternativ}>
-            {svaralternativ}
-          </Radio>
-        ))}
-      </Radio.Group>
-    </div>
+    <Radio.Group
+      legend={spm}
+      value={svar ?? 'ikke_svart'} // default må være noe annet enn tom streng, pga. en bug i designsystemet
+      onChange={handleValueChange}
+      name={`${stegnr}-${index}`}
+      description={htmlToReactNode(ht)}
+    >
+      {options.map((svaralternativ) => (
+        <Radio value={svaralternativ} key={svaralternativ}>
+          {svaralternativ}
+        </Radio>
+      ))}
+    </Radio.Group>
   );
 };
 

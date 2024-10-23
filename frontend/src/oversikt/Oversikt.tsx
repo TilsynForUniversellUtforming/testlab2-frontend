@@ -19,9 +19,9 @@ interface OversiktLinkListProps {
 const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
   <div className="oversikt__links-item">
     <AppTitle heading={heading} size="large" />
-    <div className="lenker">
+    <menu className="lenker">
       {routes.map((route) => (
-        <div className="lenker__wrapper" key={route.navn}>
+        <li className="lenker__wrapper" key={route.navn}>
           <TestlabLinkButton
             route={route}
             title={route.navn}
@@ -34,9 +34,9 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             <img src={route.imgSrc} alt={route.navn} width={36} height={36} />
             {route.navn}
           </TestlabLinkButton>
-        </div>
+        </li>
       ))}
-    </div>
+    </menu>
   </div>
 );
 

@@ -25,7 +25,7 @@ const TestregelButton = ({
   status,
   onChangeStatus,
 }: Props) => (
-  <div
+  <li
     className={classnames('testregel-button-wrapper', {
       active: isActive,
     })}
@@ -57,7 +57,7 @@ const TestregelButton = ({
       onChangeStatus={onChangeStatus}
       testregelId={testregel.id}
     />
-  </div>
+  </li>
 );
 
 export default TestregelButton;

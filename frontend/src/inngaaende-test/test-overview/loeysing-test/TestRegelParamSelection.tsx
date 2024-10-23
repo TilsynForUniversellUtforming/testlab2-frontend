@@ -21,7 +21,7 @@ const TestRegelParamSelection = ({
   url,
 }: Props) => (
   <div className="test-param-selection">
-    <Heading size="small" level={6} className="test-param-selection__header">
+    <Heading size="small" level={4} className="test-param-selection__header">
       {innhaldstype} og {pageType}
       {isUrl(url) && (
         <Link href={url} target="_blank" title={`Gå til ${url}`}>
