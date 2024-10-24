@@ -4,9 +4,11 @@ import jakarta.servlet.http.HttpServletResponse
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.http.converter.ByteArrayHttpMessageConverter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestClient
@@ -16,10 +18,11 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("api/v1/testresultat/rapport")
 class RapportResource(
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties
+    final val testingApiProperties: TestingApiProperties
 ) {
 
   val testresultatUrl = "${testingApiProperties.url}/rapport"
+  val eksternResultatUrl = "${testingApiProperties.url}/ekstern/tester"
 
   @GetMapping("kontroll/{kontrollId}/loeysing/{loeysingId}")
   fun genererRapoort(
@@ -53,5 +56,19 @@ class RapportResource(
       response.outputStream.write(fileResponse)
     }
     response.outputStream.flush()
+  }
+  @PutMapping("publiser/kontroll/{kontrollId}")
+  fun publiserResultat(@PathVariable kontrollId: Int) {
+    val restClient = RestClient.builder(restTemplate).build()
+
+    restClient
+        .put()
+        .uri(eksternResultatUrl + "/publiser/kontroll/${kontrollId}")
+        .retrieve()
+        .onStatus(HttpStatusCode::isError) { _, response: ClientHttpResponse,
+          ->
+          throw RuntimeException("Feil ved publisering av resultat ${response.statusText}")
+        }
+        .toBodilessEntity()
   }
 }

@@ -10,6 +10,7 @@ data class Resultat(
     val testType: TestgrunnlagType,
     val dato: LocalDate,
     val loeysingar: List<LoeysingResultat>,
+    val publisert: Boolean,
     val subRows: List<LoeysingResultat>?
 )
 

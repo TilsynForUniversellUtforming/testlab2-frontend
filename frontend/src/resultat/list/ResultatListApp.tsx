@@ -8,13 +8,16 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Tag } from '@digdir/designsystemet-react';
 import { RESULTAT_KONTROLL } from '@resultat/ResultatRoutes';
-import ResultatTable from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
-const ResultatListApp = () => {
+const ResultatListApp = <T extends object>() => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
   const navigate = useNavigate();
 
@@ -143,16 +146,20 @@ const ResultatListApp = () => {
     };
   };
 
+  const tableParams: TableParams<T> = {
+    data: resultat as T[],
+    defaultColumns: columns,
+    onClickRow: onClickRow,
+    visibilityState: visibilityState,
+  };
+
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: true, hasFilter: true },
+  };
+
   return (
     <div className="sak-list">
-      <ResultatTable
-        data={resultat}
-        defaultColumns={columns}
-        onClickRow={onClickRow}
-        visibilityState={visibilityState}
-        topLevelList={true}
-        hasFilter={true}
-      />
+      <ResultatTable tableParams={tableParams} headerParams={headerParams} />
     </div>
   );
 };
