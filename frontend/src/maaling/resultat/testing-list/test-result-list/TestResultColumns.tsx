@@ -1,4 +1,5 @@
-import LoadingBar from '@common/loading-bar/LoadingBar';
+import { getSeverity } from '@common/table/util';
+import { Tag } from '@digdir/designsystemet-react';
 import { AggregatedTestresult } from '@maaling/api/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
@@ -35,10 +36,9 @@ export const getAggregatedResultColumns = (): Array<
     accessorFn: (row) => row.compliancePercent,
     id: 'compliancePercent',
     cell: ({ row }) => (
-      <LoadingBar
-        percentage={row.original.compliancePercent}
-        ariaLabel={`${row.original.testregelId} har resultat på ${row.original.compliancePercent}`}
-      />
+      <Tag size="small" color={getSeverity(row.getValue('compliancePercent'))}>
+        {row.getValue('compliancePercent') ?? 'Ikkje forekomst'}
+      </Tag>
     ),
     header: () => <>Score</>,
   },
