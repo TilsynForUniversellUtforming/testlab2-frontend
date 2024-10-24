@@ -36,8 +36,8 @@ class ResultatResource(
         }
   }
 
-  fun toPercentage(value: Float?): Int {
-    return value?.times(100)?.toInt() ?: 0
+  fun toPercentage(value: Float?): Int? {
+    return value?.times(100)?.toInt()
   }
 
   @PostMapping("aggregert/{testgrunnlagId}")

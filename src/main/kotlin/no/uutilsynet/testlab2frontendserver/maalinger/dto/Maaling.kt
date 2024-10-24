@@ -70,7 +70,7 @@ fun mergeLists(
     val aggregatedResultList =
         resultMap[testKoeyring.loeysing]?.map { result ->
           val compliancePercent =
-              result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt() ?: 0
+              result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt()
 
           AggegatedTestresultTestregel(
               loeysing = result.loeysing,
@@ -89,8 +89,14 @@ fun mergeLists(
             ?: emptyList()
 
     val compliancePercent =
-        if (aggregatedResultList.isEmpty()) 0
-        else aggregatedResultList.map { it.compliancePercent.toDouble() }.average().roundToInt()
+        if (aggregatedResultList.isEmpty()) null
+        else if (aggregatedResultList.all { erIkkjeForekomst(it) }) null
+        else
+            aggregatedResultList
+                .filter { !erIkkjeForekomst(it) }
+                .mapNotNull { it.compliancePercent }
+                .average()
+                .roundToInt()
 
     Testresult(
         loeysing = testKoeyring.loeysing,
@@ -101,4 +107,8 @@ fun mergeLists(
         antalSider = testKoeyring.crawlResultat.antallNettsider,
         compliancePercent = compliancePercent)
   }
+}
+
+fun erIkkjeForekomst(resultat: AggegatedTestresultTestregel): Boolean {
+  return resultat.talElementBrot == 0 && resultat.talElementSamsvar == 0
 }
