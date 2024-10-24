@@ -1,7 +1,10 @@
 import { getSeverity, scoreToPercentage } from '@common/table/util';
 import { Tag } from '@digdir/designsystemet-react';
 import { fetchResultatPrKravFilter } from '@resultat/resultat-api';
-import ResultatTable from '@resultat/ResultatTable';
+import ResultatTable, {
+  TableHeaderParams,
+  TableParams,
+} from '@resultat/ResultatTable';
 import { ResultatKrav } from '@resultat/types';
 import { ColumnDef, VisibilityState } from '@tanstack/react-table';
 import React, { useCallback } from 'react';
@@ -9,7 +12,7 @@ import { useLoaderData } from 'react-router-dom';
 
 import { KontrollType } from '../../kontroll/types';
 
-const ResultatListKravApp = () => {
+const ResultatListKravApp = <T extends object>() => {
   const data: Array<ResultatKrav> = useLoaderData() as Array<ResultatKrav>;
 
   const [resultat, setResultat] = React.useState<ResultatKrav[]>(data);
@@ -92,14 +95,22 @@ const ResultatListKravApp = () => {
     );
   };
 
+  const tableParams: TableParams<T> = {
+    data: resultat as T[],
+    defaultColumns: columns,
+    onClickRow: undefined,
+    visibilityState: visibilityStateResultTables,
+  };
+
+  const headerParams: TableHeaderParams = {
+    filterParams: { topLevelList: false, hasFilter: false },
+  };
+
   return (
     <div className="sak-list">
       <ResultatTable
-        data={resultat}
-        defaultColumns={columns}
-        visibilityState={visibilityStateResultTables}
-        topLevelList={false}
-        hasFilter={false}
+        tableParams={tableParams}
+        headerParams={headerParams}
         onSubmitCallback={onSubmitFilter}
       />
     </div>

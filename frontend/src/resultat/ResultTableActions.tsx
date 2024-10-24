@@ -1,20 +1,27 @@
 import { Button } from '@digdir/designsystemet-react';
-import { genererWordRapport } from '@resultat/resultat-api';
-import { useParams } from 'react-router-dom';
 
-const ResultTableActions = () => {
-  const { id, loeysingId } = useParams();
+interface ActionLabel {
+  activate: string;
+  deactivate?: string;
+}
 
-  const genererRapport = () => {
-    genererWordRapport(Number(id), Number(loeysingId));
-  };
+export interface TableActionsProps {
+  actionFunction: () => void;
+  actionsLabel?: ActionLabel;
+  isActive?: boolean;
+}
+
+const ResultTableActions = (reportProps: TableActionsProps) => {
+  const { actionFunction, actionsLabel, isActive } = reportProps;
 
   return (
-    <div className={'resultat-actions'}>
-      <Button variant="primary" onClick={genererRapport}>
-        Generer wordrapport
-      </Button>
-    </div>
+    <>
+      <div className={'resultat-actions'}>
+        <Button variant="primary" onClick={actionFunction}>
+          {!isActive ? actionsLabel?.activate : actionsLabel?.deactivate}
+        </Button>
+      </div>
+    </>
   );
 };
 
