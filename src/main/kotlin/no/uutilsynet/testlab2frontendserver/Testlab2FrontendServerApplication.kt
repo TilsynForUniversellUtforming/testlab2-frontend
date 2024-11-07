@@ -10,7 +10,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestTemplate
 
-@SpringBootApplication(exclude = [SecurityAutoConfiguration::class])
+@SpringBootApplication(
+    exclude = [SecurityAutoConfiguration::class],
+    scanBasePackages =
+        ["no.uutilsynet.testlab2frontendserver", "no.uutilsynet.testlab2securitylib"])
 @ConfigurationPropertiesScan
 class Testlab2FrontendServerApplication(
     val restTemplateBuilder: RestTemplateBuilder,
