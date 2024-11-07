@@ -49,7 +49,6 @@ class SecurityConfig {
     return http.build()
   }
 
-
   private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
       GrantedAuthoritiesMapper { authorities: Collection<GrantedAuthority> ->
         val roles: Set<GrantedAuthority> =
