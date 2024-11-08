@@ -1,8 +1,8 @@
 package no.uutilsynet.testlab2frontendserver.maaling
 
-import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.MaalingResource
+import no.uutilsynet.testlab2securitylib.interceptor.BearerTokenInterceptor
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat

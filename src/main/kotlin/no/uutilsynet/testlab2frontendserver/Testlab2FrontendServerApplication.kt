@@ -1,6 +1,6 @@
 package no.uutilsynet.testlab2frontendserver
 
-import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
+import no.uutilsynet.testlab2securitylib.interceptor.BearerTokenInterceptor
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
