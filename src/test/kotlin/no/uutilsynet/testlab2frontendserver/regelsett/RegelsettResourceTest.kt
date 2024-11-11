@@ -6,14 +6,12 @@ import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
-import no.uutilsynet.testlab2securitylib.interceptor.BearerTokenInterceptor
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.ExpectedCount
@@ -28,8 +26,6 @@ class RegelsettResourceTest(@Autowired val restTemplate: RestTemplate) {
   @Autowired private lateinit var server: MockRestServiceServer
   private val mapper =
       jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-  @MockBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
 
   private val apiUrl = "https://api.url"
   private val regelsettResource =
