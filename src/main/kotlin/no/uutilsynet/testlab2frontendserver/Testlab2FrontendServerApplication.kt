@@ -22,12 +22,19 @@ class Testlab2FrontendServerApplication(
 ) {
 
   @Bean
-  @Profile("oidcclient")
-  fun restTemplate(): RestTemplate {
+  @Profile("security")
+  fun restTemplateSecurity(): RestTemplate {
     val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
     interceptors.add(bearerTokenInterceptor)
 
     return restTemplateBuilder.interceptors(interceptors).build()
+  }
+
+  @Bean
+  @Profile("!security")
+  fun restTemplate(): RestTemplate {
+
+    return restTemplateBuilder.build()
   }
 }
 
