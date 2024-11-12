@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -20,6 +21,7 @@ import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
 
 @RestClientTest
+@AutoConfigureWebClient(registerRestTemplate = true)
 class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
   @Autowired private lateinit var server: MockRestServiceServer
   @MockBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
