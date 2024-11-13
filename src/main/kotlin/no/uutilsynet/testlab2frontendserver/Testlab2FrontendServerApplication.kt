@@ -18,12 +18,11 @@ import org.springframework.web.client.RestTemplate
 @ConfigurationPropertiesScan
 class Testlab2FrontendServerApplication(
     val restTemplateBuilder: RestTemplateBuilder,
-    val bearerTokenInterceptor: BearerTokenInterceptor
 ) {
 
   @Bean
   @Profile("security")
-  fun restTemplateSecurity(): RestTemplate {
+  fun restTemplateSecurity(bearerTokenInterceptor: BearerTokenInterceptor): RestTemplate {
     val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
     interceptors.add(bearerTokenInterceptor)
 
