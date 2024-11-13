@@ -14,8 +14,6 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
@@ -25,12 +23,15 @@ class SecurityConfig {
 
   @Bean
   @Profile("security")
-  fun filterChain(http: HttpSecurity): SecurityFilterChain {
+  fun filterChain(
+      http: HttpSecurity,
+      corsConfiguration: UrlBasedCorsConfigurationSource
+  ): SecurityFilterChain {
     http {
       csrf { csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse() }
       authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2Login { userInfoEndpoint { userAuthoritiesMapper = userAuthoritiesMapper() } }
-      cors { configurationSource = corsConfigurationSource() }
+      cors { configurationSource = corsConfiguration }
       sessionManagement { sessionCreationPolicy = SessionCreationPolicy.ALWAYS }
     }
 
@@ -46,24 +47,6 @@ class SecurityConfig {
       csrf { disable() }
     }
     return http.build()
-  }
-
-  @Bean
-  fun corsConfigurationSource(): CorsConfigurationSource {
-    val configuration = CorsConfiguration()
-    configuration.allowedOriginPatterns =
-        listOf(
-            "https://*.difi.no",
-            "https://*.uutilsynet.no",
-            "http://localhost:5173",
-            "http://localhost:80")
-    configuration.allowCredentials = true
-    configuration.allowedMethods =
-        listOf("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
-    configuration.allowedHeaders = listOf("*")
-    val source = UrlBasedCorsConfigurationSource()
-    source.registerCorsConfiguration("/**", configuration)
-    return source
   }
 
   private fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
