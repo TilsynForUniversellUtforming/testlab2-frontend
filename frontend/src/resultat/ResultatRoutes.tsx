@@ -42,10 +42,33 @@ export const RESULTAT_KONTROLL: AppRoute = {
   parentRoute: RESULTAT_ROOT,
 };
 
+export const RESULTAT_TEMA_KONTROLL_LIST: AppRoute = {
+  navn: 'Resultat tema',
+  path: 'tema',
+  parentRoute: RESULTAT_KONTROLL,
+};
+
+export const RESULTAT_KRAV_KONTROLL_LIST: AppRoute = {
+  navn: 'Resultat krav',
+  path: 'krav',
+  parentRoute: RESULTAT_KONTROLL,
+};
+
 export const TESTRESULTAT_LOEYSING: AppRoute = {
   navn: 'Resultat løysing',
   path: ':loeysingId',
   parentRoute: RESULTAT_KONTROLL,
+};
+export const RESULTAT_TEMA_LOEYSING_LIST: AppRoute = {
+  navn: 'Resultat tema',
+  path: 'tema',
+  parentRoute: TESTRESULTAT_LOEYSING,
+};
+
+export const RESULTAT_KRAV_LOEYSING_LIST: AppRoute = {
+  navn: 'Resultat krav',
+  path: 'krav',
+  parentRoute: TESTRESULTAT_LOEYSING,
 };
 
 export const VIOLATION_LIST: AppRoute = {
@@ -66,12 +89,14 @@ export const ResultRoutes: RouteObject = {
     },
     {
       path: RESULTAT_TEMA_LIST.path,
-      loader: fetchResultatPrTema,
+      loader: ({ params }) =>
+        fetchResultatPrTema(params.id as string, params.loeysingId as string),
       element: <ResultatListTemaApp />,
     },
     {
       path: RESULTAT_KRAV_LIST.path,
-      loader: fetchResultatPrKrav,
+      loader: ({ params }) =>
+        fetchResultatPrKrav(params.id as string, params.loeysingId as string),
       element: <ResultatListKravApp />,
     },
     {
@@ -86,6 +111,24 @@ export const ResultRoutes: RouteObject = {
           element: <ResultatKontrollOversikt />,
         },
         {
+          path: RESULTAT_TEMA_KONTROLL_LIST.path,
+          loader: ({ params }) =>
+            fetchResultatPrTema(
+              params.id as string,
+              params.loeysingId as string
+            ),
+          element: <ResultatListTemaApp />,
+        },
+        {
+          path: RESULTAT_KRAV_KONTROLL_LIST.path,
+          loader: ({ params }) =>
+            fetchResultatPrKrav(
+              params.id as string,
+              params.loeysingId as string
+            ),
+          element: <ResultatListKravApp />,
+        },
+        {
           path: TESTRESULTAT_LOEYSING.path,
           element: <Outlet />,
           handle: { name: TESTRESULTAT_LOEYSING.navn },
@@ -98,6 +141,24 @@ export const ResultRoutes: RouteObject = {
                   parseInt(params.loeysingId as string)
                 ),
               element: <TestResultatApp />,
+            },
+            {
+              path: RESULTAT_TEMA_LOEYSING_LIST.path,
+              loader: ({ params }) =>
+                fetchResultatPrTema(
+                  params.id as string,
+                  params.loeysingId as string
+                ),
+              element: <ResultatListTemaApp />,
+            },
+            {
+              path: RESULTAT_KRAV_LOEYSING_LIST.path,
+              loader: ({ params }) =>
+                fetchResultatPrKrav(
+                  params.id as string,
+                  params.loeysingId as string
+                ),
+              element: <ResultatListKravApp />,
             },
             {
               path: VIOLATION_LIST.path,

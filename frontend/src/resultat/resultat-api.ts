@@ -86,25 +86,45 @@ export function fetchViolationsData(
   });
 }
 
-export function fetchResultatPrTema(): Promise<ResultatTema[]> {
-  return fetchResultatPrTemaFilter(undefined, undefined, undefined, undefined);
+export function fetchResultatPrTema(
+  id: string,
+  loeysingId: string
+): Promise<ResultatTema[]> {
+  return fetchResultatPrTemaFilter(
+    id,
+    undefined,
+    undefined,
+    undefined,
+    loeysingId
+  );
 }
 
-export function fetchResultatPrKrav(): Promise<ResultatKrav[]> {
-  return fetchResultatPrKravFilter(undefined, undefined, undefined, undefined);
+export function fetchResultatPrKrav(
+  id: string,
+  loeysingId: string
+): Promise<ResultatKrav[]> {
+  return fetchResultatPrKravFilter(
+    id,
+    undefined,
+    undefined,
+    undefined,
+    loeysingId
+  );
 }
 
 export async function fetchResultatPrTemaFilter(
-  kontrollId?: number,
+  kontrollId?: string,
   kontrollType?: KontrollType,
   fraDato?: string,
-  tilDato?: string
+  tilDato?: string,
+  loeysingId?: string
 ): Promise<ResultatTema[]> {
   const params = resultatTableParams(
     kontrollId,
     kontrollType,
     fraDato,
-    tilDato
+    tilDato,
+    loeysingId
   );
 
   const response = await fetch(
@@ -115,23 +135,24 @@ export async function fetchResultatPrTemaFilter(
 }
 
 function resultatTableParams(
-  kontrollId: number | undefined,
+  kontrollId: string | undefined,
   kontrollType:
     | KontrollType
-    | undefined
     | KontrollType.InngaaendeKontroll
     | KontrollType.ForenklaKontroll
     | KontrollType.Tilsyn
     | KontrollType.Statusmaaling
     | KontrollType.UttaleSak
-    | KontrollType.Anna,
+    | KontrollType.Anna
+    | undefined,
   fraDato: string | undefined,
-  tilDato: string | undefined
+  tilDato: string | undefined,
+  loeysingId: string | undefined
 ) {
   const params = new URLSearchParams();
 
   if (kontrollId) {
-    params.append('kontrollId', String(kontrollId));
+    params.append('kontrollId', kontrollId);
   }
   if (kontrollType && keyInEnum(kontrollType)) {
     params.append('kontrollType', <string>keyInEnum(kontrollType));
@@ -142,20 +163,25 @@ function resultatTableParams(
   if (tilDato) {
     params.append('tilDato', tilDato);
   }
+  if (loeysingId) {
+    params.append('loeysingId', loeysingId);
+  }
   return params;
 }
 
 export async function fetchResultatPrKravFilter(
-  kontrollId?: number,
+  kontrollId?: string,
   kontrollType?: KontrollType,
   fraDato?: string,
-  tilDato?: string
+  tilDato?: string,
+  loeysingId?: string
 ): Promise<ResultatKrav[]> {
   const params = resultatTableParams(
     kontrollId,
     kontrollType,
     fraDato,
-    tilDato
+    tilDato,
+    loeysingId
   );
 
   const response = await fetch(
