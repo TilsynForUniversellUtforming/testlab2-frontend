@@ -11,8 +11,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -22,7 +22,7 @@ import org.springframework.web.client.RestTemplate
 @RestClientTest
 class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
   @Autowired private lateinit var server: MockRestServiceServer
-  @MockBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
+  @MockitoBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
 
   @BeforeEach
   fun setup() {
