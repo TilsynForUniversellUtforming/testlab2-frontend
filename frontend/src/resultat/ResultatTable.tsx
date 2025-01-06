@@ -14,9 +14,14 @@ import {
 } from '@digdir/designsystemet-react';
 import ResultatListTableBody from '@resultat/ResultatListTableBody';
 import {
+  RESULTAT_KONTROLL,
+  RESULTAT_KRAV_KONTROLL_LIST,
   RESULTAT_KRAV_LIST,
   RESULTAT_ROOT,
+  RESULTAT_TEMA_KONTROLL_LIST,
   RESULTAT_TEMA_LIST,
+  RESULTAT_TEMA_LOEYSING_LIST,
+  TESTRESULTAT_LOEYSING,
 } from '@resultat/ResultatRoutes';
 import ResultTableActions, {
   TableActionsProps,
@@ -26,7 +31,7 @@ import { resultTable } from '@resultat/tableoptions';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { KontrollType } from '../kontroll/types';
 
@@ -78,6 +83,8 @@ const ResultatTable = <T extends object>({
   headerParams,
   onSubmitCallback,
 }: ResultTableProps<T>): ReactElement => {
+  const { id, loeysingId } = useParams();
+
   const reportActions = headerParams.reportActions;
 
   const topLevelList = headerParams.filterParams.topLevelList ?? false;
@@ -107,6 +114,71 @@ const ResultatTable = <T extends object>({
     }
   };
 
+  const getPathSubpathLoeysing = (tab: string) => {
+    switch (tab) {
+      case 'resultat':
+        return getFullPath(
+          TESTRESULTAT_LOEYSING,
+          {
+            pathParam: ':id',
+            id: String(id),
+          },
+          {
+            pathParam: ':loeysingId',
+            id: String(loeysingId),
+          }
+        );
+      case 'tema':
+        return getFullPath(
+          RESULTAT_TEMA_LOEYSING_LIST,
+          {
+            pathParam: ':id',
+            id: String(id),
+          },
+          {
+            pathParam: ':loeysingId',
+            id: String(loeysingId),
+          }
+        );
+      case 'krav':
+        return getFullPath(
+          RESULTAT_KRAV_KONTROLL_LIST,
+          {
+            pathParam: ':id',
+            id: String(id),
+          },
+          {
+            pathParam: ':loeysingId',
+            id: String(loeysingId),
+          }
+        );
+      default:
+        return 'resultat';
+    }
+  };
+
+  const getPathSubpath = (tab: string) => {
+    switch (tab) {
+      case 'resultat':
+        return getFullPath(RESULTAT_KONTROLL, {
+          pathParam: ':id',
+          id: String(id),
+        });
+      case 'tema':
+        return getFullPath(RESULTAT_TEMA_KONTROLL_LIST, {
+          pathParam: ':id',
+          id: String(id),
+        });
+      case 'krav':
+        return getFullPath(RESULTAT_KRAV_KONTROLL_LIST, {
+          pathParam: ':id',
+          id: String(id),
+        });
+      default:
+        return 'resultat';
+    }
+  };
+
   function getCurrentPath() {
     return location.pathname.split('/').pop() ?? 'resultat';
   }
@@ -114,7 +186,13 @@ const ResultatTable = <T extends object>({
   const [activeTab, setActiveTab] = useState<string>(getCurrentPath());
   const onChangeTabs = useCallback((tab: string) => {
     setActiveTab(tab);
-    navigate(getPath(tab));
+    if (id !== undefined && loeysingId !== undefined) {
+      navigate(getPathSubpathLoeysing(tab));
+    } else if (id !== undefined && loeysingId === undefined) {
+      navigate(getPathSubpath(tab));
+    } else {
+      navigate(getPath(tab));
+    }
   }, []);
 
   const [columnVisibility, setColumnVisibility] =

@@ -34,7 +34,7 @@ const ResultatListTemaApp = <T extends object>() => {
           size="small"
           color={getSeverity(scoreToPercentage(row.getValue('score')))}
         >
-          {scoreToPercentage(row.getValue('score'))}
+          {row.getValue('score')}
         </Tag>
       ),
     },
