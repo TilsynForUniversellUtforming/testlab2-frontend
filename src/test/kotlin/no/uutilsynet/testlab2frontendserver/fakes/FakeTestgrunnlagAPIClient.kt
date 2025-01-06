@@ -2,7 +2,7 @@ package no.uutilsynet.testlab2frontendserver.fakes
 
 import java.net.URI
 import java.time.Instant
-import java.util.concurrent.TimeUnit
+import java.time.temporal.ChronoUnit
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 import no.uutilsynet.testlab2frontendserver.kontroll.ITestgrunnlagAPIClient
 import no.uutilsynet.testlab2frontendserver.kontroll.KontrollResource
@@ -33,18 +33,18 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
                 nyttTestgrunnlag.testregelIdList.map {
                   TestregelDTO(
                       it,
-                      faker.lorem().word(),
+                      "1.1.1",
                       1,
-                      faker.lorem().sentence(),
+                      testgrunnlagNamne,
                       fakeId(),
                       TestregelStatus.publisert,
-                      faker.date().past(3, TimeUnit.DAYS).toInstant(),
+                      Instant.now().minus(3, ChronoUnit.DAYS),
                       TestregelInnholdstype.nett,
                       TestregelModus.manuell,
-                      faker.options().nextElement(TestlabLocale.entries),
+                      TestlabLocale.nb,
                       fakeId(),
                       fakeId(),
-                      faker.lorem().sentence(),
+                      "1.1.1",
                       "",
                       null)
                 },
@@ -59,33 +59,28 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
         KontrollResource.TestgrunnlagDTO(
             id = id,
             kontrollId = fakeId(),
-            namn = faker.lorem().word(),
+            namn = "Kontoll 20205",
             type = TestgrunnlagType.RETEST,
             sideutval =
                 listOf(
                     Sideutval(
-                        retest.loeysingId,
-                        fakeId(),
-                        faker.lorem().sentence(),
-                        URI(faker.internet().url()),
-                        null,
-                        fakeId())),
+                        retest.loeysingId, fakeId(), siteutvalNamn, URI(dummyUrl), null, fakeId())),
             testreglar =
                 listOf(
                     TestregelDTO(
                         fakeId(),
-                        faker.lorem().word(),
+                        "1.1.1",
                         1,
-                        faker.lorem().sentence(),
+                        "Testregelnamn",
                         fakeId(),
                         TestregelStatus.publisert,
-                        faker.date().past(3, TimeUnit.DAYS).toInstant(),
+                        Instant.now().minus(3, ChronoUnit.DAYS),
                         TestregelInnholdstype.nett,
                         TestregelModus.manuell,
-                        faker.options().nextElement(TestlabLocale.entries),
+                        TestlabLocale.nb,
                         fakeId(),
                         fakeId(),
-                        faker.lorem().sentence(),
+                        "1.1.1",
                         "",
                         null)),
             datoOppretta = Instant.now())

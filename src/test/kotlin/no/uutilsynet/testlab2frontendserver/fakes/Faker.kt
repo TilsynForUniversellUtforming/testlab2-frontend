@@ -1,7 +1,20 @@
 package no.uutilsynet.testlab2frontendserver.fakes
 
-import com.github.javafaker.Faker
+import java.util.Random
 
-val faker = Faker()
+fun fakeId(): Int {
+  val rand = Random()
+  return rand.nextInt()
+}
 
-fun fakeId(): Int = faker.number().randomNumber().toInt()
+const val brukarNamn = "Brukarnamn"
+const val emailAddress = "brukar@example.com"
+const val dummyUrl = "https://www.example.com"
+
+const val testgrunnlagNamne = "Nytt testgrunnlag"
+
+const val siteutvalNamn = "Testing av side"
+
+const val elementOmtale = "Eit testelement"
+
+const val elementUtfall = "Eit utfall"

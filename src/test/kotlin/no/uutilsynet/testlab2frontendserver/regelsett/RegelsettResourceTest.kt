@@ -13,9 +13,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -29,7 +29,7 @@ class RegelsettResourceTest(@Autowired val restTemplate: RestTemplate) {
   private val mapper =
       jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-  @MockBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
+  @MockitoBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
 
   private val apiUrl = "https://api.url"
   private val regelsettResource =
