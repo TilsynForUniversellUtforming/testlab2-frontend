@@ -23,7 +23,6 @@ const ResultatKontrollOversikt = <T extends object>() => {
     resultat[0].publisert
   );
 
-  console.log('Publiseringsstatus: ' + publiseringStatus);
   const columns: Array<ColumnDef<Resultat>> = [
     {
       accessorKey: 'loeysingId',
