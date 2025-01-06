@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.4.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>no.uutilsynet</groupId>
@@ -53,13 +53,6 @@
             <version>0.0.4-SNAPSHOT</version>
         </dependency>
 
-        <!-- Testing -->
-        <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>1.0.2</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>no.uutilsynet.testlab2</groupId>
             <artifactId>testlab2-constants</artifactId>
