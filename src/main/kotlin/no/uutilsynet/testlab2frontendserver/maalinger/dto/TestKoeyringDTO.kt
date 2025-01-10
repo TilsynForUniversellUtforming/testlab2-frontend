@@ -7,5 +7,5 @@ data class TestKoeyringDTO(
     val loeysing: Loeysing,
     val sistOppdatert: LocalDate,
     val framgang: Framgang?,
-    val crawlResultat: CrawlResultatDTO
+    val antallNettsider: Int,
 )
