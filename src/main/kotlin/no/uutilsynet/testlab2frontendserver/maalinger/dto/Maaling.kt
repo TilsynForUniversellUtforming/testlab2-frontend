@@ -30,9 +30,7 @@ fun MaalingDTO.toMaaling(
     aggregatedResult: List<AggregertResultatDTO>
 ): Maaling {
   val maalingTestKoeyringDTOList: List<TestKoeyringDTO> = this.testKoeyringar ?: emptyList()
-  val crawlResultat =
-      run { this.crawlResultat ?: this.testKoeyringar?.map { it.crawlResultat } ?: emptyList() }
-          .map { it.toCrawlResultat() }
+  val crawlResultat = run { this.crawlResultat ?: emptyList() }.map { it.toCrawlResultat() }
 
   return Maaling(
       id = this.id,
@@ -104,7 +102,7 @@ fun mergeLists(
         sistOppdatert = testKoeyring.sistOppdatert,
         framgang = testKoeyring.framgang,
         aggregatedResultList = aggregatedResultList,
-        antalSider = testKoeyring.crawlResultat.antallNettsider,
+        antalSider = testKoeyring.antallNettsider,
         compliancePercent = compliancePercent)
   }
 }
