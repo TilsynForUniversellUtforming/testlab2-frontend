@@ -41,6 +41,7 @@ const KravApp = () => {
       status: krav.status,
       urlRettleiing: krav.urlRettleiing,
       innhald: krav.innhald,
+      kommentarBrudd: krav.kommentarBrudd,
     },
     resolver: zodResolver(kravValidationSchema),
   });
@@ -120,6 +121,12 @@ const KravApp = () => {
           label="Url rettleiing"
           name="urlRettleiing"
           required
+        />
+
+        <TestlabFormTextArea
+          label="Kommentar til brudd"
+          name="kommentarBrudd"
+          required={false}
         />
         <TestlabForm.FormButtons />
       </TestlabForm>

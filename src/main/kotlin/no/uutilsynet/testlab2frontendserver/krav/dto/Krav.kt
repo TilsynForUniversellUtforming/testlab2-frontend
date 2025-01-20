@@ -16,5 +16,6 @@ data class Krav(
     val prinsipp: WcagPrinsipp,
     val retningslinje: WcagRetninglinje,
     val suksesskriterium: String,
-    val samsvarsnivaa: WcagSamsvarsnivaa
+    val samsvarsnivaa: WcagSamsvarsnivaa,
+    val kommentarBrudd: String?,
 )

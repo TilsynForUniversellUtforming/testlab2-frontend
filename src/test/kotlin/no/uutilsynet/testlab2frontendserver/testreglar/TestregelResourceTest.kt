@@ -272,7 +272,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
           WcagPrinsipp.mulig_aa_oppfatte,
           WcagRetninglinje.tidsbasert_media,
           "1.1.1",
-          WcagSamsvarsnivaa.A)
+          WcagSamsvarsnivaa.A,
+          "Kommentar")
 
   private val testregelList =
       listOf(
