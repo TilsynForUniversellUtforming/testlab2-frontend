@@ -58,4 +58,5 @@ module.exports = {
       },
     ],
   },
+  ignorePatterns: ['node_modules', 'build', 'dist','.DS_Store','*.local']
 };

@@ -33,4 +33,5 @@ export const kravValidationSchema = z.object({
     .min(1, 'URL til rettleiing kan ikkje vera tomt')
     .url('URL må vera ein gyldig URL'),
   innhald: z.string().min(1, 'Innhald kan ikkje vera tomt'),
+  kommentarBrudd: z.string().optional(),
 });

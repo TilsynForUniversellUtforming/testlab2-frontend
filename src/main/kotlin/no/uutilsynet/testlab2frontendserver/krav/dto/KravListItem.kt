@@ -12,7 +12,8 @@ data class KravListItem(
     val prinsipp: String,
     val retningslinje: String,
     val suksesskriterium: String,
-    val samsvarsnivaa: String
+    val samsvarsnivaa: String,
+    val kommentarBrudd: String?
 ) {
 
   constructor(
@@ -29,5 +30,6 @@ data class KravListItem(
       prinsipp = krav.prinsipp.prinsipp,
       retningslinje = krav.retningslinje.retninglinje,
       suksesskriterium = krav.suksesskriterium,
-      samsvarsnivaa = krav.samsvarsnivaa.toString())
+      samsvarsnivaa = krav.samsvarsnivaa.toString(),
+      kommentarBrudd = krav.kommentarBrudd)
 }
