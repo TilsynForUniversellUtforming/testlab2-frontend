@@ -11,6 +11,7 @@ export type Krav = {
   retningslinje: string;
   suksesskriterium: string;
   samsvarsnivaa: Samsvarsnivaa;
+  kommentarBrudd?: string;
 };
 
 // export type Krav = {

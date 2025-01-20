@@ -30,7 +30,6 @@ class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiPro
 
   @GetMapping("/{id}")
   override fun getKrav(@PathVariable id: Int): Krav {
-    println("Henter krav med id $id")
     restTemplate.getForObject("$kravUrl/wcag2krav/$id", Krav::class.java)?.let {
       return it
     }
@@ -39,7 +38,6 @@ class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiPro
 
   @PutMapping("/{id}")
   override fun updateKrav(@PathVariable id: Int, @RequestBody krav: Krav): Krav {
-    println("Oppdaterer krav med id $id")
     restTemplate.put("$kravUrl/wcag2krav/$id", krav)
     return krav
   }
