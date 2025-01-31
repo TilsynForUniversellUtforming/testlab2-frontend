@@ -74,7 +74,7 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp update -n ca-ddt-testlab2-test-frontend -g RG-DDT-Testlab --image acrddtprod.azurecr.io/testlab2-frontend:${{ github.sha }} --subscription ${{ secrets.SUBSCRIPTION_ID }}
+            az containerapp update -n ${{ secrets.CONTAINER_APP }} -g ${{ secrets.RESOURCE_GROUP }} --image ${{ secrets.ACR_ENDPOINT }}/testlab2-frontend:${{ github.sha }} --subscription ${{ secrets.SUBSCRIPTION_ID }}
 
   acceptance_tests:
     needs: deploy
