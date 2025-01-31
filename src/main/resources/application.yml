@@ -1,0 +1,46 @@
+spring:
+  config:
+    import: optional:classpath:./dev.yml
+  security:
+    oauth2:
+        client:
+            provider:
+              brukar:
+                issuer-uri:
+            registration:
+              brukar:
+                  client-id:
+                  client-secret:
+                  client-name:
+                  scope: openid,profile
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB
+      max-request-size: 2MB
+  profiles:
+    active: oidcclient
+
+logging:
+  level:
+    root: INFO
+    no.uutilsynet: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
+
+features:
+  alle-kontroller: false
+  maalinger: false
+  testreglar: false
+
+testing:
+  api:
+    url: http://localhost:8081
+    key: ''
+
+krav:
+  api:
+    url: http://localhost:8002
+loeysingsregister:
+  api:
+    url: http://localhost:8000
+

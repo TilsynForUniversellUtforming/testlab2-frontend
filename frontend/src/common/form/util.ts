@@ -71,7 +71,6 @@ export const fetchWrapper = async (
     return await fetch(`/csrf`, { method: 'GET' }).then(async (response) => {
       const token = await getTokenFromResponse(response);
 
-      init.credentials = 'include';
       if (defaultContentType) {
         init.headers = {
           'Content-Type': 'application/json',
