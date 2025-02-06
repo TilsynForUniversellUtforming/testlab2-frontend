@@ -29,3 +29,6 @@ loeysingsregister.api.url=http://localhost:8000
 testing.api.url=http://localhost:8001
 krav.api.url=http://localhost:8002
 ```
+
+### Sikkerhet
+https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html
