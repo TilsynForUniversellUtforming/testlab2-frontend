@@ -1,24 +1,25 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
-import java.net.URI
-import java.time.LocalDate
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
-import no.uutilsynet.testlab2frontendserver.testing.Bilde
+import no.uutilsynet.testlab2frontendserver.testing.BildeService
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URI
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("api/v1/testresultat")
 class ResultatResource(
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties
+    val testingApiProperties: TestingApiProperties,
+    val bildeService: BildeService
 ) {
 
   val logger = LoggerFactory.getLogger(ResultatResource::class.java)
@@ -140,19 +141,9 @@ class ResultatResource(
   }
 
   private fun mapBilder(testresultat: TestResultat): TestResultat {
-    val nyeBilder = testresultat.bilder?.map { proxyUrl(it) }
+    val nyeBilder = testresultat.bilder?.map { bildeService.proxyUrl(it) }
     return testresultat.copy(bilder = nyeBilder)
   }
 
-  private fun proxyUrl(bilde: Bilde): Bilde {
-    return bilde.copy(
-        bildeURI = extreactUri(bilde.bildeURI), thumbnailURI = extreactUri(bilde.thumbnailURI))
-  }
 
-  fun extreactUri(uri: URI): URI {
-    val uriParts = uri.toString().split("/")
-    val imageName = uriParts.takeLast(1).joinToString { it }
-
-    return URI("/api/bilder/$imageName")
-  }
 }

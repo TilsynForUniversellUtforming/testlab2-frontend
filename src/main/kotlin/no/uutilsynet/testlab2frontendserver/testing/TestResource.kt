@@ -32,7 +32,8 @@ import org.springframework.web.server.ResponseStatusException
 class TestResource(
     val testresultatAPIClient: ITestresultatAPIClient,
     val restTemplate: RestTemplate,
-    testingApiProperties: TestingApiProperties
+    testingApiProperties: TestingApiProperties,
+    val bildeService: BildeService
 ) {
   val logger: Logger = LoggerFactory.getLogger(TestResource::class.java)
 
@@ -88,10 +89,7 @@ class TestResource(
                       resultatManuellKontroll.status == ResultatManuellKontroll.Status.Ferdig &&
                       resultatManuellKontroll.kommentar.isNullOrBlank()
                 }
-            if (missingKommentar) {
-              throw IllegalArgumentException(
-                  "Kan ikkje oppdatere test med elementOmtale 'Side' uten kommentar")
-            }
+            require(!missingKommentar) { "Kan ikkje oppdatere test med elementOmtale 'Side' uten kommentar" }
             val now = Instant.now()
             val withUtfoert =
                 resultatManuellKontrollList.map { resultatManuellKontroll ->
@@ -166,7 +164,7 @@ class TestResource(
   fun getBilder(
       @PathVariable("resultatId") resultatId: Int,
   ): ResponseEntity<List<Bilde>> =
-      ResponseEntity.ok(restTemplate.getList<Bilde>("$bildeUrl/$resultatId"))
+      ResponseEntity.ok(restTemplate.getList<Bilde>("$bildeUrl/$resultatId").toList().map { bildeService.proxyUrl(it) })
 
   @DeleteMapping("/bilder/{testresultatId}/{bildeId}")
   fun deleteBilde(
