@@ -92,8 +92,9 @@ class ResultatResource(
       @PathVariable kravId: Int,
   ): List<TestResultat> {
     logger.debug("Hent resultat for kontrolkId: $idLoeysing, loeysingId: $idLoeysing")
-    return restTemplate.getList<TestResultat>(
-        "$testresultatUrl/kontroll/${idKontroll}/loeysing/${idLoeysing}/krav/${kravId}")
+    return restTemplate
+        .getList<TestResultat>(
+            "$testresultatUrl/kontroll/${idKontroll}/loeysing/${idLoeysing}/krav/${kravId}")
         .map { mapBilder(it) }
   }
 
@@ -138,20 +139,20 @@ class ResultatResource(
     return uriComponents
   }
 
-    private fun mapBilder(testresultat: TestResultat): TestResultat {
-        val nyeBilder = testresultat.bilder?.map { proxyUrl(it) }
-        return testresultat.copy(bilder = nyeBilder)
-    }
+  private fun mapBilder(testresultat: TestResultat): TestResultat {
+    val nyeBilder = testresultat.bilder?.map { proxyUrl(it) }
+    return testresultat.copy(bilder = nyeBilder)
+  }
 
-    private fun proxyUrl(bilde: Bilde): Bilde {
-        return bilde.copy(
-            bildeURI = extreactUri(bilde.bildeURI), thumbnailURI = extreactUri(bilde.thumbnailURI))
-    }
+  private fun proxyUrl(bilde: Bilde): Bilde {
+    return bilde.copy(
+        bildeURI = extreactUri(bilde.bildeURI), thumbnailURI = extreactUri(bilde.thumbnailURI))
+  }
 
-    fun extreactUri(uri: URI): URI {
-        val uriParts = uri.toString().split("/")
-        val imageName = uriParts.takeLast(1).joinToString { it }
+  fun extreactUri(uri: URI): URI {
+    val uriParts = uri.toString().split("/")
+    val imageName = uriParts.takeLast(1).joinToString { it }
 
-        return URI("/api/bilder/$imageName")
-    }
+    return URI("/api/bilder/$imageName")
+  }
 }
