@@ -1,5 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
+import java.net.URI
+import java.time.LocalDate
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
@@ -11,8 +13,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import java.net.URI
-import java.time.LocalDate
 
 @RestController
 @RequestMapping("api/v1/testresultat")
@@ -144,6 +144,4 @@ class ResultatResource(
     val nyeBilder = testresultat.bilder?.map { bildeService.proxyUrl(it) }
     return testresultat.copy(bilder = nyeBilder)
   }
-
-
 }
