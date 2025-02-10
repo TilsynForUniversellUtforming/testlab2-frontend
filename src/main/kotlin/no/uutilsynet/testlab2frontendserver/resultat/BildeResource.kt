@@ -1,7 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.resultat
 
-
-import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import java.net.HttpURLConnection
 import java.net.Proxy
 import java.net.URI
