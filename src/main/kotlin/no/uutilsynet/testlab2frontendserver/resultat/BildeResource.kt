@@ -17,22 +17,22 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/bilder")
 class BildeResource(val testingApiProperties: TestingApiProperties) {
 
-    @GetMapping("/{bilde}")
-    fun getBilde(@PathVariable bilde: String): ResponseEntity<InputStreamResource> {
-        val bildeUrl = URI("${testingApiProperties.url}/bilder/sti/$bilde").toURL()
+  @GetMapping("/{bilde}")
+  fun getBilde(@PathVariable bilde: String): ResponseEntity<InputStreamResource> {
+    val bildeUrl = URI("${testingApiProperties.url}/bilder/sti/$bilde").toURL()
 
-        val connection = bildeUrl.openConnection(Proxy.NO_PROXY) as HttpURLConnection
-        connection.setRequestProperty(testingApiProperties.headerName, testingApiProperties.key)
+    val connection = bildeUrl.openConnection(Proxy.NO_PROXY) as HttpURLConnection
+    connection.setRequestProperty(testingApiProperties.headerName, testingApiProperties.key)
 
-        val contentType: String = connection.contentType ?: "image/jpeg"
-        val mediaType = MediaType.parseMediaType(contentType)
-        val headers = HttpHeaders()
-        headers["Content-Disposition"] = "inline; filename=\"$bilde\""
-        headers[testingApiProperties.headerName] = testingApiProperties.key
+    val contentType: String = connection.contentType ?: "image/jpeg"
+    val mediaType = MediaType.parseMediaType(contentType)
+    val headers = HttpHeaders()
+    headers["Content-Disposition"] = "inline; filename=\"$bilde\""
+    headers[testingApiProperties.headerName] = testingApiProperties.key
 
-        return ResponseEntity.ok()
-            .headers(headers)
-            .contentType(mediaType)
-            .body(InputStreamResource(connection.inputStream))
-    }
+    return ResponseEntity.ok()
+        .headers(headers)
+        .contentType(mediaType)
+        .body(InputStreamResource(connection.inputStream))
+  }
 }
