@@ -7,11 +7,7 @@ import no.uutilsynet.testlab2frontendserver.common.Brukar
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.fakes.*
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
-import no.uutilsynet.testlab2frontendserver.testing.CreateTestResultat
-import no.uutilsynet.testlab2frontendserver.testing.ElementResultat
-import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
-import no.uutilsynet.testlab2frontendserver.testing.Retest
-import no.uutilsynet.testlab2frontendserver.testing.TestResource
+import no.uutilsynet.testlab2frontendserver.testing.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -31,6 +27,7 @@ class KontrollResourceTest {
     // testen. Hvis de skal brukes senere, er det bedre om vi lager fakes for dem.
     val mockRestTemplate = Mockito.mock(RestTemplate::class.java)
     val mockTestingApiProperties = Mockito.mock(TestingApiProperties::class.java)
+      val mockBildeService = Mockito.mock(BildeService::class.java)
 
     kontrollResource =
         KontrollResource(
@@ -40,7 +37,7 @@ class KontrollResourceTest {
             mockTestingApiProperties)
     kontrollId = fakeId()
     testResource =
-        TestResource(FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties)
+        TestResource(FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties, mockBildeService)
   }
 
   @Test
