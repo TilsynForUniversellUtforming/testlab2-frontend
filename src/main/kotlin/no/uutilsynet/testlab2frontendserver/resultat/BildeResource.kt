@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/bilder")
 class BildeResource(val testingApiProperties: TestingApiProperties) {
 
-  val testApiBase = testingApiProperties.url.split("/").dropLast(1).joinToString("/")
-
   @GetMapping("/{bilde}")
   fun getBilde(@PathVariable bilde: String): ResponseEntity<InputStreamResource> {
-    val bildeUrl = URI("$testApiBase/bilder/sti/$bilde").toURL()
+    val bildeUrl = URI("${testingApiProperties.url}/bilder/sti/$bilde").toURL()
 
     val connection = bildeUrl.openConnection(Proxy.NO_PROXY) as HttpURLConnection
 
