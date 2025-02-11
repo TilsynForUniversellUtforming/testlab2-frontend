@@ -27,7 +27,7 @@ class KontrollResourceTest {
     // testen. Hvis de skal brukes senere, er det bedre om vi lager fakes for dem.
     val mockRestTemplate = Mockito.mock(RestTemplate::class.java)
     val mockTestingApiProperties = Mockito.mock(TestingApiProperties::class.java)
-      val mockBildeService = Mockito.mock(BildeService::class.java)
+    val mockBildeService = Mockito.mock(BildeService::class.java)
 
     kontrollResource =
         KontrollResource(
@@ -37,7 +37,8 @@ class KontrollResourceTest {
             mockTestingApiProperties)
     kontrollId = fakeId()
     testResource =
-        TestResource(FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties, mockBildeService)
+        TestResource(
+            FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties, mockBildeService)
   }
 
   @Test
