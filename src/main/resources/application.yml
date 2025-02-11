@@ -36,6 +36,7 @@ testing:
   api:
     url: http://localhost:8081
     key: ''
+    header-name: ''
 
 krav:
   api:
