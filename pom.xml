@@ -16,7 +16,7 @@
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.1.10</kotlin.version>
-        <docker.image.prefix>acrddtprod.azurecr.io</docker.image.prefix>
+        <docker.image.prefix>localhost</docker.image.prefix>
     </properties>
     <dependencies>
         <dependency>
@@ -102,13 +102,14 @@
                     </from>
                     <to>
                         <!--suppress UnresolvedMavenProperty -->
-                        <image>${docker.image.prefix}/testlab2-frontend:${git.commit.id}</image>
-                        <tags>latest</tags>
+                        <image>${docker.image.prefix}/testlab2-frontend</image>
+                        <tags>${git.commit.id}</tags>
                     </to>
                     <container>
                         <ports>
                             <port>8080</port>
                         </ports>
+                        <user>nobody</user>
                     </container>
                 </configuration>
             </plugin>

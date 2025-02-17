@@ -16,7 +16,7 @@ services:
       retries: 5
 
   loeysingsregister:
-    image: acrddtprod.azurecr.io/testlab2-loeysingsregister:latest
+    image: ${DOCKER_REGISTRY}/testlab2-loeysingsregister:latest
     depends_on:
       postgres:
         condition: service_healthy
@@ -26,9 +26,11 @@ services:
       - dev_network
     environment:
       SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres?currentSchema=testlab2_loeysingsregister'
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: Passw0rd
 
   kravregister:
-    image: acrddtprod.azurecr.io/testlab2-krav:latest
+    image: ${DOCKER_REGISTRY}/testlab2-krav:latest
     ports:
       - "8002:8080"
     networks:
@@ -39,9 +41,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: Passw0rd
 
   testing:
-    image: acrddtprod.azurecr.io/testlab2-testing:latest
+    image: ${DOCKER_REGISTRY}/testlab2-testing:latest
     ports:
-      - "8001:8080"
+      - "8001:8081"
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,7 +53,7 @@ services:
       SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres?currentSchema=testlab2_testing'
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: Passw0rd
-      LOEYSINGREGISTER_HOST: loeysingsregister
+      LOEYSINGSREGISTER_HOST: loeysingsregister
       KRAVREGISTER_HOST: kravregister
 
 networks:

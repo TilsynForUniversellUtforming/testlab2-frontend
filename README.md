@@ -12,6 +12,15 @@ GUI for testlab i ReactJS som kallar API til andre komponenter
 4. Kjør tester med `npm test` i ./frontend
 5. Kjør ende-til-ende-tester med `npm run test:e2e` i ./frontend
 
+
+### Bygge lokalt
+Krever mulighet for å køyre bash-script
+Checkout backendapplikasjoner til folder parallelt med frontend.
+Oppdatert .env fil med riktig foldersti til backendapplikasjoner.
+Kjør `./build.sh` i frontend-mappa.
+
+Dette vil bygge docker-image til lokalt repository.
+
 ### Lokalt API og database
 
 I utgangspunktet kjører frontend lokalt, men kaller API-et som kjører i testmiljøet på azure. Hvis du vil kjøre mot et
@@ -30,5 +39,6 @@ testing.api.url=http://localhost:8001
 krav.api.url=http://localhost:8002
 ```
 
-### Sikkerhet
+### Auth
+Krev oppsett av eigen oauth2/oidc provider. Eks Keycloak, Google
 https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html

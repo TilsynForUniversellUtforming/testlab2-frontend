@@ -54,7 +54,7 @@ jobs:
       - name: copy frontend app
         run: cp -R frontend/dist/* target/classes/public/
       - name: build and push image
-        run: mvn -B compile jib:build
+        run: mvn -Ddocker.image.prefix=${{ secrets.ACR_ENDPOINT }} -B compile jib:build
 
   deploy:
     runs-on: ubuntu-latest
