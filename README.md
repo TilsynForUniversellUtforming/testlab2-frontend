@@ -40,4 +40,5 @@ krav.api.url=http://localhost:8002
 ```
 
 ### Auth
+Krev oppsett av eigen oauth2/oidc provider. Eks Keycloak, Google
 https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html
