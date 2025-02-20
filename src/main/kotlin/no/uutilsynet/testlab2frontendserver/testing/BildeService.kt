@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.testing
 
 import java.net.URI
 import org.springframework.stereotype.Service
+import org.springframework.web.util.UriComponentsBuilder
 
 @Service
 class BildeService {
@@ -12,9 +13,6 @@ class BildeService {
   }
 
   fun extreactUri(uri: URI): URI {
-    val uriParts = uri.toString().split("/")
-    val imageName = uriParts.takeLast(1).joinToString { it }
-
-    return URI("/api/bilder/$imageName")
+    return UriComponentsBuilder.fromUriString("/api/bilder?$uri.query").build().toUri()
   }
 }
