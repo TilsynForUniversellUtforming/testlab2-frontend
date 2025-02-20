@@ -13,6 +13,6 @@ class BildeService {
   }
 
   fun extreactUri(uri: URI): URI {
-    return UriComponentsBuilder.fromUriString("/api/bilder?$uri.query").build().toUri()
+    return UriComponentsBuilder.fromUriString("/api/bilder?${uri.query}").build().toUri()
   }
 }
