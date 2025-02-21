@@ -31,7 +31,7 @@ lokalt API og en lokal database, kan du kjøre opp dette systemet med compose-fi
 Eventuelt kan du lage en _run configuration_ i
 IntelliJ: https://www.jetbrains.com/help/idea/docker-compose-run-configuration.html
 
-Du må også oppdatere src/main/resources/dev.properties med disse verdiene:
+Du må også oppdatere src/main/resources/dev.yml med disse verdiene:
 
 ```
 loeysingsregister.api.url=http://localhost:8000
