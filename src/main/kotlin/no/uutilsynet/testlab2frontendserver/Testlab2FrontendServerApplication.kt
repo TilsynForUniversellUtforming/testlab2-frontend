@@ -7,22 +7,28 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication(exclude = [SecurityAutoConfiguration::class])
 @ConfigurationPropertiesScan
-class Testlab2FrontendServerApplication(
-    val restTemplateBuilder: RestTemplateBuilder,
-    val bearerTokenInterceptor: BearerTokenInterceptor
-) {
+class Testlab2FrontendServerApplication(val restTemplateBuilder: RestTemplateBuilder) {
 
   @Bean
-  fun restTemplate(): RestTemplate {
+  @Profile("security")
+  fun restTemplateSecurity(bearerTokenInterceptor: BearerTokenInterceptor): RestTemplate {
     val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
     interceptors.add(bearerTokenInterceptor)
 
     return restTemplateBuilder.interceptors(interceptors).build()
+  }
+
+  @Bean
+  @Profile("!security")
+  fun restTemplate(): RestTemplate {
+
+    return restTemplateBuilder.build()
   }
 }
 

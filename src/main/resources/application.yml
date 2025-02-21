@@ -1,18 +1,6 @@
 spring:
   config:
     import: optional:classpath:./dev.yml
-  security:
-    oauth2:
-        client:
-            provider:
-              brukar:
-                issuer-uri:
-            registration:
-              brukar:
-                  client-id:
-                  client-secret:
-                  client-name:
-                  scope: openid,profile
   servlet:
     multipart:
       enabled: true
