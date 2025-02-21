@@ -7,7 +7,6 @@ import java.time.Instant
 import no.uutilsynet.testlab2.constants.KravStatus
 import no.uutilsynet.testlab2.constants.WcagPrinsipp
 import no.uutilsynet.testlab2.constants.WcagRetninglinje
-import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
@@ -29,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -40,7 +38,6 @@ import org.springframework.web.client.RestTemplate
 class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Autowired private lateinit var server: MockRestServiceServer
-  @MockitoBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
   private val testregelApiUrl = "https://api.url/testregel"
   private val kravApiUrl = "https://api.url/krav"
 

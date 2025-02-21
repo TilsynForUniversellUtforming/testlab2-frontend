@@ -2,7 +2,6 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.uutilsynet.testlab2frontendserver.common.BearerTokenInterceptor
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
@@ -28,8 +26,6 @@ class RegelsettResourceTest(@Autowired val restTemplate: RestTemplate) {
   @Autowired private lateinit var server: MockRestServiceServer
   private val mapper =
       jacksonObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-
-  @MockitoBean lateinit var bearerTokenInterceptor: BearerTokenInterceptor
 
   private val apiUrl = "https://api.url"
   private val regelsettResource =
