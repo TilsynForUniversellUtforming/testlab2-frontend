@@ -40,5 +40,10 @@ krav.api.url=http://localhost:8002
 ```
 
 ### Auth
+Aktiver med property spring.profiles.active=oidcclient,security
 Krev oppsett av eigen oauth2/oidc provider. Eks Keycloak, Google
 https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html
+
+Autentisering mot testlab2-testing
+testing.api.key
+key-verdi må også settast på testlab2-testing
