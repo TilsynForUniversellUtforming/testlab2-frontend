@@ -37,16 +37,6 @@ class SecurityConfig {
     return http.build()
   }
 
-  @Bean
-  @Profile("!security")
-  fun openFilterChain(http: HttpSecurity): SecurityFilterChain {
-    http {
-      authorizeHttpRequests { authorize(anyRequest, permitAll) }
-      cors {}
-      csrf { disable() }
-    }
-    return http.build()
-  }
 
   @Bean
   fun corsConfigurationSource(): CorsConfigurationSource {
