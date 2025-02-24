@@ -37,7 +37,6 @@ class SecurityConfig {
     return http.build()
   }
 
-
   @Bean
   fun corsConfigurationSource(): CorsConfigurationSource {
     val configuration = CorsConfiguration()
