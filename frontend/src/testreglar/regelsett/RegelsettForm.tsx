@@ -115,7 +115,7 @@ const RegelsettForm = ({
         header: () => <>Namn</>,
       },
       {
-        accessorFn: (row) => row.krav.tittel,
+        accessorFn: (row) => (row.krav ? row.krav.tittel : ''),
         id: 'krav',
         cell: (info) => info.getValue(),
         header: () => <>Krav</>,
