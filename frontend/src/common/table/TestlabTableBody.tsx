@@ -42,6 +42,7 @@ const TestlabTableBody = <T extends object>({
             <Table.Cell
               key={cell.id}
               onClick={() => onRowClick(row, cell.id.includes(CellCheckboxId))}
+              tabIndex={0}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </Table.Cell>

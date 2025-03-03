@@ -82,6 +82,7 @@ const ResultatListTableBody = <T extends object>({
                   key={cell.id}
                   id={cell.column.id}
                   rowSpan={row.subRows.length}
+                  tabIndex={0}
                 >
                   {renderKontrollCellContent(subRow, cell)}
                 </Table.Cell>
