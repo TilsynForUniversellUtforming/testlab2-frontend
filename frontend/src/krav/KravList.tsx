@@ -10,6 +10,7 @@ import { Krav } from './types';
 import toError from '@common/error/util';
 import { deleteKrav } from './api/krav-api';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
+import { joinStringsToList } from '@common/util/stringutils';
 
 const KravList = () => {
   const kravliste = useLoaderData() as Krav[];
@@ -18,7 +19,22 @@ const KravList = () => {
   const kravColumns = kravColumnDefs();
 
   const [kravRowSelection, setKravRowSelection] = useState<Krav[]>([]);
-  const [deleteMessage] = useState<string>('');
+  const [deleteMessage, setDeleteMessage] = useState<string>('');
+
+  const onSelectRows = useCallback((rowSelection: Krav[]) => {
+    setKravRowSelection(rowSelection);
+
+    if (rowSelection.length === 0) {
+      setDeleteMessage('');
+    } else {
+      setDeleteMessage(
+        `Vil du sletta ${joinStringsToList(
+          rowSelection.map((tr) => `${tr.tittel}`)
+        )}? Dette kan ikkje angrast`
+      );
+    }
+  }, []);
+
   const onClickDelete = useCallback(() => {
     function filterKrav(element: Krav, index: number, list: Array<Krav>) {
       return list.includes(element);
@@ -50,6 +66,7 @@ const KravList = () => {
       tableProps={{
         data: kravliste,
         defaultColumns: kravColumns,
+        onSelectRows: onSelectRows,
         rowActions: [
           {
             action: 'add',
