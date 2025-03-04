@@ -1,11 +1,12 @@
-import { AppRoute, idPath } from '@common/util/routeUtils';
+import { AppRoute, createPath, idPath } from '@common/util/routeUtils';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import kravImg from '../assets/krav.svg';
 import { getKrav, listKrav } from './api/krav-api';
-import KravApp from './KravApp';
+import KravList from './KravList';
 import KravEditApp from './KravEditApp';
 import { Krav } from './types';
+import KravCreate from './KravCreate';
 
 export const KRAV_LIST: AppRoute = {
   navn: 'Krav',
@@ -17,6 +18,12 @@ export const KRAV_LIST: AppRoute = {
 export const KRAV_EDIT: AppRoute = {
   navn: 'Endre krav',
   path: idPath,
+  parentRoute: KRAV_LIST,
+};
+
+export const KRAV_CREATE: AppRoute = {
+  navn: 'Nytt krav',
+  path: createPath,
   parentRoute: KRAV_LIST,
 };
 
@@ -33,12 +40,17 @@ export const KravRoutes: RouteObject = {
       loader: async (): Promise<Krav[]> => {
         return await listKrav();
       },
-      element: <KravApp />,
+      element: <KravList />,
+    },
+    {
+      path: createPath,
+      element: <KravCreate />,
+      handle: { name: KRAV_CREATE.navn },
     },
     {
       path: idPath,
       loader: async ({ params }): Promise<Krav> => {
-        return (await getKrav(Number(params?.id))) as Krav;
+        return await getKrav(Number(params?.id));
       },
       handle: { name: KRAV_EDIT.navn },
       element: <KravEditApp />,

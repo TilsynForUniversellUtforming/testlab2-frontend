@@ -7,11 +7,11 @@ import java.time.Instant
 import no.uutilsynet.testlab2.constants.KravStatus
 import no.uutilsynet.testlab2.constants.WcagPrinsipp
 import no.uutilsynet.testlab2.constants.WcagRetninglinje
+import no.uutilsynet.testlab2.constants.WcagSamsvarsnivaa
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
-import no.uutilsynet.testlab2frontendserver.krav.dto.WcagSamsvarsnivaa
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO

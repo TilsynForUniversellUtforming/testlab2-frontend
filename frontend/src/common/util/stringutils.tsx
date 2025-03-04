@@ -30,6 +30,22 @@ function asciiSafeCharactersToNorwegian(s: string): string {
   return s.replaceAll('aa', 'å').replaceAll('oe', 'ø').replaceAll('ae', 'æ');
 }
 
+function handleCamelCase(label: string) {
+  return label
+    .trim()
+    .split('')
+    .reduce((acc, c) => (c === c.toUpperCase() ? acc + ' ' + c : acc + c), '')
+    .split(/\s+/)
+    .map((word, i) => (i === 0 ? capitalize(word) : word.toLowerCase()))
+    .join(' ');
+}
+
+function handleKontrollLabel(enumLabel: string) {
+  if (enumLabel.includes('kontroll') && !enumLabel.includes(' ')) {
+    enumLabel = enumLabel.replace('kontroll', ' kontroll');
+  }
+  return enumLabel;
+}
 /**
  * Sanitizes an emum value to be used in a label by replacing underscores with
  * spaces and capitalizing the first character.
@@ -37,30 +53,28 @@ function asciiSafeCharactersToNorwegian(s: string): string {
  * @returns {string} Sanitized label.
  */
 export const sanitizeEnumLabel = (label: string): string => {
-  function isCamelCase(s: string): boolean {
-    const camelCaseRegex = /^[a-z]+(?:[A-Z][a-z0-9]*)*$/;
-    return camelCaseRegex.test(s);
-  }
+  let enumLabel = sanitizeEnumValueAllowUnsafeCharacters(label);
 
+  return asciiSafeCharactersToNorwegian(enumLabel);
+};
+
+function isCamelCase(s: string): boolean {
+  const camelCaseRegex = /^[a-z]+(?:[A-Z][a-z0-9]*)*$/;
+  return camelCaseRegex.test(s);
+}
+
+export const sanitizeEnumValueAllowUnsafeCharacters = (
+  label: string
+): string => {
   let enumLabel = '';
   if (isCamelCase(label)) {
-    enumLabel = label
-      .trim()
-      .split('')
-      .reduce((acc, c) => (c === c.toUpperCase() ? acc + ' ' + c : acc + c), '')
-      .split(/\s+/)
-      .map((word, i) => (i === 0 ? capitalize(word) : word.toLowerCase()))
-      .join(' ');
+    enumLabel = handleCamelCase(label);
   } else {
     enumLabel = capitalize(
       label.toLocaleLowerCase('no-NO').replaceAll('_', ' ').replaceAll('-', ' ')
     );
   }
-  if (enumLabel.includes('kontroll') && !enumLabel.includes(' ')) {
-    enumLabel = enumLabel.replace('kontroll', ' kontroll');
-  }
-
-  return asciiSafeCharactersToNorwegian(enumLabel);
+  return handleKontrollLabel(enumLabel);
 };
 
 /**
@@ -205,19 +219,19 @@ export const createOptionsFromLiteral = <T extends string>(
 ): OptionType[] => {
   return literals.map((literal) => ({
     value: literal,
-    label: sanitizeEnumLabel(literal),
+    label: sanitizeEnumValueAllowUnsafeCharacters(literal),
   }));
 };
 
 /*
 Creates a list of OptionType from a enum type
  */
-export const createOptionsFormEnum = <T extends Record<string, string>>(
-  enumType: T
+export const createOptionsFormEnum = (
+  enumType: Record<string, string>
 ): OptionType[] => {
   return Object.entries(enumType).map(([key, value]) => ({
     value: key,
-    label: value,
+    label: sanitizeEnumLabel(value),
   }));
 };
 

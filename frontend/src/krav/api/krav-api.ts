@@ -1,4 +1,4 @@
-import { Krav } from '../types';
+import { Krav, KravInit } from '../types';
 
 export const listKrav = async (): Promise<Krav[]> => {
   const kravList = await fetch(`/api/v1/krav`, {
@@ -26,4 +26,23 @@ export const updateKrav = async (krav: Krav): Promise<Krav> => {
   });
 
   return await updatedKrav.json();
+};
+
+export const createKrav = async (krav: KravInit): Promise<number> => {
+  console.log('createKrav ' + JSON.stringify(krav));
+  const nyttKrav = await fetch(`/api/v1/krav`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(krav),
+  });
+  const kravid = await nyttKrav.json();
+  return Number(JSON.stringify(kravid));
+};
+
+export const deleteKrav = async (id: number): Promise<void> => {
+  await fetch(`/api/v1/krav/${id}`, {
+    method: 'DELETE',
+  });
 };

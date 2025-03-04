@@ -3,7 +3,9 @@ package no.uutilsynet.testlab2frontendserver.krav
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.krav.dto.KravApi
+import no.uutilsynet.testlab2frontendserver.krav.dto.KravInit
 import no.uutilsynet.testlab2frontendserver.krav.dto.KravListItem
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -14,7 +16,7 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("api/v1/krav", produces = [MediaType.APPLICATION_JSON_VALUE])
 class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiProperties) : KravApi {
 
-  val logger = LoggerFactory.getLogger(KravResource::class.java)
+  val logger: Logger = LoggerFactory.getLogger(KravResource::class.java)
 
   val kravUrl = "${kravApiProperties.url}/v1/krav"
 
@@ -43,10 +45,21 @@ class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiPro
   }
 
   @PostMapping
-  override fun createKrav(krav: Krav): Int {
-    restTemplate.postForObject("$kravUrl/wcag2krav", krav, Int::class.java)?.let {
-      return it
-    }
-        ?: throw Error("Klarte ikke å opprette krav")
+  override fun createKrav(@RequestBody krav: KravInit): Int {
+    logger.info("Oppretter krav $krav")
+
+    return runCatching {
+          restTemplate.postForObject("$kravUrl/wcag2krav", krav, Int::class.java)
+              ?: throw RuntimeException("Klarte ikke å opprette krav")
+        }
+        .fold(
+            onSuccess = { it },
+            onFailure = { throw RuntimeException("Klarte ikke å opprette krav", it) })
+  }
+
+  @DeleteMapping("/{id}")
+  override fun deleteKrav(@PathVariable id: Int): Boolean {
+    restTemplate.delete("$kravUrl/wcag2krav/$id")
+    return true
   }
 }

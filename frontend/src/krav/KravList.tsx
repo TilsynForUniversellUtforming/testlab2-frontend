@@ -1,18 +1,47 @@
 import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Checkbox } from '@digdir/designsystemet-react';
-import { ColumnDef } from '@tanstack/react-table';
-import React from 'react';
+import { ColumnDef, Row } from '@tanstack/react-table';
+import React, { useCallback, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
-import { KRAV_EDIT } from './KravRoutes';
+import { KRAV_CREATE, KRAV_EDIT } from './KravRoutes';
 import { Krav } from './types';
+import toError from '@common/error/util';
+import { deleteKrav } from './api/krav-api';
+import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 
-const KravApp = () => {
+const KravList = () => {
   const kravliste = useLoaderData() as Krav[];
   const navigate = useNavigate();
 
   const kravColumns = kravColumnDefs();
+
+  const [kravRowSelection, setKravRowSelection] = useState<Krav[]>([]);
+  const [deleteMessage] = useState<string>('');
+  const onClickDelete = useCallback(() => {
+    function filterKrav(element: Krav, index: number, list: Array<Krav>) {
+      return list.includes(element);
+    }
+
+    const deleteAndFetchLoeysing = async () => {
+      const deleteListe = kravRowSelection.map((krav) => krav.id);
+      for (const krav of deleteListe) {
+        try {
+          await deleteKrav(krav);
+        } catch (e) {
+          toError(e, 'Feil ved sletting avk krav');
+        }
+      }
+
+      const updatedKrav = kravliste.filter(filterKrav);
+      setKravRowSelection(updatedKrav);
+    };
+
+    deleteAndFetchLoeysing().finally(() => {
+      setKravRowSelection([]);
+    });
+  }, [kravRowSelection]);
 
   return (
     <UserActionTable<Krav>
@@ -21,6 +50,22 @@ const KravApp = () => {
       tableProps={{
         data: kravliste,
         defaultColumns: kravColumns,
+        rowActions: [
+          {
+            action: 'add',
+            route: KRAV_CREATE,
+          },
+          {
+            action: 'delete',
+            rowSelectionRequired: true,
+            modalProps: {
+              title: 'Slett krav',
+              disabled: kravRowSelection.length === 0,
+              message: deleteMessage,
+              onConfirm: onClickDelete,
+            },
+          },
+        ],
         onClickRow: (row) =>
           navigate(
             getFullPath(KRAV_EDIT, {
@@ -33,9 +78,10 @@ const KravApp = () => {
   );
 };
 
-export default KravApp;
+export default KravList;
 
 const kravColumnDefs = (): Array<ColumnDef<Krav>> => [
+  getCheckboxColumn((row: Row<Krav>) => `Velg ${row.original.tittel}`),
   {
     accessorFn: (row) => row.tittel,
     id: 'Tittel',
