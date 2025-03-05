@@ -84,6 +84,7 @@ const KravForm = <T extends object>({ krav, onSubmit }: KravFormProps<T>) => {
           options={createOptionsFormEnum(KravStatus)}
           label="Status krav"
           name="status"
+          radio={true}
           required
         />
         <TestlabFormSelect
@@ -91,6 +92,7 @@ const KravForm = <T extends object>({ krav, onSubmit }: KravFormProps<T>) => {
           options={createOptionsFormEnum(WcagPrinsipp)}
           label="Prinsipp"
           name="prinsipp"
+          radio={true}
           required
         />
         <TestlabFormSelect
@@ -105,6 +107,7 @@ const KravForm = <T extends object>({ krav, onSubmit }: KravFormProps<T>) => {
           options={createOptionsFromLiteral<Samsvarsnivaa>(['A', 'AA', 'AAA'])}
           label="Samsvarsnivaa"
           name="samsvarsnivaa"
+          radio={true}
           required
         />
         <TestlabFormInput
