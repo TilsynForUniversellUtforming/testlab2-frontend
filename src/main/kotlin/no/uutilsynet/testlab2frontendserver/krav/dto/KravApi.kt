@@ -7,5 +7,7 @@ interface KravApi {
 
   fun updateKrav(id: Int, krav: Krav): Krav
 
-  fun createKrav(krav: Krav): Int
+  fun createKrav(krav: KravInit): Int
+
+  fun deleteKrav(id: Int): Boolean
 }
