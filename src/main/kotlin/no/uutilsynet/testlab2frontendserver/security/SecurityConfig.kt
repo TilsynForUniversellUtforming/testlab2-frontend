@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.security
 
+import java.util.stream.Collectors
 import no.uutilsynet.testlab2securitylib.RoleExtractor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,8 +16,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.util.stream.Collectors
-
 
 @Configuration
 @EnableWebSecurity

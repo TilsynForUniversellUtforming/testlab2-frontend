@@ -21,8 +21,8 @@ class Testlab2FrontendServerApplication(val restTemplateBuilder: RestTemplateBui
   @Bean
   @Profile("security")
   fun restTemplateSecurity(tokenRelayInterceptor: TokenRelayInterceptor): RestTemplate {
-      val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
-      interceptors.add(tokenRelayInterceptor)
+    val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
+    interceptors.add(tokenRelayInterceptor)
 
     return restTemplateBuilder.interceptors(interceptors).build()
   }
