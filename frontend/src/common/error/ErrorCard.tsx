@@ -8,6 +8,7 @@ import {
   useAsyncError,
   useRouteError,
 } from 'react-router-dom';
+import { reportErrorToBackend } from '@common/util/apiUtils';
 
 interface ErrorContentProps {
   onClick?: () => void;
@@ -59,6 +60,7 @@ const ErrorCard = ({
   const routeError = useRouteError();
   const asyncError = useAsyncError() as Error | undefined;
   const isRouteError = isRouteErrorResponse(routeError);
+  reportErrorToBackend(error);
 
   if (
     typeof error === 'undefined' &&
