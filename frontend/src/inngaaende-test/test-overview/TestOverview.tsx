@@ -30,6 +30,7 @@ import { STYRINGSDATA_LOEYSING } from '../../styringsdata/StyringsdataRoutes';
 import { KlageType, StyringsdataListElement } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
+import { KontrollType } from '../../kontroll/types';
 
 export type TestOverviewLoaderData = {
   loeysingList: Loeysing[];
@@ -37,6 +38,7 @@ export type TestOverviewLoaderData = {
   testgrunnlag: Testgrunnlag[];
   styringsdata: StyringsdataListElement[];
   styringsdataError: boolean;
+  kontrolltype: KontrollType;
 };
 
 export function teststatus(

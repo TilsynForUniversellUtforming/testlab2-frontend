@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 class CsrfController {
   @RequestMapping("/csrf")
   fun csrf(token: CsrfToken?): CsrfToken? {
+    println("Getting CSRF token " + token)
     return token
   }
 }

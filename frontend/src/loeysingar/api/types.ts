@@ -6,6 +6,7 @@ export type Loeysing = {
   url: string;
   orgnummer: string;
   verksemdId?: number;
+  type: 'nett' | 'app';
 };
 
 export type LoeysingInit = {
