@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.core.AbstractOAuth2Token
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Component
 
 @Component
@@ -35,8 +36,14 @@ class TokenRelayInterceptor(
   ): ClientHttpResponse {
     val authentication: Authentication = SecurityContextHolder.getContext().authentication
 
+    if (authentication is JwtAuthenticationToken) {
+      request.headers.setBearerAuth(authentication.token.tokenValue)
+      execution.execute(request, bytes)
+    }
+
     return if (authentication is OAuth2AuthenticationToken) {
       runCatching {
+            logger.info("Authenticated")
             val clientRegistrationId = authentication.authorizedClientRegistrationId
             var client = loadClient(clientRegistrationId, authentication)
 
