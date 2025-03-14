@@ -20,7 +20,7 @@ class SecurityConfig {
   fun filterChain(http: HttpSecurity): SecurityFilterChain {
     http {
       csrf { csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse() }
-      authorizeHttpRequests { authorize(anyRequest, authenticated) }
+      authorizeHttpRequests {  authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2ResourceServer {
         jwt { jwtAuthenticationConverter = Testlab2AuthenticationConverter() }
       }
