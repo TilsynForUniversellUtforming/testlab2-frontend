@@ -62,6 +62,26 @@ const getTokenFromResponse = async (response: Response): Promise<string> => {
   }
 };
 
+const getTokenFromCookie = (): string | undefined => {
+  const cookies = document.cookie.split(';');
+
+  function getCsrfcookies() {
+    return cookies.filter((cookie) => {
+      return cookie.includes('XSRF-TOKEN');
+    });
+  }
+
+  if (cookies.length === 0 && cookies.includes('XSRF-TOKEN')) {
+    return cookies[0].split('=')[1];
+  } else {
+    const csrfcookies = getCsrfcookies();
+    console.log('Csrfcookies ' + csrfcookies);
+    if (csrfcookies.length > 0) {
+      return csrfcookies[0].split('=')[1];
+    }
+  }
+};
+
 export const fetchWrapper = async (
   input: string,
   init?: RequestInit,
@@ -69,7 +89,11 @@ export const fetchWrapper = async (
 ): Promise<Response> => {
   if (init) {
     return await fetch(`/csrf`, { method: 'GET' }).then(async (response) => {
-      const token = await getTokenFromResponse(response);
+      const cookieToken = getTokenFromCookie();
+      const responseToken = await getTokenFromResponse(response);
+      console.log(cookieToken, responseToken);
+
+      const token = responseToken;
 
       if (defaultContentType) {
         init.headers = {

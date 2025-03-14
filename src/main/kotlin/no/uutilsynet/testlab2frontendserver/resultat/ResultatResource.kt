@@ -141,7 +141,6 @@ class ResultatResource(
   }
 
   private fun mapBilder(testresultat: TestResultat): TestResultat {
-    logger.info("Bilder: ${testresultat.bilder}")
     val nyeBilder = testresultat.bilder?.map { bildeService.proxyUrl(it) }
     return testresultat.copy(bilder = nyeBilder)
   }

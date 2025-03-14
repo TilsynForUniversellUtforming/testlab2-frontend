@@ -19,7 +19,7 @@ import org.springframework.security.oauth2.core.AbstractOAuth2Token
 import org.springframework.stereotype.Component
 
 @Component
-@Profile("oidcclient")
+@Profile("security")
 class TokenRelayInterceptor(
     val clientService: OAuth2AuthorizedClientService,
     val clientManager: OAuth2AuthorizedClientManager
