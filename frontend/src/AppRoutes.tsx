@@ -100,7 +100,6 @@ export const AppRoutes: RouteObject = {
     TestingRoutes,
     ResultRoutes,
     KontrollRoutes,
-    TestingRoutes,
     StyringsdataRoutes,
     {
       path: '*',
