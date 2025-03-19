@@ -21,7 +21,6 @@ import {
   ActiveTest,
   ManuellTestStatus,
   PageType,
-  TestContextKontroll,
   TestOverviewLoaderResponse,
   TestResultUpdate,
 } from '@test/types';
@@ -39,7 +38,7 @@ import {
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router-dom';
 
 const TestOverviewLoeysing = () => {
   const { testgrunnlagId: testgrunnlagIdParam, loeysingId: loeysingIdParam } =
@@ -47,8 +46,6 @@ const TestOverviewLoeysing = () => {
   const loeysingId = Number(loeysingIdParam);
   const testgrunnlagId = Number(testgrunnlagIdParam);
 
-  const { innhaldstypeList, sideutvalTypeList }: TestContextKontroll =
-    useOutletContext();
   const [innhaldstype, setInnhaldstype] =
     useState<InnhaldstypeTesting>(innhaldstypeAlle);
 
@@ -59,6 +56,8 @@ const TestOverviewLoeysing = () => {
     activeLoeysing,
     kontrollTitle,
     testKeys,
+    sideutvalTypeList,
+    innhaldstypeList,
   } = useLoaderData() as TestOverviewLoaderResponse;
 
   const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>(

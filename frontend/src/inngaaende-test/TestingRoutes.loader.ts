@@ -236,41 +236,6 @@ function getActiveLoeysing(kontroll: Kontroll, loeysingId: number) {
   }
   return activeLoeysing;
 }
-
-export const testLoader = async ({ params }: LoaderFunctionArgs) => {
-  const kontrollId = Number(params?.id);
-  validateKontrollParam(kontrollId);
-
-  const [
-    kontrollPromise,
-    sideutvalTypePromise,
-    innhaldstypePromise,
-    testreglarPromise,
-  ] = await Promise.allSettled([
-    fetchKontroll(kontrollId),
-    listSideutvalType(),
-    listInnhaldstype(),
-    listTestreglarWithMetadata(),
-  ]);
-
-  const sideutvalTypeList = validatedSideutvalTypeList(sideutvalTypePromise);
-
-  const innhaldstypeList = validatedContentTypeList(innhaldstypePromise);
-
-  const testreglar = validatedTestreglar(testreglarPromise);
-
-  const kontroll = await validatedKontroll(kontrollPromise, kontrollId);
-  const kontrollTestreglar = getKontrollTestreglar(kontroll, testreglar);
-
-  return {
-    sideutvalTypeList: sideutvalTypeList,
-    innhaldstypeTestingList: getInnhaldstypeInTest(
-      kontrollTestreglar,
-      innhaldstypeList
-    ),
-  };
-};
-
 export const testOverviewLoader = async ({
   params,
 }: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
@@ -309,13 +274,21 @@ export const testOverviewLoeysingLoader = async ({
   const testgrunnlagId = getIdFromParams(params?.testgrunnlagId);
   const loeysingId = getIdFromParams(params?.loeysingId);
 
-  const [kontrollPromise, testgrunnlagPromise, testResults, testreglarPromise] =
-    await Promise.allSettled([
-      fetchKontroll(kontrollId),
-      listTestgrunnlag(kontrollId),
-      fetchTestResults(testgrunnlagId),
-      listTestreglarWithMetadata(),
-    ]);
+  const [
+    kontrollPromise,
+    testgrunnlagPromise,
+    testResults,
+    testreglarPromise,
+    sideutvalTypePromise,
+    innhaldstypePromise,
+  ] = await Promise.allSettled([
+    fetchKontroll(kontrollId),
+    listTestgrunnlag(kontrollId),
+    fetchTestResults(testgrunnlagId),
+    listTestreglarWithMetadata(),
+    listSideutvalType(),
+    listInnhaldstype(),
+  ]);
 
   const testgrunnlag = getTestgrunnlag(testgrunnlagPromise, testgrunnlagId);
   const testResultsForLoeysing = getTestresultsForLoeysing(
@@ -339,12 +312,24 @@ export const testOverviewLoeysingLoader = async ({
 
   const activeLoeysing = getActiveLoeysing(kontroll, loeysingId);
 
-  return {
+  const sideutvalTypeList = validatedSideutvalTypeList(sideutvalTypePromise);
+  const innhaldstypeList = validatedContentTypeList(innhaldstypePromise);
+
+  const innhalstypeForTesting = getInnhaldstypeInTest(
+    testreglarForLoeysing,
+    innhaldstypeList
+  );
+
+  const loaderData = {
     testResultatForLoeysing: testResultsForLoeysing,
     sideutvalForLoeysing: sideutvalForLoeysing,
     testreglarForLoeysing: testreglarForLoeysing,
     testKeys: toTestKeys(testgrunnlag, testResultsForLoeysing),
     activeLoeysing: activeLoeysing,
     kontrollTitle: kontroll.tittel,
+    sideutvalTypeList: sideutvalTypeList,
+    innhaldstypeList: innhalstypeForTesting,
   };
+
+  return loaderData;
 };
