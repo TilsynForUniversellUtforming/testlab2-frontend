@@ -8,6 +8,8 @@ import {
   Svar,
   TestgrunnlagListElement,
 } from './api/types';
+import { StyringsdataListElement } from '../styringsdata/types';
+import { KontrollType } from '../kontroll/types';
 
 export type ManuellTestStatus =
   | 'ferdig'
@@ -42,6 +44,15 @@ export type TestResultUpdate = {
   kommentar?: string;
 };
 
+export type TestOverviewLoaderData = {
+  loeysingList: Loeysing[];
+  resultater: ResultatManuellKontroll[];
+  testgrunnlag: Testgrunnlag[];
+  styringsdata: StyringsdataListElement[];
+  styringsdataError: boolean;
+  kontrolltype: KontrollType;
+};
+
 export type TestOverviewLoaderResponse = {
   testResultatForLoeysing: ResultatManuellKontroll[];
   sideutvalForLoeysing: Sideutval[];
@@ -72,3 +83,5 @@ export type Testgrunnlag = {
   type: 'OPPRINNELIG_TEST' | 'RETEST';
   datoOppretta: string;
 };
+
+export class TestregelTestingStatus {}
