@@ -2,8 +2,8 @@ import { fetchTestResults, listTestgrunnlag } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import {
   Testgrunnlag,
-  TestOverviewLoaderResponse,
   TestOverviewLoaderData,
+  TestOverviewLoaderResponse,
 } from '@test/types';
 import {
   getIdFromParams,
@@ -92,13 +92,6 @@ function validatedContentTypeList(
 
   return innhaldstypePromise.value as InnhaldstypeTesting[];
 }
-
-function validateKontrollParam(kontrollId: number) {
-  if (isNaN(kontrollId) || kontrollId <= 0) {
-    throw new Error('Ugyldig kontroll-id');
-  }
-}
-
 function validatedSideutvalTypeList(
   sideutvalTypePromise:
     | PromiseFulfilledResult<
@@ -112,13 +105,6 @@ function validatedSideutvalTypeList(
 
   return sideutvalTypePromise.value as SideutvalType[];
 }
-
-function getKontrollTestreglar(kontroll: Kontroll, testreglar: Testregel[]) {
-  const kontrollTestregelIdList = getKontrollTestregelIdList(kontroll);
-
-  return testreglar.filter((tr) => kontrollTestregelIdList.includes(tr.id));
-}
-
 function validatedTestgrunnlag(
   testgrunnlagPromise:
     | PromiseFulfilledResult<Response | Testgrunnlag[]>
@@ -320,7 +306,7 @@ export const testOverviewLoeysingLoader = async ({
     innhaldstypeList
   );
 
-  const loaderData = {
+  return {
     testResultatForLoeysing: testResultsForLoeysing,
     sideutvalForLoeysing: sideutvalForLoeysing,
     testreglarForLoeysing: testreglarForLoeysing,
@@ -330,6 +316,4 @@ export const testOverviewLoeysingLoader = async ({
     sideutvalTypeList: sideutvalTypeList,
     innhaldstypeList: innhalstypeForTesting,
   };
-
-  return loaderData;
 };
