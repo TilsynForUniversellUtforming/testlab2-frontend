@@ -18,7 +18,7 @@ import tilsynImg from './assets/tilsyn.svg';
 import { KONTROLL_LISTE, KontrollRoutes } from './kontroll/KontrollRoutes';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
-import { RESULTAT_ROOT, ResultRoutes } from './resultat/ResultatRoutes';
+import { RESULTAT_ROOT, ResultRoutes } from '@resultat/ResultatRoutes';
 import { StyringsdataRoutes } from './styringsdata/StyringsdataRoutes';
 
 export const ROOT: AppRoute = {
