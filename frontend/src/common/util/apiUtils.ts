@@ -17,6 +17,7 @@ export const responseToJson = (
   if (response.ok) {
     return response.json();
   } else {
+    reportErrorToBackend(new Error(JSON.stringify(response)));
     throw new Error(errorMessage);
   }
 };
@@ -62,7 +63,7 @@ export const reportErrorToBackend = (error: Error | undefined) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: error.stack,
+      body: error.message + error.stack + error.cause,
     }).then((response) => {});
   }
 };
