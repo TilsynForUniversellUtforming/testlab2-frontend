@@ -21,9 +21,20 @@ export const responseToJson = (
     return response.json();
   } else {
     console.error(response);
-    reportErrorToBackend(new Error(JSON.stringify(response)));
     throw new Error(errorMessage);
   }
+};
+
+export const responseWithLogErrors = (
+  response: Response,
+  errorMessage: string
+  // eslint-disable-next-line
+): Promise<any> => {
+  return responseToJson(response, errorMessage).catch((error) => {
+    console.error(error);
+    reportErrorToBackend(error);
+    throw error;
+  });
 };
 
 /**

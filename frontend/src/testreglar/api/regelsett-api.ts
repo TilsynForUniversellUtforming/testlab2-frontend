@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 import {
   Regelsett,
   RegelsettCreate,
@@ -16,7 +16,9 @@ export const fetchRegelsettList = async (
 
   return await fetch(`/api/v1/regelsett?${params.toString()}`, {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikke hente regelsett'));
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikke hente regelsett')
+  );
 };
 
 export const deleteRegelsettList = async (
@@ -29,7 +31,7 @@ export const deleteRegelsettList = async (
     },
     body: JSON.stringify({ idList: regelsettIdList }),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje slette regelsett')
+    responseWithLogErrors(response, 'Kunne ikkje slette regelsett')
   );
 };
 
@@ -43,7 +45,7 @@ export const createRegelsett = async (
     },
     body: JSON.stringify(regelsettCreate),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje lage nytt regelsett')
+    responseWithLogErrors(response, 'Kunne ikkje lage nytt regelsett')
   );
 
 export const updateRegelsett = async (
@@ -56,5 +58,5 @@ export const updateRegelsett = async (
     },
     body: JSON.stringify(regelsett),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere regelsett')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere regelsett')
   );

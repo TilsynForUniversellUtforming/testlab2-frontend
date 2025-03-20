@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import {
   StyringsdataKontroll,
@@ -15,7 +15,10 @@ export const findStyringsdataForKontroll = async (
   return await fetch(`${styringsdataApiBaseUrl}?kontrollId=${kontrollId}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente styringsdata for kontroll')
+    responseWithLogErrors(
+      response,
+      'Kunne ikkje hente styringsdata for kontroll'
+    )
   );
 };
 
@@ -28,7 +31,7 @@ export const fetchStyringsdataLoeysing = async (
       method: 'GET',
     }
   ).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente styringsdata')
+    responseWithLogErrors(response, 'Kunne ikkje hente styringsdata')
   );
 };
 
@@ -42,7 +45,7 @@ export const updateStyringsdataLoeysing = async (
     },
     body: JSON.stringify(styringsdata),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere styringsdata')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere styringsdata')
   );
 
 export const createStyringsdataLoeysing = async (
@@ -58,7 +61,7 @@ export const createStyringsdataLoeysing = async (
     if (response.status === 400) {
       throw new Error('Styringsdata finns allereie');
     }
-    return responseToJson(response, 'Kunne ikkje opprette styringsdata');
+    return responseWithLogErrors(response, 'Kunne ikkje opprette styringsdata');
   });
 
 export const fetchStyringsdataKontroll = async (
@@ -67,13 +70,13 @@ export const fetchStyringsdataKontroll = async (
   return await fetch(`${styringsdataApiBaseUrl}/kontroll/${styringsdataId}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente styringsdata')
+    responseWithLogErrors(response, 'Kunne ikkje hente styringsdata')
   );
 };
 
 export const updateStyringsdataKontroll = async (
   styringsdata: StyringsdataKontroll
-): Promise<StyringsdataLoeysing> =>
+): Promise<StyringsdataKontroll> =>
   await fetchWrapper(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
     method: 'PUT',
     headers: {
@@ -81,7 +84,7 @@ export const updateStyringsdataKontroll = async (
     },
     body: JSON.stringify(styringsdata),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere styringsdata')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere styringsdata')
   );
 
 export const createStyringsdataKontroll = async (
@@ -97,5 +100,5 @@ export const createStyringsdataKontroll = async (
     if (response.status === 400) {
       throw new Error('Styringsdata finns allereie');
     }
-    return responseToJson(response, 'Kunne ikkje opprette styringsdata');
+    return responseWithLogErrors(response, 'Kunne ikkje opprette styringsdata');
   });

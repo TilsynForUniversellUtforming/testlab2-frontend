@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
@@ -21,7 +21,7 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
     },
     body: JSON.stringify(maaling),
   }).then((response) =>
-    responseToJson(
+    responseWithLogErrors(
       response,
       'Kunne ikkje oppretta måling, ver vennleg og prøv igjen seinare'
     )
@@ -37,7 +37,7 @@ export const updateMaaling = async (
     },
     body: JSON.stringify(maaling),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere måling')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const fetchCrawlParametersKontroll = async (
@@ -49,7 +49,7 @@ export const fetchCrawlParametersKontroll = async (
       method: 'GET',
     }
   ).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente crawl-parametere')
+    responseWithLogErrors(response, 'Kunne ikkje hente crawl-parametere')
   );
 
 export const updateCrawlParameters = async (
@@ -66,7 +66,7 @@ export const updateCrawlParameters = async (
       body: JSON.stringify(crawlParameters),
     }
   ).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere crawl-parametere')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere crawl-parametere')
   );
 
 export const deleteMaalingList = async (
@@ -78,7 +78,9 @@ export const deleteMaalingList = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maalingIdList),
-  }).then((response) => responseToJson(response, 'Kunne ikkje hente målingar'));
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente målingar')
+  );
 
 export const updateMaalingStatus = async (
   id: number,
@@ -91,18 +93,22 @@ export const updateMaalingStatus = async (
     },
     body: status,
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere måling')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
   fetch('/api/v1/maalinger', {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikkje hente målingar'));
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente målingar')
+  );
 
 export const fetchMaaling = async (id: number): Promise<Maaling> =>
   fetch(`/api/v1/maalinger/${id}`, {
     method: 'GET',
-  }).then((response) => responseToJson(response, 'Kunne ikkje hente måling'));
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente måling')
+  );
 
 export const restart = async (
   restartRequest: RestartRequest
@@ -117,7 +123,10 @@ export const restart = async (
       body: JSON.stringify(restartRequest.loeysingIdList),
     }
   ).then((response) =>
-    responseToJson(response, `Kunne ikkje restarte ${restartRequest.process}`)
+    responseWithLogErrors(
+      response,
+      `Kunne ikkje restarte ${restartRequest.process}`
+    )
   );
 
 export const fetchLoeysingNettsider = async (
@@ -130,7 +139,7 @@ export const fetchLoeysingNettsider = async (
       method: 'GET',
     }
   ).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente sideutval for måling')
+    responseWithLogErrors(response, 'Kunne ikkje hente sideutval for måling')
   );
 
 export const fetchTestResultatLoeysing = async (
@@ -142,7 +151,9 @@ export const fetchTestResultatLoeysing = async (
     {
       method: 'GET',
     }
-  ).then((response) => responseToJson(response, 'Kunne ikkje hente løysingar'));
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
+  );
 
 export const getMaalingIdFromKontrollId = async (
   kontrollId: number
@@ -150,5 +161,5 @@ export const getMaalingIdFromKontrollId = async (
   await fetch(`/api/v1/maalinger/kontroll/${kontrollId}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );

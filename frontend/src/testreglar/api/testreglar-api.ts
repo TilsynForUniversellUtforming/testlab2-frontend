@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Krav } from '../../krav/types';
 import {
@@ -15,42 +15,42 @@ export const listTestreglar = async (): Promise<TestregelBase[]> =>
   await fetch(`/api/v1/testreglar`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke hente testreglar')
+    responseWithLogErrors(response, 'Kunne ikke hente testreglar')
   );
 
 export const listTestreglarWithMetadata = async (): Promise<Testregel[]> =>
   await fetch(`/api/v1/testreglar?includeMetadata=true`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke hente testreglar')
+    responseWithLogErrors(response, 'Kunne ikke hente testreglar')
   );
 
 export const getTestregel = async (id: number): Promise<Testregel> =>
   await fetch(`/api/v1/testreglar/${id}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente testregel')
+    responseWithLogErrors(response, 'Kunne ikkje hente testregel')
   );
 
 export const listInnhaldstype = async (): Promise<InnhaldstypeTesting[]> =>
   await fetch(`/api/v1/testreglar/innhaldstypeForTesting`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente testregel')
+    responseWithLogErrors(response, 'Kunne ikkje hente testregel')
   );
 
 export const listTema = async (): Promise<Tema[]> =>
   await fetch(`/api/v1/testreglar/temaForTestreglar`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente testregel')
+    responseWithLogErrors(response, 'Kunne ikkje hente testregel')
   );
 
 export const listTestobjekt = async (): Promise<Testobjekt[]> =>
   await fetch(`/api/v1/testreglar/testobjektForTestreglar`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente testregel')
+    responseWithLogErrors(response, 'Kunne ikkje hente testregel')
   );
 
 export const createTestregel = async (
@@ -63,7 +63,7 @@ export const createTestregel = async (
     },
     body: JSON.stringify(testregel),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje lagre testregel')
+    responseWithLogErrors(response, 'Kunne ikkje lagre testregel')
   );
 
 export const updateTestregel = async (
@@ -76,7 +76,7 @@ export const updateTestregel = async (
     },
     body: JSON.stringify(testregel),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke oppdatere testregel')
+    responseWithLogErrors(response, 'Kunne ikke oppdatere testregel')
   );
 
 export const deleteTestregelList = async (
@@ -89,11 +89,11 @@ export const deleteTestregelList = async (
     },
     body: JSON.stringify({ idList: testregelIdList }),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke slette testregel')
+    responseWithLogErrors(response, 'Kunne ikke slette testregel')
   );
 
 export const getKrav = async (idKrav: number): Promise<Krav> => {
   return fetch(`/api/v1/testreglar/krav/${idKrav}`, {}).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente krav')
+    responseWithLogErrors(response, 'Kunne ikkje hente krav')
   );
 };
