@@ -14,6 +14,9 @@ export const responseToJson = (
   errorMessage: string
   // eslint-disable-next-line
 ): Promise<any> => {
+  if (response.redirected) {
+    window.location.href = response.url;
+  }
   if (response.ok) {
     return response.json();
   } else {
