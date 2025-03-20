@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Loeysing, LoeysingFormElement, LoeysingInit } from './types';
 
@@ -7,14 +7,14 @@ export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
   await fetch(`/api/v1/loeysing/${id}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const findLoeysingByName = async (name: string): Promise<Loeysing[]> =>
   await fetch(`/api/v1/loeysing?name=${name}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje søke etter virksomhet')
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const findLoeysingByOrgnummer = async (
@@ -23,14 +23,14 @@ export const findLoeysingByOrgnummer = async (
   await fetch(`/api/v1/loeysing?orgnummer=${orgnummer}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje søke etter virksomhet')
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   await fetch('/api/v1/loeysing', {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
@@ -41,18 +41,17 @@ export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
     },
     body: JSON.stringify(loeysing),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere løysing')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere løysing')
   );
 
 export const createLoeysing = async (
   loeysingInit: LoeysingInit
 ): Promise<Loeysing[]> => {
-  //const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
   return await fetchWrapper('/api/v1/loeysing', {
     method: 'POST',
     body: JSON.stringify(loeysingInit),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje opprette løysing')
+    responseWithLogErrors(response, 'Kunne ikkje opprette løysing')
   );
 };
 
@@ -81,6 +80,6 @@ export const fetchLoeysingFormElement = async (
   return await fetch(`/api/v1/loeysing/${id}/withVerksemd`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 };

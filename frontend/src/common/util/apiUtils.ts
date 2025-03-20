@@ -14,11 +14,27 @@ export const responseToJson = (
   errorMessage: string
   // eslint-disable-next-line
 ): Promise<any> => {
+  if (response.redirected) {
+    window.location.href = response.url;
+  }
   if (response.ok) {
     return response.json();
   } else {
+    console.error(response);
     throw new Error(errorMessage);
   }
+};
+
+export const responseWithLogErrors = (
+  response: Response,
+  errorMessage: string
+  // eslint-disable-next-line
+): Promise<any> => {
+  return responseToJson(response, errorMessage).catch((error) => {
+    console.error(error);
+    reportErrorToBackend(error);
+    throw error;
+  });
 };
 
 /**
@@ -62,7 +78,7 @@ export const reportErrorToBackend = (error: Error | undefined) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: error.stack,
+      body: error.message + error.stack + error.cause,
     }).then((response) => {});
   }
 };

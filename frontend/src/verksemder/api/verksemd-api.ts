@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Verksemd, VerksemdInit } from './types';
 
@@ -21,7 +21,7 @@ export const fetchVerksemd = async (id: number): Promise<Verksemd> => {
   return await fetch(`/api/v1/verksemd/${id}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 };
 
@@ -29,7 +29,7 @@ export const findVerksemdByName = async (name: string): Promise<Verksemd[]> =>
   await fetch(`/api/v1/verksemd/list?name=${name}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje søke etter virksomhet')
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const findVerksemdByOrgnummer = async (
@@ -38,14 +38,14 @@ export const findVerksemdByOrgnummer = async (
   await fetch(`/api/v1/verksemd/list?orgnummer=${orgnummer}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje søke etter virksomhet')
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const fetchVerksemdList = async (): Promise<Verksemd[]> =>
   await fetch('/api/v1/verksemd', {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente løysingar')
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const fetchVerksemdMany = async (
@@ -54,7 +54,7 @@ export const fetchVerksemdMany = async (
   await fetch(`/api/v1/verksemd?idList=${kontrollVerksemdIds.join(',')}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente verksemder')
+    responseWithLogErrors(response, 'Kunne ikkje hente verksemder')
   );
 
 export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
@@ -65,7 +65,7 @@ export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
     },
     body: JSON.stringify(Verksemd),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere løysing')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere løysing')
   );
 
 export const createVerksemd = async (
@@ -75,7 +75,7 @@ export const createVerksemd = async (
     method: 'POST',
     body: JSON.stringify(VerksemdInit),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje opprette løysing')
+    responseWithLogErrors(response, 'Kunne ikkje opprette løysing')
   );
 };
 

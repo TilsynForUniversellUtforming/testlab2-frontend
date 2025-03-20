@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 import { Testgrunnlag } from '@test/types';
 
 import {
@@ -19,7 +19,7 @@ export const fetchTestResults = async (
   return await fetch(`${testingApiBaseUrl}/${testgrunnlagId}`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikke hente testresultat')
+    responseWithLogErrors(response, 'Kunne ikke hente testresultat')
   );
 };
 
@@ -33,7 +33,7 @@ export const createTestResultat = async (
     },
     body: JSON.stringify(testResultat),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje opprette testresultat')
+    responseWithLogErrors(response, 'Kunne ikkje opprette testresultat')
   );
 };
 
@@ -47,7 +47,7 @@ export const updateTestResultat = async (
     },
     body: JSON.stringify([testResultat]),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere testresultat')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere testresultat')
   );
 };
 
@@ -61,7 +61,7 @@ export const updateTestResultatMany = async (
     },
     body: JSON.stringify(testResultatList),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje oppdatere testresultat')
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere testresultat')
   );
 };
 
@@ -75,7 +75,7 @@ export const deleteTestResultat = async (
     },
     body: JSON.stringify(resultat),
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje slette testresultat')
+    responseWithLogErrors(response, 'Kunne ikkje slette testresultat')
   );
 };
 
@@ -94,12 +94,14 @@ export const uploadBilde = async (
       body: formData,
     },
     false
-  ).then((response) => responseToJson(response, 'Kunne ikkje lagre bilde'));
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje lagre bilde')
+  );
 };
 
 export const getBilder = async (resultatId: number): Promise<Bilde[]> =>
   await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
-    (response) => responseToJson(response, 'Kunne ikkje hente bilder')
+    (response) => responseWithLogErrors(response, 'Kunne ikkje hente bilder')
   );
 
 export const deleteBilde = async (
@@ -108,14 +110,19 @@ export const deleteBilde = async (
 ): Promise<Bilde[]> =>
   await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
     method: 'DELETE',
-  }).then((response) => responseToJson(response, 'Kunne ikkje slette bilde'));
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje slette bilde')
+  );
 
 export const listTestgrunnlag = async (
   kontrollId: number
 ): Promise<Testgrunnlag[]> =>
   await fetch(`${kontrollApiBaseUrl}/${kontrollId}/testgrunnlag`).then(
     (response) =>
-      responseToJson(response, 'Klarte ikke å hente liste med testgrunnlag')
+      responseWithLogErrors(
+        response,
+        'Klarte ikke å hente liste med testgrunnlag'
+      )
   );
 
 export const createRetest = async (
@@ -130,7 +137,9 @@ export const createRetest = async (
       },
       body: JSON.stringify(retestParams),
     }
-  ).then((response) => responseToJson(response, 'Kunne ikkje opprette retest'));
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje opprette retest')
+  );
 };
 
 export const postTestgrunnlag = async (nyttTestgrunnlag: {
@@ -146,7 +155,7 @@ export const postTestgrunnlag = async (nyttTestgrunnlag: {
       body: JSON.stringify(nyttTestgrunnlag),
     }
   ).then((response) =>
-    responseToJson(response, 'Kunne ikkje opprette testgrunnlag')
+    responseWithLogErrors(response, 'Kunne ikkje opprette testgrunnlag')
   );
 };
 

@@ -1,5 +1,5 @@
 import { fetchWrapper } from '@common/form/util';
-import { responseToJson } from '@common/util/apiUtils';
+import { responseWithLogErrors } from '@common/util/apiUtils';
 import { Utval } from '@loeysingar/api/types';
 
 import { SideutvalBase, SideutvalType } from './sideutval/types';
@@ -65,7 +65,7 @@ export async function listSideutvalType(): Promise<SideutvalType[]> {
   return await fetch(`/api/v1/kontroller/sideutvaltype`, {
     method: 'GET',
   }).then((response) =>
-    responseToJson(response, 'Kunne ikkje hente testregel')
+    responseWithLogErrors(response, 'Kunne ikkje hente testregel')
   );
 }
 

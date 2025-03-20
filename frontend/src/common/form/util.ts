@@ -89,11 +89,7 @@ export const fetchWrapper = async (
 ): Promise<Response> => {
   if (init) {
     return await fetch(`/csrf`, { method: 'GET' }).then(async (response) => {
-      const cookieToken = getTokenFromCookie();
-      const responseToken = await getTokenFromResponse(response);
-      console.log(cookieToken, responseToken);
-
-      const token = responseToken;
+      const token = await getTokenFromResponse(response);
 
       if (defaultContentType) {
         init.headers = {
