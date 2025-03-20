@@ -17,6 +17,7 @@ export const responseToJson = (
   if (response.ok) {
     return response.json();
   } else {
+    console.error(response);
     reportErrorToBackend(new Error(JSON.stringify(response)));
     throw new Error(errorMessage);
   }
