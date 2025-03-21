@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import ImageGallery from './ImageGallery';
 import { Point } from './types';
+import { fetchWithErrorHandling } from '@common/form/util';
 
 const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   const [alert, setAlert] = useAlert();

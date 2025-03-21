@@ -1,4 +1,4 @@
-import { fetchWithCsrf } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Krav } from '../../krav/types';

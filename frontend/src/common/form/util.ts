@@ -114,25 +114,20 @@ export const fetchWithErrorHandling: typeof fetch = async (
   ...rest
 ) => {
   async function call(): Promise<Response> {
-    return fetchWithErrorHandling(input, ...rest)
-      .then((response) => {
-        console.log('response', response);
-        return response;
-      })
-      .catch((error) => {
-        console.error(error);
-        reportErrorToBackend(error);
-        if (
-          input
-            .toString()
-            .includes(
-              'https://user.difi.no/auth/realms/difi/protocol/openid-connect/auth'
-            )
-        ) {
-          window.location.href = input.toString();
-        }
-        throw new Error('Kunne ikke hente data');
-      });
+    return fetch(input, ...rest).catch((error) => {
+      console.error(error);
+      reportErrorToBackend(error);
+      if (
+        input
+          .toString()
+          .includes(
+            'https://user.difi.no/auth/realms/difi/protocol/openid-connect/auth'
+          )
+      ) {
+        window.location.href = input.toString();
+      }
+      return Promise.reject(error);
+    });
   }
   return await call();
 };
