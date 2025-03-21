@@ -12,11 +12,14 @@ import {
   Paragraph,
   Tag,
 } from '@digdir/designsystemet-react';
-import { Loeysing } from '@loeysingar/api/types';
 import { ResultatManuellKontroll, RetestRequest } from '@test/api/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import { ManuellTestStatus, Testgrunnlag } from '@test/types';
+import {
+  ManuellTestStatus,
+  Testgrunnlag,
+  TestOverviewLoaderData,
+} from '@test/types';
 import { useCallback } from 'react';
 import {
   Link,
@@ -27,19 +30,9 @@ import {
 } from 'react-router-dom';
 
 import { STYRINGSDATA_LOEYSING } from '../../styringsdata/StyringsdataRoutes';
-import { KlageType, StyringsdataListElement } from '../../styringsdata/types';
+import { KlageType } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
-import { KontrollType } from '../../kontroll/types';
-
-export type TestOverviewLoaderData = {
-  loeysingList: Loeysing[];
-  resultater: ResultatManuellKontroll[];
-  testgrunnlag: Testgrunnlag[];
-  styringsdata: StyringsdataListElement[];
-  styringsdataError: boolean;
-  kontrolltype: KontrollType;
-};
 
 export function teststatus(
   resultatliste: ResultatManuellKontroll[],
@@ -55,21 +48,19 @@ export function teststatus(
 
   if (resultater.every((r) => r.status === 'IkkjePaabegynt')) {
     return 'ikkje-starta';
-  } else {
-    if (
-      kombinasjoner.every(([testregelId, sideutvalId]) =>
-        resultater.some(
-          (r) =>
-            r.testregelId === testregelId &&
-            r.sideutvalId === sideutvalId &&
-            r.status === 'Ferdig'
-        )
+  } else if (
+    kombinasjoner.every(([testregelId, sideutvalId]) =>
+      resultater.some(
+        (r) =>
+          r.testregelId === testregelId &&
+          r.sideutvalId === sideutvalId &&
+          r.status === 'Ferdig'
       )
-    ) {
-      return 'ferdig';
-    } else {
-      return 'under-arbeid';
-    }
+    )
+  ) {
+    return 'ferdig';
+  } else {
+    return 'under-arbeid';
   }
 }
 
@@ -164,6 +155,24 @@ const TestOverview = () => {
 
   function slett(etTestgrunnlag: Testgrunnlag): void {
     submit(etTestgrunnlag, { method: 'delete', encType: 'application/json' });
+  }
+
+  function getJobstatus(status: ManuellTestStatus): string {
+    return (
+      statusIkkjeStarta(status) ?? statusUnderArbeid(status) ?? 'Vis testen'
+    );
+  }
+
+  function statusIkkjeStarta(status: ManuellTestStatus) {
+    if (status === 'ikkje-starta') {
+      return 'Start testing';
+    }
+  }
+
+  function statusUnderArbeid(status: ManuellTestStatus) {
+    if (status === 'under-arbeid') {
+      return 'Fortsett testing';
+    }
   }
 
   return (
@@ -306,11 +315,7 @@ const TestOverview = () => {
                           onChangeLoeysing(etTestgrunnlag, loeysingId)
                         }
                       >
-                        {status === 'ikkje-starta'
-                          ? 'Start testing'
-                          : status === 'under-arbeid'
-                            ? 'Fortsett testing'
-                            : 'Vis testen'}
+                        {getJobstatus(status)}
                       </Button>
                       {visRetestKnapp(
                         etTestgrunnlag,
