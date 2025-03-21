@@ -1,4 +1,4 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 import { TesterResult, TestResult } from '@maaling/api/types';
 import {
@@ -15,14 +15,16 @@ import { Krav } from '../krav/types';
 export const fetchTestresultatAggregert = async (
   id: number
 ): Promise<TestResult> =>
-  fetch(`/api/v1/testresultat/aggregert/${id}`, {}).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje hente for loeysing')
+  fetchWithErrorHandling(`/api/v1/testresultat/aggregert/${id}`, {}).then(
+    (response) =>
+      responseWithLogErrors(response, 'Kunne ikkje hente for loeysing')
   );
 
 export const createTestresultatAggregert = async (id: number) =>
-  fetchWrapper(`/api/v1/testresultat/aggregert/${id}`, { method: 'POST' }).then(
-    (response) =>
-      responseWithLogErrors(response, 'Kunne ikkje hente for loeysing')
+  fetchWithCsrf(`/api/v1/testresultat/aggregert/${id}`, {
+    method: 'POST',
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente for loeysing')
   );
 
 export const fetchDetaljertResultat = async (
@@ -30,7 +32,7 @@ export const fetchDetaljertResultat = async (
   loeysingId: number,
   kravId: number
 ): Promise<TesterResult[]> => {
-  return fetch(
+  return fetchWithErrorHandling(
     `/api/v1/testresultat/kontroll/${id}/loeysing/${loeysingId}/krav/${kravId}`,
     {}
   ).then((response) =>
@@ -42,14 +44,17 @@ export const fetchDetaljertResultat = async (
 };
 
 export const fetchResultList = async (): Promise<Resultat[]> => {
-  return fetch(`/api/v1/testresultat/list`, {}).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje hente resultat')
+  return fetchWithErrorHandling(`/api/v1/testresultat/list`, {}).then(
+    (response) => responseWithLogErrors(response, 'Kunne ikkje hente resultat')
   );
 };
 
 export function fetchKontrollResultat(idKontroll: number): Promise<Resultat[]> {
-  return fetch(`/api/v1/testresultat/kontroll/${idKontroll}`, {}).then(
-    (response) => responseWithLogErrors(response, 'Kunne ikkje hente resultat')
+  return fetchWithErrorHandling(
+    `/api/v1/testresultat/kontroll/${idKontroll}`,
+    {}
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente resultat')
   );
 }
 
@@ -57,7 +62,7 @@ export function fetchKontrollLoeysing(
   idKontroll: number,
   idLoeysing: number
 ): Promise<ResultatOversiktLoeysing[]> {
-  return fetch(
+  return fetchWithErrorHandling(
     `/api/v1/testresultat/kontroll/${idKontroll}/loeysing/${idLoeysing}`,
     {}
   ).then((response) =>
@@ -66,8 +71,8 @@ export function fetchKontrollLoeysing(
 }
 
 export function fetchKrav(kravId: number): Promise<Krav> {
-  return fetch(`/api/v1/testreglar/krav/${kravId}`, {}).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje hente krav')
+  return fetchWithErrorHandling(`/api/v1/testreglar/krav/${kravId}`, {}).then(
+    (response) => responseWithLogErrors(response, 'Kunne ikkje hente krav')
   );
 }
 
@@ -130,7 +135,7 @@ export async function fetchResultatPrTemaFilter(
     loeysingId
   );
 
-  const response = await fetch(
+  const response = await fetchWithErrorHandling(
     `/api/v1/testresultat/tema?` + params.toString(),
     {}
   );
@@ -187,7 +192,7 @@ export async function fetchResultatPrKravFilter(
     loeysingId
   );
 
-  const response = await fetch(
+  const response = await fetchWithErrorHandling(
     `/api/v1/testresultat/krav?` + params.toString(),
     {}
   );
@@ -204,7 +209,7 @@ function keyInEnum(type: KontrollType): string | undefined {
 }
 
 export function genererWordRapport(id: number, loeysingId: number) {
-  fetchWrapper(
+  fetchWithCsrf(
     `/api/v1/testresultat/rapport/kontroll/${id}/loeysing/${loeysingId}`,
     {
       method: 'GET',
@@ -230,7 +235,7 @@ export function genererWordRapport(id: number, loeysingId: number) {
 }
 
 export async function publiserResultat(kontrollId: number) {
-  await fetchWrapper(
+  await fetchWithCsrf(
     `/api/v1/testresultat/rapport/publiser/kontroll/${kontrollId}`,
     {
       method: 'PUT',

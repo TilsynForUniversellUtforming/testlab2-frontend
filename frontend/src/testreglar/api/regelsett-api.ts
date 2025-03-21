@@ -1,4 +1,4 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 import {
   Regelsett,
@@ -14,9 +14,12 @@ export const fetchRegelsettList = async (
   params.append('includeTestreglar', includeTestreglar.toString());
   params.append('includeInactive', includeInactive.toString());
 
-  return await fetch(`/api/v1/regelsett?${params.toString()}`, {
-    method: 'GET',
-  }).then((response) =>
+  return await fetchWithErrorHandling(
+    `/api/v1/regelsett?${params.toString()}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
     responseWithLogErrors(response, 'Kunne ikke hente regelsett')
   );
 };
@@ -24,7 +27,7 @@ export const fetchRegelsettList = async (
 export const deleteRegelsettList = async (
   regelsettIdList: number[]
 ): Promise<Regelsett[]> => {
-  return await fetchWrapper(`/api/v1/regelsett`, {
+  return await fetchWithCsrf(`/api/v1/regelsett`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +41,7 @@ export const deleteRegelsettList = async (
 export const createRegelsett = async (
   regelsettCreate: RegelsettCreate
 ): Promise<Regelsett[]> =>
-  await fetchWrapper(`/api/v1/regelsett`, {
+  await fetchWithCsrf(`/api/v1/regelsett`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -51,7 +54,7 @@ export const createRegelsett = async (
 export const updateRegelsett = async (
   regelsett: RegelsettEdit
 ): Promise<Regelsett[]> =>
-  await fetchWrapper(`/api/v1/regelsett`, {
+  await fetchWithCsrf(`/api/v1/regelsett`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

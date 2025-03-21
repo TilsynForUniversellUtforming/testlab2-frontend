@@ -1,5 +1,5 @@
 import toError from '@common/error/util';
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf } from '@common/form/util';
 
 /**
  * Converts a fetch API response to JSON, throwing an error if the response is not ok.
@@ -73,7 +73,7 @@ export const withErrorHandling =
 
 export const reportErrorToBackend = (error: Error | undefined) => {
   if (error) {
-    fetchWrapper('/api/v1/error', {
+    fetchWithCsrf('/api/v1/error', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ import {
   get,
 } from 'react-hook-form';
 import { FieldError } from 'react-hook-form/dist/types/errors';
+import { reportErrorToBackend } from '@common/util/apiUtils';
 
 /**
  * Retrieves the error message for a specific form field.
@@ -82,7 +83,7 @@ const getTokenFromCookie = (): string | undefined => {
   }
 };
 
-export const fetchWrapper = async (
+export const fetchWithCsrf = async (
   input: string,
   init?: RequestInit,
   defaultContentType: boolean = true
@@ -106,4 +107,27 @@ export const fetchWrapper = async (
   } else {
     return await fetch(input, init);
   }
+};
+
+export const fetchWithErrorHandling: typeof fetch = async (
+  input: Request | string | URL,
+  ...rest
+) => {
+  async function call(): Promise<Response> {
+    return fetch(input, ...rest).catch((error) => {
+      console.error(error);
+      reportErrorToBackend(error);
+      if (
+        input
+          .toString()
+          .includes(
+            'https://user.difi.no/auth/realms/difi/protocol/openid-connect/auth'
+          )
+      ) {
+        window.location.href = input.toString();
+      }
+      return Promise.reject(error);
+    });
+  }
+  return await call();
 };

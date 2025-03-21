@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import ImageGallery from './ImageGallery';
 import { Point } from './types';
+import { fetchWithErrorHandling } from '@common/form/util';
 
 const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   const [alert, setAlert] = useAlert();
@@ -76,7 +77,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
       const canvas = canvasRef.current;
       const filetype = selectedFile.type;
       const dataUrl = canvas.toDataURL(filetype);
-      const response = await fetch(dataUrl);
+      const response = await fetchWithErrorHandling(dataUrl);
       const blob = await response.blob();
       const file = new File([blob], selectedFile.name, { type: filetype });
 
