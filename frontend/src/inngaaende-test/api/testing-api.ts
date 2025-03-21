@@ -1,4 +1,4 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithErrorHandling, fetchWithCsrf } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 import { Testgrunnlag } from '@test/types';
 
@@ -16,9 +16,12 @@ const kontrollApiBaseUrl = '/api/v1/kontroller';
 export const fetchTestResults = async (
   testgrunnlagId: number
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetch(`${testingApiBaseUrl}/${testgrunnlagId}`, {
-    method: 'GET',
-  }).then((response) =>
+  return await fetchWithErrorHandling(
+    `${testingApiBaseUrl}/${testgrunnlagId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
     responseWithLogErrors(response, 'Kunne ikke hente testresultat')
   );
 };
@@ -26,7 +29,7 @@ export const fetchTestResults = async (
 export const createTestResultat = async (
   testResultat: CreateTestResultat
 ): Promise<ResultatManuellKontroll> => {
-  return await fetchWrapper(testingApiBaseUrl, {
+  return await fetchWithCsrf(testingApiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +43,7 @@ export const createTestResultat = async (
 export const updateTestResultat = async (
   testResultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(testingApiBaseUrl, {
+  return await fetchWithCsrf(testingApiBaseUrl, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +57,7 @@ export const updateTestResultat = async (
 export const updateTestResultatMany = async (
   testResultatList: ResultatManuellKontroll[]
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(testingApiBaseUrl, {
+  return await fetchWithCsrf(testingApiBaseUrl, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -68,7 +71,7 @@ export const updateTestResultatMany = async (
 export const deleteTestResultat = async (
   resultat: ResultatManuellKontroll
 ): Promise<ResultatManuellKontroll[]> => {
-  return await fetchWrapper(testingApiBaseUrl, {
+  return await fetchWithCsrf(testingApiBaseUrl, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +90,7 @@ export const uploadBilde = async (
   formData.append('bilde', bilde);
   formData.append('resultatId', String(resultatId));
 
-  return await fetchWrapper(
+  return await fetchWithCsrf(
     `${testingApiBaseUrl}/bilder?includeBilder=true`,
     {
       method: 'POST',
@@ -100,7 +103,7 @@ export const uploadBilde = async (
 };
 
 export const getBilder = async (resultatId: number): Promise<Bilde[]> =>
-  await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
+  await fetchWithCsrf(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
     (response) => responseWithLogErrors(response, 'Kunne ikkje hente bilder')
   );
 
@@ -108,7 +111,7 @@ export const deleteBilde = async (
   resultatId: number,
   bildeId: number
 ): Promise<Bilde[]> =>
-  await fetchWrapper(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
+  await fetchWithCsrf(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
     method: 'DELETE',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje slette bilde')
@@ -117,18 +120,19 @@ export const deleteBilde = async (
 export const listTestgrunnlag = async (
   kontrollId: number
 ): Promise<Testgrunnlag[]> =>
-  await fetch(`${kontrollApiBaseUrl}/${kontrollId}/testgrunnlag`).then(
-    (response) =>
-      responseWithLogErrors(
-        response,
-        'Klarte ikke å hente liste med testgrunnlag'
-      )
+  await fetchWithErrorHandling(
+    `${kontrollApiBaseUrl}/${kontrollId}/testgrunnlag`
+  ).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Klarte ikke å hente liste med testgrunnlag'
+    )
   );
 
 export const createRetest = async (
   retestParams: RetestRequest
 ): Promise<Testgrunnlag> => {
-  return await fetchWrapper(
+  return await fetchWithCsrf(
     `${kontrollApiBaseUrl}/${retestParams.kontrollId}/testgrunnlag/retest`,
     {
       method: 'POST',
@@ -145,7 +149,7 @@ export const createRetest = async (
 export const postTestgrunnlag = async (nyttTestgrunnlag: {
   kontrollId: number;
 }): Promise<Testgrunnlag> => {
-  return await fetchWrapper(
+  return await fetchWithCsrf(
     `${kontrollApiBaseUrl}/${nyttTestgrunnlag.kontrollId}/testgrunnlag`,
     {
       method: 'POST',
@@ -160,7 +164,7 @@ export const postTestgrunnlag = async (nyttTestgrunnlag: {
 };
 
 export const deleteTestgrunnlag = async (testgrunnlag: Testgrunnlag) => {
-  return await fetchWrapper(
+  return await fetchWithCsrf(
     `${kontrollApiBaseUrl}/${testgrunnlag.kontrollId}/testgrunnlag/${testgrunnlag.id}`,
     {
       method: 'DELETE',

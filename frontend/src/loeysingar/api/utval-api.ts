@@ -1,9 +1,10 @@
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Utval } from './types';
+import { fetchWithErrorHandling } from '@common/form/util';
 
 export const fetchUtvalList = async (): Promise<Utval[]> =>
-  await fetch('/api/v1/utval', {
+  await fetchWithErrorHandling('/api/v1/utval', {
     method: 'GET',
   })
     .then((response) =>
@@ -14,4 +15,4 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
     );
 
 export const getUtvalById = async (id: number): Promise<Response> =>
-  await fetch(`/api/v1/utval/${id}`);
+  await fetchWithErrorHandling(`/api/v1/utval/${id}`);

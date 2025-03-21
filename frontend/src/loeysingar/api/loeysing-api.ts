@@ -1,17 +1,17 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Loeysing, LoeysingFormElement, LoeysingInit } from './types';
 
 export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
-  await fetch(`/api/v1/loeysing/${id}`, {
+  await fetchWithErrorHandling(`/api/v1/loeysing/${id}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const findLoeysingByName = async (name: string): Promise<Loeysing[]> =>
-  await fetch(`/api/v1/loeysing?name=${name}`, {
+  await fetchWithErrorHandling(`/api/v1/loeysing?name=${name}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
@@ -20,21 +20,21 @@ export const findLoeysingByName = async (name: string): Promise<Loeysing[]> =>
 export const findLoeysingByOrgnummer = async (
   orgnummer: string
 ): Promise<Loeysing[]> =>
-  await fetch(`/api/v1/loeysing?orgnummer=${orgnummer}`, {
+  await fetchWithErrorHandling(`/api/v1/loeysing?orgnummer=${orgnummer}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
-  await fetch('/api/v1/loeysing', {
+  await fetchWithErrorHandling('/api/v1/loeysing', {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
-  await fetchWrapper('/api/v1/loeysing', {
+  await fetchWithCsrf('/api/v1/loeysing', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
 export const createLoeysing = async (
   loeysingInit: LoeysingInit
 ): Promise<Loeysing[]> => {
-  return await fetchWrapper('/api/v1/loeysing', {
+  return await fetchWithCsrf('/api/v1/loeysing', {
     method: 'POST',
     body: JSON.stringify(loeysingInit),
   }).then((response) =>
@@ -58,7 +58,7 @@ export const createLoeysing = async (
 export const deleteLoeysingList = async (
   loeysingIdList: number[]
 ): Promise<Loeysing[]> => {
-  const response = await fetchWrapper(`/api/v1/loeysing`, {
+  const response = await fetchWithCsrf(`/api/v1/loeysing`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ export const deleteLoeysingList = async (
 export const fetchLoeysingFormElement = async (
   id: number
 ): Promise<LoeysingFormElement> => {
-  return await fetch(`/api/v1/loeysing/${id}/withVerksemd`, {
+  return await fetchWithErrorHandling(`/api/v1/loeysing/${id}/withVerksemd`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')

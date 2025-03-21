@@ -76,7 +76,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
       const canvas = canvasRef.current;
       const filetype = selectedFile.type;
       const dataUrl = canvas.toDataURL(filetype);
-      const response = await fetch(dataUrl);
+      const response = await fetchWithErrorHandling(dataUrl);
       const blob = await response.blob();
       const file = new File([blob], selectedFile.name, { type: filetype });
 

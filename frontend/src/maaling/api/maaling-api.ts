@@ -1,4 +1,4 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
@@ -14,7 +14,7 @@ import {
 } from './types';
 
 export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
-  await fetchWrapper('/api/v1/maalinger', {
+  await fetchWithCsrf('/api/v1/maalinger', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
 export const updateMaaling = async (
   maaling: MaalingEditParams
 ): Promise<Maaling> =>
-  await fetchWrapper('/api/v1/maalinger', {
+  await fetchWithCsrf('/api/v1/maalinger', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const updateMaaling = async (
 export const fetchCrawlParametersKontroll = async (
   kontrollId: number
 ): Promise<CrawlParameters> =>
-  await fetchWrapper(
+  await fetchWithCsrf(
     `/api/v1/maalinger/crawlparameters/kontroll/${kontrollId}`,
     {
       method: 'GET',
@@ -56,7 +56,7 @@ export const updateCrawlParameters = async (
   kontrollId: number,
   crawlParameters: CrawlParameters
 ): Promise<void> =>
-  await fetchWrapper(
+  await fetchWithCsrf(
     `/api/v1/maalinger/crawlparameters/kontroll/${kontrollId}`,
     {
       method: 'PUT',
@@ -72,7 +72,7 @@ export const updateCrawlParameters = async (
 export const deleteMaalingList = async (
   maalingIdList: IdList
 ): Promise<Maaling[]> =>
-  fetchWrapper(`/api/v1/maalinger`, {
+  fetchWithCsrf(`/api/v1/maalinger`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export const updateMaalingStatus = async (
   id: number,
   status: MaalingStatus
 ): Promise<Maaling> =>
-  await fetchWrapper(`/api/v1/maalinger/${id}`, {
+  await fetchWithCsrf(`/api/v1/maalinger/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -97,14 +97,14 @@ export const updateMaalingStatus = async (
   );
 
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
-  fetch('/api/v1/maalinger', {
+  fetchWithErrorHandling('/api/v1/maalinger', {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente målingar')
   );
 
 export const fetchMaaling = async (id: number): Promise<Maaling> =>
-  fetch(`/api/v1/maalinger/${id}`, {
+  fetchWithErrorHandling(`/api/v1/maalinger/${id}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente måling')
@@ -113,7 +113,7 @@ export const fetchMaaling = async (id: number): Promise<Maaling> =>
 export const restart = async (
   restartRequest: RestartRequest
 ): Promise<Maaling> =>
-  fetchWrapper(
+  fetchWithCsrf(
     `/api/v1/maalinger/${restartRequest.maalingId}/restart?process=${restartRequest.process}`,
     {
       method: 'PUT',
@@ -133,7 +133,7 @@ export const fetchLoeysingNettsider = async (
   maalingId: number,
   loeysingId: number
 ): Promise<CrawlUrl[]> =>
-  fetch(
+  fetchWithErrorHandling(
     `/api/v1/maalinger/${maalingId}/crawlresultat/nettsider?loeysingId=${loeysingId}`,
     {
       method: 'GET',
@@ -146,7 +146,7 @@ export const fetchTestResultatLoeysing = async (
   maalingId: number,
   loeysingId: number
 ): Promise<TesterResult[]> =>
-  await fetch(
+  await fetchWithErrorHandling(
     `/api/v1/maalinger/${maalingId}/resultat?loeysingId=${loeysingId}`,
     {
       method: 'GET',
@@ -158,7 +158,7 @@ export const fetchTestResultatLoeysing = async (
 export const getMaalingIdFromKontrollId = async (
   kontrollId: number
 ): Promise<number> =>
-  await fetch(`/api/v1/maalinger/kontroll/${kontrollId}`, {
+  await fetchWithErrorHandling(`/api/v1/maalinger/kontroll/${kontrollId}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')

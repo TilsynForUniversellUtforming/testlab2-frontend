@@ -1,8 +1,8 @@
 import { Krav, KravInit } from '../types';
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 
 export const listKrav = async (): Promise<Krav[]> => {
-  const kravList = await fetch(`/api/v1/krav`, {
+  const kravList = await fetchWithErrorHandling(`/api/v1/krav`, {
     method: 'GET',
   });
 
@@ -10,7 +10,7 @@ export const listKrav = async (): Promise<Krav[]> => {
 };
 
 export const getKrav = async (id: number): Promise<Krav> => {
-  const krav = await fetch(`/api/v1/krav/${id}`, {
+  const krav = await fetchWithErrorHandling(`/api/v1/krav/${id}`, {
     method: 'GET',
   });
 
@@ -18,7 +18,7 @@ export const getKrav = async (id: number): Promise<Krav> => {
 };
 
 export const updateKrav = async (krav: Krav): Promise<Krav> => {
-  const updatedKrav = await fetchWrapper(`/api/v1/krav/${krav.id}`, {
+  const updatedKrav = await fetchWithCsrf(`/api/v1/krav/${krav.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export const updateKrav = async (krav: Krav): Promise<Krav> => {
 
 export const createKrav = async (krav: KravInit): Promise<number> => {
   console.log('createKrav ' + JSON.stringify(krav));
-  const nyttKrav = await fetchWrapper(`/api/v1/krav`, {
+  const nyttKrav = await fetchWithCsrf(`/api/v1/krav`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const createKrav = async (krav: KravInit): Promise<number> => {
 };
 
 export const deleteKrav = async (id: number): Promise<void> => {
-  await fetchWrapper(`/api/v1/krav/${id}`, {
+  await fetchWithCsrf(`/api/v1/krav/${id}`, {
     method: 'DELETE',
   });
 };

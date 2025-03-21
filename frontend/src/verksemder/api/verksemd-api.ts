@@ -1,4 +1,4 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import { Verksemd, VerksemdInit } from './types';
@@ -18,7 +18,7 @@ const getVerksemdList_dummy = async () => {
 export default getVerksemdList_dummy;
 
 export const fetchVerksemd = async (id: number): Promise<Verksemd> => {
-  return await fetch(`/api/v1/verksemd/${id}`, {
+  return await fetchWithErrorHandling(`/api/v1/verksemd/${id}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
@@ -26,7 +26,7 @@ export const fetchVerksemd = async (id: number): Promise<Verksemd> => {
 };
 
 export const findVerksemdByName = async (name: string): Promise<Verksemd[]> =>
-  await fetch(`/api/v1/verksemd/list?name=${name}`, {
+  await fetchWithErrorHandling(`/api/v1/verksemd/list?name=${name}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
@@ -35,14 +35,14 @@ export const findVerksemdByName = async (name: string): Promise<Verksemd[]> =>
 export const findVerksemdByOrgnummer = async (
   orgnummer: string
 ): Promise<Verksemd[]> =>
-  await fetch(`/api/v1/verksemd/list?orgnummer=${orgnummer}`, {
+  await fetchWithErrorHandling(`/api/v1/verksemd/list?orgnummer=${orgnummer}`, {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const fetchVerksemdList = async (): Promise<Verksemd[]> =>
-  await fetch('/api/v1/verksemd', {
+  await fetchWithErrorHandling('/api/v1/verksemd', {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
@@ -51,14 +51,17 @@ export const fetchVerksemdList = async (): Promise<Verksemd[]> =>
 export const fetchVerksemdMany = async (
   kontrollVerksemdIds: number[]
 ): Promise<Verksemd[]> =>
-  await fetch(`/api/v1/verksemd?idList=${kontrollVerksemdIds.join(',')}`, {
-    method: 'GET',
-  }).then((response) =>
+  await fetchWithErrorHandling(
+    `/api/v1/verksemd?idList=${kontrollVerksemdIds.join(',')}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente verksemder')
   );
 
 export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
-  await fetchWrapper('/api/v1/verksemd', {
+  await fetchWithCsrf('/api/v1/verksemd', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -71,7 +74,7 @@ export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
 export const createVerksemd = async (
   VerksemdInit: VerksemdInit
 ): Promise<Verksemd[]> => {
-  return await fetchWrapper('/api/v1/verksemd', {
+  return await fetchWithCsrf('/api/v1/verksemd', {
     method: 'POST',
     body: JSON.stringify(VerksemdInit),
   }).then((response) =>
@@ -82,7 +85,7 @@ export const createVerksemd = async (
 export const deleteVerksemd = async (
   verksemdId: number[]
 ): Promise<Verksemd[]> => {
-  const response = await fetchWrapper(`/api/v1/verksemd`, {
+  const response = await fetchWithCsrf(`/api/v1/verksemd`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

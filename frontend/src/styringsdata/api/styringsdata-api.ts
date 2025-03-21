@@ -1,4 +1,4 @@
-import { fetchWrapper } from '@common/form/util';
+import { fetchWithErrorHandling, fetchWithCsrf } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import {
@@ -12,9 +12,12 @@ const styringsdataApiBaseUrl = '/api/v1/styringsdata';
 export const findStyringsdataForKontroll = async (
   kontrollId: number
 ): Promise<StyringsdataResult> => {
-  return await fetch(`${styringsdataApiBaseUrl}?kontrollId=${kontrollId}`, {
-    method: 'GET',
-  }).then((response) =>
+  return await fetchWithErrorHandling(
+    `${styringsdataApiBaseUrl}?kontrollId=${kontrollId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
     responseWithLogErrors(
       response,
       'Kunne ikkje hente styringsdata for kontroll'
@@ -25,7 +28,7 @@ export const findStyringsdataForKontroll = async (
 export const fetchStyringsdataLoeysing = async (
   loeysingStyringsdataId: number
 ): Promise<StyringsdataLoeysing> => {
-  return await fetch(
+  return await fetchWithErrorHandling(
     `${styringsdataApiBaseUrl}/loeysing/${loeysingStyringsdataId}`,
     {
       method: 'GET',
@@ -38,7 +41,7 @@ export const fetchStyringsdataLoeysing = async (
 export const updateStyringsdataLoeysing = async (
   styringsdata: StyringsdataLoeysing
 ): Promise<StyringsdataLoeysing> =>
-  await fetchWrapper(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
+  await fetchWithCsrf(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -51,7 +54,7 @@ export const updateStyringsdataLoeysing = async (
 export const createStyringsdataLoeysing = async (
   styringsdata: StyringsdataLoeysing
 ) =>
-  await fetchWrapper(styringsdataApiBaseUrl, {
+  await fetchWithCsrf(styringsdataApiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -67,9 +70,12 @@ export const createStyringsdataLoeysing = async (
 export const fetchStyringsdataKontroll = async (
   styringsdataId: number
 ): Promise<StyringsdataKontroll> => {
-  return await fetch(`${styringsdataApiBaseUrl}/kontroll/${styringsdataId}`, {
-    method: 'GET',
-  }).then((response) =>
+  return await fetchWithErrorHandling(
+    `${styringsdataApiBaseUrl}/kontroll/${styringsdataId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente styringsdata')
   );
 };
@@ -77,7 +83,7 @@ export const fetchStyringsdataKontroll = async (
 export const updateStyringsdataKontroll = async (
   styringsdata: StyringsdataKontroll
 ): Promise<StyringsdataKontroll> =>
-  await fetchWrapper(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
+  await fetchWithCsrf(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -90,7 +96,7 @@ export const updateStyringsdataKontroll = async (
 export const createStyringsdataKontroll = async (
   styringsdata: StyringsdataKontroll
 ) =>
-  await fetchWrapper(styringsdataApiBaseUrl, {
+  await fetchWithCsrf(styringsdataApiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
