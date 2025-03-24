@@ -117,16 +117,11 @@ export const fetchWithErrorHandling: typeof fetch = async (
     return fetch(input, ...rest).catch((error) => {
       console.error(error);
       reportErrorToBackend(error);
-      if (
-        input
-          .toString()
-          .includes(
-            'https://user.difi.no/auth/realms/difi/protocol/openid-connect/auth'
-          )
-      ) {
+      if (input.toString().includes('https://user.difi.no/auth/realms/difi')) {
         window.location.href = input.toString();
+      } else {
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
     });
   }
   return await call();

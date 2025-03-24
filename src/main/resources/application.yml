@@ -23,7 +23,7 @@ features:
 testing:
   api:
     url: http://localhost:8001
-    key: ''
+    key:
     header-name: ''
 
 krav:
