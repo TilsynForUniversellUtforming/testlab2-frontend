@@ -26,16 +26,20 @@ class BildeResource(val testingApiProperties: TestingApiProperties) {
             .toUri()
             .toURL()
 
+    bildeUrl.openConnection().connect()
+
     val filename = bildesti.split("/").last()
 
     val connection = bildeUrl.openConnection(Proxy.NO_PROXY) as HttpURLConnection
-    connection.setRequestProperty(testingApiProperties.headerName, testingApiProperties.key)
 
     val contentType: String = connection.contentType ?: "image/jpeg"
     val mediaType = MediaType.parseMediaType(contentType)
     val headers = HttpHeaders()
     headers["Content-Disposition"] = "inline; filename=\"$filename\""
-    headers[testingApiProperties.headerName] = testingApiProperties.key
+    if (testingApiProperties.key.isNotEmpty()) {
+      connection.setRequestProperty(testingApiProperties.headerName, testingApiProperties.key)
+      headers[testingApiProperties.headerName] = testingApiProperties.key
+    }
 
     return ResponseEntity.ok()
         .headers(headers)
