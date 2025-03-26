@@ -26,7 +26,6 @@ class BildeResource(val testingApiProperties: TestingApiProperties) {
             .toUri()
             .toURL()
 
-    bildeUrl.openConnection().connect()
 
     val filename = bildesti.split("/").last()
 
