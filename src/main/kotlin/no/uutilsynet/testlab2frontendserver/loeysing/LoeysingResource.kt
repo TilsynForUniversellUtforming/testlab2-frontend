@@ -94,7 +94,9 @@ class LoeysingResource(
   private fun getLoeysingList(): List<Loeysing> {
     val interceptors = restTemplate.interceptors
     interceptors.addLast(LoggingInterceptor())
-    return restTemplate.getList<Loeysing>(loeysingUrl)
+    val response = restTemplate.getList<Loeysing>(loeysingUrl)
+    interceptors.removeLast()
+    return response
   }
 
   @PostMapping
