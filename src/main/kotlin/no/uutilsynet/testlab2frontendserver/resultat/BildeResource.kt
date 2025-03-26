@@ -26,7 +26,6 @@ class BildeResource(val testingApiProperties: TestingApiProperties) {
             .toUri()
             .toURL()
 
-
     val filename = bildesti.split("/").last()
 
     val connection = bildeUrl.openConnection(Proxy.NO_PROXY) as HttpURLConnection
