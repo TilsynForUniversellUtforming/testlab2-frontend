@@ -72,7 +72,7 @@ const ErrorCard = ({
   }
 
   if (isRouteError) {
-    if (routeError.status === 401) {
+    if (routeError.status === 401 || routeError.status === 403) {
       return (
         <ErrorContent
           errorHeader="Uautorisert"
@@ -124,7 +124,7 @@ const ErrorCard = ({
       <ErrorContent
         errorHeader={errorHeader ?? 'Uventa feil'}
         errorText={error!.message}
-        onClick={onClick}
+        onClick={() => window.location.reload()}
         buttonText={buttonText}
       />
     );

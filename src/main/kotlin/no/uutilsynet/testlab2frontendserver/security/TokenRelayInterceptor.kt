@@ -54,8 +54,6 @@ class TokenRelayInterceptor(
           }
           .getOrElse {
             logger.error("Error in TokenRelayInterceptor", it)
-            SecurityContextHolder.getContext().authentication = null
-            SecurityContextHolder.clearContext()
             execution.execute(request, bytes)
           }
     } else {

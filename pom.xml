@@ -58,22 +58,6 @@
             <artifactId>testlab2-constants</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
-
-<!--        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.12.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.12.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.12.5</version>
-        </dependency>-->
     </dependencies>
 
     <build>
@@ -126,6 +110,9 @@
                             <port>8080</port>
                         </ports>
                         <user>nobody</user>
+                        <environment>
+                            <TZ>Europe/Oslo</TZ>
+                        </environment>
                     </container>
                 </configuration>
             </plugin>

@@ -5,6 +5,7 @@ import no.uutilsynet.testlab2frontendserver.common.LoeysingsregisterApiPropertie
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.LoeysingFormElement
+import no.uutilsynet.testlab2frontendserver.security.LoggingInterceptor
 import no.uutilsynet.testlab2frontendserver.verksemd.Verksemd
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -90,7 +91,11 @@ class LoeysingResource(
     }
   }
 
-  private fun getLoeysingList() = restTemplate.getList<Loeysing>(loeysingUrl)
+  private fun getLoeysingList(): List<Loeysing> {
+    val interceptors = restTemplate.interceptors
+    interceptors.addLast(LoggingInterceptor())
+    return restTemplate.getList<Loeysing>(loeysingUrl)
+  }
 
   @PostMapping
   fun createLoeysing(@RequestBody dto: CreateLoeysingDTO): ResponseEntity<out Any> =
