@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
@@ -38,6 +39,8 @@ class TestregelResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
     kravApiProperties: KravApiProperties,
+    val testregelApiClient: TestregelApiClient,
+    val kravApiClient: KravApiClient
 ) {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
@@ -49,13 +52,12 @@ class TestregelResource(
       runCatching {
             val testregelDTO =
                 restTemplate.getForObject("$testregelUrl/$id", TestregelDTO::class.java)
-            val temaList = restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
+            val temaList = testregelApiClient.getTemaForTestreglar()
             val testobjektList =
-                restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+                testregelApiClient.getTestobjektForTesting()
             val innhaldstypeForTestingList =
-                restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
-            val krav = restTemplate.getForObject<Krav>("$kravUrl/wcag2krav/${testregelDTO?.kravId}")
-
+                testregelApiClient.getInnhaldstypeForTestingList()
+          val krav = getKrav(testregelDTO?.kravId)
             ResponseEntity.ok(
                 testregelDTO?.toTestregel(
                     temaList, testobjektList, innhaldstypeForTestingList, krav))
@@ -65,21 +67,25 @@ class TestregelResource(
             throw it
           }
 
-  @GetMapping
+    fun getKrav(kravId:Int?) : Krav {
+        requireNotNull(kravId) { "KravId kan ikkje vere null" }
+        return kravApiClient.getKrav(kravId)
+    }
+
+    @GetMapping
   fun listTestreglar(
       @RequestParam(required = false) includeMetadata: Boolean = false
   ): List<TestregelBase> =
       try {
         logger.debug("Henter testreglar fra $testregelUrl")
-        val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav")
+        val krav = kravApiClient.listKrav()
         if (includeMetadata) {
-          val temaList = restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
+          val temaList = testregelApiClient.getTemaForTestreglar()
           val testobjektList =
-              restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+              testregelApiClient.getTestobjektForTesting()
           val innhaldstypeForTestingList =
-              restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
-          restTemplate
-              .getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
+              testregelApiClient.getInnhaldstypeForTestingList()
+          getTestregelList()
               .toTestregelList(temaList, testobjektList, innhaldstypeForTestingList, krav)
         } else {
           val kravMap = krav.associateBy { it.id }
@@ -94,13 +100,8 @@ class TestregelResource(
   fun createTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
         logger.debug("Lagrer ny testregel med navn: ${testregel.namn} fra $testregelUrl")
-        val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
-        if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
-          throw IllegalArgumentException("Duplikat skjema for testregel")
-        }
-        if (testregel.modus == TestregelModus.semiAutomatisk) {
-          throw IllegalArgumentException("Det er ikkje støtte for semi-automatiske testreglar")
-        }
+          validateDuplicatSchema(testregel)
+          validateNotSemiAutomatic(testregel)
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
@@ -111,11 +112,24 @@ class TestregelResource(
         throw Error("Klarte ikke å lage testregel")
       }
 
-  @PutMapping
+    private fun validateNotSemiAutomatic(testregel: TestregelInit) {
+        if (testregel.modus == TestregelModus.semiAutomatisk) {
+            throw IllegalArgumentException("Det er ikkje støtte for semi-automatiske testreglar")
+        }
+    }
+
+    private fun validateDuplicatSchema(testregel: TestregelInit) {
+        val testregelList = getTestregelList()
+        if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
+            throw IllegalArgumentException("Duplikat skjema for testregel")
+        }
+    }
+
+    @PutMapping
   fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
         logger.debug("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
-        val testregelList = restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
+        val testregelList = getTestregelList()
         if (testregelList.any {
           it.testregelSchema == testregel.testregelSchema && it.id != testregel.id
         }) {
@@ -131,7 +145,9 @@ class TestregelResource(
         throw Error("Klarte ikke å oppdatere testregel")
       }
 
-  @DeleteMapping
+    private fun getTestregelList() = testregelApiClient.getTestregelListWithMetadata()
+
+    @DeleteMapping
   fun deleteTestregelList(@RequestBody idList: IdList): ResponseEntity<out Any> {
     for (id in idList.idList) {
       runCatching { restTemplate.delete("$testregelUrl/$id") }
@@ -147,13 +163,13 @@ class TestregelResource(
   fun getInnhaldstypeForTesting(): List<InnhaldstypeTesting> =
       try {
         logger.debug("Henter innhaldstype for testing fra $testregelUrl")
-        restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")
+          testregelApiClient.getInnhaldstypeForTestingList()
       } catch (e: Error) {
         logger.error("klarte ikke å hente innhaldstype for testing", e)
         throw Error("Klarte ikke å hente innhaldstype for testing")
       }
 
-  @GetMapping("temaForTestreglar")
+    @GetMapping("temaForTestreglar")
   fun getTemaForTesreglar(): List<Tema> =
       try {
         logger.debug("Henter tema fra $testregelUrl")
@@ -167,13 +183,15 @@ class TestregelResource(
   fun getTestobjektForTestreglar(): List<Testobjekt> =
       try {
         logger.debug("Henter testobjekt fra $testregelUrl")
-        restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+          testregelApiClient.getTestobjektForTesting()
       } catch (e: Error) {
         logger.error("klarte ikke å hente testobjekt", e)
         throw Error("Klarte ikke å hente testobjekt")
       }
 
-  @GetMapping("krav/{kravId}")
+    private fun testobjektForTesting() = restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+
+    @GetMapping("krav/{kravId}")
   fun getKrav(@PathVariable kravId: Int): Krav =
       try {
         restTemplate.getForObject("$kravUrl/wcag2krav/$kravId", Krav::class.java)
