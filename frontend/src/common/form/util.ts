@@ -7,7 +7,6 @@ import {
   get,
 } from 'react-hook-form';
 import { FieldError } from 'react-hook-form/dist/types/errors';
-import { reportErrorToBackend } from '@common/util/apiUtils';
 
 /**
  * Retrieves the error message for a specific form field.
@@ -115,13 +114,7 @@ export const fetchWithErrorHandling: typeof fetch = async (
 ) => {
   async function call(): Promise<Response> {
     return fetch(input, ...rest).catch((error) => {
-      console.error(error);
-      reportErrorToBackend(error);
-      if (input.toString().includes('https://user.difi.no/auth/realms/difi')) {
-        window.location.href = input.toString();
-      } else {
-        return Promise.reject(error);
-      }
+      throw error;
     });
   }
   return await call();
