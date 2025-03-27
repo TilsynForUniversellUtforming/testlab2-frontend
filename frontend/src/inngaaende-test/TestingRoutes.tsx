@@ -5,7 +5,6 @@ import { RetestRequest } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import {
-  testLoader,
   testOverviewLoader,
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
@@ -51,7 +50,6 @@ export const TestingRoutes: RouteObject = {
       element: <InngaaendeTestApp />,
       handle: { name: 'Test' },
       errorElement: <ErrorCard />,
-      loader: testLoader,
       children: [
         {
           index: true,
