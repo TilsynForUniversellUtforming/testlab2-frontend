@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
@@ -31,6 +32,7 @@ class RegelsettResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
     kravApiProperties: KravApiProperties,
+    val kravApiClient: KravApiClient
 ) {
 
   val logger = LoggerFactory.getLogger(RegelsettResource::class.java)
@@ -57,7 +59,7 @@ class RegelsettResource(
   ): List<RegelsettBase> =
       runCatching {
             if (includeTestreglar) {
-              val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
+              val krav = getKravmap()
 
               restTemplate
                   .getList<RegelsettDTO>(
@@ -73,12 +75,14 @@ class RegelsettResource(
             throw it
           }
 
-  @GetMapping("testreglar")
+    private fun getKravmap() = kravApiClient.listKrav().associateBy { it.id }
+
+    @GetMapping("testreglar")
   fun listRegelsettWithTestreglar(
       @RequestParam(required = false, defaultValue = "false") includeInactive: Boolean
   ): List<Regelsett> =
       runCatching {
-            val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
+            val krav = getKravmap()
 
             restTemplate
                 .getList<RegelsettDTO>(
@@ -100,7 +104,7 @@ class RegelsettResource(
       logger.error("Kunne ikkje hente regelsett med id $id frå server")
       throw RuntimeException("Klarte ikkje å hente regelsett")
     }
-    val krav = restTemplate.getList<Krav>("$kravUrl/wcag2krav").associateBy { it.id }
+    val krav = getKravmap()
 
     return ResponseEntity.ok(regelsett.toRegelsett(krav))
   }
