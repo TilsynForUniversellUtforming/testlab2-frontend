@@ -28,7 +28,6 @@ export const responseWithLogErrors = (
 ): Promise<any> => {
   return responseToJson(response, errorMessage).catch((error) => {
     console.error(error);
-    reportErrorToBackend(error);
     throw error;
   });
 };
