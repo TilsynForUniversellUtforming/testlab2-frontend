@@ -53,11 +53,9 @@ class TestregelResource(
             val testregelDTO =
                 restTemplate.getForObject("$testregelUrl/$id", TestregelDTO::class.java)
             val temaList = testregelApiClient.getTemaForTestreglar()
-            val testobjektList =
-                testregelApiClient.getTestobjektForTesting()
-            val innhaldstypeForTestingList =
-                testregelApiClient.getInnhaldstypeForTestingList()
-          val krav = getKrav(testregelDTO?.kravId)
+            val testobjektList = testregelApiClient.getTestobjektForTesting()
+            val innhaldstypeForTestingList = testregelApiClient.getInnhaldstypeForTestingList()
+            val krav = getKrav(testregelDTO?.kravId)
             ResponseEntity.ok(
                 testregelDTO?.toTestregel(
                     temaList, testobjektList, innhaldstypeForTestingList, krav))
@@ -67,12 +65,12 @@ class TestregelResource(
             throw it
           }
 
-    fun getKrav(kravId:Int?) : Krav {
-        requireNotNull(kravId) { "KravId kan ikkje vere null" }
-        return kravApiClient.getKrav(kravId)
-    }
+  fun getKrav(kravId: Int?): Krav {
+    requireNotNull(kravId) { "KravId kan ikkje vere null" }
+    return kravApiClient.getKrav(kravId)
+  }
 
-    @GetMapping
+  @GetMapping
   fun listTestreglar(
       @RequestParam(required = false) includeMetadata: Boolean = false
   ): List<TestregelBase> =
@@ -81,10 +79,8 @@ class TestregelResource(
         val krav = kravApiClient.listKrav()
         if (includeMetadata) {
           val temaList = testregelApiClient.getTemaForTestreglar()
-          val testobjektList =
-              testregelApiClient.getTestobjektForTesting()
-          val innhaldstypeForTestingList =
-              testregelApiClient.getInnhaldstypeForTestingList()
+          val testobjektList = testregelApiClient.getTestobjektForTesting()
+          val innhaldstypeForTestingList = testregelApiClient.getInnhaldstypeForTestingList()
           getTestregelList()
               .toTestregelList(temaList, testobjektList, innhaldstypeForTestingList, krav)
         } else {
@@ -100,8 +96,8 @@ class TestregelResource(
   fun createTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
         logger.debug("Lagrer ny testregel med navn: ${testregel.namn} fra $testregelUrl")
-          validateDuplicatSchema(testregel)
-          validateNotSemiAutomatic(testregel)
+        validateDuplicatSchema(testregel)
+        validateNotSemiAutomatic(testregel)
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
@@ -112,20 +108,20 @@ class TestregelResource(
         throw Error("Klarte ikke å lage testregel")
       }
 
-    private fun validateNotSemiAutomatic(testregel: TestregelInit) {
-        if (testregel.modus == TestregelModus.semiAutomatisk) {
-            throw IllegalArgumentException("Det er ikkje støtte for semi-automatiske testreglar")
-        }
+  private fun validateNotSemiAutomatic(testregel: TestregelInit) {
+    if (testregel.modus == TestregelModus.semiAutomatisk) {
+      throw IllegalArgumentException("Det er ikkje støtte for semi-automatiske testreglar")
     }
+  }
 
-    private fun validateDuplicatSchema(testregel: TestregelInit) {
-        val testregelList = getTestregelList()
-        if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
-            throw IllegalArgumentException("Duplikat skjema for testregel")
-        }
+  private fun validateDuplicatSchema(testregel: TestregelInit) {
+    val testregelList = getTestregelList()
+    if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
+      throw IllegalArgumentException("Duplikat skjema for testregel")
     }
+  }
 
-    @PutMapping
+  @PutMapping
   fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
         logger.debug("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
@@ -145,9 +141,9 @@ class TestregelResource(
         throw Error("Klarte ikke å oppdatere testregel")
       }
 
-    private fun getTestregelList() = testregelApiClient.getTestregelListWithMetadata()
+  private fun getTestregelList() = testregelApiClient.getTestregelListWithMetadata()
 
-    @DeleteMapping
+  @DeleteMapping
   fun deleteTestregelList(@RequestBody idList: IdList): ResponseEntity<out Any> {
     for (id in idList.idList) {
       runCatching { restTemplate.delete("$testregelUrl/$id") }
@@ -163,13 +159,13 @@ class TestregelResource(
   fun getInnhaldstypeForTesting(): List<InnhaldstypeTesting> =
       try {
         logger.debug("Henter innhaldstype for testing fra $testregelUrl")
-          testregelApiClient.getInnhaldstypeForTestingList()
+        testregelApiClient.getInnhaldstypeForTestingList()
       } catch (e: Error) {
         logger.error("klarte ikke å hente innhaldstype for testing", e)
         throw Error("Klarte ikke å hente innhaldstype for testing")
       }
 
-    @GetMapping("temaForTestreglar")
+  @GetMapping("temaForTestreglar")
   fun getTemaForTesreglar(): List<Tema> =
       try {
         logger.debug("Henter tema fra $testregelUrl")
@@ -183,15 +179,16 @@ class TestregelResource(
   fun getTestobjektForTestreglar(): List<Testobjekt> =
       try {
         logger.debug("Henter testobjekt fra $testregelUrl")
-          testregelApiClient.getTestobjektForTesting()
+        testregelApiClient.getTestobjektForTesting()
       } catch (e: Error) {
         logger.error("klarte ikke å hente testobjekt", e)
         throw Error("Klarte ikke å hente testobjekt")
       }
 
-    private fun testobjektForTesting() = restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
+  private fun testobjektForTesting() =
+      restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
 
-    @GetMapping("krav/{kravId}")
+  @GetMapping("krav/{kravId}")
   fun getKrav(@PathVariable kravId: Int): Krav =
       try {
         restTemplate.getForObject("$kravUrl/wcag2krav/$kravId", Krav::class.java)

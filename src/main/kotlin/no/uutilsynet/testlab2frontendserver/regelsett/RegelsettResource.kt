@@ -4,7 +4,6 @@ import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
-import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
@@ -75,9 +74,9 @@ class RegelsettResource(
             throw it
           }
 
-    private fun getKravmap() = kravApiClient.listKrav().associateBy { it.id }
+  private fun getKravmap() = kravApiClient.listKrav().associateBy { it.id }
 
-    @GetMapping("testreglar")
+  @GetMapping("testreglar")
   fun listRegelsettWithTestreglar(
       @RequestParam(required = false, defaultValue = "false") includeInactive: Boolean
   ): List<Regelsett> =
