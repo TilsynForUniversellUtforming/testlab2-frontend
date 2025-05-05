@@ -56,5 +56,15 @@ services:
       LOEYSINGSREGISTER_HOST: loeysingsregister
       KRAVREGISTER_HOST: kravregister
 
+  frontend:
+    image: ${DOCKER_REGISTRY}/testlab2-frontend:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - dev_network
+    depends_on:
+      - testing
+
+
 networks:
   dev_network:
