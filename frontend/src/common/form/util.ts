@@ -113,7 +113,8 @@ export const fetchWithErrorHandling: typeof fetch = async (
   ...rest
 ) => {
   async function call(): Promise<Response> {
-    return fetch(input, ...rest).catch((error) => {
+    const init: RequestInit = { credentials: 'include', ...(rest[0] || {}) };
+    return fetch(input, init).catch((error) => {
       throw error;
     });
   }
