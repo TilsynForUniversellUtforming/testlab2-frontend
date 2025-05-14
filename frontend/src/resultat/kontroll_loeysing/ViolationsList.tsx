@@ -13,7 +13,6 @@ const ViolationsList = <T extends object>() => {
   const context: ResultKontrollContext = useOutletContext();
   const violationsData = useLoaderData() as ViolationsData;
 
-  console.log('context', context);
   const typeKontroll = context.typeKontroll;
   const kontrollNamn = context.kontrollNamn;
 
