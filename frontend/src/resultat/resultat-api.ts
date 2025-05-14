@@ -82,12 +82,10 @@ export function fetchViolationsData(
   testregelId: number
 ): Promise<ViolationsData> {
   const detaljerResultat = fetchDetaljertResultat(id, loeysingId, testregelId);
-  const kontrollData = fetchKontrollLoeysing(id, loeysingId);
 
-  return Promise.all([detaljerResultat, kontrollData]).then((values) => {
+  return Promise.all([detaljerResultat]).then((values) => {
     return {
       detaljerResultat: values[0],
-      kontrollData: values[1],
     };
   });
 }
