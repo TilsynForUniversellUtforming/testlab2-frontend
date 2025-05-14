@@ -79,17 +79,15 @@ export function fetchKrav(kravId: number): Promise<Krav> {
 export function fetchViolationsData(
   id: number,
   loeysingId: number,
-  kravId: number
+  testregelId: number
 ): Promise<ViolationsData> {
-  const detaljerResultat = fetchDetaljertResultat(id, loeysingId, kravId);
+  const detaljerResultat = fetchDetaljertResultat(id, loeysingId, testregelId);
   const kontrollData = fetchKontrollLoeysing(id, loeysingId);
-  const krav = fetchKrav(kravId);
 
-  return Promise.all([detaljerResultat, kontrollData, krav]).then((values) => {
+  return Promise.all([detaljerResultat, kontrollData]).then((values) => {
     return {
       detaljerResultat: values[0],
       kontrollData: values[1],
-      krav: values[2],
     };
   });
 }

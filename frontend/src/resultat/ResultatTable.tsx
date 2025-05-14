@@ -42,7 +42,6 @@ export interface ResultTableProps<T extends object> {
   typeKontroll?: string;
   kontrollNamn?: string;
   loeysingNamn?: string;
-  hasFilter?: boolean;
   subHeader?: string;
   onSubmitCallback?: (
     kontrollId?: number,
@@ -50,7 +49,6 @@ export interface ResultTableProps<T extends object> {
     fraDato?: Date,
     tilDato?: Date
   ) => void;
-  rapportButton?: boolean;
 }
 
 export interface TableParams<T extends object> {
@@ -275,7 +273,7 @@ const ResultatTable = <T extends object>({
                 {headerGroup.headers.map((header) => (
                   <TestlabTableHeader<T>
                     header={header}
-                    loading={tableParams.loading}
+                    loading={tableParams.loading as boolean}
                     key={header.column.id}
                   />
                 ))}

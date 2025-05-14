@@ -15,6 +15,36 @@ import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
+function LoeysingNamn(
+  props: Readonly<{ loeysingNamn: string; testType: string }>
+) {
+  return (
+    <>
+      {props.loeysingNamn}
+      {props.testType == 'RETEST' && <Tag color="info">{props.testType}</Tag>}
+    </>
+  );
+}
+
+function Score(props: Readonly<{ score: number }>) {
+  return (
+    <Tag size="small" color={getSeverity(props.score)}>
+      {scoreToPercentage(props.score)}
+    </Tag>
+  );
+}
+
+function Progresjon(
+  props: Readonly<{ progresjon: number; loeysingNamn: string }>
+) {
+  return (
+    <LoadingBar
+      percentage={props.progresjon}
+      ariaLabel={`${props.loeysingNamn} har resultat på ${props.progresjon}`}
+    />
+  );
+}
+
 const ResultatKontrollOversikt = <T extends object>() => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
   const navigate = useNavigate();
@@ -22,6 +52,28 @@ const ResultatKontrollOversikt = <T extends object>() => {
   const [publiseringStatus, setPubliseringStatus] = React.useState<boolean>(
     resultat[0].publisert
   );
+
+  function getLoeysingNamn(row: Row<Resultat>) {
+    return (
+      <LoeysingNamn
+        loeysingNamn={row.getValue('loeysingNamn')}
+        testType={row.getValue('testType')}
+      />
+    );
+  }
+
+  function getProgresjon(row: Row<Resultat>) {
+    return (
+      <Progresjon
+        progresjon={row.getValue('progresjon')}
+        loeysingNamn={row.getValue('loeysingNamn')}
+      />
+    );
+  }
+
+  function getScore(row: Row<Resultat>) {
+    return <Score score={row.getValue('score')} />;
+  }
 
   const columns: Array<ColumnDef<Resultat>> = [
     {
@@ -42,14 +94,7 @@ const ResultatKontrollOversikt = <T extends object>() => {
       header: 'Løysing',
       enableColumnFilter: false,
       enableGlobalFilter: false,
-      cell: ({ row }) => (
-        <>
-          {row.getValue('loeysingNamn')}
-          {row.getValue('testType') == 'RETEST' && (
-            <Tag color="info">{row.getValue('testType')}</Tag>
-          )}
-        </>
-      ),
+      cell: ({ row }) => getLoeysingNamn(row),
     },
     {
       accessorKey: 'testType',
@@ -62,23 +107,14 @@ const ResultatKontrollOversikt = <T extends object>() => {
       header: 'Progresjon',
       enableGlobalFilter: false,
       enableColumnFilter: false,
-      cell: ({ row }) => (
-        <LoadingBar
-          percentage={row.getValue('progresjon')}
-          ariaLabel={`${row.getValue('loeysingNamn')} har resultat på ${row.getValue('progresjon')}`}
-        />
-      ),
+      cell: ({ row }) => getProgresjon(row),
     },
     {
       accessorKey: 'score',
       header: 'Resultat',
       enableGlobalFilter: false,
       enableColumnFilter: false,
-      cell: ({ row }) => (
-        <Tag size="small" color={getSeverity(row.getValue('score'))}>
-          {scoreToPercentage(row.getValue('score'))}
-        </Tag>
-      ),
+      cell: ({ row }) => getScore(row),
     },
     {
       accessorKey: 'testar',
@@ -162,8 +198,8 @@ const ResultatKontrollOversikt = <T extends object>() => {
     isActive: publiseringStatus,
   };
 
-  const tableParams: TableParams<T> = {
-    data: resultat as T[],
+  const tableParams: TableParams<Resultat> = {
+    data: resultat,
     defaultColumns: columns,
     onClickRow: onClickRow,
     visibilityState: visibilityState,
@@ -179,11 +215,7 @@ const ResultatKontrollOversikt = <T extends object>() => {
 
   return (
     <div className="sak-list">
-      <ResultatTable
-        tableParams={tableParams}
-        headerParams={headerParams}
-        rapportButton={true}
-      />
+      <ResultatTable tableParams={tableParams} headerParams={headerParams} />
     </div>
   );
 };

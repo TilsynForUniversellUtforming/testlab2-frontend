@@ -17,6 +17,7 @@ import {
   fetchResultList,
   fetchViolationsData,
 } from './resultat-api';
+import ResultITSolution from '@resultat/kontroll_loeysing/ResultITSolution';
 
 export const RESULTAT_ROOT: AppRoute = {
   navn: 'Resultat',
@@ -73,7 +74,7 @@ export const RESULTAT_KRAV_LOEYSING_LIST: AppRoute = {
 
 export const VIOLATION_LIST: AppRoute = {
   navn: 'Resultat testregel',
-  path: ':kravId',
+  path: ':testregelId',
   parentRoute: TESTRESULTAT_LOEYSING,
 };
 
@@ -102,13 +103,13 @@ export const ResultRoutes: RouteObject = {
     {
       path: RESULTAT_KONTROLL.path,
       element: <Outlet />,
-      handle: { name: RESULTAT_KONTROLL.navn },
       children: [
         {
           index: true,
+          element: <ResultatKontrollOversikt />,
           loader: ({ params }) =>
             fetchKontrollResultat(parseInt(params.id as string)),
-          element: <ResultatKontrollOversikt />,
+          handle: { name: RESULTAT_KONTROLL.navn },
         },
         {
           path: RESULTAT_TEMA_KONTROLL_LIST.path,
@@ -130,16 +131,16 @@ export const ResultRoutes: RouteObject = {
         },
         {
           path: TESTRESULTAT_LOEYSING.path,
-          element: <Outlet />,
+          element: <ResultITSolution />,
           handle: { name: TESTRESULTAT_LOEYSING.navn },
+          loader: ({ params }) =>
+            fetchKontrollLoeysing(
+              parseInt(params.id as string),
+              parseInt(params.loeysingId as string)
+            ),
           children: [
             {
               index: true,
-              loader: ({ params }) =>
-                fetchKontrollLoeysing(
-                  parseInt(params.id as string),
-                  parseInt(params.loeysingId as string)
-                ),
               element: <TestResultatApp />,
             },
             {
@@ -166,7 +167,7 @@ export const ResultRoutes: RouteObject = {
                 fetchViolationsData(
                   parseInt(params.id as string),
                   parseInt(params.loeysingId as string),
-                  parseInt(params.kravId as string)
+                  parseInt(params.testregelId as string)
                 ),
               element: <ViolationsList />,
               handle: { name: VIOLATION_LIST.navn },

@@ -81,8 +81,8 @@ export const getResultColumns = (): Array<
   ColumnDef<ResultatOversiktLoeysing>
 > => [
   {
-    accessorKey: 'kravTittel',
-    header: 'Krav',
+    accessorKey: 'testregelTittel',
+    header: 'Testregel',
   },
   {
     accessorKey: 'score',
