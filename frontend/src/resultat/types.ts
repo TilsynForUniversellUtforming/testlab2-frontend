@@ -58,11 +58,11 @@ export type ResultatKrav = {
 
 export type ViolationsData = {
   detaljerResultat: TesterResult[];
-  kontrollData: ResultatOversiktLoeysing[];
 };
 
 export type ResultKontrollContext = {
   resultat: Array<Resultat>;
   kontrollNamn: string;
   typeKontroll: string;
+  loeysingNamn: string;
 };

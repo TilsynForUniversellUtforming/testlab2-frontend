@@ -9,7 +9,9 @@ const ResultITSolution = () => {
 
   const typeKontroll = sanitizeEnumLabel(resultat[0].typeKontroll);
 
-  return <Outlet context={{ kontrollNamn, typeKontroll }} />;
+  const loeysingNamn = resultat[0].loeysingNamn;
+
+  return <Outlet context={{ kontrollNamn, typeKontroll, loeysingNamn }} />;
 };
 
 export default ResultITSolution;

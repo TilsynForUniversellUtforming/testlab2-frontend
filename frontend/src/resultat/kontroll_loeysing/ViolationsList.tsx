@@ -17,10 +17,9 @@ const ViolationsList = <T extends object>() => {
   const kontrollNamn = context.kontrollNamn;
 
   const testResults: TesterResult[] = violationsData.detaljerResultat;
-  const resultatLoeysing = violationsData.kontrollData;
   const testregelTittel =
     testResults.length > 0 ? testResults[0].testregelNoekkel : '';
-  const loeysing = resultatLoeysing[0].loeysingNamn;
+  const loeysing = context.loeysingNamn;
 
   const testResultatColumns = useMemo(() => getViolationsColumns(), []);
 
