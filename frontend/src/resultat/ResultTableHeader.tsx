@@ -183,7 +183,7 @@ const ResultTableHeader = <T extends object>({
             )}
             {kontrollNamn && (
               <List.Item>
-                <strong>Namn {kontrollNamn}</strong>
+                <strong>Namn: </strong> {kontrollNamn}
               </List.Item>
             )}
             {loeysingNamn && (

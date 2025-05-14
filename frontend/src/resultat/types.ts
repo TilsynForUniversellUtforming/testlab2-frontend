@@ -1,7 +1,6 @@
 import { TesterResult } from '@maaling/api/types';
 
 import { KontrollType } from '../kontroll/types';
-import { Krav } from '../krav/types';
 
 export type Resultat = {
   id: number;
@@ -31,7 +30,7 @@ export type ResultatOversiktLoeysing = {
   kontrollNamn: string;
   testar: string[];
   score?: number;
-  kravId: number;
+  testregelId: number;
   talTestaElement: number;
   talElementBrot: number;
   talElementSamsvar: number;
@@ -60,5 +59,10 @@ export type ResultatKrav = {
 export type ViolationsData = {
   detaljerResultat: TesterResult[];
   kontrollData: ResultatOversiktLoeysing[];
-  krav: Krav;
+};
+
+export type ResultKontrollContext = {
+  resultat: Array<Resultat>;
+  kontrollNamn: string;
+  typeKontroll: string;
 };
