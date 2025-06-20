@@ -11,7 +11,9 @@ const ResultITSolution = () => {
 
   const loeysingNamn = resultat[0].loeysingNamn;
 
-  return <Outlet context={{ kontrollNamn, typeKontroll, loeysingNamn }} />;
+  return (
+    <Outlet context={{ resultat, kontrollNamn, typeKontroll, loeysingNamn }} />
+  );
 };
 
 export default ResultITSolution;
