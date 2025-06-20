@@ -61,7 +61,7 @@ export type ViolationsData = {
 };
 
 export type ResultKontrollContext = {
-  resultat: Array<Resultat>;
+  resultat: Array<ResultatOversiktLoeysing>;
   kontrollNamn: string;
   typeKontroll: string;
   loeysingNamn: string;

@@ -8,17 +8,20 @@ import ResultatTable, {
   TableParams,
 } from '@resultat/ResultatTable';
 import { TableActionsProps } from '@resultat/ResultTableActions';
-import { ResultatOversiktLoeysing } from '@resultat/types';
+import {
+  ResultatOversiktLoeysing,
+  ResultKontrollContext,
+} from '@resultat/types';
 import { Row, VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 const TestResultatApp = <T extends object>() => {
   const { id, loeysingId } = useParams();
   const navigate = useNavigate();
+  const context: ResultKontrollContext = useOutletContext();
+  const testResultList: ResultatOversiktLoeysing[] = context.resultat;
 
-  const testResultList: ResultatOversiktLoeysing[] =
-    useLoaderData() as ResultatOversiktLoeysing[];
   const testResultatColumns = useMemo(() => getResultColumns(), []);
 
   const getPathViolations = (testregelId: number): string => {
@@ -45,13 +48,11 @@ const TestResultatApp = <T extends object>() => {
   };
 
   const getLoeysingNamn = (): string => {
-    const resultat = testResultList[0];
-    return resultat.loeysingNamn;
+    return context.loeysingNamn;
   };
 
   const getTypeKontroll = (): string => {
-    const resultat = testResultList[0];
-    return sanitizeEnumLabel(resultat.typeKontroll);
+    return sanitizeEnumLabel(context.typeKontroll);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

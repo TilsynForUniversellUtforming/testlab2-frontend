@@ -30,4 +30,9 @@ class SecurityConfig {
 
     return http.build()
   }
+  /*
+  @Bean
+  fun webSecurityCustomizer(): WebSecurityCustomizer {
+    return WebSecurityCustomizer { web: WebSecurity -> web.debug(true) }
+  }*/
 }
