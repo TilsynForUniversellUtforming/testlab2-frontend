@@ -68,7 +68,9 @@ fun List<TestregelDTO>.toTestregelList(
         testregelId = testregelDTO.testregelId,
         versjon = testregelDTO.versjon,
         namn = testregelDTO.namn,
-        krav = kravMap[testregelDTO.kravId] ?: throw IllegalArgumentException("Krav med id ${testregelDTO.kravId} finns ikkje for testregel id  ${testregelDTO.id}"),
+        krav = kravMap[testregelDTO.kravId]
+                ?: throw IllegalArgumentException(
+                    "Krav med id ${testregelDTO.kravId} finns ikkje for testregel id  ${testregelDTO.id}"),
         status = testregelDTO.status,
         datoSistEndra = testregelDTO.datoSistEndra.toString(),
         type = testregelDTO.type,
