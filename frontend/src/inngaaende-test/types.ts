@@ -60,6 +60,8 @@ export type TestOverviewLoaderResponse = {
   testKeys: string[];
   activeLoeysing: Loeysing;
   kontrollTitle: string;
+  sideutvalTypeList: SideutvalType[];
+  innhaldstypeList: InnhaldstypeTesting[];
 };
 
 /* Kontroll */
@@ -83,5 +85,3 @@ export type Testgrunnlag = {
   type: 'OPPRINNELIG_TEST' | 'RETEST';
   datoOppretta: string;
 };
-
-export class TestregelTestingStatus {}

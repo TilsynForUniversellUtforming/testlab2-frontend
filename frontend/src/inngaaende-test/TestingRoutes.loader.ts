@@ -2,8 +2,8 @@ import { fetchTestResults, listTestgrunnlag } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import {
   Testgrunnlag,
-  TestOverviewLoaderResponse,
   TestOverviewLoaderData,
+  TestOverviewLoaderResponse,
 } from '@test/types';
 import {
   getIdFromParams,
@@ -92,13 +92,6 @@ function validatedContentTypeList(
 
   return innhaldstypePromise.value as InnhaldstypeTesting[];
 }
-
-function validateKontrollParam(kontrollId: number) {
-  if (isNaN(kontrollId) || kontrollId <= 0) {
-    throw new Error('Ugyldig kontroll-id');
-  }
-}
-
 function validatedSideutvalTypeList(
   sideutvalTypePromise:
     | PromiseFulfilledResult<
@@ -112,13 +105,6 @@ function validatedSideutvalTypeList(
 
   return sideutvalTypePromise.value as SideutvalType[];
 }
-
-function getKontrollTestreglar(kontroll: Kontroll, testreglar: Testregel[]) {
-  const kontrollTestregelIdList = getKontrollTestregelIdList(kontroll);
-
-  return testreglar.filter((tr) => kontrollTestregelIdList.includes(tr.id));
-}
-
 function validatedTestgrunnlag(
   testgrunnlagPromise:
     | PromiseFulfilledResult<Response | Testgrunnlag[]>
@@ -236,41 +222,6 @@ function getActiveLoeysing(kontroll: Kontroll, loeysingId: number) {
   }
   return activeLoeysing;
 }
-
-export const testLoader = async ({ params }: LoaderFunctionArgs) => {
-  const kontrollId = Number(params?.id);
-  validateKontrollParam(kontrollId);
-
-  const [
-    kontrollPromise,
-    sideutvalTypePromise,
-    innhaldstypePromise,
-    testreglarPromise,
-  ] = await Promise.allSettled([
-    fetchKontroll(kontrollId),
-    listSideutvalType(),
-    listInnhaldstype(),
-    listTestreglarWithMetadata(),
-  ]);
-
-  const sideutvalTypeList = validatedSideutvalTypeList(sideutvalTypePromise);
-
-  const innhaldstypeList = validatedContentTypeList(innhaldstypePromise);
-
-  const testreglar = validatedTestreglar(testreglarPromise);
-
-  const kontroll = await validatedKontroll(kontrollPromise, kontrollId);
-  const kontrollTestreglar = getKontrollTestreglar(kontroll, testreglar);
-
-  return {
-    sideutvalTypeList: sideutvalTypeList,
-    innhaldstypeTestingList: getInnhaldstypeInTest(
-      kontrollTestreglar,
-      innhaldstypeList
-    ),
-  };
-};
-
 export const testOverviewLoader = async ({
   params,
 }: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
@@ -309,13 +260,21 @@ export const testOverviewLoeysingLoader = async ({
   const testgrunnlagId = getIdFromParams(params?.testgrunnlagId);
   const loeysingId = getIdFromParams(params?.loeysingId);
 
-  const [kontrollPromise, testgrunnlagPromise, testResults, testreglarPromise] =
-    await Promise.allSettled([
-      fetchKontroll(kontrollId),
-      listTestgrunnlag(kontrollId),
-      fetchTestResults(testgrunnlagId),
-      listTestreglarWithMetadata(),
-    ]);
+  const [
+    kontrollPromise,
+    testgrunnlagPromise,
+    testResults,
+    testreglarPromise,
+    sideutvalTypePromise,
+    innhaldstypePromise,
+  ] = await Promise.allSettled([
+    fetchKontroll(kontrollId),
+    listTestgrunnlag(kontrollId),
+    fetchTestResults(testgrunnlagId),
+    listTestreglarWithMetadata(),
+    listSideutvalType(),
+    listInnhaldstype(),
+  ]);
 
   const testgrunnlag = getTestgrunnlag(testgrunnlagPromise, testgrunnlagId);
   const testResultsForLoeysing = getTestresultsForLoeysing(
@@ -339,6 +298,14 @@ export const testOverviewLoeysingLoader = async ({
 
   const activeLoeysing = getActiveLoeysing(kontroll, loeysingId);
 
+  const sideutvalTypeList = validatedSideutvalTypeList(sideutvalTypePromise);
+  const innhaldstypeList = validatedContentTypeList(innhaldstypePromise);
+
+  const innhalstypeForTesting = getInnhaldstypeInTest(
+    testreglarForLoeysing,
+    innhaldstypeList
+  );
+
   return {
     testResultatForLoeysing: testResultsForLoeysing,
     sideutvalForLoeysing: sideutvalForLoeysing,
@@ -346,5 +313,7 @@ export const testOverviewLoeysingLoader = async ({
     testKeys: toTestKeys(testgrunnlag, testResultsForLoeysing),
     activeLoeysing: activeLoeysing,
     kontrollTitle: kontroll.tittel,
+    sideutvalTypeList: sideutvalTypeList,
+    innhaldstypeList: innhalstypeForTesting,
   };
 };

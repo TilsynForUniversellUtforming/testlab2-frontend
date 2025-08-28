@@ -10,14 +10,7 @@ const InngaaendeTestApp = () => {
   return (
     <Suspense fallback={<Spinner title="Hentar test" />}>
       <Await resolve={data}>
-        {(data: InngaaendeTestLoadingResponseKontroll) => (
-          <Outlet
-            context={{
-              sideutvalTypeList: data.sideutvalTypeList,
-              innhaldstypeList: data.innhaldstypeTestingList,
-            }}
-          />
-        )}
+        <Outlet />
       </Await>
     </Suspense>
   );
