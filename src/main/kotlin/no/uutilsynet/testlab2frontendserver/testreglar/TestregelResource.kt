@@ -11,13 +11,10 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelBase
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelList
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -31,7 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
+
+private const val DUPLIKAT_SKJEMA_FOR_TESTREGEL = "Duplikat skjema for testregel"
 
 @RestController
 @RequestMapping("api/v1/testreglar", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -76,17 +74,7 @@ class TestregelResource(
   ): List<TestregelBase> =
       try {
         logger.debug("Henter testreglar fra $testregelUrl")
-        val krav = kravApiClient.listKrav()
-        if (includeMetadata) {
-          val temaList = testregelApiClient.getTemaForTestreglar()
-          val testobjektList = testregelApiClient.getTestobjektForTesting()
-          val innhaldstypeForTestingList = testregelApiClient.getInnhaldstypeForTestingList()
-          getTestregelList()
-              .toTestregelList(temaList, testobjektList, innhaldstypeForTestingList, krav)
-        } else {
-          val kravMap = krav.associateBy { it.id }
-          restTemplate.getList<TestregelBaseDTO>(testregelUrl).toTestregelBase(kravMap)
-        }
+        testregelApiClient.getTestregelList()
       } catch (e: Error) {
         logger.error("klarte ikke å hente testreglar", e)
         throw Error("Klarte ikke å hente testreglar")
@@ -101,7 +89,7 @@ class TestregelResource(
         restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
-        logger.error("Duplikat skjema for testregel", e)
+        logger.error(DUPLIKAT_SKJEMA_FOR_TESTREGEL, e)
         throw e
       } catch (e: Error) {
         logger.error("Klarte ikke å lage testregel", e)
@@ -109,33 +97,24 @@ class TestregelResource(
       }
 
   private fun validateNotSemiAutomatic(testregel: TestregelInit) {
-    if (testregel.modus == TestregelModus.semiAutomatisk) {
-      throw IllegalArgumentException("Det er ikkje støtte for semi-automatiske testreglar")
-    }
+    require(testregel.modus != TestregelModus.semiAutomatisk) { "Det er ikkje støtte for semi-automatiske testreglar" }
   }
 
   private fun validateDuplicatSchema(testregel: TestregelInit) {
     val testregelList = getTestregelList()
-    if (testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
-      throw IllegalArgumentException("Duplikat skjema for testregel")
-    }
+    require(!testregelList.any { it.testregelSchema == testregel.testregelSchema }) { DUPLIKAT_SKJEMA_FOR_TESTREGEL }
   }
 
   @PutMapping
   fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
-        logger.debug("Oppdaterer testregel id: ${testregel.id} fra $testregelUrl")
-        val testregelList = getTestregelList()
-        if (testregelList.any {
-          it.testregelSchema == testregel.testregelSchema && it.id != testregel.id
-        }) {
-          throw IllegalArgumentException("Duplikat skjema for testregel")
-        }
+          logger.debug("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
+        validateDuplicatSchema(testregel)
         restTemplate.put(testregelUrl, testregel, Testregel::class.java)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
-        logger.error("Duplikat skjema for testregel", e)
-        throw Error("Duplikat skjema for testregel")
+        logger.error(DUPLIKAT_SKJEMA_FOR_TESTREGEL, e)
+        throw Error(DUPLIKAT_SKJEMA_FOR_TESTREGEL)
       } catch (e: Error) {
         logger.error("Klarte ikke å oppdatere testregel", e)
         throw Error("Klarte ikke å oppdatere testregel")
@@ -185,10 +164,7 @@ class TestregelResource(
         throw Error("Klarte ikke å hente testobjekt")
       }
 
-  private fun testobjektForTesting() =
-      restTemplate.getList<Testobjekt>("$testregelUrl/testobjektForTestreglar")
-
-  @GetMapping("krav/{kravId}")
+    @GetMapping("krav/{kravId}")
   fun getKrav(@PathVariable kravId: Int): Krav =
       try {
         restTemplate.getForObject("$kravUrl/wcag2krav/$kravId", Krav::class.java)
