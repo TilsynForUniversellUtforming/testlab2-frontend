@@ -2,10 +2,7 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
+import no.uutilsynet.testlab2frontendserver.testreglar.dto.*
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
@@ -27,4 +24,8 @@ class TestregelApiClient(
 
   fun getTestregelListWithMetadata() =
       restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
+
+    fun getTestregelList() : List<Testregel> =
+        restTemplate.getList<Testregel>("$testregelUrl/aggregates")
+
 }
