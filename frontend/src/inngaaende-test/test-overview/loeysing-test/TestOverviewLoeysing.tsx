@@ -216,32 +216,38 @@ const TestOverviewLoeysing = () => {
     [testResults, pageType]
   );
 
+  function getTestregelStatus(nextTestregel: Testregel) {
+    const statusKey = toTestregelStatusKey(
+      testgrunnlagId,
+      nextTestregel.id,
+      pageType.sideId
+    );
+    return testStatusMap.get(statusKey);
+  }
+
+  function getNextTestregel(testregelId: number) {
+    return testreglarForLoeysing.find((tr) => tr.id === testregelId);
+  }
+
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       setActiveTest(undefined);
-      const nextTestregel = testreglarForLoeysing.find(
-        (tr) => tr.id === testregelId
-      );
+      const nextTestregel = getNextTestregel(testregelId);
+
       if (!nextTestregel) {
         setAlert(
           'danger',
           'Kan ikkje byta testregel',
           'Det oppstod ein feil ved byting av testregel'
         );
+        return;
       } else {
         if (nextTestregel.id === activeTest?.testregel.id) {
           setActiveTest(undefined);
           return;
         }
 
-        const statusKey = toTestregelStatusKey(
-          testgrunnlagId,
-          nextTestregel.id,
-          pageType.sideId
-        );
-        const testregelStatus = testStatusMap.get(statusKey);
-
-        if (testregelStatus && testregelStatus === 'ikkje-starta') {
+        if (testregelStatusIkkjeStarta(nextTestregel)) {
           doCreateTestResult(nextTestregel, pageType.sideId);
         } else {
           processData(testResults, pageType, innhaldstype, nextTestregel);
@@ -251,68 +257,110 @@ const TestOverviewLoeysing = () => {
     [testResults, pageType, innhaldstype, activeTest]
   );
 
+  function testregelStatusIkkjeStarta(nextTestregel: Testregel): boolean {
+    const testregelStatus = getTestregelStatus(nextTestregel);
+    return !!(testregelStatus && testregelStatus === 'ikkje-starta');
+  }
+
+  function updateTestresults(
+    selectedTestresultat: ResultatManuellKontroll[],
+    testregelId: number,
+    newStatus: 'Ferdig' | 'Deaktivert' | 'UnderArbeid' | 'IkkjePaabegynt'
+  ) {
+    const updatedtestResults: ResultatManuellKontroll[] =
+      selectedTestresultat.map((testResult) => ({
+        id: testResult.id,
+        testgrunnlagId: testgrunnlagId,
+        loeysingId: loeysingId,
+        testregelId: testregelId,
+        sideutvalId: testResult.sideutvalId,
+        elementOmtale: testResult.elementOmtale,
+        elementResultat: testResult.elementResultat,
+        elementUtfall: testResult.elementUtfall,
+        testVartUtfoert: testResult.testVartUtfoert,
+        svar: testResult.svar,
+        status: newStatus,
+        kommentar: testResult.kommentar,
+        sistLagra: testResult.sistLagra,
+      }));
+
+    doUpdateTestResultStatus(updatedtestResults);
+    if (testregelId === activeTest?.testregel.id) {
+      setActiveTest(undefined);
+    }
+  }
+
+  function checkIsElementSide(testregel: Testregel) {
+    return (
+      JSON.parse(testregel.testregelSchema).element.toLowerCase() === 'side'
+    );
+  }
+
+  function isMissingComments(
+    isElementSide: boolean,
+    selectedTestresultat: ResultatManuellKontroll[]
+  ) {
+    return (
+      isElementSide &&
+      selectedTestresultat.filter((tr) => isDefined(tr.kommentar)).length !==
+        selectedTestresultat.length
+    );
+  }
+
+  function isNotFinished(selectedTestresultat: ResultatManuellKontroll[]) {
+    const notFinished = selectedTestresultat.filter((tr) =>
+      isNotDefined(tr.elementResultat)
+    );
+    return notFinished.length > 0;
+  }
+
+  function getSelectedTestresultat(testregelId: number) {
+    return testResults.filter(
+      (tr) =>
+        tr.testregelId === testregelId && tr.sideutvalId === pageType.sideId
+    );
+  }
+
+  function getCurrentTestregel(testregelId: number) {
+    return testreglarForLoeysing.find((tr) => tr.id === testregelId);
+  }
+
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
-      const testregel = testreglarForLoeysing.find(
-        (tr) => tr.id === testregelId
-      );
-      const selectedTestresultat = testResults.filter(
-        (tr) =>
-          tr.testregelId === testregelId && tr.sideutvalId === pageType.sideId
-      );
-      const newStatus = mapStatus(status);
+      const testregel = getCurrentTestregel(testregelId);
+      const selectedTestresultat = getSelectedTestresultat(testregelId);
 
       if (testStatusMap && testregel) {
         if (status === 'under-arbeid' && isNotDefined(selectedTestresultat)) {
           doCreateTestResult(testregel, pageType.sideId);
-        } else {
-          const isElementSide =
-            JSON.parse(testregel.testregelSchema).element.toLowerCase() ===
-            'side';
-          const missingKommentar =
-            isElementSide &&
-            selectedTestresultat.filter((tr) => isDefined(tr.kommentar))
-              .length !== selectedTestresultat.length;
+          return;
+        }
 
-          const notFinished = selectedTestresultat.filter((tr) =>
-            isNotDefined(tr.elementResultat)
-          );
-          if (status === 'ferdig' && notFinished.length > 0) {
+        if (status === 'ferdig') {
+          if (isNotFinished(selectedTestresultat)) {
             setAlert(
               'warning',
               `Kan ikkje sette status ${status}`,
               'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement'
             );
-          } else if (status === 'ferdig' && missingKommentar) {
+            return;
+          }
+          if (
+            isMissingComments(
+              checkIsElementSide(testregel),
+              selectedTestresultat
+            )
+          ) {
             setAlert(
               'warning',
               `Kan ikkje sette status ${status}`,
               'Ferdigstatus kan ikkje settast før alle testelement har kommentar til resultat'
             );
-          } else {
-            const updatedtestResults: ResultatManuellKontroll[] =
-              selectedTestresultat.map((testResult) => ({
-                id: testResult.id,
-                testgrunnlagId: testgrunnlagId,
-                loeysingId: loeysingId,
-                testregelId: testregelId,
-                sideutvalId: testResult.sideutvalId,
-                elementOmtale: testResult.elementOmtale,
-                elementResultat: testResult.elementResultat,
-                elementUtfall: testResult.elementUtfall,
-                testVartUtfoert: testResult.testVartUtfoert,
-                svar: testResult.svar,
-                status: newStatus,
-                kommentar: testResult.kommentar,
-                sistLagra: testResult.sistLagra,
-              }));
-
-            doUpdateTestResultStatus(updatedtestResults);
-            if (testregelId === activeTest?.testregel.id) {
-              setActiveTest(undefined);
-            }
+            return;
           }
         }
+
+        updateTestresults(selectedTestresultat, testregelId, mapStatus(status));
       }
     },
     [testStatusMap, testResults, pageType.sideId, activeTest]
