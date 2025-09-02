@@ -11,6 +11,7 @@ import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { PageType, ActiveTest } from '@test/types';
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
 import { ResultatManuellKontroll } from '@test/api/types';
+import useAlertModal from '@common/alert/useAlertModal';
 
 interface UseTestOverviewStateProps {
   testgrunnlagId: number;
@@ -21,7 +22,6 @@ interface UseTestOverviewStateProps {
   sideutvalForLoeysing: Sideutval[];
   testreglarForLoeysing: Testregel[];
   testKeys: any;
-  setAlert: (severity: string, title: string, message: string) => void;
 }
 
 export const useTestOverviewState = ({
@@ -33,7 +33,6 @@ export const useTestOverviewState = ({
   sideutvalForLoeysing,
   testreglarForLoeysing,
   testKeys,
-  setAlert,
 }: UseTestOverviewStateProps) => {
   const [innhaldstype, setInnhaldstype] = useState(innhaldstypeList[0]);
   const [testResults, setTestResults] = useState(testResultatForLoeysing);
@@ -41,6 +40,8 @@ export const useTestOverviewState = ({
   const [testFerdig, setTestFerdig] = useState(
     isTestFinished(testResultatForLoeysing, testKeys)
   );
+
+  const [alert, setAlert, modalRef] = useAlertModal();
 
   const pageTypeList = useMemo(
     () => getPageTypeList(sideutvalForLoeysing, sideutvalTypeList),
@@ -192,5 +193,6 @@ export const useTestOverviewState = ({
     processData,
     onChangeSideutval,
     onChangeInnhaldstype,
+    pageTypeList,
   };
 };
