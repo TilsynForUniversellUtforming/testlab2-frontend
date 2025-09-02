@@ -25,7 +25,6 @@ class TestregelApiClient(
   fun getTestregelListWithMetadata() =
       restTemplate.getList<TestregelDTO>("$testregelUrl?includeMetadata=true")
 
-    fun getTestregelList() : List<Testregel> =
-        restTemplate.getList<Testregel>("$testregelUrl/aggregates")
-
+  fun getTestregelList(): List<Testregel> =
+      restTemplate.getList<Testregel>("$testregelUrl/aggregates")
 }

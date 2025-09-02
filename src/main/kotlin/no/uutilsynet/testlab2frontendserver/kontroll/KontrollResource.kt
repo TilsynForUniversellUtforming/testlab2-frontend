@@ -155,14 +155,9 @@ class KontrollResource(
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
-
-            if (okToRetest(resultat)) {
-              val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
-              ResponseEntity.ok(testgrunnlagDTO)
-            } else {
-              throw IllegalStateException(
-                  "Testgrunnlag kan ikkje retestes før alle tester er ferdig")
-            }
+          check(!okToRetest(resultat))
+          val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
+          ResponseEntity.ok(testgrunnlagDTO)
           }
           .getOrElse { throwable ->
             when (throwable) {
@@ -189,12 +184,8 @@ class KontrollResource(
     return testresultatAPIClient
         .getResultatForTestgrunnlag(testgrunnlagId)
         .mapCatching { resultat ->
-          if (okToDelete(resultat)) {
+            check(!okToDelete(resultat))
             testgrunnlagAPIClient.deleteTestgrunnlag(testgrunnlagId)
-          } else {
-            throw IllegalStateException(
-                "Testgrunnlag kan ikkje slettast når det finst eit resultat")
-          }
         }
         .fold(
             { ResponseEntity.noContent().build() },
@@ -226,6 +217,17 @@ class KontrollResource(
             TestStatus::class.java)
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
+
+    @GetMapping("/testmetadata/{kontrollId}")
+    fun getTestingMetadata(
+        @PathVariable kontrollId: Int,
+    ): ResponseEntity<KontrollTestingMetadata> {
+      val responseEntity =
+          restTemplate.getForEntity(
+              testingApiProperties.url + "/kontroller/testmetadata/$kontrollId",
+              KontrollTestingMetadata::class.java)
+      return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
+    }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
     return resultat.all { it.status == ResultatManuellKontroll.Status.IkkjePaabegynt }
