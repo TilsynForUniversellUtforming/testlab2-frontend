@@ -1,44 +1,10 @@
 import AlertModal from '@common/alert/AlertModal';
 import useAlertModal from '@common/alert/useAlertModal';
-import { isDefined, isNotDefined } from '@common/util/validationUtils';
-import { createTestresultatAggregert } from '@resultat/resultat-api';
-import {
-  createTestResultat,
-  deleteTestResultat,
-  fetchTestResults,
-  updateTestResultat,
-  updateTestResultatMany,
-} from '@test/api/testing-api';
-import {
-  CreateTestResultat,
-  ResultatManuellKontroll,
-  toElementResultat,
-} from '@test/api/types';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
-import {
-  ActiveTest,
-  ManuellTestStatus,
-  PageType,
-  TestContextKontroll,
-  TestOverviewLoaderResponse,
-  TestResultUpdate,
-} from '@test/types';
-import {
-  findActiveTestResults,
-  getInitialPageType,
-  getPageTypeList,
-  innhaldstypeAlle,
-  isTestFinished,
-  mapStatus,
-  mapTestregelOverviewElements,
-  progressionForSelection,
-  toTestregelStatus,
-  toTestregelStatusKey,
-} from '@test/util/testregelUtils';
-import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
+import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 
@@ -64,7 +30,6 @@ const TestOverviewLoeysing = () => {
   const {
     innhaldstype,
     pageType,
-    testResults,
     activeTest,
     setActiveTest,
     testFerdig,
@@ -73,10 +38,14 @@ const TestOverviewLoeysing = () => {
     testStatusMap,
     showHelpText,
     toggleShowHelpText,
-    processData,
     onChangeSideutval,
     onChangeInnhaldstype,
     pageTypeList,
+    doUpdateTestResult,
+    onChangeTestregel,
+    onChangeTestregelStatus,
+    slettTestelement,
+    createNewTestResult,
   } = useTestOverviewState({
     testgrunnlagId,
     loeysingId,
@@ -91,308 +60,6 @@ const TestOverviewLoeysing = () => {
   const handleSetInactiveTest = useCallback(() => {
     setActiveTest(undefined);
   }, []);
-
-  const createNewTestResult = async (activeTest: ActiveTest) => {
-    const nyttTestresultat: CreateTestResultat = {
-      testgrunnlagId: testgrunnlagId,
-      loeysingId: loeysingId,
-      testregelId: activeTest.testregel.id,
-      sideutvalId: pageType.sideId,
-    };
-    await createTestResultat(nyttTestresultat);
-    const alleResultater = await fetchTestResults(testgrunnlagId);
-    processData(alleResultater, pageType, innhaldstype, activeTest.testregel);
-  };
-
-  function getTestregelStatus(nextTestregel: Testregel) {
-    const statusKey = toTestregelStatusKey(
-      testgrunnlagId,
-      nextTestregel.id,
-      pageType.sideId
-    );
-    return testStatusMap.get(statusKey);
-  }
-
-  function getNextTestregel(testregelId: number) {
-    return testreglarForLoeysing.find((tr) => tr.id === testregelId);
-  }
-
-  const onChangeTestregel = useCallback(
-    (testregelId: number) => {
-      setActiveTest(undefined);
-      const nextTestregel = getNextTestregel(testregelId);
-
-      if (!nextTestregel) {
-        setAlert(
-          'danger',
-          'Kan ikkje byta testregel',
-          'Det oppstod ein feil ved byting av testregel'
-        );
-        return;
-      } else {
-        if (nextTestregel.id === activeTest?.testregel.id) {
-          setActiveTest(undefined);
-          return;
-        }
-
-        if (testregelStatusIkkjeStarta(nextTestregel)) {
-          doCreateTestResult(nextTestregel, pageType.sideId);
-        } else {
-          processData(testResults, pageType, innhaldstype, nextTestregel);
-        }
-      }
-    },
-    [testResults, pageType, innhaldstype, activeTest]
-  );
-
-  function testregelStatusIkkjeStarta(nextTestregel: Testregel): boolean {
-    const testregelStatus = getTestregelStatus(nextTestregel);
-    return !!(testregelStatus && testregelStatus === 'ikkje-starta');
-  }
-
-  function updateTestresults(
-    selectedTestresultat: ResultatManuellKontroll[],
-    testregelId: number,
-    newStatus: 'Ferdig' | 'Deaktivert' | 'UnderArbeid' | 'IkkjePaabegynt'
-  ) {
-    const updatedtestResults: ResultatManuellKontroll[] =
-      selectedTestresultat.map((testResult) => ({
-        id: testResult.id,
-        testgrunnlagId: testgrunnlagId,
-        loeysingId: loeysingId,
-        testregelId: testregelId,
-        sideutvalId: testResult.sideutvalId,
-        elementOmtale: testResult.elementOmtale,
-        elementResultat: testResult.elementResultat,
-        elementUtfall: testResult.elementUtfall,
-        testVartUtfoert: testResult.testVartUtfoert,
-        svar: testResult.svar,
-        status: newStatus,
-        kommentar: testResult.kommentar,
-        sistLagra: testResult.sistLagra,
-      }));
-
-    doUpdateTestResultStatus(updatedtestResults);
-    if (testregelId === activeTest?.testregel.id) {
-      setActiveTest(undefined);
-    }
-  }
-
-  function checkIsElementSide(testregel: Testregel) {
-    return (
-      JSON.parse(testregel.testregelSchema).element.toLowerCase() === 'side'
-    );
-  }
-
-  function isMissingComments(
-    isElementSide: boolean,
-    selectedTestresultat: ResultatManuellKontroll[]
-  ) {
-    return (
-      isElementSide &&
-      selectedTestresultat.filter((tr) => isDefined(tr.kommentar)).length !==
-        selectedTestresultat.length
-    );
-  }
-
-  function isNotFinished(selectedTestresultat: ResultatManuellKontroll[]) {
-    const notFinished = selectedTestresultat.filter((tr) =>
-      isNotDefined(tr.elementResultat)
-    );
-    return notFinished.length > 0;
-  }
-
-  function getSelectedTestresultat(testregelId: number) {
-    return testResults.filter(
-      (tr) =>
-        tr.testregelId === testregelId && tr.sideutvalId === pageType.sideId
-    );
-  }
-
-  function getCurrentTestregel(testregelId: number) {
-    return testreglarForLoeysing.find((tr) => tr.id === testregelId);
-  }
-
-  const onChangeTestregelStatus = useCallback(
-    (status: ManuellTestStatus, testregelId: number) => {
-      const testregel = getCurrentTestregel(testregelId);
-      const selectedTestresultat = getSelectedTestresultat(testregelId);
-
-      if (testStatusMap && testregel) {
-        if (status === 'under-arbeid' && isNotDefined(selectedTestresultat)) {
-          doCreateTestResult(testregel, pageType.sideId);
-          return;
-        }
-
-        if (status === 'ferdig') {
-          if (isNotFinished(selectedTestresultat)) {
-            setAlert(
-              'warning',
-              `Kan ikkje sette status ${status}`,
-              'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement'
-            );
-            return;
-          }
-          if (
-            isMissingComments(
-              checkIsElementSide(testregel),
-              selectedTestresultat
-            )
-          ) {
-            setAlert(
-              'warning',
-              `Kan ikkje sette status ${status}`,
-              'Ferdigstatus kan ikkje settast før alle testelement har kommentar til resultat'
-            );
-            return;
-          }
-        }
-
-        updateTestresults(selectedTestresultat, testregelId, mapStatus(status));
-      }
-    },
-    [testStatusMap, testResults, pageType.sideId, activeTest]
-  );
-
-  // Create test result when the block is opened
-  const doCreateTestResult = useCallback(
-    async (activeTestregel: Testregel, sideutvalId: number | undefined) => {
-      if (activeTestregel && sideutvalId) {
-        const testResult: CreateTestResultat = {
-          testgrunnlagId: testgrunnlagId,
-          loeysingId: loeysingId,
-          testregelId: activeTestregel.id,
-          sideutvalId: sideutvalId,
-        };
-
-        try {
-          await createTestResultat(testResult);
-          const results = await fetchTestResults(testgrunnlagId);
-          processData(results, pageType, innhaldstype, activeTestregel);
-        } catch (e) {
-          setAlert('danger', 'Kunne ikkje lagre', 'Opprett testresultat feila');
-        }
-      } else {
-        setAlert(
-          'danger',
-          'Kunne ikkje lagre',
-          'Ugyldig oppretting av testresultat'
-        );
-      }
-    },
-    [activeTest, pageType, innhaldstype]
-  );
-
-  const doUpdateTestResult = useCallback(
-    async (testResultUpdate: TestResultUpdate) => {
-      const { resultatId, alleSvar, resultat, elementOmtale, kommentar } =
-        testResultUpdate;
-      const activeTestResult = testResults.find(
-        (testResult) => testResult.id === resultatId
-      );
-
-      if (
-        isDefined(testgrunnlagId) &&
-        isDefined(loeysingId) &&
-        activeTest &&
-        pageType.sideId &&
-        activeTestResult
-      ) {
-        const testResult: ResultatManuellKontroll = {
-          id: activeTestResult.id,
-          testgrunnlagId: testgrunnlagId,
-          loeysingId: loeysingId,
-          testregelId: activeTest.testregel?.id,
-          sideutvalId: pageType.sideId,
-          elementOmtale,
-          elementResultat: resultat && toElementResultat(resultat),
-          elementUtfall: resultat?.utfall,
-          svar: alleSvar,
-          status: mapStatus('under-arbeid'),
-          kommentar: kommentar,
-          sistLagra: activeTestResult.sistLagra,
-        };
-
-        try {
-          const updatedTestResults = await updateTestResultat(testResult);
-          await createTestresultatAggregert(testgrunnlagId).catch((e) => {
-            setAlert(
-              'danger',
-              'Kunne ikkje oppdatere aggregert resultat',
-              `Oppdatering av aggregert resultat feila ${e}`
-            );
-          });
-          processData(
-            updatedTestResults,
-            pageType,
-            innhaldstype,
-            activeTest?.testregel
-          );
-        } catch (e) {
-          setAlert(
-            'danger',
-            'Kunne ikkje lagre',
-            'Oppdatering av testresultat feila'
-          );
-        }
-      } else {
-        setAlert(
-          'danger',
-          'Kunne ikkje lagre',
-          'Ugyldig oppdatering av testresultat'
-        );
-      }
-    },
-    [activeTest, testResults, pageType.sideId, innhaldstype]
-  );
-
-  const slettTestelement = async (
-    activeTest: ActiveTest,
-    resultatId: number
-  ) => {
-    const resultat = testResults.find((tr) => tr.id === resultatId);
-    if (!resultat) {
-      setAlert(
-        'danger',
-        'Resultatet finnes ikkje',
-        `Vi prøvde å slette resultatet med id ${resultatId}, men det eksisterer ikkje.`
-      );
-      return;
-    }
-    try {
-      const alleResultater = await deleteTestResultat(resultat);
-      processData(alleResultater, pageType, innhaldstype, activeTest.testregel);
-    } catch (e) {
-      setAlert(
-        'danger',
-        'Kunne ikkje slette test',
-        'Sletting av test for testregel feila'
-      );
-    }
-  };
-
-  const doUpdateTestResultStatus = useCallback(
-    async (testResultat: ResultatManuellKontroll[]) => {
-      try {
-        const updatedTestResults = await updateTestResultatMany(testResultat);
-        await createTestresultatAggregert(testgrunnlagId).catch((e) => {
-          setAlert(
-            'danger',
-            'Kunne ikkje oppdatere aggregert resultat',
-            `Oppdatering av aggregert resultat feila ${e}`
-          );
-        });
-        processData(updatedTestResults, pageType, innhaldstype);
-      } catch (e) {
-        setAlert(
-          'danger',
-          'Kunne ikkje endre status',
-          'Oppdatering av status for testresultat feila'
-        );
-      }
-    },
-    [activeTest, pageType, innhaldstype]
-  );
 
   useEffect(() => {
     if (alert) {
