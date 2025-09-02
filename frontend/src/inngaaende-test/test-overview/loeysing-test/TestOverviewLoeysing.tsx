@@ -40,6 +40,7 @@ import {
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
+import { useTestOverviewState } from '@test/util/useTestOverviewState';
 
 const TestOverviewLoeysing = () => {
   const { testgrunnlagId: testgrunnlagIdParam, loeysingId: loeysingIdParam } =
@@ -49,8 +50,6 @@ const TestOverviewLoeysing = () => {
 
   const { innhaldstypeList, sideutvalTypeList }: TestContextKontroll =
     useOutletContext();
-  const [innhaldstype, setInnhaldstype] =
-    useState<InnhaldstypeTesting>(innhaldstypeAlle);
 
   const {
     testResultatForLoeysing,
@@ -60,113 +59,38 @@ const TestOverviewLoeysing = () => {
     kontrollTitle,
     testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
-
-  const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>(
-    testResultatForLoeysing
-  );
-
-  const [activeTest, setActiveTest] = useState<ActiveTest>();
   const [alert, setAlert, modalRef] = useAlertModal();
-  const [testFerdig, setTestFerdig] = useState(
-    isTestFinished(testResults, testKeys)
-  );
 
-  const pageTypeList = useMemo(
-    () => getPageTypeList(sideutvalForLoeysing, sideutvalTypeList),
-    [sideutvalForLoeysing, sideutvalTypeList]
-  );
-
-  const [pageType, setPageType] = useState<PageType>(
-    getInitialPageType(pageTypeList)
-  );
-
-  const [progressionPercent, setProgressionPercent] = useState(
-    progressionForSelection(
-      testreglarForLoeysing,
-      testResultatForLoeysing,
-      pageType.sideId,
-      innhaldstype
-    )
-  );
-  const [testregelListElements, setTestregelListElements] = useState(
-    mapTestregelOverviewElements(
-      testreglarForLoeysing,
-      innhaldstype,
-      pageType.sideId,
-      testKeys
-    )
-  );
-  const [testStatusMap, setTestStatusMap] = useState(
-    toTestregelStatus(
-      testregelListElements,
-      testResultatForLoeysing,
-      testgrunnlagId,
-      pageType.sideId
-    )
-  );
-
-  const [showHelpText, setShowHelpText] = useState(true);
-
-  const toggleShowHelpText = () => {
-    setShowHelpText((showHelpText) => !showHelpText);
-  };
+  const {
+    innhaldstype,
+    pageType,
+    testResults,
+    activeTest,
+    setActiveTest,
+    testFerdig,
+    progressionPercent,
+    testregelListElements,
+    testStatusMap,
+    showHelpText,
+    toggleShowHelpText,
+    processData,
+    onChangeSideutval,
+    onChangeInnhaldstype,
+    pageTypeList,
+  } = useTestOverviewState({
+    testgrunnlagId,
+    loeysingId,
+    innhaldstypeList,
+    sideutvalTypeList,
+    testResultatForLoeysing,
+    sideutvalForLoeysing,
+    testreglarForLoeysing,
+    testKeys,
+  });
 
   const handleSetInactiveTest = useCallback(() => {
     setActiveTest(undefined);
   }, []);
-
-  const processData = (
-    testResults: ResultatManuellKontroll[],
-    pageType: PageType,
-    innhaldstype: InnhaldstypeTesting,
-    activeTestregel?: Testregel
-  ) => {
-    const testResultsLoeysing = testResults.filter(
-      (tr) => tr.loeysingId === loeysingId
-    );
-    setTestResults(testResultsLoeysing);
-
-    const testregelListElements = mapTestregelOverviewElements(
-      testreglarForLoeysing,
-      innhaldstype,
-      pageType.sideId,
-      testKeys
-    );
-
-    setTestregelListElements(testregelListElements);
-    setProgressionPercent(
-      progressionForSelection(
-        testreglarForLoeysing,
-        testResultsLoeysing,
-        pageType.sideId,
-        innhaldstype
-      )
-    );
-
-    setTestStatusMap(
-      toTestregelStatus(
-        testregelListElements,
-        testResultsLoeysing,
-        testgrunnlagId,
-        pageType.sideId
-      )
-    );
-
-    const finished = isTestFinished(testResultsLoeysing, testKeys);
-    setTestFerdig(finished);
-
-    if (activeTestregel) {
-      setActiveTest({
-        testregel: activeTestregel,
-        testResultList: findActiveTestResults(
-          testResultsLoeysing,
-          testgrunnlagId,
-          activeTestregel.id,
-          pageType.sideId
-        ),
-      });
-    }
-  };
 
   const createNewTestResult = async (activeTest: ActiveTest) => {
     const nyttTestresultat: CreateTestResultat = {
@@ -179,42 +103,6 @@ const TestOverviewLoeysing = () => {
     const alleResultater = await fetchTestResults(testgrunnlagId);
     processData(alleResultater, pageType, innhaldstype, activeTest.testregel);
   };
-
-  const onChangeSideutval = useCallback(
-    (sideutvalId: number) => {
-      const nextSideutvalTestside = pageTypeList.find(
-        (pt) => pt.sideId === sideutvalId
-      );
-      if (nextSideutvalTestside) {
-        setPageType(nextSideutvalTestside);
-        setActiveTest(undefined);
-        processData(testResults, nextSideutvalTestside, innhaldstype);
-      } else {
-        setAlert('danger', 'Kan ikkje velje sideutval', 'Ugylig sideutval');
-      }
-    },
-    [testResults, innhaldstype]
-  );
-
-  const onChangeInnhaldstype = useCallback(
-    (innhaldstypeId: number) => {
-      const nextInnhaldstype = innhaldstypeList.find(
-        (it) => it.id === Number(innhaldstypeId)
-      );
-      if (nextInnhaldstype) {
-        setInnhaldstype(nextInnhaldstype);
-        setActiveTest(undefined);
-        processData(testResults, pageType, nextInnhaldstype);
-      } else {
-        setAlert(
-          'danger',
-          'Kan ikkje velje innhaldstype',
-          'Ugylig innhaldstype'
-        );
-      }
-    },
-    [testResults, pageType]
-  );
 
   function getTestregelStatus(nextTestregel: Testregel) {
     const statusKey = toTestregelStatusKey(
