@@ -1,6 +1,6 @@
 import { toUnique } from '@common/util/arrayUtils';
 import { capitalize } from '@common/util/stringutils';
-import { isDefined, isNotDefined } from '@common/util/validationUtils';
+import { isNotDefined } from '@common/util/validationUtils';
 import { ResultatManuellKontroll, ResultatStatus } from '@test/api/types';
 import {
   ManuellTestStatus,
@@ -8,34 +8,62 @@ import {
   Testgrunnlag,
   TestregelOverviewElement,
 } from '@test/types';
-import {
-  InnhaldstypeTesting,
-  Testregel,
-  TestregelBase,
-} from '@testreglar/api/types';
+import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
+
+function findNumSideutvalItSolution(
+  testgrunnlag: Testgrunnlag,
+  loeysingId: number
+) {
+  return testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId)
+    .length;
+}
+
+function getTestregelIdListTestgrunnlag(testgrunnlag: Testgrunnlag) {
+  return testgrunnlag.testreglar.map((tr) => tr.id) ?? [];
+}
+
+function mapToTestresultatKey(tr: ResultatManuellKontroll) {
+  return `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`;
+}
+
+function isTestresultatFerdig(
+  testregelIdList: number[],
+  tr: ResultatManuellKontroll,
+  loeysingId: number
+) {
+  return (
+    testregelIdList.includes(tr.testregelId) &&
+    tr.loeysingId === loeysingId &&
+    tr.status === 'Ferdig'
+  );
+}
+
+function findNumFinishedTestresults(
+  testResults: ResultatManuellKontroll[],
+  testregelIdList: number[],
+  loeysingId: number
+) {
+  const finishedTestIdentifierArray = testResults
+    .filter((tr) => isTestresultatFerdig(testregelIdList, tr, loeysingId))
+    .map(mapToTestresultatKey);
+
+  return new Set(finishedTestIdentifierArray).size;
+}
 
 export const progressionForTestgrunnlagSideutval = (
   testgrunnlag: Testgrunnlag,
   testResults: ResultatManuellKontroll[],
   loeysingId: number
 ): number => {
-  const testregelIdList = testgrunnlag.testreglar.map((tr) => tr.id) ?? [];
-  const numSideutval = testgrunnlag.sideutval.filter(
-    (su) => su.loeysingId === loeysingId
-  ).length;
-
-  const finishedTestIdentifierArray = testResults
-    .filter(
-      (tr) =>
-        testregelIdList.includes(tr.testregelId) &&
-        tr.loeysingId === loeysingId &&
-        tr.status === 'Ferdig'
-    )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
-
-  const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
+  const testregelIdList = getTestregelIdListTestgrunnlag(testgrunnlag);
+  const numSideutval = findNumSideutvalItSolution(testgrunnlag, loeysingId);
+  const numFinishedTestResults = findNumFinishedTestresults(
+    testResults,
+    testregelIdList,
+    loeysingId
+  );
 
   const numContentTestregel = testregelIdList.length * numSideutval;
 

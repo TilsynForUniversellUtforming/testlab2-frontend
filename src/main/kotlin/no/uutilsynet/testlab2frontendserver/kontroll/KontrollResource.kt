@@ -155,9 +155,9 @@ class KontrollResource(
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
-          check(!okToRetest(resultat))
-          val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
-          ResponseEntity.ok(testgrunnlagDTO)
+            check(!okToRetest(resultat))
+            val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
+            ResponseEntity.ok(testgrunnlagDTO)
           }
           .getOrElse { throwable ->
             when (throwable) {
@@ -184,8 +184,8 @@ class KontrollResource(
     return testresultatAPIClient
         .getResultatForTestgrunnlag(testgrunnlagId)
         .mapCatching { resultat ->
-            check(!okToDelete(resultat))
-            testgrunnlagAPIClient.deleteTestgrunnlag(testgrunnlagId)
+          check(!okToDelete(resultat))
+          testgrunnlagAPIClient.deleteTestgrunnlag(testgrunnlagId)
         }
         .fold(
             { ResponseEntity.noContent().build() },
@@ -218,16 +218,16 @@ class KontrollResource(
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
 
-    @GetMapping("/testmetadata/{kontrollId}")
-    fun getTestingMetadata(
-        @PathVariable kontrollId: Int,
-    ): ResponseEntity<KontrollTestingMetadata> {
-      val responseEntity =
-          restTemplate.getForEntity(
-              testingApiProperties.url + "/kontroller/testmetadata/$kontrollId",
-              KontrollTestingMetadata::class.java)
-      return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
-    }
+  @GetMapping("/testmetadata/{kontrollId}")
+  fun getTestingMetadata(
+      @PathVariable kontrollId: Int,
+  ): ResponseEntity<KontrollTestingMetadata> {
+    val responseEntity =
+        restTemplate.getForEntity(
+            testingApiProperties.url + "/kontroller/testmetadata/$kontrollId",
+            KontrollTestingMetadata::class.java)
+    return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
+  }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
     return resultat.all { it.status == ResultatManuellKontroll.Status.IkkjePaabegynt }

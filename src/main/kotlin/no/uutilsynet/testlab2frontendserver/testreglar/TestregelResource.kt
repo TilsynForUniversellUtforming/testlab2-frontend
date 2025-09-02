@@ -168,7 +168,7 @@ class TestregelResource(
         throw Error("Klarte ikke å hente testobjekt")
       }
 
-    @GetMapping("krav/{kravId}")
+  @GetMapping("krav/{kravId}")
   fun getKrav(@PathVariable kravId: Int): Krav =
       try {
         restTemplate.getForObject("$kravUrl/wcag2krav/$kravId", Krav::class.java)
