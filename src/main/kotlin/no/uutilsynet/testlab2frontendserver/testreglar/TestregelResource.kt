@@ -97,18 +97,22 @@ class TestregelResource(
       }
 
   private fun validateNotSemiAutomatic(testregel: TestregelInit) {
-    require(testregel.modus != TestregelModus.semiAutomatisk) { "Det er ikkje støtte for semi-automatiske testreglar" }
+    require(testregel.modus != TestregelModus.semiAutomatisk) {
+      "Det er ikkje støtte for semi-automatiske testreglar"
+    }
   }
 
   private fun validateDuplicatSchema(testregel: TestregelInit) {
     val testregelList = getTestregelList()
-    require(!testregelList.any { it.testregelSchema == testregel.testregelSchema }) { DUPLIKAT_SKJEMA_FOR_TESTREGEL }
+    require(!testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
+      DUPLIKAT_SKJEMA_FOR_TESTREGEL
+    }
   }
 
   @PutMapping
   fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
-          logger.debug("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
+        logger.debug("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
         validateDuplicatSchema(testregel)
         restTemplate.put(testregelUrl, testregel, Testregel::class.java)
         listTestreglar()

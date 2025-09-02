@@ -8,7 +8,11 @@ import {
   Testgrunnlag,
   TestregelOverviewElement,
 } from '@test/types';
-import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
+import {
+  InnhaldstypeTesting,
+  Testregel,
+  TestregelBase,
+} from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
 
@@ -125,7 +129,7 @@ export const getPageTypeList = (
       label = `Egendefinert: ${su.egendefinertType}`;
     } else {
       const type =
-        sideutvalType.find((sut) => sut.id === su.typeId)?.type || '';
+        sideutvalType.find((sut) => sut.id === su.typeId)?.type ?? '';
       const existingType = acc.find((item) => item.pageType.startsWith(type));
       if (existingType) {
         const typeCount =
@@ -157,35 +161,6 @@ export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
 
   return forside ?? firstInSideutval;
 };
-
-export const toSideutvalTestside = (
-  sideutval: Sideutval[],
-  sideutvalTypeList: SideutvalType[],
-  sideutvalId: number
-): PageType => {
-  const firstInSideutval = sideutval[0];
-  if (isNotDefined(firstInSideutval)) {
-    throw Error('Det finns ikkje sideutval for test');
-  }
-
-  const property =
-    sideutval.find((np) => np.id === sideutvalId) || firstInSideutval;
-
-  const sideutvalType = property?.egendefinertType
-    ? property.egendefinertType
-    : sideutvalTypeList.find((su) => su.id === property.typeId)?.type;
-
-  if (isNotDefined(sideutvalType)) {
-    throw Error('Det finns ikkje påkrevd forside for test');
-  }
-
-  return {
-    sideId: property.id,
-    pageType: sideutvalType,
-    url: property.url,
-  };
-};
-
 export const innhaldstypeAlle: InnhaldstypeTesting = {
   id: 0,
   innhaldstype: 'Alle',
@@ -196,9 +171,12 @@ export const isTestFinished = (
   testKeys: string[]
 ): boolean => {
   const finishedTestIdentifierArray = toFinishedTestresultKeys(testResults);
+
   return (
-    JSON.stringify(testKeys.sort()) ===
-    JSON.stringify(finishedTestIdentifierArray.sort())
+    JSON.stringify(testKeys.toSorted((a, b) => a.localeCompare(b))) ===
+    JSON.stringify(
+      finishedTestIdentifierArray.toSorted((a, b) => a.localeCompare(b))
+    )
   );
 };
 
@@ -227,15 +205,13 @@ export const toTestregelStatus = (
       let status: ManuellTestStatus;
       if (isNotDefined(testresults)) {
         status = 'ikkje-starta';
+      } else if (
+        testresults.filter((tr) => tr.status === 'Ferdig').length ===
+        testresults.length
+      ) {
+        status = 'ferdig';
       } else {
-        if (
-          testresults.filter((tr) => tr.status === 'Ferdig').length ===
-          testresults.length
-        ) {
-          status = 'ferdig';
-        } else {
-          status = 'under-arbeid';
-        }
+        status = 'under-arbeid';
       }
       // TODO - Slett
 
@@ -302,20 +278,10 @@ export function findActiveTestResults(
       tr.sideutvalId === sideId
   );
 }
-
 export const getInnhaldstypeInTest = (
-  testregelList: Testregel[],
   innhaldstypeList: InnhaldstypeTesting[]
 ) => {
-  const innhaldstypeIdInTest = testregelList
-    .map((tr) => tr.innhaldstypeTesting?.id)
-    .filter((id) => isDefined(id));
-  return [
-    innhaldstypeAlle,
-    ...innhaldstypeList
-      .filter((it) => innhaldstypeIdInTest.includes(it.id))
-      .sort(),
-  ];
+  return [innhaldstypeAlle, ...innhaldstypeList.sort()];
 };
 
 export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {

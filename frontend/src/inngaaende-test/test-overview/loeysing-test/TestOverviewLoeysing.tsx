@@ -61,9 +61,6 @@ const TestOverviewLoeysing = () => {
     testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
 
-  console.log('Testreglar for løysing:', testreglarForLoeysing);
-  console.log('Innhaldstype ' + JSON.stringify(innhaldstypeList));
-
   const [testResults, setTestResults] = useState<ResultatManuellKontroll[]>(
     testResultatForLoeysing
   );

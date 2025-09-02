@@ -10,14 +10,14 @@ import {
   getInnhaldstypeInTest,
   toTestKeys,
 } from '@test/util/testregelUtils';
-import {
-  listInnhaldstype,
-  listTestreglarWithMetadata,
-} from '@testreglar/api/testreglar-api';
+import { listTestreglarWithMetadata } from '@testreglar/api/testreglar-api';
 import { LoaderFunctionArgs } from 'react-router-dom';
 
-import { fetchKontroll, listSideutvalType } from '../kontroll/kontroll-api';
-import { Kontroll } from '../kontroll/types';
+import {
+  fetchKontroll,
+  fetchKontrollTestmetadata,
+} from '../kontroll/kontroll-api';
+import { Kontroll, KontrollTestingMetadata } from '../kontroll/types';
 import { findStyringsdataForKontroll } from '../styringsdata/api/styringsdata-api';
 import { SideutvalType } from 'kontroll/sideutval/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
@@ -63,11 +63,6 @@ async function validatedKontroll(
   handleErrorStatus(kontrollResponse, kontrollId);
   return await kontrollResponse.json();
 }
-
-function getKontrollTestregelIdList(kontroll: Kontroll) {
-  return kontroll.testreglar?.testregelList?.map((tr) => tr.id) ?? [];
-}
-
 function validatedTestreglar(
   testreglarPromise:
     | PromiseFulfilledResult<Response | Testregel[]>
@@ -78,47 +73,11 @@ function validatedTestreglar(
   }
   return testreglarPromise.value as Testregel[];
 }
-
-function validatedContentTypeList(
-  innhaldstypePromise:
-    | PromiseFulfilledResult<
-        Response | SideutvalType[] | InnhaldstypeTesting[] | Testregel[]
-      >
-    | PromiseRejectedResult
-): InnhaldstypeTesting[] {
-  if (innhaldstypePromise.status === 'rejected') {
-    throw new Error('Kunne ikkje hente innhaldstypar');
-  }
-
-  return innhaldstypePromise.value as InnhaldstypeTesting[];
-}
-
 function validateKontrollParam(kontrollId: number) {
   if (isNaN(kontrollId) || kontrollId <= 0) {
     throw new Error('Ugyldig kontroll-id');
   }
 }
-
-function validatedSideutvalTypeList(
-  sideutvalTypePromise:
-    | PromiseFulfilledResult<
-        Response | SideutvalType[] | InnhaldstypeTesting[] | Testregel[]
-      >
-    | PromiseRejectedResult
-): SideutvalType[] {
-  if (sideutvalTypePromise.status === 'rejected') {
-    throw new Error('Kunne ikkje hente sideutvaltyper');
-  }
-
-  return sideutvalTypePromise.value as SideutvalType[];
-}
-
-function getKontrollTestreglar(kontroll: Kontroll, testreglar: Testregel[]) {
-  const kontrollTestregelIdList = getKontrollTestregelIdList(kontroll);
-
-  return testreglar.filter((tr) => kontrollTestregelIdList.includes(tr.id));
-}
-
 function validatedTestgrunnlag(
   testgrunnlagPromise:
     | PromiseFulfilledResult<Response | Testgrunnlag[]>
@@ -237,37 +196,35 @@ function getActiveLoeysing(kontroll: Kontroll, loeysingId: number) {
   return activeLoeysing;
 }
 
+function kontrollmetataValidated(
+  kontrollMetadata:
+    | PromiseFulfilledResult<Response | Awaited<KontrollTestingMetadata>>
+    | PromiseRejectedResult
+): KontrollTestingMetadata {
+  if (kontrollMetadata.status === 'rejected') {
+    throw new Error('Feil ved henting av kontroll metadata');
+  } else {
+    return kontrollMetadata.value as KontrollTestingMetadata;
+  }
+}
+
 export const testLoader = async ({ params }: LoaderFunctionArgs) => {
   const kontrollId = Number(params?.id);
   validateKontrollParam(kontrollId);
 
-  const [
-    kontrollPromise,
-    sideutvalTypePromise,
-    innhaldstypePromise,
-    testreglarPromise,
-  ] = await Promise.allSettled([
-    fetchKontroll(kontrollId),
-    listSideutvalType(),
-    listInnhaldstype(),
-    listTestreglarWithMetadata(),
+  const [kontrollMetadata] = await Promise.allSettled([
+    fetchKontrollTestmetadata(kontrollId),
   ]);
 
-  const sideutvalTypeList = validatedSideutvalTypeList(sideutvalTypePromise);
+  const kontrollmetadataValidated = kontrollmetataValidated(kontrollMetadata);
 
-  const innhaldstypeList = validatedContentTypeList(innhaldstypePromise);
-
-  const testreglar = validatedTestreglar(testreglarPromise);
-
-  const kontroll = await validatedKontroll(kontrollPromise, kontrollId);
-  const kontrollTestreglar = getKontrollTestreglar(kontroll, testreglar);
+  const innholdstypeTestingsList = getInnhaldstypeInTest(
+    kontrollmetadataValidated.innhaldstypeTesting
+  );
 
   return {
-    sideutvalTypeList: sideutvalTypeList,
-    innhaldstypeTestingList: getInnhaldstypeInTest(
-      kontrollTestreglar,
-      innhaldstypeList
-    ),
+    sideutvalTypeList: kontrollmetadataValidated.sideutvalList,
+    innhaldstypeTestingList: innholdstypeTestingsList,
   };
 };
 
