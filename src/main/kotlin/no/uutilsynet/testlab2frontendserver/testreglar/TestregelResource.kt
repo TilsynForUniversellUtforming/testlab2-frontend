@@ -132,6 +132,7 @@ class TestregelResource(
   fun getTemaForTesreglar(): List<Tema> =
       try {
         logger.debug("Henter tema fra $testregelUrl")
+        testregelApiClient.getTemaForTestreglar()
         restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
       } catch (e: Error) {
         logger.error("klarte ikke å hente tema", e)

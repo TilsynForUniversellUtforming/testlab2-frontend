@@ -35,7 +35,6 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
 
   @Autowired private lateinit var server: MockRestServiceServer
   private val testregelApiUrl = "https://api.url/testregel"
-  private val kravApiUrl = "https://api.url/krav"
 
   private val testregelApiClient =
       TestregelApiClient(restTemplate, TestingApiProperties(testregelApiUrl))
