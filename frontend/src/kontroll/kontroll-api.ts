@@ -23,6 +23,18 @@ export function editKontroll(kontroll: Kontroll): Promise<Response> {
   });
 }
 
+export async function fetchKontrollTestmetadata(
+  kontrollId: number
+): Promise<KontrollTestingMetadata> {
+  let response = await fetchWithErrorHandling(
+    `/api/v1/kontroller/testmetadata/${kontrollId}`
+  );
+  return await responseWithLogErrors(
+    response,
+    'Klarte ikke å hente liste med testmetadata'
+  );
+}
+
 export function updateKontrollUtval(
   kontroll: Kontroll,
   utval: Utval

@@ -32,7 +32,7 @@ export const getErrorMessage = <TFieldValues extends FieldValues>(
     form.errors,
     `${String(name).replaceAll(regex, '.[$1].')}.root`
   );
-  return error?.message || rootError?.message;
+  return error?.message ?? rootError?.message;
 };
 
 /**
@@ -50,16 +50,7 @@ export const normalizeString = (str: string): string => {
 
 const getTokenFromResponse = async (response: Response): Promise<string> => {
   const responseText = await response.text();
-  try {
-    const token = JSON.parse(responseText)['token'];
-    if (typeof token === 'string') {
-      return token;
-    } else {
-      return '';
-    }
-  } catch (e) {
-    return '';
-  }
+  return JSON.parse(responseText)['token'];
 };
 
 const getTokenFromCookie = (): string | undefined => {
@@ -101,6 +92,7 @@ export const fetchWithCsrf = async (
           'X-XSRF-TOKEN': token,
         };
       }
+      init.credentials = 'include';
       return await fetch(input, init);
     });
   } else {

@@ -1,8 +1,9 @@
 import { Utval } from '@loeysingar/api/types';
 import { CrawlParameters } from '@maaling/api/types';
 
-import { Sideutval, SideutvalBase } from './sideutval/types';
+import { Sideutval, SideutvalBase, SideutvalType } from './sideutval/types';
 import { KontrollTestreglar } from './velg-testreglar/types';
+import { InnhaldstypeTesting } from '@testreglar/api/types';
 
 export type Orgnummer = string;
 
@@ -67,3 +68,8 @@ export const steps = {
 };
 
 export type TestStatus = 'Pending' | 'Started';
+
+export type KontrollTestingMetadata = {
+  innhaldstypeTesting: InnhaldstypeTesting[];
+  sideutvalList: SideutvalType[];
+};
