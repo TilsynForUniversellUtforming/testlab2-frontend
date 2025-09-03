@@ -27,4 +27,26 @@ class TestregelApiClient(
 
   fun getTestregelList(): List<Testregel> =
       restTemplate.getList<Testregel>("$testregelUrl/aggregates")
+
+  fun getTestregel(id: Int): TestregelDTO {
+    kotlin
+        .runCatching { restTemplate.getForObject("$testregelUrl/$id", TestregelDTO::class.java) }
+        .getOrElse { throw RuntimeException("Feil ved henting av testregel med id $id", it) }
+        ?.let {
+          return it
+        }
+        ?: throw NoSuchElementException("Fant ikkje testregel med id $id")
+  }
+
+  fun getTestregelAggregate(id: Int): Testregel {
+    kotlin
+        .runCatching {
+          restTemplate.getForObject("$testregelUrl/aggregates/$id", Testregel::class.java)
+        }
+        .getOrElse { throw RuntimeException("Feil ved henting av testregel med id $id", it) }
+        ?.let {
+          return it
+        }
+        ?: throw NoSuchElementException("Fant ikkje testregel med id $id")
+  }
 }
