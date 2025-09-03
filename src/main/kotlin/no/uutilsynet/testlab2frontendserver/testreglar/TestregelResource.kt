@@ -3,7 +3,6 @@ package no.uutilsynet.testlab2frontendserver.testreglar
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
-import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
@@ -11,10 +10,8 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.Tema
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregel
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -36,37 +33,20 @@ private const val DUPLIKAT_SKJEMA_FOR_TESTREGEL = "Duplikat skjema for testregel
 class TestregelResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
-    kravApiProperties: KravApiProperties,
     val testregelApiClient: TestregelApiClient,
     val kravApiClient: KravApiClient
 ) {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
   val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
-  val kravUrl = "${kravApiProperties.url}/v1/krav"
 
   @GetMapping("{id}")
   fun getTestregel(@PathVariable id: Int): ResponseEntity<Testregel> =
-      runCatching {
-            val testregelDTO =
-                restTemplate.getForObject("$testregelUrl/$id", TestregelDTO::class.java)
-            val temaList = testregelApiClient.getTemaForTestreglar()
-            val testobjektList = testregelApiClient.getTestobjektForTesting()
-            val innhaldstypeForTestingList = testregelApiClient.getInnhaldstypeForTestingList()
-            val krav = getKrav(testregelDTO?.kravId)
-            ResponseEntity.ok(
-                testregelDTO?.toTestregel(
-                    temaList, testobjektList, innhaldstypeForTestingList, krav))
-          }
+      runCatching { ResponseEntity.ok(testregelApiClient.getTestregelAggregate(id)) }
           .getOrElse {
             logger.error("Kunne ikkje hente testregel", it)
             throw it
           }
-
-  fun getKrav(kravId: Int?): Krav {
-    requireNotNull(kravId) { "KravId kan ikkje vere null" }
-    return kravApiClient.getKrav(kravId)
-  }
 
   @GetMapping
   fun listTestreglar(
@@ -171,8 +151,7 @@ class TestregelResource(
   @GetMapping("krav/{kravId}")
   fun getKrav(@PathVariable kravId: Int): Krav =
       try {
-        restTemplate.getForObject("$kravUrl/wcag2krav/$kravId", Krav::class.java)
-            ?: throw NoSuchElementException("Krav med id $kravId finns ikkje")
+        kravApiClient.getKrav(kravId)
       } catch (e: Error) {
         logger.error("Klarte ikkje hente krav med id $kravId", e)
         throw Error("Klarte ikkje hente krav med id $kravId", e)

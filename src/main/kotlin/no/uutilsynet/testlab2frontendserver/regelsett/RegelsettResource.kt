@@ -3,7 +3,6 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
-import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.Regelsett
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
@@ -30,14 +29,12 @@ import org.springframework.web.client.RestTemplate
 class RegelsettResource(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties,
-    kravApiProperties: KravApiProperties,
     val kravApiClient: KravApiClient
 ) {
 
   val logger = LoggerFactory.getLogger(RegelsettResource::class.java)
 
   val regelsettUrl = "${testingApiProperties.url}/v1/regelsett"
-  val kravUrl = "${kravApiProperties.url}/v1/krav"
 
   @PostMapping
   fun createRegelsett(@RequestBody regelsett: RegelsettCreate): List<RegelsettBase> =
