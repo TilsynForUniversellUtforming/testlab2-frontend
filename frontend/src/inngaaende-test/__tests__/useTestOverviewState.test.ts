@@ -12,8 +12,12 @@ vi.mock('@test/util/testregelUtils', () => ({
   toTestregelStatus: vi.fn().mockReturnValue(new Map()),
 }));
 
+const mockSetAlert = vi.fn();
+vi.mock('@common/alert/useAlertModal', () => ({
+  default: () => [undefined, mockSetAlert, { current: null }],
+}));
+
 describe('useTestOverviewState', () => {
-  const mockSetAlert = vi.fn();
   const mockProps = {
     testgrunnlagId: 1,
     loeysingId: 2,
@@ -23,9 +27,7 @@ describe('useTestOverviewState', () => {
     sideutvalForLoeysing: [],
     testreglarForLoeysing: [],
     testKeys: {},
-    setAlert: mockSetAlert,
   };
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -35,7 +37,6 @@ describe('useTestOverviewState', () => {
 
     expect(result.current.innhaldstype).toEqual(mockProps.innhaldstypeList[0]);
     expect(result.current.pageType).toEqual({ sideId: 1, name: 'Page 1' });
-    expect(result.current.testResults).toEqual([]);
     expect(result.current.testFerdig).toBe(false);
     expect(result.current.progressionPercent).toBe(0);
     expect(result.current.testregelListElements).toEqual([]);
@@ -77,6 +78,7 @@ describe('useTestOverviewState', () => {
       result.current.onChangeSideutval(999);
     });
 
+    expect(mockSetAlert).toHaveBeenCalled();
     expect(mockSetAlert).toHaveBeenCalledWith(
       'danger',
       'Kan ikkje velje sideutval',
@@ -96,6 +98,7 @@ describe('useTestOverviewState', () => {
   });
 
   it('should call setAlert on invalid innhaldstype change', () => {
+    console.log(mockProps);
     const { result } = renderHook(() => useTestOverviewState(mockProps));
 
     act(() => {
