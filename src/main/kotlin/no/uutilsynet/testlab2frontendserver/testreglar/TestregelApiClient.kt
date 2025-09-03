@@ -28,7 +28,7 @@ class TestregelApiClient(
   fun getTestregelList(): List<Testregel> =
       restTemplate.getList<Testregel>("$testregelUrl/aggregates")
 
-    fun getTestregelAggregate(id: Int): Testregel {
+  fun getTestregelAggregate(id: Int): Testregel {
     kotlin
         .runCatching {
           restTemplate.getForObject("$testregelUrl/aggregates/$id", Testregel::class.java)
