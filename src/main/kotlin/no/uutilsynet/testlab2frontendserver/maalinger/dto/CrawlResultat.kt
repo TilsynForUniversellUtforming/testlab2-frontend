@@ -6,7 +6,7 @@ import no.uutilsynet.testlab2frontendserver.common.TimeUtil.toLocalDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CrawlResultat(
-    val loeysing: Loeysing,
+    val loeysing: LoeysingVerksemd,
     val type: JobStatus,
     val sistOppdatert: LocalDateTime,
     val feilmelding: String?,

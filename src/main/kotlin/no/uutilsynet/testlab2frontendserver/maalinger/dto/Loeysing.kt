@@ -18,3 +18,11 @@ data class LoeysingFormElement(
     val orgnummer: String?,
     val verksemd: Verksemd?
 )
+
+data class LoeysingVerksemd(
+    val id: Int,
+    val namn: String,
+    val url: URL,
+    val orgnummer: String,
+    val verksemdNamn: String,
+)

@@ -1,14 +1,14 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.time.LocalDate
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Framgang
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.JobStatus
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.LoeysingVerksemd
+import java.time.LocalDate
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Testresult(
-    val loeysing: Loeysing,
+    val loeysing: LoeysingVerksemd,
     val tilstand: JobStatus,
     val sistOppdatert: LocalDate,
     val framgang: Framgang?,

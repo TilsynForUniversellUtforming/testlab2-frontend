@@ -6,7 +6,7 @@ import java.time.Instant
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class CrawlResultatDTO(
-    val loeysing: Loeysing,
+    val loeysing: LoeysingVerksemd,
     val sistOppdatert: Instant,
     val type: JobStatus,
     val statusUrl: URL?,

@@ -14,7 +14,7 @@ data class Maaling(
     val navn: String,
     val datoStart: LocalDate,
     val status: MaalingStatus,
-    val loeysingList: List<Loeysing>,
+    val loeysingList: List<LoeysingVerksemd>,
     val testregelList: List<TestregelBaseDTO>,
     val crawlResultat: List<CrawlResultat>,
     val crawlStatistics: JobStatistics,
@@ -38,17 +38,7 @@ fun MaalingDTO.toMaaling(
       datoStart = this.datoStart,
       status = this.status,
       loeysingList =
-          if (crawlResultat.isNotEmpty()) {
-            crawlResultat.map { it.loeysing }
-          } else if (maalingTestKoeyringDTOList.isNotEmpty()) {
-            maalingTestKoeyringDTOList.map { it.loeysing }
-          } else {
-            if (this.loeysingList.isNullOrEmpty()) {
-              emptyList()
-            } else {
-              this.loeysingList
-            }
-          },
+          selectLoeysingList(crawlResultat, maalingTestKoeyringDTOList),
       testregelList = this.testregelList ?: testregelList,
       crawlResultat = crawlResultat,
       crawlStatistics = crawlResultat.map { it.type }.toJobStatistics(),
@@ -56,6 +46,19 @@ fun MaalingDTO.toMaaling(
       testStatistics = maalingTestKoeyringDTOList.map { it.tilstand }.toJobStatistics(),
       crawlParameters = this.crawlParameters,
   )
+}
+
+private fun MaalingDTO.selectLoeysingList(
+    crawlResultat: List<CrawlResultat>,
+    maalingTestKoeyringDTOList: List<TestKoeyringDTO>,
+): List<LoeysingVerksemd> {
+    return if (crawlResultat.isNotEmpty()) {
+        crawlResultat.map { it.loeysing }
+    } else if (maalingTestKoeyringDTOList.isNotEmpty()) {
+        maalingTestKoeyringDTOList.map { it.loeysing }
+    } else {
+        this.loeysingList.orEmpty()
+    }
 }
 
 fun mergeLists(

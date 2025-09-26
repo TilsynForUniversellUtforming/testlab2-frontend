@@ -1,9 +1,9 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation
 
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.LoeysingVerksemd
 
 data class AggegatedTestresultTestregel(
-    val loeysing: Loeysing,
+    val loeysing: LoeysingVerksemd,
     val testregelId: String,
     val suksesskriterium: String,
     val talElementSamsvar: Int,

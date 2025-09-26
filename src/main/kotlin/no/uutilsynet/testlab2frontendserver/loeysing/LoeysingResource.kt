@@ -74,8 +74,10 @@ class LoeysingResource(
       @RequestParam("orgnummer", required = false) orgnummer: String?
   ): ResponseEntity<Any> {
     if (namn != null && orgnummer != null) {
+        println("Feil i param")
       return ResponseEntity.badRequest().body("Må søke med enten namn eller orgnummer")
     }
+      println("Params: namn=$namn, orgnummer=$orgnummer")
     return try {
       if (namn != null) {
         ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?search=$namn"))
