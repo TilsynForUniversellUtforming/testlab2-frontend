@@ -48,9 +48,7 @@ export function Oppsummering() {
     const countMap: Record<string, number> = {};
 
     loeysingar.forEach((loeysing) => {
-      const namn = isDefined(loeysing.verksemdId)
-        ? (verksemdIdName.get(loeysing.verksemdId) ?? loeysing.orgnummer)
-        : loeysing.orgnummer;
+      const namn = loeysing.namn;
       if (namn) {
         countMap[namn] = (countMap[namn] || 0) + 1;
       }
