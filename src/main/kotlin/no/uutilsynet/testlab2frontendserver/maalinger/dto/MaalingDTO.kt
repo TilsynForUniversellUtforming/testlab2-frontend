@@ -10,7 +10,7 @@ data class MaalingDTO(
     val navn: String,
     val datoStart: LocalDate,
     val status: MaalingStatus,
-    val loeysingList: List<Loeysing>?,
+    val loeysingList: List<LoeysingVerksemd>?,
     val testregelList: List<TestregelBaseDTO>?,
     val crawlResultat: List<CrawlResultatDTO>?,
     val testKoeyringar: List<TestKoeyringDTO>?,

@@ -1,4 +1,8 @@
-import { Loeysing } from '@loeysingar/api/types';
+import {
+  Loeysing,
+  LoeysingFormElement,
+  LoeysingVerksemd,
+} from '@loeysingar/api/types';
 import { Bilde } from '@test/api/types';
 import { TestregelBase } from '@testreglar/api/types';
 
@@ -70,7 +74,7 @@ export type AggregatedTestresult = {
 };
 
 export type TestResult = {
-  loeysing: Loeysing;
+  loeysing: LoeysingVerksemd;
   tilstand: JobStatus;
   sistOppdatert: string;
   framgang?: Framgang;
@@ -83,7 +87,7 @@ export type Maaling = {
   id: number;
   navn: string;
   datoStart: string;
-  loeysingList: Loeysing[];
+  loeysingList: LoeysingFormElement[];
   testregelList: TestregelBase[];
   status: MaalingStatus;
   crawlResultat: CrawlResultat[];

@@ -29,7 +29,7 @@ export const getTestingListColumns = (
     header: () => <>Løysing</>,
   },
   {
-    accessorFn: (row) => row.loeysing.namn,
+    accessorFn: (row) => row.loeysing.verksemdNamn,
     id: 'namn',
     cell: (info) => info.getValue(),
     header: () => <>Verksemd</>,

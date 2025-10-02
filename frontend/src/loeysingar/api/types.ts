@@ -7,6 +7,7 @@ export type Loeysing = {
   orgnummer: string;
   verksemdId?: number;
   type: 'nett' | 'app';
+  verksemdnamn: string;
 };
 
 export type LoeysingInit = {
@@ -29,4 +30,13 @@ export type LoeysingFormElement = {
   url: string;
   orgnummer: string;
   verksemd: Verksemd | undefined;
+};
+
+export type LoeysingVerksemd = {
+  id: number;
+  namn: string;
+  url: string;
+  orgnummer: string;
+  type: 'nett' | 'app';
+  verksemdNamn: string;
 };

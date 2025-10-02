@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class TestKoeyringDTO(
     val tilstand: JobStatus,
-    val loeysing: Loeysing,
+    val loeysing: LoeysingVerksemd,
     val sistOppdatert: LocalDate,
     val framgang: Framgang?,
     val antallNettsider: Int,

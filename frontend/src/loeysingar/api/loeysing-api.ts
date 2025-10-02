@@ -1,7 +1,12 @@
 import { fetchWithCsrf, fetchWithErrorHandling } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
-import { Loeysing, LoeysingFormElement, LoeysingInit } from './types';
+import {
+  Loeysing,
+  LoeysingExpanded,
+  LoeysingFormElement,
+  LoeysingInit,
+} from './types';
 
 export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
   await fetchWithErrorHandling(`/api/v1/loeysing/${id}`, {
@@ -28,6 +33,15 @@ export const findLoeysingByOrgnummer = async (
 
 export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   await fetchWithErrorHandling('/api/v1/loeysing', {
+    method: 'GET',
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
+  );
+
+export const fetchLoeysingListExpanded = async (): Promise<
+  LoeysingExpanded[]
+> =>
+  await fetchWithErrorHandling('/api/v1/loeysing/expanded', {
     method: 'GET',
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
