@@ -37,8 +37,7 @@ fun MaalingDTO.toMaaling(
       navn = this.navn,
       datoStart = this.datoStart,
       status = this.status,
-      loeysingList =
-          selectLoeysingList(crawlResultat, maalingTestKoeyringDTOList),
+      loeysingList = selectLoeysingList(crawlResultat, maalingTestKoeyringDTOList),
       testregelList = this.testregelList ?: testregelList,
       crawlResultat = crawlResultat,
       crawlStatistics = crawlResultat.map { it.type }.toJobStatistics(),
@@ -52,13 +51,13 @@ private fun MaalingDTO.selectLoeysingList(
     crawlResultat: List<CrawlResultat>,
     maalingTestKoeyringDTOList: List<TestKoeyringDTO>,
 ): List<LoeysingVerksemd> {
-    return if (crawlResultat.isNotEmpty()) {
-        crawlResultat.map { it.loeysing }
-    } else if (maalingTestKoeyringDTOList.isNotEmpty()) {
-        maalingTestKoeyringDTOList.map { it.loeysing }
-    } else {
-        this.loeysingList.orEmpty()
-    }
+  return if (crawlResultat.isNotEmpty()) {
+    crawlResultat.map { it.loeysing }
+  } else if (maalingTestKoeyringDTOList.isNotEmpty()) {
+    maalingTestKoeyringDTOList.map { it.loeysing }
+  } else {
+    this.loeysingList.orEmpty()
+  }
 }
 
 fun mergeLists(
