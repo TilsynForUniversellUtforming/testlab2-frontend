@@ -29,14 +29,10 @@ class TestregelApiClient(
       restTemplate.getList<Testregel>("$testregelUrl/aggregates")
 
   fun getTestregelAggregate(id: Int): Testregel {
-    kotlin
-        .runCatching {
+    return runCatching {
           restTemplate.getForObject("$testregelUrl/aggregates/$id", Testregel::class.java)
         }
         .getOrElse { throw RuntimeException("Feil ved henting av testregel med id $id", it) }
-        ?.let {
-          return it
-        }
         ?: throw NoSuchElementException("Fant ikkje testregel med id $id")
   }
 }
