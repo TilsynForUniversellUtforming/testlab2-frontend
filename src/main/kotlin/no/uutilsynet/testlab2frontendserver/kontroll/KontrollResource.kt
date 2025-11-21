@@ -155,7 +155,7 @@ class KontrollResource(
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
-            check(!okToRetest(resultat))
+            check(okToRetest(resultat))
             val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
             ResponseEntity.ok(testgrunnlagDTO)
           }
@@ -180,11 +180,11 @@ class KontrollResource(
   fun slettTestgrunnlag(
       @PathVariable kontrollId: Int,
       @PathVariable testgrunnlagId: Int
-  ): ResponseEntity<Unit> {
+  ): ResponseEntity<Unit?> {
     return testresultatAPIClient
         .getResultatForTestgrunnlag(testgrunnlagId)
         .mapCatching { resultat ->
-          check(!okToDelete(resultat))
+          check(okToDelete(resultat))
           testgrunnlagAPIClient.deleteTestgrunnlag(testgrunnlagId)
         }
         .fold(
