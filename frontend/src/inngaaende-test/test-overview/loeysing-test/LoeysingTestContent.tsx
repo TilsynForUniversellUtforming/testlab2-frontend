@@ -14,7 +14,7 @@ import {
   TestResultUpdate,
 } from '@test/types';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
-import { InnhaldstypeTesting } from '@testreglar/api/types';
+import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -28,7 +28,12 @@ interface Props {
   activeTest: ActiveTest | undefined;
   clearActiveTestregel: () => void;
   onChangeTestregel: (testregelId: number) => void;
-  createNewTestResult: (activeTest: ActiveTest) => void;
+  createNewTestResult: (
+    activeTestregel: Testregel,
+    testgrunnlagId: number,
+    loeysingId: number,
+    sideId: number
+  ) => void;
   doUpdateTestResult: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
@@ -76,7 +81,7 @@ const LoeysingTestContent = ({
   showHelpText,
   toggleShowHelpText,
 }: Props) => {
-  const { testgrunnlagId } = useParams();
+  const { testgrunnlagId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
   const alertRef = useRef<HTMLDialogElement>(null);
   const [loading, setLoading] = useState(false);
@@ -102,7 +107,12 @@ const LoeysingTestContent = ({
       activeTest?.testResultList &&
       alleHarUtfall(activeTest.testResultList)
     ) {
-      createNewTestResult(activeTest);
+      createNewTestResult(
+        activeTest.testregel,
+        Number(testgrunnlagId),
+        Number(loeysingId),
+        sideutval.sideId
+      );
     } else {
       alertRef?.current?.showModal();
     }
@@ -149,7 +159,7 @@ const LoeysingTestContent = ({
                         tr.id,
                         sideutval.sideId
                       )
-                    ) || 'ikkje-starta'
+                    ) ?? 'ikkje-starta'
                   }
                   onChangeStatus={onChangeStatus}
                 />

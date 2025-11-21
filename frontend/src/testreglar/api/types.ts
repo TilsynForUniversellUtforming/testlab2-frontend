@@ -10,6 +10,7 @@ export type TestregelBase = {
   krav: Krav;
   modus: TestregelModus;
   type: TestregelInnholdstype;
+  innhaldstypeTesting?: InnhaldstypeTesting;
 };
 
 export type TestregelStatus =

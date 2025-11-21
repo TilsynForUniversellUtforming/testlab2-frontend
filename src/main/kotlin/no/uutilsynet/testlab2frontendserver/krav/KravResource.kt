@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.krav
 
-import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.krav.dto.KravApi
 import no.uutilsynet.testlab2frontendserver.krav.dto.KravInit
@@ -14,7 +13,11 @@ import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("api/v1/krav", produces = [MediaType.APPLICATION_JSON_VALUE])
-class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiProperties) : KravApi {
+class KravResource(
+    val restTemplate: RestTemplate,
+    kravApiProperties: KravApiProperties,
+    val kravApiClient: KravApiClient
+) : KravApi {
 
   val logger: Logger = LoggerFactory.getLogger(KravResource::class.java)
 
@@ -24,7 +27,7 @@ class KravResource(val restTemplate: RestTemplate, kravApiProperties: KravApiPro
   override fun listKrav(): List<KravListItem> =
       try {
         logger.info("Henter krav fra $kravUrl/wcag2krav")
-        restTemplate.getList<Krav>("$kravUrl/wcag2krav").map { KravListItem(it) }
+        kravApiClient.listKrav().map { KravListItem(it) }
       } catch (e: RestClientException) {
         logger.error("Klarte ikke å hente krav", e)
         throw Error("Klarte ikke å hente krav")
