@@ -1,5 +1,5 @@
 import { ButtonVariant } from '@common/types';
-import { DropdownMenu } from '@digdir/designsystemet-react';
+import { Dropdown } from '@digdir/designsystemet-react';
 import { CogIcon } from '@navikt/aksel-icons';
 import { ButtonStatus, ManuellTestStatus } from '@test/types';
 import { useState } from 'react';
@@ -58,41 +58,40 @@ const TestregelStatusDropdown = ({
 
   return (
     <div className="status-dropdown">
-      <DropdownMenu
+      <Dropdown
         open={show}
         onClose={() => setShow(false)}
         placement="bottom-start"
-        size="small"
+        data-size="sm"
       >
-        <DropdownMenu.Trigger
+        <Dropdown.Trigger
           aria-haspopup="true"
           aria-expanded={show}
           id="Oppgi status"
           onClick={() => {
             setShow((show) => !show);
           }}
-          size="small"
+          data-size="sm"
           variant={ButtonVariant.Quiet}
           className="button"
         >
           <CogIcon />
           Oppgi status
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
-          <DropdownMenu.Group>
+        </Dropdown.Trigger>
+          <Dropdown.List>
             {options.map(({ label, value, title, disabled }) => (
-              <DropdownMenu.Item
+              <Dropdown.Item
                 key={value}
-                onClick={() => handleButtonClick(value)}
-                disabled={disabled}
-                title={title}
               >
+                <Dropdown.Button   onClick={() => handleButtonClick(value)}
+                                   disabled={disabled}
+                                   title={title} >
                 {label}
-              </DropdownMenu.Item>
+                </Dropdown.Button>
+              </Dropdown.Item>
             ))}
-          </DropdownMenu.Group>
-        </DropdownMenu.Content>
-      </DropdownMenu>
+          </Dropdown.List>
+      </Dropdown>
     </div>
   );
 };

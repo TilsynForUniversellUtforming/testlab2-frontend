@@ -1,6 +1,6 @@
 import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
-import { Accordion } from '@digdir/designsystemet-react';
+import { Details } from '@digdir/designsystemet-react';
 import { MaalingContext, MaalingFormState } from '@maaling/types';
 import React, { useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
@@ -118,7 +118,7 @@ const ConfirmContent = ({
 
   return (
     <div className="sak-confirm">
-      <Accordion color="neutral">
+      <Details color="neutral">
         <ConfirmationAccordionList
           open
           hideNumbering
@@ -144,7 +144,7 @@ const ConfirmContent = ({
           accordionHeader={`Testreglar (${testregelItems.length})`}
           listItems={testregelItems}
         />
-      </Accordion>
+      </Details>
       {alert && (
         <AlertTimed
           severity={alert.severity}

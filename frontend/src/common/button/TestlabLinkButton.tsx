@@ -1,6 +1,7 @@
 import './link-button.scss';
 
 import { Button, ButtonProps } from '@digdir/designsystemet-react';
+import { Size } from '@digdir/designsystemet-types';
 import { Link } from 'react-router-dom';
 
 import { AppRoute, getFullPath, IdReplacement } from '../util/routeUtils';
@@ -11,6 +12,8 @@ export interface Props extends ButtonProps {
   title: string;
   disabled?: boolean;
   redirectExternal?: boolean;
+  fullWidth?: boolean;
+  size?: Size
 }
 
 const TestlabLinkButton = ({
@@ -36,9 +39,9 @@ const TestlabLinkButton = ({
         variant={variant}
         color={color}
         title={title}
-        size={size}
+        data-size={size}
         icon={icon}
-        fullWidth={fullWidth}
+        data-fullwidth={fullWidth}
         disabled={disabled}
         onClick={onClick}
       >

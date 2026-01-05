@@ -4,10 +4,10 @@ import {
   Alert,
   Button,
   Heading,
-  Ingress,
   Pagination,
   Paragraph,
   Tag,
+  usePagination,
 } from '@digdir/designsystemet-react';
 import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
@@ -36,29 +36,14 @@ export function Oppsummering() {
     (verksemdLoesyingList.length ?? 0) / elementsPerPage
   );
 
-  function summarizeLoeysingar(
-    loeysingar: Loeysing[],
-    verksemdar: Verksemd[]
-  ): VerksemdLoeysing[] {
-    const verksemdIdName = new Map<number, string>();
-    verksemdar.forEach((verksemd) =>
-      verksemdIdName.set(verksemd.id, verksemd.namn)
-    );
+  const { pages, nextButtonProps, prevButtonProps } = usePagination({
+    currentPage,
+    setCurrentPage,
+    totalPages: totalPages
+  });
 
-    const countMap: Record<string, number> = {};
 
-    loeysingar.forEach((loeysing) => {
-      const namn = loeysing.namn;
-      if (namn) {
-        countMap[namn] = (countMap[namn] || 0) + 1;
-      }
-    });
 
-    return Object.entries(countMap).map(([namn, loeysingCount]) => ({
-      namn,
-      loeysingCount,
-    }));
-  }
 
   function listeElement(oppsummeringsItem: VerksemdLoeysing) {
     const mobilapper: number = 0;
@@ -73,7 +58,7 @@ export function Oppsummering() {
 
     return (
       <li className={classes.listeelement} key={oppsummeringsItem.namn}>
-        <Heading level={3} size="small" className={classes.navn}>
+        <Heading level={3} data-size="sm" className={classes.navn}>
           {oppsummeringsItem.namn}
         </Heading>
         <div className={classes.listeelementData}>
@@ -95,14 +80,6 @@ export function Oppsummering() {
     );
   }
 
-  function viewUtvalNamn(utval: Utval | undefined) {
-    if (utval?.namn) {
-      return utval.namn;
-    } else {
-      console.error('Utval mangler på denne kontrollen');
-      return 'Utval mangler';
-    }
-  }
 
   function getPage(
     verksemdLoesyingList: VerksemdLoeysing[],
@@ -138,24 +115,24 @@ export function Oppsummering() {
 
   return (
     <section className={kontrollClasses.kontrollSection}>
-      <Heading level={1} size="xlarge" className={classes.hovedoverskrift}>
+      <Heading level={1} data-size="xl" className={classes.hovedoverskrift}>
         Kontrollen er opprettet
       </Heading>
 
-      <Alert severity="info" className={classes.infoboks}>
-        <Heading level={2} size="xsmall">
+      <Alert data-color="info" className={classes.infoboks}>
+        <Heading level={2} data-size="xs">
           Du er ferdig med å opprette kontrollen.
         </Heading>
-        <Paragraph spacing>
+        <Paragraph>
           Virksomheter, løsninger og testregler er på plass. Dersom du ønsker å
           redigere disse, kan du gjøre det på et senere tidspunkt, eller gå
           tilbake og redigere med en gang.{' '}
         </Paragraph>
-        <Paragraph spacing>
+        <Paragraph>
           Vil du opprette flere kontroller, eller er ferdig for nå, velger du
           lagre og lukk. Da kommer du tilbake til startsiden.
         </Paragraph>
-        <Paragraph spacing>
+        <Paragraph>
           Vil du gjennomføre testen, velg hvem du vil starte med fra listen
           under.{' '}
         </Paragraph>
@@ -170,7 +147,7 @@ export function Oppsummering() {
       </Button>
 
       <div className={classes.kontrollTittel}>
-        <Ingress>{kontroll.tittel}</Ingress>
+        <Paragraph variant={"long"}>{kontroll.tittel}</Paragraph>
         <div className={classes.tags}>
           <Tag color="first">{sanitizeEnumLabel(kontroll.kontrolltype)}</Tag>
           <Tag color="first">{kontroll.saksbehandler}</Tag>
@@ -178,7 +155,7 @@ export function Oppsummering() {
       </div>
 
       <div className={classes.loesninger}>
-        <Heading level={2} size="large">
+        <Heading level={2} data-size="lg">
           Velg hvilken løsning du vil starte kontrollen for
         </Heading>
         <div className={classes.tags}>
@@ -188,14 +165,41 @@ export function Oppsummering() {
           {getPage(verksemdLoesyingList, currentPage).map(listeElement)}
         </ul>
         {totalPages > 1 && (
-          <Pagination
-            className={classes.pagination}
-            nextLabel="Neste"
-            previousLabel="Forrige"
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onChange={setCurrentPage}
-          />
+          <Pagination>
+            <Pagination.List>
+              <Pagination.Item>
+                <Pagination.Button
+                  asChild
+                  aria-label='Forrige side'
+                  {...prevButtonProps}
+                >
+                  <a href='#forrige-side'>Forrige</a>
+                </Pagination.Button>
+              </Pagination.Item>
+              {pages.map(({ page, itemKey, buttonProps }) => (
+                <Pagination.Item key={itemKey}>
+                  {typeof page === 'number' && (
+                    <Pagination.Button
+                      asChild
+                      aria-label={`Side ${page}`}
+                      {...buttonProps}
+                    >
+                      <a href={`#side-${page}`}>{page}</a>
+                    </Pagination.Button>
+                  )}
+                </Pagination.Item>
+              ))}
+              <Pagination.Item>
+                <Pagination.Button
+                  asChild
+                  aria-label='Neste side'
+                  {...nextButtonProps}
+                >
+                  <a href='#neste-side'>Neste</a>
+                </Pagination.Button>
+              </Pagination.Item>
+            </Pagination.List>
+          </Pagination>
         )}
       </div>
       <div className={classes.tilbakeOgNeste}>
@@ -222,3 +226,37 @@ export function Oppsummering() {
     </section>
   );
 }
+
+function viewUtvalNamn(utval: Utval | undefined) {
+  if (utval?.namn) {
+    return utval.namn;
+  } else {
+    console.error('Utval mangler på denne kontrollen');
+    return 'Utval mangler';
+  }
+}
+
+function summarizeLoeysingar(
+  loeysingar: Loeysing[],
+  verksemdar: Verksemd[]
+): VerksemdLoeysing[] {
+  const verksemdIdName = new Map<number, string>();
+  for (const verksemd of verksemdar) {
+    verksemdIdName.set(verksemd.id, verksemd.namn);
+  }
+
+  const countMap: Record<string, number> = {};
+
+  for (const loeysing of loeysingar) {
+    const namn = loeysing.namn;
+    if (namn) {
+      countMap[namn] = (countMap[namn] || 0) + 1;
+    }
+  }
+
+  return Object.entries(countMap).map(([namn, loeysingCount]) => ({
+    namn,
+    loeysingCount,
+  }));
+}
+

@@ -1,5 +1,5 @@
 import { AlertProps } from '@common/alert/AlertTimed';
-import { Alert, Modal } from '@digdir/designsystemet-react';
+import { Alert, Dialog } from '@digdir/designsystemet-react';
 import { forwardRef } from 'react';
 
 export interface AlertModalProps extends AlertProps {
@@ -11,17 +11,17 @@ const AlertModal = forwardRef<HTMLDialogElement, AlertModalProps>(
     { severity, message, title = 'Noko har skjedd', clearMessage },
     modalRef
   ) => (
-    <Modal ref={modalRef} onInteractOutside={clearMessage}>
-      <Modal.Header>{title}</Modal.Header>
-      <Modal.Content>
+    <Dialog.TriggerContext>
+      <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+      <Dialog>
         <Alert
-          severity={severity}
+          data-color={severity}
           role={severity === 'success' ? 'status' : undefined}
         >
           {message}
         </Alert>
-      </Modal.Content>
-    </Modal>
+      </Dialog>
+    </Dialog.TriggerContext>
   )
 );
 

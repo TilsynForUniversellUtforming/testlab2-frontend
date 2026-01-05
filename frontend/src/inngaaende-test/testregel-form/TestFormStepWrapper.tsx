@@ -1,4 +1,4 @@
-import { ErrorMessage } from '@digdir/designsystemet-react';
+import { ErrorSummary } from '@digdir/designsystemet-react';
 import { Svar } from '@test/api/types';
 import TestFormDescription from '@test/testregel-form/input/TestFormDescription';
 import TestFormInputRadio from '@test/testregel-form/input/TestFormInputRadio';
@@ -23,7 +23,7 @@ const TestFormStepWrapper = ({
 }: FormStepProps) => {
   if (!steg) {
     // dette er enten en feil i parseren (klarer ikke å finne neste steg), eller en feil i testregelen.
-    return <ErrorMessage>Fann ikkje steg</ErrorMessage>;
+    return <ErrorSummary>Fann ikkje steg</ErrorSummary>;
   }
 
   steg = {

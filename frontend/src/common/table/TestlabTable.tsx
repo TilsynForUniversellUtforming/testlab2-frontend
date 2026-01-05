@@ -1,9 +1,4 @@
 import './testlabTable.scss';
-import '@tanstack/react-table';
-
-import TestlabTableBody from '@common/table/TestlabTableBody';
-import { ErrorMessage, Table } from '@digdir/designsystemet-react';
-import { RankingInfo } from '@tanstack/match-sorter-utils';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -19,6 +14,10 @@ import {
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
+
+import TestlabTableBody from '@common/table/TestlabTableBody';
+import { ErrorSummary, Table } from '@digdir/designsystemet-react';
+import { RankingInfo } from '@tanstack/match-sorter-utils';
 import { TableOptions } from '@tanstack/table-core';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
@@ -117,9 +116,9 @@ const TestlabTable = <T extends object>({
   ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
-    Object.assign({}, selectedRows) as unknown as RowSelectionState
-  );
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({
+    ...selectedRows,
+  } as unknown as RowSelectionState);
 
   const rowSelectionEnabled = typeof onSelectRows !== 'undefined';
 
@@ -178,9 +177,9 @@ const TestlabTable = <T extends object>({
 
   useEffect(() => {
     if (isDefined(selectedRows)) {
-      table.setRowSelection(
-        Object.assign({}, selectedRows) as unknown as RowSelectionState
-      );
+      table.setRowSelection({
+        ...selectedRows,
+      } as unknown as RowSelectionState);
     }
   }, [selectedRows]);
 
@@ -248,7 +247,7 @@ const TestlabTable = <T extends object>({
         </Table.Head>
       </Table>
       {actionRequiredError && (
-        <ErrorMessage size="small">{actionRequiredError}</ErrorMessage>
+        <ErrorSummary data-size="sm">{actionRequiredError}</ErrorSummary>
       )}
     </div>
   );

@@ -2,10 +2,11 @@ import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
 import {
-  Combobox,
-  ErrorMessage,
+  ErrorSummary,
+  Fieldset,
   Label,
   Radio,
+  useRadioGroup, ValidationMessage, EXPERIMENTAL_Suggestion as Suggestion,
 } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -13,11 +14,12 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { OptionType } from '../types';
 import { TestlabInputBaseProps } from './TestlabFormInput';
 
-export interface TestlabInputSelectProps<T extends object>
-  extends TestlabInputBaseProps<T> {
+export type TestlabInputSelectProps<T extends object> =
+   TestlabInputBaseProps<T> & {
   options: OptionType[];
   radio?: boolean;
   radioInline?: boolean;
+  description: string;
 }
 
 /**
@@ -50,35 +52,23 @@ const TestlabFormSelect = <T extends object>({
   const errorMessage = getErrorMessage(formState, name);
 
   if (radio) {
+    const { getRadioProps, validationMessageProps } = useRadioGroup()
     return (
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { value } }) => (
           <div className="testlab-form__select">
-            <Radio.Group
-              legend={
+            <Fieldset>
+              <Fieldset.Legend>
                 <TestlabFormRequiredLabel label={label} required={required} />
-              }
-              description={description}
-              error={errorMessage}
-              onChange={onChange}
-              value={typeof value === 'undefined' ? undefined : String(value)}
-              size={size}
-              disabled={disabled}
-              inline={radioInline}
-            >
-              {options.map(({ label, value, title, disabled }) => (
-                <Radio
-                  key={value}
-                  value={value}
-                  title={title}
-                  disabled={disabled}
-                >
-                  {label}
-                </Radio>
+              </Fieldset.Legend>
+              <Fieldset.Description>{description}</Fieldset.Description>
+              {options.map(({ label, value }) => (
+                <Radio label={label} {...getRadioProps(value)} />
               ))}
-            </Radio.Group>
+              <ValidationMessage {...validationMessageProps} />
+            </Fieldset>
           </div>
         )}
       />
@@ -98,24 +88,21 @@ const TestlabFormSelect = <T extends object>({
               <div className="testlab-form__input-sub-label">{description}</div>
             )}
           </Label>
-          <Combobox
-            {...rest}
-            id={name}
-            value={value ? [String(value)] : undefined}
-            onValueChange={(value) => onChange(value[0])}
-            error={isDefined(errorMessage)}
-            disabled={disabled}
-            label={label}
-            hideLabel
+          <SuggestionRoot
+            multiple
           >
+            <Suggestion.Input data-size={size} />
+            <Suggestion.ClearButton />
+            <Suggestion.List>
             {options.map((o) => (
-              <Combobox.Option value={o.value} key={`${o.label}_${o.value}`}>
+              <Suggestion.Option value={o.value} key={`${o.label}_${o.value}`}>
                 {o.label}
-              </Combobox.Option>
+              </Suggestion.Option>
             ))}
-          </Combobox>
+            </Suggestion.List>
+          </SuggestionRoot>
           {errorMessage && (
-            <ErrorMessage size="small">{errorMessage}</ErrorMessage>
+            <ErrorSummary data-size="sm">{errorMessage}</ErrorSummary>
           )}
         </div>
       )}

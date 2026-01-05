@@ -8,7 +8,7 @@ import TestlabTableHeader from '@common/table/TestlabTableHeader';
 import { getFullPath } from '@common/util/routeUtils';
 import {
   Button,
-  ErrorMessage,
+  ErrorSummary,
   Table,
   Tabs,
 } from '@digdir/designsystemet-react';
@@ -262,7 +262,7 @@ const ResultatTable = <T extends object>({
           <Tabs.Tab value={'tema'}>Sortert på tema</Tabs.Tab>
           <Tabs.Tab value={'krav'}>Sortert på krav</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Content value={activeTab}>
+        <Tabs.Panel value={activeTab}>
           <Table
             className={classnames('testlab-table__table', 'resultat-table', {
               'table-error': !!tableParams.actionRequiredError,
@@ -312,12 +312,12 @@ const ResultatTable = <T extends object>({
               </Table.Row>
             </Table.Head>
           </Table>
-        </Tabs.Content>
+        </Tabs.Panel>
       </Tabs>
       {tableParams.actionRequiredError && (
-        <ErrorMessage size="small">
+        <ErrorSummary data-size="sm">
           {tableParams.actionRequiredError}
-        </ErrorMessage>
+        </ErrorSummary>
       )}
     </div>
   );

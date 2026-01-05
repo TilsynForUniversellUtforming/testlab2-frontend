@@ -1,7 +1,7 @@
 import './dropdown.scss';
 
 import { ButtonSize, ButtonVariant } from '@common/types';
-import { DropdownMenu } from '@digdir/designsystemet-react';
+import { Dropdown } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classNames from 'classnames';
 import React, { useState } from 'react';
@@ -28,13 +28,13 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
 
   return (
     <div className={classNames('dropdown-content links', { show })}>
-      <DropdownMenu
+      <Dropdown
         open={show}
         onClose={() => setShow(false)}
-        size={ButtonSize.Small}
+        data-size={ButtonSize.Small}
         placement="bottom-start"
       >
-        <DropdownMenu.Trigger
+        <Dropdown.Trigger
           className={classNames('dropdown__button', { show: show })}
           onClick={() => {
             setShow((show) => !show);
@@ -46,30 +46,28 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
         >
           {navn}
           <ChevronDownIcon className="chevron-icon" />
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
-          <DropdownMenu.Group>
+        </Dropdown.Trigger>
+        <Dropdown.List>
             {routes.map((route) => {
               if (route.disabled) {
                 return (
-                  <DropdownMenu.Item key={route.navn} disabled>
+                  <Dropdown.Item key={route.navn} aria-disabled>
                     {route.navn}
-                  </DropdownMenu.Item>
+                  </Dropdown.Item>
                 );
               }
 
               return (
-                <DropdownMenu.Item
+                <Dropdown.Item
                   key={route.navn}
                   onClick={() => handleButtonClick(route)}
                 >
                   {route.navn}
-                </DropdownMenu.Item>
+                </Dropdown.Item>
               );
             })}
-          </DropdownMenu.Group>
-        </DropdownMenu.Content>
-      </DropdownMenu>
+        </Dropdown.List>
+      </Dropdown>
     </div>
   );
 };

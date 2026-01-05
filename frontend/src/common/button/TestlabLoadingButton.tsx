@@ -16,7 +16,6 @@ const TestlabLoadingButton = ({
   const handleOnClick = (e: React.MouseEvent, onClick: () => void) => {
     if (loading) {
       e.preventDefault();
-      return;
     } else {
       onClick();
     }
@@ -26,7 +25,7 @@ const TestlabLoadingButton = ({
 
   return (
     <Button onClick={(e) => handleOnClick(e, onClick)} aria-disabled={loading}>
-      {loading && <Spinner title={loadingTitle} variant="interaction" />}
+      {loading && <Spinner aria-label={loadingTitle} />}
       {loading ? loadingTitle : title}
     </Button>
   );

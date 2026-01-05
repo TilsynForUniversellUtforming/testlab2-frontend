@@ -3,10 +3,12 @@ import {
   Button,
   ButtonProps,
   Divider,
-  Modal,
+  Dialog,
   Paragraph,
+  Heading,
 } from '@digdir/designsystemet-react';
-import React, { useCallback, useRef } from 'react';
+import React, { JSX, useCallback, useRef } from 'react';
+import { Size } from '@digdir/designsystemet-types';
 
 export type ConfirmModalProps = {
   className?: string;
@@ -15,6 +17,7 @@ export type ConfirmModalProps = {
   onConfirm: () => void;
   disabled?: boolean;
   buttonIcon?: JSX.Element;
+  size?: Size;
 };
 
 const ConfirmModalButton = ({
@@ -43,32 +46,34 @@ const ConfirmModalButton = ({
         className={className}
         color={color}
         icon={icon}
-        size={size}
+        data-size={size}
         variant={variant}
         title={icon ? title : undefined}
       >
         {buttonIcon}
         {icon ? null : title}
       </Button>
-      <Modal ref={modalRef} onInteractOutside={() => modalRef.current?.close()}>
-        <Modal.Header closeButton={false}>{title}</Modal.Header>
+      <Dialog ref={modalRef} closedby={'any'}>
+        <Dialog.Block>
+          <Heading>{title}</Heading>
+        </Dialog.Block>
         <Divider color="subtle" />
-        <Modal.Content>
+        <Dialog.Block>
           <Paragraph>{message}</Paragraph>
-        </Modal.Content>
-        <Modal.Footer>
+        </Dialog.Block>
+        <Dialog.Block>
           <Button
             variant={ButtonVariant.Outline}
             onClick={() => modalRef.current?.close()}
-            size={ButtonSize.Small}
+            data-size={ButtonSize.Small}
           >
             Lukk
           </Button>
-          <Button onClick={onConfirmModal} size={ButtonSize.Small}>
+          <Button onClick={onConfirmModal} data-size={ButtonSize.Small}>
             OK
           </Button>
-        </Modal.Footer>
-      </Modal>
+        </Dialog.Block>
+      </Dialog>
     </>
   );
 };

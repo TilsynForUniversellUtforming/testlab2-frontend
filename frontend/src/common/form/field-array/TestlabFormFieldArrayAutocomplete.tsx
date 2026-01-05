@@ -8,7 +8,7 @@ import { getLabelString } from '@common/form/autocomplete/util';
 import { getErrorMessage } from '@common/form/util';
 import { ButtonSize, ButtonVariant } from '@common/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
-import { Button, ErrorMessage } from '@digdir/designsystemet-react';
+import { Button, ValidationMessage } from '@digdir/designsystemet-react';
 import { MinusCircleIcon, PlusCircleIcon } from '@navikt/aksel-icons';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -132,13 +132,12 @@ const TestlabFormFieldArrayAutocomplete = <
                     required={required}
                     spacing={spacing}
                     customError={customError}
-                    hideLabel
                   />
                 </div>
               }
             />
             <Button
-              size={ButtonSize.Small}
+              data-size={ButtonSize.Small}
               variant={ButtonVariant.Quiet}
               type="button"
               onClick={() => onClickRemove(idx)}
@@ -151,7 +150,7 @@ const TestlabFormFieldArrayAutocomplete = <
         );
       })}
       <Button
-        size={ButtonSize.Small}
+        data-size={ButtonSize.Small}
         variant={ButtonVariant.Quiet}
         type="button"
         onClick={onClickAdd}
@@ -162,7 +161,7 @@ const TestlabFormFieldArrayAutocomplete = <
       </Button>
       {errorMessage &&
         (fields.length === 0 || isNotDefined(defaultValueIdx)) && (
-          <ErrorMessage size="small">{errorMessage}</ErrorMessage>
+          <ValidationMessage data-size="sm">{errorMessage}</ValidationMessage>
         )}
     </div>
   );

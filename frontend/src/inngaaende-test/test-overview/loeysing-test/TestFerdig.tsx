@@ -14,9 +14,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
   const {
-    testgrunnlagId: testgrunnlagId,
-    id: id,
-    loeysingId: loeysingId,
+    testgrunnlagId,
+    id,
+    loeysingId,
   } = useParams();
   const navigate = useNavigate();
   const [alert, setAlert, modalRef] = useAlertModal();
@@ -47,11 +47,11 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
 
   return (
     <div className="status-ferdig">
-      <Alert severity="success">
-        <Heading level={5} size="xs" spacing>
+      <Alert data-color="success">
+        <Heading level={5} data-size="xs">
           {loeysingNamn} er ferdig testa!
         </Heading>
-        <Paragraph spacing>
+        <Paragraph>
           Du har no testa alle innhaldstypar for alle sideutval og kan gå vidare
           for å sjå resultatet.
         </Paragraph>

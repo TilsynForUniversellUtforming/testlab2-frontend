@@ -5,7 +5,7 @@ import { formatDateString } from '@common/util/stringutils';
 import {
   Button,
   Heading,
-  Modal,
+  Dialog,
   Paragraph,
 } from '@digdir/designsystemet-react';
 import { XMarkIcon } from '@navikt/aksel-icons';
@@ -39,7 +39,7 @@ const ImageGallery = ({
     <>
       <TestlabDivider />
       {heading && (
-        <Heading size="small" level={5} spacing>
+        <Heading data-size="sm" level={5}>
           Bilder til resultat
         </Heading>
       )}
@@ -51,7 +51,7 @@ const ImageGallery = ({
               onClick={() => handleOpenModal(bilde)}
               title="Trykk for å se full storleik"
               icon
-              size="large"
+              data-size="lg"
               asChild
             >
               <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
@@ -72,23 +72,25 @@ const ImageGallery = ({
             )}
           </div>
         ))}
-        <Modal
+        <Dialog.Trigger>
+        <Dialog
           ref={modalRef}
-          onInteractOutside={() => modalRef.current?.close()}
+          closedby='any'
           onClose={() => setActiveBilde(undefined)}
           style={{
             maxWidth: '1200px',
             width: 'fit-content',
           }}
         >
-          <Modal.Header>Resultat</Modal.Header>
-          <Modal.Content>
+          <Heading>Resultat</Heading>
+          <Dialog.Block>
             <img src={activeBilde?.bildeURI} alt="" />
-            <Paragraph size="xsmall">
+            <Paragraph data-size="xs">
               Oppretta {formatDateString(String(activeBilde?.opprettet), true)}
             </Paragraph>
-          </Modal.Content>
-        </Modal>
+          </Dialog.Block>
+        </Dialog>
+        </Dialog.Trigger>
       </div>
     </>
   );

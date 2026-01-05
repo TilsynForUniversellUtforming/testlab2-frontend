@@ -1,17 +1,21 @@
 import {
+  Label,
   Textarea,
+  TextareaProps,
   Textfield,
   TextfieldProps,
 } from '@digdir/designsystemet-react';
 import React, { useEffect, useState } from 'react';
+import { Size } from '@digdir/designsystemet-types';
 
 export type Props = {
   value?: string;
   onChange: (value?: string) => void;
   debounce?: number;
-  ariaLabel?: string;
+  ariaLabel?: TextareaProps["aria-label"];
   errorMessage?: string;
   textArea?: boolean;
+  size?:Size;
 };
 
 const DebouncedInput = ({
@@ -26,7 +30,6 @@ const DebouncedInput = ({
   errorMessage,
   size,
   disabled,
-  hideLabel,
   type = 'text',
   textArea = false,
 }: Props & Omit<TextfieldProps, 'onChange'>) => {
@@ -47,17 +50,14 @@ const DebouncedInput = ({
   if (textArea) {
     return (
       <div className="debounced-input__container">
+        <Label>{label}</Label>
         <Textarea
           id={id}
-          label={label}
-          description={description}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           aria-label={ariaLabel}
-          error={errorMessage}
-          size={size}
+          data-size={size}
           disabled={disabled}
-          hideLabel={hideLabel}
         />
       </div>
     );
@@ -72,12 +72,10 @@ const DebouncedInput = ({
         type={type}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        onFocus={onFocus}
-        aria-label={ariaLabel}
+        onFocus={onFocus as React.FocusEventHandler<HTMLInputElement>}
         error={errorMessage}
-        size={size}
+        data-size={size}
         disabled={disabled}
-        hideLabel={hideLabel}
       />
     </div>
   );

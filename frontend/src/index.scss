@@ -1,5 +1,5 @@
-@use '@digdir/designsystemet-theme/brand/tilsynet/tokens.css' as *;
-@use '@digdir/designsystemet-css' as *;
+@import '@digdir/designsystemet-css/index.css';
+@import '@digdir/designsystemet-theme/uutilsynet.css';
 
 $blaasvart: #1e2b3c;
 

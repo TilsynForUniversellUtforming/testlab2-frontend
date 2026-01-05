@@ -2,15 +2,11 @@ import './app-title.scss';
 
 import { isNotDefined } from '@common/util/validationUtils';
 import { Heading, Paragraph } from '@digdir/designsystemet-react';
+import { Size } from '@digdir/designsystemet-types';
+
 import { Link } from 'react-router-dom';
 
-export type AppTitleSize =
-  | 'xxsmall'
-  | 'xsmall'
-  | 'small'
-  | 'medium'
-  | 'large'
-  | 'xlarge';
+
 
 interface SubHeadingProps {
   subHeading?: string;
@@ -19,7 +15,7 @@ interface SubHeadingProps {
 
 export interface AppTitleProps extends SubHeadingProps {
   heading?: string;
-  size?: AppTitleSize;
+  size?: Size;
   loading?: boolean;
 }
 
@@ -31,11 +27,11 @@ const SubHeading = ({ subHeading, linkPath }: SubHeadingProps) => {
   if (linkPath) {
     return (
       <Link to={linkPath}>
-        <Paragraph spacing>{subHeading}</Paragraph>
+        <Paragraph>{subHeading}</Paragraph>
       </Link>
     );
   } else {
-    return <Paragraph spacing>{subHeading}</Paragraph>;
+    return <Paragraph>{subHeading}</Paragraph>;
   }
 };
 
@@ -53,8 +49,7 @@ const AppTitle = ({
     <div className="app-title">
       <Heading
         className="app-title__heading"
-        size={size ?? 'xlarge'}
-        spacing={!appSubHeading}
+        data-size={size ?? 'xl'}
       >
         {appHeading}
       </Heading>

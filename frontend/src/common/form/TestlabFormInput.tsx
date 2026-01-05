@@ -3,14 +3,17 @@ import { Label, Textfield, TextfieldProps } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 import { Path, useFormContext } from 'react-hook-form';
+import { Size } from '@digdir/designsystemet-types';
 
-export interface TestlabInputBaseProps<T extends object>
-  extends TextfieldProps {
+export type TestlabInputBaseProps<T extends object>
+  = TextfieldProps & {
   label: string;
   required?: boolean;
   hidden?: boolean;
   name: Path<T>;
   disabled?: boolean;
+  size?:Size
+  type?: TextfieldProps['type'];
 }
 
 /**
@@ -32,7 +35,7 @@ const TestlabFormInput = <T extends object>({
   description,
   name,
   required = false,
-  size = 'small',
+  size = 'sm',
   type,
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
@@ -53,15 +56,15 @@ const TestlabFormInput = <T extends object>({
         )}
       </Label>
       <Textfield
-        {...rest}
+        id={name}
+        error={errorMessage}
+        data-size={size}
+        label={label}
+        type={type}
         {...register(name, {
           required: required,
         })}
-        id={name}
-        error={errorMessage}
-        name={name}
-        type={type}
-        size={size}
+        {...rest}
       />
     </div>
   );

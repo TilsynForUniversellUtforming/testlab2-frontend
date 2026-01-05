@@ -6,6 +6,7 @@ import Skeleton from 'react-loading-skeleton';
 interface Props<T extends object> extends TestlabInputBaseProps<T> {
   width?: number;
   height?: number;
+  description?: string;
 }
 
 const TestlabFormFieldSkeleton = <T extends object>({
