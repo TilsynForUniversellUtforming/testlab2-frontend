@@ -12,7 +12,8 @@ export type TestlabInputBaseProps<T extends object>
   hidden?: boolean;
   name: Path<T>;
   disabled?: boolean;
-  size?:Size;
+  size?:Size
+  type?: TextfieldProps['type'];
 }
 
 /**
@@ -35,6 +36,7 @@ const TestlabFormInput = <T extends object>({
   name,
   required = false,
   size = 'sm',
+  type,
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
   const { register, formState } = useFormContext<T>();
@@ -55,6 +57,7 @@ const TestlabFormInput = <T extends object>({
         error={errorMessage}
         data-size={size}
         label={label}
+        type={type}
         {...register(name, {
           required: required,
         })}
