@@ -107,28 +107,28 @@ describe('<TestlabStatusTag />', () => {
       </>
     );
 
-    expect(screen.queryByTestId('test-first')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-first')?.getAttribute('data-color')).toMatch(
       /first/gi
     );
-    expect(screen.queryByTestId('test-second')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-second')?.getAttribute('data-color')).toMatch(
       /second/gi
     );
-    expect(screen.queryByTestId('test-third')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-third')?.getAttribute('data-color')).toMatch(
       /third/gi
     );
-    expect(screen.queryByTestId('test-success')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-success')?.getAttribute('data-color')).toMatch(
       /success/gi
     );
-    expect(screen.queryByTestId('test-danger')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-danger')?.getAttribute('data-color')).toMatch(
       /danger/gi
     );
-    expect(screen.queryByTestId('test-warning')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-warning')?.getAttribute('data-color')).toMatch(
       /warning/gi
     );
-    expect(screen.queryByTestId('test-info')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-info')?.getAttribute('data-color')).toMatch(
       /info/gi
     );
-    expect(screen.queryByTestId('test-neutral')?.getAttribute('class')).toMatch(
+    expect(screen.queryByTestId('test-neutral')?.getAttribute('data-color')).toMatch(
       /neutral/gi
     );
   });
@@ -150,10 +150,10 @@ describe('<TestlabStatusTag />', () => {
     );
 
     const tagElement1 = screen.queryByTestId('status-tag-1');
-    expect(tagElement1?.getAttribute('class')).toMatch(/second/gi);
+    expect(tagElement1?.getAttribute('data-color')).toMatch(/second/gi);
 
     const tagElement2 = screen.queryByTestId('status-tag-2');
-    expect(tagElement2?.getAttribute('class')).toMatch(/second/gi);
+    expect(tagElement2?.getAttribute('data-color')).toMatch(/second/gi);
   });
 
   it("should display 'neutral' color when status is not mapped to a color in colorMap", () => {
@@ -166,6 +166,6 @@ describe('<TestlabStatusTag />', () => {
     );
 
     const tagElement1 = screen.queryByTestId('status-tag-1');
-    expect(tagElement1?.getAttribute('class')).toMatch(/neutral/gi);
+    expect(tagElement1?.getAttribute('data-color')).toMatch(/neutral/gi);
   });
 });

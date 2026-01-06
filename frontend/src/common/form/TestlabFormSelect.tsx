@@ -80,9 +80,7 @@ const TestlabFormSelectCheckbox = <T extends object>({name,control, label,requir
               <div className="testlab-form__input-sub-label">{description}</div>
             )}
           </Label>
-          <Suggestion
-            multiple
-          >
+          <Suggestion>
             <Suggestion.Input data-size={size} />
             <Suggestion.Clear />
             <Suggestion.List>
