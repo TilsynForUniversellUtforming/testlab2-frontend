@@ -62,15 +62,6 @@ const SideutvalAccordion = ({
         : [...prevExpanded, key]
     );
   };
-
-  const onChangeSideutvalType = (values: string[]) => {
-    const sideutvalTypeId = Number.parseInt(values[0]);
-    const sideutvalType = selectableSideutvalType.find(
-      (type) => type.id === sideutvalTypeId
-    );
-    setSideutvalTypeToAdd(sideutvalType);
-  };
-
   const handleAddSideutvalType = () => {
     if (!sideutvalTypeToAdd) {
       setTypeError({ type: 'Ugyldig sidetype' });
@@ -177,14 +168,6 @@ const SideutvalAccordion = ({
             <Suggestion
               aria-label="Legg til sidetype"
               data-size="sm"
-              value={
-                sideutvalTypeToAdd?.id ? [String(sideutvalTypeToAdd.id)] : []
-              }
-              onValueChange={onChangeSideutvalType}
-              inputValue={
-                sideutvalTypeToAdd?.type ? String(sideutvalTypeToAdd.type) : ''
-              }
-              error={typeError?.type}
             >
               <Suggestion.Empty>Ingen treff</Suggestion.Empty>
               <Suggestion.List>

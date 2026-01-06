@@ -16,7 +16,7 @@ const LoeysingFormSkeleton = ({ heading, subHeading }: Props) => (
         <TestlabFormHeader heading={heading} description={subHeading} />
       )}
       <div className="loeysing-form__input">
-        <Paragraph spacing size="small">
+        <Paragraph data-size="sm">
           Felter markert med stjerne er obligatoriske
         </Paragraph>
         <TestlabFormFieldSkeleton<LoeysingInit>

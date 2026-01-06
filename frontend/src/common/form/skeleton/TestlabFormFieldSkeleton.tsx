@@ -3,7 +3,7 @@ import './testlab-form-skeleton.scss';
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import Skeleton from 'react-loading-skeleton';
 
-interface Props<T extends object> extends TestlabInputBaseProps<T> {
+type Props<T extends object> = TestlabInputBaseProps<T>  &{
   width?: number;
   height?: number;
   description?: string;

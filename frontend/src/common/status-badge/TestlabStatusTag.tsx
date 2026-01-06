@@ -2,6 +2,7 @@ import { TestlabColor } from '@common/types';
 import { Tag, TagProps } from '@digdir/designsystemet-react';
 
 import { sanitizeEnumLabel } from '../util/stringutils';
+import { Size } from '@digdir/designsystemet-types';
 
 /**
  * Defines the color mapping for the status badge. This type maps each color to an array of labels.
@@ -26,6 +27,7 @@ interface Props<T extends string> extends TagProps {
   customLabel?: string;
   status?: string;
   colorMapping: ColorMapping<T>;
+  size?: Size
 }
 
 const getTagColor = <T extends string>(
@@ -70,19 +72,17 @@ const TestlabStatusTag = <T extends string>({
   customLabel,
   status,
   colorMapping,
-  size = 'small',
+  size = 'sm',
   ...rest
 }: Props<T>) => {
   if (status == null || typeof status === 'undefined') {
     return null;
   }
 
-  const sanitizedLabel = customLabel
-    ? customLabel
-    : sanitizeEnumLabel(String(status));
+  const sanitizedLabel = customLabel || sanitizeEnumLabel(String(status));
 
   return (
-    <Tag color={getTagColor(status, colorMapping)} {...rest} size={size}>
+    <Tag data-color={getTagColor(status, colorMapping)} {...rest} data-size={size}>
       {sanitizedLabel}
     </Tag>
   );

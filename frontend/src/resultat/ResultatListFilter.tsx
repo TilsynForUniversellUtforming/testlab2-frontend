@@ -4,7 +4,6 @@ import { ChangeEvent } from 'react';
 interface Props {
   searchValue: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  onClear: () => void;
   onChangeBeforeDate: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeAfterDate: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (value: string) => void;
@@ -12,28 +11,27 @@ interface Props {
 const ResultatTableFilter = ({
   searchValue,
   onChange,
-  onClear,
   onChangeBeforeDate,
   onChangeAfterDate,
   onSubmit,
 }: Props) => {
   return (
     <div className="resultat-header-search">
-      <Heading size="medium" level={2} spacing>
+      <Heading data-size="md" level={2} >
         Filtrer visning
       </Heading>
       <div id="kontrollTypeFilter">
         <Label htmlFor="table-search">Søk i etter type kontroll</Label>
         <Search
-          id="table-search"
+          onSubmit={() => onSubmit}
+        >
+          <Search.Input aria-label={"Filtrer"} id="table-search"
           value={searchValue}
           onChange={onChange}
-          onClear={onClear}
-          onSearchClick={onSubmit}
-          size="medium"
-          variant="primary"
-          searchButtonLabel="Filtrer"
-        />
+          />
+          <Search.Clear />
+          <Search.Button variant="primary" />
+        </Search>
       </div>
       <div id="kontrollDateFilter">
         <div id="filterBefore">

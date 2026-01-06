@@ -149,8 +149,8 @@ export function Oppsummering() {
       <div className={classes.kontrollTittel}>
         <Paragraph variant={"long"}>{kontroll.tittel}</Paragraph>
         <div className={classes.tags}>
-          <Tag color="first">{sanitizeEnumLabel(kontroll.kontrolltype)}</Tag>
-          <Tag color="first">{kontroll.saksbehandler}</Tag>
+          <Tag data-color="first">{sanitizeEnumLabel(kontroll.kontrolltype)}</Tag>
+          <Tag data-color="first">{kontroll.saksbehandler}</Tag>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export function Oppsummering() {
           Velg hvilken løsning du vil starte kontrollen for
         </Heading>
         <div className={classes.tags}>
-          <Tag color="first">{viewUtvalNamn(kontroll.utval)}</Tag>
+          <Tag data-color="first">{viewUtvalNamn(kontroll.utval)}</Tag>
         </div>
         <ul className={classes.liste}>
           {getPage(verksemdLoesyingList, currentPage).map(listeElement)}
@@ -183,8 +183,7 @@ export function Oppsummering() {
                       asChild
                       aria-label={`Side ${page}`}
                       {...buttonProps}
-                    >
-                      <a href={`#side-${page}`}>{page}</a>
+                    ><a href={`#side-${page}`}>{page}</a>
                     </Pagination.Button>
                   )}
                 </Pagination.Item>

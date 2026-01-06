@@ -144,10 +144,10 @@ const ResultTableHeader = <T extends object>({
   return (
     <div className="resultat-header">
       <div className={'resultat-header-headings'}>
-        <Heading size="xlarge" level={1} spacing={true}>
+        <Heading data-size="xl" level={1} >
           Resultatvisning
         </Heading>
-        <Heading size="large" level={2} spacing={true}>
+        <Heading data-size="lg" level={2} >
           {subHeader}
         </Heading>
       </div>
@@ -163,10 +163,10 @@ const ResultTableHeader = <T extends object>({
         />
       )}
       <div className="resultat-header-status">
-        <List.Root>
-          <List.Heading level={2} size={'small'}>
+        <List.Unordered>
+          <Heading level={2} data-size={'sm'}>
             Resultater
-          </List.Heading>
+          </Heading>
           <List.Unordered
             style={{
               listStyle: 'none',
@@ -192,7 +192,7 @@ const ResultTableHeader = <T extends object>({
               </List.Item>
             )}
           </List.Unordered>
-        </List.Root>
+        </List.Unordered>
       </div>
     </div>
   );

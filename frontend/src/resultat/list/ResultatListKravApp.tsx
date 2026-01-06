@@ -6,7 +6,7 @@ import ResultatTable, {
   TableParams,
 } from '@resultat/ResultatTable';
 import { ResultatKrav } from '@resultat/types';
-import { ColumnDef, VisibilityState } from '@tanstack/react-table';
+import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React, { useCallback } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
@@ -29,14 +29,7 @@ const ResultatListKravApp = <T extends object>() => {
       header: 'Resultat',
       enableGlobalFilter: false,
       enableColumnFilter: false,
-      cell: ({ row }) => (
-        <Tag
-          size="small"
-          color={getSeverity(scoreToPercentage(row.getValue('score')))}
-        >
-          {row.getValue('score')}
-        </Tag>
-      ),
+      cell: ({ row }) => getScoreTag(row)
     },
     {
       accessorKey: 'talTestaElement',
@@ -106,6 +99,12 @@ const ResultatListKravApp = <T extends object>() => {
     filterParams: { topLevelList: false, hasFilter: false },
   };
 
+  function getScoreTag(row: Row<ResultatKrav>) {
+    return <ScoreTag row={row} />;
+  }
+
+
+
   return (
     <div className="sak-list">
       <ResultatTable
@@ -116,5 +115,16 @@ const ResultatListKravApp = <T extends object>() => {
     </div>
   );
 };
+
+function ScoreTag(props: Readonly<{ row: Row<ResultatKrav> }>) {
+  return (
+    <Tag
+      data-size="sm"
+      data-color={getSeverity(scoreToPercentage(props.row.getValue('score')))}
+    >
+      {props.row.getValue('score')}
+    </Tag>
+  );
+}
 
 export default ResultatListKravApp;
