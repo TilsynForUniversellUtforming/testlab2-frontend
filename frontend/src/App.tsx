@@ -1,5 +1,4 @@
 import './index.scss';
-import 'react-router/dist';
 
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
