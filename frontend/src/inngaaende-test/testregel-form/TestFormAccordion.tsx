@@ -21,6 +21,7 @@ import React, { useEffect, useState } from 'react';
 
 import classes from './test-form-accordion.module.css';
 
+
 type Props = {
   testregel: Testregel;
   skjemaerMedSvar: SkjemaMedSvar[];
@@ -33,6 +34,7 @@ type Props = {
   slettTestelement: (resultatId: number) => void;
   showHelpText: boolean;
   isLoading: boolean;
+  isDemoApp?: boolean;
 };
 
 export function TestFormAccordion({
@@ -44,6 +46,7 @@ export function TestFormAccordion({
   slettTestelement,
   showHelpText,
   isLoading,
+  isDemoApp,
 }: Readonly<Props>) {
   function initState() {
     const lastElement = skjemaerMedSvar.at(-1);
@@ -94,6 +97,7 @@ export function TestFormAccordion({
             kommentar={detaljer?.kommentar ?? ''}
             resultatId={resultatId}
             isElementSide={isElementSide}
+            isDemoApp={isDemoApp}
           />
         )}
       </div>

@@ -2,21 +2,21 @@
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  background-color: var(--fds-semantic-surface-neutral-inverted);
-  color: var(--fds-semantic-surface-on_inverted-default);
+  background-color: var(--ds-color-neutral-base-default);
+  color: var(--ds-color-neutral-base-contrast-default);
 
   .link-button-wrapper {
     > button:hover {
-      color: var(--fds-semantic-surface-neutral-subtle-hover);
+      color: var(--ds-color-neutral-surface-hover);
       background: none !important;
     }
   }
 
   .dropdown__button {
-    color: white;
+    color: var(--ds-color-neutral-base-contrast-default);
 
     &:hover {
-      color: var(--fds-semantic-surface-neutral-subtle-hover);
+      color: var(--ds-color-neutral-surface-hover);
       background: none !important;
     }
 
@@ -33,7 +33,7 @@
   }
 
   &:hover {
-    color: var(--fds-semantic-surface-on_inverted-hover);
+    color: var(--ds-color-neutral-surface-hover);
   }
 
   &__list {

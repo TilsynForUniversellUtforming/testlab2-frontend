@@ -28,12 +28,7 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
 
   return (
     <div className={classNames('dropdown-content links', { show })}>
-      <Dropdown
-        open={show}
-        onClose={() => setShow(false)}
-        data-size={ButtonSize.Small}
-        placement="bottom-start"
-      >
+      <Dropdown.TriggerContext>
         <Dropdown.Trigger
           className={classNames('dropdown__button', { show: show })}
           onClick={() => {
@@ -47,6 +42,7 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
           {navn}
           <ChevronDownIcon className="chevron-icon" />
         </Dropdown.Trigger>
+        <Dropdown>
         <Dropdown.List>
             {routes.map((route) => {
               if (route.disabled) {
@@ -67,7 +63,8 @@ export const NavigationLinksDropdown = ({ navn, routes }: Props) => {
               );
             })}
         </Dropdown.List>
-      </Dropdown>
+        </Dropdown>
+      </Dropdown.TriggerContext>
     </div>
   );
 };

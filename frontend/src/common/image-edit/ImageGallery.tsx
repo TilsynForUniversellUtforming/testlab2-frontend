@@ -35,6 +35,8 @@ const ImageGallery = ({
     return null;
   }
 
+  console.log(bilder)
+
   return (
     <>
       <TestlabDivider />

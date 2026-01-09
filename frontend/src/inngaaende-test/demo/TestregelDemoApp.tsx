@@ -50,7 +50,7 @@ const TestregelDemoApp = () => {
   };
 
   if (!testregel || loading) {
-    return <Spinner title="Laster" />;
+    return <Spinner aria-label="Laster" />;
   }
 
   function slettTestelement() {
@@ -65,6 +65,7 @@ const TestregelDemoApp = () => {
       slettTestelement={slettTestelement}
       showHelpText={true}
       isLoading={false}
+      isDemoApp={true}
     />
   );
 };

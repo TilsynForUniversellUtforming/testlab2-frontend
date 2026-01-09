@@ -2,7 +2,7 @@ import TestlabDivider from '@common/divider/TestlabDivider';
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestlabSeverity } from '@common/types';
 import {
-  Heading,
+  Heading, Label,
   Paragraph,
   Tag,
   Textarea,
@@ -20,6 +20,7 @@ interface Props {
   ) => void;
   kommentar: string;
   isElementSide: boolean;
+  isDemoApp?: boolean;
 }
 
 const TestFormResultat = ({
@@ -28,6 +29,7 @@ const TestFormResultat = ({
   kommentar,
   resultatId,
   isElementSide,
+  isDemoApp
 }: Props) => {
   let severity: TestlabSeverity;
   let title: string;
@@ -70,30 +72,31 @@ const TestFormResultat = ({
     <div className="test-form__result-card">
       <TestlabDivider size="xsmall" />
       <div className="test-form__result-heading">
-        <Heading size="medium" level={4}>
+        <Heading data-size="md" level={4}>
           Resultater
         </Heading>
-        <Paragraph size="small">
+        <Paragraph data-size="sm">
           Basert på svara dine er det følgjande utfall på dette suksesskriteriet
         </Paragraph>
       </div>
       <div className="test-form__result-card-result">
-        <Tag color={severity} size="large">
+        <Tag data-color={severity} data-size="lg">
           {title}
         </Tag>
         <Paragraph dangerouslySetInnerHTML={cleanHTMLUtfall}></Paragraph>
       </div>
+      <Label htmlFor={'kommentar'}>
+        {isElementSide
+          ? 'Kommenter resultat'
+          : 'Frivillig kommentar til resultatet'}
+      </Label>
       <Textarea
-        label={
-          isElementSide
-            ? 'Kommenter resultat'
-            : 'Frivillig kommentar til resultatet'
-        }
+        id={kommentar}
         value={nyKommentar}
         onBlur={onBlur}
         onChange={(e) => setNyKommentar(e.target.value)}
       />
-      <ImageUpload resultatId={resultatId} />
+      <ImageUpload resultatId={resultatId} isDemo={isDemoApp} />
     </div>
   );
 };

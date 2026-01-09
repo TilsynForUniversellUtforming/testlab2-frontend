@@ -17,10 +17,11 @@ const TableSkeleton = <T extends object>({ table }: TableProps<T>) => (
             <Table.Cell key={`skeleton_col_${i}`}>
               {isCheckbox ? (
                 <Checkbox
-                  size="small"
+                  data-size="sm"
                   title="laster..."
                   disabled={true}
                   value=""
+                  label=""
                 />
               ) : (
                 <Skeleton />
