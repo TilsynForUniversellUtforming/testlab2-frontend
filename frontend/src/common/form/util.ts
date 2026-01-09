@@ -1,12 +1,12 @@
 import { isNotDefined } from '@common/util/validationUtils';
 import {
   ArrayPath,
+  FieldError,
   type FieldPath,
   type FieldValues,
   type FormState,
   get,
 } from 'react-hook-form';
-import { FieldError } from 'react-hook-form/dist/types/errors';
 
 /**
  * Retrieves the error message for a specific form field.
@@ -45,7 +45,7 @@ export const normalizeString = (str: string): string => {
   return str
     .trim()
     .toLowerCase()
-    .replace(/[^a-zæøå0-9]/gi, '');
+    .replaceAll(/[^a-zæøå0-9]/gi, '');
 };
 
 const getTokenFromResponse = async (response: Response): Promise<string> => {
@@ -105,7 +105,7 @@ export const fetchWithErrorHandling: typeof fetch = async (
   ...rest
 ) => {
   async function call(): Promise<Response> {
-    const init: RequestInit = { credentials: 'include', ...(rest[0] || {}) };
+    const init: RequestInit = { credentials: 'include', ...rest[0] };
     return fetch(input, init).catch((error) => {
       throw error;
     });
