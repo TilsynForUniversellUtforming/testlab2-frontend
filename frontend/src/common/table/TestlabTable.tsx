@@ -240,11 +240,11 @@ const TestlabTable = <T extends object>({
             onClickCallback={onClickRow}
           />
         </Table.Body>
-        <Table.Head>
+        <Table.Foot>
           <Table.Row className="testlab-table__footer">
             <PaginationContainer table={table} loading={isLoading} />
           </Table.Row>
-        </Table.Head>
+        </Table.Foot>
       </Table>
       {actionRequiredError && (
         <ErrorSummary data-size="sm">{actionRequiredError}</ErrorSummary>
