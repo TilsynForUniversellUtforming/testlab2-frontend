@@ -10,15 +10,18 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  HeaderGroup,
   Row,
+  RowData,
   RowSelectionState,
   useReactTable,
+  Table as TSTable,
 } from '@tanstack/react-table';
 
 import TestlabTableBody from '@common/table/TestlabTableBody';
 import { ErrorSummary, Table } from '@digdir/designsystemet-react';
 import { RankingInfo } from '@tanstack/match-sorter-utils';
-import { TableOptions } from '@tanstack/table-core';
+import { Header, TableOptions } from '@tanstack/table-core';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 
@@ -27,8 +30,14 @@ import { isDefined } from '../util/validationUtils';
 import ControlHeader from './control/ControlHeader';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableHeader from './TestlabTableHeader';
-import { TableFilterPreference, TableRowAction, TableStyle } from './types';
+import {
+  CellCheckboxId,
+  TableFilterPreference,
+  TableRowAction,
+  TableStyle,
+} from './types';
 import { fuzzyFilter } from './util';
+import TableSkeleton from '@common/table/skeleton/TableSkeleton';
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -72,6 +81,19 @@ export interface TestlabTableProps<T extends object> {
   customStyle?: TableStyle;
   rowActions?: TableRowAction[];
   classNames?: string[];
+}
+
+function getHeaders(headerGroup: HeaderGroup<RowData>) {
+  return headerGroup.headers;
+}
+
+function getRows<T>(table: TSTable<T>) {
+  return table.getRowModel().rows;
+}
+
+
+function getCheckboxColumns<T>(table: TSTable<T>) {
+  return table.getAllColumns().map(col => col.id === CellCheckboxId);
 }
 
 /**
@@ -205,7 +227,14 @@ const TestlabTable = <T extends object>({
     );
   }
 
+
+
+
   const headerGroup = table.getHeaderGroups()[0];
+
+  const columnCheckboxes = getCheckboxColumns(table);
+
+
 
   return (
     <div className="testlab-table">
@@ -224,7 +253,7 @@ const TestlabTable = <T extends object>({
       >
         <Table.Head>
           <Table.Row>
-            {headerGroup.headers.map((header) => (
+            {getHeaders(headerGroup).map((header: Header<T, unknown>) => (
               <TestlabTableHeader<T>
                 header={header}
                 loading={isLoading}
@@ -234,11 +263,13 @@ const TestlabTable = <T extends object>({
           </Table.Row>
         </Table.Head>
         <Table.Body>
+          {isLoading && <TableSkeleton columnIsCheckBox={columnCheckboxes} />}
+          {!isLoading &&
           <TestlabTableBody<T>
-            table={table}
-            loading={isLoading}
             onClickCallback={onClickRow}
+            rows={getRows(table)}
           />
+          }
         </Table.Body>
         <Table.Foot>
           <Table.Row className="testlab-table__footer">

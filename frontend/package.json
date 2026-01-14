@@ -34,7 +34,8 @@
     "react-hook-form": "7.70.0",
     "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "7.12.0",
-    "zod": "4.3.5"
+    "zod": "4.3.5",
+    "testlab2-common-frontend": "file:../../testlab2-common-frontend"
   },
   "devDependencies": {
     "@faker-js/faker": "10.2.0",

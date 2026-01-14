@@ -4,18 +4,16 @@ import { Checkbox, Table } from '@digdir/designsystemet-react';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-import { CellCheckboxId, TableProps } from '../types';
-
-const TableSkeleton = <T extends object>({ table }: TableProps<T>) => (
+const TableSkeleton = (props: {columnIsCheckBox:boolean[]}) => (
   <>
-    {[...Array(10)].map((_, i) => (
+    {[...Array(10)].map((_, i) => {
+      return (
       <Table.Row key={`skeleton_row_${i}`} className="table-skeleton-row">
-        {table.getAllColumns().map((col, i) => {
-          const isCheckbox = col.id === CellCheckboxId;
+        {props.columnIsCheckBox.map((col, i) => {
 
           return (
             <Table.Cell key={`skeleton_col_${i}`}>
-              {isCheckbox ? (
+              {col ? (
                 <Checkbox
                   data-size="sm"
                   title="laster..."
@@ -30,7 +28,7 @@ const TableSkeleton = <T extends object>({ table }: TableProps<T>) => (
           );
         })}
       </Table.Row>
-    ))}
+    );})}
   </>
 );
 

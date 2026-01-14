@@ -1,51 +1,41 @@
 import { Table } from '@digdir/designsystemet-react';
-import { flexRender, Row } from '@tanstack/react-table';
+import { Row } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React from 'react';
+import { TestlabTableCell } from '@common/table/TestlabTableCell';
 
-import TableSkeleton from './skeleton/TableSkeleton';
-import { CellCheckboxId, LoadingTableProps } from './types';
-
-export interface TableBodyProps<T> extends LoadingTableProps<T> {
+export interface TableBodyProps<T>  {
   onClickCallback?: (row?: Row<T>) => void;
+  rows:Row<T>[]
 }
 
+function getCells<T>(row: Row<T>) {
+  return row.getVisibleCells();
+}
+
+
 const TestlabTableBody = <T extends object>({
-  loading,
-  table,
   onClickCallback,
+  rows
 }: TableBodyProps<T>) => {
-  if (loading) {
-    return <TableSkeleton table={table} />;
-  }
-
   const isSelectable = typeof onClickCallback !== 'undefined';
-
-  const onRowClick = (row: Row<T>, isCheckbox: boolean) => {
-    if (!isSelectable || isCheckbox) {
-      return;
-    } else {
-      onClickCallback(row);
-    }
-  };
-
   return (
     <>
-      {table.getRowModel().rows.map((row) => (
+      {rows.map((row: Row<T>) => (
         <Table.Row
           key={row.id}
           className={classnames('testlab-table__row', {
             selectable: isSelectable,
           })}
         >
-          {row.getVisibleCells().map((cell) => (
-            <Table.Cell
-              key={cell.id}
-              onClick={() => onRowClick(row, cell.id.includes(CellCheckboxId))}
-            >
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </Table.Cell>
-          ))}
+          {getCells(row).map((cell) => (
+              <TestlabTableCell
+                key={cell.id}
+                cell={cell}
+                onClickCallback={onClickCallback}
+              />
+            )
+          )}
         </Table.Row>
       ))}
     </>
