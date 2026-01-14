@@ -1,6 +1,6 @@
 import { ConfirmModalProps } from '@common/confirm-modal/ConfirmModalButton';
 import { AppRoute } from '@common/util/routeUtils';
-import { Row, Table } from '@tanstack/react-table';
+import { Table } from '@tanstack/react-table';
 
 export interface TableProps<T> {
   table: Table<T>;

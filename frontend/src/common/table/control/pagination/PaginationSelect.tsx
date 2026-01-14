@@ -29,7 +29,6 @@ const PaginationSelect = <T extends object>({ table }: TableProps<T>) => {
 
 
 
-
   return (
     <div className="pagination-container__button-list">
       <Pagination>

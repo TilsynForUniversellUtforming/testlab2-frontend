@@ -3,7 +3,7 @@ import './standard-table.scss';
 import React, { ReactElement, ReactNode } from 'react';
 
 import AppTitle, { AppTitleProps } from '../app-title/AppTitle';
-import TestlabTable, { TestlabTableProps } from './TestlabTable';
+import TestlabTanstackTable, { TestlabTableProps } from './TestlabTanstackTable';
 
 export interface Props<T extends object> extends AppTitleProps {
   children?: ReactNode;
@@ -31,7 +31,7 @@ const UserActionTable = <T extends object>({
   <div className="standard-table">
     <AppTitle heading={heading} subHeading={subHeading} linkPath={linkPath} />
     {children}
-    <TestlabTable<T> {...tableProps} />
+    <TestlabTanstackTable<T> {...tableProps} />
   </div>
 );
 

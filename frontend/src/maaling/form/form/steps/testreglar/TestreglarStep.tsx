@@ -1,7 +1,7 @@
 import { TestlabFormLabel } from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
-import TestlabTable from '@common/table/TestlabTable';
+import TestlabTanstackTable from '@common/table/TestlabTanstackTable';
 import { ButtonSize, OptionType } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
 import {
@@ -197,7 +197,7 @@ const TestreglarStep = ({
             Legg til
           </Button>
         </div>
-        <TestlabTable<TestregelBase>
+        <TestlabTanstackTable<TestregelBase>
           data={selection}
           defaultColumns={testregelColumns}
           displayError={{ error }}

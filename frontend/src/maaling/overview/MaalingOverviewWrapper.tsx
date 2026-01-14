@@ -1,7 +1,7 @@
 import AppTitle from '@common/app-title/AppTitle';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import useLoading from '@common/hooks/useLoading';
-import TestlabTable from '@common/table/TestlabTable';
+import TestlabTanstackTable from '@common/table/TestlabTanstackTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Tabs } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
@@ -61,7 +61,7 @@ const MaalingOverviewWrapper = () => {
           <MaalingEdit onChangeTabs={onChangeTabs} />
         </Tabs.Content>
         <Tabs.Content value="nettloeysingar">
-          <TestlabTable<Loeysing>
+          <TestlabTanstackTable<Loeysing>
             defaultColumns={loeysingColumns}
             data={maaling?.loeysingList ?? []}
             loading={loading}
@@ -77,7 +77,7 @@ const MaalingOverviewWrapper = () => {
           />
         </Tabs.Content>
         <Tabs.Content value="testreglar">
-          <TestlabTable<TestregelBase>
+          <TestlabTanstackTable<TestregelBase>
             defaultColumns={testregelColumns}
             data={maaling?.testregelList ?? []}
             loading={loading}

@@ -1,6 +1,6 @@
 import TestlabFormAutocomplete from '@common/form/autocomplete/TestlabFormAutocomplete';
 import { getErrorMessage, normalizeString } from '@common/form/util';
-import TestlabTable from '@common/table/TestlabTable';
+import TestlabTanstackTable from '@common/table/TestlabTanstackTable';
 import { ButtonSize, OptionExtended } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
 import {
@@ -186,7 +186,7 @@ const MaalingLoeysingList = () => {
         </Button>
       </div>
       {listErrors && <ErrorSummary>{listErrors}</ErrorSummary>}
-      <TestlabTable<LoeysingVerksemd>
+      <TestlabTanstackTable<LoeysingVerksemd>
         data={selection}
         defaultColumns={loeysingColumns}
         onSelectRows={handleSelectRow}

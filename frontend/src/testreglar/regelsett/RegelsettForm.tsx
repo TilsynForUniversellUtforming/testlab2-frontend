@@ -5,7 +5,7 @@ import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { getErrorMessage } from '@common/form/util';
 import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
-import TestlabTable from '@common/table/TestlabTable';
+import TestlabTanstackTable from '@common/table/TestlabTanstackTable';
 import { OptionType } from '@common/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
@@ -133,7 +133,7 @@ const RegelsettForm = ({
   const tableError = getErrorMessage(formMethods.formState, 'testregelList');
 
   const onChangeType = (selectedType: TestregelInnholdstype) => {
-    const newType = type !== selectedType ? selectedType : undefined;
+    const newType = type === selectedType ? undefined : selectedType;
     setType(newType);
   };
 
@@ -200,7 +200,7 @@ const RegelsettForm = ({
             </Chip.Toggle>
           </Chip.Group>
         </div>
-        <TestlabTable<TestregelBase>
+        <TestlabTanstackTable<TestregelBase>
           data={selectableTestreglar}
           defaultColumns={testRegelColumns}
           displayError={{ error: contextError }}

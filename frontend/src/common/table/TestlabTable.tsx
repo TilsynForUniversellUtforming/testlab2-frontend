@@ -1,89 +1,13 @@
-import './testlabTable.scss';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  FilterFn,
-  getCoreRowModel,
-  getFacetedMinMaxValues,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  HeaderGroup,
-  Row,
-  RowData,
-  RowSelectionState,
-  useReactTable,
-  Table as TSTable,
-} from '@tanstack/react-table';
-
-import TestlabTableBody from '@common/table/TestlabTableBody';
-import { ErrorSummary, Table } from '@digdir/designsystemet-react';
-import { RankingInfo } from '@tanstack/match-sorter-utils';
-import { Header, TableOptions } from '@tanstack/table-core';
+import { HeaderGroup, Row, Table as TSTable } from '@tanstack/react-table';
+import React from 'react';
+import { Table } from '@digdir/designsystemet-react';
 import classnames from 'classnames';
-import React, { ReactElement, useCallback, useEffect, useState } from 'react';
-
-import ErrorCard, { TestlabError } from '../error/ErrorCard';
-import { isDefined } from '../util/validationUtils';
-import ControlHeader from './control/ControlHeader';
-import PaginationContainer from './control/pagination/PaginationContainer';
-import TestlabTableHeader from './TestlabTableHeader';
-import {
-  CellCheckboxId,
-  TableFilterPreference,
-  TableRowAction,
-  TableStyle,
-} from './types';
-import { fuzzyFilter } from './util';
 import TableSkeleton from '@common/table/skeleton/TableSkeleton';
+import TestlabTableBody from '@common/table/TestlabTableBody';
+import PaginationContainer from '@common/table/control/pagination/PaginationContainer';
+import TestlabTableHeader from '@common/table/TestlabTableHeader';
 
-declare module '@tanstack/table-core' {
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>;
-    exact: FilterFn<unknown>;
-  }
-
-  interface FilterMeta {
-    itemRank: RankingInfo;
-  }
-}
-
-/*
-ColumnMeta is extended to include the select property,
-which is used to indicate whether a column should use a select component instead of input
-*/
-declare module '@tanstack/react-table' {
-  // eslint-disable-next-line
-  interface ColumnMeta<TData, TValue> {
-    select?: boolean;
-  }
-}
-
-// eslint-disable-next-line
-const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
-  const rowValue = row.getValue(columnId);
-  return rowValue === value;
-};
-
-export interface TestlabTableProps<T extends object> {
-  data: T[];
-  defaultColumns: ColumnDef<T>[];
-  displayError?: TestlabError;
-  actionRequiredError?: string;
-  loading?: boolean;
-  filterPreference?: TableFilterPreference;
-  selectedRows?: boolean[];
-  onSelectRows?: (rows: T[]) => void;
-  onClickRow?: (row?: Row<T>) => void;
-  onClickRetry?: () => void;
-  customStyle?: TableStyle;
-  rowActions?: TableRowAction[];
-  classNames?: string[];
-}
-
-function getHeaders(headerGroup: HeaderGroup<RowData>) {
+function getHeaders<T extends object>(headerGroup: HeaderGroup<T>) {
   return headerGroup.headers;
 }
 
@@ -92,196 +16,60 @@ function getRows<T>(table: TSTable<T>) {
 }
 
 
-function getCheckboxColumns<T>(table: TSTable<T>) {
-  return table.getAllColumns().map(col => col.id === CellCheckboxId);
+interface TestlabTableProps<T> {
+  classNames?: string[];
+  actionRequiredError?: string;
+  headerGroup: HeaderGroup<T>;
+  loading: boolean;
+  columnIsCheckBox: boolean[];
+  onClickRow?: (row?: Row<T>) => void;
+  table: TSTable<T>;
 }
 
-/**
- * A TanStack table component for displaying and manipulating data.
- *
- * @template T - The type of data displayed in the table.
- * @param {object} props - The props for the component.
- * @param {T[]} props.data - The data to be displayed in the table.
- * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
- * @param {TestlabError} props.displayError - The error to show in the error card.
- * @param {string} props.actionRequiredError - Optional error message to display if a table requires a user action.
- * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
- * @param {TableFilterPreference} [props.filterPreference='all'] - The default filter preference.
- * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
- * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected. If defined the row selection is implicitly active
- * @param {(row?: Row<T>) => void} [props.onClickRow] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
- * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
- * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
- * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
- * @returns {ReactElement} - The React component for the TestlabTable.
- */
-const TestlabTable = <T extends object>({
-  data,
-  defaultColumns,
-  displayError,
-  actionRequiredError,
-  loading = false,
-  filterPreference = 'all',
-  selectedRows,
-  onSelectRows,
-  onClickRow,
-  onClickRetry,
-  customStyle = {
-    small: false,
-  },
-  rowActions,
+export const TestlabTable = <T extends object>( {
   classNames,
-}: TestlabTableProps<T>): ReactElement => {
-  const isLoading = loading ?? false;
-  const [columns, setColumns] = useState<typeof defaultColumns>(() => [
-    ...defaultColumns,
-  ]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({
-    ...selectedRows,
-  } as unknown as RowSelectionState);
-
-  const rowSelectionEnabled = typeof onSelectRows !== 'undefined';
-
-  const handleRowSelection = (rss: RowSelectionState) => {
-    setRowSelection(rss);
-  };
-
-  useEffect(() => {
-    setColumns([...defaultColumns]);
-  }, [defaultColumns]);
-
-  const tableOptions: TableOptions<T> = {
-    data: data,
-    columns: columns,
-    filterFns: {
-      fuzzy: fuzzyFilter,
-      exact: exactTextFilterFn,
-    },
-    state: {
-      columnFilters,
-      globalFilter,
-      rowSelection,
-    },
-    enableRowSelection: rowSelectionEnabled,
-    enableMultiRowSelection: rowSelectionEnabled,
-    onRowSelectionChange: (updaterOrValue) => {
-      if (typeof updaterOrValue === 'function') {
-        handleRowSelection(updaterOrValue(rowSelection));
-      } else {
-        handleRowSelection(updaterOrValue);
-      }
-    },
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    autoResetPageIndex: false,
-  };
-
-  const table = useReactTable(tableOptions);
-
-  useEffect(() => {
-    if (rowSelectionEnabled) {
-      const selectedTableRows = table
-        .getSelectedRowModel()
-        .flatRows.map((fr) => fr.original);
-      onSelectRows?.(selectedTableRows);
-    }
-  }, [rowSelection, rowSelectionEnabled]);
-
-  useEffect(() => {
-    if (isDefined(selectedRows)) {
-      table.setRowSelection({
-        ...selectedRows,
-      } as unknown as RowSelectionState);
-    }
-  }, [selectedRows]);
-
-  const onChangeGlobalFilter = useCallback((value: string) => {
-    setGlobalFilter(value);
-  }, []);
-
-  const handleClickRetry = () => {
-    table.toggleAllRowsSelected(false);
-    if (onClickRetry) {
-      onClickRetry();
-    }
-  };
-
-  if (displayError?.error) {
-    return (
-      <ErrorCard
-        errorHeader={displayError.errorHeader}
-        error={displayError.error}
-        onClick={displayError.onClick ?? handleClickRetry}
-        buttonText={displayError.buttonText ?? 'Prøv igjen'}
-      />
-    );
-  }
-
-
-
-
-  const headerGroup = table.getHeaderGroups()[0];
-
-  const columnCheckboxes = getCheckboxColumns(table);
-
-
-
+  actionRequiredError,
+  headerGroup,
+  loading,
+  columnIsCheckBox,
+  onClickRow,
+  table
+}: TestlabTableProps<T>) => {
   return (
-    <div className="testlab-table">
-      <ControlHeader
-        filterPreference={filterPreference ?? 'all'}
-        table={table}
-        onChangeFilter={onChangeGlobalFilter}
-        small={customStyle?.small}
-        rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
-        rowActions={rowActions}
-      />
-      <Table
-        className={classnames(classNames, 'testlab-table__table', {
-          'table-error': !!actionRequiredError,
-        })}
-      >
-        <Table.Head>
-          <Table.Row>
-            {getHeaders(headerGroup).map((header: Header<T, unknown>) => (
+    <Table
+      className={classnames(classNames, 'testlab-table__table', {
+        'table-error': !!actionRequiredError,
+      })}
+    >
+      <Table.Head>
+        <Table.Row>
+          {getHeaders(headerGroup).map(
+            (header) => (
               <TestlabTableHeader<T>
                 header={header}
-                loading={isLoading}
+                loading={loading}
                 key={header.column.id}
               />
-            ))}
-          </Table.Row>
-        </Table.Head>
-        <Table.Body>
-          {isLoading && <TableSkeleton columnIsCheckBox={columnCheckboxes} />}
-          {!isLoading &&
+            )
+          )}
+        </Table.Row>
+      </Table.Head>
+      <Table.Body>
+        {loading && (
+          <TableSkeleton columnIsCheckBox={columnIsCheckBox} />
+        )}
+        {!loading && (
           <TestlabTableBody<T>
             onClickCallback={onClickRow}
             rows={getRows(table)}
           />
-          }
-        </Table.Body>
-        <Table.Foot>
-          <Table.Row className="testlab-table__footer">
-            <PaginationContainer table={table} loading={isLoading} />
-          </Table.Row>
-        </Table.Foot>
-      </Table>
-      {actionRequiredError && (
-        <ErrorSummary data-size="sm">{actionRequiredError}</ErrorSummary>
-      )}
-    </div>
+        )}
+      </Table.Body>
+      <Table.Foot>
+        <Table.Row className="testlab-table__footer">
+          <PaginationContainer table={table} loading={loading} />
+        </Table.Row>
+      </Table.Foot>
+    </Table>
   );
 };
-
-export default TestlabTable;
