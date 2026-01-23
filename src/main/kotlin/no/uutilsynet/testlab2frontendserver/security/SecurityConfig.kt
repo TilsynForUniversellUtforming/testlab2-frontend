@@ -12,27 +12,22 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
 class SecurityConfig {
 
   @Bean
   @Profile("security")
   fun filterChain(http: HttpSecurity): SecurityFilterChain {
     http {
-      csrf { csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse() }
-      authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
+      authorizeHttpRequests { authorize(anyRequest, authenticated) }
       oauth2ResourceServer {
         jwt { jwtAuthenticationConverter = Testlab2AuthenticationConverter() }
       }
       sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+      csrf { csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse() }
       cors { disable() }
     }
 
     return http.build()
   }
-  /*
-  @Bean
-  fun webSecurityCustomizer(): WebSecurityCustomizer {
-    return WebSecurityCustomizer { web: WebSecurity -> web.debug(true) }
-  }*/
 }
