@@ -1,5 +1,5 @@
 import { OptionType } from '@common/types';
-import { DropdownMenu } from '@digdir/designsystemet-react';
+import { Dropdown } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import { useState } from 'react';
@@ -21,13 +21,13 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
 
   return (
     <div className="page-selector__dropdown">
-      <DropdownMenu
+      <Dropdown
         open={show}
         onClose={() => setShow(false)}
         placement="bottom-start"
-        size="small"
+        data-size="sm"
       >
-        <DropdownMenu.Trigger
+        <Dropdown.Trigger
           aria-haspopup="true"
           aria-expanded={show}
           id={title}
@@ -40,21 +40,19 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
             className="chevron-icon"
             style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
-          <DropdownMenu.Group>
+        </Dropdown.Trigger>
+          <Dropdown.List>
             {options.map(({ label, value }) => (
-              <DropdownMenu.Item
+              <Dropdown.Item
                 key={value}
                 onClick={() => handleButtonClick(value)}
                 className={classnames({ active: value === String(typeId) })}
               >
                 {label}
-              </DropdownMenu.Item>
+              </Dropdown.Item>
             ))}
-          </DropdownMenu.Group>
-        </DropdownMenu.Content>
-      </DropdownMenu>
+          </Dropdown.List>
+      </Dropdown>
     </div>
   );
 };

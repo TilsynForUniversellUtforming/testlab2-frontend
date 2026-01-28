@@ -5,8 +5,8 @@ import { ButtonSize, OptionExtended } from '@common/types';
 import { joinStringsToList, removeSpaces } from '@common/util/stringutils';
 import {
   Button,
-  ErrorMessage,
-  NativeSelect,
+  ErrorSummary,
+  Select,
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import { getLoeysingVerksemdColumns } from '@maaling/form/form/steps/loeysing/LoeysingColumns';
@@ -53,14 +53,14 @@ const MaalingLoeysingList = () => {
           (value, idx, self) =>
             self.findIndex((v) => v.loeysing.id === value.loeysing.id) === idx
         );
-        if (filteredValues.length !== newLoeysingList.length) {
+        if (filteredValues.length === newLoeysingList.length) {
+          setValue('loeysingList', filteredValues);
+          clearErrors();
+        } else {
           setError('loeysingList', {
             type: 'manual',
             message: 'Løysingar må vera unike',
           });
-        } else {
-          setValue('loeysingList', filteredValues);
-          clearErrors();
         }
 
         setSelectableLoeysingList([]);
@@ -158,16 +158,15 @@ const MaalingLoeysingList = () => {
             retainLabelValueChange={false}
             hideErrors
             name="loeysingList"
-            size="small"
+            data-size={"sm"}
           />
         </div>
         <div className="sak-loeysing__input-select">
-          <NativeSelect
-            label="Ansvarlig verksemd (i saka)"
+          <Select
+            aria-label="Ansvarlig verksemd (i saka)"
             onChange={(e) => setVerksemdId(e.currentTarget.value)}
             value={verksemdId}
-            error={!!listErrors}
-            size="small"
+            data-size="sm"
           >
             <option value="blank">Velg …</option>
             {verksemdOptions.map((verksemd) => (
@@ -175,18 +174,18 @@ const MaalingLoeysingList = () => {
                 {verksemd.label}
               </option>
             ))}
-          </NativeSelect>
+          </Select>
         </div>
         <Button
           title="Legg til"
           color="success"
           onClick={onClickAdd}
-          size={ButtonSize.Small}
+          data-size={ButtonSize.Small}
         >
           Legg til
         </Button>
       </div>
-      {listErrors && <ErrorMessage>{listErrors}</ErrorMessage>}
+      {listErrors && <ErrorSummary>{listErrors}</ErrorSummary>}
       <TestlabTable<LoeysingVerksemd>
         data={selection}
         defaultColumns={loeysingColumns}

@@ -9,28 +9,25 @@ interface Props {
 }
 
 const IndeterminateCheckbox = ({
-  indeterminate,
-  checked,
+ checked,
   disabled,
   onChange,
   ariaLabel,
   id,
 }: Props & HTMLProps<HTMLInputElement>) => (
   <>
-    <label className="sr-only" htmlFor={id}>
+    <label className="sr-only" htmlFor={id} id={"checkbox-label-" + id}>
       {ariaLabel}
     </label>
     <Checkbox
       value={String(id)}
-      type="checkbox"
-      indeterminate={indeterminate}
       checked={checked}
       disabled={disabled}
       onChange={onChange}
-      aria-label={ariaLabel}
+      aria-labelledby={"checkbox-label-" + id}
       id={id}
       title={ariaLabel}
-      size={CheckboxSize.Small}
+      data-size={CheckboxSize.Small}
     />
   </>
 );

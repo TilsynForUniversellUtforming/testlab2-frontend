@@ -29,7 +29,7 @@ export interface TestlabFormProps<T extends object> {
  * @param {SubmitHandler<T>} props.onSubmit - Submit handler function for the form.
  * @param {UseFormReturn<T>} props.formMethods - React hook form methods for the form.
  * @param {ReactNode} props.children - React children to render within the form.
- * @param {booelan} props.hasRequiredFields - For displaying info about fields being required. Default to true.
+ * @param {boolean} props.hasRequiredFields - For displaying info about fields being required. Default to true.
  * @param {string} className - Optional field for custom classes
  * @return {ReactElement} The React component for the TestlabForm.
  */
@@ -71,7 +71,7 @@ const TestlabForm = <T extends object>({
           <TestlabFormHeader heading={heading} description={description} />
         )}
         {hasRequiredFields && (
-          <Paragraph spacing size="small">
+          <Paragraph data-size="sm">
             Felter markert med stjerne er obligatoriske
           </Paragraph>
         )}

@@ -1,4 +1,4 @@
-import { Accordion, ListItem } from '@digdir/designsystemet-react';
+import { Details, Heading, ListItem } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -22,9 +22,9 @@ const ConfirmationAccordionList = ({
   open = false,
   hideNumbering = false,
 }: Props) => (
-  <Accordion.Item defaultOpen={open}>
-    <Accordion.Header>{accordionHeader}</Accordion.Header>
-    <Accordion.Content>
+  <Details>
+    <Heading>{accordionHeader}</Heading>
+    <Details.Content>
       <ol
         className={classNames('accordion-list', {
           unnumbered: hideNumbering,
@@ -37,8 +37,8 @@ const ConfirmationAccordionList = ({
           </li>
         ))}
       </ol>
-    </Accordion.Content>
-  </Accordion.Item>
+    </Details.Content>
+  </Details>
 );
 
 export default ConfirmationAccordionList;

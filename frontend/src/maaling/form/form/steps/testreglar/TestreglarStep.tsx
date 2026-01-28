@@ -6,8 +6,8 @@ import { ButtonSize, OptionType } from '@common/types';
 import { joinStringsToList } from '@common/util/stringutils';
 import {
   Button,
-  ErrorMessage,
-  NativeSelect,
+  ErrorSummary,
+  Select,
 } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormWrapper from '@maaling/form/form/FormWrapper';
@@ -62,7 +62,7 @@ const TestreglarStep = ({
     const options: OptionType[] = testregelList
       .filter(
         (tr) =>
-          tr.modus === 'automatisk' && !selection.find((s) => s.id === tr.id)
+          tr.modus === 'automatisk' && !selection.some((s) => s.id === tr.id)
       )
       .map((tr) => ({
         label: tr.namn,
@@ -174,12 +174,11 @@ const TestreglarStep = ({
               description="Vel enkelt testregel eller samling av testreglar (testregelsett)
                 du vil legge til."
             />
-            <NativeSelect
+            <Select
               id="testregelId"
               onChange={(e) => setTestregelId(e.currentTarget.value)}
               value={testregelId}
-              error={!!formError}
-              size="small"
+              data-size="sm"
             >
               <option value="blank">Velg …</option>
               {testRegelOptions.map((tr) => (
@@ -187,13 +186,13 @@ const TestreglarStep = ({
                   {tr.label}
                 </option>
               ))}
-            </NativeSelect>
+            </Select>
           </div>
           <Button
             title="Legg til"
             color="success"
             onClick={onClickAdd}
-            size={ButtonSize.Small}
+            data-size={ButtonSize.Small}
           >
             Legg til
           </Button>
@@ -221,7 +220,7 @@ const TestreglarStep = ({
             },
           ]}
         />
-        {formError && <ErrorMessage>{formError}</ErrorMessage>}
+        {formError && <ErrorSummary>{formError}</ErrorSummary>}
       </div>
     </FormWrapper>
   );

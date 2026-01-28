@@ -26,12 +26,6 @@ const TableSearch = ({
     setSearchValue(e.target.value);
     resetPagination();
   };
-
-  const onClear = () => {
-    setSearchValue('');
-    onChangeFilter('');
-  };
-
   if (!showSearch) {
     return null;
   }
@@ -39,14 +33,17 @@ const TableSearch = ({
   return (
     <div className="control-header__search">
       <Label htmlFor="table-search">Søk i tabell</Label>
-      <Search
-        id="table-search"
-        value={searchValue}
-        onChange={onChange}
-        onClear={onClear}
-        size="medium"
-        variant="simple"
-      />
+      <Search>
+        <Search.Input
+          id="table-search"
+          value={searchValue}
+          onChange={onChange}
+          placeholder="Søk i tabell"
+        />
+        <Search.Clear />
+        <Search.Button variant="primary" />
+      </Search>
+
     </div>
   );
 };

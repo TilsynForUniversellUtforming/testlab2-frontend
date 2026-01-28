@@ -6,11 +6,22 @@ import ResultatTable, {
   TableParams,
 } from '@resultat/ResultatTable';
 import { ResultatTema } from '@resultat/types';
-import { ColumnDef, VisibilityState } from '@tanstack/react-table';
+import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React, { useCallback } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { KontrollType } from '../../kontroll/types';
+
+function ScoreTag(props: Readonly<{ row: Row<ResultatTema> }>) {
+  return (
+    <Tag
+      data-size="sm"
+      data-color={getSeverity(scoreToPercentage(props.row.getValue('score')))}
+    >
+      {props.row.getValue('score')}
+    </Tag>
+  );
+}
 
 const ResultatListTemaApp = <T extends object>() => {
   const data: Array<ResultatTema> = useLoaderData() as Array<ResultatTema>;
@@ -29,14 +40,7 @@ const ResultatListTemaApp = <T extends object>() => {
       header: 'Resultat',
       enableGlobalFilter: false,
       enableColumnFilter: false,
-      cell: ({ row }) => (
-        <Tag
-          size="small"
-          color={getSeverity(scoreToPercentage(row.getValue('score')))}
-        >
-          {row.getValue('score')}
-        </Tag>
-      ),
+      cell: ({ row }) => getScoreTag(row),
     },
     {
       accessorKey: 'talTestaElement',
@@ -58,6 +62,10 @@ const ResultatListTemaApp = <T extends object>() => {
       enableColumnFilter: false,
     },
   ];
+
+  function getScoreTag(row: Row<ResultatTema>) {
+    return <ScoreTag row={row} />;
+  }
 
   const visibilityState = (): VisibilityState => {
     return {};

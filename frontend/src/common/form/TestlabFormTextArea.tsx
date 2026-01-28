@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import { Path, useFormContext } from 'react-hook-form';
 
 import { getErrorMessage } from './util';
+import { Size } from '@digdir/designsystemet-types';
 
 export interface TestlabInputBaseProps<T extends object> extends TextareaProps {
   label: string;
@@ -12,6 +13,8 @@ export interface TestlabInputBaseProps<T extends object> extends TextareaProps {
   numeric?: boolean;
   disabled?: boolean;
   textarea?: boolean;
+  size?:Size;
+  description?: string;
 }
 
 /**
@@ -32,13 +35,12 @@ const TestlabFormTextArea = <T extends object>({
   description,
   name,
   required = false,
-  size = 'small',
+  size = 'sm',
   inputMode,
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
   const { register, formState } = useFormContext<T>();
-  const errorMessage = getErrorMessage(formState, name);
-
+  getErrorMessage(formState, name);
   return (
     <div className="testlab-form__input">
       <Label htmlFor={name} className="testlab-form__input-label">
@@ -54,9 +56,8 @@ const TestlabFormTextArea = <T extends object>({
           required: required,
         })}
         {...rest}
-        error={errorMessage}
         inputMode={inputMode}
-        size={size}
+        data-size={size}
       />
     </div>
   );

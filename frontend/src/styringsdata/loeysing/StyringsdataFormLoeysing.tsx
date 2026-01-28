@@ -9,8 +9,8 @@ import { idPath } from '@common/util/routeUtils';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import {
-  Accordion,
   Button,
+  Details,
   ErrorSummary,
   Heading,
   Paragraph,
@@ -52,7 +52,7 @@ const ClearReaksjonButton = ({
   };
 
   return (
-    <Button onClick={onClick} size={ButtonSize.Small}>
+    <Button onClick={onClick} data-size={ButtonSize.Small}>
       Tøm
     </Button>
   );
@@ -180,14 +180,14 @@ const StyringsdataFormLoeysing = () => {
   return (
     <div className={classes.styringsdata}>
       <div className={classes.styringsdataForm}>
-        <Heading level={2} size="medium" spacing>
+        <Heading level={2} data-size="md">
           {' '}
           Styringsdata {loeysingNamn}
         </Heading>
-        <Paragraph spacing>Legg til styringsdata for denne løysinga</Paragraph>
+        <Paragraph>Legg til styringsdata for denne løysinga</Paragraph>
         <div className={classes.styringsdataTags}>
-          <Tag color="second">{kontrollTittel}</Tag>
-          <Tag color="second">{verksemdNamn}</Tag>
+          <Tag data-color="second">{kontrollTittel}</Tag>
+          <Tag data-color="second">{verksemdNamn}</Tag>
         </div>
         {arkivreferanse && <Tag>{arkivreferanse}</Tag>}
         <TestlabForm<StyringsdataLoeysing>
@@ -214,10 +214,10 @@ const StyringsdataFormLoeysing = () => {
             type="date"
             required
           />
-          <Heading level={3} size="small">
+          <Heading level={3} data-size="sm">
             Saksbehandling
           </Heading>
-          <Paragraph size="small" spacing>
+          <Paragraph data-size="sm">
             Ansvarleg for kontrollen kan redigera og leggja til aktivitetar i
             samband med kontroll av denne løysinga.
             <br />
@@ -232,10 +232,9 @@ const StyringsdataFormLoeysing = () => {
             radio
           />
           {reaksjon === 'reaksjon' && (
-            <Accordion color="first" border>
-              <Accordion.Item>
-                <Accordion.Header level={3}>Pålegg</Accordion.Header>
-                <Accordion.Content>
+            <Details color="first">
+                <Details.Summary>Pålegg</Details.Summary>
+                <Details.Content>
                   <TestlabFormSelect
                     options={reaksjonOptions}
                     label="Skal det gis pålegg om retting"
@@ -264,11 +263,9 @@ const StyringsdataFormLoeysing = () => {
                       />
                     </>
                   )}
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item>
-                <Accordion.Header level={3}>Pålegg klage</Accordion.Header>
-                <Accordion.Content>
+                </Details.Content>
+                <Details.Summary >Pålegg klage</Details.Summary>
+                <Details.Content>
                   <TestlabFormSelect
                     options={reaksjonOptions}
                     label="Er det klage på pålegg?"
@@ -284,11 +281,9 @@ const StyringsdataFormLoeysing = () => {
                       />
                     </>
                   )}
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item>
-                <Accordion.Header level={3}>Bot</Accordion.Header>
-                <Accordion.Content>
+                </Details.Content>
+                <Details.Summary >Bot</Details.Summary>
+                <Details.Content>
                   <TestlabFormSelect
                     options={reaksjonOptions}
                     label="Skal det gis bot (tvangsmulkt)?"
@@ -345,11 +340,9 @@ const StyringsdataFormLoeysing = () => {
                       <ClearReaksjonButton field="bot" setValue={setValue} />
                     </>
                   )}
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item>
-                <Accordion.Header level={3}>Bot klage</Accordion.Header>
-                <Accordion.Content>
+                </Details.Content>
+                <Details.Summary >Bot klage</Details.Summary>
+                <Details.Content>
                   <TestlabFormSelect
                     options={reaksjonOptions}
                     label="Er det klage på bot?"
@@ -365,26 +358,29 @@ const StyringsdataFormLoeysing = () => {
                       />
                     </>
                   )}
-                </Accordion.Content>
-              </Accordion.Item>
-            </Accordion>
+                </Details.Content>
+            </Details>
           )}
           {(botError || paaleggError) && (
-            <ErrorSummary.Root size="md">
+            <ErrorSummary data-size="md">
               <ErrorSummary.Heading>Feil i skjema</ErrorSummary.Heading>
               <ErrorSummary.List>
                 {botError && (
-                  <ErrorSummary.Item href="#">
+                  <ErrorSummary.Item>
+                    <ErrorSummary.Link href="#">
                     Bot må fylles ut før man kan legge inn klage
+                    </ErrorSummary.Link>
                   </ErrorSummary.Item>
                 )}
                 {paaleggError && (
-                  <ErrorSummary.Item href="#">
+                  <ErrorSummary.Item>
+                    <ErrorSummary.Link href="#">
                     Pålegg må fylles ut før man kan legge inn klage
+                    </ErrorSummary.Link>
                   </ErrorSummary.Item>
                 )}
               </ErrorSummary.List>
-            </ErrorSummary.Root>
+            </ErrorSummary>
           )}
           <div className={classes.buttons}>
             <TestlabLinkButton

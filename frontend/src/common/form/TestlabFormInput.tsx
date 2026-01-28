@@ -1,16 +1,18 @@
 import { getErrorMessage } from '@common/form/util';
-import { Label, Textfield, TextfieldProps } from '@digdir/designsystemet-react';
+import {Textfield, TextfieldProps } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 import { Path, useFormContext } from 'react-hook-form';
+import { Size } from '@digdir/designsystemet-types';
 
-export interface TestlabInputBaseProps<T extends object>
-  extends TextfieldProps {
+export type TestlabInputBaseProps<T extends object>
+  = TextfieldProps & {
   label: string;
   required?: boolean;
   hidden?: boolean;
   name: Path<T>;
   disabled?: boolean;
+  size?:Size;
 }
 
 /**
@@ -32,12 +34,14 @@ const TestlabFormInput = <T extends object>({
   description,
   name,
   required = false,
-  size = 'small',
-  type,
+  size = 'sm',
   ...rest
 }: TestlabInputBaseProps<T>): ReactNode => {
   const { register, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
+
+  const type = rest.type;
+
 
   return (
     <div
@@ -45,23 +49,16 @@ const TestlabFormInput = <T extends object>({
         date: type === 'date',
       })}
     >
-      <Label htmlFor={name} className="testlab-form__input-label">
-        {label}
-        {required && <span className="asterisk-color">*</span>}
-        {description && (
-          <div className="testlab-form__input-sub-label">{description}</div>
-        )}
-      </Label>
+
       <Textfield
-        {...rest}
+        id={name}
+        error={errorMessage}
+        data-size={size}
+        label={label}
         {...register(name, {
           required: required,
         })}
-        id={name}
-        error={errorMessage}
-        name={name}
-        type={type}
-        size={size}
+        {...rest}
       />
     </div>
   );

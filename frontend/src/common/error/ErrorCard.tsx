@@ -31,8 +31,8 @@ const ErrorContent = ({
   buttonText,
 }: ErrorContentProps) => (
   <div className="error-card">
-    <Alert severity="danger">
-      <Heading size="large" spacing title={errorHeader}>
+    <Alert data-color="danger">
+      <Heading data-size="lg" title={errorHeader}>
         {errorHeader}
       </Heading>
       <div className="error-card__body">{errorText}</div>
@@ -114,8 +114,8 @@ const ErrorCard = ({
     return (
       <ErrorContent
         errorHeader={errorHeader ?? 'Uventa feil'}
-        errorText={err!.message}
-        onClick={() => window.location.reload()}
+        errorText={err.message}
+        onClick={() => globalThis.location.reload()}
         buttonText="Prøv på nytt"
       />
     );
@@ -124,7 +124,7 @@ const ErrorCard = ({
       <ErrorContent
         errorHeader={errorHeader ?? 'Uventa feil'}
         errorText={error!.message}
-        onClick={() => window.location.reload()}
+        onClick={() => globalThis.location.reload()}
         buttonText={buttonText}
       />
     );

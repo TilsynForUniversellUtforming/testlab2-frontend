@@ -91,8 +91,8 @@ export const getResultColumns = (): Array<
     enableColumnFilter: false,
     cell: ({ row }) => (
       <Tag
-        size="small"
-        color={getSeverity(scoreToPercentage(row.getValue('score')))}
+        data-size="sm"
+        data-color={getSeverity(scoreToPercentage(row.getValue('score')))}
       >
         {scoreToPercentage(row.getValue('score')) ?? 'Ikkje forekomst'}
       </Tag>

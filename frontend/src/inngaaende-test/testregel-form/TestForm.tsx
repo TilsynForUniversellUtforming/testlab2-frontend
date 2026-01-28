@@ -29,6 +29,7 @@ interface Props {
   onResultat: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (resultatId: number) => void;
   isLoading: boolean;
+  isDemoApp?: boolean;
 }
 
 function isEqual(a: Svar, b: Svar) {
@@ -42,6 +43,7 @@ const TestForm = ({
   onResultat,
   slettTestelement,
   isLoading,
+  isDemoApp,
 }: Props) => {
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
@@ -156,7 +158,7 @@ const TestForm = ({
 
   return (
     <div className="test-form">
-      <Heading size="medium" level={3}>
+      <Heading dat-size="md" level={3}>
         {testregel.namn}
       </Heading>
       {testregel.kravTilSamsvar && showHelpText && (
@@ -174,6 +176,7 @@ const TestForm = ({
         onChangeKommentar={onKommentar}
         detaljerMap={detaljerMap}
         isLoading={isLoading}
+        isDemoApp={isDemoApp}
       />
     </div>
   );

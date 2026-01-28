@@ -40,8 +40,8 @@ export const getTestingListColumns = (
     cell: ({ row }) =>
       maalingStatus === 'testing_ferdig' && (
         <Tag
-          size="small"
-          color={getSeverity(row.getValue('compliancePercent'))}
+          data-size="sm"
+          data-color={getSeverity(row.getValue('compliancePercent'))}
         >
           {row.getValue('compliancePercent') ?? 'Ikkje forekomst'}
         </Tag>
@@ -52,7 +52,7 @@ export const getTestingListColumns = (
     accessorFn: (row) =>
       headingWithSorting(
         row.framgang?.prosessert ||
-          (row.tilstand !== 'feila' ? row.antalSider : 0) ||
+          (row.tilstand === 'feila' ? 0 : row.antalSider) ||
           0,
         row.tilstand
       ),

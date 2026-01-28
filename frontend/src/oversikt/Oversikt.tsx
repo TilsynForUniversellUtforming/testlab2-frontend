@@ -18,7 +18,7 @@ interface OversiktLinkListProps {
 
 const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
   <div className="oversikt__links-item">
-    <AppTitle heading={heading} size="large" />
+    <AppTitle heading={heading} data-size="lg" />
     <div className="lenker">
       {routes.map((route) => (
         <div className="lenker__wrapper" key={route.navn}>
@@ -26,7 +26,7 @@ const OversiktLinkList = ({ heading, routes }: OversiktLinkListProps) => (
             route={route}
             title={route.navn}
             variant={ButtonVariant.Outline}
-            size="large"
+            data-size="lg"
             color="second"
             fullWidth={true}
             disabled={route.disabled}
@@ -44,7 +44,7 @@ const Oversikt = () => {
   return (
     <div className="oversikt">
       <div className="oversikt__sak">
-        <Heading size="xlarge" title="Meny" spacing={true}>
+        <Heading data-size="xl" title="Meny">
           Meny
         </Heading>
         <div className="oversikt__sak-links">
@@ -52,7 +52,7 @@ const Oversikt = () => {
             route={KONTROLL_CREATE}
             title={KONTROLL_CREATE.navn}
             variant={ButtonVariant.Outline}
-            size="large"
+            data-size="lg"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"
@@ -70,7 +70,7 @@ const Oversikt = () => {
             route={TEST_ROOT}
             title={TEST_ROOT.navn}
             variant={ButtonVariant.Outline}
-            size="large"
+            data-size="lg"
             color="second"
             fullWidth={true}
             className="oversikt__sak-ny"

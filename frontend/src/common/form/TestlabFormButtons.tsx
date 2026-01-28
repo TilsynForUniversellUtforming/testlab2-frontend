@@ -18,9 +18,6 @@ export interface TestlabFormButtonProps {
   step?: TestlabFormButtonStep;
   className?: string;
   loading?: boolean;
-  textBack?: string;
-  textNext?: string;
-  onClickBack?: () => void;
 }
 
 /**

@@ -26,7 +26,7 @@ const TableActionButton = ({
         title="Legg til"
         route={route}
         variant={variant}
-        size={size}
+        data-size={size}
         disabled={disabled}
       >
         Legg til
@@ -39,7 +39,7 @@ const TableActionButton = ({
       <TestlabLinkButton
         title={'Lagre'}
         route={route}
-        size={size}
+        data-size={size}
         disabled={disabled}
       >
         Lagre

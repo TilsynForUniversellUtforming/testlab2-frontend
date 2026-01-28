@@ -1,5 +1,5 @@
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
-import { Button, DropdownMenu, Heading } from '@digdir/designsystemet-react';
+import { Button, Dropdown, Heading } from '@digdir/designsystemet-react';
 import { ArrowDownIcon, CaretDownFillIcon } from '@navikt/aksel-icons';
 import {
   elementOmtaleSide,
@@ -21,6 +21,7 @@ import React, { useEffect, useState } from 'react';
 
 import classes from './test-form-accordion.module.css';
 
+
 type Props = {
   testregel: Testregel;
   skjemaerMedSvar: SkjemaMedSvar[];
@@ -33,6 +34,7 @@ type Props = {
   slettTestelement: (resultatId: number) => void;
   showHelpText: boolean;
   isLoading: boolean;
+  isDemoApp?: boolean;
 };
 
 export function TestFormAccordion({
@@ -44,9 +46,10 @@ export function TestFormAccordion({
   slettTestelement,
   showHelpText,
   isLoading,
+  isDemoApp,
 }: Readonly<Props>) {
   function initState() {
-    const lastElement = skjemaerMedSvar[skjemaerMedSvar.length - 1];
+    const lastElement = skjemaerMedSvar.at(-1);
     return skjemaerMedSvar.reduce(
       (acc, value) => ({ ...acc, [value.resultatId]: value === lastElement }),
       {}
@@ -57,10 +60,10 @@ export function TestFormAccordion({
 
   useEffect(() => {
     setShowForm((prevState) => {
-      if (Object.entries(prevState).length !== skjemaerMedSvar.length) {
-        return initState();
-      } else {
+      if (Object.entries(prevState).length === skjemaerMedSvar.length) {
         return prevState;
+      } else {
+        return initState();
       }
     });
   }, [skjemaerMedSvar]);
@@ -94,6 +97,7 @@ export function TestFormAccordion({
             kommentar={detaljer?.kommentar ?? ''}
             resultatId={resultatId}
             isElementSide={isElementSide}
+            isDemoApp={isDemoApp}
           />
         )}
       </div>
@@ -106,12 +110,12 @@ export function TestFormAccordion({
 
   function dropdownMenu(index: number) {
     return (
-      <DropdownMenu placement="bottom-start" size="small">
-        <DropdownMenu.Trigger size="small" className={classes.copyButton}>
+      <Dropdown placement="bottom-start" data-size="sm">
+        <Dropdown.Trigger data-size="sm" className={classes.copyButton}>
           Kopier svar fra tidligere test
           <CaretDownFillIcon />
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
+        </Dropdown.Trigger>
+        <Dropdown.List>
           {skjemaerMedSvar.map((kilde, i) => {
             if (i === index) return null;
 
@@ -119,16 +123,16 @@ export function TestFormAccordion({
             if (!elementOmtale) return null;
 
             return (
-              <DropdownMenu.Item
+              <Dropdown.Item
                 key={kilde.resultatId}
                 onClick={() => kopierSvar(kilde, index)}
               >
                 {elementOmtale}
-              </DropdownMenu.Item>
+              </Dropdown.Item>
             );
           })}
-        </DropdownMenu.Content>
-      </DropdownMenu>
+        </Dropdown.List>
+      </Dropdown>
     );
   }
 
@@ -172,7 +176,7 @@ export function TestFormAccordion({
             warning: ['advarsel'],
             info: ['ikkjeForekomst', 'ikkjeTesta'],
           }}
-          size="medium"
+          data-size="md"
         />
       </button>
     );
@@ -217,7 +221,7 @@ export function TestFormAccordion({
                 <div className={classes.formContent}>
                   <Heading
                     level={4}
-                    size={'medium'}
+                    data-size={'md'}
                     className={classes.formHeading}
                   >
                     Test {index + 1}
@@ -229,7 +233,7 @@ export function TestFormAccordion({
                     <Button
                       className={classes.removeButton}
                       variant="secondary"
-                      size="small"
+                      data-size="sm"
                       onClick={() => slettTestelement(resultatId)}
                     >
                       Slett dette testelementet

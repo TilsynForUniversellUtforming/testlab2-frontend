@@ -1,5 +1,5 @@
 import { htmlToReactNode } from '@common/util/stringutils';
-import { Radio } from '@digdir/designsystemet-react';
+import { Fieldset, Radio } from '@digdir/designsystemet-react';
 import { Svar } from '@test/api/types';
 import { StegJaNei, StegRadio } from '@test/util/testregel-interface/Steg';
 
@@ -21,19 +21,18 @@ const TestFormInputRadio = ({ steg, svar, index, onAnswer }: Props) => {
 
   return (
     <div>
-      <Radio.Group
-        legend={htmlToReactNode(spm)}
-        value={svar ?? 'ikke_svart'} // default må være noe annet enn tom streng, pga. en bug i designsystemet
-        onChange={handleValueChange}
-        name={`${stegnr}-${index}`}
-        description={htmlToReactNode(ht)}
+      <Fieldset
       >
+        <Fieldset.Legend>
+          {htmlToReactNode(spm)}
+        </Fieldset.Legend>
+        {htmlToReactNode(ht)}
         {options.map((svaralternativ) => (
-          <Radio value={svaralternativ} key={svaralternativ}>
+          <Radio name={`${stegnr}-${index}`} value={svaralternativ} key={svaralternativ} label={svaralternativ} onChange={(value) => handleValueChange(svaralternativ)}>
             {svaralternativ}
           </Radio>
         ))}
-      </Radio.Group>
+      </Fieldset>
     </div>
   );
 };

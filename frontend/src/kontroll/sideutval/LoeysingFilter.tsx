@@ -13,27 +13,24 @@ interface Props {
 
 const Filter = ({
   loeysingList,
-  selectedLoeysing,
   onChangeLoeysing,
 }: Omit<Props, 'heading' | 'finished'>) => {
   if (loeysingList.length === 0) {
-    return <Alert severity="warning">Kontroll har ikkje løysingsutval</Alert>;
+    return <Alert data-color="warning">Kontroll har ikkje løysingsutval</Alert>;
   }
 
   return (
-    <Chip.Group className={classes.sideutvalLoeysingChips}>
+    <div className={classes.sideutvalLoeysingChips}>
       {loeysingList.map((l) => (
-        <Chip.Toggle
+        <Chip.Radio
           key={l.id}
-          selected={l.id === selectedLoeysing?.id}
           onClick={() => onChangeLoeysing(l.id)}
-          checkmark
           id={`loeysing-${l.id}`}
         >
           {l.namn}
-        </Chip.Toggle>
+        </Chip.Radio>
       ))}
-    </Chip.Group>
+    </div>
   );
 };
 
@@ -45,10 +42,10 @@ const LoeysingFilter = ({
   onChangeLoeysing,
 }: Props) => (
   <div className={classes.loeysingFilter}>
-    <Heading level={3} size="medium">
+    <Heading level={3} data-size="md">
       {heading}
     </Heading>
-    <Heading level={4} size="xsmall">
+    <Heading level={4} data-size="xs">
       Vel sideutval for løysing
     </Heading>
     <Filter
@@ -58,12 +55,12 @@ const LoeysingFilter = ({
     />
     {finished.length > 0 && (
       <>
-        <Heading level={3} size="medium">
+        <Heading level={3} data-size="md">
           Ferdig
         </Heading>
         <div className={classes.ferdigUtval}>
           {finished.map((loeysing) => (
-            <Tag color="first" size="medium" key={loeysing.id}>
+            <Tag data-color="first" data-size="md" key={loeysing.id}>
               {loeysing.namn}
             </Tag>
           ))}

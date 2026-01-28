@@ -5,7 +5,7 @@ import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import { TestlabFormLabel } from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
 import { isDefined } from '@common/util/validationUtils';
-import { Search } from '@digdir/designsystemet-react';
+import { Field, Label, Search } from '@digdir/designsystemet-react';
 import classnames from 'classnames';
 import React, {
   ReactNode,
@@ -17,6 +17,7 @@ import React, {
 import { Path, PathValue, useFormContext, useWatch } from 'react-hook-form';
 
 import { getLabelString } from './util';
+import { Size } from '@digdir/designsystemet-types';
 
 export interface AutoCompleteProps<
   FormDataType extends object,
@@ -34,6 +35,7 @@ export interface AutoCompleteProps<
   spacing?: boolean;
   hideErrors?: boolean;
   customError?: string;
+  size?: Size
 }
 
 /**
@@ -80,10 +82,9 @@ const TestlabFormAutocomplete = <
   description,
   required = false,
   onClick,
-  size = 'small',
+  size = 'sm',
   maxListLength,
   spacing = false,
-  hideLabel = false,
   hideErrors = false,
   customError,
 }: AutoCompleteProps<FormDataType, ResultDataType>): ReactNode => {
@@ -171,24 +172,27 @@ const TestlabFormAutocomplete = <
         spacing: spacing,
       })}
     >
-      <Search
-        id="autocomplete"
-        label={
-          <TestlabFormLabel
-            htmlFor="autocomplete"
-            label={label}
-            required={required}
-            description={description}
-          />
-        }
-        type="text"
-        value={inputValueLabel}
-        onChange={(e) => handleOnChange(e.target.value)}
-        onFocus={() => setShowResultList(true)}
-        error={errorMessage}
-        size={size}
-        hideLabel={hideLabel}
-      />
+      <Field>
+        <Label> <TestlabFormLabel
+          htmlFor="autocomplete"
+          label={label}
+          required={required}
+          description={description}
+        /></Label>
+      <Search id={"autocomplete"}>
+        <Search.Input
+          aria-label={label}
+          data-size={size}
+          value={inputValueLabel}
+          onChange={(e) => handleOnChange(e.target.value)}
+          onFocus={() => setShowResultList(true)}
+        />
+        <Search.Clear />
+        <Search.Button />
+      </Search>
+      </Field>
+
+
       <ul className="testlab-form-autocomplete__list" ref={resultsRef}>
         <TestlabFormAutocompleteList
           resultList={resultList}

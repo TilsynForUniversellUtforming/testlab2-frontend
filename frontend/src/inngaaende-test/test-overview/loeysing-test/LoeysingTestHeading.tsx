@@ -1,4 +1,4 @@
-import { Heading, Ingress, Tag } from '@digdir/designsystemet-react';
+import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
 import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
 import { PageType } from '@test/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
@@ -26,10 +26,10 @@ const LoeysingTestHeading = ({
 }: Props) => {
   return (
     <div className="manual-test-heading">
-      <Heading spacing size="xlarge" level={2}>
+      <Heading data-size="xl" level={2}>
         Gjennomfør test
       </Heading>
-      <Ingress spacing>{title}</Ingress>
+      <Paragraph variant={"long"}>{title}</Paragraph>
       <div className="tags">
         <Tag color="second">Inngående kontroll</Tag>
         <Tag color="second">Nettside</Tag>

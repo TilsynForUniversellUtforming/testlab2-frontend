@@ -17,7 +17,7 @@ import ImageGallery from './ImageGallery';
 import { Point } from './types';
 import { fetchWithErrorHandling } from '@common/form/util';
 
-const ImageUpload = ({ resultatId }: { resultatId: number }) => {
+const ImageUpload = ({ resultatId, isDemo = false }: { resultatId: number, isDemo?:boolean}) => {
   const [alert, setAlert] = useAlert();
   const [contextMenuPosition, setContextMenuPosition] = useState<Point>({
     x: 0,
@@ -58,13 +58,18 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
   );
 
   const fetchImageUris = useCallback(async () => {
+    if(isDemo) {
+      setImageUris([])
+      return;
+    }
+
     try {
       const imageUris = await getBilder(resultatId);
       setImageUris(imageUris);
     } catch (e) {
       setAlert('danger', 'Noko gjekk gale med henting av bilder');
     }
-  }, [resultatId]);
+  }, [resultatId, isDemo]);
 
   useEffect(() => {
     fetchImageUris();
@@ -184,7 +189,7 @@ const ImageUpload = ({ resultatId }: { resultatId: number }) => {
             </>
           )}
         </div>
-        <Paragraph size="small" spacing>
+        <Paragraph data-size="sm">
           Antall filer {selectedFile ? 1 : 0}/1
         </Paragraph>
         <ImageControl

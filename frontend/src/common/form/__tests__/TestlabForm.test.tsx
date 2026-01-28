@@ -157,7 +157,7 @@ describe('<TestlabForm />', () => {
     // Select - ok
     const selectInput = screen.getByRole('combobox');
     await userEvent.click(selectInput);
-    const option = await screen.findByLabelText('1');
+    const option = await screen.findByText('1');
     await userEvent.click(option);
 
     await waitFor(

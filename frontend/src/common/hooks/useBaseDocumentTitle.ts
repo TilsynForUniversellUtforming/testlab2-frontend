@@ -7,7 +7,7 @@ import { useEffect } from 'react';
  */
 const useBaseDocumentTitle = (baseTitle: string) => {
   useEffect(() => {
-    window.document.title = baseTitle;
+    globalThis.document.title = baseTitle;
   }, [baseTitle]);
 };
 

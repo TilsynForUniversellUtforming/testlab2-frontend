@@ -1,12 +1,12 @@
 import { ButtonSize, ButtonVariant } from '@common/types';
 import {
-  Accordion,
   Button,
   Chip,
-  Combobox,
+  Details,
   Heading,
   Paragraph,
   Textfield,
+  EXPERIMENTAL_Suggestion as Suggestion
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
@@ -62,15 +62,6 @@ const SideutvalAccordion = ({
         : [...prevExpanded, key]
     );
   };
-
-  const onChangeSideutvalType = (values: string[]) => {
-    const sideutvalTypeId = parseInt(values[0]);
-    const sideutvalType = selectableSideutvalType.find(
-      (type) => type.id === sideutvalTypeId
-    );
-    setSideutvalTypeToAdd(sideutvalType);
-  };
-
   const handleAddSideutvalType = () => {
     if (!sideutvalTypeToAdd) {
       setTypeError({ type: 'Ugyldig sidetype' });
@@ -153,21 +144,19 @@ const SideutvalAccordion = ({
             classes.testregelTypeSelector
           )}
         >
-          <Heading level={5} size="small">
+          <Heading level={5} data-size="sm">
             {selectedLoeysing.namn}
           </Heading>
-          <Chip.Group className={classes.chipSpacing}>
-            <Chip.Toggle selected checkmark>
+            <Chip.Radio defaultChecked>
               Test av nettside
-            </Chip.Toggle>
-            <Chip.Toggle
+            </Chip.Radio>
+            <Chip.Radio
               disabled
               title="Test av mobil er ikkje tilgjengelig ennå"
             >
               Test av mobil
-            </Chip.Toggle>
-          </Chip.Group>
-          <Paragraph size="medium">
+            </Chip.Radio>
+          <Paragraph data-size="md">
             Vel i nedtrekklista. Forside skal alltid med. 10% av utvalet skal
             vera eigendefinert. Vel derfor eigendefinert for desse sidene.
           </Paragraph>
@@ -176,30 +165,24 @@ const SideutvalAccordion = ({
       <div className={classes.centered}>
         <div className={classes.sideutvalForm}>
           <div className={classes.sideutvaltypeSelect}>
-            <Combobox
-              label="Legg til sidetype"
-              size="small"
-              value={
-                sideutvalTypeToAdd?.id ? [String(sideutvalTypeToAdd.id)] : []
-              }
-              onValueChange={onChangeSideutvalType}
-              inputValue={
-                sideutvalTypeToAdd?.type ? String(sideutvalTypeToAdd.type) : ''
-              }
-              error={typeError?.type}
+            <Suggestion
+              aria-label="Legg til sidetype"
+              data-size="sm"
             >
-              <Combobox.Empty>Ingen treff</Combobox.Empty>
-              {selectableSideutvalType.map((tl) => (
-                <Combobox.Option value={String(tl.id)} key={tl.id}>
-                  {tl.type}
-                </Combobox.Option>
-              ))}
-            </Combobox>
+              <Suggestion.Empty>Ingen treff</Suggestion.Empty>
+              <Suggestion.List>
+                {selectableSideutvalType.map((tl) => (
+                  <Suggestion.Option value={String(tl.id)} key={tl.id}>
+                    {tl.type}
+                  </Suggestion.Option>
+                ))}
+              </Suggestion.List>
+            </Suggestion>
             {sideutvalTypeToAdd?.type?.toLowerCase() === 'egendefinert' && (
               <Textfield
                 label="Egendefinert sidetype"
-                size="small"
-                value={egendefinertType?.length !== 0 ? egendefinertType : ''}
+                data-size="sm"
+                value={egendefinertType?.length === 0 ? '' : egendefinertType}
                 onChange={(e) => setEgendefinertType(e.target.value)}
                 error={typeError?.egendefinert}
               />
@@ -207,59 +190,49 @@ const SideutvalAccordion = ({
             <Button
               className={classes.sideutvaltypeLagre}
               variant={ButtonVariant.Outline}
-              size={ButtonSize.Small}
+              data-size={ButtonSize.Small}
               onClick={handleAddSideutvalType}
             >
               Legg til
             </Button>
           </div>
           <div className={classes.accordionWrapper}>
-            <Accordion>
-              {[...groupByType(sideutval, sideutvalTypeList).entries()].map(
-                ([sideutvalTypeLabel, sideutvalBySideutvalType]) => {
-                  const sideutvalIndexedList = sideutvalBySideutvalType.filter(
-                    (su) => su.sideutval.loeysingId === selectedLoeysing.id
-                  );
-
-                  const errors = formErrors.find(
-                    (fe) =>
-                      fe.sideutvalType === sideutvalTypeLabel &&
-                      fe.loeysingId === selectedLoeysing.id
-                  );
-
-                  if (sideutvalIndexedList.length === 0) {
-                    return null;
-                  }
-
-                  return (
-                    <Accordion.Item
-                      open={expanded.includes(sideutvalTypeLabel)}
-                      key={sideutvalTypeLabel}
+            <ul>
+            {Array.from(
+              groupByType(sideutval, sideutvalTypeList).entries()
+            ).map(([sideutvalTypeLabel, sideutvalBySideutvalType]) => {
+              const sideutvalIndexedList = sideutvalBySideutvalType.filter(
+                (su) => su.sideutval.loeysingId === selectedLoeysing.id
+              );
+              if (sideutvalIndexedList.length === 0) return null;
+              const errors = formErrors.find(
+                (fe) =>
+                  fe.sideutvalType === sideutvalTypeLabel &&
+                  fe.loeysingId === selectedLoeysing.id
+              );
+              return (
+                <li key={sideutvalTypeLabel}>
+                <Details>
+                    <Details.Summary
                     >
-                      <Accordion.Header
-                        level={6}
-                        onHeaderClick={() =>
-                          handleSetExpanded(sideutvalTypeLabel)
-                        }
-                      >
-                        {sideutvalTypeLabel}
-                        {errors && <> ({errors.antallFeil} feil)</>}
-                      </Accordion.Header>
-                      <Accordion.Content>
-                        <SideBegrunnelseForm
-                          sideutvalTypeLabel={sideutvalTypeLabel}
-                          sideutvalIndexedList={sideutvalIndexedList}
-                          setExpanded={handleSetExpanded}
-                          handleAddSide={handleAddSide}
-                          handleRemoveSide={handleRemoveSide}
-                          register={register}
-                        />
-                      </Accordion.Content>
-                    </Accordion.Item>
-                  );
-                }
-              )}
-            </Accordion>
+                      {sideutvalTypeLabel}
+                      {errors && <> ({errors.antallFeil} feil)</>}
+                    </Details.Summary>
+                    <Details.Content>
+                      <SideBegrunnelseForm
+                        sideutvalTypeLabel={sideutvalTypeLabel}
+                        sideutvalIndexedList={sideutvalIndexedList}
+                        setExpanded={handleSetExpanded}
+                        handleAddSide={handleAddSide}
+                        handleRemoveSide={handleRemoveSide}
+                        register={register}
+                      />
+                    </Details.Content>
+                </Details>
+                </li>
+              );
+            })}
+            </ul>
           </div>
         </div>
       </div>

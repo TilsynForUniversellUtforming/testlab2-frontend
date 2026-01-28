@@ -1,6 +1,8 @@
 import { CellCheckboxId } from '@common/table/types';
-import { Table as DSTable } from '@digdir/designsystemet-react';
-import { TableHeaderCellProps } from '@digdir/designsystemet-react/dist/types/components/Table/TableHeaderCell';
+import {
+  Table as DSTable,
+  TableHeaderCellProps,
+} from '@digdir/designsystemet-react';
 import { flexRender, Header } from '@tanstack/react-table';
 import React from 'react';
 
@@ -48,7 +50,7 @@ const TestlabTableHeader = <T extends object>({
     sortDirection = 'descending';
   }
 
-  const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSort: React.MouseEventHandler<HTMLTableCellElement> = (e) => {
     e.preventDefault();
     const toggleSortingHandler = header.column.getToggleSortingHandler();
     if (toggleSortingHandler) {
@@ -57,16 +59,13 @@ const TestlabTableHeader = <T extends object>({
   };
 
   return (
-    <>
       <DSTable.HeaderCell
-        onSortClick={handleSort}
+        onClick={handleSort}
         sort={sortDirection}
         colSpan={header.colSpan}
-        sortable={column.getCanSort()}
       >
         {flexRender(header.column.columnDef.header, header.getContext())}
       </DSTable.HeaderCell>
-    </>
   );
 };
 

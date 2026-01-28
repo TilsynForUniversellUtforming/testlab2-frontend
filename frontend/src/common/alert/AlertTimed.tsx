@@ -38,7 +38,7 @@ const AlertTimed = ({
   return (
     <div className="alert">
       <Alert
-        severity={severity}
+        data-color={severity}
         role={severity === 'success' ? 'status' : undefined}
       >
         {message}
