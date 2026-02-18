@@ -1,18 +1,15 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.*
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
 @Component
-class TestregelApiClient(
-    val restTemplate: RestTemplate,
-    testingApiProperties: TestingApiProperties
-) {
+class TestregelApiClient(val restTemplate: RestTemplate, kravApiProperties: KravApiProperties) {
 
-  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
+  val testregelUrl = "${kravApiProperties.url}/v1/testreglar"
 
   fun getInnhaldstypeForTestingList() =
       restTemplate.getList<InnhaldstypeTesting>("$testregelUrl/innhaldstypeForTesting")

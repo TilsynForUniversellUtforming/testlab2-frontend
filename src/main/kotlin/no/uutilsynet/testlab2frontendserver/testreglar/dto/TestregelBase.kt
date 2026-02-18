@@ -1,5 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
+import no.uutilsynet.testlab2.constants.TestregelInnholdstype
+import no.uutilsynet.testlab2.constants.TestregelModus
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 
 open class TestregelBase(

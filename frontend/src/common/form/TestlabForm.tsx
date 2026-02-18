@@ -46,21 +46,7 @@ const TestlabForm = <T extends object>({
 
   return (
     <FormProvider
-      watch={formMethods.watch}
-      getValues={formMethods.getValues}
-      getFieldState={formMethods.getFieldState}
-      setError={formMethods.setError}
-      clearErrors={formMethods.clearErrors}
-      setValue={formMethods.setValue}
-      trigger={formMethods.trigger}
-      formState={formMethods.formState}
-      resetField={formMethods.resetField}
-      reset={formMethods.reset}
-      handleSubmit={formMethods.handleSubmit}
-      unregister={formMethods.unregister}
-      control={formMethods.control}
-      register={formMethods.register}
-      setFocus={formMethods.setFocus}
+      {...formMethods}
     >
       <form
         className={classnames('testlab-form', className)}

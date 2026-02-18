@@ -2,10 +2,10 @@ package no.uutilsynet.testlab2frontendserver.regelsett
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.uutilsynet.testlab2.constants.TestregelModus
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
 import no.uutilsynet.testlab2frontendserver.regelsett.dto.RegelsettBase
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.BeforeEach

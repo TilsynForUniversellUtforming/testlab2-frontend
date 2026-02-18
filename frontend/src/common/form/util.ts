@@ -50,7 +50,16 @@ export const normalizeString = (str: string): string => {
 
 const getTokenFromResponse = async (response: Response): Promise<string> => {
   const responseText = await response.text();
-  return JSON.parse(responseText)['token'];
+  try {
+    const token = JSON.parse(responseText)['token'];
+    if (typeof token === 'string') {
+      return token;
+    } else {
+      return '';
+    }
+  } catch (e) {
+    return '';
+  }
 };
 
 const getTokenFromCookie = (): string | undefined => {

@@ -5,7 +5,10 @@ import {
   Fieldset,
   Label,
   Radio,
-  useRadioGroup, ValidationMessage, EXPERIMENTAL_Suggestion as Suggestion,
+  useRadioGroup,
+  ValidationMessage,
+  EXPERIMENTAL_Suggestion as Suggestion,
+  Select,
 } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
 import { Control, Controller, Path, useFormContext } from 'react-hook-form';
@@ -67,36 +70,34 @@ interface SelectProps<T extends object> {
 
 
 const TestlabFormSelectCheckbox = <T extends object>({name,control, label,required,description,options,size,errorMessage}:SelectProps<T> & {size:Size|undefined; errorMessage:string|undefined}) => {
+
   return (
+    <div className="testlab-form__select">
+      <Label htmlFor={name} className="testlab-form__input-label">
+        {label}
+        {required && <span className="asterisk-color">*</span>}
+        {description && (
+          <div className="testlab-form__input-sub-label">{description}</div>
+        )}
+      </Label>
     <Controller
       name={name}
       control={control}
       render={({ field: { onChange, value } }) => (
-        <div className="testlab-form__select">
-          <Label htmlFor={name} className="testlab-form__input-label">
-            {label}
-            {required && <span className="asterisk-color">*</span>}
-            {description && (
-              <div className="testlab-form__input-sub-label">{description}</div>
-            )}
-          </Label>
-          <Suggestion>
-            <Suggestion.Input data-size={size} />
-            <Suggestion.Clear />
-            <Suggestion.List>
+
+          <Select value={value} onChange={onChange} id={name}>
               {options.map((o) => (
-                <Suggestion.Option value={o.value} key={`${o.label}_${o.value}`}>
-                  {o.label}
-                </Suggestion.Option>
+                <Select.Option value={o.value} key={`${o.label}_${o.value}`} label={o.label} >
+                  {value}   {o.label}
+                </Select.Option>
               ))}
-            </Suggestion.List>
-          </Suggestion>
-          {errorMessage && (
-            <ErrorSummary data-size="sm">{errorMessage}</ErrorSummary>
-          )}
-        </div>
+          </Select>
       )}
-    />)};
+    />
+      {errorMessage && (
+        <ErrorSummary data-size="sm">{errorMessage}</ErrorSummary>
+      )}
+    </div>)};
 
 const TestlabFormSelectRadio = <T extends object>({name,control, label,required,description,options}:SelectProps<T>) => {
   const { getRadioProps, validationMessageProps } = useRadioGroup();
@@ -104,15 +105,15 @@ const TestlabFormSelectRadio = <T extends object>({name,control, label,required,
     <Controller
       name={name}
       control={control}
-      render={({ field: { value } }) => (
+      render={({ field: { onChange, value } }) => (
         <div className="testlab-form__select">
           <Fieldset>
             <Fieldset.Legend>
               <TestlabFormRequiredLabel label={label} required={required} />
             </Fieldset.Legend>
             <Fieldset.Description>{description}</Fieldset.Description>
-            {options.map(({ label, value }) => (
-              <Radio label={label} {...getRadioProps(value)} />
+            {options.map((o) => (
+              <Radio label={o.label} name={name} value={o.value} key={o.value} onChange={onChange} disabled={o.disabled}/>
             ))}
             <ValidationMessage {...validationMessageProps} />
           </Fieldset>
