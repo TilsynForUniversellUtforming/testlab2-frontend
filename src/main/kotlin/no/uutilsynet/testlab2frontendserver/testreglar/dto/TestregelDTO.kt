@@ -1,7 +1,10 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
 import java.time.Instant
-import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestregelInnholdstype
+import no.uutilsynet.testlab2.constants.TestregelModus
+import no.uutilsynet.testlab2.constants.TestregelStatus
 
 data class TestregelDTO(
     val id: Int,

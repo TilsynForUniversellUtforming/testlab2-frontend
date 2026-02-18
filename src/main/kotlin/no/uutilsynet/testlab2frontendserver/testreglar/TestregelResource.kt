@@ -1,8 +1,8 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
-import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
-import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2.constants.TestregelModus
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
@@ -11,7 +11,6 @@ import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testobjekt
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.Testregel
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInit
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -32,13 +31,13 @@ private const val DUPLIKAT_SKJEMA_FOR_TESTREGEL = "Duplikat skjema for testregel
 @RequestMapping("api/v1/testreglar", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TestregelResource(
     val restTemplate: RestTemplate,
-    testingApiProperties: TestingApiProperties,
+    kravApiProperties: KravApiProperties,
     val testregelApiClient: TestregelApiClient,
     val kravApiClient: KravApiClient
 ) {
   val logger = LoggerFactory.getLogger(TestregelResource::class.java)
 
-  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
+  val testregelUrl = "${kravApiProperties.url}/v1/testreglar"
 
   @GetMapping("{id}")
   fun getTestregel(@PathVariable id: Int): ResponseEntity<Testregel> =
@@ -84,9 +83,12 @@ class TestregelResource(
 
   private fun validateDuplicatSchema(testregel: TestregelInit) {
     val testregelList = getTestregelList()
-    require(!testregelList.any { it.testregelSchema == testregel.testregelSchema }) {
-      DUPLIKAT_SKJEMA_FOR_TESTREGEL
-    }
+    require(
+        !testregelList.any {
+          it.testregelSchema == testregel.testregelSchema && it.id != testregel.id
+        }) {
+          DUPLIKAT_SKJEMA_FOR_TESTREGEL
+        }
   }
 
   @PutMapping
@@ -133,7 +135,6 @@ class TestregelResource(
       try {
         logger.debug("Henter tema fra $testregelUrl")
         testregelApiClient.getTemaForTestreglar()
-        restTemplate.getList<Tema>("$testregelUrl/temaForTestreglar")
       } catch (e: Error) {
         logger.error("klarte ikke å hente tema", e)
         throw Error("Klarte ikke å hente tema")

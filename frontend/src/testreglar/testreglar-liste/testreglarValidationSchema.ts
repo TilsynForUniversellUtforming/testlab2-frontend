@@ -1,15 +1,16 @@
 import { z } from 'zod';
 
 export const testregelBaseSchema = z.object({
-  id: z.number().optional(),
+  id: z.coerce.number().optional(),
   namn: z.string().min(1, 'Namn kan ikkje vera tomt'),
-  kravId: z
-    .union([z.number(), z.string()])
-    .refine((data) => !isNaN(Number(data)), 'Krav må veljast'),
+  kravId: z.coerce
+     .number()
+    .refine((data) => !Number.isNaN(Number(data)), 'Krav må veljast').optional(),
   modus: z.union([
     z.literal('automatisk'),
     z.literal('manuell'),
     z.literal('semi-automatisk'),
+    z.literal('deque'),
   ]),
 });
 
@@ -17,10 +18,10 @@ export const testregelSchema = testregelBaseSchema.and(
   z.object({
     testregelSchema: z.string().min(1, 'Testregel test-id kan ikkje vera tom'),
     testregelId: z.string().min(1, 'Testregel-id kan ikkje vera tom'),
-    versjon: z
-      .union([z.number(), z.string()])
-      .refine((data) => !isNaN(Number(data)), {
-        message: 'Format på testregel er QW-ACT-RXX',
+    versjon: z.coerce
+      .number()
+      .refine((data) => !Number.isNaN(Number(data)), {
+        message: 'Versjon må være et gyldig nummer',
       }),
     status: z.union([
       z.literal('ikkje_starta'),
@@ -40,9 +41,9 @@ export const testregelSchema = testregelBaseSchema.and(
       z.literal('nett'),
     ]),
     spraak: z.union([z.literal('nn'), z.literal('nb'), z.literal('en')]),
-    tema: z.union([z.number(), z.string()]).optional(),
-    testobjekt: z.union([z.number(), z.string()]).optional(),
-    innhaldstypeTesting: z.union([z.number(), z.string()]).optional(),
+    tema:z.coerce.number().optional(),
+    testobjekt: z.coerce.number().optional().optional(),
+    innhaldstypeTestingId: z.coerce.number().optional().optional(),
     kravTilSamsvar: z.string().optional(),
   })
 );

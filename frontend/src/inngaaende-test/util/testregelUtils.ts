@@ -84,7 +84,7 @@ export const progressionForTestgrunnlagInnhaldstype = (
     .filter((su) => su.loeysingId === loeysingId)
     .map((su) => su.id);
   const innhaldstypeIds = new Set(
-    testgrunnlag.testreglar.map((tr) => (tr.innhaldstypeTesting ?? 0) as number)
+    testgrunnlag.testreglar.map((tr) => (tr.innhaldstypeTestingId ?? 0) as number)
   );
   const finishedTestIdentifierArray = testResults
     .filter((tr) => tr.loeysingId === loeysingId && tr.status === 'Ferdig')
@@ -95,7 +95,7 @@ export const progressionForTestgrunnlagInnhaldstype = (
     // Tester som skal gjøres for denne innhaldstypen
     const testsForInnhaldstype = testgrunnlag.testreglar
       .filter(
-        (tr) => ((tr.innhaldstypeTesting ?? 0) as number) === innhaldstypeId
+        (tr) => ((tr.innhaldstypeTestingId ?? 0) as number) === innhaldstypeId
       )
       .flatMap((tr) =>
         sideutvalIds.map((sideutvalId) => `${sideutvalId}_${tr.id}`)
@@ -273,7 +273,7 @@ export const filterTestregelByInnhaldstype = (
   testregelList.filter(
     (tr) =>
       innhaldstype.innhaldstype === 'Alle' ||
-      tr.innhaldstypeTesting?.id === innhaldstype.id
+      tr.innhaldstypeTestingId?.id === innhaldstype.id
   );
 
 export const mapTestregelOverviewElements = (

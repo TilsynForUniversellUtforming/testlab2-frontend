@@ -1,9 +1,9 @@
 package no.uutilsynet.testlab2frontendserver.regelsett.dto
 
+import no.uutilsynet.testlab2.constants.TestregelModus
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.RegelsettInnholdstype
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBase
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.toTestregelBase
 
 data class Regelsett(
