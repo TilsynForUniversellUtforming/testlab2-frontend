@@ -111,7 +111,7 @@ const TestregelForm = ({
       id: testregel?.id,
       testregelSchema: testregel?.testregelSchema || '',
       namn: testregel?.namn || '',
-      kravId: testregel?.krav.id,
+      kravId: testregel?.krav.id || 1,
       modus: testregel?.modus || 'manuell',
       testregelId: testregel?.testregelId || '',
       versjon: testregel?.versjon || 1,
