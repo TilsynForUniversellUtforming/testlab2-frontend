@@ -81,7 +81,7 @@ const CanvasDrawingControls = ({
       </ToggleGroup>
     )}
     <Button
-      size="small"
+      data-size="sm"
       title="Lukk"
       onClick={hideContextMenu}
       icon

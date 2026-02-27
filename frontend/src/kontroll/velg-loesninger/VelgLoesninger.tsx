@@ -81,7 +81,7 @@ const VelgLoesninger = () => {
     <section className={classes.kontrollSection}>
       <KontrollStepper />
       <div className={classes.velgLoesningerOverskrift}>
-        <Heading level={1} size="xlarge">
+        <Heading level={1} data-size="xl">
           Vel løysingar
         </Heading>
         <Paragraph>Vel kva løysingar du vil ha med i kontrollen</Paragraph>
@@ -108,7 +108,7 @@ const VelgLoesninger = () => {
       </div>
       {isUtvalg(selectedOption) && (
         <>
-          <Heading level={2} size="large">
+          <Heading level={2} data-size="lg">
             Nyaste utval av løysingar
           </Heading>
           <div className={classes.nyesteUtvalgButtons}>
@@ -128,7 +128,7 @@ const VelgLoesninger = () => {
           </div>
           {!isEmpty(eldreUtvalg) && (
             <>
-              <Heading level={2} size="large">
+              <Heading level={2} data-size="lg">
                 Eldre utval av løysingar
               </Heading>
               <ul className={classes.eldreUtvalg}>
@@ -161,8 +161,8 @@ const VelgLoesninger = () => {
         </>
       )}
       {isLoesning(selectedOption) && (
-        <Alert elevated severity="warning">
-          Manuelt val av løysingar er ikkke ferdig enda.
+        <Alert data-color="warning">
+          Manuelt val av løysingar er ikke ferdig enda.
         </Alert>
       )}
     </section>

@@ -55,7 +55,7 @@ const TestlabSearch = ({
           onChange={handleOnChange}
           inputMode={numeric ? 'numeric' : 'text'}
           error={error}
-          size={'small'}
+          data-size={'sm'}
         />
         <Button
           className="testlab__search-button"

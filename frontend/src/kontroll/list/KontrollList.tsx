@@ -27,7 +27,7 @@ const StyringsdataLinkButton = ({
   const text = styringsdataId ? 'Endre styringsdata' : 'Legg til styringsdata';
   return (
     <Link to={`../../styringsdata/${kontrollId}${styringsdataParam}`}>
-      <Button size={ButtonSize.Small}>{text}</Button>
+      <Button data-size={ButtonSize.Small}>{text}</Button>
     </Link>
   );
 };
@@ -50,7 +50,7 @@ const KontrollList = () => {
 
   return (
     <section className={classes.kontrollList}>
-      <Heading level={1} size="xlarge">
+      <Heading level={1} data-size="xl">
         Alle kontroller
       </Heading>
       <Textfield

@@ -39,7 +39,7 @@ const PageTypeSelector = ({
 
   return (
     <div className="page-selector">
-      <Heading level={3} size="small" spacing>
+      <Heading level={3} data-size="sm">
         Vel type test
       </Heading>
       <div className="page-selector-wrapper">

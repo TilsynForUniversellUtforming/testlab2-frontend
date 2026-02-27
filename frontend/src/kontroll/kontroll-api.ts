@@ -3,7 +3,12 @@ import { responseWithLogErrors } from '@common/util/apiUtils';
 import { Utval } from '@loeysingar/api/types';
 
 import { SideutvalBase, SideutvalType } from './sideutval/types';
-import { Kontroll, KontrollListItem, UpdateKontrollTestreglar } from './types';
+import {
+  Kontroll,
+  KontrollListItem,
+  KontrollTestingMetadata,
+  UpdateKontrollTestreglar,
+} from './types';
 
 export function fetchKontroll(kontrollId: number): Promise<Response> {
   return fetchWithErrorHandling(`/api/v1/kontroller/${kontrollId}`);

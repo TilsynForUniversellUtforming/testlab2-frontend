@@ -285,7 +285,7 @@ class MaalingResource(
   private fun getTestregelListForMaaling(maalingId: Int): List<TestregelBaseDTO> =
       runCatching {
             logger.debug("Henter testreglar for måling $maalingId")
-            restTemplate.getList<TestregelBaseDTO>("$testregelUrl?maalingId=$maalingId")
+            restTemplate.getList<TestregelBaseDTO>("$maalingUrl/$maalingId/testreglar")
           }
           .getOrElse {
             logger.error("Feila ved henting av testreglar for måling $maalingId", it)

@@ -21,7 +21,7 @@ const TestRegelParamSelection = ({
   url,
 }: Props) => (
   <div className="test-param-selection">
-    <Heading size="small" level={6} className="test-param-selection__header">
+    <Heading data-size="sm" level={6} className="test-param-selection__header">
       {innhaldstype} og {pageType}
       {isUrl(url) && (
         <Link href={url} target="_blank" title={`Gå til ${url}`}>
@@ -38,10 +38,11 @@ const TestRegelParamSelection = ({
       percentage={progressionPercent}
     />
     <Switch
-      position="left"
-      size="small"
+      position="start"
+      data-size="sm"
       checked={showHelpText}
       onChange={toggleShowHelpText}
+      aria-label="Hjelpetekster"
     >
       Hjelpetekster
     </Switch>

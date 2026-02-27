@@ -34,7 +34,7 @@ const TestregelSelector = ({
 
   if (isForenkla && modus !== 'automatisk') {
     return (
-      <Alert severity="warning">
+      <Alert data-color="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå
       </Alert>
     );
@@ -42,7 +42,7 @@ const TestregelSelector = ({
 
   if (testregelList.length === 0) {
     return (
-      <Alert severity="info">
+      <Alert data-color="info">
         Ingen testrelgar for valgt type tilgjengelig
       </Alert>
     );
@@ -53,7 +53,7 @@ const TestregelSelector = ({
       <div className={classes.gridContainer}>
         {[...groupedTestreglar.entries()].map(([krav, testreglar]) => (
           <div key={krav} className={classes.gridItem}>
-            <Heading size="xxsmall" level={6}>
+            <Heading data-size="2xs" level={6}>
               {krav}
             </Heading>
             <br />

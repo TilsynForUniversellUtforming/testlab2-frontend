@@ -58,7 +58,7 @@ const StyringsdataFormKontroll = () => {
   return (
     <div className={classes.styringsdata}>
       <div className={classes.styringsdataForm}>
-        <Heading level={2} size="medium" spacing>
+        <Heading level={2} data-size="md">
           {' '}
           Styringsdata {kontrollTittel}
         </Heading>

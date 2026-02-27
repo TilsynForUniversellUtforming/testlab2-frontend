@@ -36,10 +36,10 @@ const KontrollStepper = () => {
             {([currentPathName, step.name].includes('Opprett Kontroll') &&
               isNotDefined(kontrollId)) ||
             currentPathName === step.name ? (
-              <Paragraph size="small">{step.name}</Paragraph>
+              <Paragraph data-size="sm">{step.name}</Paragraph>
             ) : (
               <Link to={getPath(step.relativePath)} relative="path">
-                <Paragraph size="small">{step.name}</Paragraph>
+                <Paragraph data-size="sm">{step.name}</Paragraph>
               </Link>
             )}
           </li>

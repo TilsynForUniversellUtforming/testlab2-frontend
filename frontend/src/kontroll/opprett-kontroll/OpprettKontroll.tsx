@@ -75,7 +75,7 @@ export default function OpprettKontroll() {
   return (
     <section className={classes.kontrollSection}>
       <KontrollStepper />
-      <Heading level={1} size="xlarge">
+      <Heading level={1} data-size="xl">
         Bygg kontroll
       </Heading>
       <p className={classes.ingress}>
@@ -89,10 +89,10 @@ export default function OpprettKontroll() {
         hasRequiredFields={false}
       >
         <div className={classes.skjemaOverskrift}>
-          <Heading level={2} size="medium">
+          <Heading level={2} data-size="md">
             Kontrolltype
           </Heading>
-          <Paragraph size="small">
+          <Paragraph data-size="sm">
             Felter markert med stjerne er obligatoriske
           </Paragraph>
         </div>
@@ -107,14 +107,13 @@ export default function OpprettKontroll() {
           )}
           required
           disabled={editMode}
-          aria-label={editMode ? 'Kan ikkje endre kontrolltype' : ''}
         />
         <TestlabFormInput
           label="Tittel"
           className={classes.tittel}
           name="tittel"
           id="tittel"
-          size="medium"
+          data-size="md"
           required
         />
         <TestlabFormInput
@@ -122,7 +121,7 @@ export default function OpprettKontroll() {
           className={classes.saksbehandler}
           name="saksbehandler"
           id="saksbehandler"
-          size="medium"
+          data-size="md"
           required
         />
         <TestlabFormSelect
@@ -140,13 +139,13 @@ export default function OpprettKontroll() {
           label="Arkivreferanse"
           className={classes.arkivreferanse}
           name="arkivreferanse"
-          size="medium"
+          data-size="md"
           id="arkivreferanse"
         />
         <Button type="submit" className={classes.opprettResten}>
           Opprett resten av kontrollen
         </Button>
-        {errors?.server && <Alert severity="danger">{errors.server}</Alert>}
+        {errors?.server && <Alert data-color="danger">{errors.server}</Alert>}
       </TestlabForm>
     </section>
   );

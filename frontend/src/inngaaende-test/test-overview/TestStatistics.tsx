@@ -31,7 +31,7 @@ const TestStatistics = ({ resultatliste, loeysingId, testgrunnlag }: Props) => {
   const testStatisticsLabel = `${percentSideutval}% Sideutval | ${percentInnhaldstype}% Innhaldstype`;
 
   return (
-    <Tag size="small" className={classes.statistikk}>
+    <Tag data-size="sm" className={classes.statistikk}>
       {testStatisticsLabel}
     </Tag>
   );

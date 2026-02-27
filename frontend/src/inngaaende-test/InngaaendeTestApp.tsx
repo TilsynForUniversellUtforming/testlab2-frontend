@@ -8,7 +8,7 @@ const InngaaendeTestApp = () => {
     useLoaderData() as Promise<InngaaendeTestLoadingResponseKontroll>;
 
   return (
-    <Suspense fallback={<Spinner title="Hentar test" />}>
+    <Suspense fallback={<Spinner aria-label="Hentar test" />}>
       <Await resolve={data}>
         {(data: InngaaendeTestLoadingResponseKontroll) => (
           <Outlet

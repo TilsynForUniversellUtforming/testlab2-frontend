@@ -1,4 +1,9 @@
-import { Chip, Heading, Paragraph } from '@digdir/designsystemet-react';
+import {
+  Chip,
+  Heading,
+  Paragraph,
+  ToggleGroup,
+} from '@digdir/designsystemet-react';
 import { RegelsettInnholdstype, TestregelModus } from '@testreglar/api/types';
 
 import classes from '../kontroll.module.css';
@@ -17,86 +22,87 @@ const TestregelFilter = ({
   regelsettSelected,
 }: Props) => (
   <div className={classes.testregelFilter}>
-    <Heading level={3} size="medium" spacing>
+    <Heading level={3} data-size="md">
       Kva slags test skal du køyra?
     </Heading>
     <div className={classes.testregelFilterVal}>
-      <Heading level={5} size="xsmall" spacing>
+      <Heading level={5} data-size="xs">
         Kva slags test skal du køyra?
       </Heading>
-      <Chip.Group>
-        <Chip.Toggle
-          selected={modus === 'manuell'}
+      <ToggleGroup>
+        <ToggleGroup.Item
+          value={'manuell'}
           onClick={() => onChangeFilter('manuell', type)}
           title="Testreglar for inngaående kontroll"
         >
           Manuell
-        </Chip.Toggle>
-        <Chip.Toggle
-          selected={modus === 'automatisk'}
+        </ToggleGroup.Item>
+        <ToggleGroup.Item
+          value={'automatisk'}
           onClick={() => onChangeFilter('automatisk', type)}
           title="Testreglar for forenkla kontroll"
         >
           Automatisk
-        </Chip.Toggle>
-        <Chip.Toggle
-          selected={modus === 'semi-automatisk'}
+        </ToggleGroup.Item>
+        <ToggleGroup.Item
+          value={'semi-automatisk'}
           onClick={() => onChangeFilter('semi-automatisk', type)}
           title="Testreglar for kombinasjon av inngåaend og forenkla kontroll"
         >
           Begge deler
-        </Chip.Toggle>
-      </Chip.Group>
+        </ToggleGroup.Item>
+      </ToggleGroup>
     </div>
     <div className={classes.testregelFilterVal}>
-      <Heading level={5} size="xsmall" spacing>
+      <Heading level={5} data-size="xs">
         Kva slags løysing skal du testa?
       </Heading>
-      <Chip.Group>
-        <Chip.Toggle
-          selected={type === 'nett'}
+      <ToggleGroup>
+        <ToggleGroup.Item
+          value={'nett'}
           onClick={() => onChangeFilter(modus, 'nett')}
           title="Testreglar for å testa nettløysingar"
         >
           Nett
-        </Chip.Toggle>
-        <Chip.Toggle
-          selected={type === 'app'}
+        </ToggleGroup.Item>
+        <ToggleGroup.Item
+          value={'app'}
           onClick={() => onChangeFilter(modus, 'app')}
           title="Testreglar for å testa appar"
         >
           App
-        </Chip.Toggle>
-        <Chip.Toggle
-          selected={type === 'automat'}
+        </ToggleGroup.Item>
+        <ToggleGroup.Item
+          value={
+          'automat'}
           onClick={() => onChangeFilter(modus, 'automat')}
           title="Testreglar for å testa automatar"
         >
           Automat
-        </Chip.Toggle>
-        <Chip.Toggle
-          selected={type === 'dokument'}
+        </ToggleGroup.Item>
+        <ToggleGroup.Item
+          value={'dokument'}
           onClick={() => onChangeFilter(modus, 'dokument')}
           title="Testreglar for å testa dokument"
         >
           Dokument
-        </Chip.Toggle>
+        </ToggleGroup.Item>
         {regelsettSelected && (
-          <Chip.Toggle
-            selected={type === 'kombinasjon'}
+          <ToggleGroup.Item
+            value={'kombinasjon'}
             onClick={() => onChangeFilter(modus, 'kombinasjon')}
             title="Regelsett med testreglar for å testa fleire typar"
           >
             Kombinasjon
-          </Chip.Toggle>
+          </ToggleGroup.Item>
         )}
-      </Chip.Group>
+      </ToggleGroup>
     </div>
     <div>
-      <Heading level={4} size="small" spacing>
+      <Heading level={4} data-size="sm">
         {regelsettSelected ? 'Vel testregelsett' : 'Vel testreglar sjølv'}
       </Heading>
-      <Paragraph size="medium" spacing>
+      <Paragraph data-size="md">
         {regelsettSelected
           ? 'Vel et testregelsett frå lista'
           : 'Vel testreglar og suksesskriterium som skal med i testen din'}
