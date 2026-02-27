@@ -181,7 +181,7 @@ const VelgSideutval = () => {
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
       <div className={classes.velgTestreglarOverskrift}>
-        <Heading level={1} size="xlarge">
+        <Heading level={1} data-size="xl">
           Sideutval
         </Heading>
         <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>

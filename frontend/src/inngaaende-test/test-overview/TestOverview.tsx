@@ -179,11 +179,11 @@ const TestOverview = () => {
     <div className={classes.testContainer}>
       <div className={classes.testWrapper}>
         {styringsdataError && (
-          <Alert severity="danger">Kunne ikkje hente styringsdata</Alert>
+          <Alert data-color="danger">Kunne ikkje hente styringsdata</Alert>
         )}
         {testgrunnlag.length === 0 && (
-          <Alert severity="warning">
-            <Heading level={3} size="xs" spacing>
+          <Alert data-color="warning">
+            <Heading level={3} data-size="xs">
               Ingen testgrunnlag for test
             </Heading>
             <Paragraph>
@@ -260,7 +260,7 @@ const TestOverview = () => {
                         info: ['ikkje-starta'],
                         success: ['ferdig'],
                       }}
-                      size="small"
+                      data-size="sm"
                     />
                     <TestStatusChart
                       testgrunnlag={etTestgrunnlag}
@@ -276,7 +276,7 @@ const TestOverview = () => {
                   <div className={classes.loeysingButtonInnhold}>
                     <div className={classes.loeysingTestMetadata}>
                       <div className={classes.headingWrapper}>
-                        <Heading size="medium" level={4}>
+                        <Heading data-size="md" level={4}>
                           {namn}
                         </Heading>
                         {styringsdataStatus && (
@@ -286,16 +286,16 @@ const TestOverview = () => {
                               danger: ['bot'],
                               warning: ['paalegg'],
                             }}
-                            size="small"
+                            data-size="sm"
                           />
                         )}
                       </div>
                       <div className={classes.tagWrapper}>
                         <div className={classes.testTags}>
-                          <Tag color="second" size="small">
+                          <Tag color="second" data-size="sm">
                             Inngående kontroll
                           </Tag>
-                          <Tag color="second" size="small">
+                          <Tag color="second" data-size="sm">
                             {viewTestType(
                               etTestgrunnlag,
                               sideutvalIds,
@@ -303,7 +303,7 @@ const TestOverview = () => {
                             )}
                           </Tag>
                         </div>
-                        <Tag color="info" size="small">
+                        <Tag color="info" data-size="sm">
                           Nettsted
                         </Tag>
                       </div>

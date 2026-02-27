@@ -31,7 +31,7 @@ const ImageGalleryResults = ({ bilder }: Props) => {
               onClick={() => handleOpenModal(bilde)}
               title="Trykk for å se full storleik"
               icon
-              size="large"
+              data-size="lg"
               asChild
             >
               <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
@@ -46,7 +46,7 @@ const ImageGalleryResults = ({ bilder }: Props) => {
           <Modal.Header>Resultat</Modal.Header>
           <Modal.Content>
             <img src={activeBilde?.bildeURI} alt="" />
-            <Paragraph size="xsmall">
+            <Paragraph data-size="xs">
               Oppretta {formatDateString(String(activeBilde?.opprettet), true)}
             </Paragraph>
           </Modal.Content>

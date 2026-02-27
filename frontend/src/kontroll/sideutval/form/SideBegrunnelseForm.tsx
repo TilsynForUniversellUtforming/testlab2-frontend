@@ -78,14 +78,14 @@ const SideBegrunnelseForm = ({
             >
               <Card.Header>
                 <div className={classes.begrunnelseInputsHeader}>
-                  <Heading level={4} size="xsmall">
+                  <Heading level={4} data-size="xs">
                     {sideutvalTypeLabel} side {arrayIndex + 1}
                   </Heading>
                   {hasMultipleItems && (
                     <Button
                       variant={ButtonVariant.Quiet}
                       color={ButtonColor.Danger}
-                      size={ButtonSize.Small}
+                      data-size={ButtonSize.Small}
                       type="button"
                       title="Ta bort side"
                       onClick={() => handleRemoveSide([index])}
@@ -143,7 +143,7 @@ const SideBegrunnelseForm = ({
           buttonIcon={<MinusCircleIcon />}
         />
         <Button
-          size={ButtonSize.Small}
+          data-size={ButtonSize.Small}
           variant={ButtonVariant.Quiet}
           type="button"
           onClick={() =>

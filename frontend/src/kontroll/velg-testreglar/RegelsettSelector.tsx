@@ -22,7 +22,7 @@ const RegelsettSelector = ({
 }: Props) => {
   if (isForenkla && modus !== 'automatisk') {
     return (
-      <Alert severity="warning">
+      <Alert data-color="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå
       </Alert>
     );
@@ -30,7 +30,7 @@ const RegelsettSelector = ({
 
   if (regelsettList.length === 0) {
     return (
-      <Alert severity="info">Ingen regelsett for valgt type tilgjengelig</Alert>
+      <Alert data-color="info">Ingen regelsett for valgt type tilgjengelig</Alert>
     );
   }
 

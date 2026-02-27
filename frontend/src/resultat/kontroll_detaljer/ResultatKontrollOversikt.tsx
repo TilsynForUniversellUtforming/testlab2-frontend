@@ -28,7 +28,7 @@ function LoeysingNamn(
 
 function Score(props: Readonly<{ score: number }>) {
   return (
-    <Tag size="small" color={getSeverity(props.score)}>
+    <Tag data-size="sm" color={getSeverity(props.score)}>
       {scoreToPercentage(props.score)}
     </Tag>
   );

@@ -90,7 +90,7 @@ const ResultatListApp = <T extends object>() => {
       enableColumnFilter: false,
       cell: ({ row }) => (
         <Tag
-          size="small"
+          data-size="sm"
           color={getSeverity(scoreToPercentage(row.getValue('score')))}
         >
           {scoreToPercentage(row.getValue('score'))}

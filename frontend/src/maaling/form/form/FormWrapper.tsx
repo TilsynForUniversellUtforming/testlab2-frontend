@@ -36,7 +36,7 @@ const FormWrapper = ({
         <div className="sak__form">
           <TestlabFormHeader heading={heading} description={description} />
           {hasRequiredFields && (
-            <Paragraph spacing size="small">
+            <Paragraph data-size="sm">
               Felter markert med stjerne er obligatoriske
             </Paragraph>
           )}

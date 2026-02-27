@@ -1,9 +1,10 @@
 import './loading-bar.scss';
 
-import { Size, TestlabColor, TestlabSeverity } from '@common/types';
+import {  TestlabColor, TestlabSeverity } from '@common/types';
 import { Label } from '@digdir/designsystemet-react';
 import classnames from 'classnames';
 import React from 'react';
+import { Size } from '@digdir/designsystemet-types';
 
 export interface Props {
   percentage?: number;
@@ -35,7 +36,7 @@ const getSeverity = (percentage: number): TestlabSeverity => {
  */
 const LoadingBar = ({
   percentage,
-  size = 'xsmall',
+  size = 'xs',
   customText,
   textPlacement = 'center',
   labelPlacement = 'top',
@@ -55,7 +56,7 @@ const LoadingBar = ({
     >
       <Label
         className={classnames('loading-bar__label', textPlacement)}
-        size={size}
+        data-size={'sm'}
         htmlFor="progresjon"
       >
         {customText ? customText : `${percentage}%`}

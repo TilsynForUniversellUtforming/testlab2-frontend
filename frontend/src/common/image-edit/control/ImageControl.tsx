@@ -102,7 +102,7 @@ const ImageControl = ({
         />
       </div>
       <div className="draw-actions">
-        <ToggleGroup value={drawMode} onChange={setDrawMode} size="small">
+        <ToggleGroup value={drawMode} onChange={setDrawMode} data-size="sm">
           <ToggleGroup.Item value="draw" icon title="Tekn">
             <PencilIcon fontSize="1.5rem" />
           </ToggleGroup.Item>
@@ -129,7 +129,7 @@ const ImageControl = ({
         </ToggleGroup>
         <div className="draw-actions-options">
           {drawMode === 'draw' && (
-            <ToggleGroup value={lineType} onChange={setLineType} size="small">
+            <ToggleGroup value={lineType} onChange={setLineType} data-size="sm">
               <ToggleGroup.Item value="line" icon={true} title="Linje">
                 <MinusIcon fontSize="1.5rem" />
               </ToggleGroup.Item>
@@ -145,7 +145,7 @@ const ImageControl = ({
             </ToggleGroup>
           )}
           {drawMode === 'text' && (
-            <ToggleGroup value={textStyle} onChange={setTextStyle} size="small">
+            <ToggleGroup value={textStyle} onChange={setTextStyle} data-size="sm">
               <ToggleGroup.Item value="filled" icon={true} title="Fylt">
                 <TextStyleIcon selected={textStyle === 'filled'} filled />
               </ToggleGroup.Item>

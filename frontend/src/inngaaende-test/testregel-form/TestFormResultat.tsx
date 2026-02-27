@@ -70,7 +70,7 @@ const TestFormResultat = ({
 
   return (
     <div className="test-form__result-card">
-      <TestlabDivider size="xsmall" />
+      <TestlabDivider size="sm" />
       <div className="test-form__result-heading">
         <Heading data-size="md" level={4}>
           Resultater

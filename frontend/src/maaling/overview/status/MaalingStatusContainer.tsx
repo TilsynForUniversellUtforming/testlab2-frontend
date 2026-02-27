@@ -46,7 +46,7 @@ const MaalingStatusContainer = ({ maaling }: Props) => {
                 }}
               />
               {pollingStatuses.includes(maaling.status) && (
-                <Spinner title="Oppdaterer måling" size="small" />
+                <Spinner aria-label="Oppdaterer måling" data-size="sm" />
               )}
             </div>
           </div>

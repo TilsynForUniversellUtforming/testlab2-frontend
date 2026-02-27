@@ -87,7 +87,7 @@ export type Maaling = {
   id: number;
   navn: string;
   datoStart: string;
-  loeysingList: LoeysingFormElement[];
+  loeysingList: Loeysing[];
   testregelList: TestregelBase[];
   status: MaalingStatus;
   crawlResultat: CrawlResultat[];
