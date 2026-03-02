@@ -5,7 +5,13 @@ import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
-import { Card, Divider, Heading, Tag } from '@digdir/designsystemet-react';
+import {
+  Card,
+  Divider,
+  Heading,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm } from 'react-hook-form';
 import { useLoaderData, useParams, useSubmit } from 'react-router-dom';
@@ -70,7 +76,7 @@ const StyringsdataFormKontroll = () => {
           hasRequiredFields
         >
           <Card color="second">
-            <Card.Header>
+            <Heading>
               <div
                 style={{
                   display: 'flex',
@@ -78,13 +84,13 @@ const StyringsdataFormKontroll = () => {
                   alignItems: 'center',
                 }}
               >
-                <Heading level={2} size="xs">
+                <Heading level={2} data-size="xs">
                   Oppstart
                 </Heading>
               </div>
-            </Card.Header>
+            </Heading>
             <Divider color="subtle" />
-            <Card.Content>
+            <Paragraph>
               <input type="hidden" {...register('id' as const)} />
               <TestlabFormInput<StyringsdataKontroll>
                 label="Ansvarleg"
@@ -117,10 +123,10 @@ const StyringsdataFormKontroll = () => {
                 name="varselSendtDato"
                 type="date"
               />
-            </Card.Content>
+            </Paragraph>
           </Card>
           <Card color="second">
-            <Card.Header>
+            <Heading>
               <div
                 style={{
                   display: 'flex',
@@ -128,13 +134,13 @@ const StyringsdataFormKontroll = () => {
                   alignItems: 'center',
                 }}
               >
-                <Heading level={2} size="xs">
+                <Heading level={2} data-size="xs">
                   Rapport
                 </Heading>
               </div>
-            </Card.Header>
+            </Heading>
             <Divider color="subtle" />
-            <Card.Content>
+            <Paragraph>
               <TestlabFormInput<StyringsdataKontroll>
                 label="Foreløpig rapport sendt"
                 name="foerebelsRapportSendtDato"
@@ -150,10 +156,10 @@ const StyringsdataFormKontroll = () => {
                 name="svarFoerebelsRapportDato"
                 type="date"
               />
-            </Card.Content>
+            </Paragraph>
           </Card>
           <Card color="second">
-            <Card.Header>
+            <Heading>
               <div
                 style={{
                   display: 'flex',
@@ -161,13 +167,13 @@ const StyringsdataFormKontroll = () => {
                   alignItems: 'center',
                 }}
               >
-                <Heading level={2} size="xs">
+                <Heading level={2} data-size="xs">
                   Avslutning
                 </Heading>
               </div>
-            </Card.Header>
+            </Heading>
             <Divider color="subtle" />
-            <Card.Content>
+            <Paragraph>
               <TestlabFormInput<StyringsdataKontroll>
                 label="Kontroll avsluttet dato"
                 name="endeligRapportDato"
@@ -183,7 +189,7 @@ const StyringsdataFormKontroll = () => {
                 name="rapportPublisertDato"
                 type="date"
               />
-            </Card.Content>
+            </Paragraph>
           </Card>
           <div className={classes.buttons}>
             <TestlabLinkButton

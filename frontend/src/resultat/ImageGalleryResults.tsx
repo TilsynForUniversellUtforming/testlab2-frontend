@@ -1,8 +1,14 @@
 import { ButtonVariant } from '@common/types';
 import { formatDateString } from '@common/util/stringutils';
-import { Button, Modal, Paragraph } from '@digdir/designsystemet-react';
+import {
+  Button,
+  Dialog,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { Bilde } from '@test/api/types';
 import { useRef, useState } from 'react';
+import { Header } from '@tanstack/react-table';
 
 interface Props {
   bilder: Bilde[];
@@ -22,37 +28,34 @@ const ImageGalleryResults = ({ bilder }: Props) => {
   }
 
   return (
-    <>
-      <div className="image-gallery">
-        {bilder.map((bilde, index) => (
-          <div className="image-gallery-item" key={bilde.thumbnailURI}>
-            <Button
-              variant={ButtonVariant.Quiet}
-              onClick={() => handleOpenModal(bilde)}
-              title="Trykk for å se full storleik"
-              icon
-              data-size="lg"
-              asChild
-            >
-              <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
-            </Button>
-          </div>
-        ))}
-        <Modal
-          ref={modalRef}
-          onInteractOutside={() => modalRef.current?.close()}
-          onClose={() => setActiveBilde(undefined)}
-        >
-          <Modal.Header>Resultat</Modal.Header>
-          <Modal.Content>
+    <div className="image-gallery">
+      {bilder.map((bilde, index) => (
+        <div className="image-gallery-item" key={bilde.thumbnailURI}>
+          <Button
+            variant={ButtonVariant.Quiet}
+            onClick={() => handleOpenModal(bilde)}
+            title="Trykk for å se full storleik"
+            icon
+            data-size="lg"
+            asChild
+          >
+            <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
+          </Button>
+        </div>
+      ))}
+      <Dialog.TriggerContext
+      >
+        <Dialog onClose={() => setActiveBilde(undefined)}>
+          <Heading>Resultat</Heading>
+          <Dialog.Block>
             <img src={activeBilde?.bildeURI} alt="" />
             <Paragraph data-size="xs">
               Oppretta {formatDateString(String(activeBilde?.opprettet), true)}
             </Paragraph>
-          </Modal.Content>
-        </Modal>
-      </div>
-    </>
+          </Dialog.Block>
+        </Dialog>
+      </Dialog.TriggerContext>
+    </div>
   );
 };
 

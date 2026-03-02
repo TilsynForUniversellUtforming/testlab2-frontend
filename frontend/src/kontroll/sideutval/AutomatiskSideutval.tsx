@@ -11,13 +11,13 @@ import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 const crawlParametersValidationSchema = z
   .object({
     maxLenker: z
-      .union([z.number(), z.string()])
+      .coerce.number()
       .transform((val) => parseNumberInput(val))
       .refine((value) => value >= 1 && value <= 10000, {
         message: 'Brutto-utval av nettsider må være mellom 1 og 10 000',
       }),
     talLenker: z
-      .union([z.number(), z.string()])
+      .coerce.number()
       .transform((val) => parseNumberInput(val))
       .refine((value) => value >= 1 && value <= 2000, {
         message: 'Netto-utval av nettsider må være mellom 1 og 2000',

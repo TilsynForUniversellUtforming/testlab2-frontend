@@ -1,14 +1,14 @@
 export type Krav = {
   id: number;
   tittel: string;
-  status: string;
+  status: KravStatus;
   innhald?: string;
   gjeldAutomat: boolean;
   gjeldNettsider: boolean;
   gjeldApp: boolean;
   urlRettleiing?: string;
-  prinsipp: string;
-  retningslinje: string;
+  prinsipp: WcagPrinsipp;
+  retningslinje: WcagRetninglinje;
   suksesskriterium: string;
   samsvarsnivaa: Samsvarsnivaa;
   kommentarBrudd?: string;

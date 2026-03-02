@@ -84,7 +84,7 @@ export const progressionForTestgrunnlagInnhaldstype = (
     .filter((su) => su.loeysingId === loeysingId)
     .map((su) => su.id);
   const innhaldstypeIds = new Set(
-    testgrunnlag.testreglar.map((tr) => (tr.innhaldstypeTestingId ?? 0) as number)
+    testgrunnlag.testreglar.map((tr) => tr.innhaldstypeTesting?.id ?? 0)
   );
   const finishedTestIdentifierArray = testResults
     .filter((tr) => tr.loeysingId === loeysingId && tr.status === 'Ferdig')
@@ -94,9 +94,7 @@ export const progressionForTestgrunnlagInnhaldstype = (
   innhaldstypeIds.forEach((innhaldstypeId) => {
     // Tester som skal gjøres for denne innhaldstypen
     const testsForInnhaldstype = testgrunnlag.testreglar
-      .filter(
-        (tr) => ((tr.innhaldstypeTestingId ?? 0) as number) === innhaldstypeId
-      )
+      .filter((tr) => (tr.innhaldstypeTesting?.id ?? 0) === innhaldstypeId)
       .flatMap((tr) =>
         sideutvalIds.map((sideutvalId) => `${sideutvalId}_${tr.id}`)
       );
@@ -180,7 +178,7 @@ export const getPageTypeList = (
 export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
   const firstInSideutval = pageTypeList[0];
   if (isNotDefined(firstInSideutval)) {
-    throw Error('Det finns ikkje sideutval for test');
+    throw new Error('Det finns ikkje sideutval for test');
   }
 
   const forside = pageTypeList.find(
@@ -273,7 +271,7 @@ export const filterTestregelByInnhaldstype = (
   testregelList.filter(
     (tr) =>
       innhaldstype.innhaldstype === 'Alle' ||
-      tr.innhaldstypeTestingId?.id === innhaldstype.id
+      tr.innhaldstypeTesting?.id === innhaldstype.id
   );
 
 export const mapTestregelOverviewElements = (
@@ -326,8 +324,8 @@ export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
 };
 
 export const getIdFromParams = (idString: string | undefined): number => {
-  const id = parseInt(idString ?? '', 10);
-  if (isNaN(id)) {
+  const id = Number.parseInt(idString ?? '', 10);
+  if (Number.isNaN(id)) {
     throw new Error('Id-en i URL-en er ikke et tall');
   }
   return id;

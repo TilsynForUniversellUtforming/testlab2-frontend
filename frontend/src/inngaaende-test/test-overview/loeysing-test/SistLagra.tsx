@@ -11,9 +11,9 @@ const SistLagra = ({ sistLagra, isLoading }: Props) => (
   <div className="sist-lagra">
     <ConditionalComponentContainer
       condition={isLoading}
-      conditionalComponent={<Spinner size="small" title="Lagrer..." />}
+      conditionalComponent={<Spinner data-size="sm" aria-label="Lagrer..." />}
       otherComponent={
-        <Paragraph size="xs">
+        <Paragraph data-size="xs">
           Sist lagra: {formatDateString(sistLagra, true)}
         </Paragraph>
       }
