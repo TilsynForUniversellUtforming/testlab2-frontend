@@ -1,4 +1,4 @@
-import { Alert, Checkbox, Heading } from '@digdir/designsystemet-react';
+import { Alert, Checkbox, Fieldset, Heading } from '@digdir/designsystemet-react';
 import { TestregelBase, TestregelModus } from '@testreglar/api/types';
 import { useMemo } from 'react';
 
@@ -57,24 +57,19 @@ const TestregelSelector = ({
               {krav}
             </Heading>
             <br />
-            <Checkbox.Group
-              legend={krav}
-              hideLegend
-              onChange={onSelectTestregelId}
-              value={selectedTestregelIdList.map((id) => String(id))}
-              size="small"
-              data-testid="manuell-testregel"
-            >
+            <Fieldset>
               {testreglar.map((testregel) => (
                 <Checkbox
                   key={testregel.id}
                   value={String(testregel.id)}
                   title={`Vel ${testregel.namn}`}
-                >
-                  {testregel.namn}
-                </Checkbox>
+                  onClick={()=>onSelectTestregelId}
+                  label={testregel.namn}
+                  data-testid="manuell-testregel"
+                data-size={"sm"}
+                checked={testregel.id==selectedTestregelIdList[testregel.id]}/>
               ))}
-            </Checkbox.Group>
+            </Fieldset>
           </div>
         ))}
       </div>

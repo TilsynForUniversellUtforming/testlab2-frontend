@@ -148,7 +148,7 @@ const ResultatListApp = <T extends object>() => {
 
   const tableParams: TableParams<T> = {
     data: resultat as T[],
-    defaultColumns: columns,
+    defaultColumns: columns as Array<ColumnDef<T>>,
     onClickRow: onClickRow,
     visibilityState: visibilityState,
   };

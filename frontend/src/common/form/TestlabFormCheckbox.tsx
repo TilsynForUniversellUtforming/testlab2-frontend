@@ -1,10 +1,10 @@
 import { TestlabInputBaseProps } from '@common/form/TestlabFormInput';
 import TestlabFormRequiredLabel from '@common/form/TestlabFormRequiredLabel';
 import { getErrorMessage } from '@common/form/util';
-import { Checkbox } from '@digdir/designsystemet-react';
+import { Checkbox, Fieldset } from '@digdir/designsystemet-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-export interface Props<T extends object> extends TestlabInputBaseProps<T> {
+export type Props<T extends object> = TestlabInputBaseProps<T> &{
   checkboxLabel: string;
 }
 
@@ -26,24 +26,23 @@ const TestlabFormCheckbox = <T extends object>({
       control={control}
       render={({ field: { onChange, value, onBlur } }) => (
         <div className="testlab-form__select">
-          <Checkbox.Group
-            legend={
+          <Fieldset>
+            <Fieldset.Legend>
               <TestlabFormRequiredLabel label={label} required={required} />
-            }
-            description={description}
-            size={size}
-            error={errorMessage}
-            disabled={disabled}
-          >
+            </Fieldset.Legend>
+           <Fieldset.Description>
+             {description}
+           </Fieldset.Description>
             <Checkbox
               onChange={() => onChange(!value)}
               checked={value === true}
               value={checkboxLabel}
+              label={checkboxLabel}
               onBlur={onBlur}
-            >
-              {checkboxLabel}
-            </Checkbox>
-          </Checkbox.Group>
+              error={errorMessage}
+              disabled={disabled}
+            />
+          </Fieldset>
         </div>
       )}
     />

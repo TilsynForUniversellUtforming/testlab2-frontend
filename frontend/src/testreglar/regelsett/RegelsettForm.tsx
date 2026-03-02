@@ -166,39 +166,33 @@ const RegelsettForm = ({
           name="standard"
         />
         <div className="testregel-form-type-filter">
-          <Heading level={3} size="xsmall" spacing>
+          <Heading level={3} data-size="xs">
             Filtrer type
           </Heading>
-          <Chip.Group>
-            <Chip.Toggle
-              selected={type === 'nett'}
+            <Chip.Radio
+              value={'nett'}
               onClick={() => onChangeType('nett')}
-              checkmark={false}
             >
               Nett
-            </Chip.Toggle>
-            <Chip.Toggle
-              selected={type === 'app'}
+            </Chip.Radio>
+            <Chip.Radio
+              value={'app'}
               onClick={() => onChangeType('app')}
-              checkmark={false}
             >
               App
-            </Chip.Toggle>
-            <Chip.Toggle
-              selected={type === 'automat'}
+            </Chip.Radio>
+            <Chip.Radio
+              value={'automat'}
               onClick={() => onChangeType('automat')}
-              checkmark={false}
             >
               Automat
-            </Chip.Toggle>
-            <Chip.Toggle
-              selected={type === 'dokument'}
+            </Chip.Radio>
+            <Chip.Radio
+              value={'dokument'}
               onClick={() => onChangeType('dokument')}
-              checkmark={false}
             >
               Dokument
-            </Chip.Toggle>
-          </Chip.Group>
+            </Chip.Radio>
         </div>
         <TestlabTable<TestregelBase>
           data={selectableTestreglar}

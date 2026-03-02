@@ -36,7 +36,7 @@ const getSeverity = (percentage: number): TestlabSeverity => {
  */
 const LoadingBar = ({
   percentage,
-  size = 'xs',
+  size = 'sm',
   customText,
   textPlacement = 'center',
   labelPlacement = 'top',

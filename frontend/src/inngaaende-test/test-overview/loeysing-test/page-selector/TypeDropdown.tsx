@@ -45,7 +45,7 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
             {options.map(({ label, value }) => (
               <Dropdown.Item
                 key={value}
-                onClick={() => handleButtonClick(value)}
+                onClick={() => handleButtonClick(String(value))}
                 className={classnames({ active: value === String(typeId) })}
               >
                 {label}

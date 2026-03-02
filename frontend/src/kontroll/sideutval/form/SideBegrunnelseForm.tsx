@@ -2,7 +2,13 @@ import ConfirmModalButton from '@common/confirm-modal/ConfirmModalButton';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { ButtonColor, ButtonSize, ButtonVariant } from '@common/types';
-import { Button, Card, Divider, Heading } from '@digdir/designsystemet-react';
+import {
+  Button,
+  Card,
+  Divider,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import {
   MinusCircleIcon,
   PlusCircleIcon,
@@ -76,7 +82,7 @@ const SideBegrunnelseForm = ({
               key={`${side.typeId}_${index}`}
               className={classes.begrunnelseInputs}
             >
-              <Card.Header>
+              <Heading>
                 <div className={classes.begrunnelseInputsHeader}>
                   <Heading level={4} data-size="xs">
                     {sideutvalTypeLabel} side {arrayIndex + 1}
@@ -95,9 +101,9 @@ const SideBegrunnelseForm = ({
                     </Button>
                   )}
                 </div>
-              </Card.Header>
+              </Heading>
               <Divider color="subtle" />
-              <Card.Content>
+              <Paragraph>
                 <input
                   type="hidden"
                   {...register(`sideutval.${index}.loeysingId` as const, {
@@ -122,7 +128,7 @@ const SideBegrunnelseForm = ({
                   name={`sideutval.${index}.begrunnelse`}
                 />
                 <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
-              </Card.Content>
+              </Paragraph>
             </Card>
           );
         })}

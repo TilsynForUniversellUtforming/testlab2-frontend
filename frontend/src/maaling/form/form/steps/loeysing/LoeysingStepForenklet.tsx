@@ -1,6 +1,6 @@
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import { isDefined } from '@common/util/validationUtils';
-import { Radio } from '@digdir/designsystemet-react';
+import { Field, Fieldset, Radio } from '@digdir/designsystemet-react';
 import MaalingLoeysingList from '@maaling/form/form/steps/loeysing/MaalingLoeysingList';
 import UtvalList from '@maaling/form/form/steps/loeysing/UtvalList';
 import { LoeysingSource, MaalingFormState } from '@maaling/types';
@@ -13,7 +13,7 @@ const LoeysingStepForenklet = () => {
 
   const handleChangeSource = (source?: string) => {
     if (typeof source === 'undefined') {
-      throw new Error('Ugyldig kilde');
+      throw new TypeError('Ugyldig kilde');
     }
     const oldSource = getValues('loeysingSource');
     if (oldSource !== source) {
@@ -32,16 +32,12 @@ const LoeysingStepForenklet = () => {
   return (
     <>
       <div className="sak-loeysing__utval">
-        <Radio.Group
-          legend="Vil du bruke eit ferdig utval?"
-          description="Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."
-          name="useUtval"
-          onChange={handleChangeSource}
-          value={source}
-        >
-          <Radio value="utval">Bruk eit utval</Radio>
-          <Radio value="manuell">Velg løysingar sjølv</Radio>
-        </Radio.Group>
+        <Fieldset>
+          <Fieldset.Legend>Vil du bruke eit ferdig utval?</Fieldset.Legend>
+          <Fieldset.Description>Her kan du velje å bruke eit av dei ferdige utvala, eller du kan legge inn løysingane sjølv."</Fieldset.Description>
+          <Radio value="utval" label="Bruk eit utval" onClick={()=>handleChangeSource}/>
+          <Radio value="manuell" label="Velg løysingar sjølv" />
+        </Fieldset>
       </div>
       <ConditionalComponentContainer
         condition={source === 'utval'}
