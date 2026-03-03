@@ -8,11 +8,8 @@ const KravCreate = () => {
   const navidation = useNavigate();
 
   const onSubmit = useCallback(async (data: KravInit) => {
-    console.log('onSubmitt krav ' + JSON.stringify(data));
-
     const create = async (): Promise<number> => {
       return await createKrav(data).then((response) => {
-        console.log('KravCreate response ' + response);
         return response;
       });
     };

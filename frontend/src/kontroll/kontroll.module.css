@@ -18,30 +18,30 @@
   top: calc(50% - 0.5px);
   height: 1px;
   width: 100%;
-  background-color: var(--fds-semantic-surface-first-dark);
+  background-color: var(--ds-color-brand1-surface-active);
 }
 
 .stepper ol li {
   list-style: none;
-  background-color: var(--fds-semantic-surface-first-light);
+  background-color: var(--ds-color-brand1-surface-default);
   border-radius: 10px;
   border: 2px solid transparent;
 
   &:hover {
-    background-color: var(--fds-semantic-surface-first-light-hover);
+    background-color: var(--ds-color-brand1-surface-hover);
   }
 }
 
 .stepper .selected {
-  background-color: var(--fds-semantic-surface-first-light-active);
-  border: 2px solid var(--fds-semantic-surface-first-dark);
+  background-color: var(--ds-color-brand1-surface-hover);
+  border: 2px solid var(--ds-color-brand1-surface-active);
 
   p {
-    color: var(--fds-semantic-surface-neutral-default);
+    color: var(--ds-color-brand1-surface-default);
   }
 
   &:hover {
-    background-color: var(--fds-semantic-surface-first-light-hover);
+    background-color: var(--ds-color-brand1-surface-active);
   }
 }
 
@@ -63,7 +63,7 @@
 }
 
 .skjema {
-  background-color: var(--fds-semantic-surface-third-light);
+  background-color: var(--ds-color-brand1-surface-tinted);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -72,7 +72,7 @@
 
 .skjema-overskrift {
   padding: 2rem 0;
-  border-bottom: 1px solid var(--fds-semantic-surface-success-active);
+  border-bottom: 1px solid var(--ds-color-brand1-surface-active);
   margin-bottom: 2rem;
 }
 
@@ -100,10 +100,10 @@
 .utvalg-eller-manuelt,
 .nyeste-utvalg-buttons {
   button {
-    background-color: var(--fds-semantic-surface-first-light);
+    background-color: var(--ds-color-brand1-surface-tinted);
     color: black;
     border: none;
-    font: var(--fds-typography-paragraph-large);
+    font: var(--ds-body-lg-font-weight);
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -112,29 +112,28 @@
     align-items: center;
 
     &:hover {
-      background-color: var(--fds-semantic-surface-first-light-hover);
+      background-color: var(--ds-color-brand1-surface-hover);
     }
 
     &:active {
-      background-color: var(--fds-semantic-surface-first-light-active);
+      background-color: var(--ds-color-brand1-surface-active);
     }
 
     &.selected {
-      background: var(--fds-semantic-surface-first-light-active);
-      color: var(--fds-semantic-surface-neutral-default);
+      background: var(--ds-color-brand1-surface-active);
       &:hover {
-        background-color: var(--fds-semantic-surface-first-light-hover);
+        background-color: var(--ds-color-brand1-surface-hover);
       }
     }
 
     &:disabled {
       cursor: not-allowed;
-      background-color: var(--fds-semantic-surface-first-light);
+      background-color: var(--ds-color-brand1-surface-tinted);
     }
 
     .utvalgOppretta {
-      font: var(--fds-typography-paragraph-medium);
-      color: var(--fds-semantic-text-neutral-subtle);
+      font: var(--ds-body-md-font-weight);
+      color: var(--ds-color-neutral-text-subtle);
     }
   }
 }
@@ -182,7 +181,7 @@
     position: relative;
 
     :hover {
-      background-color: var(--fds-semantic-surface-first-light-hover);
+      background-color: var(--ds-color-brand1-surface-hover);
     }
 
     &.selected {
@@ -192,7 +191,7 @@
         content: '•';
         position: absolute;
         font-size: 50px;
-        color: var(--fds-semantic-surface-first-dark);
+        color: var(--ds-color-brand1-surface-active);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -203,11 +202,11 @@
     button {
       border: none;
       text-align: left;
-      font: var(--fds-typography-paragraph-large);
+      font: var(--ds-body-lg-font-weight);
       padding: 0.5rem 0.75rem;
       cursor: pointer;
       border-radius: 10px;
-      background-color: var(--fds-semantic-surface-action-first-subtle);
+      background-color: var(--ds-color-brand1-surface-tinted);
       max-width: 450px;
       overflow: hidden;
       white-space: nowrap;
@@ -216,10 +215,10 @@
       height: 50px;
 
       &.selected {
-        color: var(--fds-semantic-surface-neutral-default);
-        background-color: var(--fds-semantic-surface-first-light-active);
+        color: var(--ds-color-brand1-surface-default);
+        background-color: var(--ds-color-brand1-surface-active);
         &:hover {
-          background-color: var(--fds-semantic-surface-first-light-hover);
+          background-color: var(--ds-color-brand1-surface-hover);
         }
       }
     }
@@ -235,7 +234,7 @@
 
 .lagret {
   display: flex;
-  color: var(--fds-semantic-surface-success-default);
+  color: var(--ds-color-success-surface-default);
   align-items: center;
 }
 
@@ -258,7 +257,7 @@
     margin-left: calc(-50vw + 50% + 10px);
   }
   margin-bottom: auto;
-  background-color: var(--fds-semantic-surface-action-subtle);
+  background-color: var(--ds-color-info-surface-tinted);
   padding-top: 2rem;
   flex-grow: 1;
 
@@ -393,20 +392,20 @@
     padding: 3rem;
     cursor: pointer;
     border-radius: 10px;
-    background-color: var(--fds-brand-alt3-200);
+    background-color: var(--ds-color-brand3-base-default);
     text-align: left;
     font-size: 21px;
     font-weight: 400;
     min-width: 16rem;
 
     &:hover {
-      background-color: var(--fds-semantic-surface-third-light-hover);
+      background-color: var(--ds-color-brand3-base-hover);
     }
 
     &.selected {
-      background-color: var(--fds-brand-alt3-500);
+      background-color: var(--ds-color-brand3-base-default);
       &:hover {
-        background-color: var(--fds-semantic-surface-third-light-hover);
+        background-color: var(--ds-color-brand3-base-hover);
       }
     }
   }
@@ -435,9 +434,9 @@
   button:focus {
     --fds-focus-border-width: 3px;
     box-shadow: 0 0 0 var(--fds-focus-border-width)
-      var(--fds-semantic-border-focus-boxshadow);
+      var(--ds-color-focus-inner);
     outline: var(--fds-focus-border-width) solid
-      var(--fds-semantic-border-focus-outline);
+      var(--ds-color-focus-outer);
     outline-offset: var(--fds-focus-border-width);
   }
 }
@@ -451,8 +450,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 1px;
-  border-top: 1px solid var(--fds-semantic-surface-third-light-active);
-  border-left: 1px solid var(--fds-semantic-surface-third-light-active);
+  border-top: 1px solid var(--ds-color-brand3-base-active);
+  border-left: 1px solid var(--ds-color-brand3-base-active);
 }
 
 .grid-item {
@@ -460,8 +459,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  border-bottom: 1px solid var(--fds-semantic-surface-third-light-active);
-  border-right: 1px solid var(--fds-semantic-surface-third-light-active);
+  border-bottom: 1px solid var(--ds-color-brand3-base-active);
+  border-right: 1px solid var(--ds-color-brand3-base-active);
 }
 
 .testregel-krav {

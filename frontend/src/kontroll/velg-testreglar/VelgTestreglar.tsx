@@ -119,8 +119,8 @@ const VelgTestreglar = () => {
     [selectionType]
   );
 
-  const onSelectTestregelId = (selectedIds: string[]) => {
-    const selectedIdsNumeric = selectedIds.map((id) => Number(id));
+  const onSelectTestregelId = (selectedIds: number[]) => {
+    const selectedIdsNumeric = selectedIds.map(Number);
     const testregelIds = testregelList.map((tr) => tr.id);
     const validTestregelIds = selectedIdsNumeric.every(
       (id) => !isNaN(id) && testregelIds.includes(id)

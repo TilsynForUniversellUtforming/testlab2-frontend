@@ -103,7 +103,7 @@ const SideBegrunnelseForm = ({
                 </div>
               </Heading>
               <Divider color="subtle" />
-              <Paragraph>
+              <div>
                 <input
                   type="hidden"
                   {...register(`sideutval.${index}.loeysingId` as const, {
@@ -128,7 +128,7 @@ const SideBegrunnelseForm = ({
                   name={`sideutval.${index}.begrunnelse`}
                 />
                 <TestlabFormInput label="Url" name={`sideutval.${index}.url`} />
-              </Paragraph>
+              </div>
             </Card>
           );
         })}

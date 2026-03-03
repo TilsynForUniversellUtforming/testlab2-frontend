@@ -206,9 +206,9 @@ const VelgSideutval = () => {
           })}
           disabled={!isForenkla}
           title={
-            !isForenkla
-              ? 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
-              : 'Vel automatisk'
+            isForenkla
+              ? 'Vel automatisk'
+              : 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
           }
         >
           Automatisk sideutval
@@ -236,7 +236,9 @@ const VelgSideutval = () => {
                       <ErrorSummary.Item
                         key={`${formError.loeysingId}_${formError.sideutvalType}`}
                       >
-                        <ErrorSummary.Link href={`#loeysing-${formError.loeysingId}`}>
+                        <ErrorSummary.Link
+                          href={`#loeysing-${formError.loeysingId}`}
+                        >
                           {
                             loeysingList.find(
                               (ll) => ll.id === formError.loeysingId
@@ -245,7 +247,6 @@ const VelgSideutval = () => {
                           - {formError.sideutvalType} ({formError.antallFeil}{' '}
                           feil)
                         </ErrorSummary.Link>
-
                       </ErrorSummary.Item>
                     ))}
                   </ErrorSummary.List>
@@ -276,7 +277,7 @@ const VelgSideutval = () => {
                     <div className={classes.centered}>
                       <div className={classes.sideutvalForm}>
                         {alert && (
-                          <Alert severity={alert.severity}>
+                          <Alert data-color={alert.severity}>
                             {alert.message}
                           </Alert>
                         )}

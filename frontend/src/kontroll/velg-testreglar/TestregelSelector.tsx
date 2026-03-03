@@ -1,13 +1,13 @@
 import { Alert, Checkbox, Fieldset, Heading } from '@digdir/designsystemet-react';
 import { TestregelBase, TestregelModus } from '@testreglar/api/types';
-import { useMemo } from 'react';
+import { ChangeEvent, useMemo } from 'react';
 
 import classes from '../kontroll.module.css';
 
 interface Props {
   testregelList: TestregelBase[];
   selectedTestregelIdList: number[];
-  onSelectTestregelId: (testregelIdList: string[]) => void;
+  onSelectTestregelId: (testregelIdList: number[]) => void;
   modus: TestregelModus;
   isInngaaende: boolean;
   isForenkla: boolean;
@@ -48,6 +48,15 @@ const TestregelSelector = ({
     );
   }
 
+  const onChangeTestregel = (testregel: TestregelBase) => {
+    return (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.checked) {
+        onSelectTestregelId([...selectedTestregelIdList, testregel.id]);
+      } else {
+        onSelectTestregelId(selectedTestregelIdList.filter((v) => v !== testregel.id));
+      }
+    };
+  }
   return (
     <div className={classes.gridWrapper}>
       <div className={classes.gridContainer}>
@@ -63,11 +72,10 @@ const TestregelSelector = ({
                   key={testregel.id}
                   value={String(testregel.id)}
                   title={`Vel ${testregel.namn}`}
-                  onClick={()=>onSelectTestregelId}
+                  onChange={onChangeTestregel(testregel)}
                   label={testregel.namn}
                   data-testid="manuell-testregel"
-                data-size={"sm"}
-                checked={testregel.id==selectedTestregelIdList[testregel.id]}/>
+                data-size={"sm"} />
               ))}
             </Fieldset>
           </div>
