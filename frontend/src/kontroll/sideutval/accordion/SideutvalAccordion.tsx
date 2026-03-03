@@ -6,11 +6,12 @@ import {
   Heading,
   Paragraph,
   Textfield,
-  EXPERIMENTAL_Suggestion as Suggestion
+  EXPERIMENTAL_Suggestion as Suggestion,
+  Select,
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { FieldArrayWithId, UseFormRegister } from 'react-hook-form';
 
 import classes from '../../kontroll.module.css';
@@ -62,6 +63,16 @@ const SideutvalAccordion = ({
         : [...prevExpanded, key]
     );
   };
+
+  const onChangeSideutvalType = (event:React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    const sideutvalTypeId = Number.parseInt(value);
+    const sideutvalType = selectableSideutvalType.find(
+      (type) => type.id === sideutvalTypeId
+    );
+    setSideutvalTypeToAdd(sideutvalType);
+  };
+
   const handleAddSideutvalType = () => {
     if (!sideutvalTypeToAdd) {
       setTypeError({ type: 'Ugyldig sidetype' });
@@ -135,6 +146,7 @@ const SideutvalAccordion = ({
     }
   }, [formErrors]);
 
+
   return (
     <div className={classes.accordion}>
       <div className={classes.centered}>
@@ -147,15 +159,10 @@ const SideutvalAccordion = ({
           <Heading level={5} data-size="sm">
             {selectedLoeysing.namn}
           </Heading>
-            <Chip.Radio defaultChecked>
-              Test av nettside
-            </Chip.Radio>
-            <Chip.Radio
-              disabled
-              title="Test av mobil er ikkje tilgjengelig ennå"
-            >
-              Test av mobil
-            </Chip.Radio>
+          <Chip.Radio defaultChecked>Test av nettside</Chip.Radio>
+          <Chip.Radio disabled title="Test av mobil er ikkje tilgjengelig ennå">
+            Test av mobil
+          </Chip.Radio>
           <Paragraph data-size="md">
             Vel i nedtrekklista. Forside skal alltid med. 10% av utvalet skal
             vera eigendefinert. Vel derfor eigendefinert for desse sidene.
@@ -165,19 +172,21 @@ const SideutvalAccordion = ({
       <div className={classes.centered}>
         <div className={classes.sideutvalForm}>
           <div className={classes.sideutvaltypeSelect}>
-            <Suggestion
+            <Select
               aria-label="Legg til sidetype"
               data-size="sm"
+              defaultValue={''}
+              onChange={onChangeSideutvalType}
             >
-              <Suggestion.Empty>Ingen treff</Suggestion.Empty>
-              <Suggestion.List>
-                {selectableSideutvalType.map((tl) => (
-                  <Suggestion.Option value={String(tl.id)} key={tl.id}>
-                    {tl.type}
-                  </Suggestion.Option>
-                ))}
-              </Suggestion.List>
-            </Suggestion>
+              <Select.Option value={''} disabled>
+                Velg ein sidetype
+              </Select.Option>
+              {selectableSideutvalType.map((tl) => (
+                <Select.Option value={String(tl.id)} key={tl.id}>
+                  {tl.type}
+                </Select.Option>
+              ))}
+            </Select>
             {sideutvalTypeToAdd?.type?.toLowerCase() === 'egendefinert' && (
               <Textfield
                 label="Egendefinert sidetype"
@@ -198,40 +207,39 @@ const SideutvalAccordion = ({
           </div>
           <div className={classes.accordionWrapper}>
             <ul>
-            {Array.from(
-              groupByType(sideutval, sideutvalTypeList).entries()
-            ).map(([sideutvalTypeLabel, sideutvalBySideutvalType]) => {
-              const sideutvalIndexedList = sideutvalBySideutvalType.filter(
-                (su) => su.sideutval.loeysingId === selectedLoeysing.id
-              );
-              if (sideutvalIndexedList.length === 0) return null;
-              const errors = formErrors.find(
-                (fe) =>
-                  fe.sideutvalType === sideutvalTypeLabel &&
-                  fe.loeysingId === selectedLoeysing.id
-              );
-              return (
-                <li key={sideutvalTypeLabel}>
-                <Details>
-                    <Details.Summary
-                    >
-                      {sideutvalTypeLabel}
-                      {errors && <> ({errors.antallFeil} feil)</>}
-                    </Details.Summary>
-                    <Details.Content>
-                      <SideBegrunnelseForm
-                        sideutvalTypeLabel={sideutvalTypeLabel}
-                        sideutvalIndexedList={sideutvalIndexedList}
-                        setExpanded={handleSetExpanded}
-                        handleAddSide={handleAddSide}
-                        handleRemoveSide={handleRemoveSide}
-                        register={register}
-                      />
-                    </Details.Content>
-                </Details>
-                </li>
-              );
-            })}
+              {Array.from(
+                groupByType(sideutval, sideutvalTypeList).entries()
+              ).map(([sideutvalTypeLabel, sideutvalBySideutvalType]) => {
+                const sideutvalIndexedList = sideutvalBySideutvalType.filter(
+                  (su) => su.sideutval.loeysingId === selectedLoeysing.id
+                );
+                if (sideutvalIndexedList.length === 0) return null;
+                const errors = formErrors.find(
+                  (fe) =>
+                    fe.sideutvalType === sideutvalTypeLabel &&
+                    fe.loeysingId === selectedLoeysing.id
+                );
+                return (
+                  <li key={sideutvalTypeLabel}>
+                    <Details>
+                      <Details.Summary>
+                        {sideutvalTypeLabel}
+                        {errors && <> ({errors.antallFeil} feil)</>}
+                      </Details.Summary>
+                      <Details.Content>
+                        <SideBegrunnelseForm
+                          sideutvalTypeLabel={sideutvalTypeLabel}
+                          sideutvalIndexedList={sideutvalIndexedList}
+                          setExpanded={handleSetExpanded}
+                          handleAddSide={handleAddSide}
+                          handleRemoveSide={handleRemoveSide}
+                          register={register}
+                        />
+                      </Details.Content>
+                    </Details>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

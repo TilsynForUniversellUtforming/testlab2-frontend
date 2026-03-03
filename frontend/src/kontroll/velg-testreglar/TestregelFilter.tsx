@@ -1,9 +1,4 @@
-import {
-  Chip,
-  Heading,
-  Paragraph,
-  ToggleGroup,
-} from '@digdir/designsystemet-react';
+import { Heading, Paragraph, ToggleGroup } from '@digdir/designsystemet-react';
 import { RegelsettInnholdstype, TestregelModus } from '@testreglar/api/types';
 
 import classes from '../kontroll.module.css';
@@ -29,24 +24,31 @@ const TestregelFilter = ({
       <Heading level={5} data-size="xs">
         Kva slags test skal du køyra?
       </Heading>
-      <ToggleGroup>
+      <ToggleGroup onChange={value => onChangeFilter(value as TestregelModus,type)}>
         <ToggleGroup.Item
           value={'manuell'}
-          onClick={() => onChangeFilter('manuell', type)}
+          onToggle={() => onChangeFilter('manuell', type)}
           title="Testreglar for inngaående kontroll"
         >
           Manuell
         </ToggleGroup.Item>
         <ToggleGroup.Item
           value={'automatisk'}
-          onClick={() => onChangeFilter('automatisk', type)}
+          onToggle={() => onChangeFilter('automatisk', type)}
           title="Testreglar for forenkla kontroll"
         >
           Automatisk
         </ToggleGroup.Item>
         <ToggleGroup.Item
+          value={'deque'}
+          onToggle={() => onChangeFilter('deque', type)}
+          title="Testreglar for Deque Auditor"
+        >
+          Deque Auditor
+        </ToggleGroup.Item>
+        <ToggleGroup.Item
           value={'semi-automatisk'}
-          onClick={() => onChangeFilter('semi-automatisk', type)}
+          onToggle={() => onChangeFilter('semi-automatisk', type)}
           title="Testreglar for kombinasjon av inngåaend og forenkla kontroll"
         >
           Begge deler
@@ -57,17 +59,17 @@ const TestregelFilter = ({
       <Heading level={5} data-size="xs">
         Kva slags løysing skal du testa?
       </Heading>
-      <ToggleGroup>
+      <ToggleGroup onChange={value => onChangeFilter(modus, value as RegelsettInnholdstype)}>
         <ToggleGroup.Item
           value={'nett'}
-          onClick={() => onChangeFilter(modus, 'nett')}
+          onToggle={() => onChangeFilter(modus, 'nett')}
           title="Testreglar for å testa nettløysingar"
         >
           Nett
         </ToggleGroup.Item>
         <ToggleGroup.Item
           value={'app'}
-          onClick={() => onChangeFilter(modus, 'app')}
+          onToggle={() => onChangeFilter(modus, 'app')}
           title="Testreglar for å testa appar"
         >
           App
@@ -75,14 +77,14 @@ const TestregelFilter = ({
         <ToggleGroup.Item
           value={
           'automat'}
-          onClick={() => onChangeFilter(modus, 'automat')}
+          onToggle={() => onChangeFilter(modus, 'automat')}
           title="Testreglar for å testa automatar"
         >
           Automat
         </ToggleGroup.Item>
         <ToggleGroup.Item
           value={'dokument'}
-          onClick={() => onChangeFilter(modus, 'dokument')}
+          onToggle={() => onChangeFilter(modus, 'dokument')}
           title="Testreglar for å testa dokument"
         >
           Dokument
@@ -90,7 +92,7 @@ const TestregelFilter = ({
         {regelsettSelected && (
           <ToggleGroup.Item
             value={'kombinasjon'}
-            onClick={() => onChangeFilter(modus, 'kombinasjon')}
+            onToggle={() => onChangeFilter(modus, 'kombinasjon')}
             title="Regelsett med testreglar for å testa fleire typar"
           >
             Kombinasjon
