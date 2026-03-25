@@ -1,8 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat
 
-import java.net.URL
-import java.time.LocalDateTime
 import no.uutilsynet.testlab2frontendserver.testing.Bilde
+import java.time.LocalDateTime
 
 data class TestResultat(
     val suksesskriterium: List<String>,
