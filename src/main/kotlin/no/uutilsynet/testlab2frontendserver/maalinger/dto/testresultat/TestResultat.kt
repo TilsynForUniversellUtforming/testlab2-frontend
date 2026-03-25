@@ -6,7 +6,7 @@ import no.uutilsynet.testlab2frontendserver.testing.Bilde
 
 data class TestResultat(
     val suksesskriterium: List<String>,
-    val side: URL,
+    val side: String,
     val testregelId: Int,
     val testregelNoekkel: String,
     val sideNivaa: Int,
