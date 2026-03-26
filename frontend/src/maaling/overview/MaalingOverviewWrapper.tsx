@@ -54,13 +54,13 @@ const MaalingOverviewWrapper = () => {
           <Tabs.Tab value="nettloeysingar">Nettløysingar</Tabs.Tab>
           <Tabs.Tab value="testreglar">Testreglar</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Content value="oversikt">
+        <Tabs.Panel value="oversikt">
           <MaalingOverview />
-        </Tabs.Content>
-        <Tabs.Content value="redigermaaling">
+        </Tabs.Panel>
+        <Tabs.Panel value="redigermaaling">
           <MaalingEdit onChangeTabs={onChangeTabs} />
-        </Tabs.Content>
-        <Tabs.Content value="nettloeysingar">
+        </Tabs.Panel>
+        <Tabs.Panel value="nettloeysingar">
           <TestlabTable<Loeysing>
             defaultColumns={loeysingColumns}
             data={maaling?.loeysingList ?? []}
@@ -75,8 +75,8 @@ const MaalingOverviewWrapper = () => {
               )
             }
           />
-        </Tabs.Content>
-        <Tabs.Content value="testreglar">
+        </Tabs.Panel>
+        <Tabs.Panel value="testreglar">
           <TestlabTable<TestregelBase>
             defaultColumns={testregelColumns}
             data={maaling?.testregelList ?? []}
@@ -91,7 +91,7 @@ const MaalingOverviewWrapper = () => {
               )
             }
           />
-        </Tabs.Content>
+        </Tabs.Panel>
       </Tabs>
     </>
   );

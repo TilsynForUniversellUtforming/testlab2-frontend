@@ -3,7 +3,6 @@ import { responseWithLogErrors } from '@common/util/apiUtils';
 
 import {
   Loeysing,
-  LoeysingExpanded,
   LoeysingFormElement,
   LoeysingInit,
 } from './types';
@@ -37,16 +36,6 @@ export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
-
-export const fetchLoeysingListExpanded = async (): Promise<
-  LoeysingExpanded[]
-> =>
-  await fetchWithErrorHandling('/api/v1/loeysing/expanded', {
-    method: 'GET',
-  }).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
-  );
-
 export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
   await fetchWithCsrf('/api/v1/loeysing', {
     method: 'PUT',

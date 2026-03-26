@@ -1,13 +1,13 @@
-import { Alert, Checkbox, Heading } from '@digdir/designsystemet-react';
+import { Alert, Checkbox, Fieldset, Heading } from '@digdir/designsystemet-react';
 import { TestregelBase, TestregelModus } from '@testreglar/api/types';
-import { useMemo } from 'react';
+import { ChangeEvent, useMemo } from 'react';
 
 import classes from '../kontroll.module.css';
 
 interface Props {
   testregelList: TestregelBase[];
   selectedTestregelIdList: number[];
-  onSelectTestregelId: (testregelIdList: string[]) => void;
+  onSelectTestregelId: (testregelIdList: number[]) => void;
   modus: TestregelModus;
   isInngaaende: boolean;
   isForenkla: boolean;
@@ -34,7 +34,7 @@ const TestregelSelector = ({
 
   if (isForenkla && modus !== 'automatisk') {
     return (
-      <Alert severity="warning">
+      <Alert data-color="warning">
         Kombinasjon av automatiske og manuelle testreglar er ikkje mogleg ennå
       </Alert>
     );
@@ -42,39 +42,42 @@ const TestregelSelector = ({
 
   if (testregelList.length === 0) {
     return (
-      <Alert severity="info">
+      <Alert data-color="info">
         Ingen testrelgar for valgt type tilgjengelig
       </Alert>
     );
   }
 
+  const onChangeTestregel = (testregel: TestregelBase) => {
+    return (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.checked) {
+        onSelectTestregelId([...selectedTestregelIdList, testregel.id]);
+      } else {
+        onSelectTestregelId(selectedTestregelIdList.filter((v) => v !== testregel.id));
+      }
+    };
+  }
   return (
     <div className={classes.gridWrapper}>
       <div className={classes.gridContainer}>
         {[...groupedTestreglar.entries()].map(([krav, testreglar]) => (
           <div key={krav} className={classes.gridItem}>
-            <Heading size="xxsmall" level={6}>
+            <Heading data-size="2xs" level={6}>
               {krav}
             </Heading>
             <br />
-            <Checkbox.Group
-              legend={krav}
-              hideLegend
-              onChange={onSelectTestregelId}
-              value={selectedTestregelIdList.map((id) => String(id))}
-              size="small"
-              data-testid="manuell-testregel"
-            >
+            <Fieldset>
               {testreglar.map((testregel) => (
                 <Checkbox
                   key={testregel.id}
                   value={String(testregel.id)}
                   title={`Vel ${testregel.namn}`}
-                >
-                  {testregel.namn}
-                </Checkbox>
+                  onChange={onChangeTestregel(testregel)}
+                  label={testregel.namn}
+                  data-testid="manuell-testregel"
+                data-size={"sm"} />
               ))}
-            </Checkbox.Group>
+            </Fieldset>
           </div>
         ))}
       </div>

@@ -16,7 +16,7 @@ const TestregelFormSkeleton = ({ heading, subHeading }: Props) => (
       {heading && (
         <TestlabFormHeader heading={heading} description={subHeading} />
       )}
-      <Paragraph spacing size="small">
+      <Paragraph data-size="sm">
         Felter markert med stjerne er obligatoriske
       </Paragraph>
       <TestlabFormFieldSkeleton<Testregel> label="Namn" name="namn" required />

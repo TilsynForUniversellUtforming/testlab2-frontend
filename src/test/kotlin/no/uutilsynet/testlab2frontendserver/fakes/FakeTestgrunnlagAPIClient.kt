@@ -3,7 +3,10 @@ package no.uutilsynet.testlab2frontendserver.fakes
 import java.net.URI
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestregelInnholdstype
+import no.uutilsynet.testlab2.constants.TestregelModus
+import no.uutilsynet.testlab2.constants.TestregelStatus
 import no.uutilsynet.testlab2frontendserver.kontroll.ITestgrunnlagAPIClient
 import no.uutilsynet.testlab2frontendserver.kontroll.KontrollResource
 import no.uutilsynet.testlab2frontendserver.kontroll.Sideutval
@@ -11,9 +14,6 @@ import no.uutilsynet.testlab2frontendserver.kontroll.TestgrunnlagAPIClient
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.Retest
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelInnholdstype
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelStatus
 
 object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
   private val database = mutableMapOf<Int, KontrollResource.TestgrunnlagDTO>()

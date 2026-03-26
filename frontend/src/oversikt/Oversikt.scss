@@ -16,8 +16,8 @@
     color: var(--colors-blue-900);
   }
   &:focus-within {
-    box-shadow: 0 0 0 var(--fds-focus-border-width)
-      var(--fds-inner-focus-border-color);
+    box-shadow: 0 0 0 var(--ds-border-width-default)
+      var(--ds-color-neutral-border-default);
   }
   img {
     padding-right: 0.5rem;

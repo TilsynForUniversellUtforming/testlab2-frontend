@@ -26,12 +26,12 @@ const LoeysingEdit = () => {
           loeysingInit.organisasjonsnummer.replace(/\s/g, '');
 
         if (loeysingInit && id) {
-          const loeysing: Loeysing = {
+          const loeysing: LoeysingFormElement = {
             id: Number(id),
             namn: loeysingInit.namn,
             url: loeysingInit.url,
             orgnummer: orgnummerWithoutWhitespace,
-            verksemdId: loeysingInit.verksemd?.id,
+            verksemd: loeysingInit.verksemd,
           };
 
           const existingLoeysing = loeysingList.find(

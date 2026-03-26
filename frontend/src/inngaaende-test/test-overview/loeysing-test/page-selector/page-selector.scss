@@ -6,10 +6,10 @@
   }
 
   &__dropdown .active {
-    background-color: var(--fds-semantic-surface-first-light-active);
+    background-color: var(--ds-color-surface-first-light-active);
     border-radius: 5px;
     > button {
-      color: var(--fds-semantic-background-default);
+      color: var(--ds-color-background-default);
     }
   }
 }

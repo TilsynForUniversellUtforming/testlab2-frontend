@@ -119,8 +119,8 @@ const VelgTestreglar = () => {
     [selectionType]
   );
 
-  const onSelectTestregelId = (selectedIds: string[]) => {
-    const selectedIdsNumeric = selectedIds.map((id) => Number(id));
+  const onSelectTestregelId = (selectedIds: number[]) => {
+    const selectedIdsNumeric = selectedIds.map(Number);
     const testregelIds = testregelList.map((tr) => tr.id);
     const validTestregelIds = selectedIdsNumeric.every(
       (id) => !isNaN(id) && testregelIds.includes(id)
@@ -176,7 +176,7 @@ const VelgTestreglar = () => {
     <section className={classes.kontrollSection}>
       <KontrollStepper />
       <div className={classes.velgTestreglarOverskrift}>
-        <Heading level={1} size="xlarge" data-testid="testreglar-heading">
+        <Heading level={1} data-size="xl" data-testid="testreglar-heading">
           Vel testreglar
         </Heading>
         <Paragraph>
@@ -234,7 +234,7 @@ const VelgTestreglar = () => {
               }
             />
           </div>
-          {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
+          {alert && <Alert data-color={alert.severity}>{alert.message}</Alert>}
           <LagreOgNeste
             testStarta={testStatus === 'Started'}
             sistLagret={actionData?.sistLagret}

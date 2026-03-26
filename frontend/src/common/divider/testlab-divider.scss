@@ -1,20 +1,20 @@
 .testlab-divider {
   width: 100%;
-  background-color: var(--fds-semantic-border-neutral-subtle);
+  background-color: var(--ds-color-neutral-border-subtle);
 
   &.xsmall {
-    margin: var(--fds-spacing-2) 0;
+    margin: var(--ds-letter-spacing-2) 0;
   }
 
   &.small {
-    margin: var(--fds-spacing-4) 0;
+    margin: var(--ds-letter-spacing-4) 0;
   }
 
   &.medium {
-    margin: var(--fds-spacing-6) 0;
+    margin: var(--ds-letter-spacing-6) 0;
   }
 
   &.large {
-    margin: var(--fds-spacing-8) 0;
+    margin: var(--ds-letter-spacing-9) 0;
   }
 }

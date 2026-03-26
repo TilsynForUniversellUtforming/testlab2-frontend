@@ -90,7 +90,7 @@ const ResultatListApp = <T extends object>() => {
       enableColumnFilter: false,
       cell: ({ row }) => (
         <Tag
-          size="small"
+          data-size="sm"
           color={getSeverity(scoreToPercentage(row.getValue('score')))}
         >
           {scoreToPercentage(row.getValue('score'))}
@@ -148,7 +148,7 @@ const ResultatListApp = <T extends object>() => {
 
   const tableParams: TableParams<T> = {
     data: resultat as T[],
-    defaultColumns: columns,
+    defaultColumns: columns as Array<ColumnDef<T>>,
     onClickRow: onClickRow,
     visibilityState: visibilityState,
   };

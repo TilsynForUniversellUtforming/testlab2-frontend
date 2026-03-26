@@ -56,7 +56,7 @@
         <dependency>
             <groupId>no.uutilsynet.testlab2</groupId>
             <artifactId>testlab2-constants</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

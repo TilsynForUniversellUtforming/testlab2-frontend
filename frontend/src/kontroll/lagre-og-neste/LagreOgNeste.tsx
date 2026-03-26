@@ -78,8 +78,8 @@ export default function LagreOgNeste({
   return (
     <>
       {testStarta && (
-        <Alert severity="warning" className={classes.lagreOgNesteAlert}>
-          <Heading level={4} size="xs" spacing>
+        <Alert data-color="warning" className={classes.lagreOgNesteAlert}>
+          <Heading level={4} data-size="xs">
             Test starta
           </Heading>
           <Paragraph>
@@ -108,7 +108,7 @@ export default function LagreOgNeste({
           Lagre og gå til neste
         </Button>
         {isSaving(internalSaveState) && (
-          <Spinner title={'Lagrer...'} size="small" />
+          <Spinner aria-label={'Lagrer...'} data-size="sm" />
         )}
         {internalSaveState.t === 'saved' && (
           <span className={classes.lagret}>

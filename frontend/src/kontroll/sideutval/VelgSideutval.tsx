@@ -77,7 +77,7 @@ const VelgSideutval = () => {
     const errorMap = new Map<string, FormError>();
 
     fields.forEach((field, index) => {
-      if (errors.sideutval && errors.sideutval[index]) {
+      if (errors.sideutval?.[index]) {
         const sideutvalTypeLabel = getSideutvalTypeLabel(
           sideutvalTypeList,
           field.typeId,
@@ -181,7 +181,7 @@ const VelgSideutval = () => {
     <section className={classes.sideutvalSection}>
       <KontrollStepper />
       <div className={classes.velgTestreglarOverskrift}>
-        <Heading level={1} size="xlarge">
+        <Heading level={1} data-size="xl">
           Sideutval
         </Heading>
         <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
@@ -206,9 +206,9 @@ const VelgSideutval = () => {
           })}
           disabled={!isForenkla}
           title={
-            !isForenkla
-              ? 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
-              : 'Vel automatisk'
+            isForenkla
+              ? 'Vel automatisk'
+              : 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
           }
         >
           Automatisk sideutval
@@ -227,27 +227,30 @@ const VelgSideutval = () => {
             />
             {formErrors.length > 0 && (
               <div className={classes.sideutvalLoeysingErrors}>
-                <ErrorSummary.Root size="medium">
+                <ErrorSummary data-size="md">
                   <ErrorSummary.Heading>
                     Det er feil med sideutval på føljande løysingar
                   </ErrorSummary.Heading>
                   <ErrorSummary.List>
                     {formErrors.map((formError) => (
                       <ErrorSummary.Item
-                        href={`#loeysing-${formError.loeysingId}`}
                         key={`${formError.loeysingId}_${formError.sideutvalType}`}
                       >
-                        {
-                          loeysingList.find(
-                            (ll) => ll.id === formError.loeysingId
-                          )?.namn
-                        }{' '}
-                        - {formError.sideutvalType} ({formError.antallFeil}{' '}
-                        feil)
+                        <ErrorSummary.Link
+                          href={`#loeysing-${formError.loeysingId}`}
+                        >
+                          {
+                            loeysingList.find(
+                              (ll) => ll.id === formError.loeysingId
+                            )?.namn
+                          }{' '}
+                          - {formError.sideutvalType} ({formError.antallFeil}{' '}
+                          feil)
+                        </ErrorSummary.Link>
                       </ErrorSummary.Item>
                     ))}
                   </ErrorSummary.List>
-                </ErrorSummary.Root>
+                </ErrorSummary>
               </div>
             )}
             <FormProvider {...formMethods}>
@@ -274,7 +277,7 @@ const VelgSideutval = () => {
                     <div className={classes.centered}>
                       <div className={classes.sideutvalForm}>
                         {alert && (
-                          <Alert severity={alert.severity}>
+                          <Alert data-color={alert.severity}>
                             {alert.message}
                           </Alert>
                         )}

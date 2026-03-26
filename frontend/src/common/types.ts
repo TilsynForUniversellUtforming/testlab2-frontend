@@ -8,11 +8,10 @@ export interface AppContext {
   setContextLoading: (loading: boolean) => void;
 }
 
-export type Size = 'xsmall' | 'small' | 'medium' | 'large';
 
 export type OptionType = {
   label: string;
-  value: string;
+  value: string|number;
   title?: string;
   disabled?: boolean;
 };

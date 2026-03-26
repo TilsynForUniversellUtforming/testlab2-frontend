@@ -1,11 +1,13 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
-enum class TestregelInnholdstype(val value: String) {
-  app("app"),
-  automat("automat"),
-  dokument("dokument"),
-  nett("nett"),
-}
+import no.uutilsynet.testlab2.constants.TestregelInnholdstype
+
+// enum class TestregelInnholdstype(val value: String) {
+//  app("app"),
+//  automat("automat"),
+//  dokument("dokument"),
+//  nett("nett"),
+// }
 
 enum class RegelsettInnholdstype(val value: String) {
   app(TestregelInnholdstype.app.value),

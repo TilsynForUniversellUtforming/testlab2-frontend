@@ -18,28 +18,21 @@ const UtvalList = () => {
   const errorMessage = getErrorMessage(formState, 'utval');
 
   return (
-    <Fieldset legend="Velg eit utval">
+    <Fieldset>
+      <Fieldset.Legend>
+        Velg eit utval
+      </Fieldset.Legend>
       {utvalList.length === 0 && (
-        <p>
+        <Fieldset.Description>
           <em>
-            Det finnes inga lagra utval. Du må enten leggje til løysingar sjølv,
+            Det finnes ingen lagra utval. Du må enten leggje til løysingar sjølv,
             eller lage eit utval før du oppretter ei ny måling.
           </em>
-        </p>
+        </Fieldset.Description>
       )}
-      <Radio.Group
-        name="chooseUtval"
-        value={String(getValues('utval')?.id)}
-        onChange={handleChangeUtval}
-        error={errorMessage}
-        legend="Utval"
-      >
         {utvalList.map((u) => (
-          <Radio value={String(u.id)} key={String(u.id)}>
-            {u.namn}
-          </Radio>
+          <Radio value={String(u.id)} key={String(u.id)} label={u.namn} onClick={() => handleChangeUtval(String(u.id))} checked={getValues("utval")!!.id == u.id} />
         ))}
-      </Radio.Group>
     </Fieldset>
   );
 };

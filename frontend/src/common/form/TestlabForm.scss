@@ -22,10 +22,10 @@
   }
 
   &__input-label {
-    color: var(--fds-semantic-text-neutral-default);
+    color: var(---ds-color-neutral-text-default);
   }
   &__input-sub-label {
-    color: var(--fds-semantic-text-neutral-subtle);
+    color: var(--ds-color-neutral-text-subtle);
     padding-bottom: 0.25rem;
   }
 
@@ -44,6 +44,6 @@
   }
 
   .asterisk-color {
-    color: var(--fds-semantic-text-danger-default);
+    color: var(--ds-color-danger-text-subtle);
   }
 }

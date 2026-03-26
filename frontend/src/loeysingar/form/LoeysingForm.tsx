@@ -87,7 +87,7 @@ const LoeysingForm = ({
             retainLabelValueChange={false}
             hideErrors
             name="verksemd"
-            size="small"
+            size="sm"
           />
         </div>
 

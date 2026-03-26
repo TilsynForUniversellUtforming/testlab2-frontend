@@ -1,7 +1,10 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestregelInnholdstype
+import no.uutilsynet.testlab2.constants.TestregelModus
+import no.uutilsynet.testlab2.constants.TestregelStatus
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

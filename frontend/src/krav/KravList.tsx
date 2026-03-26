@@ -114,7 +114,7 @@ const kravColumnDefs = (): Array<ColumnDef<Krav>> => [
   {
     accessorFn: (row) => row.gjeldNettsider,
     id: 'gjeldNettsider',
-    cell: ({ getValue }) => <Checkbox checked={getValue()} readOnly={true} />,
+    cell: ({ getValue }) => <Checkbox value={getValue} readOnly={true} />,
     header: () => <>Gjeld nettside</>,
   },
   {

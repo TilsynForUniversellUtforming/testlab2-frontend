@@ -8,7 +8,7 @@
   &__button {
     padding: 0;
     background: none;
-    color: var(--fds-semantic-surface-first-dark);
+    color: var(--ds-color-brand1-text-default);
     border: none;
     font: inherit;
     cursor: default;
@@ -17,13 +17,13 @@
     &.active {
       cursor: pointer;
       .icon {
-        box-shadow: 0 0 0 1px var(--fds-semantic-surface-first-dark);
+        box-shadow: 0 0 0 1px var(--ds-color-brand1-surface-active);
       }
       &:hover {
         color: var(--colors-blue-800);
         .icon {
-          box-shadow: 0 0 0 1px var(--fds-semantic-surface-first-light);
-          background-color: var(--fds-semantic-surface-action-no_fill-hover);
+          box-shadow: 0 0 0 1px var(--ds-color-brand1-surface-tinted);
+          background-color: var(--ds-color-brand1-surface-hover);
         }
         .text {
           text-decoration: underline;
@@ -64,16 +64,15 @@
         height: 3rem;
         min-height: 3rem;
         border-radius: 50%;
-        color: var(--fds-semantic-surface-first-dark);
-        background-color: var(--fds-semantic-surface-first-light-hover);
+        color: var(--ds-color-brand1-surface-active);
+        background-color: var(--ds-color-brand1-surface-hover);
 
         &__line {
           position: absolute;
           z-index: -1;
-          border-top: 1px solid var(--fds-semantic-surface-first-dark);
+          border-top: 1px solid var(--ds-color-brand1-surface-active);
           width: 5rem;
           left: 3rem;
-          //margin-top: 146px;
         }
       }
     }

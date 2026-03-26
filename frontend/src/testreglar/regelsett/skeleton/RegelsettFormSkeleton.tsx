@@ -16,7 +16,7 @@ const RegelsettFormSkeleton = ({ heading, description }: Props) => (
       {heading && (
         <TestlabFormHeader heading={heading} description={description} />
       )}
-      <Paragraph spacing size="small">
+      <Paragraph data-size="sm">
         Felter markert med stjerne er obligatoriske
       </Paragraph>
       <TestlabFormFieldSkeleton<Regelsett>

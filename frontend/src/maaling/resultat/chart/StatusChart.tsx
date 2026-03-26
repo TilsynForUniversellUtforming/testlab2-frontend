@@ -31,7 +31,7 @@ const ProgressElement = ({ chartStatus, total }: ProgressElementProps) => {
     <div className="status-chart__progress-element">
       <LoadingBar
         percentage={percentage}
-        size={'large'}
+        size={'lg'}
         customText={statusText}
         dynamicSeverity={false}
         textPlacement={'left'}
@@ -62,7 +62,7 @@ const StatusChart = ({
 
   return (
     <div className="status-chart">
-      <Heading size="medium" className="status-chart__heading">
+      <Heading data-size="md" className="status-chart__heading">
         Status
       </Heading>
       {[pendingStatus, runningStatus, finishedStatus, errorStatus].map(
@@ -77,7 +77,7 @@ const StatusChart = ({
       {loadingStateStatus && (
         <>
           {`${loadingStateStatus} `}
-          <Spinner title={loadingStateStatus} size="small" />
+          <Spinner aria-label={loadingStateStatus} data-size="sm" />
         </>
       )}
     </div>

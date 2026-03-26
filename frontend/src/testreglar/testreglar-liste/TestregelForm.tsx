@@ -53,12 +53,13 @@ const TestregelForm = ({
   const { id } = useParams();
   const kravOptions: OptionType[] = kravList.map((k) => ({
     label: k.tittel,
-    value: String(k.id),
+    value: k.id,
   }));
 
   const modusOptions: OptionType[] = createOptionsFromLiteral<TestregelModus>([
     'manuell',
     'automatisk',
+    'deque'
   ]).concat({
     label: 'Semi-automatisk',
     value: 'semi-automatisk',
@@ -92,17 +93,17 @@ const TestregelForm = ({
 
   const innhaldsTypeOptions: OptionType[] = innhaldstypeList.map((it) => ({
     label: it.innhaldstype,
-    value: String(it.id),
-  }));
+    value: it.id,
+  }))
 
   const temaOptions: OptionType[] = temaList.map((it) => ({
     label: it.tema,
-    value: String(it.id),
+    value: it.id,
   }));
 
   const testobjektOptions: OptionType[] = testobjektList.map((it) => ({
     label: it.testobjekt,
-    value: String(it.id),
+    value: it.id,
   }));
 
   const formMethods = useForm<TestregelInit>({
@@ -110,17 +111,17 @@ const TestregelForm = ({
       id: testregel?.id,
       testregelSchema: testregel?.testregelSchema || '',
       namn: testregel?.namn || '',
-      kravId: testregel?.krav.id,
+      kravId: testregel?.krav.id || 1,
       modus: testregel?.modus || 'manuell',
       testregelId: testregel?.testregelId || '',
       versjon: testregel?.versjon || 1,
-      status: testregel?.status || 'ikkje_starta',
+      status: testregel?.status || 'publisert',
       type: testregel?.type || 'nett',
       spraak: testregel?.spraak || 'nn',
       tema: testregel?.tema?.id,
       testobjekt: testregel?.testobjekt?.id,
       kravTilSamsvar: testregel?.kravTilSamsvar || '',
-      innhaldstypeTesting: testregel?.innhaldstypeTesting?.id,
+      innhaldstypeTestingId: testregel?.innhaldstypeTesting?.id,
     },
     resolver: zodResolver(testreglarValidationSchema),
   });
@@ -130,7 +131,13 @@ const TestregelForm = ({
   const testregelType = useWatch({
     control,
     name: 'modus',
-  }) as TestregelModus;
+  });
+
+  const testregelInnholdstype = useWatch({
+    control,
+    name: 'type',
+  });
+
 
   const showDemoLink = testregel && testregel.modus === 'manuell' && id;
 
@@ -147,8 +154,9 @@ const TestregelForm = ({
           name="modus"
           options={modusOptions}
           label={`Type testregel${isDefined(testregel?.modus) ? ' (kan ikkje endrast)' : ''}`}
-          size="small"
+          size="sm"
           disabled={isDefined(testregel?.modus)}
+          multiline={true}
           required
         />
         <TestlabFormTextArea label="Namn" name="namn" required />
@@ -183,6 +191,7 @@ const TestregelForm = ({
           options={testregelStatusOptions}
           label="Status"
           name="status"
+          defaultValue={'publisert'}
           required
         />
         <TestlabFormInput
@@ -195,6 +204,7 @@ const TestregelForm = ({
           options={typeOptions}
           label="Type"
           name="type"
+          defaultValue={'nett'}
           required
         />
         <TestlabFormSelect

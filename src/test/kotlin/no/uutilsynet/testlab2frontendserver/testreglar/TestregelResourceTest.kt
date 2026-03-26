@@ -5,12 +5,15 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Instant
 import no.uutilsynet.testlab2.constants.KravStatus
+import no.uutilsynet.testlab2.constants.TestlabLocale
+import no.uutilsynet.testlab2.constants.TestregelInnholdstype
+import no.uutilsynet.testlab2.constants.TestregelModus
+import no.uutilsynet.testlab2.constants.TestregelStatus
 import no.uutilsynet.testlab2.constants.WcagPrinsipp
 import no.uutilsynet.testlab2.constants.WcagRetninglinje
 import no.uutilsynet.testlab2.constants.WcagSamsvarsnivaa
-import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.common.TestlabLocale
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
+import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties
 import no.uutilsynet.testlab2frontendserver.krav.dto.Krav
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.*
@@ -37,12 +40,12 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
   private val testregelApiUrl = "https://api.url/testregel"
 
   private val testregelApiClient =
-      TestregelApiClient(restTemplate, TestingApiProperties(testregelApiUrl))
+      TestregelApiClient(restTemplate, KravApiProperties(testregelApiUrl))
 
   private val testregelResource =
       TestregelResource(
           restTemplate,
-          TestingApiProperties(testregelApiUrl),
+          KravApiProperties(testregelApiUrl),
           testregelApiClient,
           Mockito.mock(KravApiClient::class.java))
   private val mapper =
@@ -240,15 +243,16 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
           "1.1.1 Ikke-tekstlig innhold,Gjeldande",
           KravStatus.gjeldande,
           "Innhald",
-          false,
-          false,
-          false,
-          "https://www.uutilsynet.no/wcag-standarden/111-ikke-tekstlig-innhold-niva/87",
-          WcagPrinsipp.mulig_aa_oppfatte,
-          WcagRetninglinje.tidsbasert_media,
-          "1.1.1",
-          WcagSamsvarsnivaa.A,
-          "Kommentar")
+          gjeldAutomat = false,
+          gjeldNettsider = false,
+          gjeldApp = false,
+          urlRettleiing =
+              "https://www.uutilsynet.no/wcag-standarden/111-ikke-tekstlig-innhold-niva/87",
+          prinsipp = WcagPrinsipp.mulig_aa_oppfatte,
+          retningslinje = WcagRetninglinje.tidsbasert_media,
+          suksesskriterium = "1.1.1",
+          samsvarsnivaa = WcagSamsvarsnivaa.A,
+          kommentarBrudd = "Kommentar")
 
   private val testregelList =
       listOf(

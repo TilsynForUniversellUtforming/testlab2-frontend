@@ -1,6 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.regelsett.dto
 
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelModus
+import no.uutilsynet.testlab2.constants.TestregelModus
 
 open class RegelsettBase(
     open val id: Int,
