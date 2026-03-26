@@ -22,10 +22,10 @@ body {
   }
 
   a {
-    color: var(--fds-semantic-text-neutral-default);
+    color: var(--ds-color-neutral-text-default);
 
     &:hover {
-      color: var(--fds-semantic-text-neutral-subtle);
+      color: var(--ds-color-neutral-text-subtle);
     }
   }
 }

@@ -7,7 +7,7 @@
     transform: translateX(-50%);
     border-width: 15px;
     border-style: solid;
-    border-color: var(--fds-semantic-surface-first-light-active) transparent
+    border-color: var(--ds-color-surface-first-light-active) transparent
       transparent transparent;
   }
 
@@ -17,7 +17,7 @@
     left: 7.5rem;
     display: inline-block;
     > button {
-      color: var(--fds-semantic-text-neutral-default);
+      color: var(--ds-color-text-neutral-default);
     }
   }
 }
@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: var(--fds-semantic-surface-neutral-default);
+  background-color: var(--ds-color-surface-neutral-default);
   border: 0;
   border-radius: 10px;
   cursor: pointer;
@@ -38,64 +38,64 @@
   max-width: 26rem;
 
   &.ferdig {
-    background-color: var(--fds-semantic-surface-third-light-hover);
+    background-color: var(--ds-color-surface-third-light-hover);
     .testregel-button-id {
-      background-color: var(--fds-semantic-surface-third-dark);
+      background-color: var(--ds-color-surface-third-dark);
     }
 
     &:hover {
-      background-color: var(--fds-semantic-surface-third-light-active);
+      background-color: var(--ds-color-surface-third-light-active);
       .testregel-button-id {
-        background-color: var(--fds-semantic-surface-third-dark);
+        background-color: var(--ds-color-surface-third-dark);
       }
     }
   }
 
   &.deaktivert {
-    background-color: var(--fds-semantic-surface-neutral-subtle);
+    background-color: var(--ds-color-surface-neutral-subtle);
     .testregel-button-id {
-      background-color: var(--fds-semantic-surface-neutral-dark);
+      background-color: var(--ds-color-surface-neutral-dark);
     }
 
     &:hover {
-      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      background-color: var(--ds-color-surface-neutral-subtle-hover);
       .testregel-button-id {
-        background-color: var(--fds-semantic-surface-neutral-dark-hover);
+        background-color: var(--ds-color-surface-neutral-dark-hover);
       }
     }
   }
 
   &.under-arbeid {
-    background-color: var(--fds-semantic-surface-neutral-subtle);
+    background-color: var(--ds-color-surface-neutral-subtle);
     .testregel-button-id {
-      background-color: var(--fds-semantic-surface-action-default);
+      background-color: var(--ds-color-action-default);
     }
 
     &:hover {
-      background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+      background-color: var(--ds-color-surface-neutral-subtle-hover);
       .testregel-button-id {
-        background-color: var(--fds-semantic-surface-action-default);
+        background-color: var(--ds-color-action-default);
       }
     }
   }
 
   &.active {
-    background-color: var(--fds-semantic-surface-first-light);
+    background-color: var(--ds-color-surface-first-light);
     .testregel-button-id {
-      background-color: var(--fds-semantic-surface-first-light-active);
+      background-color: var(--ds-color-surface-first-light-active);
     }
 
     &:hover {
-      background-color: var(--fds-semantic-surface-first-light-hover);
+      background-color: var(--ds-color-surface-first-light-hover);
       .testregel-button-id {
-        background-color: var(--fds-semantic-surface-first-light-active);
+        background-color: var(--ds-color-surface-first-light-active);
       }
     }
   }
 
   &-id {
-    background-color: var(--fds-semantic-border-action-first-subtle-hover);
-    color: var(--fds-semantic-surface-neutral-default);
+    background-color: var(--ds-color-border-action-first-subtle-hover);
+    color: var(--ds-color-surface-neutral-default);
     padding: 2rem 1rem 1rem 1rem;
     display: flex;
     align-items: start;
@@ -103,7 +103,7 @@
     min-height: 7rem;
     width: 3rem;
     min-width: 5rem;
-    font: var(--fds-typography-paragraph-medium);
+    font: var(--ds-typography-paragraph-medium);
     font-family: 'Inter', sans-serif;
 
     .id-text-wrapper {
@@ -112,7 +112,7 @@
       justify-content: space-between;
       height: 7rem;
       .status {
-        font: var(--fds-typography-paragraph-xsmall);
+        font: var(--ds-typography-paragraph-xsmall);
         font-family: 'Inter', sans-serif;
       }
     }
@@ -120,9 +120,9 @@
 
   &:hover {
     box-shadow: 0 0 2px;
-    background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+    background-color: var(--ds-color-surface-neutral-subtle-hover);
     .testregel-button-id {
-      background-color: var(--fds-semantic-surface-action-hover);
+      background-color: var(--ds-color-action-hover);
     }
   }
 

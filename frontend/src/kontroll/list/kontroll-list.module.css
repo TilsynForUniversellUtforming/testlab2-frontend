@@ -14,21 +14,21 @@
       display: flex;
       justify-content: center;
 
-      background-color: var(--fds-semantic-surface-third-light);
+      background-color: var(--ds-color-brand3-base-default);
       padding: 1.5rem;
       border-radius: 10px;
-      font: var(--fds-typography-heading-small);
+      font: var(--ds-heading-sm-font-size);
       cursor: pointer;
       &:hover {
-        background-color: var(--fds-semantic-surface-third-light-hover);
+        background-color: var(--ds-color-brand3-base-hover);
       }
     }
 
     label:has(> input:checked) {
-      background-color: var(--fds-semantic-surface-third-light-active);
+      background-color: var(--ds-color-brand3-base-active);
       text-decoration: underline;
       &:hover {
-        background-color: var(--fds-semantic-surface-third-light-hover);
+        background-color: var(--ds-color-brand3-base-hover);
       }
     }
   }

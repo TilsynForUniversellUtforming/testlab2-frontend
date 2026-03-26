@@ -16,19 +16,19 @@
     overflow-wrap: break-word;
     width: 100%;
     &.table-error {
-      box-shadow: 0 0 0 2px var(--fds-semantic-border-danger-default);
+      box-shadow: 0 0 0 2px var(--ds-color-border-danger-default);
     }
   }
 
   &__row {
     &:hover {
-      background-color: var(--fds-semantic-background-default) !important;
+      background-color: var(--ds-color-background-default) !important;
     }
 
     &.selectable {
       &:hover {
         background-color: var(
-          --fds-semantic-surface-neutral-subtle-hover
+          --ds-color-surface-neutral-subtle-hover
         ) !important;
         cursor: pointer;
       }
@@ -37,10 +37,10 @@
 
   &__footer {
     &:hover {
-      background-color: var(--fds-semantic-background-default) !important;
+      background-color: var(--ds-color-background-default) !important;
     }
     .footer-wrapper:hover {
-      background-color: var(--fds-semantic-background-default) !important;
+      background-color: var(--ds-color-background-default) !important;
     }
   }
 

@@ -8,13 +8,13 @@
 }
 
 .vis-detaljer {
-  background: var(--fds-semantic-surface-neutral-default) !important;
-  color: var(--fds-semantic-text-action-default) !important;
+  background: var(--ds-color-neutral-background-default) !important;
+  color: var(--ds-color-neutral-text-default) !important;
 }
 
 .resultat-header {
   &-search {
-    background: var(--fds-semantic-surface-action-subtle);
+    background: var(--ds-color-neutral-surface-tinted);
     padding: 1rem;
     width: 100%;
 
@@ -82,6 +82,6 @@
   left: 581px;
   top: 1849px;
 
-  background: var(--fds-semantic-surface-info-subtle);
+  background: var(--ds-color-neutral-base-contrast-subtle);
   border-radius: 20px;
 }
