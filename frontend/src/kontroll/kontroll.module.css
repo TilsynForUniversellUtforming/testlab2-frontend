@@ -432,12 +432,11 @@
 
 .loeysing-filter {
   button:focus {
-    --fds-focus-border-width: 3px;
-    box-shadow: 0 0 0 var(--fds-focus-border-width)
+    box-shadow: 0 0 0 var(--ds-color-neutral-border-strong)
       var(--ds-color-focus-inner);
-    outline: var(--fds-focus-border-width) solid
+    outline: var(--ds-color-neutral-border-strong) solid
       var(--ds-color-focus-outer);
-    outline-offset: var(--fds-focus-border-width);
+    outline-offset: var(--ds-color-neutral-border-strong);
   }
 }
 

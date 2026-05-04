@@ -5,7 +5,7 @@
 }
 
 .accordion-button {
-  background-color: var(--fds-semantic-surface-action-subtle);
+  background-color: var(--ds-color-neutral-surface-active);
   display: flex;
   align-items: center;
   gap: 0.5rem;
