@@ -11,6 +11,6 @@
 
 .lagret {
   display: flex;
-  color: var(--fds-semantic-surface-success-default);
+  color: var(--ds-color-success-surface-default);
   align-items: center;
 }

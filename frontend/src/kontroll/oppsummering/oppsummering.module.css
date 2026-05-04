@@ -55,7 +55,7 @@
     display: flex;
     align-items: center;
 
-    background-color: var(--fds-semantic-surface-first-light);
+    background-color: var(--ds-color-brand1-surface-tinted);
     border-radius: 10px;
     margin: 1rem 0;
 
