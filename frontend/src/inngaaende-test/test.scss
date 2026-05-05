@@ -6,7 +6,7 @@
     min-width: 400px;
     width: calc(100vw - 20px);
     margin-bottom: auto;
-    background-color: var(--ds-color-surface-action-subtle);
+    background-color: var(--ds-color-accent-surface-tinted);
     padding: 2rem 0;
     overflow: hidden;
   }
@@ -84,7 +84,7 @@
     min-width: 400px;
     width: calc(100vw - 20px);
     margin-bottom: auto;
-    background-color: var(--ds-color-surface-action-subtle);
+    background-color: var(--ds-color-accent-surface-tinted);
     padding: 2rem 0;
     flex: 1 1 auto;
     overflow: hidden;
@@ -151,7 +151,7 @@
 
   &-description,
   &-instruction {
-    background-color: var(--ds-color-surface-action-subtle);
+    background-color: var(--ds-color-accent-surface-tinted);
     border-radius: 10px;
     padding: 1.5rem;
   }

@@ -35,37 +35,37 @@
 
     &.info {
       &::-webkit-progress-value {
-        background: var(--ds-color-info-background-tinted);
+        background: var(--ds-color-info-surface-active);
       }
       &::-moz-progress-bar {
-        background: var(---ds-color-info-background-tinted);
+        background: var(---ds-color-info-surface-active);
       }
     }
 
     &.danger {
       &::-webkit-progress-value {
-        background: var(--ds-color-danger-background-tinted);
+        background: var(--ds-color-danger-surface-active);
       }
       &::-moz-progress-bar {
-        background: var(--ds-color-danger-background-tinted);
+        background: var(--ds-color-danger-surface-active);
       }
     }
 
     &.warning {
       &::-webkit-progress-value {
-        background: var(--ds-color-warning-background-tinted);
+        background: var(--ds-color-warning-surface-active);
       }
       &::-moz-progress-bar {
-        background: var(--ds-color-warning-background-tinted);
+        background: var(--ds-color-warning-surface-active);
       }
     }
 
     &.success {
       &::-webkit-progress-value {
-        background: var(--ds-color-success-background-tinted);
+        background: var(--ds-color-success-surface-active);
       }
       &::-moz-progress-bar {
-        background: var(--ds-color-success-background-tinted);
+        background: var(--ds-color-success-surface-active);
       }
     }
 
@@ -80,33 +80,33 @@
 
     &.first {
       &::-webkit-progress-value {
-        background: var(--ds-color-first-light);
+        background: var(--ds-color-brand1-surface-tinted);
       }
       &::-moz-progress-bar {
-        background: var(--ds-color-first-light);
+        background: var(--ds-color-brand1-surface-tinted);
       }
     }
 
     &.second {
       &::-webkit-progress-value {
-        background: var(--ds-color-second-light);
+        background: var(--ds-color-brand2-surface-tinted);
       }
       &::-moz-progress-bar {
-        background: var(--ds-color-second-light);
+        background: var(--ds-color-brand2-surface-tinted);
       }
     }
 
     &.third {
       &::-webkit-progress-value {
-        background: var(--ds-color-third-light);
+        background: var(--ds-color-brand3-surface-tinted);
       }
       &::-moz-progress-bar {
-        background: var(--ds-color-third-light);
+        background: var(--ds-color-brand3-surface-tinted);
       }
     }
 
     &::-webkit-progress-bar {
-      background-color: var(--ds-color-action-first-subtle);
+      background-color: var(--ds-color-brand1-background-tinted);
       border-radius: 10px;
     }
   }
