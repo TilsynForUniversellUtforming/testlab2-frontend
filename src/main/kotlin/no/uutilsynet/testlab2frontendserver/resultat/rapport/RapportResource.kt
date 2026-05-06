@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.body
 
 @RestController
 @RequestMapping("api/v1/testresultat/rapport")
@@ -50,7 +51,7 @@ class RapportResource(
               ->
               throw RuntimeException("Feil ved generering av rapport")
             }
-            .body(ByteArray::class.java)
+            .body<ByteArray>()
 
     if (fileResponse != null) {
       response.outputStream.write(fileResponse)
