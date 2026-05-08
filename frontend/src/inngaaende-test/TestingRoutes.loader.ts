@@ -4,6 +4,7 @@ import {
   Testgrunnlag,
   TestOverviewLoaderResponse,
   TestOverviewLoaderData,
+  TestOverviewElement,
 } from '@test/types';
 import {
   getIdFromParams,
@@ -22,6 +23,9 @@ import { findStyringsdataForKontroll } from '../styringsdata/api/styringsdata-ap
 import { Testregel } from '@testreglar/api/types';
 import { Sideutval } from '../kontroll/sideutval/types';
 import { Loeysing } from '@loeysingar/api/types';
+import { filterStyringdataForLoeysing, findLoeysingNamn,
+  getStyringsdataStatus, groupSideutvalByLoeysing, teststatus, viewTestType
+} from '@test/test-overview/util/testOverviewUtils';
 
 // --- Generic settlement validator ---
 
@@ -191,16 +195,40 @@ export const testOverviewLoader = async ({
 
   const styringsdataRejected = styringsdataResult.status === 'rejected';
 
+  const styringsdata = styringsdataRejected
+    ? []
+    : (styringsdataResult as PromiseFulfilledResult<any>).value
+      .styringsdataLoeysing
+
+
+  const testoverviewElements: TestOverviewElement[] = testgrunnlag.flatMap((etTestgrunnlag) =>
+    [...groupSideutvalByLoeysing(etTestgrunnlag).entries()].map(([loeysingId, sideutval]) => {
+      const loeysingStyringsdata = filterStyringdataForLoeysing(styringsdata, loeysingId);
+      return {
+        testgrunnlagId: etTestgrunnlag.id,
+        loeysingNamn: findLoeysingNamn(loeysingList, loeysingId),
+        loeysingId,
+        testStatus: teststatus(resultater, etTestgrunnlag, loeysingId),
+        testType: viewTestType(etTestgrunnlag, sideutval.map((su) => su.id), testgrunnlag),
+        styringsdataId: loeysingStyringsdata?.id ?? 0,
+        styringsdataStatus: getStyringsdataStatus(loeysingStyringsdata) ?? '',
+      } satisfies TestOverviewElement;
+    })
+  );
+
+
+
+
+
+
+
   return {
     loeysingList,
     resultater,
     testgrunnlag,
-    styringsdata: styringsdataRejected
-      ? []
-      : (styringsdataResult as PromiseFulfilledResult<any>).value
-          .styringsdataLoeysing,
+    styringsdata: styringsdata,
     styringsdataError: styringsdataRejected,
-    kontrolltype: kontroll.kontrolltype,
+    testoverviewElements: testoverviewElements
   };
 };
 
