@@ -76,7 +76,7 @@ export default function OpprettKontroll() {
     <section className={classes.kontrollSection}>
       <KontrollStepper />
       <Heading level={1} data-size="xl">
-        Bygg kontroll
+        Opprett kontroll
       </Heading>
       <p className={classes.ingress}>
         Opprett en ny kontroll. Du vil i senere steg kunne legge inn
