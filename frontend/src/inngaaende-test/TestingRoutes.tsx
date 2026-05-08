@@ -1,7 +1,5 @@
 import ErrorCard from '@common/error/ErrorCard';
 import { AppRoute, idPath } from '@common/util/routeUtils';
-import { createRetest, deleteTestgrunnlag } from '@test/api/testing-api';
-import { RetestRequest } from '@test/api/types';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import {
@@ -9,12 +7,12 @@ import {
   testOverviewLoader,
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
-import { Testgrunnlag } from '@test/types';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import nyTestImg from '../assets/ny_test.svg';
 import InngaaendeTestApp from './InngaaendeTestApp';
 import TestOverview from './test-overview/TestOverview';
+import { testOverviewAction } from '@test/TestingRoutes.action';
 
 export const TEST_ROOT: AppRoute = {
   navn: 'Tester',
@@ -57,18 +55,7 @@ export const TestingRoutes: RouteObject = {
           index: true,
           element: <TestOverview />,
           loader: testOverviewLoader,
-          action: async ({ request }) => {
-            switch (request.method) {
-              case 'POST': {
-                const retestRequest = (await request.json()) as RetestRequest;
-                return await createRetest(retestRequest);
-              }
-              case 'DELETE': {
-                const testgrunnlag: Testgrunnlag = await request.json();
-                return await deleteTestgrunnlag(testgrunnlag);
-              }
-            }
-          },
+          action: testOverviewAction,
         },
         {
           path: TEST_LOEYSING_KONTROLL.path,
