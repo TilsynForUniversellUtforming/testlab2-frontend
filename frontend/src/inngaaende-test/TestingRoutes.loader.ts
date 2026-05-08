@@ -24,7 +24,7 @@ import { Testregel } from '@testreglar/api/types';
 import { Sideutval } from '../kontroll/sideutval/types';
 import { Loeysing } from '@loeysingar/api/types';
 import { filterStyringdataForLoeysing, findLoeysingNamn,
-  getStyringsdataStatus, groupSideutvalByLoeysing, teststatus, viewTestType
+  getStyringsdataStatus, getSideutvalForLoeysing, groupSideutvalByLoeysing, teststatus, viewTestType
 } from '@test/test-overview/util/testOverviewUtils';
 
 // --- Generic settlement validator ---
@@ -148,12 +148,6 @@ function getTestresultatForLoeysing(
   );
 }
 
-function getSideutvalForLoeysing(
-  testgrunnlag: Testgrunnlag,
-  loeysingId: number
-): Sideutval[] {
-  return testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId);
-}
 
 // --- Loaders ---
 
@@ -216,14 +210,7 @@ export const testOverviewLoader = async ({
     })
   );
 
-
-
-
-
-
-
   return {
-    loeysingList,
     resultater,
     testgrunnlag,
     styringsdata: styringsdata,

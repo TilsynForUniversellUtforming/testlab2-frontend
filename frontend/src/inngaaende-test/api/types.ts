@@ -86,3 +86,8 @@ export type RetestRequest = {
   kontrollId: number;
   loeysingId: number;
 };
+
+export type DeleteTestgrunnlagRequest = {
+  testgrunnlagId: number;
+  kontrollId: number;
+}

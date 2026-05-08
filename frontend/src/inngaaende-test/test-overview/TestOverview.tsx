@@ -5,7 +5,7 @@ import { ButtonVariant } from '@common/types';
 import { isEmpty } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Alert, Button, Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
-import { RetestRequest } from '@test/api/types';
+import { DeleteTestgrunnlagRequest, RetestRequest } from '@test/api/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, Testgrunnlag, TestOverviewLoaderData } from '@test/types';
@@ -72,8 +72,13 @@ const TestOverview = () => {
     }
   }
 
-  function slett(etTestgrunnlag: Testgrunnlag): void {
-    submit(etTestgrunnlag, { method: 'delete', encType: 'application/json' });
+  function slett(testgrunnlagId:number, kontrollId: number): void {
+
+    const deleteRequest: DeleteTestgrunnlagRequest = {
+      testgrunnlagId: testgrunnlagId,
+      kontrollId: kontrollId,
+    };
+    submit(deleteRequest, { method: 'delete', encType: 'application/json' });
   }
 
   return (
@@ -162,7 +167,12 @@ const TestOverview = () => {
                   >
                     {getJobstatus(testStatus)}
                   </Button>
-                  {visRetestKnapp(etTestgrunnlag, loeysingId, testgrunnlag, resultater) && (
+                  {visRetestKnapp(
+                    etTestgrunnlag,
+                    loeysingId,
+                    testgrunnlag,
+                    resultater
+                  ) && (
                     <Button
                       variant="secondary"
                       onClick={() => retest(testgrunnlagId, loeysingId)}
@@ -174,7 +184,7 @@ const TestOverview = () => {
                     <Button
                       variant="secondary"
                       color="danger"
-                      onClick={() => slett(etTestgrunnlag)}
+                      onClick={() => slett(testgrunnlagId, kontrollId)}
                     >
                       Slett
                     </Button>
@@ -184,7 +194,9 @@ const TestOverview = () => {
                       variant={ButtonVariant.Outline}
                       disabled={styringsdataError}
                     >
-                      {styringsdataId ? 'Endre styringsdata' : 'Legg til styringsdata'}
+                      {styringsdataId
+                        ? 'Endre styringsdata'
+                        : 'Legg til styringsdata'}
                     </Button>
                   </Link>
                 </div>

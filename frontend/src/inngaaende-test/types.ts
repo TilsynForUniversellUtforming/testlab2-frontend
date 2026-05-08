@@ -45,7 +45,6 @@ export type TestResultUpdate = {
 };
 
 export type TestOverviewLoaderData = {
-  loeysingList: Loeysing[];
   resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
   styringsdata: StyringsdataListElement[];

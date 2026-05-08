@@ -1,5 +1,5 @@
 import { createRetest, deleteTestgrunnlag } from '@test/api/testing-api';
-import { RetestRequest } from '@test/api/types';
+import { DeleteTestgrunnlagRequest, RetestRequest } from '@test/api/types';
 import { Testgrunnlag } from '@test/types';
 import { ActionFunctionArgs } from 'react-router-dom';
 
@@ -11,7 +11,8 @@ export const testOverviewAction = async ({ request }: ActionFunctionArgs) => {
     }
     case 'DELETE': {
       const testgrunnlag: Testgrunnlag = await request.json();
-      return await deleteTestgrunnlag(testgrunnlag);
+      const deleteRetestRequest = (await request.json()) as DeleteTestgrunnlagRequest;
+      return await deleteTestgrunnlag(deleteRetestRequest);
     }
     default:
       return null;

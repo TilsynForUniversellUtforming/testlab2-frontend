@@ -9,6 +9,7 @@ import {
   TestregelOverviewElement,
 } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
+import { filterFerdig, getSideutvalForLoeysing } from '@test/test-overview/util/testOverviewUtils';
 
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
 
@@ -16,8 +17,7 @@ function findNumSideutvalItSolution(
   testgrunnlag: Testgrunnlag,
   loeysingId: number
 ) {
-  return testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId)
-    .length;
+  return getSideutvalForLoeysing(testgrunnlag, loeysingId).length;
 }
 
 function getTestregelIdListTestgrunnlag(testgrunnlag: Testgrunnlag) {
@@ -28,25 +28,13 @@ function mapToTestresultatKey(tr: ResultatManuellKontroll) {
   return `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`;
 }
 
-function isTestresultatFerdig(
-  testregelIdList: number[],
-  tr: ResultatManuellKontroll,
-  loeysingId: number
-) {
-  return (
-    testregelIdList.includes(tr.testregelId) &&
-    tr.loeysingId === loeysingId &&
-    tr.status === 'Ferdig'
-  );
-}
-
 function findNumFinishedTestresults(
   testResults: ResultatManuellKontroll[],
   testregelIdList: number[],
   loeysingId: number
 ) {
-  const finishedTestIdentifierArray = testResults
-    .filter((tr) => isTestresultatFerdig(testregelIdList, tr, loeysingId))
+  const finishedTestIdentifierArray = filterFerdig(testResults)
+    .filter((tr) => testregelIdList.includes(tr.testregelId) && tr.loeysingId === loeysingId)
     .map(mapToTestresultatKey);
 
   return new Set(finishedTestIdentifierArray).size;
@@ -80,36 +68,31 @@ export const progressionForTestgrunnlagInnhaldstype = (
   testResults: ResultatManuellKontroll[],
   loeysingId: number
 ): number => {
-  const sideutvalIds = testgrunnlag.sideutval
-    .filter((su) => su.loeysingId === loeysingId)
-    .map((su) => su.id);
-  const innhaldstypeIds = new Set(
-    testgrunnlag.testreglar.map((tr) => tr.innhaldstypeTesting?.id ?? 0)
+  const sideutvalIds = getSideutvalForLoeysing(testgrunnlag, loeysingId).map((su) => su.id);
+
+  const finishedKeys = new Set(
+    filterFerdig(testResults.filter((tr) => tr.loeysingId === loeysingId))
+      .map((tr) => `${tr.sideutvalId}_${tr.testregelId}`)
   );
-  const finishedTestIdentifierArray = testResults
-    .filter((tr) => tr.loeysingId === loeysingId && tr.status === 'Ferdig')
-    .map((tr) => `${tr.sideutvalId}_${tr.testregelId}`);
 
-  let completed = 0;
-  innhaldstypeIds.forEach((innhaldstypeId) => {
-    // Tester som skal gjøres for denne innhaldstypen
-    const testsForInnhaldstype = testgrunnlag.testreglar
-      .filter((tr) => (tr.innhaldstypeTesting?.id ?? 0) === innhaldstypeId)
-      .flatMap((tr) =>
-        sideutvalIds.map((sideutvalId) => `${sideutvalId}_${tr.id}`)
-      );
+  // Group testreglar by innhaldstype id
+  const byInnhaldstype = Map.groupBy(
+    testgrunnlag.testreglar,
+    (tr) => tr.innhaldstypeTesting?.id ?? 0
+  );
 
-    if (testsForInnhaldstype.length !== 0) {
-      // Ferdige tester for denne innhaldstypen
-      const numFinished = testsForInnhaldstype.filter((testIdentifier) =>
-        finishedTestIdentifierArray.includes(testIdentifier)
-      ).length;
+  if (byInnhaldstype.size === 0) return 0;
 
-      const percentFinished = numFinished / testsForInnhaldstype.length;
+  const completed = [...byInnhaldstype.values()].reduce((sum, testreglar) => {
+    const total = testreglar.length * sideutvalIds.length;
+    if (total === 0) return sum;
 
-      completed += percentFinished / innhaldstypeIds.size;
-    }
-  });
+    const numFinished = testreglar.reduce((count, tr) =>
+      count + sideutvalIds.filter((sid) => finishedKeys.has(`${sid}_${tr.id}`)).length
+    , 0);
+
+    return sum + numFinished / total / byInnhaldstype.size;
+  }, 0);
 
   return Math.round(completed * 100);
 };
@@ -125,14 +108,11 @@ export const progressionForSelection = (
     innhaldstype
   ).map((tr) => tr.id);
 
-  const finishedTestIdentifierArray = testResults
-    .filter(
-      (tr) =>
-        testregelIdList.includes(tr.testregelId) &&
-        tr.sideutvalId === sideutvalId &&
-        tr.status === 'Ferdig'
+  const finishedTestIdentifierArray = filterFerdig(
+    testResults.filter(
+      (tr) => testregelIdList.includes(tr.testregelId) && tr.sideutvalId === sideutvalId
     )
-    .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
+  ).map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
 
   const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
 
@@ -231,10 +211,7 @@ export const toTestregelStatus = (
       let status: ManuellTestStatus;
       if (isNotDefined(testresults)) {
         status = 'ikkje-starta';
-      } else if (
-        testresults.filter((tr) => tr.status === 'Ferdig').length ===
-        testresults.length
-      ) {
+      } else if (filterFerdig(testresults).length === testresults.length) {
         status = 'ferdig';
       } else {
         status = 'under-arbeid';
@@ -333,9 +310,7 @@ export const getIdFromParams = (idString: string | undefined): number => {
 
 const toFinishedTestresultKeys = (testresultater: ResultatManuellKontroll[]) =>
   toUnique(
-    testresultater
-      .filter((tr) => tr.status === 'Ferdig')
-      .map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
+    filterFerdig(testresultater).map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
   );
 
 // Lager nøkler for alle kobinasjoner av testregler og sideutval som skal testes slik at alle tester har en unik nøkkel

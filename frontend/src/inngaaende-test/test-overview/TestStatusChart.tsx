@@ -1,6 +1,7 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { Testgrunnlag } from '@test/types';
+import { filterResultaterForLoeysingTestgrunnlag, filterFerdig } from './util/testOverviewUtils';
 
 import classes from './test-overview.module.css';
 
@@ -14,9 +15,7 @@ const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
   const loeysingSideutval = testgrunnlag.sideutval.filter(
     (su) => su.loeysingId === loeysingId
   );
-  const loeysingResultat = resultater.filter(
-    (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
-  );
+  const loeysingResultat = filterResultaterForLoeysingTestgrunnlag(resultater, loeysingId, testgrunnlag.id);
 
   const numTestregelResultat = new Set(
     loeysingResultat.map((lr) => `${lr.sideutvalId}_${lr.testregelId}`)
@@ -27,8 +26,7 @@ const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
       ? numTestregelResultat
       : loeysingSideutval.length * testgrunnlag.testreglar.length;
   const finished = new Set(
-    loeysingResultat
-      .filter((r) => r.status === 'Ferdig')
+    filterFerdig(loeysingResultat)
       .map((r) => `${r.sideutvalId}_${r.testregelId}`)
   ).size;
   const testing = new Set(
