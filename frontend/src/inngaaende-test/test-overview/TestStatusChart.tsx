@@ -1,8 +1,7 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { Testgrunnlag } from '@test/types';
-import { filterResultaterForLoeysingTestgrunnlag, filterFerdig } from './util/testOverviewUtils';
-
+import { getTestStatusCounts } from './util/testOverviewUtils';
 import classes from './test-overview.module.css';
 
 interface Props {
@@ -12,35 +11,14 @@ interface Props {
 }
 
 const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
-  const loeysingSideutval = testgrunnlag.sideutval.filter(
-    (su) => su.loeysingId === loeysingId
+  const { total, finished, testing, pending } = getTestStatusCounts(
+    testgrunnlag,
+    resultater,
+    loeysingId
   );
-  const loeysingResultat = filterResultaterForLoeysingTestgrunnlag(resultater, loeysingId, testgrunnlag.id);
-
-  const numTestregelResultat = new Set(
-    loeysingResultat.map((lr) => `${lr.sideutvalId}_${lr.testregelId}`)
-  ).size;
-
-  const total =
-    testgrunnlag.type === 'RETEST'
-      ? numTestregelResultat
-      : loeysingSideutval.length * testgrunnlag.testreglar.length;
-  const finished = new Set(
-    filterFerdig(loeysingResultat)
-      .map((r) => `${r.sideutvalId}_${r.testregelId}`)
-  ).size;
-  const testing = new Set(
-    loeysingResultat
-      .filter((r) => r.status === 'UnderArbeid')
-      .map((r) => `${r.sideutvalId}_${r.testregelId}`)
-  ).size;
-
-  const pending = total - (finished + testing);
 
   const percentage = (count: number) => Math.round((count / total) * 100);
-
-  const statusText = (state: string, count: number) =>
-    `${state} (${count} av ${total})`;
+  const statusText = (state: string, count: number) => `${state} (${count} av ${total})`;
 
   return (
     <div className={classes.statusContainer}>

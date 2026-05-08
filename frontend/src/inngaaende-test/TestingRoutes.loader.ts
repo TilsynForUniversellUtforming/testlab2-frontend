@@ -21,10 +21,16 @@ import {
 import { Kontroll, KontrollTestingMetadata } from '../kontroll/types';
 import { findStyringsdataForKontroll } from '../styringsdata/api/styringsdata-api';
 import { Testregel } from '@testreglar/api/types';
-import { Sideutval } from '../kontroll/sideutval/types';
 import { Loeysing } from '@loeysingar/api/types';
-import { filterStyringdataForLoeysing, findLoeysingNamn,
-  getStyringsdataStatus, getSideutvalForLoeysing, groupSideutvalByLoeysing, teststatus, viewTestType
+import {
+  filterStyringdataForLoeysing,
+  findLoeysingNamn,
+  getStyringsdataStatus,
+  getSideutvalForLoeysing,
+  groupSideutvalByLoeysing,
+  teststatus,
+  viewTestType,
+  filterResultaterForLoeysingTestgrunnlag,
 } from '@test/test-overview/util/testOverviewUtils';
 
 // --- Generic settlement validator ---
@@ -198,22 +204,31 @@ export const testOverviewLoader = async ({
   const testoverviewElements: TestOverviewElement[] = testgrunnlag.flatMap((etTestgrunnlag) =>
     [...groupSideutvalByLoeysing(etTestgrunnlag).entries()].map(([loeysingId, sideutval]) => {
       const loeysingStyringsdata = filterStyringdataForLoeysing(styringsdata, loeysingId);
+
+      const filteredResults = filterResultaterForLoeysingTestgrunnlag(
+        resultater,
+        loeysingId,
+        etTestgrunnlag.id
+      );
       return {
-        testgrunnlagId: etTestgrunnlag.id,
+        etTestgrunnlag: etTestgrunnlag,
         loeysingNamn: findLoeysingNamn(loeysingList, loeysingId),
         loeysingId,
-        testStatus: teststatus(resultater, etTestgrunnlag, loeysingId),
-        testType: viewTestType(etTestgrunnlag, sideutval.map((su) => su.id), testgrunnlag),
+        testStatus: teststatus(filteredResults, etTestgrunnlag, loeysingId),
+        testType: viewTestType(
+          etTestgrunnlag,
+          sideutval.map((su) => su.id),
+          testgrunnlag
+        ),
         styringsdataId: loeysingStyringsdata?.id ?? 0,
         styringsdataStatus: getStyringsdataStatus(loeysingStyringsdata) ?? '',
+        testresultat: filteredResults,
       } satisfies TestOverviewElement;
     })
   );
 
   return {
-    resultater,
     testgrunnlag,
-    styringsdata: styringsdata,
     styringsdataError: styringsdataRejected,
     testoverviewElements: testoverviewElements
   };

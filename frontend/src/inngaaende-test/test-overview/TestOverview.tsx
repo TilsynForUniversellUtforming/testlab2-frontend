@@ -5,10 +5,10 @@ import { ButtonVariant } from '@common/types';
 import { isEmpty } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Alert, Button, Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
-import { DeleteTestgrunnlagRequest, RetestRequest } from '@test/api/types';
+import { DeleteTestgrunnlagRequest, ResultatManuellKontroll, RetestRequest } from '@test/api/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
-import { ManuellTestStatus, Testgrunnlag, TestOverviewLoaderData } from '@test/types';
+import { ManuellTestStatus, TestOverviewLoaderData } from '@test/types';
 import { useCallback } from 'react';
 import { Link, useLoaderData, useNavigate, useParams, useSubmit } from 'react-router-dom';
 import { KlageType } from '../../styringsdata/types';
@@ -29,7 +29,6 @@ const TestOverview = () => {
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
   const {
-    resultater,
     testgrunnlag,
     styringsdataError,
     testoverviewElements,
@@ -57,8 +56,12 @@ const TestOverview = () => {
     [id, navigate, setAlert]
   );
 
-  function retest(testgrunnlagId: number, loeysingId: number) {
-    const rs = hasLoeysingBrot(resultater, testgrunnlagId, loeysingId);
+  function retest(
+    testgrunnlagId: number,
+    loeysingId: number,
+    testresultat: ResultatManuellKontroll[]
+  ) {
+    const rs = hasLoeysingBrot(testresultat);
     if (isEmpty(rs)) {
       console.debug('ingen brot');
     } else {
@@ -87,7 +90,7 @@ const TestOverview = () => {
         {styringsdataError && (
           <Alert data-color="danger">Kunne ikkje hente styringsdata</Alert>
         )}
-        {testgrunnlag.length === 0 && (
+        {testoverviewElements.length === 0 && (
           <Alert data-color="warning">
             <Heading level={3} data-size="xs">
               Ingen testgrunnlag for test
@@ -99,13 +102,25 @@ const TestOverview = () => {
           </Alert>
         )}
         {testoverviewElements.map((element) => {
-          const { testgrunnlagId, loeysingId, loeysingNamn, testStatus, testType, styringsdataId, styringsdataStatus } = element;
-          const etTestgrunnlag = testgrunnlag.find((tg) => tg.id === testgrunnlagId)!;
-          const styringsdataPath = getStyringsdataPath(kontrollId, loeysingId, styringsdataId || undefined);
+          const {
+            etTestgrunnlag,
+            loeysingId,
+            loeysingNamn,
+            testStatus,
+            testType,
+            styringsdataId,
+            styringsdataStatus,
+            testresultat,
+          } = element;
+          const styringsdataPath = getStyringsdataPath(
+            kontrollId,
+            loeysingId,
+            styringsdataId || undefined
+          );
 
           return (
             <div
-              key={`${testgrunnlagId}/${loeysingId}`}
+              key={`${etTestgrunnlag.id}/${loeysingId}`}
               className={classes.loeysingButton}
             >
               <div className={classes.loeysingButtonTag}>
@@ -120,11 +135,11 @@ const TestOverview = () => {
                 />
                 <TestStatusChart
                   testgrunnlag={etTestgrunnlag}
-                  resultater={resultater}
+                  resultater={testresultat}
                   loeysingId={loeysingId}
                 />
                 <TestStatistics
-                  resultatliste={resultater}
+                  resultatliste={testresultat}
                   loeysingId={loeysingId}
                   testgrunnlag={etTestgrunnlag}
                 />
@@ -163,7 +178,9 @@ const TestOverview = () => {
                 <div className={classes.buttons}>
                   <Button
                     title="Start testing"
-                    onClick={() => onChangeLoeysing(testgrunnlagId, loeysingId)}
+                    onClick={() =>
+                      onChangeLoeysing(etTestgrunnlag.id, loeysingId)
+                    }
                   >
                     {getJobstatus(testStatus)}
                   </Button>
@@ -171,11 +188,13 @@ const TestOverview = () => {
                     etTestgrunnlag,
                     loeysingId,
                     testgrunnlag,
-                    resultater
+                    testresultat
                   ) && (
                     <Button
                       variant="secondary"
-                      onClick={() => retest(testgrunnlagId, loeysingId)}
+                      onClick={() =>
+                        retest(etTestgrunnlag.id, loeysingId, testresultat)
+                      }
                     >
                       Retest
                     </Button>
@@ -184,7 +203,7 @@ const TestOverview = () => {
                     <Button
                       variant="secondary"
                       color="danger"
-                      onClick={() => slett(testgrunnlagId, kontrollId)}
+                      onClick={() => slett(etTestgrunnlag.id, kontrollId)}
                     >
                       Slett
                     </Button>

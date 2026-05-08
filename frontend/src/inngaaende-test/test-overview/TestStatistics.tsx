@@ -6,7 +6,6 @@ import {
   progressionForTestgrunnlagInnhaldstype,
   progressionForTestgrunnlagSideutval,
 } from '@test/util/testregelUtils';
-import { filterResultaterForLoeysingTestgrunnlag } from './util/testOverviewUtils';
 
 interface Props {
   resultatliste: ResultatManuellKontroll[];
@@ -15,15 +14,14 @@ interface Props {
 }
 
 const TestStatistics = ({ resultatliste, loeysingId, testgrunnlag }: Props) => {
-  const resultat = filterResultaterForLoeysingTestgrunnlag(resultatliste, loeysingId, testgrunnlag.id);
   const percentSideutval = progressionForTestgrunnlagSideutval(
     testgrunnlag,
-    resultat,
+    resultatliste,
     loeysingId
   );
   const percentInnhaldstype = progressionForTestgrunnlagInnhaldstype(
     testgrunnlag,
-    resultat,
+    resultatliste,
     loeysingId
   );
 

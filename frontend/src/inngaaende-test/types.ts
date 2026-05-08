@@ -45,9 +45,7 @@ export type TestResultUpdate = {
 };
 
 export type TestOverviewLoaderData = {
-  resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
-  styringsdata: StyringsdataListElement[];
   styringsdataError: boolean;
   testoverviewElements: TestOverviewElement[];
 
@@ -85,13 +83,14 @@ export type Testgrunnlag = {
 };
 
 export type TestOverviewElement = {
-  testgrunnlagId: number;
+  etTestgrunnlag: Testgrunnlag;
   loeysingNamn: string;
   loeysingId: number;
   testStatus: ManuellTestStatus;
   testType: string;
   styringsdataId: number;
   styringsdataStatus: string;
+  testresultat: ResultatManuellKontroll[];
 }
 
 export class TestregelTestingStatus {}

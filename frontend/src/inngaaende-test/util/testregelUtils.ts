@@ -28,6 +28,9 @@ function mapToTestresultatKey(tr: ResultatManuellKontroll) {
   return `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`;
 }
 
+const toPercent = (finished: number, total: number): number =>
+  total > 0 ? Math.round((finished / total) * 100) : 0;
+
 function findNumFinishedTestresults(
   testResults: ResultatManuellKontroll[],
   testregelIdList: number[],
@@ -54,13 +57,7 @@ export const progressionForTestgrunnlagSideutval = (
   );
 
   const numContentTestregel = testregelIdList.length * numSideutval;
-
-  if (numContentTestregel > 0) {
-    return Math.round((numFinishedTestResults / numContentTestregel) * 100);
-  }
-
-  // No testregel with current innhaldstype
-  return 0;
+  return toPercent(numFinishedTestResults, numContentTestregel);
 };
 
 export const progressionForTestgrunnlagInnhaldstype = (
@@ -108,22 +105,15 @@ export const progressionForSelection = (
     innhaldstype
   ).map((tr) => tr.id);
 
-  const finishedTestIdentifierArray = filterFerdig(
-    testResults.filter(
-      (tr) => testregelIdList.includes(tr.testregelId) && tr.sideutvalId === sideutvalId
-    )
-  ).map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`);
+  const numFinishedTestResults = new Set(
+    filterFerdig(
+      testResults.filter(
+        (tr) => testregelIdList.includes(tr.testregelId) && tr.sideutvalId === sideutvalId
+      )
+    ).map(mapToTestresultatKey)
+  ).size;
 
-  const numFinishedTestResults = new Set(finishedTestIdentifierArray).size;
-
-  const numContentTestregel = testregelIdList.length;
-
-  if (numContentTestregel > 0) {
-    return Math.round((numFinishedTestResults / numContentTestregel) * 100);
-  }
-
-  // No testregel with current innhaldstype
-  return 0;
+  return toPercent(numFinishedTestResults, testregelIdList.length);
 };
 export const getPageTypeList = (
   sideutvalList: Sideutval[],
@@ -256,17 +246,10 @@ export const mapTestregelOverviewElements = (
   innhaldstype: InnhaldstypeTesting,
   sideutvalId: number,
   testKeys: string[]
-) => {
-  const testregelByInnhaldstype = filterTestregelByInnhaldstype(
-    testregelList,
-    innhaldstype
-  );
-  const testreglarInTest = testregelByInnhaldstype.filter((tr) =>
-    testKeys.includes(toTestKey(tr.id, sideutvalId))
-  );
-
-  return testreglarInTest.map((tr) => toTestregelOverviewElement(tr));
-};
+) =>
+  filterTestregelByInnhaldstype(testregelList, innhaldstype)
+    .filter((tr) => testKeys.includes(toTestKey(tr.id, sideutvalId)))
+    .map(toTestregelOverviewElement);
 
 export function findActiveTestResults(
   testResults: ResultatManuellKontroll[],
