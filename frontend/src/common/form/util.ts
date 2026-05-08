@@ -102,10 +102,10 @@ export const fetchWithCsrf = async (
         };
       }
       init.credentials = 'include';
-      return await fetch(input, init);
+      return await fetchWithErrorHandling(input, init);
     });
   } else {
-    return await fetch(input, init);
+    return await fetchWithErrorHandling(input, init);
   }
 };
 
@@ -113,11 +113,18 @@ export const fetchWithErrorHandling: typeof fetch = async (
   input: Request | string | URL,
   ...rest
 ) => {
-  async function call(): Promise<Response> {
+  try {
     const init: RequestInit = { credentials: 'include', ...rest[0] };
-    return fetch(input, init).catch((error) => {
-      throw error;
-    });
+    const response = await fetch(input, init);
+    if (response.status !== 200) {
+      console.error(
+        `HTTP error! status: ${response.status}, message: ${response.statusText}`
+      );
+      throw new Error(response.statusText);
+    }
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
-  return await call();
 };

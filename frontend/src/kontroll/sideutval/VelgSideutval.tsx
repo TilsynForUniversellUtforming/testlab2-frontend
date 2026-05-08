@@ -55,7 +55,7 @@ const VelgSideutval = () => {
     [kontroll.sideutvalList, loeysingList]
   );
 
-  const [selectedLoeysing, setSelectedLoesying] = useState<
+  const [selectedLoeysing, setSelectedLoeysing] = useState<
     Loeysing | undefined
   >(loeysingList.find((l) => !finished.includes(l)));
 
@@ -135,14 +135,14 @@ const VelgSideutval = () => {
       return;
     }
 
-    setSelectedLoesying((prev) =>
+    setSelectedLoeysing((prev) =>
       loeysing.id === prev?.id ? undefined : loeysing
     );
   };
 
   const onSubmitManuell = (form: SideutvalForm) => {
     alert?.clearMessage();
-    setSelectedLoesying(undefined);
+    setSelectedLoeysing(undefined);
     setFormErrors([]);
 
     const data: UpdateKontrollSideutval = {
@@ -161,7 +161,7 @@ const VelgSideutval = () => {
 
   const onSubmitAutomatisk = (crawlParameters: CrawlParameters) => {
     alert?.clearMessage();
-    setSelectedLoesying(undefined);
+    setSelectedLoeysing(undefined);
 
     const data: UpdateKontrollSideutval = {
       kontroll,
