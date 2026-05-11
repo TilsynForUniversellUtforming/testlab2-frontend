@@ -42,7 +42,7 @@ fun TestregelDTO.toTestregel(
         datoSistEndra = this.datoSistEndra.toString(),
         type = this.type,
         modus = this.modus,
-        spraak = this.spraak?: TestlabLocale.nb,
+        spraak = this.spraak ?: TestlabLocale.nb,
         tema = temaList.find { tema -> tema.id == this.tema },
         testobjekt = testobjektList.find { testobjekt -> testobjekt.id == this.testobjekt },
         kravTilSamsvar = this.kravTilSamsvar,

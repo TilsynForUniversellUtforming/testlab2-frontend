@@ -4,13 +4,29 @@ import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { ButtonVariant } from '@common/types';
 import { isEmpty } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { Alert, Button, Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
-import { DeleteTestgrunnlagRequest, ResultatManuellKontroll, RetestRequest } from '@test/api/types';
+import {
+  Alert,
+  Button,
+  Heading,
+  Paragraph,
+  Tag,
+} from '@digdir/designsystemet-react';
+import {
+  DeleteTestgrunnlagRequest,
+  ResultatManuellKontroll,
+  RetestRequest,
+} from '@test/api/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, TestOverviewLoaderData } from '@test/types';
 import { useCallback } from 'react';
-import { Link, useLoaderData, useNavigate, useParams, useSubmit } from 'react-router-dom';
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from 'react-router-dom';
 import { KlageType } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
@@ -28,11 +44,8 @@ const TestOverview = () => {
 
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const {
-    testgrunnlag,
-    styringsdataError,
-    testoverviewElements,
-  } = useLoaderData() as TestOverviewLoaderData;
+  const { testgrunnlag, styringsdataError, testoverviewElements } =
+    useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
   const onChangeLoeysing = useCallback(
@@ -75,8 +88,7 @@ const TestOverview = () => {
     }
   }
 
-  function slett(testgrunnlagId:number, kontrollId: number): void {
-
+  function slett(testgrunnlagId: number, kontrollId: number): void {
     const deleteRequest: DeleteTestgrunnlagRequest = {
       testgrunnlagId: testgrunnlagId,
       kontrollId: kontrollId,
@@ -236,4 +248,3 @@ const TestOverview = () => {
 };
 
 export default TestOverview;
-
