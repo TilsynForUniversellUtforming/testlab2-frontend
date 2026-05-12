@@ -212,6 +212,8 @@ export const useTestOverviewState = ({
     [testreglarForLoeysing, testStatusMap, testResults, sideId, activeTest, testgrunnlagId, processData, doCreateTestResult, raiseAlert]
   );
 
+
+
   const onChangeTestregelStatus = useCallback(
     (status: ManuellTestStatus, testregelId: number) => {
       const testregel = testreglarForLoeysing.find((tr) => tr.id === testregelId);
@@ -260,6 +262,23 @@ export const useTestOverviewState = ({
     [testResults, sideId, processData, raiseAlert]
   );
 
+  const createNewTestResult = async (
+    activeTestregel: Testregel,
+    testgrunnlagId: number,
+    loeysingId: number,
+    sideId: number
+  ) => {
+    const nyttTestresultat: CreateTestResultat = {
+      testgrunnlagId: testgrunnlagId,
+      loeysingId: loeysingId,
+      testregelId: activeTestregel.id,
+      sideutvalId: sideId,
+    };
+    await createTestResultat(nyttTestresultat);
+    const alleResultater = await fetchTestResults(testgrunnlagId);
+    processData(alleResultater, sideId, activeTestregel);
+  };
+
   return {
     innhaldstype,
     setInnhaldstype,
@@ -283,5 +302,6 @@ export const useTestOverviewState = ({
     onChangeTestregelStatus,
     slettTestelement,
     modalRef,
+    createNewTestResult,
   };
 };
