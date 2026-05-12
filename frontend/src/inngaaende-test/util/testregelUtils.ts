@@ -10,54 +10,24 @@ import {
 } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { filterFerdig, getSideutvalForLoeysing } from '@test/test-overview/util/testOverviewUtils';
-
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
-
-function findNumSideutvalItSolution(
-  testgrunnlag: Testgrunnlag,
-  loeysingId: number
-) {
-  return getSideutvalForLoeysing(testgrunnlag, loeysingId).length;
-}
-
-function getTestregelIdListTestgrunnlag(testgrunnlag: Testgrunnlag) {
-  return testgrunnlag.testreglar.map((tr) => tr.id) ?? [];
-}
-
-function mapToTestresultatKey(tr: ResultatManuellKontroll) {
-  return `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`;
-}
 
 const toPercent = (finished: number, total: number): number =>
   total > 0 ? Math.round((finished / total) * 100) : 0;
-
-function findNumFinishedTestresults(
-  testResults: ResultatManuellKontroll[],
-  testregelIdList: number[],
-  loeysingId: number
-) {
-  const finishedTestIdentifierArray = filterFerdig(testResults)
-    .filter((tr) => testregelIdList.includes(tr.testregelId) && tr.loeysingId === loeysingId)
-    .map(mapToTestresultatKey);
-
-  return new Set(finishedTestIdentifierArray).size;
-}
 
 export const progressionForTestgrunnlagSideutval = (
   testgrunnlag: Testgrunnlag,
   testResults: ResultatManuellKontroll[],
   loeysingId: number
 ): number => {
-  const testregelIdList = getTestregelIdListTestgrunnlag(testgrunnlag);
-  const numSideutval = findNumSideutvalItSolution(testgrunnlag, loeysingId);
-  const numFinishedTestResults = findNumFinishedTestresults(
-    testResults,
-    testregelIdList,
-    loeysingId
-  );
-
-  const numContentTestregel = testregelIdList.length * numSideutval;
-  return toPercent(numFinishedTestResults, numContentTestregel);
+  const testregelIds = testgrunnlag.testreglar.map((tr) => tr.id);
+  const numSideutval = getSideutvalForLoeysing(testgrunnlag, loeysingId).length;
+  const numFinished = new Set(
+    filterFerdig(testResults)
+      .filter((tr) => testregelIds.includes(tr.testregelId) && tr.loeysingId === loeysingId)
+      .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`)
+  ).size;
+  return toPercent(numFinished, testregelIds.length * numSideutval);
 };
 
 export const progressionForTestgrunnlagInnhaldstype = (
@@ -66,28 +36,20 @@ export const progressionForTestgrunnlagInnhaldstype = (
   loeysingId: number
 ): number => {
   const sideutvalIds = getSideutvalForLoeysing(testgrunnlag, loeysingId).map((su) => su.id);
-
   const finishedKeys = new Set(
     filterFerdig(testResults.filter((tr) => tr.loeysingId === loeysingId))
       .map((tr) => `${tr.sideutvalId}_${tr.testregelId}`)
   );
-
-  // Group testreglar by innhaldstype id
-  const byInnhaldstype = Map.groupBy(
-    testgrunnlag.testreglar,
-    (tr) => tr.innhaldstypeTesting?.id ?? 0
-  );
-
+  const byInnhaldstype = Map.groupBy(testgrunnlag.testreglar, (tr) => tr.innhaldstypeTesting?.id ?? 0);
   if (byInnhaldstype.size === 0) return 0;
 
   const completed = [...byInnhaldstype.values()].reduce((sum, testreglar) => {
     const total = testreglar.length * sideutvalIds.length;
     if (total === 0) return sum;
-
-    const numFinished = testreglar.reduce((count, tr) =>
-      count + sideutvalIds.filter((sid) => finishedKeys.has(`${sid}_${tr.id}`)).length
-    , 0);
-
+    const numFinished = testreglar.reduce(
+      (count, tr) => count + sideutvalIds.filter((sid) => finishedKeys.has(`${sid}_${tr.id}`)).length,
+      0
+    );
     return sum + numFinished / total / byInnhaldstype.size;
   }, 0);
 
@@ -100,79 +62,50 @@ export const progressionForSelection = (
   sideutvalId: number,
   innhaldstype: InnhaldstypeTesting
 ): number => {
-  const testregelIdList = filterTestregelByInnhaldstype(
-    testregelList,
-    innhaldstype
-  ).map((tr) => tr.id);
-
-  const numFinishedTestResults = new Set(
+  const testregelIds = filterTestregelByInnhaldstype(testregelList, innhaldstype).map((tr) => tr.id);
+  const numFinished = new Set(
     filterFerdig(
-      testResults.filter(
-        (tr) => testregelIdList.includes(tr.testregelId) && tr.sideutvalId === sideutvalId
-      )
-    ).map(mapToTestresultatKey)
+      testResults.filter((tr) => testregelIds.includes(tr.testregelId) && tr.sideutvalId === sideutvalId)
+    ).map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`)
   ).size;
-
-  return toPercent(numFinishedTestResults, testregelIdList.length);
+  return toPercent(numFinished, testregelIds.length);
 };
+
 export const getPageTypeList = (
   sideutvalList: Sideutval[],
   sideutvalType: SideutvalType[]
-): PageType[] => {
-  return sideutvalList.reduce((acc: PageType[], su) => {
+): PageType[] =>
+  sideutvalList.reduce((acc: PageType[], su) => {
     let label: string;
     if (su.egendefinertType && su.egendefinertType.length > 0) {
       label = `Egendefinert: ${su.egendefinertType}`;
     } else {
-      const type =
-        sideutvalType.find((sut) => sut.id === su.typeId)?.type ?? '';
-      const existingType = acc.find((item) => item.pageType.startsWith(type));
-      if (existingType) {
-        const typeCount =
-          acc.filter((item) => item.pageType.startsWith(type)).length + 1;
-        label = `${type} ${typeCount}`;
-      } else {
-        label = type;
-      }
+      const type = sideutvalType.find((sut) => sut.id === su.typeId)?.type ?? '';
+      const typeCount = acc.filter((item) => item.pageType.startsWith(type)).length;
+      label = typeCount > 0 ? `${type} ${typeCount + 1}` : type;
     }
-
-    acc.push({
-      sideId: su.id,
-      pageType: label,
-      url: su.url,
-    });
+    acc.push({ sideId: su.id, pageType: label, url: su.url });
     return acc;
   }, []);
-};
 
 export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
-  const firstInSideutval = pageTypeList[0];
-  if (isNotDefined(firstInSideutval)) {
-    throw new Error('Det finns ikkje sideutval for test');
-  }
-
-  const forside = pageTypeList.find(
-    (su) => su.pageType.toLowerCase() === 'forside'
-  );
-
-  return forside ?? firstInSideutval;
+  const first = pageTypeList[0];
+  if (isNotDefined(first)) throw new Error('Det finns ikkje sideutval for test');
+  return pageTypeList.find((su) => su.pageType.toLowerCase() === 'forside') ?? first;
 };
-export const innhaldstypeAlle: InnhaldstypeTesting = {
-  id: 0,
-  innhaldstype: 'Alle',
-};
+
+export const innhaldstypeAlle: InnhaldstypeTesting = { id: 0, innhaldstype: 'Alle' };
 
 export const isTestFinished = (
   testResults: ResultatManuellKontroll[],
   testKeys: string[]
 ): boolean => {
-  const finishedTestIdentifierArray = toFinishedTestresultKeys(testResults);
-
+  const finishedKeys = new Set(
+    filterFerdig(testResults).map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
+  );
   return (
-    JSON.stringify(testKeys.toSorted((a, b) => a.localeCompare(b))) ===
-    JSON.stringify(
-      finishedTestIdentifierArray.toSorted((a, b) => a.localeCompare(b))
-    )
+    testKeys.length === finishedKeys.size &&
+    testKeys.every((k) => finishedKeys.has(k))
   );
 };
 
@@ -182,6 +115,14 @@ export const toTestregelStatusKey = (
   sideutvalId: number
 ) => [testgrunnlagId, testregelId, sideutvalId].join('_');
 
+const deriveTestregelStatus = (
+  testresults: ResultatManuellKontroll[]
+): ManuellTestStatus => {
+  if (testresults.length === 0) return 'ikkje-starta';
+  if (filterFerdig(testresults).length === testresults.length) return 'ferdig';
+  return 'under-arbeid';
+};
+
 export const toTestregelStatus = (
   testregelList: TestregelOverviewElement[],
   testResults: ResultatManuellKontroll[],
@@ -189,46 +130,16 @@ export const toTestregelStatus = (
   sideutvalId: number
 ): Map<string, ManuellTestStatus> =>
   new Map(
-    testregelList.map((testregel) => {
-      const testresults = findActiveTestResults(
-        testResults,
-        testgrunnlagId,
-        testregel.id,
-        sideutvalId
-      );
-
+    testregelList.map((testregel) => [
+      toTestregelStatusKey(testgrunnlagId, testregel.id, sideutvalId),
       // TODO - Slett når ResultatManuellKontroll har statusfelt
-      let status: ManuellTestStatus;
-      if (isNotDefined(testresults)) {
-        status = 'ikkje-starta';
-      } else if (filterFerdig(testresults).length === testresults.length) {
-        status = 'ferdig';
-      } else {
-        status = 'under-arbeid';
-      }
-      // TODO - Slett
-
-      return [
-        toTestregelStatusKey(testgrunnlagId, testregel.id, sideutvalId),
-        status,
-      ];
-    })
+      deriveTestregelStatus(findActiveTestResults(testResults, testgrunnlagId, testregel.id, sideutvalId)),
+    ])
   );
 
-const toTestregelOverviewElement = ({
-  id,
-  namn,
-  testregelId,
-}: Testregel): TestregelOverviewElement => {
-  const regex = /^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/;
-  const result = namn.match(regex);
-
-  if (result && result.length > 3) {
-    const secondPart = result[4];
-    return { id: id, name: secondPart, krav: capitalize(testregelId) };
-  }
-
-  return { id: id, name: namn, krav: capitalize(testregelId) };
+const toTestregelOverviewElement = ({ id, namn, testregelId }: Testregel): TestregelOverviewElement => {
+  const match = namn.match(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/);
+  return { id, name: match ? match[4] : namn, krav: capitalize(testregelId) };
 };
 
 export const filterTestregelByInnhaldstype = (
@@ -236,9 +147,7 @@ export const filterTestregelByInnhaldstype = (
   innhaldstype: InnhaldstypeTesting
 ) =>
   testregelList.filter(
-    (tr) =>
-      innhaldstype.innhaldstype === 'Alle' ||
-      tr.innhaldstypeTesting?.id === innhaldstype.id
+    (tr) => innhaldstype.innhaldstype === 'Alle' || tr.innhaldstypeTesting?.id === innhaldstype.id
   );
 
 export const mapTestregelOverviewElements = (
@@ -264,53 +173,35 @@ export function findActiveTestResults(
       tr.sideutvalId === sideId
   );
 }
-export const getInnhaldstypeInTest = (
-  innhaldstypeList: InnhaldstypeTesting[]
-) => {
-  return [innhaldstypeAlle, ...innhaldstypeList.sort()];
-};
+
+export const getInnhaldstypeInTest = (innhaldstypeList: InnhaldstypeTesting[]) =>
+  [innhaldstypeAlle, ...innhaldstypeList.toSorted()];
 
 export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
   switch (frontendState) {
-    case 'ferdig':
-      return 'Ferdig';
-    case 'deaktivert':
-      return 'Deaktivert';
-    case 'under-arbeid':
-      return 'UnderArbeid';
-    case 'ikkje-starta':
-      return 'IkkjePaabegynt';
+    case 'ferdig': return 'Ferdig';
+    case 'deaktivert': return 'Deaktivert';
+    case 'under-arbeid': return 'UnderArbeid';
+    case 'ikkje-starta': return 'IkkjePaabegynt';
   }
 };
 
 export const getIdFromParams = (idString: string | undefined): number => {
   const id = Number.parseInt(idString ?? '', 10);
-  if (Number.isNaN(id)) {
-    throw new Error('Id-en i URL-en er ikke et tall');
-  }
+  if (Number.isNaN(id)) throw new Error('Id-en i URL-en er ikke et tall');
   return id;
 };
 
-const toFinishedTestresultKeys = (testresultater: ResultatManuellKontroll[]) =>
-  toUnique(
-    filterFerdig(testresultater).map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
-  );
-
-// Lager nøkler for alle kobinasjoner av testregler og sideutval som skal testes slik at alle tester har en unik nøkkel
+// Lager nøkler for alle kombinasjonar av testregler og sideutval som skal testast
 export const toTestKeys = (
   testgrunnlag: Testgrunnlag,
   testresultat: ResultatManuellKontroll[]
-) => {
-  if (testgrunnlag.type === 'RETEST') {
-    return toUnique(
-      testresultat.map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
-    );
-  }
-
-  return testgrunnlag.testreglar.flatMap((tr) =>
-    testgrunnlag.sideutval.map((su) => toTestKey(tr.id, su.id))
-  );
-};
+) =>
+  testgrunnlag.type === 'RETEST'
+    ? toUnique(testresultat.map((tr) => toTestKey(tr.testregelId, tr.sideutvalId)))
+    : testgrunnlag.testreglar.flatMap((tr) =>
+        testgrunnlag.sideutval.map((su) => toTestKey(tr.id, su.id))
+      );
 
 export const toTestKey = (testregelId: number, sideutvalId: number): string =>
   `${testregelId}_${sideutvalId}`;
