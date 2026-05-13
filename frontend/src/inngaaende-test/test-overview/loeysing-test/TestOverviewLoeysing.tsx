@@ -4,12 +4,13 @@ import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestC
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 import { useShowHelpText } from '@test/util/useShowHelpText';
 
 const TestOverviewLoeysing = () => {
+
   const { testgrunnlagId: testgrunnlagIdParam, loeysingId: loeysingIdParam } =
     useParams();
   const loeysingId = Number(loeysingIdParam);

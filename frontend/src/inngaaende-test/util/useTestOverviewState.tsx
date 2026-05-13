@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
+  isTestFinished,
   mapTestregelOverviewElements,
   progressionForSelection,
   toTestregelStatus,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { ManuellTestStatus } from '@test/types';
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
 import { ResultatManuellKontroll } from '@test/api/types';
 import useAlertModal from '@common/alert/useAlertModal';
@@ -36,10 +36,9 @@ export const useTestOverviewState = ({
   testKeys,
 }: UseTestOverviewStateProps) => {
   const [innhaldstype, setInnhaldstype] = useState(innhaldstypeList[0]);
-  const [showHelpText, setShowHelpText] = useState(true);
   const [, raiseAlert, modalRef] = useAlertModal();
 
-  const { testResults, testFerdig, activeTest, setActiveTest, processData } = useTestResults({
+  const { testResults,  activeTest, setActiveTest, processData } = useTestResults({
     loeysingId,
     testResultatForLoeysing,
     testKeys,
@@ -49,9 +48,8 @@ export const useTestOverviewState = ({
     sideutvalForLoeysing,
     sideutvalTypeList,
     onSideutvalNotFound: () => raiseAlert('danger', 'Kan ikkje velje sideutval', 'Ugylig sideutval'),
-    onSideutvalChanged: (nextSideId) => {
+    onSideutvalChanged: () => {
       setActiveTest(undefined);
-      processData(testResults, nextSideId);
     },
   });
 
@@ -69,6 +67,12 @@ export const useTestOverviewState = ({
     () => toTestregelStatus(testregelListElements, testResults, testgrunnlagId, sideId),
     [testregelListElements, testResults, testgrunnlagId, sideId]
   );
+
+  const testFerdig = useMemo(() =>
+    isTestFinished(testResultatForLoeysing, testKeys),
+    [testreglarForLoeysing,testKeys]
+  );
+
 
   const onChangeInnhaldstype = useCallback(
     (innhaldstypeId: number) => {
@@ -98,7 +102,7 @@ export const useTestOverviewState = ({
     testgrunnlagId,
     sideId,
     testResults,
-    testStatusMap: testStatusMap as Map<string, ManuellTestStatus>,
+    testStatusMap: testStatusMap,
     testreglarForLoeysing,
     activeTest,
     setActiveTest,
@@ -118,8 +122,6 @@ export const useTestOverviewState = ({
     progressionPercent,
     testregelListElements,
     testStatusMap,
-    showHelpText,
-    toggleShowHelpText: () => setShowHelpText((prev) => !prev),
     onChangeSideutval,
     onChangeInnhaldstype,
     pageTypeList,

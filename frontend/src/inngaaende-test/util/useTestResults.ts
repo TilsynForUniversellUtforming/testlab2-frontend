@@ -16,7 +16,6 @@ export const useTestResults = ({
   testKeys,
 }: UseTestResultsProps) => {
   const [testResults, setTestResults] = useState(testResultatForLoeysing);
-  const [testFerdig, setTestFerdig] = useState(isTestFinished(testResultatForLoeysing, testKeys));
   const [activeTest, setActiveTest] = useState<ActiveTest>();
 
   const processData = useCallback(
@@ -27,7 +26,6 @@ export const useTestResults = ({
     ) => {
       const filtered = allResults.filter((tr) => tr.loeysingId === loeysingId);
       setTestResults(filtered);
-      setTestFerdig(isTestFinished(filtered, testKeys));
       if (activeTestregel) {
         setActiveTest({
           testregel: activeTestregel,
@@ -40,6 +38,6 @@ export const useTestResults = ({
     [loeysingId, testKeys]
   );
 
-  return { testResults, testFerdig, activeTest, setActiveTest, processData };
+  return { testResults,  activeTest, setActiveTest, processData };
 };
 

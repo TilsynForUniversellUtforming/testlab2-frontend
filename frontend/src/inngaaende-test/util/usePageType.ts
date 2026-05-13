@@ -7,7 +7,7 @@ interface UsePageTypeProps {
   sideutvalForLoeysing: Sideutval[];
   sideutvalTypeList: SideutvalType[];
   onSideutvalNotFound: () => void;
-  onSideutvalChanged: (sideId: number) => void;
+  onSideutvalChanged: (sideId: number|undefined) => void;
 }
 
 export const usePageType = ({
@@ -28,7 +28,7 @@ export const usePageType = ({
     const next = pageTypeList.find((pt) => pt.sideId === sideutvalId);
     if (next) {
       setPageType(next);
-      onSideutvalChanged(next.sideId);
+      onSideutvalChanged(sideutvalId);
     } else {
       onSideutvalNotFound();
     }
