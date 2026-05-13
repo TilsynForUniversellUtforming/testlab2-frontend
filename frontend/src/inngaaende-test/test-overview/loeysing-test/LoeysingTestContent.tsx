@@ -16,7 +16,7 @@ import {
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface Props {
@@ -50,22 +50,17 @@ const chunkArray = <T extends object>(array: T[], size: number) => {
 };
 
 const calculateItemsPerRow = () => {
-  if (window.innerWidth > 1856) {
-    return 4;
-  } else if (window.innerWidth > 1424) {
-    return 3;
-  } else if (window.innerWidth > 992) {
-    return 2;
-  } else {
-    return 1;
-  }
+  if (window.innerWidth > 1856) return 4;
+  if (window.innerWidth > 1424) return 3;
+  if (window.innerWidth > 992) return 2;
+  return 1;
 };
 
 function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.elementUtfall != null);
 }
 
-const LoeysingTestContent = ({
+const LoeysingTestContent = memo(({
   sideutval,
   innhaldstype,
   progressionPercent,
@@ -82,31 +77,31 @@ const LoeysingTestContent = ({
   toggleShowHelpText,
 }: Props) => {
   const { testgrunnlagId, loeysingId } = useParams();
-  const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow());
+  const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
   const alertRef = useRef<HTMLDialogElement>(null);
   const [loading, setLoading] = useState(false);
 
-  const onClickSave = () => {
-    clearActiveTestregel();
-  };
-
   useEffect(() => {
-    const handleResize = () => {
-      setItemsPerRow(calculateItemsPerRow());
-    };
-
+    const handleResize = () => setItemsPerRow(calculateItemsPerRow());
     window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  function leggTilFlereTestelementer() {
-    if (
-      activeTest?.testResultList &&
-      alleHarUtfall(activeTest.testResultList)
-    ) {
+  useEffect(() => {
+    setLoading(false);
+  }, [activeTest?.testResultList]);
+
+  const chunkedTestregelList = useMemo(
+    () => chunkArray(testregelList, itemsPerRow),
+    [testregelList, itemsPerRow]
+  );
+
+  const onClickSave = useCallback(() => {
+    clearActiveTestregel();
+  }, [clearActiveTestregel]);
+
+  const leggTilFlereTestelementer = useCallback(() => {
+    if (activeTest?.testResultList && alleHarUtfall(activeTest.testResultList)) {
       createNewTestResult(
         activeTest.testregel,
         Number(testgrunnlagId),
@@ -114,18 +109,18 @@ const LoeysingTestContent = ({
         sideutval.sideId
       );
     } else {
-      alertRef?.current?.showModal();
+      alertRef.current?.showModal();
     }
-  }
+  }, [activeTest, createNewTestResult, testgrunnlagId, loeysingId, sideutval.sideId]);
 
-  const handleUpdateResult = (testresultUpdate: TestResultUpdate) => {
+  const handleUpdateResult = useCallback((testresultUpdate: TestResultUpdate) => {
     setLoading(true);
     doUpdateTestResult(testresultUpdate);
-  };
+  }, [doUpdateTestResult]);
 
-  useEffect(() => {
-    setLoading(false);
-  }, [activeTest?.testResultList]);
+  const handleSlettTestelement = useCallback((resultatId: number) => {
+    if (activeTest) slettTestelement(activeTest, resultatId);
+  }, [activeTest, slettTestelement]);
 
   return (
     <>
@@ -138,12 +133,14 @@ const LoeysingTestContent = ({
         url={sideutval.url}
       />
       <div>
-        {chunkArray(testregelList, itemsPerRow).map((row, rowIndex) => (
+        {chunkedTestregelList.map((row) => {
+          const rowKey = row.map((tr) => tr.id).join('-');
+          return (
           <div
             className={classNames('testregel-row', {
               single: testregelList.length === 1,
             })}
-            key={rowIndex}
+            key={rowKey}
           >
             <div className="testregel-container">
               {row.map((tr) => (
@@ -177,9 +174,7 @@ const LoeysingTestContent = ({
                     resultater={activeTest.testResultList}
                     onResultat={handleUpdateResult}
                     showHelpText={showHelpText}
-                    slettTestelement={(resultatId) =>
-                      slettTestelement(activeTest, resultatId)
-                    }
+                    slettTestelement={handleSlettTestelement}
                     isLoading={loading}
                   />
                   <TestlabDivider />
@@ -197,17 +192,18 @@ const LoeysingTestContent = ({
                 </div>
               )}
           </div>
-        ))}
+          );
+        })}
       </div>
       <AlertModal
         ref={alertRef}
         severity="warning"
         title="Kan ikke legge til et nytt testelement"
         message="Alle testelementer må ha et utfall før du kan legge til et nytt."
-        clearMessage={() => alertRef?.current?.close()}
+        clearMessage={() => alertRef.current?.close()}
       />
     </>
   );
-};
+});
 
 export default LoeysingTestContent;
