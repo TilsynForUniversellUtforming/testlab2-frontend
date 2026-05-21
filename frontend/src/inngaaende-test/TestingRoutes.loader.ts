@@ -4,6 +4,7 @@ import {
   Testgrunnlag,
   TestOverviewLoaderResponse,
   TestOverviewLoaderData,
+  TestOverviewElement,
 } from '@test/types';
 import {
   getIdFromParams,
@@ -19,212 +20,159 @@ import {
 } from '../kontroll/kontroll-api';
 import { Kontroll, KontrollTestingMetadata } from '../kontroll/types';
 import { findStyringsdataForKontroll } from '../styringsdata/api/styringsdata-api';
-import { SideutvalType } from 'kontroll/sideutval/types';
-import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
+import { Testregel } from '@testreglar/api/types';
+import { Loeysing } from '@loeysingar/api/types';
+import {
+  filterStyringdataForLoeysing,
+  findLoeysingNamn,
+  getStyringsdataStatus,
+  getSideutvalForLoeysing,
+  groupSideutvalByLoeysing,
+  teststatus,
+  viewTestType,
+  filterResultaterForLoeysingTestgrunnlag,
+} from '@test/test-overview/util/testOverviewUtils';
 
-function validateKontrollResponse(
-  kontrollPromise:
-    | PromiseFulfilledResult<
-        Response | SideutvalType[] | InnhaldstypeTesting[] | Testregel[]
-      >
-    | PromiseRejectedResult,
-  kontrollId: number
-): Response {
-  if (kontrollPromise.status === 'rejected') {
-    throw new Error(`Fann ikkje kontroll med id ${kontrollId}`);
+// --- Generic settlement validator ---
+
+function assertFulfilled<T>(
+  result: PromiseSettledResult<T>,
+  errorMessage: string
+): T {
+  if (result.status === 'rejected') {
+    throw new Error(errorMessage);
   }
-  return <Response>kontrollPromise.value;
+  return result.value;
 }
 
-function handleErrorStatus(kontrollResponse: Response, kontrollId: number) {
-  if (!kontrollResponse.ok) {
-    if (kontrollResponse.status === 404) {
-      throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
-    } else {
-      throw new Error('Klarte ikke å hente kontrollen.');
-    }
+// --- Kontroll helpers ---
+
+function validateKontrollParam(kontrollId: number) {
+  if (Number.isNaN(kontrollId) || kontrollId <= 0) {
+    throw new Error('Ugyldig kontroll-id');
   }
 }
 
 async function validatedKontroll(
-  kontrollPromise:
-    | PromiseFulfilledResult<
-        Response | SideutvalType[] | InnhaldstypeTesting[] | Testregel[]
-      >
-    | PromiseRejectedResult,
+  kontrollPromise: PromiseSettledResult<Response>,
   kontrollId: number
-) {
-  validateKontrollResponse(kontrollPromise, kontrollId);
-
-  const kontrollResponse = validateKontrollResponse(
+): Promise<Kontroll> {
+  const kontrollResponse = assertFulfilled(
     kontrollPromise,
-    kontrollId
+    `Fann ikkje kontroll med id ${kontrollId}`
   );
-  handleErrorStatus(kontrollResponse, kontrollId);
-  return await kontrollResponse.json();
-}
-function validatedTestreglar(
-  testreglarPromise:
-    | PromiseFulfilledResult<Response | Testregel[]>
-    | PromiseRejectedResult
-): Testregel[] {
-  if (testreglarPromise.status === 'rejected') {
-    throw new Error(`Kunne ikkje hente testreglar`);
+  if (!kontrollResponse.ok) {
+    throw new Error(
+      kontrollResponse.status === 404
+        ? `Det finnes ikke en kontroll med id ${kontrollId}`
+        : 'Klarte ikke å hente kontrollen.'
+    );
   }
-  return testreglarPromise.value as Testregel[];
-}
-function validateKontrollParam(kontrollId: number) {
-  if (isNaN(kontrollId) || kontrollId <= 0) {
-    throw new Error('Ugyldig kontroll-id');
-  }
-}
-function validatedTestgrunnlag(
-  testgrunnlagPromise:
-    | PromiseFulfilledResult<Response | Testgrunnlag[]>
-    | PromiseRejectedResult
-): Testgrunnlag[] {
-  if (testgrunnlagPromise.status === 'rejected') {
-    throw new Error(`Kunne ikkje hente testgrunnlag`);
-  }
-
-  return testgrunnlagPromise.value as Testgrunnlag[];
+  return kontrollResponse.json();
 }
 
-async function getTestresultatTestgrunnlag(testgrunnlag: Testgrunnlag[]) {
-  const resultater: ResultatManuellKontroll[][] = await Promise.all(
-    testgrunnlag.map((t) => fetchTestResults(t.id))
-  );
-  return resultater;
-}
-
-function getLoeysingIdFromSideutval(testgrunnlag: Testgrunnlag[]): number[] {
-  return testgrunnlag
-    .map((tg) => tg.sideutval.map((su) => su.loeysingId))
-    .flat();
-}
-
-function getLoysingarFromKontroll(kontroll: Kontroll) {
-  return kontroll.utval?.loeysingar ?? [];
-}
-
-function getLoeysingarFromUtval(
+function getLoeysingarForTestgrunnlag(
   kontroll: Kontroll,
-  loeysingWithSideutvalIds: number[]
-) {
-  return (
-    getLoysingarFromKontroll(kontroll).filter((l) =>
-      loeysingWithSideutvalIds.includes(l.id)
-    ) ?? []
+  testgrunnlag: Testgrunnlag[]
+): Loeysing[] {
+  const loeysingIdsWithSideutval = new Set(
+    testgrunnlag.flatMap((tg) => tg.sideutval.map((su) => su.loeysingId))
   );
-}
-
-function getLoeysingar(kontroll: Kontroll, testgrunnlag: Testgrunnlag[]) {
-  const loeysingWithSideutvalIds = getLoeysingIdFromSideutval(testgrunnlag);
-  return getLoeysingarFromUtval(kontroll, loeysingWithSideutvalIds);
-}
-
-function getTestgrunnlag(
-  testgrunnlagPromise:
-    | PromiseFulfilledResult<Response | Testgrunnlag[]>
-    | PromiseRejectedResult,
-  testgrunnlagId: number
-) {
-  const testgrunnlagList = validatedTestgrunnlag(testgrunnlagPromise);
-
-  const testgrunnlag = testgrunnlagList.find((tg) => tg.id === testgrunnlagId);
-
-  if (!testgrunnlag) {
-    throw new Error('Testgrunnlag finns ikkje for kontroll');
-  }
-  return testgrunnlag;
-}
-
-function validatedTestresultsTestgrunnlag(
-  testResults:
-    | PromiseFulfilledResult<ResultatManuellKontroll[]>
-    | PromiseRejectedResult,
-  testgrunnlagId: number
-): ResultatManuellKontroll[] {
-  if (testResults.status === 'rejected') {
-    throw new Error(`Kunne ikkje hente testresutlat for id ${testgrunnlagId}`);
-  }
-
-  return testResults.value;
-}
-
-function getTestresultsForLoeysing(
-  testResults:
-    | PromiseFulfilledResult<ResultatManuellKontroll[]>
-    | PromiseRejectedResult,
-  testgrunnlagId: number,
-  loeysingId: number
-) {
-  const testresultsTestgrunnlag = validatedTestresultsTestgrunnlag(
-    testResults,
-    testgrunnlagId
+  return (kontroll.utval?.loeysingar ?? []).filter((l) =>
+    loeysingIdsWithSideutval.has(l.id)
   );
-
-  return testresultsTestgrunnlag.filter(
-    (tr) => tr.loeysingId === loeysingId && tr.testgrunnlagId === testgrunnlagId
-  );
-}
-function getTestreglarIdTestgrunnlag(testgrunnlag: Testgrunnlag) {
-  return testgrunnlag.testreglar.map((tr) => tr.id);
-}
-function getSideutvalForLoeysing(
-  testgrunnlag: Testgrunnlag,
-  loysingId: number
-) {
-  return testgrunnlag.sideutval.filter((su) => su.loeysingId === loysingId);
-}
-
-function getTestreglarMetadataForLoeysing(
-  testreglar: Testregel[],
-  testgrunnlagTestregelIds: number[]
-) {
-  return testreglar.filter((tr) => testgrunnlagTestregelIds.includes(tr.id));
 }
 
 function getActiveLoeysing(kontroll: Kontroll, loeysingId: number) {
   const activeLoeysing = kontroll.utval?.loeysingar?.find(
-    (l: { id: number }) => l.id === loeysingId
+    (l) => l.id === loeysingId
   );
-
   if (!activeLoeysing) {
     throw new Error(`Ugyldig løysing for id ${loeysingId}`);
   }
   return activeLoeysing;
 }
 
-function kontrollmetataValidated(
-  kontrollMetadata:
-    | PromiseFulfilledResult<Response | Awaited<KontrollTestingMetadata>>
-    | PromiseRejectedResult
-): KontrollTestingMetadata {
-  if (kontrollMetadata.status === 'rejected') {
-    throw new Error('Feil ved henting av kontroll metadata');
-  } else {
-    return kontrollMetadata.value as KontrollTestingMetadata;
-  }
+// --- Testgrunnlag helpers ---
+
+function validatedTestgrunnlag(
+  testgrunnlagPromise: PromiseSettledResult<Testgrunnlag[]>
+): Testgrunnlag[] {
+  return assertFulfilled(testgrunnlagPromise, 'Kunne ikkje hente testgrunnlag');
 }
+
+function getTestgrunnlagById(
+  testgrunnlagPromise: PromiseSettledResult<Testgrunnlag[]>,
+  testgrunnlagId: number
+): Testgrunnlag {
+  const list = validatedTestgrunnlag(testgrunnlagPromise);
+  const testgrunnlag = list.find((tg) => tg.id === testgrunnlagId);
+  if (!testgrunnlag) {
+    throw new Error('Testgrunnlag finns ikkje for kontroll');
+  }
+  return testgrunnlag;
+}
+
+async function fetchAllTestresultat(
+  testgrunnlag: Testgrunnlag[]
+): Promise<ResultatManuellKontroll[]> {
+  const resultater = await Promise.all(
+    testgrunnlag.map((t) => fetchTestResults(t.id))
+  );
+  return resultater.flat();
+}
+
+// --- Testregel helpers ---
+
+function validatedTestreglar(
+  testreglarPromise: PromiseSettledResult<Testregel[]>
+): Testregel[] {
+  return assertFulfilled(testreglarPromise, 'Kunne ikkje hente testreglar');
+}
+
+function getTestreglarForTestgrunnlag(
+  testreglar: Testregel[],
+  testgrunnlag: Testgrunnlag
+): Testregel[] {
+  const ids = new Set(testgrunnlag.testreglar.map((tr) => tr.id));
+  return testreglar.filter((tr) => ids.has(tr.id));
+}
+
+// --- Testresultat helpers ---
+
+function getTestresultatForLoeysing(
+  testresultatPromise: PromiseSettledResult<ResultatManuellKontroll[]>,
+  testgrunnlagId: number,
+  loeysingId: number
+): ResultatManuellKontroll[] {
+  const all = assertFulfilled(
+    testresultatPromise,
+    `Kunne ikkje hente testresultat for id ${testgrunnlagId}`
+  );
+  return all.filter(
+    (tr) => tr.loeysingId === loeysingId && tr.testgrunnlagId === testgrunnlagId
+  );
+}
+
+
+// --- Loaders ---
 
 export const testLoader = async ({ params }: LoaderFunctionArgs) => {
   const kontrollId = Number(params?.id);
   validateKontrollParam(kontrollId);
 
-  const [kontrollMetadata] = await Promise.allSettled([
+  const [kontrollMetadataResult] = await Promise.allSettled([
     fetchKontrollTestmetadata(kontrollId),
   ]);
 
-  const kontrollmetadataValidated = kontrollmetataValidated(kontrollMetadata);
-
-  const innholdstypeTestingsList = getInnhaldstypeInTest(
-    kontrollmetadataValidated.innhaldstypeTesting
-  );
+  const metadata = assertFulfilled(
+    kontrollMetadataResult,
+    'Feil ved henting av kontroll metadata'
+  ) as KontrollTestingMetadata;
 
   return {
-    sideutvalTypeList: kontrollmetadataValidated.sideutvalList,
-    innhaldstypeTestingList: innholdstypeTestingsList,
+    sideutvalTypeList: metadata.sideutvalList,
+    innhaldstypeTestingList: getInnhaldstypeInTest(metadata.innhaldstypeTesting),
   };
 };
 
@@ -232,30 +180,57 @@ export const testOverviewLoader = async ({
   params,
 }: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
   const kontrollId = getIdFromParams(params?.id);
-  const [kontrollPromise, testgrunnlagPromise, styringsdataPromise] =
+
+  const [kontrollResult, testgrunnlagResult, styringsdataResult] =
     await Promise.allSettled([
       fetchKontroll(kontrollId),
       listTestgrunnlag(kontrollId),
       findStyringsdataForKontroll(kontrollId),
     ]);
-  const testgrunnlag = validatedTestgrunnlag(testgrunnlagPromise);
 
-  const kontroll = await validatedKontroll(kontrollPromise, kontrollId);
-  const resultater = await getTestresultatTestgrunnlag(testgrunnlag);
-  const loeysingWithSideutval = getLoeysingar(kontroll, testgrunnlag);
+  const testgrunnlag = validatedTestgrunnlag(testgrunnlagResult);
+  const kontroll = await validatedKontroll(kontrollResult, kontrollId);
+  const resultater = await fetchAllTestresultat(testgrunnlag);
+  const loeysingList = getLoeysingarForTestgrunnlag(kontroll, testgrunnlag);
 
-  const styringsdataRejected = styringsdataPromise.status === 'rejected';
-  const styringsdataLoeysing = styringsdataRejected
+  const styringsdataRejected = styringsdataResult.status === 'rejected';
+
+  const styringsdata = styringsdataRejected
     ? []
-    : styringsdataPromise.value.styringsdataLoeysing;
+    : (styringsdataResult as PromiseFulfilledResult<any>).value
+      .styringsdataLoeysing
+
+
+  const testoverviewElements: TestOverviewElement[] = testgrunnlag.flatMap((etTestgrunnlag) =>
+    [...groupSideutvalByLoeysing(etTestgrunnlag).entries()].map(([loeysingId, sideutval]) => {
+      const loeysingStyringsdata = filterStyringdataForLoeysing(styringsdata, loeysingId);
+
+      const filteredResults = filterResultaterForLoeysingTestgrunnlag(
+        resultater,
+        loeysingId,
+        etTestgrunnlag.id
+      );
+      return {
+        etTestgrunnlag: etTestgrunnlag,
+        loeysingNamn: findLoeysingNamn(loeysingList, loeysingId),
+        loeysingId,
+        testStatus: teststatus(filteredResults, etTestgrunnlag, loeysingId),
+        testType: viewTestType(
+          etTestgrunnlag,
+          sideutval.map((su) => su.id),
+          testgrunnlag
+        ),
+        styringsdataId: loeysingStyringsdata?.id ?? 0,
+        styringsdataStatus: getStyringsdataStatus(loeysingStyringsdata) ?? '',
+        testresultat: filteredResults,
+      } satisfies TestOverviewElement;
+    })
+  );
 
   return {
-    loeysingList: loeysingWithSideutval,
-    resultater: resultater.flat(),
-    testgrunnlag: testgrunnlag,
-    styringsdata: styringsdataLoeysing,
+    testgrunnlag,
     styringsdataError: styringsdataRejected,
-    kontrolltype: kontroll.kontrolltype,
+    testoverviewElements: testoverviewElements
   };
 };
 
@@ -266,7 +241,7 @@ export const testOverviewLoeysingLoader = async ({
   const testgrunnlagId = getIdFromParams(params?.testgrunnlagId);
   const loeysingId = getIdFromParams(params?.loeysingId);
 
-  const [kontrollPromise, testgrunnlagPromise, testResults, testreglarPromise] =
+  const [kontrollResult, testgrunnlagResult, testresultatResult, testreglarResult] =
     await Promise.allSettled([
       fetchKontroll(kontrollId),
       listTestgrunnlag(kontrollId),
@@ -274,34 +249,21 @@ export const testOverviewLoeysingLoader = async ({
       listTestreglarWithMetadata(),
     ]);
 
-  const testgrunnlag = getTestgrunnlag(testgrunnlagPromise, testgrunnlagId);
-  const testResultsForLoeysing = getTestresultsForLoeysing(
-    testResults,
+  const testgrunnlag = getTestgrunnlagById(testgrunnlagResult, testgrunnlagId);
+  const kontroll = await validatedKontroll(kontrollResult, kontrollId);
+  const testreglar = validatedTestreglar(testreglarResult);
+  const testResultatForLoeysing = getTestresultatForLoeysing(
+    testresultatResult,
     testgrunnlagId,
     loeysingId
   );
 
-  const testreglar = validatedTestreglar(testreglarPromise);
-
-  const kontroll = await validatedKontroll(kontrollPromise, kontrollId);
-  const sideutvalForLoeysing = getSideutvalForLoeysing(
-    testgrunnlag,
-    loeysingId
-  );
-  const testgrunnlagTestregelIds = getTestreglarIdTestgrunnlag(testgrunnlag);
-  const testreglarForLoeysing = getTestreglarMetadataForLoeysing(
-    testreglar,
-    testgrunnlagTestregelIds
-  );
-
-  const activeLoeysing = getActiveLoeysing(kontroll, loeysingId);
-
   return {
-    testResultatForLoeysing: testResultsForLoeysing,
-    sideutvalForLoeysing: sideutvalForLoeysing,
-    testreglarForLoeysing: testreglarForLoeysing,
-    testKeys: toTestKeys(testgrunnlag, testResultsForLoeysing),
-    activeLoeysing: activeLoeysing,
+    testResultatForLoeysing,
+    sideutvalForLoeysing: getSideutvalForLoeysing(testgrunnlag, loeysingId),
+    testreglarForLoeysing: getTestreglarForTestgrunnlag(testreglar, testgrunnlag),
+    testKeys: toTestKeys(testgrunnlag, testResultatForLoeysing),
+    activeLoeysing: getActiveLoeysing(kontroll, loeysingId),
     kontrollTitle: kontroll.tittel,
   };
 };

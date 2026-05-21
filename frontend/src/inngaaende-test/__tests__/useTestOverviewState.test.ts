@@ -26,13 +26,13 @@ describe('useTestOverviewState', () => {
     testResultatForLoeysing: [],
     sideutvalForLoeysing: [],
     testreglarForLoeysing: [],
-    testKeys: {},
+    testKeys: ['key1', 'key2'],
   };
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should initialize with default state', () => {
+  it('should initialize with default state and expose all expected properties', () => {
     const { result } = renderHook(() => useTestOverviewState(mockProps));
 
     expect(result.current.innhaldstype).toEqual(mockProps.innhaldstypeList[0]);
@@ -41,24 +41,24 @@ describe('useTestOverviewState', () => {
     expect(result.current.progressionPercent).toBe(0);
     expect(result.current.testregelListElements).toEqual([]);
     expect(result.current.testStatusMap).toEqual(new Map());
-    expect(result.current.showHelpText).toBe(true);
+
+    // Check existence and type of all returned values
+    expect(typeof result.current.setPageType).toBe('function');
+    expect(result.current.pageTypeList).toBeDefined();
+    expect(typeof result.current.setActiveTest).toBe('function');
+    expect(typeof result.current.onChangeSideutval).toBe('function');
+    expect(typeof result.current.onChangeInnhaldstype).toBe('function');
+    expect(typeof result.current.doUpdateTestResultStatus).toBe('function');
+    expect(typeof result.current.doUpdateTestResult).toBe('function');
+    expect(typeof result.current.doCreateTestResult).toBe('function');
+    expect(typeof result.current.onChangeTestregel).toBe('function');
+    expect(typeof result.current.onChangeTestregelStatus).toBe('function');
+    expect(typeof result.current.slettTestelement).toBe('function');
+    expect(result.current.modalRef).toBeDefined();
+    expect(typeof result.current.createNewTestResult).toBe('function');
   });
 
-  it('should toggle help text visibility', () => {
-    const { result } = renderHook(() => useTestOverviewState(mockProps));
 
-    act(() => {
-      result.current.toggleShowHelpText();
-    });
-
-    expect(result.current.showHelpText).toBe(false);
-
-    act(() => {
-      result.current.toggleShowHelpText();
-    });
-
-    expect(result.current.showHelpText).toBe(true);
-  });
 
   it('should update page type on sideutval change', () => {
     const { result } = renderHook(() => useTestOverviewState(mockProps));

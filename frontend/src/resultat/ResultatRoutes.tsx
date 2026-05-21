@@ -108,7 +108,7 @@ export const ResultRoutes: RouteObject = {
           index: true,
           element: <ResultatKontrollOversikt />,
           loader: ({ params }) =>
-            fetchKontrollResultat(parseInt(params.id as string)),
+            fetchKontrollResultat(Number.parseInt(params.id as string)),
           handle: { name: RESULTAT_KONTROLL.navn },
         },
         {

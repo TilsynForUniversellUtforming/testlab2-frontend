@@ -54,7 +54,7 @@
       color: inherit;
 
       &.disabled {
-        opacity: var(--fds-opacity-disabled);
+        opacity: var(--ds-opacity-disabled);
 
         button {
           cursor: not-allowed;

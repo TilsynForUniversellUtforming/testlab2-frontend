@@ -181,7 +181,7 @@ const ResultatTable = <T extends object>({
     return location.pathname.split('/').pop() ?? 'resultat';
   }
 
-  const [activeTab, setActiveTab] = useState<string>(getCurrentPath());
+  const [activeTab, setActiveTab] = useState<string>('resultat');
   const onChangeTabs = useCallback((tab: string) => {
     setActiveTab(tab);
     if (id !== undefined && loeysingId !== undefined) {
@@ -202,6 +202,7 @@ const ResultatTable = <T extends object>({
     columnVisibility,
     setColumnVisibility
   );
+
 
   const handleClickRetry = () => {
     table.toggleAllRowsSelected(false);
@@ -239,6 +240,7 @@ const ResultatTable = <T extends object>({
 
   const headerGroup = table.getHeaderGroups()[0];
 
+
   return (
     <div className="testlab-table">
       <ResultTableHeader
@@ -256,7 +258,8 @@ const ResultatTable = <T extends object>({
           actionsLabel={reportActions.actionsLabel}
         />
       )}
-      <Tabs value={activeTab} onChange={onChangeTabs}>
+
+      <Tabs defaultValue={'resultat'} onChange={onChangeTabs}>
         <Tabs.List>
           <Tabs.Tab value={'resultat'}>Resultat</Tabs.Tab>
           <Tabs.Tab value={'tema'}>Sortert på tema</Tabs.Tab>

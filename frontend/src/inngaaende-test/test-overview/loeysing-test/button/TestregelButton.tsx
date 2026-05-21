@@ -9,6 +9,7 @@ import {
   TestregelOverviewElement,
 } from '@test/types';
 import classnames from 'classnames';
+import { memo } from 'react';
 
 export interface Props {
   testregel: TestregelOverviewElement;
@@ -18,7 +19,7 @@ export interface Props {
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
 }
 
-const TestregelButton = ({
+const TestregelButton = memo(({
   onClick,
   testregel,
   isActive,
@@ -35,9 +36,7 @@ const TestregelButton = ({
         active: isActive,
         [status]: status,
       })}
-      onClick={() => {
-        onClick(testregel.id);
-      }}
+      onClick={() => onClick(testregel.id)}
       title={`${testregel.krav} ${testregel.name}`}
     >
       <div className="testregel-button-id">
@@ -58,6 +57,6 @@ const TestregelButton = ({
       testregelId={testregel.id}
     />
   </div>
-);
+));
 
 export default TestregelButton;
