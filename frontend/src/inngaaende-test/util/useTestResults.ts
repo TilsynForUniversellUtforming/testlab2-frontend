@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { isTestFinished } from '@test/util/testregelUtils';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { Testregel } from '@testreglar/api/types';
 import { ActiveTest } from '@test/types';

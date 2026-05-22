@@ -434,9 +434,9 @@
   button:focus {
     box-shadow: 0 0 0 var(--ds-color-neutral-border-strong)
       var(--ds-color-focus-inner);
-    outline: var(--ds-color-neutral-border-strong) solid
+    outline: var(--ds-border-width-focus) solid
       var(--ds-color-focus-outer);
-    outline-offset: var(--ds-color-neutral-border-strong);
+    outline-offset: var(--ds-border-width-focus);
   }
 }
 

@@ -176,11 +176,6 @@ const ResultatTable = <T extends object>({
         return 'resultat';
     }
   };
-
-  function getCurrentPath() {
-    return location.pathname.split('/').pop() ?? 'resultat';
-  }
-
   const [activeTab, setActiveTab] = useState<string>('resultat');
   const onChangeTabs = useCallback((tab: string) => {
     setActiveTab(tab);

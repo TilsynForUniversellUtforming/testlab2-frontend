@@ -3,7 +3,6 @@ import { Dropdown } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import { useState } from 'react';
-import style from './TypeDropdown.module.scss';
 
 interface Props {
   title: string;
@@ -12,6 +11,10 @@ interface Props {
   options: OptionType[];
 }
 
+type DropdownOptions = {
+  index: number;
+} & OptionType
+
 const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   const [show, setShow] = useState(false);
 
@@ -19,6 +22,11 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
     setShow(false);
     onChangeType(Number(typeId));
   };
+
+  const dropdownOptions: DropdownOptions[] = options.map((option, index) => ({
+    ...option,
+    index,
+  }));
 
   return (
     <div className="page-selector__dropdown">
@@ -33,9 +41,9 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
 
         <Dropdown placement="bottom-start" data-size="md">
           <Dropdown.List>
-            {options.map((option, index) => (
+            {dropdownOptions.map((option) => (
               <Dropdown.Item
-                key={index}
+                key={option.index}
                 onClick={() => handleButtonClick(String(option.value))}
                 className={classnames({
                   active: option.value === String(typeId),
