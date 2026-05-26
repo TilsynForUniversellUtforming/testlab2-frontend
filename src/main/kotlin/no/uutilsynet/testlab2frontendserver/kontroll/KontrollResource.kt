@@ -53,7 +53,7 @@ class KontrollResource(
         }
         .getOrElse {
           logger.error("Henting av alle kontroller feilet", it)
-          throw RuntimeException(it)
+          throw IllegalStateException(it)
         }
   }
 
@@ -65,7 +65,7 @@ class KontrollResource(
                     testingApiProperties.url + "/kontroller", opprettKontroll)
             val kontrollId =
                 location?.path?.substringAfterLast("/")?.toInt()
-                    ?: throw RuntimeException(
+                    ?: throw IllegalStateException(
                         "En ny kontroll ble opprettet, men vi fikk ikke noen location fra serveren.")
             mapOf("kontrollId" to kontrollId)
           }
@@ -87,7 +87,7 @@ class KontrollResource(
       runCatching { restTemplate.delete(testingApiProperties.url + "/kontroller/$id") }
           .getOrElse {
             logger.error("Sletting av kontroll feilet", it)
-            throw RuntimeException(it)
+            throw IllegalStateException(it)
           }
 
   @PutMapping("{id}")
