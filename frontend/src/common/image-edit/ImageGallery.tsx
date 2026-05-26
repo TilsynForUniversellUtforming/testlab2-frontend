@@ -68,25 +68,25 @@ const ImageGallery = ({
             )}
           </div>
         ))}
-        {/*<Dialog.Trigger>*/}
-        {/*<Dialog*/}
-        {/*  ref={modalRef}*/}
-        {/*  closedby='any'*/}
-        {/*  onClose={() => setActiveBilde(undefined)}*/}
-        {/*  style={{*/}
-        {/*    maxWidth: '1200px',*/}
-        {/*    width: 'fit-content',*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  <Heading>Resultat</Heading>*/}
-        {/*  <Dialog.Block>*/}
-        {/*    <img src={activeBilde?.bildeURI} alt="" />*/}
-        {/*    <Paragraph data-size="xs">*/}
-        {/*      Oppretta {formatDateString(String(activeBilde?.opprettet), true)}*/}
-        {/*    </Paragraph>*/}
-        {/*  </Dialog.Block>*/}
-        {/*</Dialog>*/}
-        {/*</Dialog.Trigger>*/}
+        <Dialog.Trigger>
+        <Dialog
+          ref={modalRef}
+          closedby='any'
+          onClose={() => setActiveBilde(undefined)}
+          style={{
+            maxWidth: '1200px',
+            width: 'fit-content',
+          }}
+        >
+          <Heading>Resultat</Heading>
+          <Dialog.Block>
+            <img src={activeBilde?.bildeURI} alt="" />
+            <Paragraph data-size="xs">
+              Oppretta {formatDateString(String(activeBilde?.opprettet), true)}
+            </Paragraph>
+          </Dialog.Block>
+        </Dialog>
+        </Dialog.Trigger>
       </div>
     </>
   );

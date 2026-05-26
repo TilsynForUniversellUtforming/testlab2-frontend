@@ -31,7 +31,7 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   return (
     <div className="page-selector__dropdown">
       <Dropdown.TriggerContext>
-        <Dropdown.Trigger>
+        <Dropdown.Trigger onClick={() => setShow((prev) => !prev)}>
           {title}
           <ChevronDownIcon
             className="chevron-icon"
