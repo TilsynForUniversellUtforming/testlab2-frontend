@@ -47,11 +47,16 @@ const ImageGallery = ({
         {bilder.map((bilde, index) => (
           <div className="image-gallery-item" key={bilde.thumbnailURI}>
             <Button
+              command="show-modal"
+              commandFor={`modal-${activeBilde?.id}`}
               variant={ButtonVariant.Quiet}
               onClick={() => handleOpenModal(bilde)}
               title="Trykk for å se full storleik"
               icon
-              data-size="lg"><img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} /></Button>
+              data-size="lg"
+            >
+              <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
+            </Button>
             {heading && (
               <div className="image-gallery-item__delete">
                 <ConfirmModalButton
@@ -68,25 +73,25 @@ const ImageGallery = ({
             )}
           </div>
         ))}
-        <Dialog.Trigger>
-        <Dialog
-          ref={modalRef}
-          closedby='any'
-          onClose={() => setActiveBilde(undefined)}
-          style={{
-            maxWidth: '1200px',
-            width: 'fit-content',
-          }}
-        >
-          <Heading>Resultat</Heading>
-          <Dialog.Block>
-            <img src={activeBilde?.bildeURI} alt="" />
-            <Paragraph data-size="xs">
-              Oppretta {formatDateString(String(activeBilde?.opprettet), true)}
-            </Paragraph>
-          </Dialog.Block>
-        </Dialog>
-        </Dialog.Trigger>
+          <Dialog
+            id={`modal-${activeBilde?.id}`}
+            ref={modalRef}
+            closedby="any"
+            onClose={() => setActiveBilde(undefined)}
+            style={{
+              maxWidth: '1200px',
+              width: 'fit-content',
+            }}
+          >
+            <Heading>Resultat</Heading>
+            <Dialog.Block>
+              <img src={activeBilde?.bildeURI} alt="" />
+              <Paragraph data-size="xs">
+                Oppretta{' '}
+                {formatDateString(String(activeBilde?.opprettet), true)}
+              </Paragraph>
+            </Dialog.Block>
+          </Dialog>
       </div>
     </>
   );
