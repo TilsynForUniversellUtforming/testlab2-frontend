@@ -1,11 +1,11 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
+import java.time.LocalDate
 import no.uutilsynet.testlab2.constants.Kontrolltype
 import no.uutilsynet.testlab2.constants.Sakstype
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.InnhaldstypeTesting
 import no.uutilsynet.testlab2frontendserver.utval.UtvalResource
-import java.time.LocalDate
 
 data class Kontroll(
     val id: Int,
