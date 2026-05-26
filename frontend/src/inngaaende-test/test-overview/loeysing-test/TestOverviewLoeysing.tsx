@@ -7,8 +7,11 @@ import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
+import { useShowHelpText } from '@test/util/useShowHelpText';
+
 
 const TestOverviewLoeysing = () => {
+
   const { testgrunnlagId: testgrunnlagIdParam, loeysingId: loeysingIdParam } =
     useParams();
   const loeysingId = Number(loeysingIdParam);
@@ -25,22 +28,23 @@ const TestOverviewLoeysing = () => {
     kontrollTitle,
     testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
-  const [alert, setAlert, modalRef] = useAlertModal();
+  const [alert, raiseAlert, modalRef] = useAlertModal();
+
+  const { showHelpText, toggleShowHelpText } = useShowHelpText();
+
 
   const {
     innhaldstype,
+    onChangeInnhaldstype,
     pageType,
+    pageTypeList,
+    onChangeSideutval,
     activeTest,
     setActiveTest,
     testFerdig,
     progressionPercent,
     testregelListElements,
     testStatusMap,
-    showHelpText,
-    toggleShowHelpText,
-    onChangeSideutval,
-    onChangeInnhaldstype,
-    pageTypeList,
     doUpdateTestResult,
     onChangeTestregel,
     onChangeTestregelStatus,
@@ -55,25 +59,24 @@ const TestOverviewLoeysing = () => {
     sideutvalForLoeysing,
     testreglarForLoeysing,
     testKeys,
+    raiseAlert,
   });
 
   const handleSetInactiveTest = useCallback(() => {
     setActiveTest(undefined);
-  }, []);
+  }, [setActiveTest]);
 
   useEffect(() => {
     if (alert) {
       modalRef.current?.showModal();
     }
-  }, [alert]);
-
-  const loeysingNamn = activeLoeysing.namn;
+  }, [alert, modalRef]);
 
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
         title={kontrollTitle}
-        currentLoeysingName={loeysingNamn}
+        currentLoeysingName={activeLoeysing.namn}
         sideutvalList={pageTypeList}
         sideutval={pageType}
         onChangeSideutval={onChangeSideutval}
@@ -81,7 +84,7 @@ const TestOverviewLoeysing = () => {
         innhaldstype={innhaldstype}
         onChangeInnhaldstype={onChangeInnhaldstype}
       />
-      {testFerdig && <TestFerdig loeysingNamn={loeysingNamn} />}
+      {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
       <div className="manual-test-wrapper">
         <div className="manual-test-buttons">
           <LoeysingTestContent
@@ -101,15 +104,15 @@ const TestOverviewLoeysing = () => {
             showHelpText={showHelpText}
           />
         </div>
-        {alert && (
-          <AlertModal
-            ref={modalRef}
-            severity={alert.severity}
-            title={alert.title}
-            message={alert.message}
-            clearMessage={alert.clearMessage}
-          />
-        )}
+         {alert && (
+           <AlertModal
+             ref={modalRef}
+             severity={alert.severity}
+             title={alert.title}
+             message={alert.message}
+             clearMessage={alert.clearMessage}
+           />
+         )}
       </div>
     </div>
   );

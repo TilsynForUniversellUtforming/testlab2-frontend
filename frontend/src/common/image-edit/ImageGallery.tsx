@@ -35,8 +35,6 @@ const ImageGallery = ({
     return null;
   }
 
-  console.log(bilder)
-
   return (
     <>
       <TestlabDivider />
@@ -53,11 +51,7 @@ const ImageGallery = ({
               onClick={() => handleOpenModal(bilde)}
               title="Trykk for å se full storleik"
               icon
-              data-size="lg"
-              asChild
-            >
-              <img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} />
-            </Button>
+              data-size="lg"><img src={bilde.thumbnailURI} alt={`Bilde nr. ${index + 1}`} /></Button>
             {heading && (
               <div className="image-gallery-item__delete">
                 <ConfirmModalButton

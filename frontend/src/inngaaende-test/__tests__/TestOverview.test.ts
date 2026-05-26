@@ -1,13 +1,16 @@
 import { ResultatManuellKontroll } from '@test/api/types';
 import { describe, expect, test } from 'vitest';
 
-import { viewTestType, visRetestKnapp } from '../test-overview/TestOverview';
 import {
   createOpprinneligTest,
   createResultatManuellKontroll,
   createResultatManuellKontrollForLoeysing,
   createRetest,
 } from './testdata';
+import {
+  viewTestType,
+  visRetestKnapp,
+} from '@test/test-overview/util/testOverviewUtils';
 
 describe('visRetestKnapp', () => {
   test('should return true when status is "ferdig"', () => {

@@ -40,18 +40,18 @@
   align-items: center;
 
   &-instructions {
-    border: 0.125rem dotted var(--fds-brand-alt1-300);
+    border: 0.125rem dotted var(--ds-color-brand1-border-default);
     padding: 3rem;
     text-align: center;
     max-width: 80vw;
     max-height: 80vh;
 
     &.drag-over {
-      background: var(--fds-brand-alt1-100);
+      background: var(--ds-color-brand1-background-default);
     }
 
     &.file {
-      border: 1px solid var(--fds-brand-alt1-300);
+      border: 1px solid var(--ds-color-brand1-border-default);
       padding: 0;
       overflow: auto;
     }
@@ -64,9 +64,9 @@
   &-manual-link {
     text-decoration: underline;
     cursor: pointer;
-    color: var(--fds-semantic-text-action-default);
+    color: var(--ds-color-neutral-text-default);
     &:hover {
-      color: var(--fds-semantic-text-action-hover);
+      color: var(--ds-color-neutral-base-hover);
       text-decoration-thickness: max(2px, 0.125rem, 0.12em);
     }
   }

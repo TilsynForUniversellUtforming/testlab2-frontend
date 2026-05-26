@@ -7,7 +7,7 @@
     transform: translateX(-50%);
     border-width: 15px;
     border-style: solid;
-    border-color: var(--ds-color-surface-first-light-active) transparent
+    border-color: var(--ds-color-brand1-surface-active) transparent
       transparent transparent;
   }
 
@@ -38,15 +38,15 @@
   max-width: 26rem;
 
   &.ferdig {
-    background-color: var(--ds-color-surface-third-light-hover);
+    background-color: var(--ds-color-success-surface-tinted);
     .testregel-button-id {
-      background-color: var(--ds-color-surface-third-dark);
+      background-color: var(--ds-color-success-base-active);
     }
 
     &:hover {
-      background-color: var(--ds-color-surface-third-light-active);
+      background-color: var(--ds-color-success-surface-hover);
       .testregel-button-id {
-        background-color: var(--ds-color-surface-third-dark);
+        background-color: var(--ds-color-success-base-hover);
       }
     }
   }
@@ -66,36 +66,36 @@
   }
 
   &.under-arbeid {
-    background-color: var(--ds-color-surface-neutral-subtle);
+    background-color: var(--ds-color-neutral-surface-default);
     .testregel-button-id {
-      background-color: var(--ds-color-action-default);
+      background-color: var(--ds-color-info-base-active);
     }
 
     &:hover {
-      background-color: var(--ds-color-surface-neutral-subtle-hover);
+      background-color: var(--ds-color-neutral-surface-hover);
       .testregel-button-id {
-        background-color: var(--ds-color-action-default);
+        background-color: var(--ds-color-info-base-hover);
       }
     }
   }
 
   &.active {
-    background-color: var(--ds-color-surface-first-light);
+    background-color: var(--ds-color-brand1-surface-tinted);
     .testregel-button-id {
-      background-color: var(--ds-color-surface-first-light-active);
+      background-color: var(--ds-color-brand1-surface-active);
     }
 
     &:hover {
-      background-color: var(--ds-color-surface-first-light-hover);
+      background-color: var(--ds-color-brand1-surface-hover);
       .testregel-button-id {
-        background-color: var(--ds-color-surface-first-light-active);
+        background-color: var(--ds-color-brand1-base-hover);
       }
     }
   }
 
   &-id {
-    background-color: var(--ds-color-border-action-first-subtle-hover);
-    color: var(--ds-color-surface-neutral-default);
+    background-color: var(--ds-color-success-border-subtle);
+    color: var(--ds-color-neutral-surface-default);
     padding: 2rem 1rem 1rem 1rem;
     display: flex;
     align-items: start;
@@ -122,7 +122,7 @@
     box-shadow: 0 0 2px;
     background-color: var(--ds-color-surface-neutral-subtle-hover);
     .testregel-button-id {
-      background-color: var(--ds-color-action-hover);
+      background-color: var(--ds-color-info-surface-hover);
     }
   }
 

@@ -9,11 +9,11 @@
   &__list {
     padding: 0;
     list-style: none;
-    box-shadow: var(--fds-shadow-medium);
+    box-shadow: var(--ds-shadow-md);
     width: 100%;
     position: absolute;
     z-index: 9999;
-    background-color: var(--fds-semantic-background-default);
+    background-color: var(--ds-color-neutral-background-default);
     margin: 0.5rem 0 0;
     overflow: visible;
     &-item {
@@ -21,7 +21,7 @@
       align-items: stretch;
       border-radius: 3px;
       &:hover {
-        background-color: var(--fds-semantic-surface-neutral-subtle-hover);
+        background-color: var(--ds-color-neutral-surface-hover);
       }
 
       .button-wrapper {
@@ -41,7 +41,7 @@
       background-color: transparent;
       transition: color 0.2s;
       cursor: pointer;
-      color: var(--fds-semantic-text-neutral-default);
+      color: var(--ds-color-neutral-text-default);
       font-size: smaller;
       text-align: start;
       &-title {

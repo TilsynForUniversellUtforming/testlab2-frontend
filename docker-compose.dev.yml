@@ -34,7 +34,7 @@ services:
   kravregister:
     image: ${DOCKER_REGISTRY}/testlab2-krav:latest
     ports:
-      - "8002:8080"
+      - "8002:8002"
     networks:
       - dev_network
     environment:
@@ -57,6 +57,17 @@ services:
       SPRING_DATASOURCE_PASSWORD: Passw0rd
       LOEYSINGSREGISTER_HOST: loeysingsregister
       KRAVREGISTER_HOST: kravregister
+
+  resultatregister:
+    image: ${DOCKER_REGISTRY}/testlab2-resultat:latest
+    ports:
+      - "8085:8085"
+    networks:
+      - dev_network
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres?currentSchema=testlab2_resultat'
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: Passw0rd
 
 volumes:
   postgres:

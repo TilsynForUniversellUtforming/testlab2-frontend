@@ -14,17 +14,14 @@ interface Props {
 }
 
 const TestStatistics = ({ resultatliste, loeysingId, testgrunnlag }: Props) => {
-  const resultat = resultatliste.filter(
-    (r) => r.loeysingId === loeysingId && r.testgrunnlagId === testgrunnlag.id
-  );
   const percentSideutval = progressionForTestgrunnlagSideutval(
     testgrunnlag,
-    resultat,
+    resultatliste,
     loeysingId
   );
   const percentInnhaldstype = progressionForTestgrunnlagInnhaldstype(
     testgrunnlag,
-    resultat,
+    resultatliste,
     loeysingId
   );
 

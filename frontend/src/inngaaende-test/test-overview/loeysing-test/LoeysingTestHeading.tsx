@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
 import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
 import { PageType } from '@test/types';
@@ -47,4 +48,4 @@ const LoeysingTestHeading = ({
   );
 };
 
-export default LoeysingTestHeading;
+export default memo(LoeysingTestHeading);

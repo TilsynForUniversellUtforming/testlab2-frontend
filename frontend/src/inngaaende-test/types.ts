@@ -45,12 +45,10 @@ export type TestResultUpdate = {
 };
 
 export type TestOverviewLoaderData = {
-  loeysingList: Loeysing[];
-  resultater: ResultatManuellKontroll[];
   testgrunnlag: Testgrunnlag[];
-  styringsdata: StyringsdataListElement[];
   styringsdataError: boolean;
-  kontrolltype: KontrollType;
+  testoverviewElements: TestOverviewElement[];
+
 };
 
 export type TestOverviewLoaderResponse = {
@@ -83,5 +81,16 @@ export type Testgrunnlag = {
   type: 'OPPRINNELIG_TEST' | 'RETEST';
   datoOppretta: string;
 };
+
+export type TestOverviewElement = {
+  etTestgrunnlag: Testgrunnlag;
+  loeysingNamn: string;
+  loeysingId: number;
+  testStatus: ManuellTestStatus;
+  testType: string;
+  styringsdataId: number;
+  styringsdataStatus: string;
+  testresultat: ResultatManuellKontroll[];
+}
 
 export class TestregelTestingStatus {}

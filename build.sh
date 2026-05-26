@@ -5,17 +5,22 @@ source .env
 TESTINGAPP_PATH="$(echo $TESTINGAPP_PATH | tr -d '\r')"
 KRAVAPP_PATH="$(echo $KRAVAPP_PATH | tr -d '\r')"
 LOEYSINGSREGISTERAPP_PATH="$(echo $LOEYSINGSREGISTERAPP_PATH | tr -d '\r')"
+RESULTATREGISTERAPP_PATH="$(echo $RESULTATREGISTERAPP_PATH | tr -d '\r')"
+
 BASE="$(pwd )"
 
 echo "LOEYSINGSREGISTER_PATH: $LOEYSINGSREGISTERAPP_PATH"
 echo "TESTINGAPP_PATH: $TESTINGAPP_PATH"
+echo "KRAVAPP_PATH: $KRAVAPP_PATH"
+echo "RESULTATREGISTERAPP_PATH: $RESULTATREGISTERAPP_PATH"
+# shellcheck disable=SC2086
 echo $LOEYSINGSREGISTERAPP_PATH
 
-echo $BASE
+echo "$BASE"
 
 buildFrontend() {
     echo "Building Frontend"
-    echo "$(pwd)"
+    pwd
     mvn install -DskipTests
      mvn jib:dockerBuild
     echo "Frontend built successfully"
@@ -23,7 +28,7 @@ buildFrontend() {
 
 buildReact() {
     echo "Building React"
-    echo "$(pwd)"
+    pwd
     cd $BASE/frontend
     npm ci
     npm run build
@@ -36,7 +41,7 @@ buildReact() {
 buildTesting() {
     echo "Building Testing App"
     cd $TESTINGAPP_PATH
-        echo "$(pwd)"
+    pwd
     mvn install -DskipTests
     echo "Testing App built successfully"
     echo "Build local testing-image"
@@ -46,7 +51,7 @@ buildTesting() {
 buildKrav() {
     echo "Building Krav"
     cd $KRAVAPP_PATH
-    echo "$(pwd)"
+    pwd
     mvn install -DskipTests
     echo "Krav built successfully"
     echo "Build local krav-image"
@@ -56,15 +61,26 @@ buildKrav() {
 buildLoeysingsregister() {
     echo "Building Loeysingsregister"
     cd $LOEYSINGSREGISTERAPP_PATH
-    echo "$(pwd)"
+    pwd
     mvn install -DskipTests
     echo "Loeysingsregister built successfully"
     echo "Build local loeysingsregister-image"
     mvn jib:dockerBuild
 }
 
+buildResultatregister() {
+    echo "Building Resultatregister"
+    cd $RESULTATREGISTERAPP_PATH
+    pwd
+    mvn install -DskipTests
+    echo "Resultatregister built successfully"
+    echo "Build local resultatregister-image"
+    mvn jib:dockerBuild
+}
+
 #buildKrav
 #buildLoeysingsregister
 #buildTesting
-buildReact
-buildFrontend
+#buildReact
+#buildFrontend
+buildResultatregister

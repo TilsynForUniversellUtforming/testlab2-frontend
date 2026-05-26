@@ -1,5 +1,5 @@
 import { AlertProps } from '@common/alert/AlertTimed';
-import { Alert, Dialog } from '@digdir/designsystemet-react';
+import { Alert, Dialog, Heading } from '@digdir/designsystemet-react';
 import { forwardRef } from 'react';
 
 export interface AlertModalProps extends AlertProps {
@@ -12,8 +12,10 @@ const AlertModal = forwardRef<HTMLDialogElement, AlertModalProps>(
     modalRef
   ) => (
     <Dialog.TriggerContext>
-      <Dialog.Trigger>Open Dialog</Dialog.Trigger>
-      <Dialog>
+      <Dialog ref={modalRef} onClose={clearMessage}>
+        <Heading>
+          {title}
+        </Heading>
         <Alert
           data-color={severity}
           role={severity === 'success' ? 'status' : undefined}

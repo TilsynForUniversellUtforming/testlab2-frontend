@@ -5,6 +5,7 @@ import { Testgrunnlag } from '@test/types';
 import {
   Bilde,
   CreateTestResultat,
+  DeleteTestgrunnlagRequest,
   ResultatManuellKontroll,
   RetestRequest,
 } from './types';
@@ -163,9 +164,9 @@ export const postTestgrunnlag = async (nyttTestgrunnlag: {
   );
 };
 
-export const deleteTestgrunnlag = async (testgrunnlag: Testgrunnlag) => {
+export const deleteTestgrunnlag = async (deleteRetestRequest: DeleteTestgrunnlagRequest) => {
   return await fetchWithCsrf(
-    `${kontrollApiBaseUrl}/${testgrunnlag.kontrollId}/testgrunnlag/${testgrunnlag.id}`,
+    `${kontrollApiBaseUrl}/${deleteRetestRequest.kontrollId}/testgrunnlag/${deleteRetestRequest.testgrunnlagId}`,
     {
       method: 'DELETE',
     }

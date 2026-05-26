@@ -5,8 +5,12 @@
     gap: 1rem;
   }
 
+  li:hover {
+    cursor: pointer;
+  }
+
   &__dropdown .active {
-    background-color: var(--ds-color-surface-first-light-active);
+    background-color: var(--ds-color-brand1-surface-active);
     border-radius: 5px;
     > button {
       color: var(--ds-color-background-default);
