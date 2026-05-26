@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 import { act } from 'react';
 
+
 vi.mock('@test/util/testregelUtils', () => ({
   isTestFinished: vi.fn().mockReturnValue(false),
   getPageTypeList: vi.fn().mockReturnValue([{ sideId: 1, name: 'Page 1' }]),
@@ -18,16 +19,17 @@ vi.mock('@common/alert/useAlertModal', () => ({
 }));
 
 describe('useTestOverviewState', () => {
-  const mockProps = {
-    testgrunnlagId: 1,
-    loeysingId: 2,
-    innhaldstypeList: [{ id: 1, innhaldstype: 'Type 1' }],
-    sideutvalTypeList: [{ id: 1, type: 'Side 1' }],
-    testResultatForLoeysing: [],
-    sideutvalForLoeysing: [],
-    testreglarForLoeysing: [],
-    testKeys: ['key1', 'key2'],
-  };
+    const mockProps = {
+      testgrunnlagId: 1,
+      loeysingId: 2,
+      innhaldstypeList: [{ id: 1, innhaldstype: 'Type 1' }],
+      sideutvalTypeList: [{ id: 1, type: 'Side 1' }],
+      testResultatForLoeysing: [],
+      sideutvalForLoeysing: [],
+      testreglarForLoeysing: [],
+      testKeys: ['key1', 'key2'],
+      raiseAlert: mockSetAlert,
+    };
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -54,7 +56,6 @@ describe('useTestOverviewState', () => {
     expect(typeof result.current.onChangeTestregel).toBe('function');
     expect(typeof result.current.onChangeTestregelStatus).toBe('function');
     expect(typeof result.current.slettTestelement).toBe('function');
-    expect(result.current.modalRef).toBeDefined();
     expect(typeof result.current.createNewTestResult).toBe('function');
   });
 

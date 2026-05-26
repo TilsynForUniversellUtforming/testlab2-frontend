@@ -4,10 +4,11 @@ import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestC
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 import { useShowHelpText } from '@test/util/useShowHelpText';
+
 
 const TestOverviewLoeysing = () => {
 
@@ -27,9 +28,10 @@ const TestOverviewLoeysing = () => {
     kontrollTitle,
     testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
-  const [alert, , modalRef] = useAlertModal();
+  const [alert, raiseAlert, modalRef] = useAlertModal();
 
   const { showHelpText, toggleShowHelpText } = useShowHelpText();
+
 
   const {
     innhaldstype,
@@ -57,6 +59,7 @@ const TestOverviewLoeysing = () => {
     sideutvalForLoeysing,
     testreglarForLoeysing,
     testKeys,
+    raiseAlert,
   });
 
   const handleSetInactiveTest = useCallback(() => {
@@ -101,15 +104,15 @@ const TestOverviewLoeysing = () => {
             showHelpText={showHelpText}
           />
         </div>
-        {alert && (
-          <AlertModal
-            ref={modalRef}
-            severity={alert.severity}
-            title={alert.title}
-            message={alert.message}
-            clearMessage={alert.clearMessage}
-          />
-        )}
+         {alert && (
+           <AlertModal
+             ref={modalRef}
+             severity={alert.severity}
+             title={alert.title}
+             message={alert.message}
+             clearMessage={alert.clearMessage}
+           />
+         )}
       </div>
     </div>
   );

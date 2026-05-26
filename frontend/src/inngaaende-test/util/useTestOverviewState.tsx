@@ -8,12 +8,12 @@ import {
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
 import { ResultatManuellKontroll } from '@test/api/types';
-import useAlertModal from '@common/alert/useAlertModal';
+
 import { usePageType } from '@test/util/usePageType';
 import { useTestResults } from '@test/util/useTestResults';
 import { useTestResultatActions } from '@test/util/useTestResultatActions';
 import { useTestregelSelection } from '@test/util/useTestregelSelection';
-import { AlertModalProps } from '@common/alert/AlertModal';
+import { Severity } from '@common/types';
 
 interface UseTestOverviewStateProps {
   testgrunnlagId: number;
@@ -24,34 +24,21 @@ interface UseTestOverviewStateProps {
   sideutvalForLoeysing: Sideutval[];
   testreglarForLoeysing: Testregel[];
   testKeys: string[];
-  alertModalProps: AlertModalProps;
+  raiseAlert: (severity: Severity, title: string, message: string) => void;
 }
 
-export const useTestOverviewState = (
-  p0: {
-    testgrunnlagId: number;
-    loeysingId: number;
-    innhaldstypeList: InnhaldstypeTesting[];
-    sideutvalTypeList: SideutvalType[];
-    testResultatForLoeysing: ResultatManuellKontroll[];
-    sideutvalForLoeysing: Sideutval[];
-    testreglarForLoeysing: Testregel[];
-    testKeys: string[];
-  },
-  p1: unknown,
-  {
-    testgrunnlagId,
-    loeysingId,
-    innhaldstypeList,
-    sideutvalTypeList,
-    testResultatForLoeysing,
-    sideutvalForLoeysing,
-    testreglarForLoeysing,
-    testKeys,
-  }: UseTestOverviewStateProps
-) => {
+export const useTestOverviewState = ({
+  testgrunnlagId,
+  loeysingId,
+  innhaldstypeList,
+  sideutvalTypeList,
+  testResultatForLoeysing,
+  sideutvalForLoeysing,
+  testreglarForLoeysing,
+  testKeys,
+  raiseAlert,
+}: UseTestOverviewStateProps) => {
   const [innhaldstype, setInnhaldstype] = useState(innhaldstypeList[0]);
-  const [alert, raiseAlert, modalRef] = useAlertModal();
 
   const { testResults, activeTest, setActiveTest, processData } =
     useTestResults({
@@ -175,8 +162,6 @@ export const useTestOverviewState = (
     onChangeTestregel,
     onChangeTestregelStatus,
     slettTestelement,
-    modalRef,
-    alert,
     createNewTestResult,
   };
 };
