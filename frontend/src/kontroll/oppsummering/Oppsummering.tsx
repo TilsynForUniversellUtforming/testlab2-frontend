@@ -99,19 +99,22 @@ export function Oppsummering() {
   }
 
   const loeysingIdList = kontroll.utval?.loeysingar?.map((l) => l.id) ?? [];
-  const sideutvalLoeysingIdList = kontroll.sideutvalList.map(
-    (su) => su.loeysingId
+  const sideutvalLoeysingIdList = new Set(
+    kontroll.sideutvalList.map((su) => su.loeysingId)
   );
 
   const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
 
-  const isFinished =
+  const isReady =
     loeysingIdList.length > 0 &&
     isDefined(kontroll.testreglar?.testregelList) &&
     (isForenkla ||
       loeysingIdList.every((loeysingId) =>
-        sideutvalLoeysingIdList.includes(loeysingId)
+        sideutvalLoeysingIdList.has(loeysingId)
       ));
+
+  console.log(isReady);
+  console.log(kontroll.testreglar?.testregelList);
 
   return (
     <section className={kontrollClasses.kontrollSection}>
@@ -210,7 +213,7 @@ export function Oppsummering() {
         >
           Tilbake
         </Button>
-        {isFinished && (
+        {isReady && (
           <Link
             to={
               isForenkla

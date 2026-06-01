@@ -28,7 +28,9 @@ class TestresultatAPIClient(
   ): Result<ResultatManuellKontroll> = runCatching {
     val location =
         restTemplate.postForLocation(testresultUrl, createTestResultat)
-            ?: throw IllegalStateException("Vi fikk ikkje location fra $testresultUrl")
+      checkNotNull(location) {
+        "Vi fikk ikkje location for det nye testresultatet fra serveren"
+      }
     restTemplate.getForObject(location)
   }
 

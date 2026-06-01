@@ -5,20 +5,16 @@ import { getTestStatusCounts } from './util/testOverviewUtils';
 import classes from './test-overview.module.css';
 
 interface Props {
-  testgrunnlag: Testgrunnlag;
-  resultater: ResultatManuellKontroll[];
-  loeysingId: number;
+  total: number;
+  finished: number;
+  testing: number;
+  pending: number;
 }
 
-const TestStatusChart = ({ testgrunnlag, resultater, loeysingId }: Props) => {
-  const { total, finished, testing, pending } = getTestStatusCounts(
-    testgrunnlag,
-    resultater,
-    loeysingId
-  );
-
+const TestStatusChart = ({ total, finished, testing, pending }: Props) => {
   const percentage = (count: number) => Math.round((count / total) * 100);
-  const statusText = (state: string, count: number) => `${state} (${count} av ${total})`;
+  const statusText = (state: string, count: number) =>
+    `${state} (${count} av ${total})`;
 
   return (
     <div className={classes.statusContainer}>

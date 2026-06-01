@@ -236,7 +236,6 @@ const VelgTestreglar = () => {
           </div>
           {alert && <Alert data-color={alert.severity}>{alert.message}</Alert>}
           <LagreOgNeste
-            testStarta={testStatus === 'Started'}
             sistLagret={actionData?.sistLagret}
             onClickLagreKontroll={lagreKontroll(false)}
             onClickNeste={lagreKontroll(true)}

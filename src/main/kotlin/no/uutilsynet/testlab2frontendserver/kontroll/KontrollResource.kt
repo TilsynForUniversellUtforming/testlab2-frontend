@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForEntity
 
 typealias Orgnummer = String
 
@@ -77,8 +78,9 @@ class KontrollResource(
   @GetMapping("{id}")
   fun getKontroll(@PathVariable id: Int): ResponseEntity<*> {
     val responseEntity =
-        restTemplate.getForEntity(
-            testingApiProperties.url + "/kontroller/$id", Kontroll::class.java)
+        restTemplate.getForEntity<Kontroll>(
+            testingApiProperties.url + "/kontroller/$id"
+        )
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
 

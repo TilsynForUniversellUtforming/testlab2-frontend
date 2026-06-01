@@ -2,7 +2,6 @@ import AlertTimed from '@common/alert/AlertTimed';
 import useAlert from '@common/alert/useAlert';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import { ButtonVariant } from '@common/types';
-import { isEmpty } from '@common/util/arrayUtils';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import {
   Alert,
@@ -11,11 +10,7 @@ import {
   Paragraph,
   Tag,
 } from '@digdir/designsystemet-react';
-import {
-  DeleteTestgrunnlagRequest,
-  ResultatManuellKontroll,
-  RetestRequest,
-} from '@test/api/types';
+import { DeleteTestgrunnlagRequest, RetestRequest } from '@test/api/types';
 import TestStatistics from '@test/test-overview/TestStatistics';
 import { TEST_LOEYSING_KONTROLL } from '@test/TestingRoutes';
 import { ManuellTestStatus, TestOverviewLoaderData } from '@test/types';
@@ -30,13 +25,7 @@ import {
 import { KlageType } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
-import {
-  getStyringsdataPath,
-  hasLoeysingBrot,
-  getJobstatus,
-  visRetestKnapp,
-  visSlettKnapp,
-} from './util/testOverviewUtils';
+import { getStyringsdataPath, getJobstatus } from './util/testOverviewUtils';
 
 const TestOverview = () => {
   const { id } = useParams();
@@ -44,7 +33,7 @@ const TestOverview = () => {
 
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
-  const { testgrunnlag, styringsdataError, testoverviewElements } =
+  const { styringsdataError, testgrunnlagOverviewElements } =
     useLoaderData() as TestOverviewLoaderData;
   const submit = useSubmit();
 
@@ -72,12 +61,7 @@ const TestOverview = () => {
   function retest(
     testgrunnlagId: number,
     loeysingId: number,
-    testresultat: ResultatManuellKontroll[]
   ) {
-    const rs = hasLoeysingBrot(testresultat);
-    if (isEmpty(rs)) {
-      console.debug('ingen brot');
-    } else {
       const retestRequest: RetestRequest = {
         originalTestgrunnlagId: testgrunnlagId,
         kontrollId: kontrollId,
@@ -85,7 +69,6 @@ const TestOverview = () => {
       };
 
       submit(retestRequest, { method: 'post', encType: 'application/json' });
-    }
   }
 
   function slett(testgrunnlagId: number, kontrollId: number): void {
@@ -102,7 +85,7 @@ const TestOverview = () => {
         {styringsdataError && (
           <Alert data-color="danger">Kunne ikkje hente styringsdata</Alert>
         )}
-        {testoverviewElements.length === 0 && (
+        {testgrunnlagOverviewElements.length === 0 && (
           <Alert data-color="warning">
             <Heading level={3} data-size="xs">
               Ingen testgrunnlag for test
@@ -113,16 +96,18 @@ const TestOverview = () => {
             </Paragraph>
           </Alert>
         )}
-        {testoverviewElements.map((element) => {
+        {testgrunnlagOverviewElements.map((element) => {
           const {
-            etTestgrunnlag,
+            testgrunnlagId,
             loeysingId,
             loeysingNamn,
-            testStatus,
-            testType,
+            testgrunnlagtype,
             styringsdataId,
             styringsdataStatus,
-            testresultat,
+            status,
+            teststatistics,
+            kanReteste,
+            kanSlette,
           } = element;
           const styringsdataPath = getStyringsdataPath(
             kontrollId,
@@ -132,12 +117,12 @@ const TestOverview = () => {
 
           return (
             <div
-              key={`${etTestgrunnlag.id}/${loeysingId}`}
+              key={`${testgrunnlagId}/${loeysingId}`}
               className={classes.loeysingButton}
             >
               <div className={classes.loeysingButtonTag}>
                 <TestlabStatusTag<ManuellTestStatus>
-                  status={testStatus}
+                  status={status}
                   colorMapping={{
                     second: ['under-arbeid'],
                     info: ['ikkje-starta'],
@@ -146,14 +131,14 @@ const TestOverview = () => {
                   data-size="sm"
                 />
                 <TestStatusChart
-                  testgrunnlag={etTestgrunnlag}
-                  resultater={testresultat}
-                  loeysingId={loeysingId}
+                  total={teststatistics.total}
+                  finished={teststatistics.ferdig}
+                  testing={teststatistics.underArbeid}
+                  pending={teststatistics.ikkjeStarta}
                 />
                 <TestStatistics
-                  resultatliste={testresultat}
-                  loeysingId={loeysingId}
-                  testgrunnlag={etTestgrunnlag}
+                  percentSideutval={teststatistics.percentagePerSide}
+                  percentInnhaldstype={teststatistics.percentagePerInnholdstype}
                 />
               </div>
               <div className={classes.loeysingButtonInnhold}>
@@ -179,7 +164,7 @@ const TestOverview = () => {
                         Inngående kontroll
                       </Tag>
                       <Tag color="second" data-size="sm">
-                        {testType}
+                        {testgrunnlagtype}
                       </Tag>
                     </div>
                     <Tag color="info" data-size="sm">
@@ -190,32 +175,23 @@ const TestOverview = () => {
                 <div className={classes.buttons}>
                   <Button
                     title="Start testing"
-                    onClick={() =>
-                      onChangeLoeysing(etTestgrunnlag.id, loeysingId)
-                    }
+                    onClick={() => onChangeLoeysing(testgrunnlagId, loeysingId)}
                   >
-                    {getJobstatus(testStatus)}
+                    {getJobstatus(status)}
                   </Button>
-                  {visRetestKnapp(
-                    etTestgrunnlag,
-                    loeysingId,
-                    testgrunnlag,
-                    testresultat
-                  ) && (
+                  {kanReteste && (
                     <Button
                       variant="secondary"
-                      onClick={() =>
-                        retest(etTestgrunnlag.id, loeysingId, testresultat)
-                      }
+                      onClick={() => retest(testgrunnlagId, loeysingId)}
                     >
                       Retest
                     </Button>
                   )}
-                  {visSlettKnapp(etTestgrunnlag, testStatus) && (
+                  {kanSlette && (
                     <Button
                       variant="secondary"
                       color="danger"
-                      onClick={() => slett(etTestgrunnlag.id, kontrollId)}
+                      onClick={() => slett(testgrunnlagId, kontrollId)}
                     >
                       Slett
                     </Button>

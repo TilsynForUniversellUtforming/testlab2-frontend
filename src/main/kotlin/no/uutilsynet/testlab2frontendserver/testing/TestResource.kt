@@ -164,7 +164,7 @@ class TestResource(
 
   @GetMapping("/bilder/{resultatId}")
   fun getBilder(
-      @PathVariable("resultatId") resultatId: Int,
+      @PathVariable resultatId: Int,
   ): ResponseEntity<List<Bilde>> =
       ResponseEntity.ok(
           restTemplate.getList<Bilde>("$bildeUrl/$resultatId").toList().map {
@@ -184,6 +184,7 @@ class TestResource(
             logger.error("Kunne ikkje slette bilde", it)
             return ResponseEntity.internalServerError().build()
           }
+
 
   data class TestresultatForKontroll(val resultat: List<ResultatManuellKontroll>)
 }

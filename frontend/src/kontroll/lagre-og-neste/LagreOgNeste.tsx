@@ -33,7 +33,7 @@ export default function LagreOgNeste({
   sistLagret,
   onClickLagreKontroll,
   onClickNeste,
-                                       submitOnSave = false,
+  submitOnSave = false,
   feilet = false,
 }: Readonly<Props>) {
   const [internalSaveState, setInternalSaveState] = React.useState<SaveState>({
