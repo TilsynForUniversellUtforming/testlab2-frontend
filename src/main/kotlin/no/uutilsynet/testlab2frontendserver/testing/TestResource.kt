@@ -185,6 +185,5 @@ class TestResource(
             return ResponseEntity.internalServerError().build()
           }
 
-
   data class TestresultatForKontroll(val resultat: List<ResultatManuellKontroll>)
 }

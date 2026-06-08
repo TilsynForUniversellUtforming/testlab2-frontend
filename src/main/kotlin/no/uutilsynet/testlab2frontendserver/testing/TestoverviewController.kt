@@ -20,27 +20,24 @@ class TestoverviewController(
     testingApiProperties: TestingApiProperties
 ) {
 
-    private val restClient = RestClient.create(restTemplate)
-    private val testresultUrl = testingApiProperties.url
+  private val restClient = RestClient.create(restTemplate)
+  private val testresultUrl = testingApiProperties.url
 
+  @GetMapping("/kontroll/{kontrollId}")
+  fun getTestOverview(@PathVariable kontrollId: Int): List<TestingStatus> {
+    val response =
+        restClient
+            .get()
+            .uri("${testresultUrl}/testoverview/kontroll/$kontrollId")
+            .retrieve()
+            .toEntity<List<TestingStatus>>()
 
-
-
-
-    @GetMapping("/kontroll/{kontrollId}")
-    fun getTestOverview(@PathVariable kontrollId: Int): List<TestingStatus> {
-        val response =
-            restClient.get().uri("${testresultUrl}/testoverview/kontroll/$kontrollId").retrieve()
-                .toEntity<List<TestingStatus>>()
-
-        check(response.statusCode == HttpStatus.OK) {
-            "Feil ved henting av testoverview for kontrollId $kontrollId, status code: ${response.statusCode}"
-        }
-        return response.body!!
-
+    check(response.statusCode == HttpStatus.OK) {
+      "Feil ved henting av testoverview for kontrollId $kontrollId, status code: ${response.statusCode}"
     }
+    return response.body!!
+  }
 }
-
 
 data class TestingStatus(
     val loeysingId: Int,
@@ -51,16 +48,16 @@ data class TestingStatus(
     val styringsdataId: Int?,
     val styringdataStatus: StyringsdataStatus,
     val status: ManuellTestStatus,
-    val kanSlette:Boolean,
-    val kanReteste:Boolean,
+    val kanSlette: Boolean,
+    val kanReteste: Boolean,
     val teststatistics: TestStatusCount
 )
 
 enum class ManuellTestStatus {
-    FERDIG,
-    DEAKTIVERT,
-    UNDER_ARBEID,
-    IKKJE_STARTA
+  FERDIG,
+  DEAKTIVERT,
+  UNDER_ARBEID,
+  IKKJE_STARTA
 }
 
 data class TestStatusCount(
@@ -70,12 +67,13 @@ data class TestStatusCount(
     val ferdig: Int,
     val underArbeid: Int,
     val ikkjeStarta: Int,
-    val percentagePerSide:Double,
-    val persentagePerInnholdstype: Double)
+    val percentagePerSide: Double,
+    val persentagePerInnholdstype: Double
+)
 
 enum class StyringsdataStatus {
-    BOT,
-    PAALEG,
-    KLAGE,
-    INGEN_REAKSJON_BRUKT
+  BOT,
+  PAALEG,
+  KLAGE,
+  INGEN_REAKSJON_BRUKT
 }

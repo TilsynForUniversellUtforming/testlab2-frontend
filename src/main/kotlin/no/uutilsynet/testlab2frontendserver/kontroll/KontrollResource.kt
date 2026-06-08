@@ -78,9 +78,7 @@ class KontrollResource(
   @GetMapping("{id}")
   fun getKontroll(@PathVariable id: Int): ResponseEntity<*> {
     val responseEntity =
-        restTemplate.getForEntity<Kontroll>(
-            testingApiProperties.url + "/kontroller/$id"
-        )
+        restTemplate.getForEntity<Kontroll>(testingApiProperties.url + "/kontroller/$id")
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
 
