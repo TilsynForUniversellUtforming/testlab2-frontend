@@ -98,7 +98,7 @@ class KontrollResource(
       runCatching {
             restTemplate.put(
                 testingApiProperties.url + "/kontroller/{id}", kontrollUpdate, mapOf("id" to id))
-            ResponseEntity.noContent().build<Unit>()
+            ResponseEntity.ok().build<Unit>()
           }
           .getOrElse {
             logger.error("Oppdatering av kontroll feilet")

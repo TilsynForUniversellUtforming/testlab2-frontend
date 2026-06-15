@@ -23,6 +23,7 @@ import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
 export function Oppsummering() {
   const { kontroll, verksemdList } = useLoaderData() as OppsummeringLoadingType;
 
+
   const verksemdLoesyingList = summarizeLoeysingar(
     kontroll?.utval?.loeysingar ?? [],
     verksemdList
@@ -99,22 +100,20 @@ export function Oppsummering() {
   }
 
   const loeysingIdList = kontroll.utval?.loeysingar?.map((l) => l.id) ?? [];
-  const sideutvalLoeysingIdList = new Set(
+  const sideutvalLoeysingIdList =
     kontroll.sideutvalList.map((su) => su.loeysingId)
-  );
+
 
   const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
 
   const isReady =
     loeysingIdList.length > 0 &&
-    isDefined(kontroll.testreglar?.testregelList) &&
+    isDefined(kontroll.testreglar?.testregelIdList) &&
     (isForenkla ||
       loeysingIdList.every((loeysingId) =>
-        sideutvalLoeysingIdList.has(loeysingId)
+        sideutvalLoeysingIdList.includes(loeysingId)
       ));
 
-  console.log(isReady);
-  console.log(kontroll.testreglar?.testregelList);
 
   return (
     <section className={kontrollClasses.kontrollSection}>

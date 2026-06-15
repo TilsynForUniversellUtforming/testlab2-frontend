@@ -24,7 +24,7 @@ import TestregelSelector from './TestregelSelector';
 import { SelectionType, VelgTestreglarLoader } from './types';
 
 const VelgTestreglar = () => {
-  const { kontroll, testregelList, regelsettList, testStatus } =
+  const { kontroll, testregelList, regelsettList } =
     useLoaderData() as VelgTestreglarLoader;
   const submit = useSubmit();
   const actionData = useActionData() as { sistLagret: Date };
@@ -39,7 +39,7 @@ const VelgTestreglar = () => {
   /* Manuelt valgte testregler */
   const initTestregelIdList = initRegelsettId
     ? []
-    : kontroll?.testreglar?.testregelList?.map((tr) => tr.id) || [];
+    : kontroll?.testreglar?.testregelIdList || [];
   const [selectedTestregelIdList, setSelectedTestregelIdList] =
     useState<number[]>(initTestregelIdList);
 
@@ -60,7 +60,7 @@ const VelgTestreglar = () => {
     (isRegelsett
       ? regelsettList.find((r) => r.id === kontroll.testreglar?.regelsettId)
           ?.type
-      : kontroll.testreglar?.testregelList[0]?.type) ?? 'nett';
+      : 'nett') ?? 'nett';
 
   const [type, setType] = useState<RegelsettInnholdstype>(initType);
   const [filteredTestregelList, setFilteredTestregelList] = useState<
@@ -123,7 +123,7 @@ const VelgTestreglar = () => {
     const selectedIdsNumeric = selectedIds.map(Number);
     const testregelIds = testregelList.map((tr) => tr.id);
     const validTestregelIds = selectedIdsNumeric.every(
-      (id) => !isNaN(id) && testregelIds.includes(id)
+      (id) => !Number.isNaN(id) && testregelIds.includes(id)
     );
     if (!validTestregelIds) {
       throw new Error('Valgt testregel finns ikkje');
@@ -149,12 +149,10 @@ const VelgTestreglar = () => {
       } else {
         testregelIdList.push(...testregelIdsForRegelsett);
       }
+    } else if (isEmpty(selectedTestregelIdList)) {
+      setAlert('danger', 'Kan ikkje lagre uten testreglar');
     } else {
-      if (isEmpty(selectedTestregelIdList)) {
-        setAlert('danger', 'Kan ikkje lagre uten testreglar');
-      } else {
-        testregelIdList.push(...selectedTestregelIdList);
-      }
+      testregelIdList.push(...selectedTestregelIdList);
     }
 
     const data: UpdateKontrollTestregel = {
