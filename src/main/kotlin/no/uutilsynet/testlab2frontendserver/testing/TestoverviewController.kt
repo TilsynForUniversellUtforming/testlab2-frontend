@@ -37,7 +37,7 @@ class TestoverviewController(
       "Feil ved henting av testoverview for kontrollId $kontrollId, status code: ${response.statusCode}"
     }
     return checkNotNull(response.body) {
-        "Tom respons ved henting av testoverview for kontrollId $kontrollId"
+      "Tom respons ved henting av testoverview for kontrollId $kontrollId"
     }
   }
 }
@@ -75,8 +75,8 @@ data class TestStatusCount(
 )
 
 enum class StyringsdataStatus {
-    @JsonProperty("bot") BOT,
-    @JsonProperty("paalegg") PAALEG,
-    @JsonProperty("klage") KLAGE,
-    @JsonProperty("ingen-reaksjon-brukt") INGEN_REAKSJON_BRUKT
+  @JsonProperty("bot") BOT,
+  @JsonProperty("paalegg") PAALEG,
+  @JsonProperty("klage") KLAGE,
+  @JsonProperty("ingen-reaksjon-brukt") INGEN_REAKSJON_BRUKT
 }
