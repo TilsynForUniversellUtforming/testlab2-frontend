@@ -14,8 +14,9 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
       utval.map((u) => ({ ...u, oppretta: new Date(u.oppretta) }))
     );
 
-export const getUtvalById = async (id: number|undefined): Promise<Response> => {
-  if(id===undefined)
-    throw new Error(`utvalId ${id} undefined`);
+export const getUtvalById = async (
+  id: number | undefined
+): Promise<Response> => {
+  if (id === undefined) throw new Error(`utvalId ${id} undefined`);
   return await fetchWithErrorHandling(`/api/v1/utval/${id}`);
-}
+};

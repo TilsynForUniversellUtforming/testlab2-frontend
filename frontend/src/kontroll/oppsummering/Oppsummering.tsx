@@ -100,8 +100,9 @@ export function Oppsummering() {
   }
 
   const loeysingIdList = kontroll.utval?.loeysingar?.map((l) => l.id) ?? [];
-  const sideutvalLoeysingIdList =
-    kontroll.sideutvalList.map((su) => su.loeysingId)
+  const sideutvalLoeysingIdList = kontroll.sideutvalList.map(
+    (su) => su.loeysingId
+  );
 
 
   const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';

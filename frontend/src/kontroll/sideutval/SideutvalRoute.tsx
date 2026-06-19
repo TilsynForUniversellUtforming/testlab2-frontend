@@ -9,7 +9,6 @@ import { redirect, RouteObject } from 'react-router-dom';
 
 import {
   fetchKontroll,
-  fetchTestStatus,
   listSideutvalType,
   updateKontrollSideutval,
 } from '../kontroll-api';
@@ -26,9 +25,10 @@ async function fetchKontrollOrThrow(kontrollId: number): Promise<Kontroll> {
   }
   return kontrollResponse.json();
 }
+
 const getLoeysingList = async (
   utvalResponse: PromiseSettledResult<Response>,
-  utvalId: number|undefined
+  utvalId: number | undefined
 ) => {
   let loeysingList: Loeysing[] = [];
   if (utvalResponse.status === 'fulfilled' && utvalResponse.value) {
@@ -39,6 +39,7 @@ const getLoeysingList = async (
   }
   return loeysingList;
 };
+
 export const SideutvalRoute: RouteObject = {
   path: ':kontrollId/sideutval',
   element: <VelgSideutval />,
@@ -85,7 +86,8 @@ export const SideutvalRoute: RouteObject = {
         filtredSideutvalList
       );
       if (!response.ok) {
-        throw new Error(`Klarte ikke å lagre kontrollen.${response.text()}`);
+        let respText = await response.text()
+        throw new Error(`Klarte ikke å lagre kontrollen.${respText}`);
       }
     }
 

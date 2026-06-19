@@ -15,7 +15,7 @@ type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };
 type SelectedOption = SelectedUtvalg | { t: 'løsning' };
 
 const VelgLoesninger = () => {
-  const { kontroll, utval, testStatus } = useLoaderData() as {
+  const { kontroll, utval } = useLoaderData() as {
     kontroll: Kontroll;
     utval: Utval[];
     testStatus: TestStatus;
@@ -156,7 +156,6 @@ const VelgLoesninger = () => {
             sistLagret={actionData?.sistLagret}
             onClickLagreKontroll={lagre(false)}
             onClickNeste={lagre(true)}
-            testStarta={testStatus === 'Started'}
           />
         </>
       )}

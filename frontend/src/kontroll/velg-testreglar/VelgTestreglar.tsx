@@ -146,11 +146,13 @@ const VelgTestreglar = () => {
 
       if (isNotDefined(testregelIdsForRegelsett)) {
         setAlert('danger', 'Kan ikkje lagre, regelsett finns ikkje');
+        throw new Error('Kan ikkje lagre, regelsett finns ikkje');
       } else {
         testregelIdList.push(...testregelIdsForRegelsett);
       }
     } else if (isEmpty(selectedTestregelIdList)) {
       setAlert('danger', 'Kan ikkje lagre uten testreglar');
+      throw new Error('Kan ikkje lagre uten testreglar');
     } else {
       testregelIdList.push(...selectedTestregelIdList);
     }
