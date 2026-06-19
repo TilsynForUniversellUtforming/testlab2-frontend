@@ -9,7 +9,7 @@ import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
-import { Kontroll, TestStatus } from '../types';
+import { Kontroll } from '../types';
 
 type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };
 type SelectedOption = SelectedUtvalg | { t: 'løsning' };
@@ -18,7 +18,6 @@ const VelgLoesninger = () => {
   const { kontroll, utval } = useLoaderData() as {
     kontroll: Kontroll;
     utval: Utval[];
-    testStatus: TestStatus;
   };
   const actionData = useActionData() as { sistLagret: Date };
   const [selectedOption, setSelectedOption] = React.useState<
