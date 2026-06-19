@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import no.uutilsynet.testlab2.constants.Kontrolltype
 import no.uutilsynet.testlab2.constants.Loeysingstype
 import no.uutilsynet.testlab2.constants.TestgrunnlagType
@@ -35,7 +36,9 @@ class TestoverviewController(
     check(response.statusCode == HttpStatus.OK) {
       "Feil ved henting av testoverview for kontrollId $kontrollId, status code: ${response.statusCode}"
     }
-    return response.body!!
+    return checkNotNull(response.body) {
+        "Tom respons ved henting av testoverview for kontrollId $kontrollId"
+    }
   }
 }
 
@@ -68,12 +71,12 @@ data class TestStatusCount(
     val underArbeid: Int,
     val ikkjeStarta: Int,
     val percentagePerSide: Double,
-    val persentagePerInnholdstype: Double
+    val percentagePerInnholdstype: Double
 )
 
 enum class StyringsdataStatus {
-  BOT,
-  PAALEG,
-  KLAGE,
-  INGEN_REAKSJON_BRUKT
+    @JsonProperty("bot") BOT,
+    @JsonProperty("paalegg") PAALEG,
+    @JsonProperty("klage") KLAGE,
+    @JsonProperty("ingen-reaksjon-brukt") INGEN_REAKSJON_BRUKT
 }
