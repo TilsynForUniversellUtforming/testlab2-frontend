@@ -8,9 +8,6 @@ import {
   Svar,
   TestgrunnlagListElement,
 } from './api/types';
-import { StyringsdataListElement } from '../styringsdata/types';
-import { KontrollType } from '../kontroll/types';
-import { number, string } from 'zod';
 
 export type ManuellTestStatus =
   | 'ferdig'
@@ -109,9 +106,9 @@ export type TestgrunnlagOverviewElement = {
   loeysingId: number;
   testgrunnlagId: number;
   loeysingNamn: string;
-  loeysingstype: string;
-  kontrolltype: string;
-  testgrunnlagtype: string;
+  loeysingsType: string;
+  kontrollType: string;
+  testgrunnlagType: string;
   styringsdataId?: number;
   styringsdataStatus: string;
   status: ManuellTestStatus;

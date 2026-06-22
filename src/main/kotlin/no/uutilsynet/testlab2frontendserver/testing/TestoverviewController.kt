@@ -49,7 +49,7 @@ data class TestingStatus(
     val kontrollType: Kontrolltype,
     val testgrunnlagType: TestgrunnlagType,
     val styringsdataId: Int?,
-    val styringdataStatus: StyringsdataStatus,
+    val styringsdataStatus: StyringsdataStatus,
     val status: ManuellTestStatus,
     val kanSlette: Boolean,
     val kanReteste: Boolean,

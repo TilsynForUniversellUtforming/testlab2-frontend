@@ -101,7 +101,7 @@ const TestOverview = () => {
             testgrunnlagId,
             loeysingId,
             loeysingNamn,
-            testgrunnlagtype,
+            testgrunnlagType,
             styringsdataId,
             styringsdataStatus,
             status,
@@ -164,7 +164,7 @@ const TestOverview = () => {
                         Inngående kontroll
                       </Tag>
                       <Tag color="second" data-size="sm">
-                        {testgrunnlagtype}
+                        {testgrunnlagType}
                       </Tag>
                     </div>
                     <Tag color="info" data-size="sm">

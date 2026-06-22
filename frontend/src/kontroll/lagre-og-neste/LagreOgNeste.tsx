@@ -80,6 +80,7 @@ export default function LagreOgNeste({
         onClick={handleSave}
         type={submitOnSave ? 'submit' : 'button'}
         aria-disabled={isSaving(internalSaveState)}
+        disabled={isSaving(internalSaveState)}
       >
         Lagre til seinare
       </Button>
@@ -87,6 +88,7 @@ export default function LagreOgNeste({
         variant="primary"
         onClick={handleSaveNeste}
         aria-disabled={isSaving(internalSaveState)}
+        disabled={isSaving(internalSaveState)}
         type={submitOnSave ? 'submit' : 'button'}
       >
         Lagre og gå til neste
