@@ -3,9 +3,9 @@ import { KontrollType } from './types';
 export const getKontrollIdFromParams = (
   kontrollIdString: string | undefined
 ): number => {
-  const kontrollId = parseInt(kontrollIdString ?? '', 10);
-  if (isNaN(kontrollId)) {
-    throw new Error('Id-en i URL-en er ikke et tall');
+  const kontrollId = Number.parseInt(kontrollIdString ?? '', 10);
+  if (Number.isNaN(kontrollId)) {
+    throw new TypeError('Id-en i URL-en er ikke et tall');
   }
   return kontrollId;
 };

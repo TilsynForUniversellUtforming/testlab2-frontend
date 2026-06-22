@@ -13,7 +13,6 @@ export type SideutvalLoader = {
   sideutvalTypeList: SideutvalType[];
   loeysingList: Loeysing[];
   crawlParameters: CrawlParameters | undefined;
-  testStatus: TestStatus;
 };
 
 export type SideutvalTypeKontroll = SideutvalType & {
@@ -23,7 +22,7 @@ export type SideutvalTypeKontroll = SideutvalType & {
 export type SideutvalBase = {
   loeysingId: number;
   typeId: number;
-  begrunnelse: string;
+  begrunnelse?: string;
   url: string;
   egendefinertType?: string;
 };

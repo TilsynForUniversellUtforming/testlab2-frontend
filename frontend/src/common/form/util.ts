@@ -116,7 +116,7 @@ export const fetchWithErrorHandling: typeof fetch = async (
   try {
     const init: RequestInit = { credentials: 'include', ...rest[0] };
     const response = await fetch(input, init);
-    if (response.status !== 200) {
+    if (response.status >= 400) {
       console.error(
         `HTTP error! status: ${response.status}, message: ${response.statusText}`
       );

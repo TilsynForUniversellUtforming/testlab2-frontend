@@ -9,7 +9,6 @@ import { redirect, RouteObject } from 'react-router-dom';
 
 import {
   fetchKontroll,
-  fetchTestStatus,
   listSideutvalType,
   updateKontrollSideutval,
 } from '../kontroll-api';
@@ -18,70 +17,59 @@ import { Kontroll, steps, UpdateKontrollSideutval } from '../types';
 import { SideutvalLoader } from './types';
 import VelgSideutval from './VelgSideutval';
 
+async function fetchKontrollOrThrow(kontrollId: number): Promise<Kontroll> {
+  const kontrollResponse = await fetchKontroll(kontrollId);
+  if (!kontrollResponse.ok) {
+    if (kontrollResponse.status === 404) throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
+    throw new Error('Klarte ikke å hente kontrollen.');
+  }
+  return kontrollResponse.json();
+}
+
+const getLoeysingList = async (
+  utvalResponse: PromiseSettledResult<Response>,
+  utvalId: number | undefined
+) => {
+  let loeysingList: Loeysing[] = [];
+  if (utvalResponse.status === 'fulfilled' && utvalResponse.value) {
+    const utval: Utval = await utvalResponse.value.json();
+    loeysingList = utval.loeysingar;
+  } else if (utvalId) {
+    throw new Error('Kunne ikkje hente løysingar for kontrollens utval');
+  }
+  return loeysingList;
+};
+
 export const SideutvalRoute: RouteObject = {
   path: ':kontrollId/sideutval',
   element: <VelgSideutval />,
   handle: { name: steps.sideutval.name },
   loader: async ({ params }): Promise<SideutvalLoader> => {
     const kontrollId = getKontrollIdFromParams(params.kontrollId);
-    const kontrollResponse = await fetchKontroll(kontrollId);
-    const testStatusResponse = await fetchTestStatus(kontrollId);
-
-    if (!kontrollResponse.ok) {
-      if (kontrollResponse.status === 404) {
-        throw new Error('Det finnes ikke en kontroll med id ' + kontrollId);
-      } else {
-        throw new Error('Klarte ikke å hente kontrollen.');
-      }
-    }
-
-    if (!testStatusResponse.ok) {
-      throw new Error('Klarte ikke å hente teststatus for kontrollen.');
-    }
-
-    const kontroll: Kontroll = await kontrollResponse.json();
+    const kontroll = await fetchKontrollOrThrow(kontrollId);
     const utvalId = kontroll?.utval?.id;
-
     const [sideutvalTypeList, utvalResponse] = await Promise.allSettled([
       listSideutvalType(),
-      utvalId
-        ? getUtvalById(utvalId)
-        : Promise.reject('Kontroll manglar utval'),
+      getUtvalById(utvalId),
     ]);
 
-    if (sideutvalTypeList.status === 'rejected') {
-      throw new Error('Kunne ikkje hente liste med sideutval-typer');
-    }
-
-    const loeysingList: Loeysing[] = [];
-
-    if (utvalResponse.status === 'rejected') {
-      if (utvalId) {
-        throw new Error('Kunne ikkje hente løysingar for kontrollens utval');
-      }
-    } else if (utvalResponse.value) {
-      const utval: Utval = await utvalResponse.value.json();
-      loeysingList.push(...utval.loeysingar);
-    }
+    if (sideutvalTypeList.status === 'rejected') throw new Error('Kunne ikkje hente liste med sideutval-typer');
+    let loeysingList = await getLoeysingList(utvalResponse, utvalId);
 
     if (kontroll.kontrolltype === 'forenkla-kontroll') {
       const crawlParameters = await fetchCrawlParametersKontroll(kontroll.id);
-
       return {
-        kontroll: kontroll,
+        kontroll,
         sideutvalTypeList: sideutvalTypeList.value,
-        loeysingList: loeysingList,
-        crawlParameters: crawlParameters,
-        testStatus: 'Pending',
+        loeysingList,
+        crawlParameters,
       };
     }
-
     return {
-      kontroll: kontroll,
+      kontroll,
       sideutvalTypeList: sideutvalTypeList.value,
-      loeysingList: loeysingList,
+      loeysingList,
       crawlParameters: undefined,
-      testStatus: await testStatusResponse.json(),
     };
   },
   action: async ({ request }) => {
@@ -90,7 +78,7 @@ export const SideutvalRoute: RouteObject = {
 
     if (sideutvalList.length > 0) {
       const filtredSideutvalList = sideutvalList.filter(
-        (su) => isDefined(su.url) && isDefined(su.begrunnelse)
+        (su) => isDefined(su.url)
       );
 
       const response = await updateKontrollSideutval(
@@ -98,7 +86,8 @@ export const SideutvalRoute: RouteObject = {
         filtredSideutvalList
       );
       if (!response.ok) {
-        throw new Error('Klarte ikke å lagre kontrollen.');
+        let respText = await response.text()
+        throw new Error(`Klarte ikke å lagre kontrollen.${respText}`);
       }
     }
 

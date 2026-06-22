@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForEntity
 
 typealias Orgnummer = String
 
@@ -53,7 +54,7 @@ class KontrollResource(
         }
         .getOrElse {
           logger.error("Henting av alle kontroller feilet", it)
-          throw RuntimeException(it)
+          throw IllegalStateException(it)
         }
   }
 
@@ -65,7 +66,7 @@ class KontrollResource(
                     testingApiProperties.url + "/kontroller", opprettKontroll)
             val kontrollId =
                 location?.path?.substringAfterLast("/")?.toInt()
-                    ?: throw RuntimeException(
+                    ?: throw IllegalStateException(
                         "En ny kontroll ble opprettet, men vi fikk ikke noen location fra serveren.")
             mapOf("kontrollId" to kontrollId)
           }
@@ -77,8 +78,7 @@ class KontrollResource(
   @GetMapping("{id}")
   fun getKontroll(@PathVariable id: Int): ResponseEntity<*> {
     val responseEntity =
-        restTemplate.getForEntity(
-            testingApiProperties.url + "/kontroller/$id", Kontroll::class.java)
+        restTemplate.getForEntity<Kontroll>(testingApiProperties.url + "/kontroller/$id")
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
 
@@ -87,7 +87,7 @@ class KontrollResource(
       runCatching { restTemplate.delete(testingApiProperties.url + "/kontroller/$id") }
           .getOrElse {
             logger.error("Sletting av kontroll feilet", it)
-            throw RuntimeException(it)
+            throw IllegalStateException(it)
           }
 
   @PutMapping("{id}")

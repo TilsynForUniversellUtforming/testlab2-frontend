@@ -8,8 +8,6 @@ import {
   Svar,
   TestgrunnlagListElement,
 } from './api/types';
-import { StyringsdataListElement } from '../styringsdata/types';
-import { KontrollType } from '../kontroll/types';
 
 export type ManuellTestStatus =
   | 'ferdig'
@@ -48,7 +46,7 @@ export type TestOverviewLoaderData = {
   testgrunnlag: Testgrunnlag[];
   styringsdataError: boolean;
   testoverviewElements: TestOverviewElement[];
-
+  testgrunnlagOverviewElements: TestgrunnlagOverviewElement[];
 };
 
 export type TestOverviewLoaderResponse = {
@@ -93,4 +91,29 @@ export type TestOverviewElement = {
   testresultat: ResultatManuellKontroll[];
 }
 
-export class TestregelTestingStatus {}
+export type TestStatusCount = {
+  loeysingId: number;
+  testgrunnlagId: number;
+  total: number;
+  ferdig: number;
+  underArbeid: number;
+  ikkjeStarta: number;
+  percentagePerSide: number;
+  percentagePerInnholdstype: number;
+}
+
+export type TestgrunnlagOverviewElement = {
+  loeysingId: number;
+  testgrunnlagId: number;
+  loeysingNamn: string;
+  loeysingsType: string;
+  kontrollType: string;
+  testgrunnlagType: string;
+  styringsdataId?: number;
+  styringsdataStatus: string;
+  status: ManuellTestStatus;
+  kanSlette: boolean;
+  kanReteste: boolean;
+  teststatistics: TestStatusCount;
+};
+

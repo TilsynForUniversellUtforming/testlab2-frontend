@@ -13,5 +13,5 @@ export type SelectionType = 'regelsett' | 'testregel';
 
 export type KontrollTestreglar = {
   regelsettId: number | undefined;
-  testregelList: TestregelBase[];
+  testregelIdList: number[];
 };

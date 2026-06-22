@@ -1,6 +1,6 @@
 import { fetchWithErrorHandling, fetchWithCsrf } from '@common/form/util';
 import { responseWithLogErrors } from '@common/util/apiUtils';
-import { Testgrunnlag } from '@test/types';
+import { Testgrunnlag, TestgrunnlagOverviewElement } from '@test/types';
 
 import {
   Bilde,
@@ -170,5 +170,19 @@ export const deleteTestgrunnlag = async (deleteRetestRequest: DeleteTestgrunnlag
     {
       method: 'DELETE',
     }
+  );
+};
+
+export const getTestoverview = async (
+  kontrollId: number
+): Promise<TestgrunnlagOverviewElement[]> => {
+  return await fetchWithErrorHandling(
+    `/testoverview/kontroll/${kontrollId}`,
+    {}
+  ).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Klarte ikke å hente liste med testingstatus'
+    )
   );
 };

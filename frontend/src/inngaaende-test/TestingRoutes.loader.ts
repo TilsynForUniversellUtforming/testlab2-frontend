@@ -1,10 +1,11 @@
-import { fetchTestResults, listTestgrunnlag } from '@test/api/testing-api';
+import { fetchTestResults, getTestoverview, listTestgrunnlag } from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import {
   Testgrunnlag,
   TestOverviewLoaderResponse,
   TestOverviewLoaderData,
   TestOverviewElement,
+  TestgrunnlagOverviewElement,
 } from '@test/types';
 import {
   getIdFromParams,
@@ -69,6 +70,12 @@ async function validatedKontroll(
     );
   }
   return kontrollResponse.json();
+}
+
+function validatedTestoverview(
+  testoverviewPromise: PromiseSettledResult<TestgrunnlagOverviewElement[]>,
+): TestgrunnlagOverviewElement[] {
+  return assertFulfilled(testoverviewPromise, 'Kunne ikkje hente testgrunnlag');
 }
 
 function getLoeysingarForTestgrunnlag(
@@ -181,17 +188,19 @@ export const testOverviewLoader = async ({
 }: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
   const kontrollId = getIdFromParams(params?.id);
 
-  const [kontrollResult, testgrunnlagResult, styringsdataResult] =
+  const [kontrollResult, testgrunnlagResult, styringsdataResult,testoverviewResult] =
     await Promise.allSettled([
       fetchKontroll(kontrollId),
       listTestgrunnlag(kontrollId),
       findStyringsdataForKontroll(kontrollId),
+      getTestoverview(kontrollId),
     ]);
 
   const testgrunnlag = validatedTestgrunnlag(testgrunnlagResult);
   const kontroll = await validatedKontroll(kontrollResult, kontrollId);
   const resultater = await fetchAllTestresultat(testgrunnlag);
   const loeysingList = getLoeysingarForTestgrunnlag(kontroll, testgrunnlag);
+  const testoverviewList = validatedTestoverview(testoverviewResult);
 
   const styringsdataRejected = styringsdataResult.status === 'rejected';
 
@@ -230,7 +239,8 @@ export const testOverviewLoader = async ({
   return {
     testgrunnlag,
     styringsdataError: styringsdataRejected,
-    testoverviewElements: testoverviewElements
+    testoverviewElements: testoverviewElements,
+    testgrunnlagOverviewElements: testoverviewList,
   };
 };
 

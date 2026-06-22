@@ -23,6 +23,7 @@ import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
 export function Oppsummering() {
   const { kontroll, verksemdList } = useLoaderData() as OppsummeringLoadingType;
 
+
   const verksemdLoesyingList = summarizeLoeysingar(
     kontroll?.utval?.loeysingar ?? [],
     verksemdList
@@ -103,15 +104,17 @@ export function Oppsummering() {
     (su) => su.loeysingId
   );
 
+
   const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
 
-  const isFinished =
+  const isReady =
     loeysingIdList.length > 0 &&
-    isDefined(kontroll.testreglar?.testregelList) &&
+    isDefined(kontroll.testreglar?.testregelIdList) &&
     (isForenkla ||
       loeysingIdList.every((loeysingId) =>
         sideutvalLoeysingIdList.includes(loeysingId)
       ));
+
 
   return (
     <section className={kontrollClasses.kontrollSection}>
@@ -210,7 +213,7 @@ export function Oppsummering() {
         >
           Tilbake
         </Button>
-        {isFinished && (
+        {isReady && (
           <Link
             to={
               isForenkla
