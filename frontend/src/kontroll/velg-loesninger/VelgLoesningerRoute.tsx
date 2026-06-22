@@ -13,9 +13,6 @@ export const VelgLoesningerRoute: RouteObject = {
   handle: { name: steps.loesying.name },
   loader: async ({ params }) => {
     const kontrollId = getKontrollIdFromParams(params.kontrollId);
-    if (isNaN(kontrollId)) {
-      throw new Error('Id-en i URL-en er ikke et tall');
-    }
     const kontrollResponse = await fetchKontroll(kontrollId);
 
     if (!kontrollResponse.ok) {
