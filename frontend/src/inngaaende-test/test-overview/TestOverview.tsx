@@ -98,7 +98,6 @@ const TestOverview = () => {
         )}
         {testgrunnlagOverviewElements.map((element) => {
           const {
-            testgrunnlagId,
             loeysingId,
             loeysingNamn,
             testgrunnlagType,
@@ -108,7 +107,9 @@ const TestOverview = () => {
             teststatistics,
             kanReteste,
             kanSlette,
+            kontrollType,
           } = element;
+          const testgrunnlagId = teststatistics.testgrunnlagId
           const styringsdataPath = getStyringsdataPath(
             kontrollId,
             loeysingId,
@@ -161,7 +162,7 @@ const TestOverview = () => {
                   <div className={classes.tagWrapper}>
                     <div className={classes.testTags}>
                       <Tag color="second" data-size="sm">
-                        Inngående kontroll
+                        {kontrollType.toUpperCase()}
                       </Tag>
                       <Tag color="second" data-size="sm">
                         {testgrunnlagType}

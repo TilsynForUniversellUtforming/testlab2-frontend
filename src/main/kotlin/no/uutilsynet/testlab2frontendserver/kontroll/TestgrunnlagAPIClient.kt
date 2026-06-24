@@ -34,14 +34,15 @@ class TestgrunnlagAPIClient(
     logger.info(
         "Lagar nytt testgrunnlag med type ${nyttTestgrunnlag.type} for kontroll ${nyttTestgrunnlag.kontrollId}")
     return runCatching {
-      val location =
-          restTemplate.postForLocation(
-              "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag)
-              ?: throw IllegalStateException(
-                  "Vi fikk ikkje location for det nye testgrunnlaget fra serveren")
-      restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
-          ?: throw IllegalStateException(
-              "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje.")
+        val location =
+            restTemplate.postForLocation(
+                "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag
+            )
+        check(location != null) { "Vi fikk ikkje location for det nye testgrunnlaget fra serveren" }
+
+        val nyttTestgrunnlag = restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
+        check(nyttTestgrunnlag != null) { "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje." }
+        nyttTestgrunnlag
     }
   }
 
@@ -50,10 +51,10 @@ class TestgrunnlagAPIClient(
         val location =
             restTemplate.postForLocation(
                 "${testingApiProperties.url}/testgrunnlag/kontroll/retest", retest)
-                ?: throw IllegalStateException("Vi fikk ikkje location fra $testingApiProperties")
-        restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
-            ?: throw IllegalStateException(
-                "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje.")
+       check(location != null) { "Vi fikk ikkje location fra $testingApiProperties" }
+        val nyttTestgrunnlag = restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
+            check(nyttTestgrunnlag != null) {"Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje."}
+          nyttTestgrunnlag
       }
 
   override fun getTestgrunnlag(kontrollId: Int): Result<List<KontrollResource.TestgrunnlagDTO>> {

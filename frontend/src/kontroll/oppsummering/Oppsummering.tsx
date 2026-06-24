@@ -19,6 +19,7 @@ import kontrollClasses from '../kontroll.module.css';
 import { steps } from '../types';
 import classes from './oppsummering.module.css';
 import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
+import KontrollStepper from '../stepper/KontrollStepper';
 
 export function Oppsummering() {
   const { kontroll, verksemdList } = useLoaderData() as OppsummeringLoadingType;
@@ -118,6 +119,7 @@ export function Oppsummering() {
 
   return (
     <section className={kontrollClasses.kontrollSection}>
+      <KontrollStepper />
       <Heading level={1} data-size="xl" className={classes.hovedoverskrift}>
         Kontrollen er opprettet
       </Heading>
@@ -150,9 +152,11 @@ export function Oppsummering() {
       </Button>
 
       <div className={classes.kontrollTittel}>
-        <Paragraph variant={"long"}>{kontroll.tittel}</Paragraph>
+        <Paragraph variant={'long'}>{kontroll.tittel}</Paragraph>
         <div className={classes.tags}>
-          <Tag data-color="first">{sanitizeEnumLabel(kontroll.kontrolltype)}</Tag>
+          <Tag data-color="first">
+            {sanitizeEnumLabel(kontroll.kontrolltype)}
+          </Tag>
           <Tag data-color="first">{kontroll.saksbehandler}</Tag>
         </div>
       </div>
@@ -173,10 +177,10 @@ export function Oppsummering() {
               <Pagination.Item>
                 <Pagination.Button
                   asChild
-                  aria-label='Forrige side'
+                  aria-label="Forrige side"
                   {...prevButtonProps}
                 >
-                  <a href='#forrige-side'>Forrige</a>
+                  <a href="#forrige-side">Forrige</a>
                 </Pagination.Button>
               </Pagination.Item>
               {pages.map(({ page, itemKey, buttonProps }) => (
@@ -186,7 +190,8 @@ export function Oppsummering() {
                       asChild
                       aria-label={`Side ${page}`}
                       {...buttonProps}
-                    ><a href={`#side-${page}`}>{page}</a>
+                    >
+                      <a href={`#side-${page}`}>{page}</a>
                     </Pagination.Button>
                   )}
                 </Pagination.Item>
@@ -194,10 +199,10 @@ export function Oppsummering() {
               <Pagination.Item>
                 <Pagination.Button
                   asChild
-                  aria-label='Neste side'
+                  aria-label="Neste side"
                   {...nextButtonProps}
                 >
-                  <a href='#neste-side'>Neste</a>
+                  <a href="#neste-side">Neste</a>
                 </Pagination.Button>
               </Pagination.Item>
             </Pagination.List>

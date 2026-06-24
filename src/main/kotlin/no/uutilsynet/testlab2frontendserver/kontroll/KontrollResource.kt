@@ -255,7 +255,7 @@ class KontrollResource(
       val id: Int,
       val kontrollId: Int,
       val namn: String,
-      val testreglar: List<TestregelDTO> = emptyList(),
+      val testreglar: List<Int> = emptyList(),
       val sideutval: List<Sideutval> = emptyList(),
       val type: TestgrunnlagType,
       val datoOppretta: Instant

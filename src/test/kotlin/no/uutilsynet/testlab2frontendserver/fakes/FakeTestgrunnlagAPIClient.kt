@@ -30,24 +30,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
             type = nyttTestgrunnlag.type,
             sideutval = nyttTestgrunnlag.sideutval,
             testreglar =
-                nyttTestgrunnlag.testregelIdList.map {
-                  TestregelDTO(
-                      it,
-                      "1.1.1",
-                      1,
-                      testgrunnlagNamne,
-                      fakeId(),
-                      TestregelStatus.publisert,
-                      Instant.now().minus(3, ChronoUnit.DAYS),
-                      TestregelInnholdstype.nett,
-                      TestregelModus.manuell,
-                      TestlabLocale.nb,
-                      fakeId(),
-                      fakeId(),
-                      "1.1.1",
-                      "",
-                      null)
-                },
+                nyttTestgrunnlag.testregelIdList,
             datoOppretta = Instant.now())
     database[id] = testgrunnlag
     return Result.success(testgrunnlag)
@@ -67,22 +50,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
                         retest.loeysingId, fakeId(), siteutvalNamn, URI(dummyUrl), null, fakeId())),
             testreglar =
                 listOf(
-                    TestregelDTO(
-                        fakeId(),
-                        "1.1.1",
-                        1,
-                        "Testregelnamn",
-                        fakeId(),
-                        TestregelStatus.publisert,
-                        Instant.now().minus(3, ChronoUnit.DAYS),
-                        TestregelInnholdstype.nett,
-                        TestregelModus.manuell,
-                        TestlabLocale.nb,
-                        fakeId(),
-                        fakeId(),
-                        "1.1.1",
-                        "",
-                        null)),
+                   1),
             datoOppretta = Instant.now())
     database[id] = testgrunnlag
     return Result.success(testgrunnlag)
