@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import no.uutilsynet.testlab2.constants.Kontrolltype
 import no.uutilsynet.testlab2.constants.Loeysingstype
 import no.uutilsynet.testlab2.constants.TestgrunnlagType
@@ -56,10 +57,17 @@ data class TestingStatus(
 )
 
 enum class ManuellTestStatus {
-  FERDIG,
-  DEAKTIVERT,
-  UNDER_ARBEID,
-  IKKJE_STARTA
+    @JsonProperty("ferdig")
+    FERDIG,
+
+    @JsonProperty("deaktivert")
+    DEAKTIVERT,
+
+    @JsonProperty("under-arbeid")
+    UNDER_ARBEID,
+
+    @JsonProperty("ikkje-starta")
+    IKKJE_STARTA
 }
 
 data class TestStatusCount(
@@ -75,7 +83,7 @@ data class TestStatusCount(
 
 enum class StyringsdataStatus {
   BOT,
-  PAALEG,
+  PAALEGG,
   KLAGE,
   INGEN_REAKSJON_BRUKT
 }

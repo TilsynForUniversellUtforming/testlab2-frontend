@@ -40,7 +40,7 @@
   justify-content: space-between;
   gap: 1rem;
   align-items: flex-start;
-  background: var(--ds-color-brand1-surface-tinted);
+  background: var(--ds-color-brand1-surface-active);
   padding: 1rem 2rem;
   width: 35%;
   @media (max-width: 829px) {
@@ -120,7 +120,7 @@
   min-width: 400px;
   width: calc(100vw - 20px);
   margin-bottom: auto;
-  background-color: var(--ds-color-neutral-surface-active);
+  background-color: var(--ds-color-info-surface-tinted);
   padding: 2rem 0;
   flex: 1 1 auto;
   overflow: hidden;

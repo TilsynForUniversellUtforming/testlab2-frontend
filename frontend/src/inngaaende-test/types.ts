@@ -106,7 +106,7 @@ export type TestgrunnlagOverviewElement = {
   loeysingId: number;
   testgrunnlagId: number;
   loeysingNamn: string;
-  loeysingsType: string;
+  loeysingstype: string;
   kontrollType: string;
   testgrunnlagType: string;
   styringsdataId?: number;
