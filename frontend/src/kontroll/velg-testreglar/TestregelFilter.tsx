@@ -113,6 +113,7 @@ const TestregelFilter = ({
           value={'kombinasjon'}
           onChange={() => onChangeFilter(modus, 'kombinasjon')}
           title="Regelsett med testreglar for å testa fleire typar"
+          checked={type === 'kombinasjon'}
         >
           Kombinasjon
         </Chip.Radio>
