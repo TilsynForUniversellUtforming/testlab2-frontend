@@ -428,6 +428,10 @@
 
 .testregel-filter-val {
   padding-bottom: 1rem;
+
+  .testregelFilterValChipRadio {
+    margin-right: 0.5rem;
+  }
 }
 
 .loeysing-filter {
