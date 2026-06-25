@@ -2,18 +2,12 @@ package no.uutilsynet.testlab2frontendserver.fakes
 
 import java.net.URI
 import java.time.Instant
-import java.time.temporal.ChronoUnit
-import no.uutilsynet.testlab2.constants.TestlabLocale
-import no.uutilsynet.testlab2.constants.TestregelInnholdstype
-import no.uutilsynet.testlab2.constants.TestregelModus
-import no.uutilsynet.testlab2.constants.TestregelStatus
 import no.uutilsynet.testlab2frontendserver.kontroll.ITestgrunnlagAPIClient
 import no.uutilsynet.testlab2frontendserver.kontroll.KontrollResource
 import no.uutilsynet.testlab2frontendserver.kontroll.Sideutval
 import no.uutilsynet.testlab2frontendserver.kontroll.TestgrunnlagAPIClient
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.Retest
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 
 object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
   private val database = mutableMapOf<Int, KontrollResource.TestgrunnlagDTO>()
@@ -29,8 +23,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
             namn = nyttTestgrunnlag.namn,
             type = nyttTestgrunnlag.type,
             sideutval = nyttTestgrunnlag.sideutval,
-            testreglar =
-                nyttTestgrunnlag.testregelIdList,
+            testreglar = nyttTestgrunnlag.testregelIdList,
             datoOppretta = Instant.now())
     database[id] = testgrunnlag
     return Result.success(testgrunnlag)
@@ -48,9 +41,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
                 listOf(
                     Sideutval(
                         retest.loeysingId, fakeId(), siteutvalNamn, URI(dummyUrl), null, fakeId())),
-            testreglar =
-                listOf(
-                   1),
+            testreglar = listOf(1),
             datoOppretta = Instant.now())
     database[id] = testgrunnlag
     return Result.success(testgrunnlag)

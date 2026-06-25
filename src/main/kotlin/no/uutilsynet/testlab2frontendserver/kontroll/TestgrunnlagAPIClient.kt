@@ -34,15 +34,17 @@ class TestgrunnlagAPIClient(
     logger.info(
         "Lagar nytt testgrunnlag med type ${nyttTestgrunnlag.type} for kontroll ${nyttTestgrunnlag.kontrollId}")
     return runCatching {
-        val location =
-            restTemplate.postForLocation(
-                "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag
-            )
-        check(location != null) { "Vi fikk ikkje location for det nye testgrunnlaget fra serveren" }
+      val location =
+          restTemplate.postForLocation(
+              "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag)
+      check(location != null) { "Vi fikk ikkje location for det nye testgrunnlaget fra serveren" }
 
-        val nyttTestgrunnlag = restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
-        check(nyttTestgrunnlag != null) { "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje." }
-        nyttTestgrunnlag
+      val nyttTestgrunnlag =
+          restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
+      check(nyttTestgrunnlag != null) {
+        "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje."
+      }
+      nyttTestgrunnlag
     }
   }
 
@@ -51,10 +53,13 @@ class TestgrunnlagAPIClient(
         val location =
             restTemplate.postForLocation(
                 "${testingApiProperties.url}/testgrunnlag/kontroll/retest", retest)
-       check(location != null) { "Vi fikk ikkje location fra $testingApiProperties" }
-        val nyttTestgrunnlag = restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
-            check(nyttTestgrunnlag != null) {"Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje."}
-          nyttTestgrunnlag
+        check(location != null) { "Vi fikk ikkje location fra $testingApiProperties" }
+        val nyttTestgrunnlag =
+            restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
+        check(nyttTestgrunnlag != null) {
+          "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje."
+        }
+        nyttTestgrunnlag
       }
 
   override fun getTestgrunnlag(kontrollId: Int): Result<List<KontrollResource.TestgrunnlagDTO>> {

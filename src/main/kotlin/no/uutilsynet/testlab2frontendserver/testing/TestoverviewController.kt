@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import no.uutilsynet.testlab2.constants.Kontrolltype
 import no.uutilsynet.testlab2.constants.Loeysingstype
 import no.uutilsynet.testlab2.constants.TestgrunnlagType
