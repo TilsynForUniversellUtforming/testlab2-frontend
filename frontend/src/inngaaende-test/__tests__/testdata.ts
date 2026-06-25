@@ -15,7 +15,7 @@ export function createOpprinneligTest(): Testgrunnlag {
     id: faker.number.int(),
     kontrollId: faker.number.int(),
     namn: faker.lorem.word(),
-    testreglar: faker.helpers.multiple(createTestregel),
+    testreglar: faker.helpers.multiple(createTestregel).map((tr) => tr.id),
     sideutval: faker.helpers.multiple(createSideutval),
     type: 'OPPRINNELIG_TEST',
     datoOppretta: faker.date.past().toISOString(),
@@ -78,7 +78,7 @@ export function createResultatManuellKontrollForLoeysing(
   elementResultat?: ElementResultat
 ): ResultatManuellKontroll[] {
   return [
-    ...Array(
+    new Array(
       testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId)
         .length * testgrunnlag.testreglar.length
     ),
@@ -124,7 +124,7 @@ export function createResultatManuellKontroll(
         status: 'IkkjePaabegynt',
         testgrunnlagId: testgrunnlag.id,
         loeysingId: loeysingId,
-        testregelId: testgrunnlag.testreglar[testregelIndex].id,
+        testregelId: testgrunnlag.testreglar[testregelIndex],
         sideutvalId: sideutvalIdForLoeysingId,
         sistLagra: faker.date.recent().toISOString(),
       };
@@ -138,7 +138,7 @@ export function createResultatManuellKontroll(
         status: 'UnderArbeid',
         testgrunnlagId: testgrunnlag.id,
         loeysingId: loeysingId,
-        testregelId: testgrunnlag.testreglar[testregelIndex].id,
+        testregelId: testgrunnlag.testreglar[testregelIndex],
         sideutvalId: sideutvalIdForLoeysingId,
         sistLagra: faker.date.recent().toISOString(),
       };
@@ -152,7 +152,7 @@ export function createResultatManuellKontroll(
         status: 'Ferdig',
         testgrunnlagId: testgrunnlag.id,
         loeysingId: loeysingId,
-        testregelId: testgrunnlag.testreglar[testregelIndex].id,
+        testregelId: testgrunnlag.testreglar[testregelIndex],
         sideutvalId: sideutvalIdForLoeysingId,
         elementOmtale: faker.lorem.word(),
         elementResultat:

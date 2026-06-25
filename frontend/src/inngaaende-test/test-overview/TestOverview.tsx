@@ -118,8 +118,6 @@ const TestOverview = () => {
             styringsdataId || undefined
           );
 
-          console.log(status.toLowerCase());
-
           return (
             <div
               key={`${testgrunnlagId}/${loeysingId}`}

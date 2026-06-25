@@ -74,7 +74,7 @@ export type Testgrunnlag = {
   id: number;
   kontrollId: number;
   namn: string;
-  testreglar: Testregel[];
+  testreglar: number[];
   sideutval: Sideutval[];
   type: 'OPPRINNELIG_TEST' | 'RETEST';
   datoOppretta: string;

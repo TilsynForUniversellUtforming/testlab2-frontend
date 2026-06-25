@@ -18,35 +18,6 @@ export const filterResultaterForLoeysingTestgrunnlag = (
 
 export const filterFerdig = (resultater: ResultatManuellKontroll[]) =>
   resultater.filter((r) => r.status === 'Ferdig');
-
-export const toUniqueTestKeyCount = (resultater: ResultatManuellKontroll[]) =>
-  new Set(resultater.map((r) => `${r.sideutvalId}_${r.testregelId}`)).size;
-
-export type TestStatusCounts = {
-  total: number;
-  finished: number;
-  testing: number;
-  pending: number;
-};
-
-export const getTestStatusCounts = (
-  testgrunnlag: Testgrunnlag,
-  resultater: ResultatManuellKontroll[],
-  loeysingId: number
-): TestStatusCounts => {
-  const loeysingSideutval = getSideutvalForLoeysing(testgrunnlag, loeysingId);
-  const total =
-    testgrunnlag.type === 'RETEST'
-      ? toUniqueTestKeyCount(resultater)
-      : loeysingSideutval.length * testgrunnlag.testreglar.length;
-
-  const finished = toUniqueTestKeyCount(filterFerdig(resultater));
-  const testing = toUniqueTestKeyCount(resultater.filter((r) => r.status === 'UnderArbeid'));
-  const pending = total - finished - testing;
-
-  return { total, finished, testing, pending };
-};
-
 export const getSideutvalForLoeysing = (
   testgrunnlag: Testgrunnlag,
   loeysingId: number
@@ -60,7 +31,7 @@ export const getKombinasjonerTestreglerSideutval = (
   testgrunnlag.testreglar.flatMap((tr) =>
     testgrunnlag.sideutval
       .filter((s) => s.loeysingId === loeysingId)
-      .map((s) => [tr.id, s.id])
+      .map((s) => [tr, s.id])
   );
 
 export function groupSideutvalByLoeysing(
@@ -119,20 +90,6 @@ export function visRetestKnapp(
     resultater.some((r) => r.elementResultat === 'brot')
   );
 }
-
-export function visSlettKnapp(
-  testgrunnlag: Testgrunnlag,
-  status: ManuellTestStatus
-): boolean {
-  return testgrunnlag.type === 'RETEST' && status === 'ikkje-starta';
-}
-
-export const hasLoeysingBrot = (
-  resultater: ResultatManuellKontroll[],
-) =>
-  resultater
-    .filter((r) => r.elementResultat === 'brot');
-
 export const findLoeysingNamn = (loeysingList: Loeysing[], loeysingId: number) =>
   loeysingList.find((l) => l.id === loeysingId)?.namn ?? '';
 

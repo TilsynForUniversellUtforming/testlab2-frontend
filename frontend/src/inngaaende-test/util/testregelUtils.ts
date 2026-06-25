@@ -9,53 +9,11 @@ import {
   TestregelOverviewElement,
 } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { filterFerdig, getSideutvalForLoeysing } from '@test/test-overview/util/testOverviewUtils';
+import { filterFerdig } from '@test/test-overview/util/testOverviewUtils';
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
 
 const toPercent = (finished: number, total: number): number =>
   total > 0 ? Math.round((finished / total) * 100) : 0;
-
-export const progressionForTestgrunnlagSideutval = (
-  testgrunnlag: Testgrunnlag,
-  testResults: ResultatManuellKontroll[],
-  loeysingId: number
-): number => {
-  const testregelIds = testgrunnlag.testreglar.map((tr) => tr.id);
-  const numSideutval = getSideutvalForLoeysing(testgrunnlag, loeysingId).length;
-  const numFinished = new Set(
-    filterFerdig(testResults)
-      .filter((tr) => testregelIds.includes(tr.testregelId) && tr.loeysingId === loeysingId)
-      .map((tr) => `${tr.testregelId}-${tr.loeysingId}-${tr.sideutvalId}`)
-  ).size;
-  return toPercent(numFinished, testregelIds.length * numSideutval);
-};
-
-export const progressionForTestgrunnlagInnhaldstype = (
-  testgrunnlag: Testgrunnlag,
-  testResults: ResultatManuellKontroll[],
-  loeysingId: number
-): number => {
-  const sideutvalIds = getSideutvalForLoeysing(testgrunnlag, loeysingId).map((su) => su.id);
-  const finishedKeys = new Set(
-    filterFerdig(testResults.filter((tr) => tr.loeysingId === loeysingId))
-      .map((tr) => `${tr.sideutvalId}_${tr.testregelId}`)
-  );
-  const byInnhaldstype = Map.groupBy(testgrunnlag.testreglar, (tr) => tr.innhaldstypeTesting?.id ?? 0);
-  if (byInnhaldstype.size === 0) return 0;
-
-  const completed = [...byInnhaldstype.values()].reduce((sum, testreglar) => {
-    const total = testreglar.length * sideutvalIds.length;
-    if (total === 0) return sum;
-    const numFinished = testreglar.reduce(
-      (count, tr) => count + sideutvalIds.filter((sid) => finishedKeys.has(`${sid}_${tr.id}`)).length,
-      0
-    );
-    return sum + numFinished / total / byInnhaldstype.size;
-  }, 0);
-
-  return Math.round(completed * 100);
-};
-
 export const progressionForSelection = (
   testregelList: Testregel[],
   testResults: ResultatManuellKontroll[],
@@ -138,7 +96,9 @@ export const toTestregelStatus = (
   );
 
 const toTestregelOverviewElement = ({ id, namn, testregelId }: Testregel): TestregelOverviewElement => {
-  const match = namn.match(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/);
+  const match = RegExp(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/).exec(
+    namn
+  );
   return { id, name: match ? match[4] : namn, krav: capitalize(testregelId) };
 };
 
@@ -200,7 +160,7 @@ export const toTestKeys = (
   testgrunnlag.type === 'RETEST'
     ? toUnique(testresultat.map((tr) => toTestKey(tr.testregelId, tr.sideutvalId)))
     : testgrunnlag.testreglar.flatMap((tr) =>
-        testgrunnlag.sideutval.map((su) => toTestKey(tr.id, su.id))
+        testgrunnlag.sideutval.map((su) => toTestKey(tr, su.id))
       );
 
 export const toTestKey = (testregelId: number, sideutvalId: number): string =>
