@@ -78,7 +78,7 @@ export function createResultatManuellKontrollForLoeysing(
   elementResultat?: ElementResultat
 ): ResultatManuellKontroll[] {
   return [
-    new Array(
+    ...Array(
       testgrunnlag.sideutval.filter((su) => su.loeysingId === loeysingId)
         .length * testgrunnlag.testreglar.length
     ),
