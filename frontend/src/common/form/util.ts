@@ -116,13 +116,17 @@ export const fetchWithErrorHandling: typeof fetch = async (
   try {
     const init: RequestInit = { credentials: 'include', ...rest[0] };
     const response = await fetch(input, init);
-    if (response.status >= 400) {
+    if (response.status >= 500) {
       console.error(
         `HTTP error! status: ${response.status}, message: ${response.statusText}`
       );
       throw new Error(response.statusText);
     }
-    return response;
+    if(response.status == 401 || response.status == 403) {
+      globalThis.location.href = '/oauth2/authorization/brukar';
+    }
+
+      return response;
   } catch (error) {
     console.error(error);
     throw error;
