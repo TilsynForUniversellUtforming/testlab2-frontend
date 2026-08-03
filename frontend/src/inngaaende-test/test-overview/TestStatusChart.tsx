@@ -1,7 +1,4 @@
 import LoadingBar from '@common/loading-bar/LoadingBar';
-import { ResultatManuellKontroll } from '@test/api/types';
-import { Testgrunnlag } from '@test/types';
-import { getTestStatusCounts } from './util/testOverviewUtils';
 import classes from './test-overview.module.css';
 
 interface Props {

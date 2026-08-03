@@ -113,8 +113,6 @@ const VelgTestreglar = () => {
         filterList(regelsettList, selectedModus, selectedType)
       );
 
-      setSelectedRegelsettId(undefined);
-      setSelectedTestregelIdList([]);
     },
     [selectionType]
   );

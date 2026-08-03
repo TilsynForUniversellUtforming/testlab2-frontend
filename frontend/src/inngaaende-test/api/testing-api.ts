@@ -177,7 +177,7 @@ export const getTestoverview = async (
   kontrollId: number
 ): Promise<TestgrunnlagOverviewElement[]> => {
   return await fetchWithErrorHandling(
-    `/testoverview/kontroll/${kontrollId}`,
+    `${testingApiBaseUrl}/testoverview/kontroll/${kontrollId}`,
     {}
   ).then((response) =>
     responseWithLogErrors(

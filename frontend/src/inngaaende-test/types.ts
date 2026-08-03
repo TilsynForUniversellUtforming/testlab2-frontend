@@ -74,7 +74,7 @@ export type Testgrunnlag = {
   id: number;
   kontrollId: number;
   namn: string;
-  testreglar: Testregel[];
+  testreglar: number[];
   sideutval: Sideutval[];
   type: 'OPPRINNELIG_TEST' | 'RETEST';
   datoOppretta: string;
@@ -106,7 +106,7 @@ export type TestgrunnlagOverviewElement = {
   loeysingId: number;
   testgrunnlagId: number;
   loeysingNamn: string;
-  loeysingsType: string;
+  loeysingstype: string;
   kontrollType: string;
   testgrunnlagType: string;
   styringsdataId?: number;

@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.toEntity
 
 @RestController
-@RequestMapping("/testoverview")
+@RequestMapping("api/v1/testing/testoverview")
 class TestoverviewController(
     val restTemplate: RestTemplate,
     testingApiProperties: TestingApiProperties
@@ -57,10 +57,10 @@ data class TestingStatus(
 )
 
 enum class ManuellTestStatus {
-  FERDIG,
-  DEAKTIVERT,
-  UNDER_ARBEID,
-  IKKJE_STARTA
+  @JsonProperty("ferdig") FERDIG,
+  @JsonProperty("deaktivert") DEAKTIVERT,
+  @JsonProperty("under-arbeid") UNDER_ARBEID,
+  @JsonProperty("ikkje-starta") IKKJE_STARTA
 }
 
 data class TestStatusCount(
@@ -75,8 +75,8 @@ data class TestStatusCount(
 )
 
 enum class StyringsdataStatus {
-  @JsonProperty("bot") BOT,
-  @JsonProperty("paalegg") PAALEG,
-  @JsonProperty("klage") KLAGE,
-  @JsonProperty("ingen-reaksjon-brukt") INGEN_REAKSJON_BRUKT
+  BOT,
+  PAALEGG,
+  KLAGE,
+  INGEN_REAKSJON_BRUKT
 }

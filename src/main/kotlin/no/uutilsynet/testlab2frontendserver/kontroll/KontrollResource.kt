@@ -8,7 +8,6 @@ import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
 import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
 import no.uutilsynet.testlab2frontendserver.testing.Retest
-import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelDTO
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -255,7 +254,7 @@ class KontrollResource(
       val id: Int,
       val kontrollId: Int,
       val namn: String,
-      val testreglar: List<TestregelDTO> = emptyList(),
+      val testreglar: List<Int> = emptyList(),
       val sideutval: List<Sideutval> = emptyList(),
       val type: TestgrunnlagType,
       val datoOppretta: Instant

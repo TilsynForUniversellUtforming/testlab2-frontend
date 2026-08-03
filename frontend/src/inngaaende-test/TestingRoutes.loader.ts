@@ -141,7 +141,7 @@ function getTestreglarForTestgrunnlag(
   testreglar: Testregel[],
   testgrunnlag: Testgrunnlag
 ): Testregel[] {
-  const ids = new Set(testgrunnlag.testreglar.map((tr) => tr.id));
+  const ids = new Set(testgrunnlag.testreglar.map((tr) => tr));
   return testreglar.filter((tr) => ids.has(tr.id));
 }
 
@@ -267,7 +267,7 @@ export const testOverviewLoeysingLoader = async ({
     testgrunnlagId,
     loeysingId
   );
-
+  getTestreglarForTestgrunnlag(testreglar, testgrunnlag);
   return {
     testResultatForLoeysing,
     sideutvalForLoeysing: getSideutvalForLoeysing(testgrunnlag, loeysingId),

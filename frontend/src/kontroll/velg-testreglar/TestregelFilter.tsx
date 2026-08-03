@@ -1,4 +1,9 @@
-import { Heading, Paragraph, ToggleGroup } from '@digdir/designsystemet-react';
+import {
+  Chip,
+  Heading,
+  Paragraph,
+  ToggleGroup,
+} from '@digdir/designsystemet-react';
 import { RegelsettInnholdstype, TestregelModus } from '@testreglar/api/types';
 
 import classes from '../kontroll.module.css';
@@ -6,9 +11,10 @@ import classes from '../kontroll.module.css';
 interface Props {
   modus: TestregelModus;
   type: RegelsettInnholdstype;
-  onChangeFilter: (modus: TestregelModus, type: RegelsettInnholdstype) => void;
+    onChangeFilter: (modus: TestregelModus, type: RegelsettInnholdstype) => void;
   regelsettSelected: boolean;
 }
+
 
 const TestregelFilter = ({
   modus,
@@ -24,81 +30,94 @@ const TestregelFilter = ({
       <Heading level={5} data-size="xs">
         Kva slags test skal du køyra?
       </Heading>
-      <ToggleGroup onChange={value => onChangeFilter(value as TestregelModus,type)}>
-        <ToggleGroup.Item
-          value={'manuell'}
-          onToggle={() => onChangeFilter('manuell', type)}
-          title="Testreglar for inngaående kontroll"
-        >
-          Manuell
-        </ToggleGroup.Item>
-        <ToggleGroup.Item
-          value={'automatisk'}
-          onToggle={() => onChangeFilter('automatisk', type)}
-          title="Testreglar for forenkla kontroll"
-        >
-          Automatisk
-        </ToggleGroup.Item>
-        <ToggleGroup.Item
-          value={'deque'}
-          onToggle={() => onChangeFilter('deque', type)}
-          title="Testreglar for Deque Auditor"
-        >
-          Deque Auditor
-        </ToggleGroup.Item>
-        <ToggleGroup.Item
-          value={'semi-automatisk'}
-          onToggle={() => onChangeFilter('semi-automatisk', type)}
-          title="Testreglar for kombinasjon av inngåaend og forenkla kontroll"
-        >
-          Begge deler
-        </ToggleGroup.Item>
-      </ToggleGroup>
+
+      <Chip.Radio
+        value={'manuell'}
+        onChange={() => onChangeFilter('manuell', type)}
+        title="Testreglar for inngaående kontroll"
+        checked={modus === 'manuell'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Manuell
+      </Chip.Radio>
+      <Chip.Radio
+        value={'automatisk'}
+        onChange={() => onChangeFilter('automatisk', type)}
+        title="Testreglar for forenkla kontroll"
+        checked={modus === 'automatisk'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Automatisk
+      </Chip.Radio>
+      <Chip.Radio
+        value={'deque'}
+        onChange={() => onChangeFilter('deque', type)}
+        title="Testreglar for Deque Auditor"
+        checked={modus === 'deque'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Deque Auditor
+      </Chip.Radio>
+      <Chip.Radio
+        value={'semi-automatisk'}
+        onChange={() => onChangeFilter('semi-automatisk', type)}
+        title="Testreglar for kombinasjon av inngåaend og forenkla kontroll"
+        checked={modus === 'semi-automatisk'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Begge deler
+      </Chip.Radio>
     </div>
     <div className={classes.testregelFilterVal}>
       <Heading level={5} data-size="xs">
         Kva slags løysing skal du testa?
       </Heading>
-      <ToggleGroup onChange={value => onChangeFilter(modus, value as RegelsettInnholdstype)}>
-        <ToggleGroup.Item
-          value={'nett'}
-          onToggle={() => onChangeFilter(modus, 'nett')}
-          title="Testreglar for å testa nettløysingar"
+      <Chip.Radio
+        value={'nett'}
+        onChange={() => onChangeFilter(modus, 'nett')}
+        title="Testreglar for å testa nettløysingar"
+        checked={type === 'nett'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Nett
+      </Chip.Radio>
+      <Chip.Radio
+        value={'app'}
+        onChange={() => onChangeFilter(modus, 'app')}
+        title="Testreglar for å testa appar"
+        checked={type === 'app'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        App
+      </Chip.Radio>
+      <Chip.Radio
+        value={'automat'}
+        onChange={() => onChangeFilter(modus, 'automat')}
+        title="Testreglar for å testa automatar"
+        checked={type === 'automat'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Automat
+      </Chip.Radio>
+      <Chip.Radio
+        value={'dokument'}
+        onChange={() => onChangeFilter(modus, 'dokument')}
+        title="Testreglar for å testa dokument"
+        checked={type === 'dokument'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Dokument
+      </Chip.Radio>
+      {regelsettSelected && (
+        <Chip.Radio
+          value={'kombinasjon'}
+          onChange={() => onChangeFilter(modus, 'kombinasjon')}
+          title="Regelsett med testreglar for å testa fleire typar"
+          checked={type === 'kombinasjon'}
         >
-          Nett
-        </ToggleGroup.Item>
-        <ToggleGroup.Item
-          value={'app'}
-          onToggle={() => onChangeFilter(modus, 'app')}
-          title="Testreglar for å testa appar"
-        >
-          App
-        </ToggleGroup.Item>
-        <ToggleGroup.Item
-          value={
-          'automat'}
-          onToggle={() => onChangeFilter(modus, 'automat')}
-          title="Testreglar for å testa automatar"
-        >
-          Automat
-        </ToggleGroup.Item>
-        <ToggleGroup.Item
-          value={'dokument'}
-          onToggle={() => onChangeFilter(modus, 'dokument')}
-          title="Testreglar for å testa dokument"
-        >
-          Dokument
-        </ToggleGroup.Item>
-        {regelsettSelected && (
-          <ToggleGroup.Item
-            value={'kombinasjon'}
-            onToggle={() => onChangeFilter(modus, 'kombinasjon')}
-            title="Regelsett med testreglar for å testa fleire typar"
-          >
-            Kombinasjon
-          </ToggleGroup.Item>
-        )}
-      </ToggleGroup>
+          Kombinasjon
+        </Chip.Radio>
+      )}
     </div>
     <div>
       <Heading level={4} data-size="sm">

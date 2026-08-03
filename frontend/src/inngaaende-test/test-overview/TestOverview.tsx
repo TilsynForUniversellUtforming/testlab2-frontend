@@ -26,6 +26,7 @@ import { KlageType } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';
 import { getStyringsdataPath, getJobstatus } from './util/testOverviewUtils';
+import { capitalize, sanitizeEnumLabel } from '@common/util/stringutils';
 
 const TestOverview = () => {
   const { id } = useParams();
@@ -98,7 +99,6 @@ const TestOverview = () => {
         )}
         {testgrunnlagOverviewElements.map((element) => {
           const {
-            testgrunnlagId,
             loeysingId,
             loeysingNamn,
             testgrunnlagType,
@@ -108,7 +108,10 @@ const TestOverview = () => {
             teststatistics,
             kanReteste,
             kanSlette,
+            kontrollType,
+            loeysingstype
           } = element;
+          const testgrunnlagId = teststatistics.testgrunnlagId
           const styringsdataPath = getStyringsdataPath(
             kontrollId,
             loeysingId,
@@ -122,9 +125,9 @@ const TestOverview = () => {
             >
               <div className={classes.loeysingButtonTag}>
                 <TestlabStatusTag<ManuellTestStatus>
-                  status={status}
+                  status={status.toLowerCase()}
                   colorMapping={{
-                    second: ['under-arbeid'],
+                    warning: ['under-arbeid'],
                     info: ['ikkje-starta'],
                     success: ['ferdig'],
                   }}
@@ -147,9 +150,9 @@ const TestOverview = () => {
                     <Heading data-size="md" level={4}>
                       {loeysingNamn}
                     </Heading>
-                    {styringsdataStatus && (
+                    {styringsdataStatus && styringsdataStatus!=='INGEN_REAKSJON_BRUKT' && (
                       <TestlabStatusTag<KlageType>
-                        status={styringsdataStatus}
+                        status={styringsdataStatus.toLowerCase()}
                         colorMapping={{
                           danger: ['bot'],
                           warning: ['paalegg'],
@@ -160,15 +163,17 @@ const TestOverview = () => {
                   </div>
                   <div className={classes.tagWrapper}>
                     <div className={classes.testTags}>
-                      <Tag color="second" data-size="sm">
-                        Inngående kontroll
+                      <Tag data-color="warning" data-size="sm">
+                        {capitalize(kontrollType)}
                       </Tag>
-                      <Tag color="second" data-size="sm">
-                        {testgrunnlagType}
+                      {testgrunnlagType=='RETEST' &&
+                      <Tag data-color="warning" data-size="sm">
+                        {sanitizeEnumLabel(testgrunnlagType)}
                       </Tag>
+                      }
                     </div>
-                    <Tag color="info" data-size="sm">
-                      Nettsted
+                    <Tag data-color="neutral" data-size="sm">
+                      {sanitizeEnumLabel(loeysingstype)}
                     </Tag>
                   </div>
                 </div>
