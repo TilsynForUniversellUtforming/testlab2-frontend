@@ -56,7 +56,15 @@ export const listTestobjekt = async (): Promise<Testobjekt[]> =>
 export const createTestregel = async (
   testregel: TestregelInit
 ): Promise<TestregelBase[]> =>
-  await fetchWithCsrf(`/api/v1/testreglar`, {
+{
+  if (
+    testregel.modus === 'manuell-forenkla' &&
+    testregel.instruksjonar !== undefined
+  ) {
+    testregel.testregelSchema = testregel.instruksjonar;
+  }
+
+  return await fetchWithCsrf(`/api/v1/testreglar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -65,6 +73,7 @@ export const createTestregel = async (
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje lagre testregel')
   );
+}
 
 export const updateTestregel = async (
   testregel: TestregelInit

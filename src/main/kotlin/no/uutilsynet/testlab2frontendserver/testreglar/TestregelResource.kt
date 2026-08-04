@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.postForEntity
 
 private const val DUPLIKAT_SKJEMA_FOR_TESTREGEL = "Duplikat skjema for testregel"
 
@@ -65,7 +66,7 @@ class TestregelResource(
         logger.debug("Lagrer ny testregel med navn: ${testregel.namn} fra $testregelUrl")
         validateDuplicatSchema(testregel)
         validateNotSemiAutomatic(testregel)
-        restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
+        restTemplate.postForEntity<Int>(testregelUrl, testregel)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
         logger.error(DUPLIKAT_SKJEMA_FOR_TESTREGEL, e)
