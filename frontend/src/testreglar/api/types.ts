@@ -2,7 +2,7 @@ import { TestlabLocale } from '@common/types';
 
 import { Krav } from '../../krav/types';
 
-export type TestregelModus = 'automatisk' | 'manuell' | 'semi-automatisk' | 'deque';
+export type TestregelModus = 'automatisk' | 'manuell' | 'semi-automatisk' | 'deque' | 'manuell-forenkla' ;
 
 export type TestregelBase = {
   id: number;
@@ -54,6 +54,9 @@ export type Testregel = TestregelBase & {
   kravTilSamsvar?: string;
   testregelSchema: string;
   innhaldstypeTesting?: InnhaldstypeTesting;
+  instruksjonar?: string;
+  utfall?: TestregelUtfall[];
+
 };
 
 export type TestregelInit = {
@@ -71,6 +74,8 @@ export type TestregelInit = {
   kravTilSamsvar?: string;
   testregelSchema: string;
   innhaldstypeTestingId?: number;
+  instruksjonar?: string;
+  utfall?: TestregelUtfall[];
 };
 
 export type Regelsett = {
@@ -95,4 +100,18 @@ export type RegelsettEdit = {
   modus: TestregelModus;
   standard: boolean;
   testregelIdList: number[];
+};
+
+
+export type TestresultatUtfall =
+  | 'samsvar'
+  | 'brot'
+  | 'ikkje-forekomst'
+  | 'ikkje-testbar';
+
+
+export type TestregelUtfall = {
+  beskrivelse: string;
+  testresultat: TestresultatUtfall;
+  default: boolean;
 };

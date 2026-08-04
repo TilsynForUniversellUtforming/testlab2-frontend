@@ -1,11 +1,6 @@
 import AlertTimed, { AlertProps } from '@common/alert/AlertTimed';
 import TestlabForm from '@common/form/TestlabForm';
-import TestlabFormInput from '@common/form/TestlabFormInput';
-import TestlabFormSelect from '@common/form/TestlabFormSelect';
-import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
-import { OptionType } from '@common/types';
 import { getFullPath, idPath } from '@common/util/routeUtils';
-import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { isDefined } from '@common/util/validationUtils';
 import { Link } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,11 +16,34 @@ import {
   Testobjekt,
   Testregel,
   TestregelInit,
-  TestregelInnholdstype,
-  TestregelModus,
-  TestregelStatus,
 } from '../api/types';
 import { testreglarValidationSchema } from './testreglarValidationSchema';
+import {
+  defineInnholdstypeOptions,
+  defineKravOptions,
+  defineModusOptions,
+  defineSpraakOptions,
+  defineTemaOptions,
+  defineTestregelStatusOption,
+  defineTypeOptions,
+  deineTestobjectOptions,
+} from '@testreglar/testreglar-liste/formOptionUtils.';
+import {
+  InputVersion,
+  InnhaldstypeSelect,
+  KravSelect,
+  KravTilSamsvarTextArea,
+  LangSelect,
+  ModusSelect,
+  NameTextArea,
+  TemaSelect,
+  TestobjektSelect,
+  TestregelIdInput,
+  TestregelSchemaTextArea,
+  TestregelStatusSelect,
+  TestregelTypeSelect,
+  UtfallFieldArray, InstruksjonTextArea,
+} from '@testreglar/testreglar-liste/TestregelFormFields';
 
 export interface Props {
   heading: string;
@@ -51,80 +69,17 @@ const TestregelForm = ({
   alert,
 }: Props) => {
   const { id } = useParams();
-  const kravOptions: OptionType[] = kravList.map((k) => ({
-    label: k.tittel,
-    value: k.id,
-  }));
+  const kravOptions = defineKravOptions(kravList);
+  const modusOptions = defineModusOptions();
+  const spraakOptions = defineSpraakOptions();
+  const testregelStatusOptions = defineTestregelStatusOption();
+  const typeOptions = defineTypeOptions();
 
-  const modusOptions: OptionType[] = createOptionsFromLiteral<TestregelModus>([
-    'manuell',
-    'automatisk',
-    'deque'
-  ]).concat({
-    label: 'Semi-automatisk',
-    value: 'semi-automatisk',
-    title: 'Semi-automatiske testreglar er ikkje støtta ennå',
-    disabled: true,
-  });
+  const innhaldsTypeOptions = defineInnholdstypeOptions(innhaldstypeList);
+  const temaOptions = defineTemaOptions(temaList);
+  const testobjektOptions = deineTestobjectOptions(testobjektList);
 
-  const spraakOptions: OptionType[] = [
-    { value: 'nn', label: 'Norsk nynorsk' },
-    { value: 'nb', label: 'Norsk bokmål' },
-    { value: 'en', label: 'Engelsk' },
-  ];
-  const testregelStatusOptions: OptionType[] =
-    createOptionsFromLiteral<TestregelStatus>([
-      'ikkje_starta',
-      'under_arbeid',
-      'gjennomgaatt_workshop',
-      'klar_for_testing',
-      'treng_avklaring',
-      'ferdig_testa',
-      'klar_for_kvalitetssikring',
-      'publisert',
-      'utgaar',
-    ]);
-  const typeOptions = createOptionsFromLiteral<TestregelInnholdstype>([
-    'app',
-    'nett',
-    'automat',
-    'dokument',
-  ]);
-
-  const innhaldsTypeOptions: OptionType[] = innhaldstypeList.map((it) => ({
-    label: it.innhaldstype,
-    value: it.id,
-  }))
-
-  const temaOptions: OptionType[] = temaList.map((it) => ({
-    label: it.tema,
-    value: it.id,
-  }));
-
-  const testobjektOptions: OptionType[] = testobjektList.map((it) => ({
-    label: it.testobjekt,
-    value: it.id,
-  }));
-
-  const formMethods = useForm<TestregelInit>({
-    defaultValues: {
-      id: testregel?.id,
-      testregelSchema: testregel?.testregelSchema || '',
-      namn: testregel?.namn || '',
-      kravId: testregel?.krav.id || 1,
-      modus: testregel?.modus || 'manuell',
-      testregelId: testregel?.testregelId || '',
-      versjon: testregel?.versjon || 1,
-      status: testregel?.status || 'publisert',
-      type: testregel?.type || 'nett',
-      spraak: testregel?.spraak || 'nn',
-      tema: testregel?.tema?.id,
-      testobjekt: testregel?.testobjekt?.id,
-      kravTilSamsvar: testregel?.kravTilSamsvar || '',
-      innhaldstypeTestingId: testregel?.innhaldstypeTesting?.id,
-    },
-    resolver: zodResolver(testreglarValidationSchema),
-  });
+  const formMethods = useDefineFormMethods(testregel);
 
   const { control } = formMethods;
 
@@ -132,14 +87,15 @@ const TestregelForm = ({
     control,
     name: 'modus',
   });
-
-  const testregelInnholdstype = useWatch({
+  useWatch({
     control,
     name: 'type',
   });
+  const showDemoLink =
+    (testregelType === 'manuell' || testregelType === 'manuell-forenkla') && id;
+  const isModusLocked = isDefined(testregel?.modus);
 
-
-  const showDemoLink = testregel && testregel.modus === 'manuell' && id;
+  const isManuellForenkla = testregelType === 'manuell-forenkla';
 
   return (
     <div className="testregel-form">
@@ -149,76 +105,42 @@ const TestregelForm = ({
         onSubmit={onSubmit}
         formMethods={formMethods}
       >
-        <TestlabFormSelect
-          radio
-          name="modus"
-          options={modusOptions}
-          label={`Type testregel${isDefined(testregel?.modus) ? ' (kan ikkje endrast)' : ''}`}
-          size="sm"
-          disabled={isDefined(testregel?.modus)}
-          multiline={true}
-          required
-        />
-        <TestlabFormTextArea label="Namn" name="namn" required />
-        <TestlabFormInput label="Testregel-id" name="testregelId" required />
-        <TestlabFormTextArea
-          label={
-            testregelType === 'manuell'
-              ? 'WCAG testregel'
-              : 'QualWeb regel-id (unik)'
-          }
-          description={
-            testregelType === 'manuell'
-              ? 'Testregel må være i gyldig JSON-format'
-              : ''
-          }
-          name="testregelSchema"
-          required
-        />
-        <TestlabFormSelect
-          label="Krav"
-          options={kravOptions}
-          name="kravId"
-          required
-        />
-        <TestlabFormSelect
-          options={spraakOptions}
-          label="Språk"
-          name="spraak"
-          required
-        />
-        <TestlabFormSelect
-          options={testregelStatusOptions}
-          label="Status"
-          name="status"
-          defaultValue={'publisert'}
-          required
-        />
-        <TestlabFormInput
-          label="Versjon"
-          name="versjon"
-          type="number"
-          required
-        />
-        <TestlabFormSelect
-          options={typeOptions}
-          label="Type"
-          name="type"
-          defaultValue={'nett'}
-          required
-        />
-        <TestlabFormSelect
-          options={innhaldsTypeOptions}
-          label="Innhaldstype"
-          name="innhaldstypeTesting"
-        />
-        <TestlabFormSelect options={temaOptions} label="Tema" name="tema" />
-        <TestlabFormSelect
-          options={testobjektOptions}
-          label="Testobjekt"
-          name="testobjekt"
-        />
-        <TestlabFormTextArea label="Krav til samsvar" name="kravTilSamsvar" />
+        <ModusSelect options={modusOptions} disabled={isModusLocked} />
+
+        <NameTextArea />
+
+        <TestregelIdInput />
+
+        {!isManuellForenkla && (
+          <TestregelSchemaTextArea testregelType={testregelType} />
+        )}
+
+        <KravSelect options={kravOptions} />
+
+        <LangSelect options={spraakOptions} />
+
+        <TestregelStatusSelect options={testregelStatusOptions} />
+
+        <InputVersion />
+
+        <TestregelTypeSelect options={typeOptions} />
+
+        <InnhaldstypeSelect options={innhaldsTypeOptions} />
+
+        <TemaSelect options={temaOptions} />
+
+        <TestobjektSelect options={testobjektOptions} />
+
+        <KravTilSamsvarTextArea />
+
+        {isManuellForenkla && (
+          <>
+            <InstruksjonTextArea />
+
+            <UtfallFieldArray />
+          </>
+        )}
+
         {showDemoLink && (
           <Link
             href={getFullPath(TESTREGEL_DEMO, { id: id, pathParam: idPath })}
@@ -239,4 +161,27 @@ const TestregelForm = ({
   );
 };
 
+function useDefineFormMethods(testregel: Testregel | undefined) {
+  return useForm<TestregelInit>({
+    defaultValues: {
+      id: testregel?.id,
+      testregelSchema: testregel?.testregelSchema || '',
+      namn: testregel?.namn || '',
+      kravId: testregel?.krav?.id || 1,
+      modus: testregel?.modus || 'manuell',
+      testregelId: testregel?.testregelId || '',
+      versjon: testregel?.versjon || 1,
+      status: testregel?.status || 'publisert',
+      type: testregel?.type || 'nett',
+      spraak: testregel?.spraak || 'nn',
+      tema: testregel?.tema?.id,
+      testobjekt: testregel?.testobjekt?.id,
+      kravTilSamsvar: testregel?.kravTilSamsvar || '',
+      innhaldstypeTestingId: testregel?.innhaldstypeTesting?.id,
+      instruksjonar: testregel?.instruksjonar || '',
+      utfall: testregel?.utfall,
+    },
+    resolver: zodResolver(testreglarValidationSchema),
+  });
+}
 export default TestregelForm;

@@ -22,6 +22,7 @@ const TestregelCreate = () => {
   const [alert, setAlert] = useAlert();
 
   const onSubmit = useCallback((testregel: TestregelInit) => {
+    console.log(testregel);
     const create = async () => {
       try {
         setContextLoading(true);
