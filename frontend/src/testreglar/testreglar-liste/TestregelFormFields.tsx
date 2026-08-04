@@ -5,6 +5,7 @@ import React from 'react';
 import { TestregelInit, TestregelModus, TestresultatUtfall } from '../api/types';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
+import { ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { Button, Checkbox, Heading } from '@digdir/designsystemet-react';
 import { TrashFillIcon } from '@navikt/aksel-icons';

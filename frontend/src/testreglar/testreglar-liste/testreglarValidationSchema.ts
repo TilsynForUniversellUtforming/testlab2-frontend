@@ -13,7 +13,9 @@ export const testregelBaseSchema = z.object({
     z.literal('deque'),
     z.literal('manuell-forenkla'),
   ]),
+  default:z.boolean(),
 });
+
 
 export const utfallSchema = z.object({
   beskrivelse: z.string().min(1, 'Beskrivelse kan ikkje vera tomt'),
