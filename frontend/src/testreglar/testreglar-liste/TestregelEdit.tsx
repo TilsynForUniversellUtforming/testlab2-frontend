@@ -27,6 +27,8 @@ const TestregelEdit = () => {
   }: TestregelContext = useOutletContext();
   const { id } = useParams();
   const testregel = useLoaderData() as Promise<Testregel>;
+
+  console.log(testregel);
   const [alert, setAlert] = useAlert();
 
   const onSubmit = useCallback((testregel: TestregelInit) => {

@@ -52,11 +52,9 @@ export type Testregel = TestregelBase & {
   tema?: Tema;
   testobjekt?: Testobjekt;
   kravTilSamsvar?: string;
-  testregelSchema: string;
+  testregelSchema?: string;
   innhaldstypeTesting?: InnhaldstypeTesting;
-  instruksjonar?: string;
-  utfall?: TestregelUtfall[];
-
+  definition?: ManuellForenklaDefinition;
 };
 
 export type TestregelInit = {
@@ -72,10 +70,9 @@ export type TestregelInit = {
   tema?: number;
   testobjekt?: number;
   kravTilSamsvar?: string;
-  testregelSchema: string;
+  testregelSchema?: string;
   innhaldstypeTestingId?: number;
-  instruksjonar?: string;
-  utfall?: TestregelUtfall[];
+  definition?: ManuellForenklaDefinition;
 };
 
 export type Regelsett = {
@@ -114,4 +111,10 @@ export type TestregelUtfall = {
   beskrivelse: string;
   testresultat: TestresultatUtfall;
   default: boolean;
+};
+
+export type ManuellForenklaDefinition = {
+  type?:string;
+  description: string;
+  utfall: TestregelUtfall[];
 };

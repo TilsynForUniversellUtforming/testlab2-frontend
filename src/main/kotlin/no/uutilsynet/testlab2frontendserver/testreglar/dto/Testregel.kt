@@ -1,6 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import no.uutilsynet.testlab2.constants.ITestregelDefinition
 import no.uutilsynet.testlab2.constants.TestlabLocale
 import no.uutilsynet.testlab2.constants.TestregelInnholdstype
 import no.uutilsynet.testlab2.constants.TestregelModus
@@ -23,7 +24,8 @@ data class Testregel(
     val testobjekt: Testobjekt?,
     val kravTilSamsvar: String?,
     val testregelSchema: String,
-    val innhaldstypeTesting: InnhaldstypeTesting?
+    val innhaldstypeTesting: InnhaldstypeTesting?,
+    val definition: ITestregelDefinition?
 ) : TestregelBase(id, namn, krav, modus, type)
 
 fun TestregelDTO.toTestregel(
@@ -49,8 +51,9 @@ fun TestregelDTO.toTestregel(
         testregelSchema = this.testregelSchema,
         innhaldstypeTesting =
             innhaldstypeTestingList.find { innhaldstypeTesting ->
-              innhaldstypeTesting.id == this.innhaldstypeTesting
+                innhaldstypeTesting.id == this.innhaldstypeTesting
             },
+        definition = this.definition
     )
 
 fun List<TestregelDTO>.toTestregelList(
@@ -83,6 +86,7 @@ fun List<TestregelDTO>.toTestregelList(
         testobjekt = testregelDTO.testobjekt?.let { testobjektMap[it] },
         kravTilSamsvar = testregelDTO.kravTilSamsvar,
         testregelSchema = testregelDTO.testregelSchema,
-        innhaldstypeTesting = testregelDTO.innhaldstypeTesting?.let { innhaldstypeTestingMap[it] })
+        innhaldstypeTesting = testregelDTO.innhaldstypeTesting?.let { innhaldstypeTestingMap[it] },
+        definition = testregelDTO.definition)
   }
 }

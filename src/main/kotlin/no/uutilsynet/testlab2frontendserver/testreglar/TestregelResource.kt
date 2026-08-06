@@ -95,16 +95,16 @@ class TestregelResource(
   @PutMapping
   fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
-        logger.debug("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
+        logger.info("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
         validateDuplicatSchema(testregel)
         restTemplate.put(testregelUrl, testregel, Testregel::class.java)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
         logger.error(DUPLIKAT_SKJEMA_FOR_TESTREGEL, e)
-        throw Error(DUPLIKAT_SKJEMA_FOR_TESTREGEL)
+        throw IllegalArgumentException(DUPLIKAT_SKJEMA_FOR_TESTREGEL)
       } catch (e: Error) {
         logger.error("Klarte ikke å oppdatere testregel", e)
-        throw Error("Klarte ikke å oppdatere testregel")
+        throw IllegalArgumentException("Klarte ikke å oppdatere testregel")
       }
 
   private fun getTestregelList() = testregelApiClient.getTestregelListWithMetadata()

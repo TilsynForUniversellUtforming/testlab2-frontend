@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testreglar.dto
 
+import no.uutilsynet.testlab2.constants.ITestregelDefinition
 import java.time.Instant
 import no.uutilsynet.testlab2.constants.TestlabLocale
 import no.uutilsynet.testlab2.constants.TestregelInnholdstype
@@ -21,5 +22,6 @@ data class TestregelDTO(
     val testobjekt: Int?,
     val kravTilSamsvar: String?,
     val testregelSchema: String,
-    val innhaldstypeTesting: Int?
+    val innhaldstypeTesting: Int?,
+    val definition: ITestregelDefinition?
 )

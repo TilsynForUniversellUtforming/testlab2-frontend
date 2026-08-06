@@ -11,6 +11,26 @@ import {
   TestregelInit,
 } from './types';
 
+const normalizeManuellForenklaPayload = (
+  testregel: TestregelInit
+): TestregelInit => {
+  if (testregel.modus !== 'manuell-forenkla') {
+    return testregel;
+  }
+
+  const description =
+    testregel.definition?.description ?? testregel.testregelSchema ?? '';
+  testregel.definition &&
+    (testregel.definition.type = testregel.definition.type ?? 'manuell-forenkla');
+  return {
+    ...testregel,
+    testregelSchema: description,
+    definition: testregel.definition
+      ? { ...testregel.definition, description }
+      : undefined,
+  };
+};
+
 export const listTestreglar = async (): Promise<TestregelBase[]> =>
   await fetchWithErrorHandling(`/api/v1/testreglar`, {
     method: 'GET',
@@ -57,19 +77,14 @@ export const createTestregel = async (
   testregel: TestregelInit
 ): Promise<TestregelBase[]> =>
 {
-  if (
-    testregel.modus === 'manuell-forenkla' &&
-    testregel.instruksjonar !== undefined
-  ) {
-    testregel.testregelSchema = testregel.instruksjonar;
-  }
+  const payload = normalizeManuellForenklaPayload(testregel);
 
   return await fetchWithCsrf(`/api/v1/testreglar`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(testregel),
+    body: JSON.stringify(payload),
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje lagre testregel')
   );
@@ -78,15 +93,21 @@ export const createTestregel = async (
 export const updateTestregel = async (
   testregel: TestregelInit
 ): Promise<TestregelBase[]> =>
-  await fetchWithCsrf(`/api/v1/testreglar`, {
+{
+  const payload = normalizeManuellForenklaPayload(testregel);
+
+  console.log(payload);
+
+  return await fetchWithCsrf(`/api/v1/testreglar`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(testregel),
+    body: JSON.stringify(payload),
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikke oppdatere testregel')
   );
+}
 
 export const deleteTestregelList = async (
   testregelIdList: number[]

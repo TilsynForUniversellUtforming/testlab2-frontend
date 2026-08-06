@@ -1,11 +1,10 @@
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
-import { OptionType } from '@common/types';
+import { OptionType, ButtonVariant } from '@common/types';
 import React from 'react';
 
 import { TestregelInit, TestregelModus, TestresultatUtfall } from '../api/types';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
-import { ButtonVariant } from '@common/types';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { Button, Checkbox, Heading } from '@digdir/designsystemet-react';
 import { TrashFillIcon } from '@navikt/aksel-icons';
@@ -131,7 +130,7 @@ export const KravTilSamsvarTextArea = () => (
 );
 
 export const InstruksjonTextArea = () => (
-  <TestlabFormTextArea label="Instruksjon" name={'instruksjonar'} />
+  <TestlabFormTextArea label="Instruksjon" name={'definition.description'} />
 );
 
 const testresultatUtfallOptions = createOptionsFromLiteral<TestresultatUtfall>([
@@ -145,9 +144,9 @@ export const UtfallFieldArray = () => {
   const { control, setValue } = useFormContext<TestregelInit>();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'utfall',
+    name: 'definition.utfall',
   });
-  const utfallValues = useWatch({ control, name: 'utfall' });
+  const utfallValues = useWatch({ control, name: 'definition.utfall' });
 
   const addUtfall = () => {
     append({
@@ -159,7 +158,7 @@ export const UtfallFieldArray = () => {
 
   const onDefaultChange = (targetIndex: number, checked: boolean) => {
     if (!checked) {
-      setValue(`utfall.${targetIndex}.default`, false, {
+      setValue(`definition.utfall.${targetIndex}.default`, false, {
         shouldDirty: true,
         shouldTouch: true,
         shouldValidate: true,
@@ -168,7 +167,7 @@ export const UtfallFieldArray = () => {
     }
 
     fields.forEach((_, index) => {
-      setValue(`utfall.${index}.default`, index === targetIndex, {
+      setValue(`definition.utfall.${index}.default`, index === targetIndex, {
         shouldDirty: true,
         shouldTouch: true,
         shouldValidate: true,
@@ -185,20 +184,20 @@ export const UtfallFieldArray = () => {
         <div key={field.id} className="testregel-form-utfall__row">
           <TestlabFormTextArea
             label={`Beskrivelse utfall ${index + 1}`}
-            name={`utfall.${index}.beskrivelse` as const}
+            name={`definition.utfall.${index}.beskrivelse` as const}
             required
           />
           <TestlabFormSelect<TestregelInit>
             options={testresultatUtfallOptions}
             label="Testresultat"
-            name={`utfall.${index}.testresultat` as const}
+            name={`definition.utfall.${index}.testresultat` as const}
             required
           />
           <Checkbox
             label="Bruk som standard"
             checked={Boolean(utfallValues?.[index]?.default)}
             onChange={() =>
-              onDefaultChange(index, !Boolean(utfallValues?.[index]?.default))
+              onDefaultChange(index, !utfallValues?.[index]?.default)
             }
           />
           <Button

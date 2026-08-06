@@ -178,8 +178,7 @@ function useDefineFormMethods(testregel: Testregel | undefined) {
       testobjekt: testregel?.testobjekt?.id,
       kravTilSamsvar: testregel?.kravTilSamsvar || '',
       innhaldstypeTestingId: testregel?.innhaldstypeTesting?.id,
-      instruksjonar: testregel?.instruksjonar || '',
-      utfall: testregel?.utfall,
+      definition: testregel?.definition,
     },
     resolver: zodResolver(testreglarValidationSchema),
   });
