@@ -224,7 +224,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               "QW-ACT-R1",
               1,
               StringTestregelDefinition("QW-ACT-R1 HTML Page has a title"),
-),
+          ),
           TestregelDTO(
               2,
               "QW-ACT-R2",
@@ -278,8 +278,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               modus = TestregelModus.automatisk,
               testregelSchema = "QW-ACT-R1",
               type = TestregelInnholdstype.nett,
-              definition = StringTestregelDefinition("QW-ACT-R1 HTML Page has a title")
-          ),
+              definition = StringTestregelDefinition("QW-ACT-R1 HTML Page has a title")),
           Testregel(
               2,
               "QW-ACT-R2",

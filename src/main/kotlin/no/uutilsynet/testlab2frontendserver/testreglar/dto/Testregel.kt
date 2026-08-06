@@ -51,10 +51,9 @@ fun TestregelDTO.toTestregel(
         testregelSchema = this.testregelSchema,
         innhaldstypeTesting =
             innhaldstypeTestingList.find { innhaldstypeTesting ->
-                innhaldstypeTesting.id == this.innhaldstypeTesting
+              innhaldstypeTesting.id == this.innhaldstypeTesting
             },
-        definition = this.definition
-    )
+        definition = this.definition)
 
 fun List<TestregelDTO>.toTestregelList(
     temaList: List<Tema>,
