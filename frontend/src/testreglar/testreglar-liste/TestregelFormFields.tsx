@@ -77,7 +77,7 @@ export const InnhaldstypeSelect = ({ options }: SelectProps) => (
   <TestlabFormSelect<TestregelInit>
     options={options}
     label="Innhaldstype"
-    name="innhaldstypeTestingId"
+    name="innhaldstypeTesting"
   />
 );
 

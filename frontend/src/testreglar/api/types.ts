@@ -71,7 +71,7 @@ export type TestregelInit = {
   testobjekt?: number;
   kravTilSamsvar?: string;
   testregelSchema?: string;
-  innhaldstypeTestingId?: number;
+  innhaldstypeTesting?: number;
   definition?: ManuellForenklaDefinition;
 };
 

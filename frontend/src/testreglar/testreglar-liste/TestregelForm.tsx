@@ -177,7 +177,7 @@ function useDefineFormMethods(testregel: Testregel | undefined) {
       tema: testregel?.tema?.id,
       testobjekt: testregel?.testobjekt?.id,
       kravTilSamsvar: testregel?.kravTilSamsvar || '',
-      innhaldstypeTestingId: testregel?.innhaldstypeTesting?.id,
+      innhaldstypeTesting: testregel?.innhaldstypeTesting?.id,
       definition: testregel?.definition,
     },
     resolver: zodResolver(testreglarValidationSchema),

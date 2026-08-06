@@ -56,7 +56,7 @@ export const testregelSchema = testregelBaseSchema.and(
     spraak: z.union([z.literal('nn'), z.literal('nb'), z.literal('en')]),
     tema: z.coerce.number().optional(),
     testobjekt: z.coerce.number().optional().optional(),
-    innhaldstypeTestingId: z.coerce.number().optional().optional(),
+    innhaldstypeTesting: z.coerce.number().optional().optional(),
     kravTilSamsvar: z.string().optional(),
     definition: z
       .object({
