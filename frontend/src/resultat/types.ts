@@ -66,3 +66,4 @@ export type ResultKontrollContext = {
   typeKontroll: string;
   loeysingNamn: string;
 };
+

@@ -7,15 +7,22 @@ import React from 'react';
 
 import { TableProps } from '../../types';
 
-const PaginationSelect = <T extends object>({ table }: TableProps<T>) => {
+const PaginationSelect = <T extends object>({ table,paginationHander }: TableProps<T>) => {
   const setCurrentPage = (currentPage: number) =>
     table.setPageIndex(currentPage - 1);
   const currentPage = table.getState().pagination.pageIndex + 1;
   const totalPages = table.getPageOptions().length;
 
   const onChange = (_event: any, currentPage: number) => {
-    table.setPageIndex(currentPage - 1);
-    setCurrentPage(currentPage);
+    if(paginationHander) {
+      paginationHander({
+        pageIndex: currentPage - 1,
+        pageSize: table.getState().pagination.pageSize,
+      });
+    } else {
+      table.setPageIndex(currentPage - 1);
+      setCurrentPage(currentPage);
+    }
   };
 
 

@@ -8,9 +8,10 @@ import PaginationCount from './PaginationCount';
 import PaginationSelect from './PaginationSelect';
 
 const PaginationContainer = <T extends object>({
-  table,
-  loading,
-}: TableProps<T> & { loading: boolean }) => {
+                                                 table,
+                                                 loading,
+                                                 paginationHander
+                                               }: TableProps<T> & { loading: boolean }) => {
   const pageOptions = table.getPageOptions();
   const pageCount = pageOptions.length;
   const displayPagination = pageCount > 1;
@@ -25,10 +26,10 @@ const PaginationContainer = <T extends object>({
       <HideWhenLoading loading={loading}>
         <div className="pagination-container">
           {displayPageSizeSelection && (
-            <PageSizeSelection table={table} loading={loading} />
+            <PageSizeSelection table={table} loading={loading} paginationHander={paginationHander}/>
           )}
           <PaginationCount table={table} />
-          {displayPagination && <PaginationSelect table={table} />}
+          {displayPagination && <PaginationSelect table={table} paginationHander={paginationHander}/>}
         </div>
       </HideWhenLoading>
     </Table.Cell>

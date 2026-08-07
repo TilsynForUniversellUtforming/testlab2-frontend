@@ -2,6 +2,7 @@ import usePathName from '@common/app-container/hooks/usePathName';
 import useBaseDocumentTitle from '@common/hooks/useBaseDocumentTitle';
 import Breadcrumbs from '@common/navigation/breadcrumbs/Breadcrumbs';
 import Navigation from '@common/navigation/Navigation';
+import OutletErrorBoundary from '@common/error-boundary/OutletErrorBoundary';
 import { Outlet } from 'react-router';
 
 const AppContainer = () => {
@@ -16,7 +17,9 @@ const AppContainer = () => {
       <Navigation />
       <Breadcrumbs crumbs={pathNameList} />
       <div className="app-container">
-        <Outlet />
+        <OutletErrorBoundary>
+          <Outlet />
+        </OutletErrorBoundary>
       </div>
     </>
   );

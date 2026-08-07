@@ -51,6 +51,7 @@ const TestlabFormSelect = <T extends object>({
   const { control, formState } = useFormContext<T>();
   const errorMessage = getErrorMessage(formState, name);
 
+
   if (radio) {
     return <TestlabFormSelectRadio name={name} control={control} label={label} description={description} required={required} options={options} />
   }
@@ -100,7 +101,11 @@ const TestlabFormSelectCheckbox = <T extends object>({name,control, label,requir
     </div>)};
 
 const TestlabFormSelectRadio = <T extends object>({name,control, label,required,description,options}:SelectProps<T>) => {
-  const { getRadioProps, validationMessageProps } = useRadioGroup();
+  const { getRadioProps, validationMessageProps } = useRadioGroup({
+    name: name,
+    value:control._formValues[name],
+  });
+
   return (
     <Controller
       name={name}
@@ -113,7 +118,13 @@ const TestlabFormSelectRadio = <T extends object>({name,control, label,required,
             </Fieldset.Legend>
             <Fieldset.Description>{description}</Fieldset.Description>
             {options.map((o) => (
-              <Radio label={o.label} name={name} value={o.value} key={o.value} onChange={onChange} disabled={o.disabled}/>
+              <Radio
+                label={o.label}
+                {...getRadioProps(o.value.toString())}
+                key={o.value}
+                onChange={onChange}
+                disabled={o.disabled}
+              />
             ))}
             <ValidationMessage {...validationMessageProps} />
           </Fieldset>

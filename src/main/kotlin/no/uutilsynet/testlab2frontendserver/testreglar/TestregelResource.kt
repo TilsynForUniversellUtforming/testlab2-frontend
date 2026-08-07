@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.postForEntity
 
 private const val DUPLIKAT_SKJEMA_FOR_TESTREGEL = "Duplikat skjema for testregel"
 
@@ -65,7 +66,7 @@ class TestregelResource(
         logger.debug("Lagrer ny testregel med navn: ${testregel.namn} fra $testregelUrl")
         validateDuplicatSchema(testregel)
         validateNotSemiAutomatic(testregel)
-        restTemplate.postForEntity(testregelUrl, testregel, Int::class.java)
+        restTemplate.postForEntity<Int>(testregelUrl, testregel)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
         logger.error(DUPLIKAT_SKJEMA_FOR_TESTREGEL, e)
@@ -94,16 +95,16 @@ class TestregelResource(
   @PutMapping
   fun updateTestregel(@RequestBody testregel: TestregelInit): List<TestregelBase> =
       try {
-        logger.debug("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
+        logger.info("Oppdaterer testregel id: {} fra {}", testregel.id, testregelUrl)
         validateDuplicatSchema(testregel)
         restTemplate.put(testregelUrl, testregel, Testregel::class.java)
         listTestreglar()
       } catch (e: IllegalArgumentException) {
         logger.error(DUPLIKAT_SKJEMA_FOR_TESTREGEL, e)
-        throw Error(DUPLIKAT_SKJEMA_FOR_TESTREGEL)
+        throw IllegalArgumentException(DUPLIKAT_SKJEMA_FOR_TESTREGEL)
       } catch (e: Error) {
         logger.error("Klarte ikke å oppdatere testregel", e)
-        throw Error("Klarte ikke å oppdatere testregel")
+        throw IllegalArgumentException("Klarte ikke å oppdatere testregel")
       }
 
   private fun getTestregelList() = testregelApiClient.getTestregelListWithMetadata()

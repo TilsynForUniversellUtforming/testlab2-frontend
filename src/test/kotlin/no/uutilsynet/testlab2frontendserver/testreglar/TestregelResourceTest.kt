@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Instant
 import no.uutilsynet.testlab2.constants.KravStatus
+import no.uutilsynet.testlab2.constants.StringTestregelDefinition
 import no.uutilsynet.testlab2.constants.TestlabLocale
 import no.uutilsynet.testlab2.constants.TestregelInnholdstype
 import no.uutilsynet.testlab2.constants.TestregelModus
@@ -139,7 +140,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
                 innhaldstypeTesting = 1,
                 tema = 1,
                 testobjekt = 1,
-                kravTilSamsvar = ""))
+                kravTilSamsvar = "",
+                definition = StringTestregelDefinition("QW-ACT-R1 HTML Page has a title")))
 
     assertThat(result).usingRecursiveComparison().isEqualTo(testregelList)
   }
@@ -171,7 +173,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               innhaldstypeTesting = 1,
               tema = 1,
               testobjekt = 1,
-              kravTilSamsvar = ""))
+              kravTilSamsvar = "",
+              definition = StringTestregelDefinition("QW-ACT-R1")))
     }
   }
 
@@ -219,7 +222,9 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               1,
               "HTML Page has a title",
               "QW-ACT-R1",
-              1),
+              1,
+              StringTestregelDefinition("QW-ACT-R1 HTML Page has a title"),
+          ),
           TestregelDTO(
               2,
               "QW-ACT-R2",
@@ -235,7 +240,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               1,
               "Språk på siden",
               "QW-ACT-R2",
-              1))
+              1,
+              StringTestregelDefinition("QW-ACT-R1 HTML Page has a title")))
 
   private val krav =
       Krav(
@@ -271,7 +277,8 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               spraak = TestlabLocale.nb,
               modus = TestregelModus.automatisk,
               testregelSchema = "QW-ACT-R1",
-              type = TestregelInnholdstype.nett),
+              type = TestregelInnholdstype.nett,
+              definition = StringTestregelDefinition("QW-ACT-R1 HTML Page has a title")),
           Testregel(
               2,
               "QW-ACT-R2",
@@ -287,5 +294,6 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
               spraak = TestlabLocale.nb,
               modus = TestregelModus.automatisk,
               testregelSchema = "QW-ACT-R1",
-              type = TestregelInnholdstype.nett))
+              type = TestregelInnholdstype.nett,
+              definition = StringTestregelDefinition("QW-ACT-R1 HTML Page has a title")))
 }

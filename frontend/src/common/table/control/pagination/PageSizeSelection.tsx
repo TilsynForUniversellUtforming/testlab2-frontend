@@ -1,15 +1,28 @@
 import { LoadingTableProps } from '@common/table/types';
 import { Select } from '@digdir/designsystemet-react';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 
 const PageSizeSelection = <T extends object>({
   table,
   loading,
+  paginationHander
 }: LoadingTableProps<T>) => {
   const tableId = table
     .getFlatHeaders()
     .map((h) => h.id)
     .join();
+
+
+  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (paginationHander) {
+      paginationHander({
+        pageIndex: table.getState().pagination.pageIndex,
+        pageSize: Number(event.currentTarget.value),
+      });
+    } else {
+      table.setPageSize(Number(event.currentTarget.value));
+    }
+  }
 
   return (
     <div className="pagination-container__pagination-select-wrapper">
@@ -18,7 +31,7 @@ const PageSizeSelection = <T extends object>({
         <Select
           aria-label="Rader per side"
           value={table.getState().pagination.pageSize}
-          onChange={(e) => table.setPageSize(Number(e.currentTarget.value))}
+          onChange={onChange}
           disabled={loading}
           id={tableId}
           data-size="sm"

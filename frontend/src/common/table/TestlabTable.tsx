@@ -10,6 +10,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  PaginationState,
   Row,
   RowSelectionState,
   useReactTable,
@@ -29,6 +30,7 @@ import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableHeader from './TestlabTableHeader';
 import { TableFilterPreference, TableRowAction, TableStyle } from './types';
 import { fuzzyFilter } from './util';
+import { useSearchParams } from 'react-router';
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -126,6 +128,24 @@ const TestlabTable = <T extends object>({
     setRowSelection(rss);
   };
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // 1. Read initial state from URL on load, fallback to defaults
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: Number(searchParams.get('page'))
+      ? Number(searchParams.get('page')) - 1
+      : 0,
+    pageSize: Number(searchParams.get('size')) || 10,
+  });
+
+  useEffect(() => {
+    setSearchParams((prev) => {
+      prev.set('page', String(pagination.pageIndex + 1)); // URL pages are typically 1-indexed
+      prev.set('size', String(pagination.pageSize));
+      return prev;
+    });
+  }, [pagination, setSearchParams]);
+
   useEffect(() => {
     setColumns([...defaultColumns]);
   }, [defaultColumns]);
@@ -141,6 +161,7 @@ const TestlabTable = <T extends object>({
       columnFilters,
       globalFilter,
       rowSelection,
+      pagination,
     },
     enableRowSelection: rowSelectionEnabled,
     enableMultiRowSelection: rowSelectionEnabled,
@@ -242,7 +263,7 @@ const TestlabTable = <T extends object>({
         </Table.Body>
         <Table.Foot>
           <Table.Row className="testlab-table__footer">
-            <PaginationContainer table={table} loading={isLoading} />
+            <PaginationContainer table={table} loading={isLoading} pagination={pagination} paginationHander={setPagination}/>
           </Table.Row>
         </Table.Foot>
       </Table>

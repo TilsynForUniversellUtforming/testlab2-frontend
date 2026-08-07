@@ -1,9 +1,12 @@
 import { ConfirmModalProps } from '@common/confirm-modal/ConfirmModalButton';
 import { AppRoute } from '@common/util/routeUtils';
-import { Table } from '@tanstack/react-table';
+import { PaginationState, Table } from '@tanstack/react-table';
 
 export interface TableProps<T> {
   table: Table<T>;
+  paginationHander?: (
+    value: ((prevState: PaginationState) => PaginationState) | PaginationState
+  ) => void;
 }
 
 export interface LoadingTableProps<T> extends TableProps<T> {
