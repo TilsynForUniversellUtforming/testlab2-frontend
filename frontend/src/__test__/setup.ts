@@ -10,8 +10,41 @@ afterEach(() => {
   cleanup();
 });
 
-global.ResizeObserver = class {
+globalThis.ResizeObserver = class {
   observe() {}
   unobserve() {}
   disconnect() {}
 };
+
+Object.defineProperty(Document.prototype, 'adoptedStyleSheets', {
+  configurable: true,
+  get() {
+    return this._adoptedStyleSheets || [];
+  },
+  set(value) {
+    this._adoptedStyleSheets = value;
+  },
+});
+
+Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
+  configurable: true,
+  get() {
+    return this._adoptedStyleSheets || [];
+  },
+  set(value) {
+    this._adoptedStyleSheets = value;
+  },
+});
+
+// // Mock CSSStyleSheet if you use `new CSSStyleSheet()`
+// class MockCSSStyleSheet {
+//   replaceSync(cssText) {
+//     this.cssText = cssText;
+//   }
+//   replace(cssText) {
+//     this.cssText = cssText;
+//     return Promise.resolve(this);
+//   }
+// }
+//
+// globalThis.CSSStyleSheet = MockCSSStyleSheet;
