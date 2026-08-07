@@ -2,7 +2,7 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import { TesterResult } from '@maaling/api/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const decodeBase64 = (base64String?: string) => {
   if (typeof base64String === 'undefined') {

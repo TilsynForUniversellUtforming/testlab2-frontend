@@ -14,7 +14,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm } from 'react-hook-form';
-import { useLoaderData, useParams, useSubmit } from 'react-router-dom';
+import { useLoaderData, useParams, useSubmit } from 'react-router';
 
 import { KONTROLL_LISTE } from '../../kontroll/KontrollRoutes';
 import SaveButton from '../SaveButton';

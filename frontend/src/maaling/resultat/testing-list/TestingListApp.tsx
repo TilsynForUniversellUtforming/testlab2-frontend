@@ -22,7 +22,7 @@ import {
   useNavigate,
   useOutletContext,
   useParams,
-} from 'react-router-dom';
+} from 'react-router';
 
 import StatusChart from '../chart/StatusChart';
 import { getTestingListColumns } from './TestingListColumns';

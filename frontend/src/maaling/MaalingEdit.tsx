@@ -10,7 +10,7 @@ import useMaalingForm from '@maaling/hooks/hooks/useMaalingForm';
 import useMaalingFormState from '@maaling/hooks/hooks/useMaalingFormState';
 import { MaalingContext, MaalingFormState } from '@maaling/types';
 import React, { useCallback } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 interface Props {
   onChangeTabs: (tab: string) => void;

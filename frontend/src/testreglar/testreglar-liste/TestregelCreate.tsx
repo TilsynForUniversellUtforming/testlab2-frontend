@@ -1,7 +1,7 @@
 import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
 import React, { useCallback } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import { createTestregel } from '../api/testreglar-api';
 import { TestregelInit } from '../api/types';

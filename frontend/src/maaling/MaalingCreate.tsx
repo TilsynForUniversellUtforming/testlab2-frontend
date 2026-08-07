@@ -11,7 +11,7 @@ import useMaalingForm from '@maaling/hooks/hooks/useMaalingForm';
 import { MAALING } from '@maaling/MaalingRoutes';
 import { MaalingContext, MaalingFormState } from '@maaling/types';
 import React, { useCallback, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 const MaalingCreate = () => {
   const navigate = useNavigate();

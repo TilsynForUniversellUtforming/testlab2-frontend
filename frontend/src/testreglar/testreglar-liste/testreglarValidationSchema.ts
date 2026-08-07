@@ -1,11 +1,16 @@
 import { z } from 'zod';
 
+
+const requiredCoercedNumber = (message: string) =>
+  z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.coerce.number({ error: message })
+  );
+
 export const testregelBaseSchema = z.object({
   id: z.coerce.number().optional(),
   namn: z.string().min(1, 'Namn kan ikkje vera tomt'),
-  kravId: z.coerce
-    .number()
-    .refine((data) => !Number.isNaN(Number(data)), 'Krav må veljast'),
+  kravId: requiredCoercedNumber('Krav må veljast'),
   modus: z.union([
     z.literal('automatisk'),
     z.literal('manuell'),
@@ -23,19 +28,17 @@ export const utfallSchema = z.object({
     z.literal('ikkje-testbar'),
     z.literal('ikkje-forekomst'),
   ]),
-  default:z.boolean(),
+  default: z.boolean(),
 });
 z.object({
-    description: z.string().optional(),
-    utfall: z.array(utfallSchema).optional(),
+  description: z.string().optional(),
+  utfall: z.array(utfallSchema).optional(),
 });
 export const testregelSchema = testregelBaseSchema.and(
   z.object({
     testregelSchema: z.string().optional(),
     testregelId: z.string().min(1, 'Testregel-id kan ikkje vera tom'),
-    versjon: z.coerce.number().refine((data) => !Number.isNaN(Number(data)), {
-      message: 'Versjon må være et gyldig nummer',
-    }),
+    versjon: requiredCoercedNumber('Versjon må være et gyldig nummer'),
     status: z.union([
       z.literal('ikkje_starta'),
       z.literal('under_arbeid'),

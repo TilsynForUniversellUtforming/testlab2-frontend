@@ -6,7 +6,7 @@ import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 

@@ -17,7 +17,7 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form';
-import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
+import { useActionData, useLoaderData, useSubmit } from 'react-router';
 
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';

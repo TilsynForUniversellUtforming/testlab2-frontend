@@ -7,7 +7,7 @@ import {
   testOverviewLoader,
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
-import { Outlet, RouteObject } from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router';
 
 import nyTestImg from '../assets/ny_test.svg';
 import InngaaendeTestApp from './InngaaendeTestApp';

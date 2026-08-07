@@ -1,7 +1,7 @@
 import './index.scss';
 
 import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 
 import { AppRoutes } from './AppRoutes';
 

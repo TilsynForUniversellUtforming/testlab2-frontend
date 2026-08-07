@@ -12,7 +12,7 @@ import { ResultatOversiktLoeysing } from '@resultat/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { Bilde } from '@test/api/types';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const getSmiley = (resultat: string): React.JSX.Element => {
   if (resultat.toLowerCase() === 'samsvar') {

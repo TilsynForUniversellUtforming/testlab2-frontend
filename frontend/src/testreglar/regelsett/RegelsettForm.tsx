@@ -16,7 +16,7 @@ import { filterList } from '@testreglar/api/util';
 import { regelsettValidationSchema } from '@testreglar/regelsett/regelsettValidationSchema';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import {
   Regelsett,

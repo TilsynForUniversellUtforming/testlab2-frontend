@@ -7,7 +7,7 @@ import { Tabs } from '@digdir/designsystemet-react';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { Krav } from 'krav/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
 import { listKrav } from '../krav/api/krav-api';
 import {

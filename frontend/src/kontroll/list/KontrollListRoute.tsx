@@ -1,4 +1,4 @@
-import { RouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import { fetchAlleKontroller } from '../kontroll-api';
 import KontrollList from './KontrollList';

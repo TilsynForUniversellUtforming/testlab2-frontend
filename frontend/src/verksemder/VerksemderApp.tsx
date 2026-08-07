@@ -4,7 +4,7 @@ import useFetch from '@common/hooks/useFetch';
 import { Verksemd, VerksemdContext } from '@verksemder/api/types';
 import { fetchVerksemdList } from '@verksemder/api/verksemd-api';
 import React, { useCallback, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 
 const VerksemderApp = () => {
   const [verksemdList, setVerksemdList] = useState<Verksemd[]>([]);

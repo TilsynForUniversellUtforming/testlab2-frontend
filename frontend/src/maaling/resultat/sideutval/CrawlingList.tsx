@@ -5,7 +5,7 @@ import { joinStringsToList } from '@common/util/stringutils';
 import { CrawlResultat, Maaling } from '@maaling/api/types';
 import { MAALING, TEST_CRAWLING_RESULT_LIST } from '@maaling/MaalingRoutes';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import StatusChart from '../chart/StatusChart';
 import { getCrawlColumns } from './CrawlColumns';

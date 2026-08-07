@@ -2,7 +2,7 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { formatDateString } from '@common/util/stringutils';
 import { MAALING } from '@maaling/MaalingRoutes';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { Maaling } from '../../api/types';
 

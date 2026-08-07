@@ -8,7 +8,7 @@ import { AggregatedTestresult } from '@maaling/api/types';
 import { MAALING, TEST_RESULT_LIST } from '@maaling/MaalingRoutes';
 import { MaalingTestStatus } from '@maaling/types';
 import { useMemo, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 import { TestResultContext } from '../../types';
 import { getAggregatedResultColumns } from './TestResultColumns';

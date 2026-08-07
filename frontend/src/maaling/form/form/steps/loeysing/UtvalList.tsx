@@ -2,7 +2,7 @@ import { getErrorMessage } from '@common/form/util';
 import { Fieldset, Radio } from '@digdir/designsystemet-react';
 import { MaalingContext, MaalingFormState } from '@maaling/types';
 import { useFormContext } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 const UtvalList = () => {
   const { setValue, clearErrors, getValues, formState } =

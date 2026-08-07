@@ -2,7 +2,7 @@ import './link-button.scss';
 
 import { Button, ButtonProps } from '@digdir/designsystemet-react';
 import { Size } from '@digdir/designsystemet-types';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { AppRoute, getFullPath, IdReplacement } from '../util/routeUtils';
 

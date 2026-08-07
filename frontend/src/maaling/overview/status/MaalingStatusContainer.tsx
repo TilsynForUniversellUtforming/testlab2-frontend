@@ -5,7 +5,7 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Spinner } from '@digdir/designsystemet-react';
 import { TEST_SIDEUTVAL_LIST, TEST_TESTING_LIST } from '@maaling/MaalingRoutes';
 import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import { Maaling, MaalingStatus } from '../../api/types';
 import useMaalingOverviewStatus from '../../hooks/useMaalingOverviewStatus';

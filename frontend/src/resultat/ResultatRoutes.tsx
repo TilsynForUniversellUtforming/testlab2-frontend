@@ -5,7 +5,7 @@ import ResultatListApp from '@resultat/list/ResultatListApp';
 import ResultatListKravApp from '@resultat/list/ResultatListKravApp';
 import ResultatListTemaApp from '@resultat/list/ResultListTemaApp';
 import React from 'react';
-import { Outlet, RouteObject } from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router';
 
 import resultatImg from '../assets/resultat.svg';
 import TestResultatApp from './kontroll_loeysing/TestResultatApp';

@@ -1,6 +1,6 @@
 import { createRetest, deleteTestgrunnlag } from '@test/api/testing-api';
 import { DeleteTestgrunnlagRequest, RetestRequest } from '@test/api/types';
-import { ActionFunctionArgs } from 'react-router-dom';
+import { ActionFunctionArgs } from 'react-router';
 
 export const testOverviewAction = async ({ request }: ActionFunctionArgs) => {
   switch (request.method) {

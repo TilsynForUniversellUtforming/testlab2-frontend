@@ -5,7 +5,7 @@ import LoeysingList from '@loeysingar/list/LoeysingList';
 import LoeysingApp from '@loeysingar/LoeysingApp';
 import LoeysingCreate from '@loeysingar/LoeysingCreate';
 import LoeysingEdit from '@loeysingar/LoeysingEdit';
-import { RouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import loeysingImg from '../assets/loeysingar.svg';
 

@@ -8,7 +8,7 @@ import {
   Textfield,
 } from '@digdir/designsystemet-react';
 import React, { ChangeEvent, useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router';
 
 import { KontrollListItem, KontrollType, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';

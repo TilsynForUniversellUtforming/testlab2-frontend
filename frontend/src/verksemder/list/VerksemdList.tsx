@@ -5,7 +5,7 @@ import { Verksemd, VerksemdContext } from '@verksemder/api/types';
 import { getVerksemdColumns } from '@verksemder/list/VerksemdColumns';
 import { VERKSEMD_CREATE, VERKSEMD_EDIT } from '@verksemder/VerksemdRoutes';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 const VerksemdList = () => {
   const { verksemdList, contextLoading }: VerksemdContext = useOutletContext();

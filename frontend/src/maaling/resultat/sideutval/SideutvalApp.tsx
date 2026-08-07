@@ -10,7 +10,7 @@ import { CrawlResultat, Maaling, RestartRequest } from '@maaling/api/types';
 import { TEST_SIDEUTVAL_LIST } from '@maaling/MaalingRoutes';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Outlet, useOutletContext, useParams } from 'react-router-dom';
+import { Outlet, useOutletContext, useParams } from 'react-router';
 
 import CrawlingList from './CrawlingList';
 

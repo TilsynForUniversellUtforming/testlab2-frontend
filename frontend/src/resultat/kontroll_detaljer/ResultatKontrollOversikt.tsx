@@ -13,7 +13,7 @@ import { TableActionsProps } from '@resultat/ResultTableActions';
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router';
 
 function LoeysingNamn(
   props: Readonly<{ loeysingNamn: string; testType: string }>

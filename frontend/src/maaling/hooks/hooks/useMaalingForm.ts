@@ -2,7 +2,7 @@ import { TestlabFormButtonStep } from '@common/form/TestlabFormButtons';
 import { MaalingStatus } from '@maaling/api/types';
 import { defaultSakSteps, MaalingStep, startedSakSteps } from '@maaling/types';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 /**
  * The current step and state for a Sak form component.

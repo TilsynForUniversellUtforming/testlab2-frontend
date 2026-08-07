@@ -5,7 +5,7 @@ import {
   RouteObject,
   ScrollRestoration,
   useRouteError,
-} from 'react-router-dom';
+} from 'react-router';
 
 import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';

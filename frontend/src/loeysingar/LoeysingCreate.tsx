@@ -2,7 +2,7 @@ import useAlert from '@common/alert/useAlert';
 import toError from '@common/error/util';
 import LoeysingFormSkeleton from '@loeysingar/form/skeleton/LoeysingFormSkeleton';
 import React, { useCallback } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import { createLoeysing } from './api/loeysing-api';
 import { LoeysingInit } from './api/types';
