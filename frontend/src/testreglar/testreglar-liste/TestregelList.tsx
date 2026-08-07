@@ -3,7 +3,7 @@ import UserActionTable from '@common/table/UserActionTable';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { joinStringsToList } from '@common/util/stringutils';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 import { deleteTestregelList } from '../api/testreglar-api';
 import { TestregelBase } from '../api/types';

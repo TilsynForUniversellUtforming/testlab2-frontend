@@ -31,7 +31,7 @@ import { resultTable } from '@resultat/tableoptions';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 
 import { KontrollType } from '../kontroll/types';
 
@@ -96,8 +96,6 @@ const ResultatTable = <T extends object>({
     setVisDetaljer(!visDetaljer);
     setColumnVisibility(tableParams.visibilityState(visDetaljer));
   };
-
-  const location = useLocation();
 
   const getPath = (tab: string) => {
     switch (tab) {

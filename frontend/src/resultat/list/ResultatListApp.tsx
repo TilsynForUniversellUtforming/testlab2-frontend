@@ -15,7 +15,7 @@ import ResultatTable, {
 import { Resultat } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router';
 
 const ResultatListApp = <T extends object>() => {
   const resultat: Array<Resultat> = useLoaderData() as Array<Resultat>;
@@ -91,7 +91,7 @@ const ResultatListApp = <T extends object>() => {
       cell: ({ row }) => (
         <Tag
           data-size="sm"
-          color={getSeverity(scoreToPercentage(row.getValue('score')))}
+          data-color={getSeverity(scoreToPercentage(row.getValue('score')))}
         >
           {scoreToPercentage(row.getValue('score'))}
         </Tag>

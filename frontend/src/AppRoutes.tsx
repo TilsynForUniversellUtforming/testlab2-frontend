@@ -7,7 +7,7 @@ import { MAALING_ROOT, MaalingRoutes } from '@maaling/MaalingRoutes';
 import { TestingRoutes } from '@test/TestingRoutes';
 import { TESTREGEL_ROOT, TestregelRoutes } from '@testreglar/TestregelRoutes';
 import { VERKSEMD_LIST, VerksemdRoutes } from '@verksemder/VerksemdRoutes';
-import { RouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import diskusjonImg from './assets/diskusjon.svg';
 import mineSakerImg from './assets/mine-saker.svg';

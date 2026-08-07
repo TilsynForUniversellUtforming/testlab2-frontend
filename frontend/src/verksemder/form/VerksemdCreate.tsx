@@ -6,7 +6,7 @@ import { VerksemdContext, VerksemdInit } from '@verksemder/api/types';
 import { createVerksemd } from '@verksemder/api/verksemd-api';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 import { z } from 'zod';
 
 const VerksemdCreate = () => {

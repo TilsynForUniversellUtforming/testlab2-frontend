@@ -9,7 +9,7 @@ import { formatDateString, joinStringsToList } from '@common/util/stringutils';
 import { MAALING, MAALING_CREATE } from '@maaling/MaalingRoutes';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 import { deleteMaalingList } from '../api/maaling-api';
 import { IdList, Maaling, MaalingStatus } from '../api/types';

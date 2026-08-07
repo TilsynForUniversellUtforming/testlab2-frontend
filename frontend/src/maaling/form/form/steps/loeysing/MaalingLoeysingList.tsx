@@ -17,7 +17,7 @@ import {
 } from '@maaling/types';
 import { useCallback, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 const MaalingLoeysingList = () => {
   const { loeysingList, verksemdList }: MaalingContext = useOutletContext();

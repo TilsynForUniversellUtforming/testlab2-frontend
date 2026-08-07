@@ -11,7 +11,7 @@ import { Regelsett, TestregelBase } from '@testreglar/api/types';
 import { Verksemd } from '@verksemder/api/types';
 import getVerksemdList_dummy from '@verksemder/api/verksemd-api';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router';
 
 import { User } from '../user/api/types';
 import { getAdvisors_dummy } from '../user/api/user-api';

@@ -7,7 +7,7 @@ import { getRegelsettColumns } from '@testreglar/regelsett/RegelsettCoulmns';
 import { REGELSETT_CREATE, REGELSETT_EDIT } from '@testreglar/TestregelRoutes';
 import { TestregelContext } from '@testreglar/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 import { Regelsett } from '../api/types';
 

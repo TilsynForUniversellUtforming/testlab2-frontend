@@ -5,7 +5,7 @@ import {
   fetchCrawlParametersKontroll,
   updateCrawlParameters,
 } from '@maaling/api/maaling-api';
-import { redirect, RouteObject } from 'react-router-dom';
+import { redirect, RouteObject } from 'react-router';
 
 import {
   fetchKontroll,

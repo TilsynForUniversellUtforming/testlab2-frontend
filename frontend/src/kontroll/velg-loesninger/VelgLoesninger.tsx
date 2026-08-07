@@ -4,7 +4,7 @@ import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import React from 'react';
-import { useActionData, useLoaderData, useSubmit } from 'react-router-dom';
+import { useActionData, useLoaderData, useSubmit } from 'react-router';
 
 import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';

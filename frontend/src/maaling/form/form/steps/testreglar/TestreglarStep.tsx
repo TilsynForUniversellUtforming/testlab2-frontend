@@ -21,7 +21,7 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { TestregelBase } from '@testreglar/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 interface Props extends FormBaseProps {
   error: Error | undefined;

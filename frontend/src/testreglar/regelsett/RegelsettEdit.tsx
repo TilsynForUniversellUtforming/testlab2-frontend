@@ -3,7 +3,7 @@ import toError from '@common/error/util';
 import { updateRegelsett } from '@testreglar/api/regelsett-api';
 import RegelsettFormSkeleton from '@testreglar/regelsett/skeleton/RegelsettFormSkeleton';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router';
 
 import type { Regelsett, RegelsettEdit } from '../api/types';
 import { TestregelContext } from '../types';

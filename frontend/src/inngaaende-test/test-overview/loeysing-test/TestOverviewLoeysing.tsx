@@ -5,7 +5,7 @@ import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestH
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
-import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
+import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 import { useShowHelpText } from '@test/util/useShowHelpText';
 

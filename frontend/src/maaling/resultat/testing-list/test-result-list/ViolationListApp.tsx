@@ -8,7 +8,7 @@ import { fetchTestResultatLoeysing } from '@maaling/api/maaling-api';
 import { Maaling, TesterResult, TestResult } from '@maaling/api/types';
 import { MaalingTestStatus } from '@maaling/types';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router';
 
 import { TestResultContext } from '../../types';
 import { getTestresultatColumns } from './ViolationColumns';

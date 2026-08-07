@@ -2,7 +2,7 @@ import KravForm from './KravForm';
 import { useCallback } from 'react';
 import { KravInit } from './types';
 import { createKrav } from './api/krav-api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 const KravCreate = () => {
   const navidation = useNavigate();

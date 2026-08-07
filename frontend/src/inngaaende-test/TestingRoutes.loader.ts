@@ -13,7 +13,7 @@ import {
   toTestKeys,
 } from '@test/util/testregelUtils';
 import { listTestreglarWithMetadata } from '@testreglar/api/testreglar-api';
-import { LoaderFunctionArgs } from 'react-router-dom';
+import { LoaderFunctionArgs } from 'react-router';
 
 import {
   fetchKontroll,

@@ -21,7 +21,7 @@ import {
   useNavigate,
   useParams,
   useSubmit,
-} from 'react-router-dom';
+} from 'react-router';
 import { KlageType } from '../../styringsdata/types';
 import classes from './test-overview.module.css';
 import TestStatusChart from './TestStatusChart';

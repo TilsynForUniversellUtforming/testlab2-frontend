@@ -263,7 +263,7 @@ const TestlabTable = <T extends object>({
         </Table.Body>
         <Table.Foot>
           <Table.Row className="testlab-table__footer">
-            <PaginationContainer table={table} loading={isLoading} pagination={pagination} paginationHander={setPagination}/>
+            <PaginationContainer table={table} loading={isLoading} paginationHander={setPagination}/>
           </Table.Row>
         </Table.Foot>
       </Table>

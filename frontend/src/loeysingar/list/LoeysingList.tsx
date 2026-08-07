@@ -5,7 +5,7 @@ import { joinStringsToList } from '@common/util/stringutils';
 import { LOEYSING_CREATE, LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router';
 
 import { deleteLoeysingList } from '../api/loeysing-api';
 import { Loeysing } from '../api/types';
