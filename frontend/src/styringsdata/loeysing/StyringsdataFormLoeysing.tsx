@@ -20,7 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TEST } from '@test/TestingRoutes';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import { useLoaderData, useParams, useSubmit } from 'react-router-dom';
+import { useLoaderData, useParams, useSubmit } from 'react-router';
 
 import SaveButton from '../SaveButton';
 import classes from '../styringsdata.module.css';

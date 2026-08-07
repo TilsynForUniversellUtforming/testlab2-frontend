@@ -1,6 +1,6 @@
 import StatusIcon from '@common/status-badge/StatusIcon';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 interface StatusLinkProps {
   label: string;

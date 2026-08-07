@@ -10,7 +10,7 @@ import {
 } from '@digdir/designsystemet-react';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 
 const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
   const {

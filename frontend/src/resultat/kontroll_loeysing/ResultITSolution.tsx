@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router';
 import { ResultatOversiktLoeysing } from '@resultat/types';
 import { sanitizeEnumLabel } from '@common/util/stringutils';
 

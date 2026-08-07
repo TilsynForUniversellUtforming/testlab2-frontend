@@ -1,7 +1,7 @@
 import { Spinner } from '@digdir/designsystemet-react';
 import { InngaaendeTestLoadingResponseKontroll } from '@test/types';
 import { Suspense } from 'react';
-import { Await, Outlet, useLoaderData } from 'react-router-dom';
+import { Await, Outlet, useLoaderData } from 'react-router';
 
 const InngaaendeTestApp = () => {
   const data =

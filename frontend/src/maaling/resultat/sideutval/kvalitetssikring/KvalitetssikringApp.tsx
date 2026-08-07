@@ -18,7 +18,7 @@ import {
 import { CrawlUrl, MaalingContext } from '@maaling/types';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
 
 import { getUrlColumns, getUrlColumnsKvalitetssikring } from './GetUrlColumns';
 

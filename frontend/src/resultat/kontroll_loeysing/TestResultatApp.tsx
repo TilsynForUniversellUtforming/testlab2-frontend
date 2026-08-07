@@ -14,7 +14,7 @@ import {
 } from '@resultat/types';
 import { Row, VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
 
 const TestResultatApp = <T extends object>() => {
   const { id, loeysingId } = useParams();

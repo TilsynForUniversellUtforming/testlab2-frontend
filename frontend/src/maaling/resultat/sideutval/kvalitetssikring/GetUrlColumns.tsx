@@ -2,7 +2,7 @@ import { getCheckboxColumn } from '@common/table/control/toggle/CheckboxColumn';
 import { CrawlUrl } from '@maaling/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export const getUrlColumnsKvalitetssikring = (): Array<ColumnDef<CrawlUrl>> => [
   getCheckboxColumn((row: Row<CrawlUrl>) => `Velg ${row.original.url}`),

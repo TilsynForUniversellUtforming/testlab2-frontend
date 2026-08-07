@@ -13,7 +13,7 @@ import {
   useNavigate,
   useOutletContext,
   useParams,
-} from 'react-router-dom';
+} from 'react-router';
 
 import { TestResultContext } from '../../types';
 

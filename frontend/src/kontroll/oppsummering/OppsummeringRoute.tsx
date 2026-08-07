@@ -1,6 +1,6 @@
 import { isDefined } from '@common/util/validationUtils';
 import { fetchVerksemdMany } from '@verksemder/api/verksemd-api';
-import { RouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import { fetchKontroll } from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';

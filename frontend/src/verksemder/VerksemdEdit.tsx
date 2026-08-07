@@ -8,7 +8,7 @@ import { updateVerksemd } from '@verksemder/api/verksemd-api';
 import VerksemdForm from '@verksemder/form/VerksemdForm';
 import { VERKSEMD_EDIT } from '@verksemder/VerksemdRoutes';
 import React, { useCallback, useState } from 'react';
-import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
+import { useLoaderData, useOutletContext, useParams } from 'react-router';
 
 const VerksemdEdit = () => {
   const {

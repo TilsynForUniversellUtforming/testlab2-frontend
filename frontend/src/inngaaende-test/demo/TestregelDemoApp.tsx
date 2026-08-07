@@ -6,7 +6,7 @@ import { TestResultUpdate } from '@test/types';
 import { getTestregel } from '@testreglar/api/testreglar-api';
 import { Testregel } from '@testreglar/api/types';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import TestForm from '../testregel-form/TestForm';
 

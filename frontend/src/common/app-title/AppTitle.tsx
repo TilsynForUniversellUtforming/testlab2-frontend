@@ -4,7 +4,7 @@ import { isNotDefined } from '@common/util/validationUtils';
 import { Heading, Paragraph } from '@digdir/designsystemet-react';
 import { Size } from '@digdir/designsystemet-types';
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 
 

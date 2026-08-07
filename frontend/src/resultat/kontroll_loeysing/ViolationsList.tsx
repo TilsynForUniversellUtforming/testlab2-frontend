@@ -7,7 +7,7 @@ import ResultatTable, {
 import { ResultKontrollContext, ViolationsData } from '@resultat/types';
 import { VisibilityState } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
-import { useLoaderData, useOutletContext } from 'react-router-dom';
+import { useLoaderData, useOutletContext } from 'react-router';
 
 const ViolationsList = <T extends object>() => {
   const context: ResultKontrollContext = useOutletContext();

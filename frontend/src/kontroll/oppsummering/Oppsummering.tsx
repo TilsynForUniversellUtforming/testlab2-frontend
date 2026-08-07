@@ -13,7 +13,7 @@ import { Loeysing, Utval } from '@loeysingar/api/types';
 import { CheckmarkCircleIcon, CircleSlashIcon } from '@navikt/aksel-icons';
 import { Verksemd } from '@verksemder/api/types';
 import { useState } from 'react';
-import { Link, useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router';
 
 import kontrollClasses from '../kontroll.module.css';
 import { steps } from '../types';

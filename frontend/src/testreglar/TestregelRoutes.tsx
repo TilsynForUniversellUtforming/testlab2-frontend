@@ -5,7 +5,7 @@ import {
   listPath,
 } from '@common/util/routeUtils';
 import { getTestregel } from '@testreglar/api/testreglar-api';
-import { RouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import testingImg from '../assets/testreglar.svg';
 import RegelsettApp from './regelsett/RegelsettApp';

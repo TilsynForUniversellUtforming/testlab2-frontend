@@ -4,7 +4,7 @@ import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import { LoeysingVerksemd } from '@maaling/types';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 /**
  * getLoeysingColumns function returns an array of column definitions for LoeysingVerksemd.

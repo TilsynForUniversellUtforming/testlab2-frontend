@@ -8,7 +8,7 @@ import ResultatTable, {
 import { ResultatTema } from '@resultat/types';
 import { ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import React, { useCallback } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData } from 'react-router';
 
 import { KontrollType } from '../../kontroll/types';
 

@@ -5,7 +5,7 @@ import toError from '@common/error/util';
 import useLoading from '@common/hooks/useLoading';
 import { fetchMaaling } from '@maaling/api/maaling-api';
 import React, { useCallback, useEffect } from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
 
 import { MaalingContext } from '../types';
 import MaalingParametersContainer from './parameters/MaalingParametersContainer';

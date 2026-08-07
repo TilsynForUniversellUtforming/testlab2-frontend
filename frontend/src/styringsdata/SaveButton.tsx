@@ -1,7 +1,7 @@
 import { Button } from '@digdir/designsystemet-react';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import { useEffect, useState } from 'react';
-import { useNavigation } from 'react-router-dom';
+import { useNavigation } from 'react-router';
 
 type ButtonText = 'Lagre' | 'Lagrer...' | 'Lagret';
 

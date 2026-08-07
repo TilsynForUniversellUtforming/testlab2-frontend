@@ -6,7 +6,7 @@ import VerksemdList from '@verksemder/list/VerksemdList';
 import VerksemdEdit from '@verksemder/VerksemdEdit';
 import VerksemderApp from '@verksemder/VerksemderApp';
 import React from 'react';
-import { RouteObject } from 'react-router-dom';
+import { RouteObject } from 'react-router';
 
 import verksemderImg from '../assets/verksemder.svg';
 

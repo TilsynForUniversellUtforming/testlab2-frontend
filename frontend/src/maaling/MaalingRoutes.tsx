@@ -17,7 +17,7 @@ import TestResultList from '@maaling/resultat/testing-list/test-result-list/Test
 import TestResultListApp from '@maaling/resultat/testing-list/test-result-list/TestResultListApp';
 import ViolationListApp from '@maaling/resultat/testing-list/test-result-list/ViolationListApp';
 import TestingListApp from '@maaling/resultat/testing-list/TestingListApp';
-import { redirect, RouteObject } from 'react-router-dom';
+import { redirect, RouteObject } from 'react-router';
 
 import maalingImg from '../assets/maalingar.svg';
 

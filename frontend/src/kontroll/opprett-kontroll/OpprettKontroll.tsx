@@ -16,7 +16,7 @@ import {
   useLoaderData,
   useParams,
   useSubmit,
-} from 'react-router-dom';
+} from 'react-router';
 
 import classes from '../kontroll.module.css';
 import KontrollStepper from '../stepper/KontrollStepper';

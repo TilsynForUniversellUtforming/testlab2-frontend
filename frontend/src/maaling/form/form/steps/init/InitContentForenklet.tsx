@@ -6,7 +6,7 @@ import CrawlParameters from '@maaling/form/form/steps/init/CrawlParameters';
 import { MaalingContext, MaalingFormState } from '@maaling/types';
 import { CogIcon } from '@navikt/aksel-icons';
 import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 const InitContentForenklet = () => {
   const { advisors }: MaalingContext = useOutletContext();

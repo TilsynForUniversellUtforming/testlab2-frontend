@@ -13,7 +13,7 @@ import { TestregelBase } from '@testreglar/api/types';
 import { TESTREGEL_EDIT } from '@testreglar/TestregelRoutes';
 import { getTestregelColumnsReadOnly } from '@testreglar/testreglar-liste/TestregelColumns';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router';
 
 import { MaalingContext } from '../types';
 import MaalingOverview from './MaalingOverview';

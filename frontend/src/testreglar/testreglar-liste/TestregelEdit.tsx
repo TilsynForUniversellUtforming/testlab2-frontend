@@ -7,7 +7,7 @@ import {
   useLoaderData,
   useOutletContext,
   useParams,
-} from 'react-router-dom';
+} from 'react-router';
 
 import { getTestregel, updateTestregel } from '../api/testreglar-api';
 import { Testregel, TestregelInit } from '../api/types';

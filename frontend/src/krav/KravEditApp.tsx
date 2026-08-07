@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useLoaderData, useParams } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router';
 
 import { updateKrav } from './api/krav-api';
 import { Krav } from './types';

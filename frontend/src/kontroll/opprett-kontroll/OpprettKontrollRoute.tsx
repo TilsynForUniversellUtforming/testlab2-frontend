@@ -1,5 +1,5 @@
 import { fetchWithCsrf } from '@common/form/util';
-import { redirect, RouteObject } from 'react-router-dom';
+import { redirect, RouteObject } from 'react-router';
 
 import { editKontroll, fetchKontroll } from '../kontroll-api';
 import { getKontrollIdFromParams } from '../kontroll-utils';

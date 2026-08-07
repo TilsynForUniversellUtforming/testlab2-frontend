@@ -1,5 +1,5 @@
 import { AppRoute, createPath, idPath } from '@common/util/routeUtils';
-import { Outlet, RouteObject } from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router';
 
 import kravImg from '../assets/krav.svg';
 import { getKrav, listKrav } from './api/krav-api';

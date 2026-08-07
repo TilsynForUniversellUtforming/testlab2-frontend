@@ -2,7 +2,7 @@ import './breadcrumbs.scss';
 
 import { PathName } from '@common/app-container/types';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export interface Props {
   crumbs: PathName[];

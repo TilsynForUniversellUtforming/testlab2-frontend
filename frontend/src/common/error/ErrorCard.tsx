@@ -7,7 +7,7 @@ import {
   isRouteErrorResponse,
   useAsyncError,
   useRouteError,
-} from 'react-router-dom';
+} from 'react-router';
 import { reportErrorToBackend } from '@common/util/apiUtils';
 
 interface ErrorContentProps {

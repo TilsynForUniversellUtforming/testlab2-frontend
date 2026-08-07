@@ -3,7 +3,7 @@ import useAlert from '@common/alert/useAlert';
 import { Details } from '@digdir/designsystemet-react';
 import { MaalingContext, MaalingFormState } from '@maaling/types';
 import React, { useEffect, useMemo } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import ConfirmationAccordionList from './ConfirmationAccordionList';
 

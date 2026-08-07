@@ -2,7 +2,7 @@ import { ButtonColor, ButtonColorType, ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export type TestlabButtonStepType = 'Start' | 'Middle' | 'Submit' | 'Custom';
 

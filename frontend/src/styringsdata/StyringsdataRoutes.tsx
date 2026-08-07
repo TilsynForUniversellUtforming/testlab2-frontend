@@ -1,5 +1,5 @@
 import { AppRoute } from '@common/util/routeUtils';
-import { Outlet, redirect, RouteObject } from 'react-router-dom';
+import { Outlet, redirect, RouteObject } from 'react-router';
 
 import {
   createStyringsdataKontroll,

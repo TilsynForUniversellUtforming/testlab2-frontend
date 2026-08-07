@@ -2,7 +2,7 @@ import useAlert from '@common/alert/useAlert';
 import useContentDocumentTitle from '@common/hooks/useContentDocumentTitle';
 import { LOEYSING_EDIT } from '@loeysingar/LoeysingRoutes';
 import React, { useCallback, useState } from 'react';
-import { useLoaderData, useOutletContext, useParams } from 'react-router-dom';
+import { useLoaderData, useOutletContext, useParams } from 'react-router';
 
 import { updateLoeysing } from './api/loeysing-api';
 import { Loeysing, LoeysingFormElement, LoeysingInit } from './api/types';

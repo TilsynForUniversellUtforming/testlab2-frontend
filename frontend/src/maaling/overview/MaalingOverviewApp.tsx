@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router';
 
 const MaalingOverviewApp = () => <Outlet context={useOutletContext()} />;
 

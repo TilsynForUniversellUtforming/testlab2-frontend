@@ -3,7 +3,7 @@ import { getFullPath, idPath } from '@common/util/routeUtils';
 import { Checkbox } from '@digdir/designsystemet-react';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import React, { useCallback, useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router';
 
 import { KRAV_CREATE, KRAV_EDIT } from './KravRoutes';
 import { Krav } from './types';

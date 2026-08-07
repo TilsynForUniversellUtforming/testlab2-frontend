@@ -2,7 +2,7 @@ import usePathName from '@common/app-container/hooks/usePathName';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Paragraph } from '@digdir/designsystemet-react';
 import classNames from 'classnames';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 
 import classes from '../kontroll.module.css';
 import { steps } from '../types';

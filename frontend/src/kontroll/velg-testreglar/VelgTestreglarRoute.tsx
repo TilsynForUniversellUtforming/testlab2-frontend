@@ -1,6 +1,6 @@
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestreglar } from '@testreglar/api/testreglar-api';
-import { redirect, RouteObject } from 'react-router-dom';
+import { redirect, RouteObject } from 'react-router';
 
 import {
   fetchKontroll,

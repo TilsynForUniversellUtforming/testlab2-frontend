@@ -1,7 +1,7 @@
 import { isDefined } from '@common/util/validationUtils';
 import { getIdFromParams } from '@test/util/testregelUtils';
 import { fetchVerksemd } from '@verksemder/api/verksemd-api';
-import { LoaderFunctionArgs } from 'react-router-dom';
+import { LoaderFunctionArgs } from 'react-router';
 
 import { fetchKontroll } from '../kontroll/kontroll-api';
 import { Kontroll } from '../kontroll/types';
