@@ -18,9 +18,10 @@ import {
   evaluateTestregel,
   TestregelResultat,
 } from '@test/util/testregelParser';
-import { Testregel } from '@testreglar/api/types';
+import { Testregel, TestregelModus } from '@testreglar/api/types';
 import DOMPurify from 'dompurify';
 import { useCallback, useEffect, useState } from 'react';
+import TestFormForenkla from '@test/testregel-form/TestFormForenkla';
 
 interface Props {
   testregel: Testregel;
@@ -45,12 +46,30 @@ const TestForm = ({
   isLoading,
   isDemoApp,
 }: Props) => {
+
+  if(testregel.modus == 'manuell-forenkla') {
+    return TestFormForenkla({
+      testregel,
+      resultater,
+      showHelpText,
+      onResultat,
+      slettTestelement,
+      isLoading,
+      isDemoApp
+    });
+  }
+
+
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
   );
   const [detaljerMap, setDetaljerMap] = useState<
     Map<number, TestresultatDetaljer>
   >(toTestresultatDetaljerMap(resultater));
+
+  if(testregel.testregelSchema===undefined) {
+    throw new Error('testregelSchema er tomt');
+  }
 
   const testregelSchema = JSON.parse(testregel.testregelSchema);
 

@@ -5,7 +5,7 @@ import { isDefined } from '@common/util/validationUtils';
 import { Link } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TESTREGEL_DEMO } from '@test/TestingRoutes';
-import { Krav } from 'krav/types';
+import { Krav } from '@krav/types';
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router';

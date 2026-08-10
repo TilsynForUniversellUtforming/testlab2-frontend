@@ -1,6 +1,6 @@
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { OptionType, ButtonVariant } from '@common/types';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { TestregelInit, TestregelModus, TestresultatUtfall } from '../api/types';
 import TestlabFormInput from '@common/form/TestlabFormInput';
@@ -8,7 +8,41 @@ import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { Button, Checkbox, Heading } from '@digdir/designsystemet-react';
 import { TrashFillIcon } from '@navikt/aksel-icons';
-import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import 'tinymce/tinymce';
+// DOM model
+import 'tinymce/models/dom/model';
+// Theme
+import 'tinymce/themes/silver';
+// Toolbar icons
+import 'tinymce/icons/default';
+// Editor styles
+import 'tinymce/skins/ui/oxide/skin';
+// Content styles, including inline UI like fake cursors
+import 'tinymce/skins/content/default/content';
+import 'tinymce/skins/ui/oxide/content';
+
+// Import plugins
+import 'tinymce/plugins/anchor';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/charmap';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/visualblocks';
+import 'tinymce/plugins/fullscreen';
+import 'tinymce/plugins/insertdatetime';
+import 'tinymce/plugins/preview';
+import 'tinymce/plugins/help';
+// Include resources that a plugin lazy-loads at the run-time
+import 'tinymce/plugins/help/js/i18n/keynav/en';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/wordcount';
+import { Editor } from '@tinymce/tinymce-react';
 
 interface SelectProps {
   options: OptionType[];
@@ -129,9 +163,20 @@ export const KravTilSamsvarTextArea = () => (
   <TestlabFormTextArea label="Krav til samsvar" name="kravTilSamsvar" />
 );
 
-export const InstruksjonTextArea = () => (
-  <TestlabFormTextArea label="Instruksjon" name={'definition.description'} />
-);
+  export const InstruksjonTextArea = () => {
+    const { control, formState } = useFormContext();
+
+    return (
+      <Controller
+        name="definition.description"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <Editor value={value} onEditorChange={onChange} licenseKey="gpl" />
+        )}
+      />
+    );
+    // <TestlabFormTextArea label="Instruksjon" name={'definition.description'} />
+  };
 
 const testresultatUtfallOptions = createOptionsFromLiteral<TestresultatUtfall>([
   'samsvar',
