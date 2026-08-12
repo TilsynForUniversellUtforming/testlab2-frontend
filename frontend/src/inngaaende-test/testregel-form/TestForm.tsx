@@ -21,7 +21,7 @@ import {
 import { Testregel } from '@testreglar/api/types';
 import DOMPurify from 'dompurify';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import TestFormForenkla from '@test/testregel-form/TestFormForenkla';
+import styles from '@test/testregel-form/test-form.module.scss';
 
 interface Props {
   testregel: Testregel;
@@ -154,13 +154,13 @@ const TestForm = ({
   const kravTilSamsvar = { __html: cleanHTML };
 
   return (
-    <div className="test-form">
+    <div className={styles.testForm}>
       <Heading dat-size="md" level={3}>
         {testregel.namn}
       </Heading>
       {testregel.kravTilSamsvar && showHelpText && (
         <div
-          className="test-form-description"
+          className={styles.testFormDescription}
           dangerouslySetInnerHTML={kravTilSamsvar}
         ></div>
       )}
