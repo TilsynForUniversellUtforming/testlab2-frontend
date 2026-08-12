@@ -45,19 +45,7 @@ const TestForm = ({
   isDemoApp,
 }: Props) => {
 
-  if (testregel.modus === 'manuell-forenkla') {
-    return (
-      <TestFormForenkla
-        testregel={testregel}
-        resultater={resultater}
-        showHelpText={showHelpText}
-        onResultat={onResultat}
-        slettTestelement={slettTestelement}
-        isLoading={isLoading}
-        isDemoApp={isDemoApp}
-      />
-    );
-  }
+
 
 
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
