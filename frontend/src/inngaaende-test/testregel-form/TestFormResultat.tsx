@@ -10,6 +10,7 @@ import {
 import { TestregelResultat } from '@test/util/testregelParser';
 import DOMPurify from 'dompurify';
 import { useState } from 'react';
+import styles from '@test/testregel-form/test-form.module.scss';
 
 interface Props {
   resultatId: number;
@@ -51,9 +52,9 @@ const TestFormResultat = ({
   };
 
   return (
-    <div className="test-form__result-card">
+    <div className={styles.testFormResultCard}>
       <TestlabDivider size="sm" />
-      <div className="test-form__result-heading">
+      <div className={styles.testFormResultHeading}>
         <Heading data-size="md" level={4}>
           Resultater
         </Heading>
@@ -61,7 +62,7 @@ const TestFormResultat = ({
           Basert på svara dine er det følgjande utfall på dette suksesskriteriet
         </Paragraph>
       </div>
-      <div className="test-form__result-card-result">
+      <div className={styles.testFormResultCardResult}>
         <Tag data-color={severity} data-size="lg">
           {title}
         </Tag>

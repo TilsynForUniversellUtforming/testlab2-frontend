@@ -2,8 +2,8 @@ import { Testregel } from '@testreglar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
 import { Heading } from '@digdir/designsystemet-react';
-import { TestFormAccordion } from '@test/testregel-form/TestFormAccordion';
 import DOMPurify from 'dompurify';
+import styles from '@test/testregel-form/test-form.module.scss';
 
 interface Props {
   testregel: Testregel;
@@ -17,12 +17,7 @@ interface Props {
 
 const TestFormForenkla = ({
                     testregel,
-                    resultater,
                     showHelpText,
-                    onResultat,
-                    slettTestelement,
-                    isLoading,
-                    isDemoApp,
                   }: Props) => {
 
   if (testregel.definition === undefined) {
@@ -43,18 +38,18 @@ const TestFormForenkla = ({
   const instruksjon = { __html: cleanInstruksjon };
 
   return (
-    <div className="test-form">
+    <div className={styles.testForm}>
       <Heading dat-size="md" level={3}>
         {testregel.namn}
       </Heading>
       {testregel.kravTilSamsvar && showHelpText && (
         <div
-          className="test-form-description"
+          className={styles.testFormDescription}
           dangerouslySetInnerHTML={kravTilSamsvar}
         ></div>
       )}
       <div
-        className="test-form-description"
+        className={styles.testFormDescription}
         dangerouslySetInnerHTML={instruksjon}
       ></div>
     </div>
