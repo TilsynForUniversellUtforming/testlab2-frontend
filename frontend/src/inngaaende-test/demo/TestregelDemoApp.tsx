@@ -9,8 +9,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 import TestForm from '../testregel-form/TestForm';
-import {initSkjemaMedSvar, SkjemaMedSvar, TestresultatDetaljer, toTestresultatDetaljerMap} from "@test/testregel-form/types";
-import TestFormForenkla from "@test/testregel-form/TestFormForenkla";
+import TestFormForenkla from "@test/testregel-form/testform-forenkla/TestFormForenkla";
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
@@ -64,9 +63,6 @@ const TestregelDemoApp = () => {
         resultater={[createResultat(testregel)]}
         showHelpText={true}
         onResultat={onResultat}
-        slettTestelement={slettTestelement}
-        isLoading={false}
-        isDemoApp={true}
       />
     );
   }

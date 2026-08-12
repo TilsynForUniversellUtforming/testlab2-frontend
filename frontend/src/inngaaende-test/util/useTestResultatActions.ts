@@ -100,7 +100,7 @@ export const useTestResultatActions = ({
           loeysingId,
           testregelId: activeTestregel.id,
           sideutvalId,
-        } as CreateTestResultat);
+        });
         const alleResultater = await fetchTestResults(testgrunnlagId);
         processData(alleResultater, sideId, activeTestregel);
       } catch {
