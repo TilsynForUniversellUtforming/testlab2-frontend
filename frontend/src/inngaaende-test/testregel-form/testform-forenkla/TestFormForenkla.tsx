@@ -34,10 +34,10 @@ const TestFormForenkla = (props: Props) => {
     throw new Error('definition.utfall er tomt');
   }
 
-  const defaultUtfallIndex =
-    props.testregel.definition.utfall.findIndex((u) => u.default) >= 0
-      ? props.testregel.definition.utfall.findIndex((u) => u.default)
-      : 0;
+  const defaultUtfallIndex = Math.max(
+    props.testregel.definition.utfall.findIndex((u) => u.default),
+    0
+  );
 
   const eksisterandeResultat =
     props.resultater[0] ??
@@ -55,9 +55,12 @@ const TestFormForenkla = (props: Props) => {
       status: eksisterandeResultat.status,
       sistLagra: eksisterandeResultat.sistLagra,
       svar:
-        eksisterandeResultat.svar.length > 0 ? eksisterandeResultat.svar : undefined,
+        eksisterandeResultat.svar.length > 0
+          ? eksisterandeResultat.svar
+          : undefined,
       kommentar: eksisterandeResultat.kommentar,
       valgtUtfallIndex: defaultUtfallIndex,
+      elementOmtale: eksisterandeResultat.elementOmtale,
     },
     resolver: zodResolver(testformForenklaValidationSchema),
   });
@@ -107,6 +110,7 @@ const TestFormForenkla = (props: Props) => {
       alleSvar: oppdatertResultat.svar,
       kommentar: oppdatertResultat.kommentar,
       elementOmtale: oppdatertResultat.elementOmtale,
+      elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
       resultat: mapToTestregelResultat(utfall.testresultat, utfall.beskrivelse),
     });
   };
@@ -133,6 +137,12 @@ const TestFormForenkla = (props: Props) => {
           className={styles.testFormDescription}
           dangerouslySetInnerHTML={instruksjon}
         ></div>
+
+        <TestlabForm.FormInput<TestformForenklaFormValues>
+          label={'Beskriv elementet'}
+          name="elementOmtale"
+          required={true}
+        />
 
         <TestlabForm.FormSelect<TestformForenklaFormValues>
           label="Vel utfall"
@@ -179,13 +189,23 @@ function mapToTestregelResultat(
     type: 'avslutt',
     utfall,
     fasit:
-      testresultat === 'samsvar'
-        ? 'Ja'
-        : testresultat === 'brot'
-          ? 'Nei'
-          : 'Ikkje testbart',
+      mapTestresultatToFasit(testresultat)
   };
 }
+
+function mapTestresultatToFasit(
+  testresultat: string
+): 'Ja' | 'Nei' | 'Ikkje testbart' {
+  switch (testresultat) {
+    case 'samsvar':
+      return 'Ja';
+    case 'brot':
+      return 'Nei';
+    default:
+      return 'Ikkje testbart';
+  }
+}
+
 
 function createForenklaBaseResultat({
   testregelId,

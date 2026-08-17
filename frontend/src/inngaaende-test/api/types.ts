@@ -19,6 +19,7 @@ export type CreateTestResultat = {
   testregelId: number;
   sideutvalId: number;
   elementOmtale?: string;
+  elementOmtaleHtml?: string;
   elementResultat?: ElementResultat;
   elementUtfall?: string;
   testVartUtfoert?: string;

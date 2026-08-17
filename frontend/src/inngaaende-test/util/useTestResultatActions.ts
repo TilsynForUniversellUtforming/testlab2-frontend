@@ -62,7 +62,14 @@ export const useTestResultatActions = ({
 
   const doUpdateTestResult = useCallback(
     async (testResultUpdate: TestResultUpdate) => {
-      const { resultatId, alleSvar, resultat, elementOmtale, kommentar } = testResultUpdate;
+      const {
+        resultatId,
+        alleSvar,
+        resultat,
+        elementOmtale,
+        elementOmtaleHtml,
+        kommentar,
+      } = testResultUpdate;
       const activeTestResult = testResults.find((tr) => tr.id === resultatId);
 
       if (activeTest && sideId && activeTestResult) {
@@ -73,6 +80,7 @@ export const useTestResultatActions = ({
           testregelId: activeTest.testregel?.id,
           sideutvalId: sideId,
           elementOmtale,
+          elementOmtaleHtml,
           elementResultat: resultat && toElementResultat(resultat),
           elementUtfall: resultat?.utfall,
           svar: alleSvar,

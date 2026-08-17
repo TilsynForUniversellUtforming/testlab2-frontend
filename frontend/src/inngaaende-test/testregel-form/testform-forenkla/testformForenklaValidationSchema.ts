@@ -21,6 +21,8 @@ export const testformForenklaValidationSchema = z.object({
   svar: z.array(svarSchema).optional(),
   kommentar: z.string().optional(),
   valgtUtfallIndex: z.coerce.number().int().min(0),
+  elementOmtale: z.string().min(1),
+  elementOmtaleHtml: z.string().optional()
 });
 
 export type TestformForenklaFormValues = z.infer<

@@ -117,6 +117,7 @@ const TestForm = ({
       alleSvar: svar,
       resultat,
       elementOmtale,
+      elementOmtaleHtml: elementOmtale,
       kommentar,
     });
   }, [onResultat, testregel]);
