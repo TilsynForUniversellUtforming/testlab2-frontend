@@ -58,6 +58,7 @@ export const isTestFinished = (
   testResults: ResultatManuellKontroll[],
   testKeys: string[]
 ): boolean => {
+
   const finishedKeys = new Set(
     filterFerdig(testResults).map((tr) => toTestKey(tr.testregelId, tr.sideutvalId))
   );

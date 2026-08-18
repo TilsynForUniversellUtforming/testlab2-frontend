@@ -18,6 +18,8 @@ import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
+import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
+import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
 
 interface Props {
   sideutval: PageType;
@@ -115,12 +117,15 @@ const LoeysingTestContent = memo(({
 
   const handleUpdateResult = useCallback((testresultUpdate: TestResultUpdate) => {
     setLoading(true);
+    console.log("Update results " + testresultUpdate)
     doUpdateTestResult(testresultUpdate);
   }, [doUpdateTestResult]);
 
   const handleSlettTestelement = useCallback((resultatId: number) => {
     if (activeTest) slettTestelement(activeTest, resultatId);
   }, [activeTest, slettTestelement]);
+
+  const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
 
   return (
     <>
@@ -136,62 +141,60 @@ const LoeysingTestContent = memo(({
         {chunkedTestregelList.map((row) => {
           const rowKey = row.map((tr) => tr.id).join('-');
           return (
-          <div
-            className={classNames('testregel-row', {
-              single: testregelList.length === 1,
-            })}
-            key={rowKey}
-          >
-            <div className="testregel-container">
-              {row.map((tr) => (
-                <TestregelButton
-                  isActive={tr.id === Number(activeTest?.testregel.id)}
-                  key={tr.id}
-                  testregel={tr}
-                  onClick={onChangeTestregel}
-                  status={
-                    testStatusMap.get(
-                      toTestregelStatusKey(
-                        Number(testgrunnlagId),
-                        tr.id,
-                        sideutval.sideId
-                      )
-                    ) ?? 'ikkje-starta'
-                  }
-                  onChangeStatus={onChangeStatus}
-                />
-              ))}
-            </div>
-            {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
-              activeTest && (
-                <div
-                  className={classNames('testregel-form-wrapper', {
-                    single: testregelList.length === 1,
-                  })}
-                >
-                  <TestForm
-                    testregel={activeTest.testregel}
-                    resultater={activeTest.testResultList}
-                    onResultat={handleUpdateResult}
-                    showHelpText={showHelpText}
-                    slettTestelement={handleSlettTestelement}
-                    isLoading={loading}
-                  />
-                  <TestlabDivider />
-                  <div className="testregel-form-button-wrapper">
-                    <div className="testregel-form-buttons">
-                      <Button
-                        variant={ButtonVariant.Outline}
-                        onClick={leggTilFlereTestelementer}
-                      >
-                        Legg til flere testelementer
-                      </Button>
-                      <Button onClick={onClickSave}>Lagre og lukk</Button>
+            <div
+              className={classNames('testregel-row', {
+                single: testregelList.length === 1,
+              })}
+              key={rowKey}
+            >
+              <TestregelButtonList
+                row={row}
+                activeTest={activeTest}
+                onChangeTestregel={onChangeTestregel}
+                testStatusMap={testStatusMap}
+                testgrunnlagId={testgrunnlagId}
+                sideId={sideutval.sideId}
+                onChangeStatus={onChangeStatus}
+              />
+              {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
+                activeTest && (
+                  <div
+                    className={classNames('testregel-form-wrapper', {
+                      single: testregelList.length === 1,
+                    })}
+                  >
+                    {isForenkla ? (
+                      <TestFormForenkla
+                        testregel={activeTest.testregel}
+                        resultater={activeTest.testResultList}
+                        showHelpText={true}
+                        onResultat={handleUpdateResult}
+                      />
+                    ) : (
+                      <TestForm
+                        testregel={activeTest.testregel}
+                        resultater={activeTest.testResultList}
+                        onResultat={handleUpdateResult}
+                        showHelpText={showHelpText}
+                        slettTestelement={handleSlettTestelement}
+                        isLoading={loading}
+                      />
+                    )}
+                    <TestlabDivider />
+                    <div className="testregel-form-button-wrapper">
+                      <div className="testregel-form-buttons">
+                        <Button
+                          variant={ButtonVariant.Outline}
+                          onClick={leggTilFlereTestelementer}
+                        >
+                          Legg til flere testelementer
+                        </Button>
+                        <Button onClick={onClickSave}>Lagre og lukk</Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-          </div>
+                )}
+            </div>
           );
         })}
       </div>
