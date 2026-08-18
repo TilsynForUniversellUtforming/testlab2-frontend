@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Button,
-  Heading,
-  Paragraph,
-  Spinner,
-} from '@digdir/designsystemet-react';
+import { Button, Spinner } from '@digdir/designsystemet-react';
 import { CheckmarkIcon } from '@navikt/aksel-icons';
 import React, { useEffect } from 'react';
 
@@ -59,17 +53,31 @@ export default function LagreOgNeste({
     }
   }, [feilet]);
 
+  const startSaving = () => {
+    setInternalSaveState({ t: 'saving', timestamp: new Date() });
+  };
+
   const handleSave = () => {
     if (!feilet) {
-      setInternalSaveState({ t: 'saving', timestamp: new Date() });
       onClickLagreKontroll();
+      if (submitOnSave) {
+        // Let native submit execute before disabling the submit button.
+        globalThis.setTimeout(startSaving, 0);
+      } else {
+        startSaving();
+      }
     }
   };
 
   const handleSaveNeste = () => {
     if (!feilet) {
-      setInternalSaveState({ t: 'saving', timestamp: new Date() });
       onClickNeste();
+      if (submitOnSave) {
+        // Let native submit execute before disabling the submit button.
+        globalThis.setTimeout(startSaving, 0);
+      } else {
+        startSaving();
+      }
     }
   };
 

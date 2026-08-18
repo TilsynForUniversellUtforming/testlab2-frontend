@@ -34,7 +34,7 @@ const TestregelFilter = ({
       <Chip.Radio
         value={'manuell'}
         onChange={() => onChangeFilter('manuell', type)}
-        title="Testreglar for inngaående kontroll"
+        title="Testreglar for manuell kontroll"
         checked={modus === 'manuell'}
         className={classes.testregelFilterValChipRadio}
       >
@@ -48,6 +48,15 @@ const TestregelFilter = ({
         className={classes.testregelFilterValChipRadio}
       >
         Automatisk
+      </Chip.Radio>
+      <Chip.Radio
+        value={'manuell-forenkla'}
+        onChange={() => onChangeFilter('manuell-forenkla', type)}
+        title="Testreglar for manuell testing"
+        checked={modus === 'manuell-forenkla'}
+        className={classes.testregelFilterValChipRadio}
+      >
+        Manuell kontroll forenkla
       </Chip.Radio>
       <Chip.Radio
         value={'deque'}
