@@ -1,6 +1,12 @@
-import { Alert, Checkbox, Fieldset, Heading } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Checkbox,
+  Fieldset,
+  Heading,
+  useCheckboxGroup,
+} from '@digdir/designsystemet-react';
 import { TestregelBase, TestregelModus } from '@testreglar/api/types';
-import { ChangeEvent, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import classes from '../kontroll.module.css';
 
@@ -20,6 +26,23 @@ const TestregelSelector = ({
   modus,
   isForenkla,
 }: Props) => {
+  const { getCheckboxProps, setValue } = useCheckboxGroup({
+    onChange: (nextValue) => {
+      const visibleIds = new Set(testregelList.map((testregel) => testregel.id));
+      const hiddenSelectedIds = selectedTestregelIdList.filter(
+        (id) => !visibleIds.has(id)
+      );
+      const selectedVisibleIds = nextValue.map(Number);
+
+      onSelectTestregelId([...hiddenSelectedIds, ...selectedVisibleIds]);
+    },
+  });
+
+  useEffect(() => {
+    // Keep hook-internal state synchronized with parent-controlled selection.
+    setValue(selectedTestregelIdList.map(String));
+  }, [selectedTestregelIdList, setValue]);
+
   const groupedTestreglar = useMemo(() => {
     const groups = new Map<string, TestregelBase[]>();
     testregelList.forEach((testregel) => {
@@ -47,16 +70,6 @@ const TestregelSelector = ({
       </Alert>
     );
   }
-
-  const onChangeTestregel = (testregel: TestregelBase) => {
-    return (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.checked) {
-        onSelectTestregelId([...selectedTestregelIdList, testregel.id]);
-      } else {
-        onSelectTestregelId(selectedTestregelIdList.filter((v) => v !== testregel.id));
-      }
-    };
-  }
   return (
     <div className={classes.gridWrapper}>
       <div className={classes.gridContainer}>
@@ -72,10 +85,11 @@ const TestregelSelector = ({
                   key={testregel.id}
                   value={String(testregel.id)}
                   title={`Vel ${testregel.namn}`}
-                  onChange={onChangeTestregel(testregel)}
                   label={testregel.namn}
                   data-testid="manuell-testregel"
-                data-size={"sm"} />
+                  data-size={'sm'}
+                  {...getCheckboxProps(String(testregel.id))}
+                />
               ))}
             </Fieldset>
           </div>
