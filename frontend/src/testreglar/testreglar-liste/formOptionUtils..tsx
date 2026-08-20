@@ -60,7 +60,7 @@ export const defineTemaOptions = (temaList: Tema[]) => {
   }));
   return temaOptions;
 };
-export const deineTestobjectOptions = (testobjektList: Testobjekt[]) => {
+export const defineTestobjectOptions = (testobjektList: Testobjekt[]) => {
   const testobjektOptions: OptionType[] = testobjektList.map((it) => ({
     label: it.testobjekt,
     value: it.id,

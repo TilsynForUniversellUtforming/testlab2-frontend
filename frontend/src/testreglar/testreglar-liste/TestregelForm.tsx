@@ -31,7 +31,7 @@ import {
   defineTemaOptions,
   defineTestregelStatusOption,
   defineTypeOptions,
-  deineTestobjectOptions,
+  defineTestobjectOptions,
 } from '@testreglar/testreglar-liste/formOptionUtils.';
 import {
   InputVersion,
@@ -47,7 +47,9 @@ import {
   TestregelSchemaTextArea,
   TestregelStatusSelect,
   TestregelTypeSelect,
-  UtfallFieldArray, InstruksjonTextArea,
+  UtfallFieldArray,
+  InstruksjonTextArea,
+  HelptextTextArea,
 } from '@testreglar/testreglar-liste/TestregelFormFields';
 
 export interface Props {
@@ -82,7 +84,7 @@ const TestregelForm = ({
 
   const innhaldsTypeOptions = defineInnholdstypeOptions(innhaldstypeList);
   const temaOptions = defineTemaOptions(temaList);
-  const testobjektOptions = deineTestobjectOptions(testobjektList);
+  const testobjektOptions = defineTestobjectOptions(testobjektList);
 
   const formMethods = useDefineFormMethods(testregel);
 
@@ -141,6 +143,8 @@ const TestregelForm = ({
         {isManuellForenkla && (
           <>
             <InstruksjonTextArea />
+
+            <HelptextTextArea />
 
             <UtfallFieldArray />
           </>

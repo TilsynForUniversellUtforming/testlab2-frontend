@@ -70,8 +70,7 @@ class TestResource(
       runCatching {
             logger.debug(
                 "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}," +
-                        " testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}"
-            )
+                    " testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
             val testResultat =
                 testresultatAPIClient.createTestResultat(createTestResultat).getOrThrow()
             testResultat
@@ -131,47 +130,46 @@ class TestResource(
       @RequestParam("includeBilder", required = false) includeBilder: Boolean = false,
   ): ResponseEntity<List<Bilde>> {
 
-      val allowedMIMETypes =
-          listOf(MimeTypeUtils.IMAGE_JPEG_VALUE, MimeTypeUtils.IMAGE_PNG_VALUE, "image/bmp")
-      try {
+    val allowedMIMETypes =
+        listOf(MimeTypeUtils.IMAGE_JPEG_VALUE, MimeTypeUtils.IMAGE_PNG_VALUE, "image/bmp")
+    try {
 
-          requireNotNull(bilde.originalFilename) { "Bilde kan ikkje vere null" }
-          require(allowedMIMETypes.contains(bilde.contentType)) {
-              "Ugyldig filtype. Kun JPEG, PNG og BMP er tillatt."
-          }
-
-          val body: MultiValueMap<String, Any> =
-              createBildeRequestBody(bilde)
-
-          val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
-          val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
-
-          restTemplate.postForEntity<String>("$bildeUrl/${resultatId}", requestEntity)
-      } catch (e: Error) {
-          return ResponseEntity.badRequest().build()
+      requireNotNull(bilde.originalFilename) { "Bilde kan ikkje vere null" }
+      require(allowedMIMETypes.contains(bilde.contentType)) {
+        "Ugyldig filtype. Kun JPEG, PNG og BMP er tillatt."
       }
 
-      if (includeBilder) {
-          return getBilder(resultatId)
-      }
-      return ResponseEntity.noContent().build()
-  }
+      val body: MultiValueMap<String, Any> = createBildeRequestBody(bilde)
 
-    private fun createBildeRequestBody(bilde: MultipartFile): MultiValueMap<String, Any> {
-        val body: MultiValueMap<String, Any> =
-            LinkedMultiValueMap<String, Any>().apply {
-                listOf(bilde).forEach { bilde ->
-                    add(
-                        "bilder",
-                        object : ByteArrayResource(bilde.bytes) {
-                            override fun getFilename(): String = bilde.originalFilename?.lowercase()!!
-                        })
-                }
-            }
-        return body
+      val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
+      val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
+
+      restTemplate.postForEntity<String>("$bildeUrl/${resultatId}", requestEntity)
+    } catch (e: Error) {
+      return ResponseEntity.badRequest().build()
     }
 
-    @GetMapping("/bilder/{resultatId}")
+    if (includeBilder) {
+      return getBilder(resultatId)
+    }
+    return ResponseEntity.noContent().build()
+  }
+
+  private fun createBildeRequestBody(bilde: MultipartFile): MultiValueMap<String, Any> {
+    val body: MultiValueMap<String, Any> =
+        LinkedMultiValueMap<String, Any>().apply {
+          listOf(bilde).forEach { bilde ->
+            add(
+                "bilder",
+                object : ByteArrayResource(bilde.bytes) {
+                  override fun getFilename(): String = bilde.originalFilename?.lowercase()!!
+                })
+          }
+        }
+    return body
+  }
+
+  @GetMapping("/bilder/{resultatId}")
   fun getBilder(
       @PathVariable resultatId: Int,
   ): ResponseEntity<List<Bilde>> =

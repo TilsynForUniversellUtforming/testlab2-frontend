@@ -64,6 +64,7 @@ export const testregelSchema = testregelBaseSchema.and(
     definition: z
       .object({
         description: z.string(),
+        helptext: z.string().optional(),
         utfall: z.array(utfallSchema),
       })
       .optional(),

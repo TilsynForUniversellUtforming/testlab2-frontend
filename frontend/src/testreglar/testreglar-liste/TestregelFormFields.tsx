@@ -172,18 +172,50 @@ export const KravTilSamsvarTextArea = () => (
 );
 
   export const InstruksjonTextArea = () => {
-    const { control, formState } = useFormContext();
+    const { control } = useFormContext();
 
     return (
+      <>
+        <Heading level={3} data-size="xs">
+          Testbeskrivelse
+        </Heading>
+        <Controller
+          name="definition.description"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Editor
+              value={value}
+              onEditorChange={onChange}
+              licenseKey="gpl"
+              plugins={['lists', 'advlist', 'code', 'table']}
+              toolbar={[
+                'undo redo | bold italic underline | fontfamily fontsize',
+                'alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist',
+              ]}
+            />
+          )}
+        />
+      </>
+    );
+  };
+
+export const HelptextTextArea = ()=> {
+  const { control } = useFormContext();
+
+  return (
+    <>
+      <Heading level={3} data-size="xs" className={styles.testregelFormTextareaHeading}>
+        Helpetext
+      </Heading>
       <Controller
-        name="definition.description"
+        name="definition.helptext"
         control={control}
         render={({ field: { onChange, value } }) => (
           <Editor
             value={value}
             onEditorChange={onChange}
             licenseKey="gpl"
-            plugins={['lists','advlist','code','table']}
+            plugins={['lists', 'advlist', 'code', 'table']}
             toolbar={[
               'undo redo | bold italic underline | fontfamily fontsize',
               'alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist',
@@ -191,9 +223,9 @@ export const KravTilSamsvarTextArea = () => (
           />
         )}
       />
-    );
-    // <TestlabFormTextArea label="Instruksjon" name={'definition.description'} />
-  };
+    </>
+  );
+}
 
 const testresultatUtfallOptions = createOptionsFromLiteral<TestresultatUtfall>([
   'samsvar',

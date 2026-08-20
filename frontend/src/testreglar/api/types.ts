@@ -117,4 +117,5 @@ export type ManuellForenklaDefinition = {
   type?:string;
   description: string;
   utfall: TestregelUtfall[];
+  helptext?:string;
 };

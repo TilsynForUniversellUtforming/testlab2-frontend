@@ -1,5 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
+import no.uutilsynet.testlab2.constants.ManuellForenklaTestregelDefinition
+import no.uutilsynet.testlab2.constants.StringTestregelDefinition
 import no.uutilsynet.testlab2.constants.TestregelModus
 import no.uutilsynet.testlab2frontendserver.krav.KravApiClient
 import no.uutilsynet.testlab2frontendserver.krav.KravApiProperties

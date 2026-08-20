@@ -66,10 +66,10 @@ const TestFormForenkla = (props: Props) => {
     resolver: zodResolver(testformForenklaValidationSchema),
   });
 
-  const cleanHTML = DOMPurify.sanitize(props.testregel.kravTilSamsvar ?? '', {
+  const cleanHTML = DOMPurify.sanitize(props.testregel.definition.helptext ?? '', {
     USE_PROFILES: { html: true },
   });
-  const kravTilSamsvar = { __html: cleanHTML };
+  const helptext = { __html: cleanHTML };
 
   const cleanInstruksjon = DOMPurify.sanitize(
     props.testregel.definition.description ?? '',
@@ -145,7 +145,7 @@ const TestFormForenkla = (props: Props) => {
           <div
             className={styles.testFormDescription}
             dangerouslySetInnerHTML={{
-              __html: props.showHelpText ? kravTilSamsvar.__html : '',
+              __html: props.showHelpText ? helptext.__html : '',
             }}
           ></div>
         </Details>
