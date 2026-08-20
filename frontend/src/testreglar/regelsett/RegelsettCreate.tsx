@@ -5,7 +5,8 @@ import RegelsettFormSkeleton from '@testreglar/regelsett/skeleton/RegelsettFormS
 import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router';
 
-import type { Regelsett, RegelsettCreate } from '../api/types';
+import type { RegelsettCreate } from '../api/types';
+import { RegelsettFormOutput } from '@testreglar/regelsett/regelsettValidationSchema';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
@@ -22,7 +23,7 @@ const RegelsettCreate = () => {
     setLoading(contextLoading);
   }, [contextLoading]);
 
-  const onSubmit = useCallback((regelsettInit: Regelsett) => {
+  const onSubmit = useCallback((regelsettInit: RegelsettFormOutput) => {
     const regelsett: RegelsettCreate = {
       namn: regelsettInit.namn,
       modus: regelsettInit.modus,

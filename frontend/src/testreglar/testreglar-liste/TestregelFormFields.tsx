@@ -1,12 +1,19 @@
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { OptionType, ButtonVariant } from '@common/types';
 import React, { useCallback, useEffect, useState } from 'react';
+import styles from '../testreglar.module.scss';
 
-import { TestregelInit, TestregelModus, TestresultatUtfall } from '../api/types';
+import { TestregelModus, TestresultatUtfall } from '../api/types';
+import { TestregelFormInput } from './testreglarValidationSchema';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
-import { Button, Checkbox, Heading } from '@digdir/designsystemet-react';
+import {
+  Button,
+  Checkbox,
+  Details,
+  Heading,
+} from '@digdir/designsystemet-react';
 import { TrashFillIcon } from '@navikt/aksel-icons';
 import { Controller, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import 'tinymce/tinymce';
@@ -34,6 +41,7 @@ import 'tinymce/plugins/fullscreen';
 import 'tinymce/plugins/insertdatetime';
 import 'tinymce/plugins/preview';
 import 'tinymce/plugins/help';
+
 // Include resources that a plugin lazy-loads at the run-time
 import 'tinymce/plugins/help/js/i18n/keynav/en';
 import 'tinymce/plugins/image';
@@ -57,7 +65,7 @@ interface SelectModusProps extends SelectProps {
 }
 
 export const ModusSelect = ({ options, disabled }: SelectModusProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     radio
     name="modus"
     options={options}
@@ -70,7 +78,7 @@ export const ModusSelect = ({ options, disabled }: SelectModusProps) => (
 );
 
 export const KravSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     label="Krav"
     options={options}
     name="kravId"
@@ -79,7 +87,7 @@ export const KravSelect = ({ options }: SelectProps) => (
 );
 
 export const LangSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     options={options}
     label="Språk"
     name="spraak"
@@ -88,7 +96,7 @@ export const LangSelect = ({ options }: SelectProps) => (
 );
 
 export const TestregelStatusSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     options={options}
     label="Status"
     name="status"
@@ -98,7 +106,7 @@ export const TestregelStatusSelect = ({ options }: SelectProps) => (
 );
 
 export const TestregelTypeSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     options={options}
     label="Type"
     name="type"
@@ -108,7 +116,7 @@ export const TestregelTypeSelect = ({ options }: SelectProps) => (
 );
 
 export const InnhaldstypeSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     options={options}
     label="Innhaldstype"
     name="innhaldstypeTesting"
@@ -116,7 +124,7 @@ export const InnhaldstypeSelect = ({ options }: SelectProps) => (
 );
 
 export const TemaSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     options={options}
     label="Tema"
     name="tema"
@@ -124,7 +132,7 @@ export const TemaSelect = ({ options }: SelectProps) => (
 );
 
 export const TestobjektSelect = ({ options }: SelectProps) => (
-  <TestlabFormSelect<TestregelInit>
+  <TestlabFormSelect<TestregelFormInput>
     options={options}
     label="Testobjekt"
     name="testobjekt"
@@ -171,7 +179,16 @@ export const KravTilSamsvarTextArea = () => (
         name="definition.description"
         control={control}
         render={({ field: { onChange, value } }) => (
-          <Editor value={value} onEditorChange={onChange} licenseKey="gpl" />
+          <Editor
+            value={value}
+            onEditorChange={onChange}
+            licenseKey="gpl"
+            plugins={['lists','advlist','code','table']}
+            toolbar={[
+              'undo redo | bold italic underline | fontfamily fontsize',
+              'alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist',
+            ]}
+          />
         )}
       />
     );
@@ -186,7 +203,7 @@ const testresultatUtfallOptions = createOptionsFromLiteral<TestresultatUtfall>([
 ]);
 
 export const UtfallFieldArray = () => {
-  const { control, setValue } = useFormContext<TestregelInit>();
+  const { control, setValue } = useFormContext<TestregelFormInput>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'definition.utfall',
@@ -221,38 +238,43 @@ export const UtfallFieldArray = () => {
   };
 
   return (
-    <div className="testregel-form-utfall">
+    <div className={styles.testregelFormUtfall}>
       <Heading level={3} data-size="xs">
         Utfall
       </Heading>
       {fields.map((field, index) => (
-        <div key={field.id} className="testregel-form-utfall__row">
-          <TestlabFormTextArea
-            label={`Beskrivelse utfall ${index + 1}`}
-            name={`definition.utfall.${index}.beskrivelse` as const}
-            required
-          />
-          <TestlabFormSelect<TestregelInit>
-            options={testresultatUtfallOptions}
-            label="Testresultat"
-            name={`definition.utfall.${index}.testresultat` as const}
-            required
-          />
-          <Checkbox
-            label="Bruk som standard"
-            checked={Boolean(utfallValues?.[index]?.default)}
-            onChange={() =>
-              onDefaultChange(index, !utfallValues?.[index]?.default)
-            }
-          />
-          <Button
-            type="button"
-            variant={ButtonVariant.Quiet}
-            onClick={() => remove(index)}
-          >
-            <TrashFillIcon aria-hidden />
-            Fjern utfall
-          </Button>
+        <div key={field.id} className={styles.testregelFormUtfallRow}>
+          <Details key={field.id} className={styles.testregelFormUtfallRow}>
+            <Details.Summary>{field.beskrivelse}</Details.Summary>
+            <Details.Content>
+              <TestlabFormTextArea
+                label={`Beskrivelse utfall ${index + 1}`}
+                name={`definition.utfall.${index}.beskrivelse` as const}
+                required
+              />
+              <TestlabFormSelect<TestregelFormInput>
+                options={testresultatUtfallOptions}
+                label="Testresultat"
+                name={`definition.utfall.${index}.testresultat` as const}
+                required
+              />
+              <Checkbox
+                label="Bruk som standard"
+                checked={Boolean(utfallValues?.[index]?.default)}
+                onChange={() =>
+                  onDefaultChange(index, !utfallValues?.[index]?.default)
+                }
+              />
+              <Button
+                type="button"
+                variant={ButtonVariant.Quiet}
+                onClick={() => remove(index)}
+              >
+                <TrashFillIcon aria-hidden />
+                Fjern utfall
+              </Button>
+            </Details.Content>
+          </Details>
         </div>
       ))}
       <Button type="button" variant={ButtonVariant.Outline} onClick={addUtfall}>

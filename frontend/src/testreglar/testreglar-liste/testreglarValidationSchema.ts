@@ -4,7 +4,7 @@ import { z } from 'zod';
 const requiredCoercedNumber = (message: string) =>
   z.preprocess(
     (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
-    z.coerce.number({ error: message })
+    z.coerce.number({ message })
   );
 
 export const testregelBaseSchema = z.object({
@@ -122,3 +122,9 @@ export const testreglarValidationSchema = testregelSchema
     },
     { message: 'Ugyldig JSON-format', path: ['testregelSchema'] }
   );
+
+/** Raw form field values, as entered by the user before Zod parses/coerces them. */
+export type TestregelFormInput = z.input<typeof testreglarValidationSchema>;
+/** Validated & coerced values, as produced by Zod after successful parsing. */
+export type TestregelFormOutput = z.output<typeof testreglarValidationSchema>;
+

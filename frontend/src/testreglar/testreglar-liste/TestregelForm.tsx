@@ -9,6 +9,7 @@ import { Krav } from '@krav/types';
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router';
+import styles from '../testreglar.module.scss';
 
 import {
   InnhaldstypeTesting,
@@ -17,7 +18,11 @@ import {
   Testregel,
   TestregelInit,
 } from '../api/types';
-import { testreglarValidationSchema } from './testreglarValidationSchema';
+import {
+  testreglarValidationSchema,
+  TestregelFormInput,
+  TestregelFormOutput,
+} from './testreglarValidationSchema';
 import {
   defineInnholdstypeOptions,
   defineKravOptions,
@@ -98,8 +103,8 @@ const TestregelForm = ({
   const isManuellForenkla = testregelType === 'manuell-forenkla';
 
   return (
-    <div className="testregel-form">
-      <TestlabForm<TestregelInit>
+    <div className={styles.testregelForm}>
+      <TestlabForm<TestregelFormInput, TestregelFormOutput>
         heading={heading}
         description={description}
         onSubmit={onSubmit}
@@ -162,7 +167,7 @@ const TestregelForm = ({
 };
 
 function useDefineFormMethods(testregel: Testregel | undefined) {
-  return useForm<TestregelInit>({
+  return useForm<TestregelFormInput, unknown, TestregelFormOutput>({
     defaultValues: {
       id: testregel?.id,
       testregelSchema: testregel?.testregelSchema || '',

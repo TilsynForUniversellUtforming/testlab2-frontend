@@ -1,4 +1,4 @@
-import './testreglar.scss';
+import styles from './testreglar.module.scss';
 
 import ErrorCard from '@common/error/ErrorCard';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
@@ -219,7 +219,7 @@ const TestreglarApp = () => {
           <Tabs.Tab value="regelsett">Regelsett</Tabs.Tab>
         </Tabs.List>
       </Tabs>
-      <div className="testreglar__content">
+      <div className={styles.testreglarContent}>
         <Outlet context={testRegelContext} />
       </div>
     </>
