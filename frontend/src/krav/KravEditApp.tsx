@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useLoaderData, useParams } from 'react-router';
 
 import { updateKrav } from './api/krav-api';
-import { Krav } from './types';
+import { Krav, KravInit } from './types';
 import KravForm from './KravForm';
 
 function KravEdit() {
@@ -11,15 +11,18 @@ function KravEdit() {
 
   const [krav, setKrav] = useState<Krav>(kravInit);
 
-  const onSubmit = useCallback((data: Krav) => {
-    console.log(data);
+  const onSubmit = useCallback(
+    (data: KravInit) => {
+      console.log(data);
 
-    const update = async () => {
-      data.id = Number(id);
-      updateKrav(data).then((response) => setKrav(response));
-    };
-    update();
-  }, []);
+      const update = async () => {
+        const updatedKrav: Krav = { ...data, id: Number(id) };
+        updateKrav(updatedKrav).then((response) => setKrav(response));
+      };
+      update();
+    },
+    [id]
+  );
 
   return <KravForm krav={krav} onSubmit={onSubmit} />;
 }

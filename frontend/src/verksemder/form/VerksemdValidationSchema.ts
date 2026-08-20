@@ -20,7 +20,7 @@ export const verksemdValidationSchema = z.object({
     .string()
     .min(1, 'Næringskode beskrivelse er påkrevd'),
   organisasjonsformKode: z.string().min(1, 'Organisasjonsform kode er påkrevd'),
-  organisasjonsformOmtale: z
+  organisasjonsformBeskrivelse: z
     .string()
     .min(1, 'Organisasjonsform omtale er påkrevd'),
   fylkesnummer: z.string().min(1, 'Fylkesnummer er påkrevd'),

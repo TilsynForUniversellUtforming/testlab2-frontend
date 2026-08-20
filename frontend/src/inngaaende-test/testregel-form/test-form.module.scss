@@ -12,9 +12,12 @@
   }
 }
 
+.test-form-helptext {
+  background: var(--ds-color-brand1-surface-active);
+}
+
 .testFormDescription,
 .testFormInstruction {
-  background-color: var(--ds-color-accent-surface-tinted);
   border-radius: 10px;
   padding: 1.5rem;
 }
@@ -54,3 +57,11 @@
   gap: 1rem;
 }
 
+.testFormFields {
+  background-color: var(--ds-color-accent-surface-tinted);
+  padding: 1.5rem;
+}
+
+.testregel-form-utfall {
+  width: 100;
+}

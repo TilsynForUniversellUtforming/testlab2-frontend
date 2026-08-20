@@ -93,7 +93,7 @@ const VerksemdForm = ({ verksemd, heading, description, onSubmit }: Props) => {
         <div className="loeysing-form__input">
           <TestlabFormInput
             label="Organisasjonsform omtale"
-            name="organisasjonsformOmtale"
+            name="organisasjonsformBeskrivelse"
             required
           />
         </div>

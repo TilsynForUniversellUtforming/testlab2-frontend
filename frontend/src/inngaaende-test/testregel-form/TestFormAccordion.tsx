@@ -37,7 +37,7 @@ type Props = {
   isDemoApp?: boolean;
 };
 
-export function TestFormAccordion({
+export function   TestFormAccordion({
   testregel,
   skjemaerMedSvar,
   onAnswer,

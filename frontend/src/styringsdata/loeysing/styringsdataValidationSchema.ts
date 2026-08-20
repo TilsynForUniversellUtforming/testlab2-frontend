@@ -208,6 +208,10 @@ const klageSchema = z
 
 export const styringsdataValidationSchema = z
   .object({
+    id: z.coerce.number().optional(),
+    type: z.union([z.literal('kontroll'), z.literal('loeysing')]),
+    loeysingId: z.coerce.number(),
+    kontrollId: z.coerce.number(),
     ansvarleg: z.string().min(1, 'Ansvarleg manglar'),
     oppretta: z.nullable(z.string()).optional().or(z.literal('')),
     frist: z.nullable(z.string()).optional().or(z.literal('')),

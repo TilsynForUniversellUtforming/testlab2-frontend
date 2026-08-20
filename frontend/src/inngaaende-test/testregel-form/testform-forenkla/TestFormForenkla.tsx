@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Testregel } from '@testreglar/api/types';
 import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
-import { Heading } from '@digdir/designsystemet-react';
+import { Details, Heading } from '@digdir/designsystemet-react';
 import DOMPurify from 'dompurify';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import {
   testformForenklaValidationSchema,
 } from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
 import { TestregelResultat } from '@test/util/testregelParser';
+import { capitalize } from '@common/util/stringutils';
 
 interface Props {
   testregel: Testregel;
@@ -82,7 +83,13 @@ const TestFormForenkla = (props: Props) => {
   const utfallOptions = useMemo(
     () =>
       props.testregel.definition!.utfall.map((utfall, index) => ({
-        label: utfall.beskrivelse,
+        elementLabel: (
+          <>
+            <strong>{capitalize(utfall.testresultat)}</strong>
+            {': ' + utfall.beskrivelse}
+          </>
+        ),
+        label:capitalize(utfall.testresultat) + ': ' + utfall.beskrivelse,
         value: index,
       })),
     [props.testregel.definition]
@@ -129,32 +136,40 @@ const TestFormForenkla = (props: Props) => {
       >
         <div
           className={styles.testFormDescription}
-          dangerouslySetInnerHTML={{
-            __html: props.showHelpText ? kravTilSamsvar.__html : '',
-          }}
-        ></div>
-        <div
-          className={styles.testFormDescription}
           dangerouslySetInnerHTML={instruksjon}
         ></div>
+        <Details>
+          <Details.Summary className={styles.testFormHelptext}>
+            Hjelpetekst
+          </Details.Summary>
+          <div
+            className={styles.testFormDescription}
+            dangerouslySetInnerHTML={{
+              __html: props.showHelpText ? kravTilSamsvar.__html : '',
+            }}
+          ></div>
+        </Details>
 
-        <TestlabForm.FormInput<TestformForenklaFormValues>
-          label={'Beskriv elementet'}
-          name="elementOmtale"
-          required={true}
-        />
+        <fieldset className={styles.testFormFields}>
+          <TestlabForm.FormInput<TestformForenklaFormValues>
+            label={'Beskriv elementet'}
+            name="elementOmtale"
+            required={true}
+          />
 
-        <TestlabForm.FormSelect<TestformForenklaFormValues>
-          label="Vel utfall"
-          name="valgtUtfallIndex"
-          options={utfallOptions}
-          required
-        />
+          <TestlabForm.FormSelect<TestformForenklaFormValues>
+            label="Vel utfall"
+            name="valgtUtfallIndex"
+            options={utfallOptions}
+            radio={true}
+            required
+          />
 
-        <TestlabForm.FormInput<TestformForenklaFormValues>
-          label="Kommentar"
-          name="kommentar"
-        />
+          <TestlabForm.FormInput<TestformForenklaFormValues>
+            label="Kommentar"
+            name="kommentar"
+          />
+        </fieldset>
 
         <TestlabForm.FormButtons />
       </TestlabForm>

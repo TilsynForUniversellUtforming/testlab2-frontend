@@ -2,11 +2,11 @@ export type Krav = {
   id: number;
   tittel: string;
   status: KravStatus;
-  innhald?: string;
+  innhald: string;
   gjeldAutomat: boolean;
   gjeldNettsider: boolean;
   gjeldApp: boolean;
-  urlRettleiing?: string;
+  urlRettleiing: string;
   prinsipp: WcagPrinsipp;
   retningslinje: WcagRetninglinje;
   suksesskriterium: string;
@@ -17,11 +17,11 @@ export type Krav = {
 export type KravInit = {
   tittel: string;
   status: KravStatus;
-  innhald?: string;
+  innhald: string;
   gjeldAutomat: boolean;
   gjeldNettsider: boolean;
   gjeldApp: boolean;
-  urlRettleiing?: string;
+  urlRettleiing: string;
   prinsipp: WcagPrinsipp;
   retningslinje: WcagRetninglinje;
   suksesskriterium: string;

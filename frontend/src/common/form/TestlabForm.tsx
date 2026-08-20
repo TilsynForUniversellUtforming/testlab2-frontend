@@ -10,11 +10,14 @@ import TestlabFormHeader from './TestlabFormHeader';
 import TestlabFormInput from './TestlabFormInput';
 import TestlabFormSelect from './TestlabFormSelect';
 
-export interface TestlabFormProps<T extends object> {
+export interface TestlabFormProps<
+  T extends object,
+  TTransformed extends object = T,
+> {
   heading?: string;
   description?: string;
-  onSubmit: SubmitHandler<T>;
-  formMethods: UseFormReturn<T>;
+  onSubmit: SubmitHandler<TTransformed>;
+  formMethods: UseFormReturn<T, unknown, TTransformed>;
   hasRequiredFields?: boolean;
   children: ReactNode;
   className?: string;
@@ -22,18 +25,19 @@ export interface TestlabFormProps<T extends object> {
 
 /**
  * React component for a generic form, wrapped in a form provider from 'react-hook-form'.
- * @template T - Type for form data.
- * @param {TestlabFormProps<T>} props - Props for the TestlabForm component.
+ * @template T - Type for raw form field values (as entered by the user).
+ * @template TTransformed - Type for the validated/transformed values passed to onSubmit. Defaults to T.
+ * @param {TestlabFormProps<T, TTransformed>} props - Props for the TestlabForm component.
  * @param {string} props.heading - Main heading for the form.
  * @param {string} [props.description] - Description for the form, optional.
- * @param {SubmitHandler<T>} props.onSubmit - Submit handler function for the form.
- * @param {UseFormReturn<T>} props.formMethods - React hook form methods for the form.
+ * @param {SubmitHandler<TTransformed>} props.onSubmit - Submit handler function for the form.
+ * @param {UseFormReturn<T, unknown, TTransformed>} props.formMethods - React hook form methods for the form.
  * @param {ReactNode} props.children - React children to render within the form.
  * @param {boolean} props.hasRequiredFields - For displaying info about fields being required. Default to true.
  * @param {string} className - Optional field for custom classes
  * @return {ReactElement} The React component for the TestlabForm.
  */
-const TestlabForm = <T extends object>({
+const TestlabForm = <T extends object, TTransformed extends object = T>({
   heading,
   description,
   children,
@@ -41,7 +45,7 @@ const TestlabForm = <T extends object>({
   onSubmit,
   hasRequiredFields = true,
   className,
-}: TestlabFormProps<T>): ReactElement => {
+}: TestlabFormProps<T, TTransformed>): ReactElement => {
   const { handleSubmit } = formMethods;
 
   return (

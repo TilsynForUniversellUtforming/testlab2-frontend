@@ -54,6 +54,7 @@ const LoeysingEdit = () => {
               ...loeysingInit,
               id: loeysing.id,
               orgnummer: loeysing.orgnummer,
+              verksemd: loeysingInit.verksemd,
             });
             setAlert('success', `${loeysing.namn} er endra`);
           } catch (e) {
