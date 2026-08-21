@@ -26,6 +26,7 @@ interface Props {
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
 }
 
+
 const TestFormForenkla = (props: Props) => {
   if (props.testregel.definition === undefined) {
     throw new Error('definition er tomt');
@@ -40,11 +41,16 @@ const TestFormForenkla = (props: Props) => {
     0
   );
 
-  const eksisterandeResultat =
+    const eksisterandeResultat =
     props.resultater[0] ??
     createForenklaBaseResultat({
       testregelId: props.testregel.id,
     });
+
+  const selectedUtfallIndex = props.testregel.definition.utfall.findIndex(
+    (u) => u.testresultat === eksisterandeResultat.elementResultat
+  );
+
 
   const formMethods = useForm<TestformForenklaFormValues>({
     defaultValues: {
@@ -60,25 +66,17 @@ const TestFormForenkla = (props: Props) => {
           ? eksisterandeResultat.svar
           : undefined,
       kommentar: eksisterandeResultat.kommentar,
-      valgtUtfallIndex: defaultUtfallIndex,
+      valgtUtfallIndex: selectedUtfallIndex >= 0 ? selectedUtfallIndex : defaultUtfallIndex,
       elementOmtale: eksisterandeResultat.elementOmtale,
     },
     resolver: zodResolver(testformForenklaValidationSchema),
   });
+  const helptext = sanitizeHelptext(props);
+  const instruksjon = sanitizeInstruksjon(props);
 
-  const cleanHTML = DOMPurify.sanitize(props.testregel.definition.helptext ?? '', {
-    USE_PROFILES: { html: true },
-  });
-  const helptext = { __html: cleanHTML };
 
-  const cleanInstruksjon = DOMPurify.sanitize(
-    props.testregel.definition.description ?? '',
-    {
-      USE_PROFILES: { html: true },
-    }
-  );
 
-  const instruksjon = { __html: cleanInstruksjon };
+
 
   const utfallOptions = useMemo(
     () =>
@@ -121,6 +119,7 @@ const TestFormForenkla = (props: Props) => {
       resultat: mapToTestregelResultat(utfall.testresultat, utfall.beskrivelse),
     });
   };
+
 
   return (
     <div className={styles.testForm}>
@@ -237,6 +236,28 @@ function createForenklaBaseResultat({
     sideutvalId: 0,
     sistLagra: new Date().toISOString(),
   };
+}
+
+function sanitizeHelptext(props: Props) {
+  const cleanHTML = DOMPurify.sanitize(
+    props.testregel.definition?.helptext ?? '',
+    {
+      USE_PROFILES: { html: true },
+    }
+  );
+
+  return { __html: cleanHTML };
+}
+function sanitizeInstruksjon(props: Props) {
+  const cleanInstruksjon = DOMPurify.sanitize(
+    props.testregel.definition?.description ?? '',
+    {
+      USE_PROFILES: { html: true },
+    }
+  );
+
+
+  return { __html: cleanInstruksjon };
 }
 
 export default TestFormForenkla;

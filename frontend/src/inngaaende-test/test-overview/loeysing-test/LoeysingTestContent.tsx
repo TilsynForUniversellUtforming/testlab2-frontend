@@ -117,7 +117,6 @@ const LoeysingTestContent = memo(({
 
   const handleUpdateResult = useCallback((testresultUpdate: TestResultUpdate) => {
     setLoading(true);
-    console.log("Update results " + testresultUpdate)
     doUpdateTestResult(testresultUpdate);
   }, [doUpdateTestResult]);
 
