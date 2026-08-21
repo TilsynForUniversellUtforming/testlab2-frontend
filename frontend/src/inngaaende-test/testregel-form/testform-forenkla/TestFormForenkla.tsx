@@ -1,29 +1,27 @@
 import TestlabForm from '@common/form/TestlabForm';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Testregel } from '@testreglar/api/types';
 import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
 import { Details, Heading } from '@digdir/designsystemet-react';
 import DOMPurify from 'dompurify';
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
 import styles from '@test/testregel-form/test-form.module.scss';
-import {
-  TestformForenklaFormValues,
-  testformForenklaValidationSchema,
-} from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
+import { TestformForenklaFormValues } from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
 import { TestregelResultat } from '@test/util/testregelParser';
-import { capitalize } from '@common/util/stringutils';
+import {
+  useTestFormForenklaFormOptions,
+  useUtfallOption,
+} from '@test/testregel-form/testform-forenkla/hooks';
 
 interface Props {
   testregel: Testregel;
-  resultater: ResultatManuellKontroll[];
   showHelpText: boolean;
   onResultat: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement?: (resultatId: number) => void;
   isLoading?: boolean;
   isDemoApp?: boolean;
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
+  activeResult:ResultatManuellKontroll
 }
 
 
@@ -36,62 +34,15 @@ const TestFormForenkla = (props: Props) => {
     throw new Error('definition.utfall er tomt');
   }
 
-  const defaultUtfallIndex = Math.max(
-    props.testregel.definition.utfall.findIndex((u) => u.default),
-    0
+  const formMethods = useTestFormForenklaFormOptions(
+    props.activeResult,
+    props.testregel.definition.utfall
   );
 
-    const eksisterandeResultat =
-    props.resultater[0] ??
-    createForenklaBaseResultat({
-      testregelId: props.testregel.id,
-    });
-
-  const selectedUtfallIndex = props.testregel.definition.utfall.findIndex(
-    (u) => u.testresultat === eksisterandeResultat.elementResultat
-  );
-
-
-  const formMethods = useForm<TestformForenklaFormValues>({
-    defaultValues: {
-      id: eksisterandeResultat.id,
-      testgrunnlagId: eksisterandeResultat.testgrunnlagId,
-      loeysingId: eksisterandeResultat.loeysingId,
-      testregelId: eksisterandeResultat.testregelId,
-      sideutvalId: eksisterandeResultat.sideutvalId,
-      status: eksisterandeResultat.status,
-      sistLagra: eksisterandeResultat.sistLagra,
-      svar:
-        eksisterandeResultat.svar.length > 0
-          ? eksisterandeResultat.svar
-          : undefined,
-      kommentar: eksisterandeResultat.kommentar,
-      valgtUtfallIndex: selectedUtfallIndex >= 0 ? selectedUtfallIndex : defaultUtfallIndex,
-      elementOmtale: eksisterandeResultat.elementOmtale,
-    },
-    resolver: zodResolver(testformForenklaValidationSchema),
-  });
   const helptext = sanitizeHelptext(props);
   const instruksjon = sanitizeInstruksjon(props);
 
-
-
-
-
-  const utfallOptions = useMemo(
-    () =>
-      props.testregel.definition!.utfall.map((utfall, index) => ({
-        elementLabel: (
-          <>
-            <strong>{capitalize(utfall.testresultat)}</strong>
-            {': ' + utfall.beskrivelse}
-          </>
-        ),
-        label:capitalize(utfall.testresultat) + ': ' + utfall.beskrivelse,
-        value: index,
-      })),
-    [props.testregel.definition]
-  );
+  const utfallOptions = useUtfallOption(props.testregel.definition.utfall);
 
   const onSubmit = (values: TestformForenklaFormValues) => {
     const utfall = props.testregel.definition!.utfall[values.valgtUtfallIndex];
@@ -100,7 +51,7 @@ const TestFormForenkla = (props: Props) => {
     }
 
     const oppdatertResultat: ResultatManuellKontroll = {
-      ...eksisterandeResultat,
+      ...props.activeResult,
       ...values,
       elementResultat: mapUtfallToElementResultat(utfall.testresultat),
       elementUtfall: utfall.beskrivelse,
@@ -120,13 +71,8 @@ const TestFormForenkla = (props: Props) => {
     });
   };
 
-
   return (
     <div className={styles.testForm}>
-      <Heading data-size="md" level={3}>
-        {props.testregel.namn}
-      </Heading>
-
       <TestlabForm<TestformForenklaFormValues>
         onSubmit={onSubmit}
         formMethods={formMethods}
@@ -202,8 +148,7 @@ function mapToTestregelResultat(
   return {
     type: 'avslutt',
     utfall,
-    fasit:
-      mapTestresultatToFasit(testresultat)
+    fasit: mapTestresultatToFasit(testresultat),
   };
 }
 
@@ -219,7 +164,6 @@ function mapTestresultatToFasit(
       return 'Ikkje testbart';
   }
 }
-
 
 function createForenklaBaseResultat({
   testregelId,
@@ -256,10 +200,7 @@ function sanitizeInstruksjon(props: Props) {
     }
   );
 
-
   return { __html: cleanInstruksjon };
 }
 
 export default TestFormForenkla;
-
-

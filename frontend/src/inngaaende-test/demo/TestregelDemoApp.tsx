@@ -60,9 +60,9 @@ const TestregelDemoApp = () => {
     return (
       <TestFormForenkla
         testregel={testregel}
-        resultater={[createResultat(testregel)]}
         showHelpText={true}
         onResultat={onResultat}
+        activeResult={createResultat(testregel)}
       />
     );
   }

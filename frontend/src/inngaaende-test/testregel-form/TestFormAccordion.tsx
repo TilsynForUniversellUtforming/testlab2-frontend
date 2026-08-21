@@ -48,9 +48,6 @@ export function   TestFormAccordion({
   isLoading,
   isDemoApp,
 }: Readonly<Props>) {
-  // Derive per-item data once, instead of recomputing elementOmtale /
-  // testresultatDetaljer separately in the single-item branch, the
-  // multi-item branch and the "kopier svar" dropdown.
   const items = useMemo(
     () =>
       skjemaerMedSvar.map((skjemaMedSvar) => ({
@@ -156,6 +153,54 @@ export function   TestFormAccordion({
     );
   }
 
+  type AccordionButtonProps = {
+    skjemaMedSvar: SkjemaMedSvar;
+    resultatId: number;
+    elementOmtale: string | undefined;
+    kommentar: string | undefined;
+    index: number;
+  };
+
+  function AccordionButton({
+    skjemaMedSvar,
+    resultatId,
+    elementOmtale,
+    kommentar,
+    index,
+  }: Readonly<AccordionButtonProps>) {
+    const resultat = resultatFromSkjemaMedSvar(skjemaMedSvar);
+    const label =
+      (elementOmtale === elementOmtaleSide && kommentar) || elementOmtale;
+
+    return (
+      <button
+        className={classes.accordionButton}
+        onClick={() => toggleForm(resultatId)}
+      >
+        <ArrowDownIcon
+          className={classNames(classes.arrow, {
+            [classes.arrowRotated]: showForm[resultatId],
+          })}
+        />
+        <span className={classes.labelNumber}>
+          {elementOmtale ? index + 1 + ': ' : index + 1}
+        </span>
+        {label}
+        <TestlabStatusTag<ElementResultat>
+          className={classes.resultat}
+          status={resultat}
+          colorMapping={{
+            danger: ['brot'],
+            success: ['samsvar'],
+            warning: ['advarsel'],
+            info: ['ikkjeForekomst', 'ikkjeTesta'],
+          }}
+          data-size="md"
+        />
+      </button>
+    );
+  }
+
   function accordionButton(
     skjemaMedSvar: SkjemaMedSvar,
     resultatId: number,
@@ -210,45 +255,53 @@ export function   TestFormAccordion({
 
   return (
     <div className={classes.skjemaer}>
-      {items.map(({ skjemaMedSvar, resultatId, elementOmtale, detaljer }, index) => (
-        <div key={resultatId}>
-          {accordionButton(
-            skjemaMedSvar,
-            resultatId,
-            elementOmtale,
-            detaljer?.kommentar,
-            index
-          )}
-          {showForm[resultatId] && (
-            <div className={classes.formContent}>
-              <Heading
-                level={4}
-                data-size={'md'}
-                className={classes.formHeading}
-              >
-                Test {index + 1}
-              </Heading>
-
-              {index !== 0 && dropdownMenu(index)}
-              {renderForm(resultatId, skjemaMedSvar, index, elementOmtale, detaljer)}
-              <div className={classes.accordionFooter}>
-                <Button
-                  className={classes.removeButton}
-                  variant="secondary"
-                  data-size="sm"
-                  onClick={() => slettTestelement(resultatId)}
+      {items.map(
+        ({ skjemaMedSvar, resultatId, elementOmtale, detaljer }, index) => (
+          <div key={resultatId}>
+            <AccordionButton
+              skjemaMedSvar={skjemaMedSvar}
+              resultatId={resultatId}
+              elementOmtale={elementOmtale}
+              kommentar={detaljer?.kommentar}
+              index={index}
+            />
+            {showForm[resultatId] && (
+              <div className={classes.formContent}>
+                <Heading
+                  level={4}
+                  data-size={'md'}
+                  className={classes.formHeading}
                 >
-                  Slett dette testelementet
-                </Button>
-                <SistLagra
-                  sistLagra={detaljer?.sistLagra ?? ''}
-                  isLoading={isLoading}
-                />
+                  Test {index + 1}
+                </Heading>
+
+                {index !== 0 && dropdownMenu(index)}
+                {renderForm(
+                  resultatId,
+                  skjemaMedSvar,
+                  index,
+                  elementOmtale,
+                  detaljer
+                )}
+                <div className={classes.accordionFooter}>
+                  <Button
+                    className={classes.removeButton}
+                    variant="secondary"
+                    data-size="sm"
+                    onClick={() => slettTestelement(resultatId)}
+                  >
+                    Slett dette testelementet
+                  </Button>
+                  <SistLagra
+                    sistLagra={detaljer?.sistLagra ?? ''}
+                    isLoading={isLoading}
+                  />
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      ))}
+            )}
+          </div>
+        )
+      )}
     </div>
   );
 }

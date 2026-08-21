@@ -20,6 +20,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
+import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
 
 interface Props {
   sideutval: PageType;
@@ -59,6 +60,7 @@ const calculateItemsPerRow = () => {
 };
 
 function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
+  console.log(resultater);
   return resultater.every((r) => r.elementUtfall != null);
 }
 
@@ -103,6 +105,7 @@ const LoeysingTestContent = memo(({
   }, [clearActiveTestregel]);
 
   const leggTilFlereTestelementer = useCallback(() => {
+    console.log("Legger til nytt testresultat")
     if (activeTest?.testResultList && alleHarUtfall(activeTest.testResultList)) {
       createNewTestResult(
         activeTest.testregel,
@@ -163,7 +166,7 @@ const LoeysingTestContent = memo(({
                     })}
                   >
                     {isForenkla ? (
-                      <TestFormForenkla
+                      <TestFormForenklaList
                         testregel={activeTest.testregel}
                         resultater={activeTest.testResultList}
                         showHelpText={true}
