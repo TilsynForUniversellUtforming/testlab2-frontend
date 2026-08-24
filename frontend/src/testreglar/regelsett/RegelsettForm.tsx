@@ -13,10 +13,14 @@ import { Chip, Heading } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { filterList } from '@testreglar/api/util';
-import { regelsettValidationSchema } from '@testreglar/regelsett/regelsettValidationSchema';
+import {
+  regelsettValidationSchema,
+  RegelsettFormOutput,
+} from '@testreglar/regelsett/regelsettValidationSchema';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router';
+import styles from '../testreglar.module.scss';
 
 import {
   Regelsett,
@@ -30,7 +34,7 @@ export interface Props {
   heading: string;
   description: string;
   regelsett?: Regelsett;
-  onSubmit: (testregel: Regelsett) => void;
+  onSubmit: (testregel: RegelsettFormOutput) => void;
   alert?: AlertProps;
 }
 
@@ -41,9 +45,8 @@ const RegelsettForm = ({
   onSubmit,
   alert,
 }: Props) => {
-  const formMethods = useForm<Regelsett>({
+  const formMethods = useForm<RegelsettFormOutput>({
     defaultValues: {
-      id: regelsett?.id,
       namn: regelsett?.namn || '',
       standard: regelsett?.standard || false,
       modus: regelsett?.modus || 'manuell',
@@ -142,8 +145,8 @@ const RegelsettForm = ({
   }, [modus, type]);
 
   return (
-    <div className="testregel-form">
-      <TestlabForm<Regelsett>
+    <div className={styles.testregelForm}>
+      <TestlabForm<RegelsettFormOutput>
         heading={heading}
         description={description}
         onSubmit={onSubmit}
@@ -165,7 +168,7 @@ const RegelsettForm = ({
           checkboxLabel="Standard regelsett"
           name="standard"
         />
-        <div className="testregel-form-type-filter">
+        <div className={styles.testregelFormTypeFilter}>
           <Heading level={3} data-size="xs">
             Filtrer type
           </Heading>

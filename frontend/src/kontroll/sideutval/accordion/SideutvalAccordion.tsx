@@ -6,7 +6,6 @@ import {
   Heading,
   Paragraph,
   Textfield,
-  EXPERIMENTAL_Suggestion as Suggestion,
   Select,
 } from '@digdir/designsystemet-react';
 import { Loeysing } from '@loeysingar/api/types';

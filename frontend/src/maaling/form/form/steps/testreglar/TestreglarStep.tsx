@@ -20,7 +20,7 @@ import {
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { TestregelBase } from '@testreglar/api/types';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { useOutletContext } from 'react-router';
 
 interface Props extends FormBaseProps {
@@ -39,7 +39,14 @@ const TestreglarStep = ({
 
   const formMethods = useForm<MaalingFormState>({
     defaultValues: maalingFormState,
-    resolver: zodResolver(sakTestreglarValidationSchemaForenklet),
+    // `sakTestreglarValidationSchemaForenklet` only validates a subset of
+    // `MaalingFormState` (the fields relevant to this wizard step), so its
+    // inferred Zod type is narrower than the full form state. The resolver
+    // is cast here since the actual form values are always the complete
+    // `MaalingFormState`, shared across all steps of the wizard.
+    resolver: zodResolver(
+      sakTestreglarValidationSchemaForenklet
+    ) as unknown as Resolver<MaalingFormState>,
   });
 
   const regelsettPrefix = 'regelsett';

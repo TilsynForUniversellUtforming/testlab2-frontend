@@ -19,25 +19,25 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { kravValidationSchema } from './kravValidationSchema';
 
-export interface KravFormProps<T extends object> {
+export interface KravFormProps {
   krav?: KravInit;
-  onSubmit: SubmitHandler<T>;
+  onSubmit: SubmitHandler<KravInit>;
 }
 
-const KravForm = <T extends object>({ krav, onSubmit }: KravFormProps<T>) => {
+const KravForm = ({ krav, onSubmit }: KravFormProps) => {
   const formMethods = useForm<KravInit>({
     defaultValues: {
-      tittel: krav?.tittel,
+      tittel: krav?.tittel ?? '',
       status: krav?.status,
-      innhald: krav?.innhald,
-      gjeldNettsider: krav?.gjeldNettsider,
-      gjeldApp: krav?.gjeldApp,
-      gjeldAutomat: krav?.gjeldAutomat,
+      innhald: krav?.innhald ?? '',
+      gjeldNettsider: krav?.gjeldNettsider ?? false,
+      gjeldApp: krav?.gjeldApp ?? false,
+      gjeldAutomat: krav?.gjeldAutomat ?? false,
       prinsipp: krav?.prinsipp,
       retningslinje: krav?.retningslinje,
-      suksesskriterium: krav?.suksesskriterium,
+      suksesskriterium: krav?.suksesskriterium ?? '',
       samsvarsnivaa: krav?.samsvarsnivaa,
-      urlRettleiing: krav?.urlRettleiing,
+      urlRettleiing: krav?.urlRettleiing ?? '',
       kommentarBrudd: krav?.kommentarBrudd,
     },
     resolver: zodResolver(kravValidationSchema),

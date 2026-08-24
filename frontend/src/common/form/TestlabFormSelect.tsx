@@ -7,11 +7,16 @@ import {
   Radio,
   useRadioGroup,
   ValidationMessage,
-  EXPERIMENTAL_Suggestion as Suggestion,
   Select,
 } from '@digdir/designsystemet-react';
 import React, { ReactNode } from 'react';
-import { Control, Controller, Path, useFormContext } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  Path,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form';
 
 import { OptionType } from '../types';
 import { TestlabInputBaseProps } from './TestlabFormInput';
@@ -35,7 +40,6 @@ export type TestlabInputSelectProps<T extends object> =
  * @param {OptionType[]} props.options - An array of options for the select input.
  * @param {string} props.name - The name of the input field, correlating to the property in form data.
  * @param {boolean} [props.required=false] - Indicates if the select input is required.
- * @param {boolean} [props.disabled] - Indicates if the select input is disabled.
  *
  * @returns {ReactNode}
  */
@@ -46,6 +50,7 @@ const TestlabFormSelect = <T extends object>({
   name,
   required = false,
   radio = false,
+  radioInline = false,
   size
   }: TestlabInputSelectProps<T>): ReactNode => {
   const { control, formState } = useFormContext<T>();
@@ -53,7 +58,7 @@ const TestlabFormSelect = <T extends object>({
 
 
   if (radio) {
-    return <TestlabFormSelectRadio name={name} control={control} label={label} description={description} required={required} options={options} />
+    return <TestlabFormSelectRadio name={name} control={control} label={label} description={description} required={required} options={options} inline={radioInline} />
   }
   return <TestlabFormSelectCheckbox name={name} control={control} label={label} required={required} options={options} size={size} errorMessage={errorMessage} />
 
@@ -67,6 +72,7 @@ interface SelectProps<T extends object> {
   required: boolean;
   description?: string;
   options: OptionType[];
+  inline?: boolean;
 }
 
 
@@ -81,51 +87,72 @@ const TestlabFormSelectCheckbox = <T extends object>({name,control, label,requir
           <div className="testlab-form__input-sub-label">{description}</div>
         )}
       </Label>
-    <Controller
-      name={name}
-      control={control}
-      render={({ field: { onChange, value } }) => (
-
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value } }) => (
           <Select value={value} onChange={onChange} id={name}>
-              {options.map((o) => (
-                <Select.Option value={o.value} key={`${o.label}_${o.value}`} label={o.label} >
-                  {value}   {o.label}
-                </Select.Option>
-              ))}
+            {options.map((o) => (
+              <Select.Option
+                value={o.value}
+                key={`${o.label}_${o.value}`}
+                label={o.label?.toString() ?? o.label}
+              >
+                {value} {o.label}
+              </Select.Option>
+            ))}
           </Select>
-      )}
-    />
+        )}
+      />
       {errorMessage && (
         <ErrorSummary data-size="sm">{errorMessage}</ErrorSummary>
       )}
-    </div>)};
+    </div>
+  );};
 
-const TestlabFormSelectRadio = <T extends object>({name,control, label,required,description,options}:SelectProps<T>) => {
+const TestlabFormSelectRadio = <T extends object>({name,control, label,required,description,options,inline}:SelectProps<T>) => {
+  const selectedValue = useWatch({ control, name });
   const { getRadioProps, validationMessageProps } = useRadioGroup({
     name: name,
-    value:control._formValues[name],
+    value: selectedValue !== undefined && selectedValue !== null
+      ? String(selectedValue)
+      : undefined,
   });
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange, value } }) => (
+      render={({ field: { onChange } }) => (
         <div className="testlab-form__select">
           <Fieldset>
             <Fieldset.Legend>
               <TestlabFormRequiredLabel label={label} required={required} />
             </Fieldset.Legend>
             <Fieldset.Description>{description}</Fieldset.Description>
-            {options.map((o) => (
-              <Radio
-                label={o.label}
-                {...getRadioProps(o.value.toString())}
-                key={o.value}
-                onChange={onChange}
-                disabled={o.disabled}
-              />
-            ))}
+            <div
+              style={
+                inline
+                  ? { display: 'flex', flexDirection: 'row', gap: '1rem' }
+                  : undefined
+              }
+            >
+              {options.map((o) => {
+                const radioProps = getRadioProps(o.value.toString());
+                return (
+                  <Radio
+                    label={o.elementLabel ?? o.label}
+                    {...radioProps}
+                    key={o.value}
+                    onChange={(event) => {
+                      radioProps.onChange?.(event);
+                      onChange(o.value);
+                    }}
+                    disabled={o.disabled}
+                  />
+                );
+              })}
+            </div>
             <ValidationMessage {...validationMessageProps} />
           </Fieldset>
         </div>

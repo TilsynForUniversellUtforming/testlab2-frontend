@@ -73,10 +73,22 @@ export const useTestregelSelection = ({
           raiseAlert('warning', `Kan ikkje sette status ${status}`, 'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement');
           return;
         }
-        const isElementSide = JSON.parse(testregel.testregelSchema).element.toLowerCase() === 'side';
-        if (isElementSide && selected.some((tr) => !isDefined(tr.kommentar))) {
-          raiseAlert('warning', `Kan ikkje sette status ${status}`, 'Ferdigstatus kan ikkje settast før alle testelement har kommentar til resultat');
-          return;
+        if (testregel.testregelSchema != null) {
+          const isElementSide =
+            JSON.parse(testregel.testregelSchema).element.toLowerCase() ===
+            'side';
+
+          if (
+            isElementSide &&
+            selected.some((tr) => !isDefined(tr.kommentar))
+          ) {
+            raiseAlert(
+              'warning',
+              `Kan ikkje sette status ${status}`,
+              'Ferdigstatus kan ikkje settast før alle testelement har kommentar til resultat'
+            );
+            return;
+          }
         }
       }
 

@@ -27,7 +27,8 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
             null,
             ResultatManuellKontroll.Status.IkkjePaabegynt,
             null,
-            sistLagra = Instant.now())
+            sistLagra = Instant.now(),
+            elementOmtaleHtml = null)
     database[id] = testResultat
     return Result.success(testResultat)
   }

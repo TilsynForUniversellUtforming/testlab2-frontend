@@ -33,7 +33,9 @@
     "react-hook-form": "7.84.0",
     "react-loading-skeleton": "^3.5.0",
     "react-router": "8.3.0",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "@tinymce/tinymce-react": "6.3.0",
+    "tinymce": "8.8.2"
   },
   "devDependencies": {
     "@faker-js/faker": "10.2.0",

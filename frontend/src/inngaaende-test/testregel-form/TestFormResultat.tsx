@@ -10,6 +10,7 @@ import {
 import { TestregelResultat } from '@test/util/testregelParser';
 import DOMPurify from 'dompurify';
 import { useState } from 'react';
+import styles from '@test/testregel-form/test-form.module.scss';
 
 interface Props {
   resultatId: number;
@@ -23,6 +24,7 @@ interface Props {
   isDemoApp?: boolean;
 }
 
+
 const TestFormResultat = ({
   resultat,
   onChangeKommentar,
@@ -31,30 +33,11 @@ const TestFormResultat = ({
   isElementSide,
   isDemoApp
 }: Props) => {
-  let severity: TestlabSeverity;
-  let title: string;
 
-  switch (resultat?.type) {
-    case 'avslutt':
-      switch (resultat.fasit) {
-        case 'Ja':
-          severity = 'success';
-          title = 'Samsvar';
-          break;
-        case 'Nei':
-          severity = 'danger';
-          title = 'Brot';
-          break;
-        case 'Ikkje testbart':
-          severity = 'info';
-          title = 'Ikkje testbart';
-      }
-      break;
-    case 'ikkjeForekomst':
-      severity = 'info';
-      title = 'Ikkje forekomst';
-      break;
-  }
+  const { severity, title } = getResultSeverity(
+    resultat.type,
+    resultat.type === 'avslutt' ? resultat.fasit : undefined
+  );
 
   const cleanHTMLUtfall = {
     __html: DOMPurify.sanitize(resultat.utfall || 'Inget resultat'),
@@ -69,9 +52,9 @@ const TestFormResultat = ({
   };
 
   return (
-    <div className="test-form__result-card">
+    <div className={styles.testFormResultCard}>
       <TestlabDivider size="sm" />
-      <div className="test-form__result-heading">
+      <div className={styles.testFormResultHeading}>
         <Heading data-size="md" level={4}>
           Resultater
         </Heading>
@@ -79,7 +62,7 @@ const TestFormResultat = ({
           Basert på svara dine er det følgjande utfall på dette suksesskriteriet
         </Paragraph>
       </div>
-      <div className="test-form__result-card-result">
+      <div className={styles.testFormResultCardResult}>
         <Tag data-color={severity} data-size="lg">
           {title}
         </Tag>
@@ -100,5 +83,32 @@ const TestFormResultat = ({
     </div>
   );
 };
+
+function getResultSeverity(
+  type: TestregelResultat['type'],
+  fasit?: Extract<TestregelResultat, { type: 'avslutt' }>['fasit']
+): {
+  severity: TestlabSeverity;
+  title: string;
+} {
+  if (type === 'ikkjeForekomst') {
+    return { severity: 'info', title: 'Ikkje forekomst' };
+  }
+
+  if (type === 'avslutt') {
+    switch (fasit) {
+      case 'Ja':
+        return { severity: 'success', title: 'Samsvar' };
+      case 'Nei':
+        return { severity: 'danger', title: 'Brot' };
+      case 'Ikkje testbart':
+        return { severity: 'info', title: 'Ikkje testbart' };
+      default:
+        return { severity: 'info', title: 'Ukjent resultat' };
+    }
+  }
+
+  return { severity: 'info', title: 'Ukjent resultat' };
+}
 
 export default TestFormResultat;

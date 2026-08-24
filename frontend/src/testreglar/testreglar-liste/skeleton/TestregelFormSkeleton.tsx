@@ -2,6 +2,7 @@ import TestlabFormFieldSkeleton from '@common/form/skeleton/TestlabFormFieldSkel
 import TestlabForm from '@common/form/TestlabForm';
 import TestlabFormHeader from '@common/form/TestlabFormHeader';
 import { Paragraph } from '@digdir/designsystemet-react';
+import styles from '../../testreglar.module.scss';
 
 import { Testregel } from '../../api/types';
 
@@ -11,7 +12,7 @@ export interface Props {
 }
 
 const TestregelFormSkeleton = ({ heading, subHeading }: Props) => (
-  <div className="testregel-form">
+  <div className={styles.testregelForm}>
     <form className="testlab-form">
       {heading && (
         <TestlabFormHeader heading={heading} description={subHeading} />

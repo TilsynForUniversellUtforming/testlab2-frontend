@@ -19,29 +19,29 @@ export type StyringsdataKontrollStatus =
 
 export type Paalegg = {
   id?: number;
-  vedtakDato: string;
-  frist: string;
+  vedtakDato?: string | null;
+  frist?: string | null;
 };
 
 export type Klage = {
   id?: number;
-  klageMottattDato: string;
-  klageAvgjortDato?: string;
-  resultatKlageTilsyn?: ResultatKlage;
-  klageDatoDepartement?: string;
-  resultatKlageDepartement?: ResultatKlage;
+  klageMottattDato?: string | null;
+  klageAvgjortDato?: string | null;
+  resultatKlageTilsyn?: ResultatKlage | '' | null;
+  klageDatoDepartement?: string | null;
+  resultatKlageDepartement?: ResultatKlage | '' | null;
 };
 
 type Bot = {
   id?: number;
-  beloepDag: number;
-  oekingEtterDager: number;
-  oekningType?: BotOekningType;
-  oekingSats: number;
-  vedtakDato: string;
-  startDato: string;
-  sluttDato?: string;
-  kommentar?: string;
+  beloepDag?: number | '';
+  oekingEtterDager?: number | '';
+  oekningType?: BotOekningType | '' | null;
+  oekingSats?: number | '';
+  vedtakDato?: string | null;
+  startDato?: string | null;
+  sluttDato?: string | null;
+  kommentar?: string | null;
 };
 
 export type StyringsdataType = 'kontroll' | 'loeysing';
@@ -68,17 +68,17 @@ export type StyringsdataLoeysing = {
   loeysingId: number;
   kontrollId: number;
   ansvarleg: string;
-  oppretta: string;
-  frist: string;
+  oppretta?: string | null;
+  frist?: string | null;
   reaksjon: ReaksjonsType;
-  paaleggReaksjon: ReaksjonsType;
-  paaleggKlageReaksjon: ReaksjonsType;
-  botReaksjon: ReaksjonsType;
-  botKlageReaksjon: ReaksjonsType;
-  paalegg?: Paalegg;
-  paaleggKlage?: Klage;
-  bot?: Bot;
-  botKlage?: Klage;
+  paaleggReaksjon?: ReaksjonsType | null;
+  paaleggKlageReaksjon?: ReaksjonsType | null;
+  botReaksjon?: ReaksjonsType | null;
+  botKlageReaksjon?: ReaksjonsType | null;
+  paalegg?: Paalegg | null;
+  paaleggKlage?: Klage | null;
+  bot?: Bot | null;
+  botKlage?: Klage | null;
   sistLagra?: string;
 };
 

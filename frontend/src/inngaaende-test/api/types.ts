@@ -19,6 +19,7 @@ export type CreateTestResultat = {
   testregelId: number;
   sideutvalId: number;
   elementOmtale?: string;
+  elementOmtaleHtml?: string;
   elementResultat?: ElementResultat;
   elementUtfall?: string;
   testVartUtfoert?: string;
@@ -61,11 +62,13 @@ export function findElementOmtale(
   testregel: Testregel,
   svar: Svar[]
 ): string | undefined {
-  const element = JSON.parse(testregel.testregelSchema).element;
-  if (element.toLowerCase() === 'side') {
-    return elementOmtaleSide;
-  } else {
-    return finnSvar(element, svar);
+  if (testregel.testregelSchema != null) {
+    const element = JSON.parse(testregel.testregelSchema).element;
+    if (element.toLowerCase() === 'side') {
+      return elementOmtaleSide;
+    } else {
+      return finnSvar(element, svar);
+    }
   }
 }
 

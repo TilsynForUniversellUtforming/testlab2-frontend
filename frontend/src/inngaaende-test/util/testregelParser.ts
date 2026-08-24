@@ -1,16 +1,17 @@
-import { dropWhile, first } from '@common/util/arrayUtils';
-import { Svar } from '@test/api/types';
-import { Delutfall } from '@test/util/testregel-interface/Delutfall';
+import {dropWhile, first} from '@common/util/arrayUtils';
+import {Svar} from '@test/api/types';
+import {Delutfall} from '@test/util/testregel-interface/Delutfall';
 import {
   Handling,
   HandlingAvslutt,
   HandlingFasitTyper,
+  HandlingGaaTil,
   HandlingikkjeForekomst,
   HandlingRegler,
 } from '@test/util/testregel-interface/Handling';
-import { Regel } from '@test/util/testregel-interface/Regel';
-import { Steg } from '@test/util/testregel-interface/Steg';
-import { TestregelSchema } from '@test/util/testregel-interface/TestregelSchema';
+import {Regel} from '@test/util/testregel-interface/Regel';
+import {Steg, StegJaNei, StegRadio, StegTekst,} from '@test/util/testregel-interface/Steg';
+import {TestregelSchema} from '@test/util/testregel-interface/TestregelSchema';
 
 export type TestregelForm = {
   steg: Steg[];
@@ -26,12 +27,14 @@ export type Avslutt = {
   utfall: string;
 };
 
+type BesvartSteg = StegJaNei | StegRadio | StegTekst;
+
 export function finnSvar(stegnr: string, alleSvar: Svar[]): string | undefined {
   return alleSvar.find((svar) => svar.steg === stegnr)?.svar;
 }
 
 export function evaluateTestregel(
-  testregel: TestregelSchema | string,
+  testregel: TestregelSchema | undefined,
   alleSvar: Svar[]
 ): TestregelForm {
   const parsedTestregel: TestregelSchema =
@@ -39,6 +42,32 @@ export function evaluateTestregel(
   const stepsWithoutFirst = parsedTestregel.steg.slice(1);
 
   return loop({ steg: [], delutfall: [] }, stepsWithoutFirst, alleSvar);
+}
+
+const findGaaTilSteg = (resten: Steg[], nesteHandling: HandlingGaaTil) => {
+
+  return dropWhile(resten, (step) => step.stegnr !== nesteHandling.steg);
+}
+const leggTilDelutfall = (testregelSkjema: TestregelForm, nesteHandling: HandlingGaaTil) => {
+  const oppdaterteDelutfall = {...testregelSkjema.delutfall};
+  if (nesteHandling.delutfall) {
+    oppdaterteDelutfall[nesteHandling.delutfall.nr] =
+        nesteHandling.delutfall;
+  }
+  return oppdaterteDelutfall;
+}
+const handlingGaaTil = (resten: Steg[], nesteHandling: HandlingGaaTil, testregelSkjema: TestregelForm, steg: BesvartSteg, alleSvar: Svar[]) => {
+  const gjenvaerendeSteg = findGaaTilSteg(resten, nesteHandling);
+  const oppdaterteDelutfall = leggTilDelutfall(testregelSkjema, nesteHandling);
+  return loop(
+      {
+        ...testregelSkjema,
+        steg: [...testregelSkjema.steg, steg],
+        delutfall: oppdaterteDelutfall,
+      },
+      gjenvaerendeSteg,
+      alleSvar
+  );
 }
 
 function loop(
@@ -57,55 +86,61 @@ function loop(
   }
 
   const stegSvar = finnSvar(steg.stegnr, alleSvar);
-  if (!stegSvar) {
-    const nextStep = first(resterendeSteg);
-    if (!nextStep) {
-      return testregelSkjema;
-    }
-    const steg = [nextStep];
-    return { ...testregelSkjema, steg: [...testregelSkjema.steg, ...steg] };
-  } else {
-    const nesteHandling = finnNesteHandling(
-      steg,
-      alleSvar,
-      testregelSkjema.delutfall
-    );
-    if (nesteHandling?.type === 'gaaTil') {
-      const gjenvaerendeSteg = dropWhile(
-        resten,
-        (step) => step.stegnr !== nesteHandling.steg
-      );
-      const oppdaterteDelutfall = { ...testregelSkjema.delutfall };
-      if (nesteHandling.delutfall) {
-        oppdaterteDelutfall[nesteHandling.delutfall.nr] =
-          nesteHandling.delutfall;
-      }
-      return loop(
-        {
-          ...testregelSkjema,
-          steg: [...testregelSkjema.steg, steg],
-          delutfall: oppdaterteDelutfall,
-        },
-        gjenvaerendeSteg,
-        alleSvar
-      );
-    } else if (
-      nesteHandling?.type === 'avslutt' ||
-      nesteHandling?.type === 'ikkjeForekomst'
-    ) {
-      const resultat: TestregelResultat =
-        nesteHandling?.type === 'ikkjeForekomst'
-          ? nesteHandling
-          : insertDelutfall(nesteHandling, testregelSkjema.delutfall);
-      return {
-        ...testregelSkjema,
-        steg: [...testregelSkjema.steg, steg],
-        resultat: resultat,
-      };
-    } else {
-      return testregelSkjema;
-    }
+  if (stegSvar) {
+    return handleBesvartSteg(testregelSkjema, steg, resten, alleSvar);
   }
+
+  return showNextSteg(testregelSkjema, resterendeSteg);
+}
+
+function handleBesvartSteg(
+  testregelSkjema: TestregelForm,
+  steg: BesvartSteg,
+  resterendeSteg: Steg[],
+  alleSvar: Svar[]
+): TestregelForm {
+  const nesteHandling = finnNesteHandling(steg, alleSvar, testregelSkjema.delutfall);
+  if (!nesteHandling) {
+    return testregelSkjema;
+  }
+
+  if (nesteHandling.type === 'gaaTil') {
+    return handlingGaaTil(resterendeSteg, nesteHandling, testregelSkjema, steg, alleSvar);
+  }
+
+  if (nesteHandling.type === 'avslutt' || nesteHandling.type === 'ikkjeForekomst') {
+    return closeTestregel(testregelSkjema, steg, nesteHandling);
+  }
+
+  return testregelSkjema;
+}
+
+function showNextSteg(
+  testregelSkjema: TestregelForm,
+  resterendeSteg: Steg[]
+): TestregelForm {
+  const nextStep = first(resterendeSteg);
+  if (!nextStep) {
+    return testregelSkjema;
+  }
+  return { ...testregelSkjema, steg: [...testregelSkjema.steg, nextStep] };
+}
+
+function closeTestregel(
+  testregelSkjema: TestregelForm,
+  steg: BesvartSteg,
+  nesteHandling: HandlingAvslutt | HandlingikkjeForekomst
+): TestregelForm {
+  const resultat: TestregelResultat =
+    nesteHandling.type === 'ikkjeForekomst'
+      ? nesteHandling
+      : insertDelutfall(nesteHandling, testregelSkjema.delutfall);
+
+  return {
+    ...testregelSkjema,
+    steg: [...testregelSkjema.steg, steg],
+    resultat,
+  };
 }
 
 function finnNesteHandling(
@@ -116,32 +151,59 @@ function finnNesteHandling(
   const ruting = step.ruting;
   if (ruting.alle) {
     return evaluateRutingType(ruting.alle, alleSvar, delutfall);
-  } else if (step.type === 'jaNei' && ruting.ja && ruting.nei) {
-    const svar = finnSvar(step.stegnr, alleSvar)?.toLowerCase();
-    if (svar) {
-      return evaluateRutingType(
-        svar === 'ja' ? ruting.ja : ruting.nei,
-        alleSvar,
-        delutfall
-      );
-    }
-  } else if (step.type === 'radio') {
-    const svar = finnSvar(step.stegnr, alleSvar);
-    if (svar) {
-      const index = step.svarArray
-        .map((s) => s.toUpperCase())
-        .indexOf(svar.toUpperCase());
-      const alt = `alt${index}`;
-      // @ts-expect-error Den dynamiske sammenhengen mellom indeks i svararray og rutingalternativ har vi ikke klart å uttrykke i typene
-      const handling = ruting[alt];
-      if (!handling) {
-        throw new Error(
-          `Fant ikke rutingalternativ for steg ${step.stegnr} og svar ${svar}`
-        );
-      }
-      return evaluateRutingType(handling, alleSvar, delutfall);
-    }
   }
+
+  if (step.type === 'jaNei') {
+    return evaluateJaNeiHandling(step, alleSvar, delutfall);
+  }
+
+  if (step.type === 'radio') {
+    return evaluateRadioHandling(step, alleSvar, delutfall);
+  }
+}
+
+function evaluateJaNeiHandling(
+  step: Extract<Steg, { type: 'jaNei' }>,
+  alleSvar: Svar[],
+  delutfall: Record<number, Delutfall>
+): Exclude<Handling, HandlingRegler> | undefined {
+  const { ja, nei } = step.ruting;
+  if (!ja || !nei) {
+    return;
+  }
+
+  const svar = finnSvar(step.stegnr, alleSvar)?.toLowerCase();
+  if (!svar) {
+    return;
+  }
+
+  return evaluateRutingType(svar === 'ja' ? ja : nei, alleSvar, delutfall);
+}
+
+function evaluateRadioHandling(
+  step: Extract<Steg, { type: 'radio' }>,
+  alleSvar: Svar[],
+  delutfall: Record<number, Delutfall>
+): Exclude<Handling, HandlingRegler> | undefined {
+  const svar = finnSvar(step.stegnr, alleSvar);
+  if (!svar) {
+    return;
+  }
+
+  const index = step.svarArray
+    .map((s) => s.toUpperCase())
+    .indexOf(svar.toUpperCase());
+  const alt = `alt${index}`;
+
+  // @ts-expect-error Den dynamiske sammenhengen mellom indeks i svararray og rutingalternativ har vi ikke klart å uttrykke i typene
+  const handling = step.ruting[alt];
+  if (!handling) {
+    throw new Error(
+      `Fant ikke rutingalternativ for steg ${step.stegnr} og svar ${svar}`
+    );
+  }
+
+  return evaluateRutingType(handling, alleSvar, delutfall);
 }
 
 function evaluateRutingType(
@@ -164,67 +226,59 @@ function evaluateRutingRegler(
   alleSvar: Svar[],
   delutfall: Record<number, Delutfall>
 ): Exclude<Handling, HandlingRegler> | undefined {
-  if (Object.keys(regler).length === 0) {
+  const keys = Object.keys(regler);
+  if (keys.length === 0) {
     return;
   }
 
-  const key = Math.min(...Object.keys(regler).map((key) => parseInt(key, 10)));
+  const key = Math.min(...keys.map((k) => Number.parseInt(k, 10)));
   const regel = regler[key];
-  if (regel.type === 'lik') {
-    const svar = finnSvar(regel.sjekk, alleSvar);
-    if (svar?.toUpperCase() === regel.verdi.toUpperCase()) {
-      return evaluateRutingType(regel.handling, alleSvar, delutfall);
-    } else {
-      const { [key]: _, ...rest } = regler;
-      return evaluateRutingRegler(rest, alleSvar, delutfall);
+
+  if (regelMatches(regel, alleSvar, delutfall)) {
+    return evaluateRutingType(regel.handling, alleSvar, delutfall);
+  }
+
+  const { [key]: _, ...rest } = regler;
+  return evaluateRutingRegler(rest, alleSvar, delutfall);
+}
+
+function regelMatches(
+  regel: Regel,
+  alleSvar: Svar[],
+  delutfall: Record<number, Delutfall>
+): boolean {
+  switch (regel.type) {
+    case 'lik': {
+      const svar = finnSvar(regel.sjekk, alleSvar);
+      return svar?.toUpperCase() === regel.verdi.toUpperCase();
     }
-  } else if (regel.type === 'ulik') {
-    const svar = finnSvar(regel.sjekk, alleSvar);
-    if (svar?.toUpperCase() !== regel.verdi.toUpperCase()) {
-      return evaluateRutingType(regel.handling, alleSvar, delutfall);
-    } else {
-      const { [key]: _, ...rest } = regler;
-      return evaluateRutingRegler(rest, alleSvar, delutfall);
+    case 'ulik': {
+      const svar = finnSvar(regel.sjekk, alleSvar);
+      return svar?.toUpperCase() !== regel.verdi.toUpperCase();
     }
-  } else if (regel.type === 'mellom') {
-    const min = regel.verdi;
-    const max = regel.verdi2;
-    const svar = finnSvar(regel.sjekk, alleSvar);
-    const verdi = parseInt(svar ?? '', 10);
-    if (verdi >= min && verdi <= max) {
-      return evaluateRutingType(regel.handling, alleSvar, delutfall);
-    } else {
-      const { [key]: _, ...rest } = regler;
-      return evaluateRutingRegler(rest, alleSvar, delutfall);
+    case 'mellom': {
+      const svar = finnSvar(regel.sjekk, alleSvar);
+      const verdi = Number.parseInt(svar ?? '', 10);
+      return verdi >= regel.verdi && verdi <= regel.verdi2;
     }
-  } else if (regel.type === 'talDersom') {
-    const svar = alleSvar.filter(
-      ({ steg, svar }) =>
-        regel.sjekk.includes(steg) && svar.trim() === regel.verdi.trim()
-    );
-    if (svar.length >= regel.mellom1 && svar.length <= regel.mellom2) {
-      return evaluateRutingType(regel.handling, alleSvar, delutfall);
-    } else {
-      const { [key]: _, ...rest } = regler;
-      return evaluateRutingRegler(rest, alleSvar, delutfall);
+    case 'talDersom': {
+      const svar = alleSvar.filter(
+        ({ steg, svar }) =>
+          regel.sjekk.includes(steg) && svar.trim() === regel.verdi.trim()
+      );
+      return svar.length >= regel.mellom1 && svar.length <= regel.mellom2;
     }
-  } else if (regel.type === 'vurderDelutfall') {
-    const { id, verdi, handling } = regel;
-    const etDelutfall = delutfall[id];
-    if (etDelutfall?.fasit === verdi) {
-      return evaluateRutingType(handling, alleSvar, delutfall);
-    } else {
-      const { [key]: _, ...rest } = regler;
-      return evaluateRutingRegler(rest, alleSvar, delutfall);
+    case 'vurderDelutfall': {
+      const etDelutfall = delutfall[regel.id];
+      return etDelutfall?.fasit === regel.verdi;
     }
+    default:
+      return false;
   }
 }
 
-function insertDelutfall(
-  resultat: HandlingAvslutt,
-  delutfall: Record<number, Delutfall>
-): Avslutt {
-  const delutfallFasit = Object.entries(delutfall)
+const extractDelutfallFasit = (delutfall: Record<number, Delutfall>) => {
+  return Object.entries(delutfall)
     .map(([_nr, d]) => d.fasit)
     .filter((fasit) => fasit === 'Ja' || fasit === 'Nei')
     .reduce(
@@ -232,25 +286,49 @@ function insertDelutfall(
         acc === 'Ja' && delfasit === 'Ja' ? 'Ja' : 'Nei',
       'Ja'
     );
-  const fasit =
-    resultat.fasit === 'sjekkDelutfall' ? delutfallFasit : resultat.fasit;
-  const utfall =
-    typeof resultat.utfall === 'string'
-      ? resultat.utfall
-      : fasit === 'Ja'
-        ? (resultat.utfall.ja ?? '')
-        : (resultat.utfall.nei ?? '');
-  const utfallMedDelutfall = Object.entries(delutfall).reduce(
-    (endeligUtfall, [_nr, etDelutfall]) => {
-      return endeligUtfall
-        .replace(`#delutfall(${etDelutfall.nr})`, etDelutfall.tekst)
-        .replace(
-          `#delutfall(${etDelutfall.nr},${etDelutfall.fasit})`,
-          etDelutfall.tekst
-        )
-        .replace(new RegExp(`#delutfall\\(${etDelutfall.nr},.+\\)`, 'g'), '');
-    },
-    utfall
-  );
-  return { ...resultat, fasit, utfall: utfallMedDelutfall };
+};
+
+function insertDelutfall(
+  resultat: HandlingAvslutt,
+  delutfall: Record<number, Delutfall>
+): Avslutt {
+  const fasit = resolveFasit(resultat, delutfall);
+  const utfall = extractUtfallTekst(resultat.utfall, fasit);
+  return {
+    ...resultat,
+    fasit,
+    utfall: applyDelutfallPlaceholders(utfall, delutfall),
+  };
+}
+
+function resolveFasit(
+  resultat: HandlingAvslutt,
+  delutfall: Record<number, Delutfall>
+): Exclude<HandlingFasitTyper, 'sjekkDelutfall'> {
+  if (resultat.fasit !== 'sjekkDelutfall') {
+    return resultat.fasit;
+  }
+  return extractDelutfallFasit(delutfall);
+}
+
+function applyDelutfallPlaceholders(
+  utfall: string,
+  delutfall: Record<number, Delutfall>
+): string {
+  return Object.entries(delutfall).reduce((endeligUtfall, [_nr, etDelutfall]) => {
+    return endeligUtfall
+      .replace(`#delutfall(${etDelutfall.nr})`, etDelutfall.tekst)
+      .replace(`#delutfall(${etDelutfall.nr},${etDelutfall.fasit})`, etDelutfall.tekst)
+      .replace(new RegExp(String.raw`#delutfall\(${etDelutfall.nr},.+\)`, 'g'), '');
+  }, utfall);
+}
+
+function extractUtfallTekst(
+  utfall: HandlingAvslutt['utfall'],
+  fasit: HandlingFasitTyper
+): string {
+  if (typeof utfall === 'string') {
+    return utfall;
+  }
+  return fasit === 'Ja' ? (utfall.ja ?? '') : (utfall.nei ?? '');
 }

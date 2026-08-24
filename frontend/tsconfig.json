@@ -15,6 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "rootDir": "./src",
     "paths": {
       "@common/*": ["./src/common/*"],
       "@maaling/*": ["./src/maaling/*"],
@@ -23,9 +24,9 @@
       "@sak/*": ["./src/sak/*"],
       "@testreglar/*": ["./src/testreglar/*"],
       "@test/*": ["./src/inngaaende-test/*"],
-      "@resultat/*": ["./src/resultat/*"]
-    },
-    "rootDir": "./src"
+      "@resultat/*": ["./src/resultat/*"],
+      "@krav/*": ["./src/krav/*"]
+    }
   },
   "include": ["./src"],
   "references": [{ "path": "./tsconfig.node.json" }]

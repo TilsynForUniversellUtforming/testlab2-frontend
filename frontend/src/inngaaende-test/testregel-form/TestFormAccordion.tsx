@@ -17,7 +17,7 @@ import {
 } from '@test/testregel-form/types';
 import { Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import classes from './test-form-accordion.module.css';
 
@@ -37,7 +37,7 @@ type Props = {
   isDemoApp?: boolean;
 };
 
-export function TestFormAccordion({
+export function   TestFormAccordion({
   testregel,
   skjemaerMedSvar,
   onAnswer,
@@ -48,10 +48,24 @@ export function TestFormAccordion({
   isLoading,
   isDemoApp,
 }: Readonly<Props>) {
+  const items = useMemo(
+    () =>
+      skjemaerMedSvar.map((skjemaMedSvar) => ({
+        skjemaMedSvar,
+        resultatId: skjemaMedSvar.resultatId,
+        elementOmtale: findElementOmtale(testregel, skjemaMedSvar.svar),
+        detaljer: detaljerMap.get(skjemaMedSvar.resultatId),
+      })),
+    [skjemaerMedSvar, testregel, detaljerMap]
+  );
+
   function initState() {
-    const lastElement = skjemaerMedSvar.at(-1);
-    return skjemaerMedSvar.reduce(
-      (acc, value) => ({ ...acc, [value.resultatId]: value === lastElement }),
+    const lastIndex = items.length - 1;
+    return items.reduce<Record<number, boolean>>(
+      (acc, { resultatId }, index) => ({
+        ...acc,
+        [resultatId]: index === lastIndex,
+      }),
       {}
     );
   }
@@ -59,22 +73,28 @@ export function TestFormAccordion({
   const [showForm, setShowForm] = useState<Record<number, boolean>>(initState);
 
   useEffect(() => {
-    setShowForm((prevState) => {
-      if (Object.entries(prevState).length === skjemaerMedSvar.length) {
-        return prevState;
-      } else {
-        return initState();
-      }
-    });
-  }, [skjemaerMedSvar]);
+    setShowForm((prevState) =>
+      Object.keys(prevState).length === items.length
+        ? prevState
+        : initState()
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
+
+  function toggleForm(resultatId: number) {
+    setShowForm((prevState) => ({
+      ...prevState,
+      [resultatId]: !prevState[resultatId],
+    }));
+  }
 
   function renderForm(
     resultatId: number,
     skjemaMedSvar: SkjemaMedSvar,
     index: number,
-    elementOmtale: string | undefined
+    elementOmtale: string | undefined,
+    detaljer: TestresultatDetaljer | undefined
   ) {
-    const detaljer = detaljerMap.get(resultatId);
     const isElementSide = elementOmtale === elementOmtaleSide;
 
     return (
@@ -116,16 +136,13 @@ export function TestFormAccordion({
           <CaretDownFillIcon />
         </Dropdown.Trigger>
         <Dropdown.List>
-          {skjemaerMedSvar.map((kilde, i) => {
-            if (i === index) return null;
-
-            const elementOmtale = findElementOmtale(testregel, kilde.svar);
-            if (!elementOmtale) return null;
+          {items.map(({ skjemaMedSvar, resultatId, elementOmtale }, i) => {
+            if (i === index || !elementOmtale) return null;
 
             return (
               <Dropdown.Item
-                key={kilde.resultatId}
-                onClick={() => kopierSvar(kilde, index)}
+                key={resultatId}
+                onClick={() => kopierSvar(skjemaMedSvar, index)}
               >
                 {elementOmtale}
               </Dropdown.Item>
@@ -136,27 +153,29 @@ export function TestFormAccordion({
     );
   }
 
-  function accordionButton(
-    skjemaMedSvar: SkjemaMedSvar,
-    resultatId: number,
-    elementOmtale: string | undefined,
-    kommentar: string | undefined,
-    index: number
-  ) {
+  type AccordionButtonProps = {
+    skjemaMedSvar: SkjemaMedSvar;
+    resultatId: number;
+    elementOmtale: string | undefined;
+    kommentar: string | undefined;
+    index: number;
+  };
+
+  function AccordionButton({
+    skjemaMedSvar,
+    resultatId,
+    elementOmtale,
+    kommentar,
+    index,
+  }: Readonly<AccordionButtonProps>) {
     const resultat = resultatFromSkjemaMedSvar(skjemaMedSvar);
     const label =
       (elementOmtale === elementOmtaleSide && kommentar) || elementOmtale;
 
     return (
       <button
-        key={skjemaMedSvar.resultatId}
         className={classes.accordionButton}
-        onClick={() =>
-          setShowForm({
-            ...showForm,
-            [resultatId]: !showForm[resultatId],
-          })
-        }
+        onClick={() => toggleForm(resultatId)}
       >
         <ArrowDownIcon
           className={classNames(classes.arrow, {
@@ -182,73 +201,107 @@ export function TestFormAccordion({
     );
   }
 
-  if (skjemaerMedSvar.length === 1) {
-    const skjemaMedSvar = skjemaerMedSvar[0];
-    const resultatId = skjemaMedSvar.resultatId;
-    const elementOmtale = findElementOmtale(testregel, skjemaMedSvar.svar);
-    const testresultatDetails = detaljerMap.get(resultatId);
+  function accordionButton(
+    skjemaMedSvar: SkjemaMedSvar,
+    resultatId: number,
+    elementOmtale: string | undefined,
+    kommentar: string | undefined,
+    index: number
+  ) {
+    const resultat = resultatFromSkjemaMedSvar(skjemaMedSvar);
+    const label =
+      (elementOmtale === elementOmtaleSide && kommentar) || elementOmtale;
+
+    return (
+      <button
+        key={skjemaMedSvar.resultatId}
+        className={classes.accordionButton}
+        onClick={() => toggleForm(resultatId)}
+      >
+        <ArrowDownIcon
+          className={classNames(classes.arrow, {
+            [classes.arrowRotated]: showForm[resultatId],
+          })}
+        />
+        <span className={classes.labelNumber}>
+          {elementOmtale ? index + 1 + ': ' : index + 1}
+        </span>
+        {label}
+        <TestlabStatusTag<ElementResultat>
+          className={classes.resultat}
+          status={resultat}
+          colorMapping={{
+            danger: ['brot'],
+            success: ['samsvar'],
+            warning: ['advarsel'],
+            info: ['ikkjeForekomst', 'ikkjeTesta'],
+          }}
+          data-size="md"
+        />
+      </button>
+    );
+  }
+
+  if (items.length === 1) {
+    const { skjemaMedSvar, resultatId, elementOmtale, detaljer } = items[0];
 
     return (
       <>
-        {renderForm(resultatId, skjemaMedSvar, 0, elementOmtale)}
-        <SistLagra
-          sistLagra={testresultatDetails?.sistLagra ?? ''}
-          isLoading={isLoading}
-        />
+        {renderForm(resultatId, skjemaMedSvar, 0, elementOmtale, detaljer)}
+        <SistLagra sistLagra={detaljer?.sistLagra ?? ''} isLoading={isLoading} />
       </>
     );
-  } else {
-    return (
-      <div className={classes.skjemaer}>
-        {skjemaerMedSvar.map((skjemaMedSvar, index) => {
-          const elementOmtale = findElementOmtale(
-            testregel,
-            skjemaMedSvar.svar
-          );
-          const resultatId = skjemaMedSvar.resultatId;
-          const testresultatDetails = detaljerMap.get(resultatId);
-
-          return (
-            <div key={skjemaMedSvar.resultatId}>
-              {accordionButton(
-                skjemaMedSvar,
-                resultatId,
-                elementOmtale,
-                testresultatDetails?.kommentar,
-                index
-              )}
-              {showForm[resultatId] && (
-                <div className={classes.formContent}>
-                  <Heading
-                    level={4}
-                    data-size={'md'}
-                    className={classes.formHeading}
-                  >
-                    Test {index + 1}
-                  </Heading>
-
-                  {index !== 0 && dropdownMenu(index)}
-                  {renderForm(resultatId, skjemaMedSvar, index, elementOmtale)}
-                  <div className={classes.accordionFooter}>
-                    <Button
-                      className={classes.removeButton}
-                      variant="secondary"
-                      data-size="sm"
-                      onClick={() => slettTestelement(resultatId)}
-                    >
-                      Slett dette testelementet
-                    </Button>
-                    <SistLagra
-                      sistLagra={testresultatDetails?.sistLagra ?? ''}
-                      isLoading={isLoading}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
   }
+
+  return (
+    <div className={classes.skjemaer}>
+      {items.map(
+        ({ skjemaMedSvar, resultatId, elementOmtale, detaljer }, index) => (
+          <div key={resultatId}>
+            <AccordionButton
+              skjemaMedSvar={skjemaMedSvar}
+              resultatId={resultatId}
+              elementOmtale={elementOmtale}
+              kommentar={detaljer?.kommentar}
+              index={index}
+            />
+            {showForm[resultatId] && (
+              <div className={classes.formContent}>
+                <Heading
+                  level={4}
+                  data-size={'md'}
+                  className={classes.formHeading}
+                >
+                  Test {index + 1}
+                </Heading>
+
+                {index !== 0 && dropdownMenu(index)}
+                {renderForm(
+                  resultatId,
+                  skjemaMedSvar,
+                  index,
+                  elementOmtale,
+                  detaljer
+                )}
+                <div className={classes.accordionFooter}>
+                  <Button
+                    className={classes.removeButton}
+                    variant="secondary"
+                    data-size="sm"
+                    onClick={() => slettTestelement(resultatId)}
+                  >
+                    Slett dette testelementet
+                  </Button>
+                  <SistLagra
+                    sistLagra={detaljer?.sistLagra ?? ''}
+                    isLoading={isLoading}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      )}
+    </div>
+  );
 }

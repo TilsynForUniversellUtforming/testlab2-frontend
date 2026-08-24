@@ -1,0 +1,67 @@
+.testForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+  max-width: 48rem;
+  width: 100%;
+
+  div[class*='fds-textarea-description-'],
+  div[class*='fds-fieldset-description-'] {
+    font-size: 14px !important;
+  }
+}
+
+.test-form-helptext {
+  background: var(--ds-color-brand1-surface-active);
+}
+
+.testFormDescription,
+.testFormInstruction {
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.testFormContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.testFormEntry {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.testFormEntryHelp {
+  display: block;
+}
+
+.testFormResultCard {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.testFormResultHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.testFormResultCardResult {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.testFormFields {
+  background-color: var(--ds-color-accent-surface-tinted);
+  padding: 1.5rem;
+}
+
+.testregel-form-utfall {
+  width: 100%;
+}

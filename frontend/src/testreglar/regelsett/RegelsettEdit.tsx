@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useOutletContext, useParams } from 'react-router';
 
 import type { Regelsett, RegelsettEdit } from '../api/types';
+import { RegelsettFormOutput } from '@testreglar/regelsett/regelsettValidationSchema';
 import { TestregelContext } from '../types';
 import RegelsettForm from './RegelsettForm';
 
@@ -33,7 +34,7 @@ const RegelsettEdit = () => {
   }, [regelsettList]);
 
   const onSubmit = useCallback(
-    (regelsett: Regelsett) => {
+    (regelsett: RegelsettFormOutput) => {
       const numericId = Number(id);
       setLoading(true);
       setContextError(undefined);

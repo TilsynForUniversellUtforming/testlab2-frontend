@@ -1,4 +1,4 @@
-import { hasSameItems, isEmpty, takeWhile } from '@common/util/arrayUtils';
+import { hasSameItems, takeWhile } from '@common/util/arrayUtils';
 import { Heading } from '@digdir/designsystemet-react';
 import {
   findElementOmtale,
@@ -20,7 +20,8 @@ import {
 } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
 import DOMPurify from 'dompurify';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import styles from '@test/testregel-form/test-form.module.scss';
 
 interface Props {
   testregel: Testregel;
@@ -32,9 +33,7 @@ interface Props {
   isDemoApp?: boolean;
 }
 
-function isEqual(a: Svar, b: Svar) {
-  return a.steg === b.steg && a.svar === b.svar;
-}
+
 
 const TestForm = ({
   testregel,
@@ -45,6 +44,10 @@ const TestForm = ({
   isLoading,
   isDemoApp,
 }: Props) => {
+
+
+
+
   const [skjemaerMedSvar, setSkjemaerMedSvar] = useState<SkjemaMedSvar[]>(
     initSkjemaMedSvar(resultater, testregel)
   );
@@ -52,44 +55,37 @@ const TestForm = ({
     Map<number, TestresultatDetaljer>
   >(toTestresultatDetaljerMap(resultater));
 
-  const testregelSchema = JSON.parse(testregel.testregelSchema);
+  const testregelSchemaString = testregel.testregelSchema;
+  if (testregelSchemaString === undefined) {
+    throw new Error('testregelSchema er tomt');
+  }
 
-  function onAnswer(nyeSvar: Svar[], index: number) {
+  const testregelSchema = useMemo(
+    () => JSON.parse(testregelSchemaString),
+    [testregelSchemaString]
+  );
+
+  const resultaterById = useMemo(
+    () => new Map(resultater.map((resultat) => [resultat.id, resultat])),
+    [resultater]
+  );
+
+  const onAnswer = useCallback((nyeSvar: Svar[], index: number) => {
     if (nyeSvar.length === 0) {
       return;
     }
 
-    function getOppdaterteSvar(gamleSvar: Svar[], nyeSvar: Svar[]) {
-      if (isEmpty(nyeSvar)) {
-        return gamleSvar;
-      } else {
-        const [nyttSvar, ...resten] = nyeSvar;
-        const steg = testregelSchema.steg.find(
-          (s: Steg) => s.stegnr === nyttSvar.steg
-        );
-        const gammeltSvar = gamleSvar.find((s) => s.steg === nyttSvar.steg);
-        if (
-          gammeltSvar &&
-          steg?.type === 'tekst' &&
-          steg?.ruting?.alle?.type === 'gaaTil'
-        ) {
-          const oppdatert = gamleSvar.map((s) =>
-            s.steg === nyttSvar.steg ? nyttSvar : s
-          );
-          return getOppdaterteSvar(oppdatert, resten);
-        } else {
-          const oppdatert = takeWhile(
-            gamleSvar,
-            (s) => s.steg !== nyttSvar.steg
-          ).concat([nyttSvar]);
-          return getOppdaterteSvar(oppdatert, resten);
-        }
-      }
-    }
-
     setSkjemaerMedSvar((prevState) => {
       const current = prevState[index];
-      const oppdaterteSvar = getOppdaterteSvar(current.svar, nyeSvar);
+      if (!current) {
+        return prevState;
+      }
+
+      const oppdaterteSvar = getOppdaterteSvar(
+        current.svar,
+        nyeSvar,
+        testregelSchema.steg
+      );
       const oppdatertSkjemaModell = evaluateTestregel(
         testregelSchema,
         oppdaterteSvar
@@ -102,14 +98,14 @@ const TestForm = ({
       };
       return newState;
     });
-  }
+  }, [testregelSchema]);
 
   useEffect(() => {
     setSkjemaerMedSvar(initSkjemaMedSvar(resultater, testregel));
     setDetaljerMap(toTestresultatDetaljerMap(resultater));
   }, [testregel, resultater]);
 
-  const onResultatUpdate = (
+  const onResultatUpdate = useCallback((
     resultatId: number,
     svar: Svar[],
     resultat: TestregelResultat | undefined,
@@ -117,13 +113,14 @@ const TestForm = ({
   ) => {
     const elementOmtale = findElementOmtale(testregel, svar);
     onResultat({
-      resultatId: resultatId,
+      resultatId,
       alleSvar: svar,
-      resultat: resultat,
-      elementOmtale: elementOmtale,
-      kommentar: kommentar,
+      resultat,
+      elementOmtale,
+      elementOmtaleHtml: elementOmtale,
+      kommentar,
     });
-  };
+  }, [onResultat, testregel]);
 
   const onKommentar = useCallback(
     (resultatId: number, kommentar?: string) => {
@@ -135,35 +132,36 @@ const TestForm = ({
         onResultatUpdate(resultatId, svar, skjema.resultat, kommentar);
       }
     },
-    [skjemaerMedSvar, testregel]
+    [onResultatUpdate, skjemaerMedSvar]
   );
 
   useEffect(() => {
     skjemaerMedSvar.forEach((skjemaMedSvar) => {
       const { skjema, svar, resultatId } = skjemaMedSvar;
-      const resultat = resultater.find(
-        (resultat) => resultat.id === resultatId
-      );
+      const resultat = resultaterById.get(resultatId);
 
       if (!hasSameItems(resultat?.svar ?? [], svar, isEqual)) {
         onResultatUpdate(resultatId, svar, skjema.resultat);
       }
     });
-  }, [skjemaerMedSvar]);
+  }, [onResultatUpdate, resultaterById, skjemaerMedSvar]);
 
-  const cleanHTML = DOMPurify.sanitize(testregel.kravTilSamsvar ?? '', {
-    USE_PROFILES: { html: true },
-  });
+  const cleanHTML = useMemo(
+    () => DOMPurify.sanitize(testregel.kravTilSamsvar ?? '', {
+      USE_PROFILES: { html: true },
+    }),
+    [testregel.kravTilSamsvar]
+  );
   const kravTilSamsvar = { __html: cleanHTML };
 
   return (
-    <div className="test-form">
+    <div className={styles.testForm}>
       <Heading dat-size="md" level={3}>
         {testregel.namn}
       </Heading>
       {testregel.kravTilSamsvar && showHelpText && (
         <div
-          className="test-form-description"
+          className={styles.testFormDescription}
           dangerouslySetInnerHTML={kravTilSamsvar}
         ></div>
       )}
@@ -182,4 +180,30 @@ const TestForm = ({
   );
 };
 
+
+function isEqual(a: Svar, b: Svar) {
+  return a.steg === b.steg && a.svar === b.svar;
+}
+
+function getOppdaterteSvar(
+  gamleSvar: Svar[],
+  nyeSvar: Svar[],
+  stegListe: Steg[]
+) {
+  return nyeSvar.reduce((akkSvar, nyttSvar) => {
+    const steg = stegListe.find((s) => s.stegnr === nyttSvar.steg);
+    const skalBerreOppdatereEksisterande =
+      akkSvar.some((s) => s.steg === nyttSvar.steg) &&
+      steg?.type === 'tekst' &&
+      steg?.ruting?.alle?.type === 'gaaTil';
+
+    if (skalBerreOppdatereEksisterande) {
+      return akkSvar.map((s) => (s.steg === nyttSvar.steg ? nyttSvar : s));
+    }
+
+    return takeWhile(akkSvar, (s) => s.steg !== nyttSvar.steg).concat([
+      nyttSvar,
+    ]);
+  }, gamleSvar);
+}
 export default TestForm;

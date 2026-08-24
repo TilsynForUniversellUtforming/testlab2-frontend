@@ -1,15 +1,14 @@
-import './testreglar.scss';
+import styles from './testreglar.module.scss';
 
 import ErrorCard from '@common/error/ErrorCard';
 import { useEffectOnce } from '@common/hooks/useEffectOnce';
 import { withErrorHandling } from '@common/util/apiUtils';
 import { Tabs } from '@digdir/designsystemet-react';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
-import { Krav } from 'krav/types';
+import { Krav } from '@krav/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { listKrav } from '../krav/api/krav-api';
 import {
   listInnhaldstype,
   listTema,
@@ -25,6 +24,7 @@ import {
 } from './api/types';
 import { REGELSETT_ROOT } from './TestregelRoutes';
 import { TestregelContext } from './types';
+import { listKrav } from '../krav/api/krav-api';
 
 type FetchType = {
   testreglar: TestregelBase[];
@@ -219,7 +219,7 @@ const TestreglarApp = () => {
           <Tabs.Tab value="regelsett">Regelsett</Tabs.Tab>
         </Tabs.List>
       </Tabs>
-      <div className="testreglar__content">
+      <div className={styles.testreglarContent}>
         <Outlet context={testRegelContext} />
       </div>
     </>

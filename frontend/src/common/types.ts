@@ -1,3 +1,5 @@
+import { JSX } from 'react';
+
 export type TestlabLocale = 'nn' | 'nb' | 'en';
 
 export interface AppContext {
@@ -11,6 +13,7 @@ export interface AppContext {
 
 export type OptionType = {
   label: string;
+  elementLabel?:JSX.Element;
   value: string|number;
   title?: string;
   disabled?: boolean;

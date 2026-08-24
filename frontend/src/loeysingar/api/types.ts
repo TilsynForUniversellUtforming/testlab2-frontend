@@ -14,7 +14,7 @@ export type LoeysingInit = {
   namn: string;
   url: string;
   organisasjonsnummer: string;
-  verksemd: Verksemd;
+  verksemd?: Verksemd;
 };
 
 export type Utval = {

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sakLoeysingValidationSchemaForenklet } from '@maaling/form/form/steps/loeysing/sakLoeysingValidationSchemaForenklet';
 import { FormBaseProps, MaalingFormState } from '@maaling/types';
-import { useForm } from 'react-hook-form';
+import { Resolver, useForm } from 'react-hook-form';
 
 import FormWrapper from '../../FormWrapper';
 import LoeysingStepForenklet from './LoeysingStepForenklet';
@@ -13,7 +13,9 @@ const LoeysingStepContainer = ({
 }: FormBaseProps) => {
   const formMethods = useForm<MaalingFormState>({
     defaultValues: maalingFormState,
-    resolver: zodResolver(sakLoeysingValidationSchemaForenklet),
+    resolver: zodResolver(
+      sakLoeysingValidationSchemaForenklet
+    ) as unknown as Resolver<MaalingFormState>,
   });
 
   return (

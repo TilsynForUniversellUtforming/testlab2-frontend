@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 import TestForm from '../testregel-form/TestForm';
+import TestFormForenkla from "@test/testregel-form/testform-forenkla/TestFormForenkla";
 
 const TestregelDemoApp = () => {
   const [testregel, setTestregel] = useState<Testregel>();
@@ -53,8 +54,17 @@ const TestregelDemoApp = () => {
     return <Spinner aria-label="Laster" />;
   }
 
-  function slettTestelement() {
-    console.info('Du kan ikke slette testelementer i demo appen.');
+
+
+  if (testregel.modus === 'manuell-forenkla') {
+    return (
+      <TestFormForenkla
+        testregel={testregel}
+        showHelpText={true}
+        onResultat={onResultat}
+        activeResult={createResultat(testregel)}
+      />
+    );
   }
 
   return (
@@ -69,6 +79,11 @@ const TestregelDemoApp = () => {
     />
   );
 };
+
+
+function slettTestelement() {
+  console.info('Du kan ikke slette testelementer i demo appen.');
+}
 
 export default TestregelDemoApp;
 

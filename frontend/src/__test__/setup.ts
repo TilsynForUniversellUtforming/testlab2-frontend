@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { cleanup } from '@testing-library/react';
-import { afterEach, expect } from 'vitest';
+import { afterEach, expect, vi } from 'vitest';
 
 expect.extend(matchers);
 
@@ -36,15 +36,16 @@ Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
   },
 });
 
-// // Mock CSSStyleSheet if you use `new CSSStyleSheet()`
-// class MockCSSStyleSheet {
-//   replaceSync(cssText) {
-//     this.cssText = cssText;
-//   }
-//   replace(cssText) {
-//     this.cssText = cssText;
-//     return Promise.resolve(this);
-//   }
-// }
-//
-// globalThis.CSSStyleSheet = MockCSSStyleSheet;
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});

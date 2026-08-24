@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.postForEntity
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 
@@ -68,7 +69,8 @@ class TestResource(
   ): ResultatManuellKontroll =
       runCatching {
             logger.debug(
-                "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}, testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
+                "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}," +
+                    " testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
             val testResultat =
                 testresultatAPIClient.createTestResultat(createTestResultat).getOrThrow()
             testResultat
@@ -130,16 +132,37 @@ class TestResource(
 
     val allowedMIMETypes =
         listOf(MimeTypeUtils.IMAGE_JPEG_VALUE, MimeTypeUtils.IMAGE_PNG_VALUE, "image/bmp")
+    try {
 
-    if (bilde.originalFilename == null || !allowedMIMETypes.contains(bilde.contentType)) {
+      requireNotNull(bilde.originalFilename) { "Bilde kan ikkje vere null" }
+      require(allowedMIMETypes.contains(bilde.contentType)) {
+        "Ugyldig filtype. Kun JPEG, PNG og BMP er tillatt."
+      }
+
+      val body: MultiValueMap<String, Any> = createBildeRequestBody(bilde)
+
+      val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
+      val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
+
+      restTemplate.postForEntity<String>("$bildeUrl/${resultatId}", requestEntity)
+    } catch (e: IllegalArgumentException) {
+      logger.error("Feil ved opplasting av bilde", e)
       return ResponseEntity.badRequest().build()
+    } catch (e: IllegalStateException) {
+      logger.error("Feil ved opplasting av bilde", e)
+      return ResponseEntity.internalServerError().build()
     }
 
-    val bilder = listOf(bilde)
+    if (includeBilder) {
+      return getBilder(resultatId)
+    }
+    return ResponseEntity.noContent().build()
+  }
 
+  private fun createBildeRequestBody(bilde: MultipartFile): MultiValueMap<String, Any> {
     val body: MultiValueMap<String, Any> =
         LinkedMultiValueMap<String, Any>().apply {
-          bilder.forEach { bilde ->
+          listOf(bilde).forEach { bilde ->
             add(
                 "bilder",
                 object : ByteArrayResource(bilde.bytes) {
@@ -147,19 +170,7 @@ class TestResource(
                 })
           }
         }
-
-    val headers = HttpHeaders().apply { contentType = MediaType.MULTIPART_FORM_DATA }
-    val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
-    try {
-      restTemplate.postForEntity("$bildeUrl/${resultatId}", requestEntity, String::class.java)
-    } catch (e: Error) {
-      return ResponseEntity.badRequest().build()
-    }
-
-    if (includeBilder) {
-      return getBilder(resultatId)
-    }
-    return ResponseEntity.noContent().build()
+    return body
   }
 
   @GetMapping("/bilder/{resultatId}")

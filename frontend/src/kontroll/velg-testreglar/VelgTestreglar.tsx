@@ -72,7 +72,6 @@ const VelgTestreglar = () => {
 
   const handleSetSelectionType = (selectionType: SelectionType) => {
     setSelectedRegelsettId(undefined);
-    setSelectedTestregelIdList([]);
 
     /* Type 'kombinasjon' finnes kun for regelsett, sett til default 'nett'
              ved endring til å velge testregler manuelt */
@@ -98,7 +97,6 @@ const VelgTestreglar = () => {
         return regelsettId;
       }
     });
-    setSelectedTestregelIdList([]);
   };
 
   const onChangeFilter = useCallback(
@@ -106,19 +104,26 @@ const VelgTestreglar = () => {
       setModus(selectedModus);
       setType(selectedType);
 
-      setFilteredTestregelList(
-        filterList(testregelList, selectedModus, selectedType)
+
+      const filteredTestregelList = filterList(
+        testregelList,
+        selectedModus,
+        selectedType
       );
+
+
+      setFilteredTestregelList(filteredTestregelList);
       setFilteredRegelsettList(
         filterList(regelsettList, selectedModus, selectedType)
       );
 
-    },
+      },
     [selectionType]
   );
 
   const onSelectTestregelId = (selectedIds: number[]) => {
     const selectedIdsNumeric = selectedIds.map(Number);
+
     const testregelIds = testregelList.map((tr) => tr.id);
     const validTestregelIds = selectedIdsNumeric.every(
       (id) => !Number.isNaN(id) && testregelIds.includes(id)
@@ -127,27 +132,38 @@ const VelgTestreglar = () => {
       throw new Error('Valgt testregel finns ikkje');
     }
 
+
     setSelectedTestregelIdList(selectedIdsNumeric);
     setSelectedRegelsettId(undefined);
   };
 
   const regelsettSelected = selectionType === 'regelsett';
 
+  const verifiedRegelsett = (
+    regelsettList: Regelsett[],
+    selectedRegelsettId: number
+  ):Regelsett => {
+    const regelsett =  regelsettList.find((rs) => rs.id === selectedRegelsettId);
+    if (!regelsett) {
+      setAlert('danger', 'Kan ikkje lagre, regelsett finns ikkje');
+      throw new Error('Kan ikkje lagre, regelsett finns ikkje');
+    }
+    return regelsett;
+  };
   const lagreKontroll = (neste: boolean) => () => {
     const testregelIdList: number[] = [];
     alert?.clearMessage();
 
     if (regelsettSelected && selectedRegelsettId) {
-      const testregelIdsForRegelsett = regelsettList
-        .find((rs) => rs.id === selectedRegelsettId)
-        ?.testregelList.map((tr) => tr.id);
+      const selefctedRegelsett = verifiedRegelsett(
+        regelsettList,
+        selectedRegelsettId
+      )
 
-      if (isNotDefined(testregelIdsForRegelsett)) {
-        setAlert('danger', 'Kan ikkje lagre, regelsett finns ikkje');
-        throw new Error('Kan ikkje lagre, regelsett finns ikkje');
-      } else {
-        testregelIdList.push(...testregelIdsForRegelsett);
-      }
+      testregelIdList.push(
+        ...selefctedRegelsett.testregelList.map((tr) => tr.id)
+      );
+
     } else if (isEmpty(selectedTestregelIdList)) {
       setAlert('danger', 'Kan ikkje lagre uten testreglar');
       throw new Error('Kan ikkje lagre uten testreglar');
@@ -169,6 +185,7 @@ const VelgTestreglar = () => {
       encType: 'application/json',
     });
   };
+
 
   return (
     <section className={classes.kontrollSection}>

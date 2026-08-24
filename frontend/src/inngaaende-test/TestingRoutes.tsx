@@ -39,6 +39,12 @@ export const TESTREGEL_DEMO: AppRoute = {
   parentRoute: TEST_ROOT,
 };
 
+export const TESTREGEL_DEMO_FORENKLA: AppRoute = {
+  navn:'Demo',
+  path: `demo/forenkla/${idPath}`,
+  parentRoute: TEST_ROOT,
+}
+
 export const TestingRoutes: RouteObject = {
   path: TEST_ROOT.path,
   handle: { name: TEST_ROOT.navn },
@@ -70,5 +76,10 @@ export const TestingRoutes: RouteObject = {
       element: <TestregelDemoApp />,
       handle: { name: 'Demo' },
     },
+    {
+      path:TESTREGEL_DEMO_FORENKLA.path,
+      element:  <TestregelDemoApp />,
+      handle: { name: 'Demo forenkla' },
+    }
   ],
 };

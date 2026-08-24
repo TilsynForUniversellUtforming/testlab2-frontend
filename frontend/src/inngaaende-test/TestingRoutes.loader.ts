@@ -268,6 +268,7 @@ export const testOverviewLoeysingLoader = async ({
     loeysingId
   );
   getTestreglarForTestgrunnlag(testreglar, testgrunnlag);
+
   return {
     testResultatForLoeysing,
     sideutvalForLoeysing: getSideutvalForLoeysing(testgrunnlag, loeysingId),

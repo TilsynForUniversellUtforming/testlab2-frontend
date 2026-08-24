@@ -5,10 +5,11 @@ import { isDefined } from '@common/util/validationUtils';
 import { Link } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TESTREGEL_DEMO } from '@test/TestingRoutes';
-import { Krav } from 'krav/types';
+import { Krav } from '@krav/types';
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router';
+import styles from '../testreglar.module.scss';
 
 import {
   InnhaldstypeTesting,
@@ -17,7 +18,11 @@ import {
   Testregel,
   TestregelInit,
 } from '../api/types';
-import { testreglarValidationSchema } from './testreglarValidationSchema';
+import {
+  testreglarValidationSchema,
+  TestregelFormInput,
+  TestregelFormOutput,
+} from './testreglarValidationSchema';
 import {
   defineInnholdstypeOptions,
   defineKravOptions,
@@ -26,7 +31,7 @@ import {
   defineTemaOptions,
   defineTestregelStatusOption,
   defineTypeOptions,
-  deineTestobjectOptions,
+  defineTestobjectOptions,
 } from '@testreglar/testreglar-liste/formOptionUtils.';
 import {
   InputVersion,
@@ -42,7 +47,9 @@ import {
   TestregelSchemaTextArea,
   TestregelStatusSelect,
   TestregelTypeSelect,
-  UtfallFieldArray, InstruksjonTextArea,
+  UtfallFieldArray,
+  InstruksjonTextArea,
+  HelptextTextArea,
 } from '@testreglar/testreglar-liste/TestregelFormFields';
 
 export interface Props {
@@ -77,7 +84,7 @@ const TestregelForm = ({
 
   const innhaldsTypeOptions = defineInnholdstypeOptions(innhaldstypeList);
   const temaOptions = defineTemaOptions(temaList);
-  const testobjektOptions = deineTestobjectOptions(testobjektList);
+  const testobjektOptions = defineTestobjectOptions(testobjektList);
 
   const formMethods = useDefineFormMethods(testregel);
 
@@ -98,8 +105,8 @@ const TestregelForm = ({
   const isManuellForenkla = testregelType === 'manuell-forenkla';
 
   return (
-    <div className="testregel-form">
-      <TestlabForm<TestregelInit>
+    <div className={styles.testregelForm}>
+      <TestlabForm<TestregelFormInput, TestregelFormOutput>
         heading={heading}
         description={description}
         onSubmit={onSubmit}
@@ -137,6 +144,8 @@ const TestregelForm = ({
           <>
             <InstruksjonTextArea />
 
+            <HelptextTextArea />
+
             <UtfallFieldArray />
           </>
         )}
@@ -162,7 +171,7 @@ const TestregelForm = ({
 };
 
 function useDefineFormMethods(testregel: Testregel | undefined) {
-  return useForm<TestregelInit>({
+  return useForm<TestregelFormInput, unknown, TestregelFormOutput>({
     defaultValues: {
       id: testregel?.id,
       testregelSchema: testregel?.testregelSchema || '',

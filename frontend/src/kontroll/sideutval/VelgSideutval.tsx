@@ -2,15 +2,13 @@ import useAlert from '@common/alert/useAlert';
 import ConditionalComponentContainer from '@common/ConditionalComponentContainer';
 import {
   Alert,
-  ErrorSummary,
   Heading,
   Paragraph,
 } from '@digdir/designsystemet-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loeysing } from '@loeysingar/api/types';
 import { CrawlParameters } from '@maaling/api/types';
-import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   FieldErrors,
   FormProvider,
@@ -29,6 +27,13 @@ import LoeysingFilter from './LoeysingFilter';
 import { getDefaultFormValues, getSideutvalTypeLabel } from './sideutval-util';
 import { sideutvalValidationSchema } from './sideutvalValidationSchema';
 import { FormError, SideutvalForm, SideutvalLoader } from './types';
+import {
+  ButtonSideutvalAutomatiskTest,
+  ButtonSideutvalManuellKontroll,
+  SideutvalErrorSummary,
+} from './SideutvalComponents';
+
+
 
 const VelgSideutval = () => {
   const {
@@ -42,7 +47,7 @@ const VelgSideutval = () => {
   const isForenkla = kontroll.kontrolltype === 'forenkla-kontroll';
 
   const [formErrors, setFormErrors] = useState<FormError[]>([]);
-  const [neste, setNeste] = useState<boolean>(false);
+  const nesteRef = useRef(false);
 
   const finished: Loeysing[] = useMemo(
     () =>
@@ -148,7 +153,7 @@ const VelgSideutval = () => {
       kontroll,
       sideutvalList: form.sideutval,
       crawlParameters: undefined,
-      neste: neste,
+      neste: nesteRef.current,
     };
 
     submit(JSON.stringify(data), {
@@ -166,7 +171,7 @@ const VelgSideutval = () => {
       kontroll,
       sideutvalList: [],
       crawlParameters: crawlParameters,
-      neste: neste,
+      neste: nesteRef.current,
     };
 
     submit(JSON.stringify(data), {
@@ -175,6 +180,7 @@ const VelgSideutval = () => {
       encType: 'application/json',
     });
   };
+
 
   return (
     <section className={classes.sideutvalSection}>
@@ -186,32 +192,8 @@ const VelgSideutval = () => {
         <Paragraph>Vel hvilke sider du vil ha med inn i testen</Paragraph>
       </div>
       <div className={classes.automatiskEllerManuelt}>
-        <button
-          className={classNames({
-            [classes.selected]: !isForenkla,
-          })}
-          disabled={isForenkla}
-          title={
-            isForenkla
-              ? 'Manuelt sideutval er ikkje tilgjengelig for forenkla kontroll'
-              : 'Vel manuelt'
-          }
-        >
-          Manuelt sideutval
-        </button>
-        <button
-          className={classNames({
-            [classes.selected]: isForenkla,
-          })}
-          disabled={!isForenkla}
-          title={
-            isForenkla
-              ? 'Vel automatisk'
-              : 'Automatisk sideutval er ikkje tilgjengelig for inngåande kontroll'
-          }
-        >
-          Automatisk sideutval
-        </button>
+        <ButtonSideutvalManuellKontroll isForenkla={isForenkla} />
+        <ButtonSideutvalAutomatiskTest isForenkla={isForenkla} />
       </div>
       <ConditionalComponentContainer
         condition={!isForenkla}
@@ -225,32 +207,10 @@ const VelgSideutval = () => {
               selectedLoeysing={selectedLoeysing}
             />
             {formErrors.length > 0 && (
-              <div className={classes.sideutvalLoeysingErrors}>
-                <ErrorSummary data-size="md">
-                  <ErrorSummary.Heading>
-                    Det er feil med sideutval på føljande løysingar
-                  </ErrorSummary.Heading>
-                  <ErrorSummary.List>
-                    {formErrors.map((formError) => (
-                      <ErrorSummary.Item
-                        key={`${formError.loeysingId}_${formError.sideutvalType}`}
-                      >
-                        <ErrorSummary.Link
-                          href={`#loeysing-${formError.loeysingId}`}
-                        >
-                          {
-                            loeysingList.find(
-                              (ll) => ll.id === formError.loeysingId
-                            )?.namn
-                          }{' '}
-                          - {formError.sideutvalType} ({formError.antallFeil}{' '}
-                          feil)
-                        </ErrorSummary.Link>
-                      </ErrorSummary.Item>
-                    ))}
-                  </ErrorSummary.List>
-                </ErrorSummary>
-              </div>
+              <SideutvalErrorSummary
+                formErrors={formErrors}
+                loeysingList={loeysingList}
+              />
             )}
             <FormProvider {...formMethods}>
               <form
@@ -284,8 +244,12 @@ const VelgSideutval = () => {
                         <LagreOgNeste
                           sistLagret={actionData?.sistLagret}
                           feilet={formErrors.length > 0}
-                          onClickNeste={() => setNeste(true)}
-                          onClickLagreKontroll={() => setNeste(false)}
+                          onClickNeste={() => {
+                            nesteRef.current = true;
+                          }}
+                          onClickLagreKontroll={() => {
+                            nesteRef.current = false;
+                          }}
                           submitOnSave
                         />
                       </div>
@@ -301,8 +265,12 @@ const VelgSideutval = () => {
             onSubmit={onSubmitAutomatisk}
             crawlParameters={crawlParameters}
             sistLagret={actionData?.sistLagret}
-            onClickNeste={() => setNeste(true)}
-            onClickLagreKontroll={() => setNeste(false)}
+            onClickNeste={() => {
+              nesteRef.current = true;
+            }}
+            onClickLagreKontroll={() => {
+              nesteRef.current = false;
+            }}
           />
         }
       />

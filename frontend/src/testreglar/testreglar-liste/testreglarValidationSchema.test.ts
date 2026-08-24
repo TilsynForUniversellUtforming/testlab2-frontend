@@ -51,7 +51,7 @@ describe('testreglarValidationSchema conditional required fields', () => {
         testregelSchema: undefined,
         definition: {
           description: 'Instruksjon for testen',
-          utfall: [],
+          utfall: [{beskrivelse:"Test",testresultat:'samsvar',default:true}],
         },
       })
     );

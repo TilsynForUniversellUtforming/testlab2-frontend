@@ -71,9 +71,7 @@ const TestOverviewLoeysing = () => {
       modalRef.current?.showModal();
     }
   }, [alert, modalRef]);
-
-  console.log(JSON.stringify(testreglarForLoeysing));
-
+  
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading

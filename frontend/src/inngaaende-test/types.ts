@@ -39,6 +39,7 @@ export type TestResultUpdate = {
   alleSvar: Svar[];
   resultat?: TestregelResultat;
   elementOmtale?: string;
+  elementOmtaleHtml?: string;
   kommentar?: string;
 };
 
