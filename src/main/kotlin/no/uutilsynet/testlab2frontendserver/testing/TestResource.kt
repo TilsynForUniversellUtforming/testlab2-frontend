@@ -146,13 +146,12 @@ class TestResource(
 
       restTemplate.postForEntity<String>("$bildeUrl/${resultatId}", requestEntity)
     } catch (e: IllegalArgumentException) {
-        logger.error("Feil ved opplasting av bilde", e)
+      logger.error("Feil ved opplasting av bilde", e)
       return ResponseEntity.badRequest().build()
-    }
-      catch (e: IllegalStateException) {
-        logger.error("Feil ved opplasting av bilde", e)
+    } catch (e: IllegalStateException) {
+      logger.error("Feil ved opplasting av bilde", e)
       return ResponseEntity.internalServerError().build()
-      }
+    }
 
     if (includeBilder) {
       return getBilder(resultatId)
