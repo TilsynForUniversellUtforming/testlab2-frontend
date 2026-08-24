@@ -32,7 +32,9 @@ const TestregelSelector = ({
       const hiddenSelectedIds = selectedTestregelIdList.filter(
         (id) => !visibleIds.has(id)
       );
-      const selectedVisibleIds = nextValue.map(Number);
+      const selectedVisibleIds = nextValue
+        .map(Number)
+        .filter((id) => visibleIds.has(id));
 
       onSelectTestregelId([...hiddenSelectedIds, ...selectedVisibleIds]);
     },

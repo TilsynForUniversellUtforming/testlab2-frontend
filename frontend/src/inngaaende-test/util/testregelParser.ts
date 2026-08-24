@@ -34,7 +34,7 @@ export function finnSvar(stegnr: string, alleSvar: Svar[]): string | undefined {
 }
 
 export function evaluateTestregel(
-  testregel: string | undefined,
+  testregel: TestregelSchema | undefined,
   alleSvar: Svar[]
 ): TestregelForm {
   const parsedTestregel: TestregelSchema =

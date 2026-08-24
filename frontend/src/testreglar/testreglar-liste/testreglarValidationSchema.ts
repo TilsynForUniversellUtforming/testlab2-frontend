@@ -65,7 +65,7 @@ export const testregelSchema = testregelBaseSchema.and(
       .object({
         description: z.string(),
         helptext: z.string().optional(),
-        utfall: z.array(utfallSchema),
+        utfall: z.array(utfallSchema).min(1, 'Minst eitt utfall er påkrevd'),
       })
       .optional(),
   })

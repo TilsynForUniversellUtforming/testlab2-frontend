@@ -1,6 +1,7 @@
 import { TestlabLocale } from '@common/types';
 
 import { Krav } from '../../krav/types';
+import { ElementResultat } from '@test/api/types';
 
 export type TestregelModus = 'automatisk' | 'manuell' | 'semi-automatisk' | 'deque' | 'manuell-forenkla' ;
 
@@ -109,7 +110,7 @@ export type TestresultatUtfall =
 
 export type TestregelUtfall = {
   beskrivelse: string;
-  testresultat: TestresultatUtfall;
+  testresultat: ElementResultat;
   default: boolean;
 };
 

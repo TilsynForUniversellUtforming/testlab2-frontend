@@ -145,9 +145,14 @@ class TestResource(
       val requestEntity = HttpEntity<MultiValueMap<String, Any>>(body, headers)
 
       restTemplate.postForEntity<String>("$bildeUrl/${resultatId}", requestEntity)
-    } catch (e: Error) {
+    } catch (e: IllegalArgumentException) {
+        logger.error("Feil ved opplasting av bilde", e)
       return ResponseEntity.badRequest().build()
     }
+      catch (e: IllegalStateException) {
+        logger.error("Feil ved opplasting av bilde", e)
+      return ResponseEntity.internalServerError().build()
+      }
 
     if (includeBilder) {
       return getBilder(resultatId)

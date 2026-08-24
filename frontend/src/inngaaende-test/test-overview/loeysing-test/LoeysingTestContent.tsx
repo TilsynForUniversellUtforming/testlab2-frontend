@@ -159,7 +159,7 @@ const LoeysingTestContent = memo(({
                 onChangeStatus={onChangeStatus}
               />
               {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
-                activeTest && (
+                activeTest && activeTest.testResultList.length>0 && (
                   <div
                     className={classNames('testregel-form-wrapper', {
                       single: testregelList.length === 1,

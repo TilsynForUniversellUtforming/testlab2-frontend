@@ -3,12 +3,9 @@ import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
 import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
 import {
-  Button,
   Card,
   Details,
-  DetailsContent,
   Heading,
-  Tag,
 } from '@digdir/designsystemet-react';
 import TestlabStatusTag from '@common/status-badge/TestlabStatusTag';
 import style from '../test-form.module.scss';
@@ -65,7 +62,7 @@ const TestFormForenklaList = (props: Props) => {
                     data-size="md"
                   />
                 </Details.Summary>
-                <DetailsContent>
+                <Details.Content>
                   <TestFormForenkla
                     testregel={props.testregel}
                     showHelpText={props.showHelpText}
@@ -76,7 +73,7 @@ const TestFormForenklaList = (props: Props) => {
                     onCreateForenklaResultat={props.onCreateForenklaResultat}
                     activeResult={resultat}
                   />
-                </DetailsContent>
+                </Details.Content>
               </Details>
             </Card>
           </div>

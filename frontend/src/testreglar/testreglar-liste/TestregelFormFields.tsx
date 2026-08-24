@@ -51,6 +51,7 @@ import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/wordcount';
 import { Editor } from '@tinymce/tinymce-react';
+import { ElementResultat } from '@test/api/types';
 
 interface SelectProps {
   options: OptionType[];
@@ -205,7 +206,7 @@ export const HelptextTextArea = ()=> {
   return (
     <>
       <Heading level={3} data-size="xs" className={styles.testregelFormTextareaHeading}>
-        Helpetext
+        Helpetekst
       </Heading>
       <Controller
         name="definition.helptext"
@@ -227,11 +228,12 @@ export const HelptextTextArea = ()=> {
   );
 }
 
-const testresultatUtfallOptions = createOptionsFromLiteral<TestresultatUtfall>([
+const testresultatUtfallOptions = createOptionsFromLiteral<ElementResultat>([
   'samsvar',
   'brot',
-  'ikkje-forekomst',
-  'ikkje-testbar',
+  'ikkjeForekomst',
+  'ikkjeTesta',
+  'advarsel'
 ]);
 
 export const UtfallFieldArray = () => {
@@ -277,7 +279,9 @@ export const UtfallFieldArray = () => {
       {fields.map((field, index) => (
         <div key={field.id} className={styles.testregelFormUtfallRow}>
           <Details key={field.id} className={styles.testregelFormUtfallRow}>
-            <Details.Summary>{field.beskrivelse}</Details.Summary>
+            <Details.Summary>
+              {utfallValues?.[index]?.beskrivelse}
+            </Details.Summary>
             <Details.Content>
               <TestlabFormTextArea
                 label={`Beskrivelse utfall ${index + 1}`}
