@@ -158,14 +158,12 @@ const SideutvalAccordion = ({
           <Heading level={5} data-size="sm">
             {selectedLoeysing.namn}
           </Heading>
-          <Chip.Radio defaultChecked>Test av nettside</Chip.Radio>
-          <Chip.Radio disabled title="Test av mobil er ikkje tilgjengelig ennå">
-            Test av mobil
-          </Chip.Radio>
-          <Paragraph data-size="md">
-            Vel i nedtrekklista. Forside skal alltid med. 10% av utvalet skal
-            vera eigendefinert. Vel derfor eigendefinert for desse sidene.
-          </Paragraph>
+          <div className={classes.testregelTypeSelectorChips}>
+            <Chip.Radio defaultChecked>Test av nettside</Chip.Radio>
+            <Chip.Radio title="Test av mobil er ikkje tilgjengelig ennå">
+              Test av mobil
+            </Chip.Radio>
+          </div>
         </div>
       </div>
       <div className={classes.centered}>
