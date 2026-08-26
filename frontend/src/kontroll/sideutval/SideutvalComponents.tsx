@@ -1,6 +1,5 @@
-import { useActionData, useLoaderData, useSubmit } from 'react-router';
-import { FormError, SideutvalLoader } from './types';
-import { useMemo, useState } from 'react';
+
+import { FormError } from './types';
 import { Loeysing } from '@loeysingar/api/types';
 import classes from '../kontroll.module.css';
 import classNames from 'classnames';
@@ -76,6 +75,8 @@ export const SideutvalErrorSummary = ({
                     ?.namn
                 }{' '}
                 - {formError.sideutvalType} ({formError.antallFeil} feil)
+                - {formError.errorMessage}
+
               </ErrorSummary.Link>
             </ErrorSummary.Item>
           ))}

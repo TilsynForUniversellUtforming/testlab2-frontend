@@ -32,6 +32,7 @@ import {
   ButtonSideutvalManuellKontroll,
   SideutvalErrorSummary,
 } from './SideutvalComponents';
+import { error } from 'highcharts';
 
 
 
@@ -78,6 +79,7 @@ const VelgSideutval = () => {
   const { register, control, handleSubmit } = formMethods;
 
   const onSubmitError = (errors: FieldErrors<SideutvalForm>) => {
+    console.log(errors);
     const errorMap = new Map<string, FormError>();
 
     fields.forEach((field, index) => {
@@ -87,6 +89,7 @@ const VelgSideutval = () => {
           field.typeId,
           field.egendefinertType
         );
+
 
         const key = `${field.loeysingId}-${sideutvalTypeLabel}`;
         const currentError = errorMap.get(key);
@@ -99,10 +102,12 @@ const VelgSideutval = () => {
             loeysingId: field.loeysingId,
             antallFeil: 1,
             sideutvalType: sideutvalTypeLabel,
+            errorMessage: errors.sideutval?.[index]?.begrunnelse?.message,
           });
         }
       }
     });
+
     const aggregatedErrors = Array.from(errorMap.values());
     setFormErrors(aggregatedErrors);
   };

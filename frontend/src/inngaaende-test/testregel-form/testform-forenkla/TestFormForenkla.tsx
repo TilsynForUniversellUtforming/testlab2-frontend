@@ -112,7 +112,6 @@ const TestFormForenkla = (props: Props) => {
             label="Vel utfall"
             name="valgtUtfallIndex"
             options={utfallOptions}
-            radio={true}
             required
           />
 

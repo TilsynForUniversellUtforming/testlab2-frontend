@@ -51,11 +51,11 @@ const SideBegrunnelseForm = ({
     const { loeysingId, typeId, egendefinertType } = defaultSide;
 
     if (!loeysingId) {
-      throw Error('Ugyldig løysing');
+      throw new Error('Ugyldig løysing');
     }
 
     if (!typeId) {
-      throw Error('Ugyldig sideutval type');
+      throw new Error('Ugyldig sideutval type');
     }
 
     const indiciesToRemove = sideutvalIndexedList
