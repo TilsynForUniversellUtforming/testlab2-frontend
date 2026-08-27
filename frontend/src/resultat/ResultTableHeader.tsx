@@ -3,7 +3,12 @@ import { sanitizeEnumLabel } from '@common/util/stringutils';
 import { Heading, List } from '@digdir/designsystemet-react';
 import ResultatTableFilter from '@resultat/ResultatListFilter';
 import { Column } from '@tanstack/react-table';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useCallback,
+  useState,
+} from 'react';
 
 import { KontrollType } from '../kontroll/types';
 
@@ -49,7 +54,8 @@ const ResultTableHeader = <T extends object>({
     }
   };
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    filterColumn(e.target.value);
     setSearchValue(e.target.value);
   };
 
@@ -156,7 +162,6 @@ const ResultTableHeader = <T extends object>({
         <ResultatTableFilter
           searchValue={searchValue}
           onChange={onChange}
-          onClear={onClear}
           onChangeBeforeDate={onChangeBeforeDate}
           onChangeAfterDate={onChangeAfterDate}
           onSubmit={onSearchClick}

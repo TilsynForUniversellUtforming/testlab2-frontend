@@ -1,9 +1,12 @@
-import { Heading, Label, Search } from '@digdir/designsystemet-react';
+import { Field, Heading, Label, Select } from '@digdir/designsystemet-react';
 import { ChangeEvent } from 'react';
+import { createOptionsFromLiteral } from '@common/util/stringutils';
+import { KontrollType } from '../kontroll/types';
+import { OptionType } from '@common/types';
 
 interface Props {
   searchValue: string;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
   onChangeBeforeDate: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeAfterDate: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (value: string) => void;
@@ -15,24 +18,30 @@ const ResultatTableFilter = ({
   onChangeAfterDate,
   onSubmit,
 }: Props) => {
+  const options:  OptionType[] = createOptionsFromLiteral<KontrollType>(
+    Object.values(KontrollType)
+  )
+
   return (
     <div className="resultat-header-search">
-      <Heading data-size="md" level={2} >
+      <Heading data-size="md" level={2}>
         Filtrer visning
       </Heading>
-      <div id="kontrollTypeFilter">
-        <Label htmlFor="table-search">Søk i etter type kontroll</Label>
-        <Search
-          onSubmit={() => onSubmit}
-        >
-          <Search.Input aria-label={"Filtrer"} id="table-search"
-          value={searchValue}
-          onChange={onChange}
-          />
-          <Search.Clear />
-          <Search.Button variant="primary" />
-        </Search>
-      </div>
+      <Field id="kontrollTypeFilter">
+        <Label htmlFor="table-search">Filtrer etter type kontroll</Label>
+        <Select onChange={onChange} value={searchValue}>
+          {options.map((o) => (
+              <Select.Option
+                value={o.value}
+                key={`${o.label}_${o.value}`}
+                label={o.label?.toString() ?? o.label}
+              >
+                {o.value} {o.label}
+            </Select.Option>
+          ))
+          }
+        </Select>
+      </Field>
       <div id="kontrollDateFilter">
         <div id="filterBefore">
           <Label htmlFor="beforeDate">Før dato</Label>
