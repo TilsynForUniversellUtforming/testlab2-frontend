@@ -12,6 +12,7 @@ import { Link, useLoaderData } from 'react-router';
 
 import { KontrollListItem, KontrollType, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';
+import { getNameOrReturnString } from '../../user/api/user-api';
 
 const StyringsdataLinkButton = ({
   kontrollId,
@@ -108,7 +109,9 @@ const KontrollList = () => {
                 <Table.Cell>
                   {viewVirksomheter(kontroll.virksomheter)}
                 </Table.Cell>
-                <Table.Cell>{kontroll.saksbehandler}</Table.Cell>
+                <Table.Cell>
+                  {getNameOrReturnString(kontroll.saksbehandler)}
+                </Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell>

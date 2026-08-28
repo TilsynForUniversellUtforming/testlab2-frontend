@@ -26,6 +26,7 @@ import {
   kontrollInitValidationSchema,
 } from './kontrollInitValidationSchema';
 import { Errors } from './OpprettKontrollRoute';
+import useFetchSaksbehandler from '../../user/api/hooks';
 
 export default function OpprettKontroll() {
   const submit = useSubmit();
@@ -45,6 +46,14 @@ export default function OpprettKontroll() {
     mode: 'onBlur',
     resolver: zodResolver(kontrollInitValidationSchema),
   });
+
+
+  const {saksbehandler} = useFetchSaksbehandler()
+  const saksbehandlerOptions = saksbehandler?.map((s) => ({
+    label: s.name,
+    value: s.email,
+  })) ?? [];
+
 
   const errors = useActionData() as Errors;
 
@@ -116,14 +125,16 @@ export default function OpprettKontroll() {
           data-size="md"
           required
         />
-        <TestlabFormInput
+
+        <TestlabFormSelect
           label="Saksbehandler"
           className={classes.saksbehandler}
           name="saksbehandler"
           id="saksbehandler"
-          data-size="md"
+          options={saksbehandlerOptions}
           required
         />
+
         <TestlabFormSelect
           label="Hva slags sak er det?"
           name="sakstype"

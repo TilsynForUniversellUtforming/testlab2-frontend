@@ -1,4 +1,6 @@
 import { User } from './types';
+import { useEffect } from 'react';
+import useFetchSaksbehandler from './hooks';
 
 const dummyResponse: User[] = [
   {
@@ -18,3 +20,15 @@ const dummyResponse: User[] = [
 export const getAdvisors_dummy = async (): Promise<User[]> => {
   return dummyResponse;
 };
+
+export function getNameOrReturnString(userQuery:String) {
+  const {saksbehandler} = useFetchSaksbehandler();
+
+  const user = saksbehandler.find((user) => user.email === userQuery);
+  if(user) {
+    return user.name;
+  } else {
+    return userQuery;
+  }
+
+}
