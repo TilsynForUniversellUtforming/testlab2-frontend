@@ -31,9 +31,9 @@ const PageTypeSelector = ({
   );
 
   const sideutvalOption: OptionType[] = sideutvalList.map(
-    ({ sideId, pageType }) => ({
+    ({ sideId, url }) => ({
       value: String(sideId),
-      label: pageType,
+      label: url,
     })
   );
 
