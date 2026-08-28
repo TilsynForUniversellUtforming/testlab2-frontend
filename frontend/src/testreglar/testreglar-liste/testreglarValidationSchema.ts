@@ -25,8 +25,10 @@ export const utfallSchema = z.object({
   testresultat: z.union([
     z.literal('samsvar'),
     z.literal('brot'),
-    z.literal('ikkje-testbar'),
-    z.literal('ikkje-forekomst'),
+    z.literal('ikkjeTesta'),
+    z.literal('ikkjeForekomst'),
+    z.literal('advarsel'),
+    z.literal('advarsel'),
   ]),
   default: z.boolean(),
 });
@@ -66,6 +68,7 @@ export const testregelSchema = testregelBaseSchema.and(
         description: z.string(),
         helptext: z.string().optional(),
         utfall: z.array(utfallSchema).min(1, 'Minst eitt utfall er påkrevd'),
+        typ: z.string().optional(),
       })
       .optional(),
   })

@@ -1,5 +1,5 @@
 import { CreateTestResultat, ResultatStatus, Svar } from '@test/api/types';
-import { useForm } from 'react-hook-form';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import {
   TestformForenklaFormValues,
   testformForenklaValidationSchema,
@@ -17,7 +17,7 @@ export const useTestFormForenklaFormOptions = (
     sistLagra: string;
   } & CreateTestResultat,
   utfall: TestregelUtfall[]
-) => {
+): UseFormReturn<TestformForenklaFormValues> => {
   const selectedUtfallIndex = utfall.findIndex(
     (u) => u.testresultat === eksisterandeResultat.elementResultat
   );

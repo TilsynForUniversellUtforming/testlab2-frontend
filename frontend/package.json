@@ -26,6 +26,7 @@
     "@navikt/aksel-icons": "8.16.1",
     "@tanstack/match-sorter-utils": "^9.0.0",
     "@tanstack/react-table": "8.21.3",
+    "@tanstack/react-query": "5.102.8",
     "classnames": "^2.5.1",
     "dompurify": "3.4.13",
     "react": "19.2.8",
@@ -33,6 +34,7 @@
     "react-hook-form": "7.84.0",
     "react-loading-skeleton": "^3.5.0",
     "react-router": "8.3.0",
+    "react-intl": "10.1.23",
     "zod": "3.25.76",
     "@tinymce/tinymce-react": "6.3.0",
     "tinymce": "8.8.2"

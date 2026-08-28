@@ -21,6 +21,7 @@ import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
+import StatusMessageBox from "@test/test-overview/loeysing-test/StatusMessageBox";
 
 interface Props {
   sideutval: PageType;
@@ -64,7 +65,7 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.elementUtfall != null);
 }
 
-const LoeysingTestContent = memo(({
+  const LoeysingTestContent = memo(({
   sideutval,
   innhaldstype,
   progressionPercent,
@@ -158,6 +159,7 @@ const LoeysingTestContent = memo(({
                 sideId={sideutval.sideId}
                 onChangeStatus={onChangeStatus}
               />
+
               {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
                 activeTest && activeTest.testResultList.length>0 && (
                   <div

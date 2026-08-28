@@ -12,6 +12,7 @@ import {
   useTestFormForenklaFormOptions,
   useUtfallOption,
 } from '@test/testregel-form/testform-forenkla/hooks';
+import StatusMessageBox from '@test/test-overview/loeysing-test/StatusMessageBox';
 
 interface Props {
   testregel: Testregel;
@@ -38,6 +39,9 @@ const TestFormForenkla = (props: Props) => {
     props.activeResult,
     props.testregel.definition.utfall
   );
+
+  const sucsessFullSubmit = formMethods.formState.isSubmitSuccessful
+
 
   const helptext = sanitizeHelptext(props);
   const instruksjon = sanitizeInstruksjon(props);
@@ -70,6 +74,8 @@ const TestFormForenkla = (props: Props) => {
       resultat: mapToTestregelResultat(utfall.testresultat, utfall.beskrivelse),
     });
   };
+
+  const description = formMethods.getValues("elementOmtale")
 
   return (
     <div className={styles.testForm}>
@@ -106,7 +112,6 @@ const TestFormForenkla = (props: Props) => {
             label="Vel utfall"
             name="valgtUtfallIndex"
             options={utfallOptions}
-            radio={true}
             required
           />
 
@@ -115,6 +120,10 @@ const TestFormForenkla = (props: Props) => {
             name="kommentar"
           />
         </fieldset>
+
+        {sucsessFullSubmit && <StatusMessageBox
+          statusmessage={'Lagra ' + description}
+        />}
 
         <TestlabForm.FormButtons />
       </TestlabForm>
@@ -164,24 +173,6 @@ function mapTestresultatToFasit(
       return 'Ikkje testbart';
   }
 }
-
-function createForenklaBaseResultat({
-  testregelId,
-}: {
-  testregelId: number;
-}): ResultatManuellKontroll {
-  return {
-    id: 0,
-    svar: [],
-    status: 'UnderArbeid',
-    testgrunnlagId: 0,
-    loeysingId: 0,
-    testregelId,
-    sideutvalId: 0,
-    sistLagra: new Date().toISOString(),
-  };
-}
-
 function sanitizeHelptext(props: Props) {
   const cleanHTML = DOMPurify.sanitize(
     props.testregel.definition?.helptext ?? '',

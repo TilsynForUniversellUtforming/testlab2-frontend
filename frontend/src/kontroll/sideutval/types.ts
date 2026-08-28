@@ -44,4 +44,5 @@ export type FormError = {
   loeysingId: number;
   antallFeil: number;
   sideutvalType: string;
+  errorMessage?: string;
 };

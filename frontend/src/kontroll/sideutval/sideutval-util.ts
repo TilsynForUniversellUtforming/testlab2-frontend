@@ -99,7 +99,7 @@ export const getDefaultFormValues = (
       return {
         loeysingId: loeysing.id,
         typeId: forsideType.id,
-        begrunnelse: '',
+        begrunnelse: 'Framside',
         url: '',
         egendefinertType: undefined,
       };
