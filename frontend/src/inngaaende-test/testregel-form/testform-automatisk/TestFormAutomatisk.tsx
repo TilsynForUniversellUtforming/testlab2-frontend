@@ -22,6 +22,11 @@ import {
   mapToTestregelResultat,
   mapUtfallToElementResultat,
 } from '@test/testregel-form/utils';
+import {
+  createOptionsFormEnum,
+  createOptionsFromLiteral,
+} from '@common/util/stringutils';
+import {OptionType} from "@common/types";
 
 interface Props {
   testregel: Testregel;
@@ -49,6 +54,7 @@ const TestFormAutomatisk = (props: Props) => {
     const utfall = mapUtfallToElementResultat(values['elementResultat']);
 
 
+
     const oppdatertResultat: ResultatManuellKontroll = {
       ...props.activeResult,
       ...values,
@@ -70,6 +76,14 @@ const TestFormAutomatisk = (props: Props) => {
 
   const description = formMethods.getValues('elementOmtale');
 
+  const utfallOptions: OptionType[] = createOptionsFromLiteral([
+    'samsvar',
+    'ikkjeForekomst',
+    'brot',
+    'advarsel',
+    'ikkjeTesta',
+  ]);
+
   return (
     <div className={styles.testForm}>
       <TestlabForm<TestformAutomatiskFormValues>
@@ -78,7 +92,6 @@ const TestFormAutomatisk = (props: Props) => {
         hasRequiredFields={false}
         className={styles.testFormContent}
       >
-
         <fieldset className={styles.testFormFields}>
           <TestlabForm.FormInput<TestformAutomatiskFormValues>
             label={'Beskriv elementet'}
@@ -92,10 +105,11 @@ const TestFormAutomatisk = (props: Props) => {
             required={false}
           />
 
-          <TestlabForm.FormInput<TestformAutomatiskFormValues>
-            label={'Utfall'}
+          <TestlabForm.FormSelect<TestformAutomatiskFormValues>
+            label="Vel utfall"
             name="elementResultat"
-            required={true}
+            options={utfallOptions}
+            required
           />
 
           <TestlabForm.FormInput<TestformAutomatiskFormValues>
