@@ -15,6 +15,10 @@ import {
 import StatusMessageBox from '@test/test-overview/loeysing-test/StatusMessageBox';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
 import {
+  TestformAutomatiskFormValues
+} from '@test/testregel-form/testform-automatisk/testformAutomatiskValidationSchema';
+import {useTestFormAutomatiskFormOptions} from "@test/testregel-form/testform-automatisk/hooks";
+import {
   mapToTestregelResultat,
   mapUtfallToElementResultat,
 } from '@test/testregel-form/utils';
@@ -27,44 +31,28 @@ interface Props {
   isLoading?: boolean;
   isDemoApp?: boolean;
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
-  activeResult:ResultatManuellKontroll
+  activeResult: ResultatManuellKontroll;
 }
 
-
-const TestFormForenkla = (props: Props) => {
-  if (props.testregel.definition === undefined) {
+const TestFormAutomatisk = (props: Props) => {
+  if (props.testregel.testregelSchema === undefined) {
     throw new Error('definition er tomt');
   }
 
-  if (props.testregel.definition.utfall.length === 0) {
-    throw new Error('definition.utfall er tomt');
-  }
+  const formMethods = useTestFormAutomatiskFormOptions(props.activeResult);
 
-  const formMethods = useTestFormForenklaFormOptions(
-    props.activeResult,
-    props.testregel.definition.utfall
-  );
-
-  const sucsessFullSubmit = formMethods.formState.isSubmitSuccessful
+  const sucsessFullSubmit = formMethods.formState.isSubmitSuccessful;
 
 
-  const helptext = sanitizeHelptext(props);
-  const instruksjon = sanitizeInstruksjon(props);
+  const onSubmit = (values: TestformAutomatiskFormValues) => {
 
-  const utfallOptions = useUtfallOption(props.testregel.definition.utfall);
+    const utfall = mapUtfallToElementResultat(values['elementResultat']);
 
-  const onSubmit = (values: TestformForenklaFormValues) => {
-    const utfall = props.testregel.definition!.utfall[values.valgtUtfallIndex];
-    if (!utfall) {
-      return;
-    }
 
     const oppdatertResultat: ResultatManuellKontroll = {
       ...props.activeResult,
       ...values,
-      elementResultat: mapUtfallToElementResultat(utfall.testresultat),
-      elementUtfall: utfall.beskrivelse,
-      svar: values.svar ?? [],
+      elementResultat: utfall,
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
     };
@@ -76,57 +64,47 @@ const TestFormForenkla = (props: Props) => {
       kommentar: oppdatertResultat.kommentar,
       elementOmtale: oppdatertResultat.elementOmtale,
       elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(utfall.testresultat, utfall.beskrivelse),
+      resultat: mapToTestregelResultat(values['elementResultat'], values['elementUtfall']),
     });
   };
 
-  const description = formMethods.getValues("elementOmtale")
+  const description = formMethods.getValues('elementOmtale');
 
   return (
     <div className={styles.testForm}>
-      <TestlabForm<TestformForenklaFormValues>
+      <TestlabForm<TestformAutomatiskFormValues>
         onSubmit={onSubmit}
         formMethods={formMethods}
         hasRequiredFields={false}
         className={styles.testFormContent}
       >
-        <div
-          className={styles.testFormDescription}
-          dangerouslySetInnerHTML={instruksjon}
-        ></div>
-        <Details>
-          <Details.Summary className={styles.testFormHelptext}>
-            Hjelpetekst
-          </Details.Summary>
-          <div
-            className={styles.testFormDescription}
-            dangerouslySetInnerHTML={{
-              __html: props.showHelpText ? helptext.__html : '',
-            }}
-          ></div>
-        </Details>
 
         <fieldset className={styles.testFormFields}>
-          <TestlabForm.FormInput<TestformForenklaFormValues>
+          <TestlabForm.FormInput<TestformAutomatiskFormValues>
             label={'Beskriv elementet'}
             name="elementOmtale"
             required={true}
           />
 
-          <TestlabFormTextArea<TestformForenklaFormValues>
+          <TestlabFormTextArea<TestformAutomatiskFormValues>
             label={'Element kjeldekode'}
             name="elementOmtaleHtml"
             required={false}
           />
 
-          <TestlabForm.FormSelect<TestformForenklaFormValues>
-            label="Vel utfall"
-            name="valgtUtfallIndex"
-            options={utfallOptions}
-            required
+          <TestlabForm.FormInput<TestformAutomatiskFormValues>
+            label={'Utfall'}
+            name="elementResultat"
+            required={true}
           />
 
-          <TestlabFormTextArea<TestformForenklaFormValues>
+          <TestlabForm.FormInput<TestformAutomatiskFormValues>
+            label={'Resultat'}
+            name="elementUtfall"
+            required={true}
+          />
+
+          <TestlabFormTextArea<TestformAutomatiskFormValues>
             label="Kommentar"
             name="kommentar"
           />
@@ -143,27 +121,4 @@ const TestFormForenkla = (props: Props) => {
 };
 
 
-
-
-function sanitizeHelptext(props: Props) {
-  const cleanHTML = DOMPurify.sanitize(
-    props.testregel.definition?.helptext ?? '',
-    {
-      USE_PROFILES: { html: true },
-    }
-  );
-
-  return { __html: cleanHTML };
-}
-function sanitizeInstruksjon(props: Props) {
-  const cleanInstruksjon = DOMPurify.sanitize(
-    props.testregel.definition?.description ?? '',
-    {
-      USE_PROFILES: { html: true },
-    }
-  );
-
-  return { __html: cleanInstruksjon };
-}
-
-export default TestFormForenkla;
+export default TestFormAutomatisk;

@@ -16,14 +16,10 @@ import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <IntlProvider
-      locale={locale}
-      defaultLocale="no"
-      messages={NO}
-    >
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    <IntlProvider locale={locale} defaultLocale="no" messages={getMessages()}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </IntlProvider>
   </React.StrictMode>
 );
@@ -32,4 +28,8 @@ function getLocale() {
   return (
     globalThis.navigator.language || globalThis.navigator.languages[0] || 'no'
   );
+}
+
+function getMessages() {
+  return NO;
 }

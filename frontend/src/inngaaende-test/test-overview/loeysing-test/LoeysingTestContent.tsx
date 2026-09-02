@@ -3,7 +3,6 @@ import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
-import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
 import TestForm from '@test/testregel-form/TestForm';
 import {
@@ -13,15 +12,13 @@ import {
   TestregelOverviewElement,
   TestResultUpdate,
 } from '@test/types';
-import { toTestregelStatusKey } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
-import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
-import StatusMessageBox from "@test/test-overview/loeysing-test/StatusMessageBox";
+import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
 
 interface Props {
   sideutval: PageType;
@@ -129,6 +126,8 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   }, [activeTest, slettTestelement]);
 
   const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
+  const isManuell = activeTest?.testregel.modus === 'manuell';
+  const isAutomatisk = activeTest?.testregel.modus === 'automatisk';
 
   return (
     <>
@@ -161,20 +160,14 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
               />
 
               {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
-                activeTest && activeTest.testResultList.length>0 && (
+                activeTest &&
+                activeTest.testResultList.length > 0 && (
                   <div
                     className={classNames('testregel-form-wrapper', {
                       single: testregelList.length === 1,
                     })}
                   >
-                    {isForenkla ? (
-                      <TestFormForenklaList
-                        testregel={activeTest.testregel}
-                        resultater={activeTest.testResultList}
-                        showHelpText={true}
-                        onResultat={handleUpdateResult}
-                      />
-                    ) : (
+                    {isManuell && (
                       <TestForm
                         testregel={activeTest.testregel}
                         resultater={activeTest.testResultList}
@@ -182,6 +175,14 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
                         showHelpText={showHelpText}
                         slettTestelement={handleSlettTestelement}
                         isLoading={loading}
+                      />
+                    )}
+                    {(isForenkla || isAutomatisk) && (
+                      <TestFormForenklaList
+                        testregel={activeTest.testregel}
+                        resultater={activeTest.testResultList}
+                        showHelpText={true}
+                        onResultat={handleUpdateResult}
                       />
                     )}
                     <TestlabDivider />
