@@ -42,7 +42,7 @@ const TestregelButton = memo(({
     >
       <div className={styles.testregelButtonId}>
         <div className={styles.idTextWrapper}>
-          <div className="krav">{testregel.krav}</div>
+          <div className="krav">{testregel.krav} id: {testregel.id}</div>
           {(status !== 'ikkje-starta' || isActive) && (
             <div className={styles.status}>
               {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
