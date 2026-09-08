@@ -1,13 +1,11 @@
 import TestlabForm from '@common/form/TestlabForm';
 import { Testregel } from '@testreglar/api/types';
-import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
-import { Details, Heading } from '@digdir/designsystemet-react';
+import { Details } from '@digdir/designsystemet-react';
 import DOMPurify from 'dompurify';
-import { useMemo } from 'react';
 import styles from '@test/testregel-form/test-form.module.scss';
 import { TestformForenklaFormValues } from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
-import { TestregelResultat } from '@test/util/testregelParser';
 import {
   useTestFormForenklaFormOptions,
   useUtfallOption,
