@@ -12,6 +12,7 @@ import style from '../test-form.module.scss';
 
 import commonClasses from '@test/testregel-form/test-form-accordion.module.css';
 import React from 'react';
+import TestFormAutomatisk from '@test/testregel-form/testform-automatisk/TestFormAutomatisk';
 
 interface Props {
   testregel: Testregel;
@@ -36,6 +37,9 @@ const TestFormForenklaList = (props: Props) => {
   else {
     resultatList.push(...props.resultater);
   }
+
+  const isAutomatisk = props.testregel.modus == 'automatisk'
+  const isForenkla = props.testregel.modus == 'manuell-forenkla'
 
   return (
     <div className={style.testForm}>
@@ -63,16 +67,30 @@ const TestFormForenklaList = (props: Props) => {
                   />
                 </Details.Summary>
                 <Details.Content>
-                  <TestFormForenkla
-                    testregel={props.testregel}
-                    showHelpText={props.showHelpText}
-                    onResultat={props.onResultat}
-                    slettTestelement={props.slettTestelement}
-                    isLoading={props.isLoading}
-                    isDemoApp={props.isDemoApp}
-                    onCreateForenklaResultat={props.onCreateForenklaResultat}
-                    activeResult={resultat}
-                  />
+                  {isForenkla && (
+                    <TestFormForenkla
+                      testregel={props.testregel}
+                      showHelpText={props.showHelpText}
+                      onResultat={props.onResultat}
+                      slettTestelement={props.slettTestelement}
+                      isLoading={props.isLoading}
+                      isDemoApp={props.isDemoApp}
+                      onCreateForenklaResultat={props.onCreateForenklaResultat}
+                      activeResult={resultat}
+                    />
+                  )}
+                  {isAutomatisk && (
+                    <TestFormAutomatisk
+                      testregel={props.testregel}
+                      showHelpText={props.showHelpText}
+                      onResultat={props.onResultat}
+                      slettTestelement={props.slettTestelement}
+                      isLoading={props.isLoading}
+                      isDemoApp={props.isDemoApp}
+                      onCreateForenklaResultat={props.onCreateForenklaResultat}
+                      activeResult={resultat}
+                    />
+                  )}
                 </Details.Content>
               </Details>
             </Card>

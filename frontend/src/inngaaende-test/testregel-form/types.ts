@@ -6,6 +6,7 @@ import {
 } from '@test/api/types';
 import { evaluateTestregel, TestregelForm } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
+import { TestregelSchema } from '@test/util/testregel-interface/TestregelSchema';
 
 export type SkjemaMedSvar = {
   resultatId: number;
@@ -18,9 +19,11 @@ export function initSkjemaMedSvar(
   testregel: Testregel
 ) {
   return resultater.map((resultat) => {
+    const schema = testregel.testregelSchema as unknown as TestregelSchema;
+
     return {
       resultatId: resultat.id,
-      skjema: evaluateTestregel(testregel.testregelSchema, resultat.svar),
+      skjema: evaluateTestregel(schema, resultat.svar),
       svar: resultat.svar,
     };
   });

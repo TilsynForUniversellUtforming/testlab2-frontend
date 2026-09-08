@@ -13,6 +13,9 @@ export interface Props {
   onChangeSideutval: (sideutvalId: number) => void;
   innhaldstype: InnhaldstypeTesting;
   onChangeInnhaldstype: (innhaldstypeId: number) => void;
+  testgrunnlagId: number;
+  currentLoeysingId?: number;
+  currentSideutvalId?: number;
 }
 
 const LoeysingTestHeading = ({
@@ -24,17 +27,24 @@ const LoeysingTestHeading = ({
   innhaldstype,
   onChangeInnhaldstype,
   innhaldstypeList,
+  testgrunnlagId,
+  currentLoeysingId,
+  currentSideutvalId
 }: Props) => {
   return (
     <div className="manual-test-heading">
       <Heading data-size="xl" level={2}>
         Gjennomfør test
       </Heading>
-      <Paragraph variant={"long"}>{title}</Paragraph>
+      <Paragraph variant={'long'}>
+        {title} TestgrunnlagId:{testgrunnlagId}
+      </Paragraph>
       <div className="tags">
         <Tag color="second">Inngående kontroll</Tag>
         <Tag color="second">Nettside</Tag>
-        <Tag color="second">{currentLoeysingName}</Tag>
+        <Tag color="second">
+          {currentLoeysingName} loeysingId: {currentLoeysingId}
+        </Tag>
       </div>
       <PageTypeSelector
         sideutvalList={sideutvalList}

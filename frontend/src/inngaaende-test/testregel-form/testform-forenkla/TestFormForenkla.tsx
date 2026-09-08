@@ -1,26 +1,31 @@
 import TestlabForm from '@common/form/TestlabForm';
 import { Testregel } from '@testreglar/api/types';
-import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
-import { Details, Heading } from '@digdir/designsystemet-react';
+import { Details } from '@digdir/designsystemet-react';
 import DOMPurify from 'dompurify';
-import { useMemo } from 'react';
 import styles from '@test/testregel-form/test-form.module.scss';
 import { TestformForenklaFormValues } from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
-import { TestregelResultat } from '@test/util/testregelParser';
 import {
   useTestFormForenklaFormOptions,
   useUtfallOption,
 } from '@test/testregel-form/testform-forenkla/hooks';
 import StatusMessageBox from '@test/test-overview/loeysing-test/StatusMessageBox';
+import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
+import {
+  mapToTestregelResultat,
+  mapUtfallToElementResultat,
+} from '@test/testregel-form/utils';
+import ImageUpload from '@common/image-edit/ImageUpload';
+import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
 
 interface Props {
   testregel: Testregel;
   showHelpText: boolean;
   onResultat: (testResultUpdate: TestResultUpdate) => void;
-  slettTestelement?: (resultatId: number) => void;
-  isLoading?: boolean;
-  isDemoApp?: boolean;
+  slettTestelement: (resultatId: number) => void;
+  isLoading: boolean;
+  isDemoApp: boolean;
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
   activeResult:ResultatManuellKontroll
 }
@@ -108,6 +113,12 @@ const TestFormForenkla = (props: Props) => {
             required={true}
           />
 
+          <TestlabFormTextArea<TestformForenklaFormValues>
+            label={'Element kjeldekode'}
+            name="elementOmtaleHtml"
+            required={false}
+          />
+
           <TestlabForm.FormSelect<TestformForenklaFormValues>
             label="Vel utfall"
             name="valgtUtfallIndex"
@@ -115,15 +126,22 @@ const TestFormForenkla = (props: Props) => {
             required
           />
 
-          <TestlabForm.FormInput<TestformForenklaFormValues>
+          <TestlabFormTextArea<TestformForenklaFormValues>
             label="Kommentar"
             name="kommentar"
           />
         </fieldset>
+        <ImageUpload resultatId={props.activeResult.id} isDemo={props.isDemoApp} />
 
-        {sucsessFullSubmit && <StatusMessageBox
-          statusmessage={'Lagra ' + description}
-        />}
+        {sucsessFullSubmit && (
+          <StatusMessageBox statusmessage={'Lagra ' + description} />
+        )}
+
+        <TestElementFooter
+          slettTestelement={props.slettTestelement}
+          resultatId={props.activeResult.id}
+          isLoading={props.isLoading}
+        />
 
         <TestlabForm.FormButtons />
       </TestlabForm>
@@ -131,48 +149,9 @@ const TestFormForenkla = (props: Props) => {
   );
 };
 
-function mapUtfallToElementResultat(testresultat: string): ElementResultat {
-  switch (testresultat) {
-    case 'samsvar':
-      return 'samsvar';
-    case 'brot':
-      return 'brot';
-    case 'ikkje-forekomst':
-      return 'ikkjeForekomst';
-    case 'ikkje-testbar':
-      return 'ikkjeTesta';
-    default:
-      return 'advarsel';
-  }
-}
 
-function mapToTestregelResultat(
-  testresultat: string,
-  utfall: string
-): TestregelResultat {
-  if (testresultat === 'ikkje-forekomst') {
-    return { type: 'ikkjeForekomst', utfall };
-  }
 
-  return {
-    type: 'avslutt',
-    utfall,
-    fasit: mapTestresultatToFasit(testresultat),
-  };
-}
 
-function mapTestresultatToFasit(
-  testresultat: string
-): 'Ja' | 'Nei' | 'Ikkje testbart' {
-  switch (testresultat) {
-    case 'samsvar':
-      return 'Ja';
-    case 'brot':
-      return 'Nei';
-    default:
-      return 'Ikkje testbart';
-  }
-}
 function sanitizeHelptext(props: Props) {
   const cleanHTML = DOMPurify.sanitize(
     props.testregel.definition?.helptext ?? '',

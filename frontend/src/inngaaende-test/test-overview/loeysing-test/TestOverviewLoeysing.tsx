@@ -83,6 +83,8 @@ const TestOverviewLoeysing = () => {
         innhaldstypeList={innhaldstypeList}
         innhaldstype={innhaldstype}
         onChangeInnhaldstype={onChangeInnhaldstype}
+        testgrunnlagId={testgrunnlagId}
+        currentLoeysingId={loeysingId}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
       <div className="manual-test-wrapper">
@@ -104,15 +106,15 @@ const TestOverviewLoeysing = () => {
             showHelpText={showHelpText}
           />
         </div>
-         {alert && (
-           <AlertModal
-             ref={modalRef}
-             severity={alert.severity}
-             title={alert.title}
-             message={alert.message}
-             clearMessage={alert.clearMessage}
-           />
-         )}
+        {alert && (
+          <AlertModal
+            ref={modalRef}
+            severity={alert.severity}
+            title={alert.title}
+            message={alert.message}
+            clearMessage={alert.clearMessage}
+          />
+        )}
       </div>
     </div>
   );
