@@ -15,14 +15,16 @@ import {
 } from '@test/testregel-form/utils';
 import { createOptionsFromLiteral } from '@common/util/stringutils';
 import {OptionType} from "@common/types";
+import ImageUpload from '@common/image-edit/ImageUpload';
+import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
 
 interface Props {
   testregel: Testregel;
   showHelpText: boolean;
   onResultat: (testResultUpdate: TestResultUpdate) => void;
-  slettTestelement?: (resultatId: number) => void;
-  isLoading?: boolean;
-  isDemoApp?: boolean;
+  slettTestelement: (resultatId: number) => void;
+  isLoading: boolean;
+  isDemoApp: boolean;
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
   activeResult: ResultatManuellKontroll;
 }
@@ -115,6 +117,12 @@ const TestFormAutomatisk = (props: Props) => {
         {sucsessFullSubmit && (
           <StatusMessageBox statusmessage={'Lagra ' + description} />
         )}
+        <ImageUpload resultatId={props.activeResult.id} isDemo={props.isDemoApp} />
+        <TestElementFooter
+          slettTestelement={props.slettTestelement}
+          resultatId={props.activeResult.id}
+          isLoading={props.isLoading}
+        />
 
         <TestlabForm.FormButtons />
       </TestlabForm>

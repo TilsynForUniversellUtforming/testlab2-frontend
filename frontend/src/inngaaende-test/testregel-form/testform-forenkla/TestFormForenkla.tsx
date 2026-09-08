@@ -18,14 +18,16 @@ import {
   mapToTestregelResultat,
   mapUtfallToElementResultat,
 } from '@test/testregel-form/utils';
+import ImageUpload from '@common/image-edit/ImageUpload';
+import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
 
 interface Props {
   testregel: Testregel;
   showHelpText: boolean;
   onResultat: (testResultUpdate: TestResultUpdate) => void;
-  slettTestelement?: (resultatId: number) => void;
-  isLoading?: boolean;
-  isDemoApp?: boolean;
+  slettTestelement: (resultatId: number) => void;
+  isLoading: boolean;
+  isDemoApp: boolean;
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
   activeResult:ResultatManuellKontroll
 }
@@ -131,10 +133,17 @@ const TestFormForenkla = (props: Props) => {
             name="kommentar"
           />
         </fieldset>
+        <ImageUpload resultatId={props.activeResult.id} isDemo={props.isDemoApp} />
 
         {sucsessFullSubmit && (
           <StatusMessageBox statusmessage={'Lagra ' + description} />
         )}
+
+        <TestElementFooter
+          slettTestelement={props.slettTestelement}
+          resultatId={props.activeResult.id}
+          isLoading={props.isLoading}
+        />
 
         <TestlabForm.FormButtons />
       </TestlabForm>
