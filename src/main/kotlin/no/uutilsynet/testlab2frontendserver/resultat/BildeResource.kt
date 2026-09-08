@@ -35,7 +35,6 @@ class BildeResource(val testingApiProperties: TestingApiProperties) {
     val headers = HttpHeaders()
     headers["Content-Disposition"] = "inline; filename=\"$filename\""
     if (testingApiProperties.key.isNotEmpty()) {
-      connection.setRequestProperty(testingApiProperties.headerName, testingApiProperties.key)
       headers[testingApiProperties.headerName] = testingApiProperties.key
     }
 
