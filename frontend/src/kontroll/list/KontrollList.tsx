@@ -10,9 +10,10 @@ import {
 import React, { ChangeEvent, useState } from 'react';
 import { Link, useLoaderData } from 'react-router';
 
+import useFetchSaksbehandler from '../../user/api/hooks';
+import { getNameOrReturnString } from '../../user/api/user-api';
 import { KontrollListItem, KontrollType, Orgnummer } from '../types';
 import classes from './kontroll-list.module.css';
-import { getNameOrReturnString } from '../../user/api/user-api';
 
 const StyringsdataLinkButton = ({
   kontrollId,
@@ -37,6 +38,7 @@ const KontrollList = () => {
   const filters: string[] = Object.values(KontrollType);
 
   const kontroller = useLoaderData() as KontrollListItem[];
+  const { saksbehandler } = useFetchSaksbehandler();
   const [kontrollFilter, setKontrollFilter] = useState<KontrollType>(
     KontrollType.InngaaendeKontroll
   );
@@ -110,7 +112,7 @@ const KontrollList = () => {
                   {viewVirksomheter(kontroll.virksomheter)}
                 </Table.Cell>
                 <Table.Cell>
-                  {getNameOrReturnString(kontroll.saksbehandler)}
+                  {getNameOrReturnString(kontroll.saksbehandler, saksbehandler)}
                 </Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
