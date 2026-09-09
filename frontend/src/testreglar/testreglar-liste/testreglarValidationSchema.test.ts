@@ -91,5 +91,20 @@ describe('testreglarValidationSchema conditional required fields', () => {
 
     expect(result.success).toBe(true);
   });
+
+  it('passes when modus is not manuell-forenkla even if definition has backend polymorphic shape', () => {
+    const result = testreglarValidationSchema.safeParse(
+      createValidBase({
+        modus: 'manuell',
+        testregelSchema: '{"steg":[]}',
+        definition: {
+          type: 'string',
+          body: '{"steg":[]}',
+        },
+      })
+    );
+
+    expect(result.success).toBe(true);
+  });
 });
 

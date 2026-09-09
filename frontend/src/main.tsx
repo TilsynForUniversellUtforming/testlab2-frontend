@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
 function getLocale() {
   return (
-    globalThis.navigator.language || globalThis.navigator.languages[0] || 'no'
+   'no'
   );
 }
 
