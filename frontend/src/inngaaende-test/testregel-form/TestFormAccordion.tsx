@@ -1,5 +1,4 @@
-import { Dropdown, Heading } from '@digdir/designsystemet-react';
-import { CaretDownFillIcon } from '@navikt/aksel-icons';
+import { Heading } from '@digdir/designsystemet-react';
 import { elementOmtaleSide, Svar } from '@test/api/types';
 import SistLagra from '@test/test-overview/loeysing-test/SistLagra';
 import TestFormResultat from '@test/testregel-form/TestFormResultat';
@@ -12,6 +11,7 @@ import classes from './test-form-accordion.module.css';
 import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
 import { AccordionButton } from '@test/testregel-form/AccordionButton';
 import { useTestFormItems } from '@test/testregel-form/hooks';
+import KopierSvarDropdown from '@test/testregel-form/KopierTestDropdown';
 
 
 type Props = {
@@ -112,30 +112,9 @@ export function   TestFormAccordion({
     onAnswer(kilde.svar, index);
   }
 
-  function dropdownMenu(index: number) {
-    return (
-      <Dropdown placement="bottom-start" data-size="sm">
-        <Dropdown.Trigger data-size="sm" className={classes.copyButton}>
-          Kopier svar fra tidligere test
-          <CaretDownFillIcon />
-        </Dropdown.Trigger>
-        <Dropdown.List>
-          {items.map(({ skjemaMedSvar, resultatId, elementOmtale }, i) => {
-            if (i === index || !elementOmtale) return null;
 
-            return (
-              <Dropdown.Item
-                key={resultatId}
-                onClick={() => kopierSvar(skjemaMedSvar, index)}
-              >
-                {elementOmtale}
-              </Dropdown.Item>
-            );
-          })}
-        </Dropdown.List>
-      </Dropdown>
-    );
-  }
+
+
   if (items.length === 1) {
     const { skjemaMedSvar, resultatId, elementOmtale, detaljer } = items[0];
 
@@ -171,8 +150,7 @@ export function   TestFormAccordion({
                   >
                     Test {index + 1}
                   </Heading>
-
-                  {index !== 0 && dropdownMenu(index)}
+                  {index !== 0 && <KopierSvarDropdown index={index} items={items} kopierSvar={kopierSvar} />}
                   {renderForm(
                     resultatId,
                     skjemaMedSvar,
