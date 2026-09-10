@@ -1,6 +1,6 @@
 import { responseWithLogErrors } from '@common/util/apiUtils';
 
-import { Utval } from './types';
+import { Utval } from '@loeysingar/api/types';
 import { fetchWithErrorHandling } from '@common/form/util';
 
 export const fetchUtvalList = async (): Promise<Utval[]> =>
@@ -16,7 +16,10 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
 
 export const getUtvalById = async (
   id: number | undefined
-): Promise<Response> => {
+): Promise<Utval> => {
   if (id === undefined) throw new Error(`utvalId ${id} undefined`);
-  return await fetchWithErrorHandling(`/api/v1/utval/${id}`);
+  return await fetchWithErrorHandling(`/api/v1/utval/${id}`).then((response) => response.json());
 };
+
+
+

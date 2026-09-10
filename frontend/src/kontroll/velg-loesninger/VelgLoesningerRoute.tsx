@@ -1,5 +1,5 @@
 import { Utval } from '@loeysingar/api/types';
-import { fetchUtvalList } from '@loeysingar/api/utval-api';
+import { fetchUtvalList } from '@utval/utval-api';
 import { redirect, RouteObject } from 'react-router';
 
 import { fetchKontroll, updateKontrollUtval } from '../kontroll-api';

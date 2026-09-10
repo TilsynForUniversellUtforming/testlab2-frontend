@@ -4,7 +4,7 @@ import { withErrorHandling } from '@common/util/apiUtils';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { fetchLoeysingList } from '@loeysingar/api/loeysing-api';
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import { fetchUtvalList } from '@loeysingar/api/utval-api';
+import { fetchUtvalList } from '@utval/utval-api';
 import { fetchRegelsettList } from '@testreglar/api/regelsett-api';
 import { listTestreglar } from '@testreglar/api/testreglar-api';
 import { Regelsett, TestregelBase } from '@testreglar/api/types';

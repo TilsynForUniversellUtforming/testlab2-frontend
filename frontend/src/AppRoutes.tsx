@@ -20,6 +20,7 @@ import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
 import { RESULTAT_ROOT, ResultRoutes } from './resultat/ResultatRoutes';
 import { StyringsdataRoutes } from './styringsdata/StyringsdataRoutes';
+import { UTVAL_ROOT, UtvalRoutes } from './utval/UtvalRoutes';
 
 export const ROOT: AppRoute = {
   navn: 'uu',
@@ -57,6 +58,9 @@ const TEKNIKK_ROOT: AppRoute = {
   disabled: true,
 };
 
+
+
+
 export const KONKURRANSE_ROOT: AppRoute = {
   navn: 'Konkurranse',
   path: '/',
@@ -70,6 +74,7 @@ export const utval: AppRoute[] = [
   VERKSEMD_LIST,
   TESTREGEL_ROOT,
   KRAV_LIST,
+  UTVAL_ROOT,
   TEKNIKK_ROOT,
 ];
 
@@ -102,6 +107,7 @@ export const AppRoutes: RouteObject = {
     KontrollRoutes,
     TestingRoutes,
     StyringsdataRoutes,
+    UtvalRoutes,
     {
       path: '*',
       element: <Page404 />,

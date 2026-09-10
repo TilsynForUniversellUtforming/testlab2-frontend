@@ -1,6 +1,6 @@
 import { isDefined } from '@common/util/validationUtils';
 import { Loeysing, Utval } from '@loeysingar/api/types';
-import { getUtvalById } from '@loeysingar/api/utval-api';
+import { getUtvalById } from '@utval/utval-api';
 import {
   fetchCrawlParametersKontroll,
   updateCrawlParameters,
