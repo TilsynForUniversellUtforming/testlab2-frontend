@@ -6,12 +6,7 @@ import PaginationContainer from '@common/table/control/pagination/PaginationCont
 import TestlabTableBody from '@common/table/TestlabTableBody';
 import TestlabTableHeader from '@common/table/TestlabTableHeader';
 import { getFullPath } from '@common/util/routeUtils';
-import {
-  Button,
-  ErrorSummary,
-  Table,
-  Tabs,
-} from '@digdir/designsystemet-react';
+import { Button, ErrorSummary, Table, Tabs, } from '@digdir/designsystemet-react';
 import ResultatListTableBody from '@resultat/ResultatListTableBody';
 import {
   RESULTAT_KONTROLL,
@@ -23,17 +18,16 @@ import {
   RESULTAT_TEMA_LOEYSING_LIST,
   TESTRESULTAT_LOEYSING,
 } from '@resultat/ResultatRoutes';
-import ResultTableActions, {
-  TableActionsProps,
-} from '@resultat/ResultTableActions';
+import ResultTableActions, { TableActionsProps, } from '@resultat/ResultTableActions';
 import ResultTableHeader from '@resultat/ResultTableHeader';
 import { resultTable } from '@resultat/tableoptions';
 import { Column, ColumnDef, Row, VisibilityState } from '@tanstack/react-table';
 import classnames from 'classnames';
 import React, { ReactElement, useCallback, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { KontrollType } from '../kontroll/types';
+import { useGetCurrentPath } from '@resultat/resultHooks';
 
 export interface ResultTableProps<T extends object> {
   tableParams: TableParams<T>;
@@ -97,92 +91,13 @@ const ResultatTable = <T extends object>({
     setColumnVisibility(tableParams.visibilityState(visDetaljer));
   };
 
-  const location = useLocation();
-
-  const getPath = (tab: string) => {
-    switch (tab) {
-      case 'resultat':
-        return getFullPath(RESULTAT_ROOT);
-      case 'tema':
-        return getFullPath(RESULTAT_TEMA_LIST);
-      case 'krav':
-        return getFullPath(RESULTAT_KRAV_LIST);
-      default:
-        return 'resultat';
-    }
-  };
-
-  const getPathSubpathLoeysing = (tab: string) => {
-    switch (tab) {
-      case 'resultat':
-        return getFullPath(
-          TESTRESULTAT_LOEYSING,
-          {
-            pathParam: ':id',
-            id: String(id),
-          },
-          {
-            pathParam: ':loeysingId',
-            id: String(loeysingId),
-          }
-        );
-      case 'tema':
-        return getFullPath(
-          RESULTAT_TEMA_LOEYSING_LIST,
-          {
-            pathParam: ':id',
-            id: String(id),
-          },
-          {
-            pathParam: ':loeysingId',
-            id: String(loeysingId),
-          }
-        );
-      case 'krav':
-        return getFullPath(
-          RESULTAT_KRAV_KONTROLL_LIST,
-          {
-            pathParam: ':id',
-            id: String(id),
-          },
-          {
-            pathParam: ':loeysingId',
-            id: String(loeysingId),
-          }
-        );
-      default:
-        return 'resultat';
-    }
-  };
-
-  const getPathSubpath = (tab: string) => {
-    switch (tab) {
-      case 'resultat':
-        return getFullPath(RESULTAT_KONTROLL, {
-          pathParam: ':id',
-          id: String(id),
-        });
-      case 'tema':
-        return getFullPath(RESULTAT_TEMA_KONTROLL_LIST, {
-          pathParam: ':id',
-          id: String(id),
-        });
-      case 'krav':
-        return getFullPath(RESULTAT_KRAV_KONTROLL_LIST, {
-          pathParam: ':id',
-          id: String(id),
-        });
-      default:
-        return 'resultat';
-    }
-  };
-  const [activeTab, setActiveTab] = useState<string>('resultat');
+  const [activeTab, setActiveTab] = useState<string>(useGetCurrentPath);
   const onChangeTabs = useCallback((tab: string) => {
     setActiveTab(tab);
     if (id !== undefined && loeysingId !== undefined) {
-      navigate(getPathSubpathLoeysing(tab));
+      navigate(getPathSubpathLoeysing(tab, id, loeysingId));
     } else if (id !== undefined && loeysingId === undefined) {
-      navigate(getPathSubpath(tab));
+      navigate(getPathSubpath(tab, id));
     } else {
       navigate(getPath(tab));
     }
@@ -197,7 +112,6 @@ const ResultatTable = <T extends object>({
     columnVisibility,
     setColumnVisibility
   );
-
 
   const handleClickRetry = () => {
     table.toggleAllRowsSelected(false);
@@ -235,7 +149,6 @@ const ResultatTable = <T extends object>({
 
   const headerGroup = table.getHeaderGroups()[0];
 
-
   return (
     <div className="testlab-table">
       <ResultTableHeader
@@ -254,7 +167,7 @@ const ResultatTable = <T extends object>({
         />
       )}
 
-      <Tabs defaultValue={'resultat'} onChange={onChangeTabs}>
+      <Tabs defaultValue={activeTab} onChange={onChangeTabs}>
         <Tabs.List>
           <Tabs.Tab value={'resultat'}>Resultat</Tabs.Tab>
           <Tabs.Tab value={'tema'}>Sortert på tema</Tabs.Tab>
@@ -320,5 +233,85 @@ const ResultatTable = <T extends object>({
     </div>
   );
 };
+
+
+function getPath (tab: string)  {
+  switch (tab) {
+    case 'resultat':
+      return getFullPath(RESULTAT_ROOT);
+    case 'tema':
+      return getFullPath(RESULTAT_TEMA_LIST);
+    case 'krav':
+      return getFullPath(RESULTAT_KRAV_LIST);
+    default:
+      return 'resultat';
+  }
+}
+
+function getPathSubpath  (tab: string, id:string) {
+  switch (tab) {
+    case 'resultat':
+      return getFullPath(RESULTAT_KONTROLL, {
+        pathParam: ':id',
+        id: String(id),
+      });
+    case 'tema':
+      return getFullPath(RESULTAT_TEMA_KONTROLL_LIST, {
+        pathParam: ':id',
+        id: String(id),
+      });
+    case 'krav':
+      return getFullPath(RESULTAT_KRAV_KONTROLL_LIST, {
+        pathParam: ':id',
+        id: String(id),
+      });
+    default:
+      return 'resultat';
+  }
+}
+
+
+function getPathSubpathLoeysing(tab: string, id: string, loeysingId: string) {
+  switch (tab) {
+    case 'resultat':
+      return getFullPath(
+        TESTRESULTAT_LOEYSING,
+        {
+          pathParam: ':id',
+          id: String(id),
+        },
+        {
+          pathParam: ':loeysingId',
+          id: String(loeysingId),
+        }
+      );
+    case 'tema':
+      return getFullPath(
+        RESULTAT_TEMA_LOEYSING_LIST,
+        {
+          pathParam: ':id',
+          id: String(id),
+        },
+        {
+          pathParam: ':loeysingId',
+          id: String(loeysingId),
+        }
+      );
+    case 'krav':
+      return getFullPath(
+        RESULTAT_KRAV_KONTROLL_LIST,
+        {
+          pathParam: ':id',
+          id: String(id),
+        },
+        {
+          pathParam: ':loeysingId',
+          id: String(loeysingId),
+        }
+      );
+    default:
+      return 'resultat';
+  }
+}
 
 export default ResultatTable;
