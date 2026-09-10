@@ -32,10 +32,14 @@ export const utfallSchema = z.object({
   ]),
   default: z.boolean(),
 });
-z.object({
-  description: z.string().optional(),
-  utfall: z.array(utfallSchema).optional(),
+
+const manuellForenklaDefinitionSchema = z.object({
+  description: z.string(),
+  helptext: z.string().optional(),
+  utfall: z.array(utfallSchema).min(1, 'Minst eitt utfall er påkrevd'),
+  type: z.string().optional(),
 });
+
 export const testregelSchema = testregelBaseSchema.and(
   z.object({
     testregelSchema: z.string().optional(),
@@ -63,30 +67,47 @@ export const testregelSchema = testregelBaseSchema.and(
     testobjekt: z.coerce.number().optional().optional(),
     innhaldstypeTesting: z.coerce.number().optional().optional(),
     kravTilSamsvar: z.string().optional(),
-    definition: z
-      .object({
-        description: z.string(),
-        helptext: z.string().optional(),
-        utfall: z.array(utfallSchema).min(1, 'Minst eitt utfall er påkrevd'),
-        typ: z.string().optional(),
-      })
-      .optional(),
+    // definition can be various backend polymorphic shapes for non-manuell-forenkla modes.
+    definition: z.unknown().optional(),
   })
 );
 
 export const testreglarValidationSchema = testregelSchema
-  .refine(
-    (data) => {
-      if (data.modus === 'manuell-forenkla') {
-        return (data.definition?.description ?? '').trim().length > 0;
-      }
-      return true;
-    },
-    {
-      message: 'Instruksjon kan ikkje vera tom',
-      path: ['definition', 'description'],
+  .superRefine((data, ctx) => {
+    if (data.modus !== 'manuell-forenkla') {
+      return;
     }
-  )
+
+    const description =
+      typeof data.definition === 'object' &&
+      data.definition !== null &&
+      'description' in data.definition &&
+      typeof (data.definition as { description?: unknown }).description === 'string'
+        ? ((data.definition as { description: string }).description ?? '')
+        : '';
+
+    if (description.trim().length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Instruksjon kan ikkje vera tom',
+        path: ['definition', 'description'],
+      });
+    }
+
+    const parsed = manuellForenklaDefinitionSchema.safeParse(data.definition);
+
+    if (parsed.success) {
+      return;
+    }
+
+    for (const issue of parsed.error.issues) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: issue.message,
+        path: ['definition', ...issue.path],
+      });
+    }
+  })
   .refine(
     (data) => {
       if (data.modus !== 'manuell-forenkla') {

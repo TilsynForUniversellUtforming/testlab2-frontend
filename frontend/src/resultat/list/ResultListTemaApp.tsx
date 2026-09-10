@@ -18,7 +18,7 @@ function ScoreTag(props: Readonly<{ row: Row<ResultatTema> }>) {
       data-size="sm"
       data-color={getSeverity(scoreToPercentage(props.row.getValue('score')))}
     >
-      {props.row.getValue('score')}
+      {scoreToPercentage(props.row.getValue('score'))}
     </Tag>
   );
 }

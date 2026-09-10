@@ -96,6 +96,8 @@ export const updateTestregel = async (
 {
   const payload = normalizeManuellForenklaPayload(testregel);
 
+  console.log("Payload for updateTestregel:", payload); // Debug log
+
   return await fetchWithCsrf(`/api/v1/testreglar`, {
     method: 'PUT',
     headers: {

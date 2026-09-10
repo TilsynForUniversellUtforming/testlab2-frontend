@@ -32,6 +32,7 @@ const TestregelEdit = () => {
 
   const onSubmit = useCallback((testregel: TestregelInit) => {
     const update = async () => {
+      console.log("Update testregel " + testregel);
       try {
         setContextLoading(true);
         setContextError(undefined);
