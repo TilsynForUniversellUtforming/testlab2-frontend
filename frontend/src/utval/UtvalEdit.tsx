@@ -114,26 +114,6 @@ export const UtvalEdit = () => {
       <UserActionTable<Loeysing>
         heading={'Utval'}
         subHeading={'Loeysingar i utval: ' + loeysingList.length}
-        children={
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-            <Button data-size="sm" onClick={onClickAdd} disabled={loading}>
-              Legg til løysing
-            </Button>
-            <Button
-              data-size="sm"
-              onClick={onClickSave}
-              disabled={loading || hasInvalidRows}
-            >
-              Lagre utval
-            </Button>
-            {hasInvalidRows && (
-              <p style={{ margin: 0 }}>
-                Fyll ut namn, URL og organisasjonsnummer for alle rader før lagring.
-              </p>
-            )}
-            {infoMessage && <p style={{ margin: 0 }}>{infoMessage}</p>}
-          </div>
-        }
         tableProps={{
           data: loeysingList,
           defaultColumns: loeysingColumns,
@@ -158,7 +138,27 @@ export const UtvalEdit = () => {
             },
           ],
         }}
-      />
+      >
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+          <Button data-size="sm" onClick={onClickAdd} disabled={loading}>
+            Legg til løysing
+          </Button>
+          <Button
+            data-size="sm"
+            onClick={onClickSave}
+            disabled={loading || hasInvalidRows}
+          >
+            Lagre utval
+          </Button>
+          {hasInvalidRows && (
+            <p style={{ margin: 0 }}>
+              Fyll ut namn, URL og organisasjonsnummer for alle rader før
+              lagring.
+            </p>
+          )}
+          {infoMessage && <p style={{ margin: 0 }}>{infoMessage}</p>}
+        </div>
+      </UserActionTable>
     </div>
   );
 };
