@@ -3,6 +3,24 @@ import { responseWithLogErrors } from '@common/util/apiUtils';
 import { Utval } from '@loeysingar/api/types';
 import { fetchWithErrorHandling } from '@common/form/util';
 
+type NyttUtvalPayload = {
+  namn: string;
+  loeysingList: Array<{
+    namn: string;
+    url: string;
+    orgnummer: string;
+  }>;
+};
+
+const mapUtvalToPayload = (utval: Pick<Utval, 'namn' | 'loeysingar'>): NyttUtvalPayload => ({
+  namn: utval.namn,
+  loeysingList: utval.loeysingar.map((loeysing) => ({
+    namn: loeysing.namn,
+    url: loeysing.url,
+    orgnummer: loeysing.orgnummer,
+  })),
+});
+
 export const fetchUtvalList = async (): Promise<Utval[]> =>
   await fetchWithErrorHandling('/api/v1/utval', {
     method: 'GET',
@@ -22,12 +40,13 @@ export const getUtvalById = async (
 };
 
 export const updateUtval = async (utval: Utval): Promise<Utval> => {
+  const payload = mapUtvalToPayload(utval);
   return await fetchWithErrorHandling(`/api/v1/utval/${utval.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(utval),
+    body: JSON.stringify(payload),
   })
     .then((response) =>
       responseWithLogErrors(response, 'Kunne ikkje oppdatere utval')
@@ -39,12 +58,13 @@ export const updateUtval = async (utval: Utval): Promise<Utval> => {
 };
 
 export const createUtval = async (utval: Omit<Utval, 'id'>): Promise<Utval> => {
+  const payload = mapUtvalToPayload(utval);
   return await fetchWithErrorHandling('/api/v1/utval', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(utval),
+    body: JSON.stringify(payload),
   })
     .then((response) =>
       responseWithLogErrors(response, 'Kunne ikkje opprette utval')
