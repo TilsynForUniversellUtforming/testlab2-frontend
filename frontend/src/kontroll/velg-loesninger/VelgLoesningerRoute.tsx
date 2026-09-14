@@ -1,5 +1,5 @@
 import { Utval } from '@loeysingar/api/types';
-import { fetchUtvalList } from '@utval/utval-api';
+import { fetchUtvalListLoeysingar } from '@utval/utval-api';
 import { redirect, RouteObject } from 'react-router';
 
 import { fetchKontroll, updateKontrollUtval } from '../kontroll-api';
@@ -24,7 +24,7 @@ export const VelgLoesningerRoute: RouteObject = {
     }
 
 
-    const utval = await fetchUtvalList();
+    const utval = await fetchUtvalListLoeysingar();
     return {
       kontroll: await kontrollResponse.json(),
       utval,

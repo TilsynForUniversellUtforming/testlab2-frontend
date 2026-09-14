@@ -4,6 +4,7 @@ import java.net.URI
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
+import no.uutilsynet.testlab2frontendserver.kontroll.KontrollUpdate
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,6 +33,12 @@ class UtvalResource(
     val url = "${testingApiProperties.url}/v1/utval"
     return restTemplate.getList(url)
   }
+
+    @GetMapping("/loeysingar")
+    fun getUtvalListLoeysingar(): List<Utval> {
+        val url = "${testingApiProperties.url}/v1/utval/loeysingar"
+        return restTemplate.getList(url)
+    }
 
   @GetMapping("/{id}")
   fun getUtval(@PathVariable id: Int): ResponseEntity<Utval> =

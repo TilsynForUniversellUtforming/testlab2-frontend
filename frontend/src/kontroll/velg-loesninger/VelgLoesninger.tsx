@@ -17,6 +17,7 @@ import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import { Kontroll } from '../types';
 import { InformationIcon, InformationSquareIcon } from '@navikt/aksel-icons';
+import { UtvalDetailButton } from './UtvalDetailButton';
 
 
 
@@ -121,45 +122,11 @@ const VelgLoesninger = () => {
           <Heading level={2} data-size="lg">
             Nyaste utval av løysingar
           </Heading>
-          <div className={classes.nyesteUtvalgButtons}>
+          <ul className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
-              <div key={u.id} className={classes.utvalgPreviewWrapper}>
-                <button
-                  type={'button'}
-                  data-testid="utvalg"
-                  onClick={velgUtvalg(u)}
-                  className={classNames(classes.utvalgValgButton, {
-                    [classes.selected]: isValgt(u),
-                  })}
-                >
-                  <span className={classes.utvalgNamn}>{u.namn}</span>
-                  <span className={classes.utvalgOppretta}>
-                    {formatDate(u.oppretta)}
-                  </span>
-                </button>
-                <Button
-                  className={classes.utvalgPreviewTrigger}
-                  command="show-modal"
-                  commandfor={`utval-preview-modal-${u.id}`}
-                  data-utvalid={u.id}
-                  data-variant={'secondary'}
-                  icon
-                >
-                  <InformationIcon title="a11y-title" fontSize="1.5rem" />
-                </Button>
-                <Dialog id={`utval-preview-modal-${u.id}`}>
-                  <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
-                    Dialog header
-                  </Heading>
-                  <Paragraph style={{ marginBottom: 'var(--ds-size-2)' }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Blanditiis doloremque obcaecati assumenda odio ducimus sunt
-                    et.
-                  </Paragraph>
-                </Dialog>
-              </div>
+         <UtvalDetailButton key={u.id} utval={u} velgUtval={velgUtvalg} isValgt={isValgt} />
             ))}
-          </div>
+          </ul>
           {!isEmpty(eldreUtvalg) && (
             <>
               <Heading level={2} data-size="lg">
@@ -171,45 +138,42 @@ const VelgLoesninger = () => {
                   return (
                     <li
                       key={u.id}
-                      className={classNames({ [classes.selected]: valgt })}
+                      className={classNames(classes.eldreUtvalgPreviewWrapper, {
+                        [classes.selected]: valgt,
+                      })}
                     >
-                      <div className={classes.eldreUtvalgPreviewWrapper}>
-                        <button
-                          type={'button'}
-                          onClick={velgUtvalg(u)}
-                          className={classNames(classes.eldreUtvalgValgButton, {
-                            [classes.selected]: valgt,
-                          })}
-                          title={u.namn}
-                        >
-                          {u.namn}
-                        </button>
-                        <Button
-                          className={classes.utvalgPreviewTrigger}
-                          command="show-modal"
-                          commandfor={`utval-preview-modal-${u.id}`}
-                          data-utvalid={u.id}
-                          data-variant={'secondary'}
-                          icon
-                        >
-                          <InformationIcon
-                            title="a11y-title"
-                            fontSize="1.5rem"
-                          />
-                        </Button>
-                        <Dialog id={`utval-preview-modal-${u.id}`}>
-                          <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
-                            Dialog header
-                          </Heading>
-                          <Paragraph
-                            style={{ marginBottom: 'var(--ds-size-2)' }}
-                          >
-                            Lorem ipsum dolor sit, amet consectetur adipisicing
-                            elit. Blanditiis doloremque obcaecati assumenda odio
-                            ducimus sunt et.
-                          </Paragraph>
-                        </Dialog>
-                      </div>
+                      <button
+                        type={'button'}
+                        onClick={velgUtvalg(u)}
+                        className={classNames(classes.eldreUtvalgValgButton, {
+                          [classes.selected]: valgt,
+                        })}
+                        title={u.namn}
+                      >
+                        {u.namn}
+                      </button>
+                      <Button
+                        className={classes.utvalgPreviewTrigger}
+                        command="show-modal"
+                        commandfor={`utval-preview-modal-${u.id}`}
+                        data-utvalid={u.id}
+                        data-variant={'secondary'}
+                        icon
+                      >
+                        <InformationIcon title="a11y-title" fontSize="1.5rem" />
+                      </Button>
+                      <Dialog id={`utval-preview-modal-${u.id}`}>
+                        <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
+                          Dialog header
+                        </Heading>
+                        <Paragraph style={{ marginBottom: 'var(--ds-size-2)' }}>
+                          <ul>
+                            {u.loeysingar.map((loeysing) => {
+                              return <li key={loeysing.id}>{loeysing.namn}</li>;
+                            })}
+                          </ul>
+                        </Paragraph>
+                      </Dialog>
                     </li>
                   );
                 })}

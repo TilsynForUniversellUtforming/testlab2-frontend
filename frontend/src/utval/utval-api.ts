@@ -32,6 +32,17 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
       utval.map((u) => ({ ...u, oppretta: new Date(u.oppretta) }))
     );
 
+export const fetchUtvalListLoeysingar = async (): Promise<Utval[]> =>
+  await fetchWithErrorHandling('/api/v1/utval/loeysingar', {
+    method: 'GET',
+  })
+    .then((response) =>
+      responseWithLogErrors(response, 'Kunne ikkje hente utval')
+    )
+    .then((utval: Utval[]) =>
+      utval.map((u) => ({ ...u, oppretta: new Date(u.oppretta) }))
+    );
+
 export const getUtvalById = async (
   id: number | undefined
 ): Promise<Utval> => {
