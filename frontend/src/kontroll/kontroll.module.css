@@ -97,9 +97,11 @@
 
 .automatisk-eller-manuelt,
 .testregel-eller-manuelt,
-.utvalg-eller-manuelt,
-.nyeste-utvalg-buttons {
-  display: block;
+.utvalg-eller-manuelt {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+
   button:not(.utvalg-preview-trigger) {
     background-color: var(--ds-color-brand1-surface-tinted);
     color: black;
@@ -139,21 +141,6 @@
   }
 }
 
-.automatisk-eller-manuelt,
-.testregel-eller-manuelt,
-.utvalg-eller-manuelt {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.automatisk-eller-manuelt button,
-.testregel-eller-manuelt button,
-.utvalg-eller-manuelt button {
-  width: 100%;
-  height: 8rem;
-}
-
 .nyeste-utvalg-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -161,10 +148,49 @@
   margin: 1.5rem 0 4rem;
   padding-inline-start: 0;
 
+  > .utvalg-preview-wrapper > button:not(.utvalg-preview-trigger) {
+    background-color: var(--ds-color-brand1-surface-tinted);
+    color: black;
+    border: none;
+    font: var(--ds-body-lg-font-weight);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: var(--ds-color-brand1-surface-hover);
+    }
+
+    &:active {
+      background-color: var(--ds-color-brand1-surface-active);
+    }
+
+    &.selected {
+      background: var(--ds-color-brand1-surface-active);
+      &:hover {
+        background-color: var(--ds-color-brand1-surface-hover);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: var(--ds-color-brand1-surface-tinted);
+    }
+
+    .utvalgOppretta {
+      font: var(--ds-body-md-font-weight);
+      color: var(--ds-color-neutral-text-subtle);
+    }
+  }
+
   .utvalg-preview-wrapper {
     position: relative;
     width: calc(100% / 3 - 1rem);
     list-style-type: none;
+    display: flex;
   }
 
   .utvalg-valg-button {
@@ -185,6 +211,13 @@
   }
 }
 
+.automatisk-eller-manuelt button,
+.testregel-eller-manuelt button,
+.utvalg-eller-manuelt button {
+  width: 100%;
+  height: 8rem;
+}
+
 .eldre-utvalg {
   display: flex;
   flex-wrap: wrap;
@@ -193,12 +226,12 @@
   padding: 0;
   margin: 0;
 
-  li {
+  > li {
     flex: 1 1 calc(100% / 2 - 1rem);
     max-width: calc(100% / 2 - 1rem);
     position: relative;
 
-    :hover {
+    &:hover {
       background-color: var(--ds-color-brand1-surface-hover);
     }
 
@@ -420,24 +453,54 @@
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+  list-style-type: none;
+  padding-block-start: 0;
 
-  button {
-    border: none;
+  > li > button:not(.utvalg-preview-trigger) {
     padding: 3rem;
-    cursor: pointer;
-    border-radius: 10px;
-    background-color: var(--ds-color-brand3-surface-tinted);
+    min-width: 16rem;
     text-align: left;
+    border-radius: 10px;
+  }
+
+  .utvalg-preview-wrapper {
+    position: relative;
+    display: flex;
+    border-radius: 10px;
+  }
+
+  .utvalg-valg-button {
+    width: 100%;
+    padding-right: 6rem !important;
+  }
+
+  .utvalg-preview-trigger {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: auto;
+    height: auto;
+    min-height: auto;
+  }
+
+  > li,
+  > li > button:not(.utvalg-preview-trigger) {
+    color: var(--ds-color-neutral-text-default);
+    border: none;
+    cursor: pointer;
+    background-color: var(--ds-color-brand3-surface-tinted);
     font-size: 21px;
     font-weight: 400;
-    min-width: 16rem;
+
 
     &:hover {
       background-color: var(--ds-color-brand3-surface-hover);
     }
 
     &.selected {
-      background-color: var(--ds-color-brand3-surface-active);
+      background-color: var(--ds-color-brand3-base-default);
       &:hover {
         background-color: var(--ds-color-brand3-surface-hover);
       }
