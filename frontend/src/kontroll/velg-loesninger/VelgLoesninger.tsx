@@ -1,6 +1,12 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
 import { formatDate } from '@common/util/stringutils';
-import { Alert, Heading, Paragraph } from '@digdir/designsystemet-react';
+import {
+  Alert,
+  Button,
+  Dialog,
+  Heading,
+  Paragraph,
+} from '@digdir/designsystemet-react';
 import { Utval } from '@loeysingar/api/types';
 import classNames from 'classnames';
 import React from 'react';
@@ -10,6 +16,9 @@ import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import { Kontroll } from '../types';
+import { InformationIcon, InformationSquareIcon } from '@navikt/aksel-icons';
+
+
 
 type SelectedUtvalg = { t: 'utvalg'; valgtUtvalg?: Utval };
 type SelectedOption = SelectedUtvalg | { t: 'løsning' };
@@ -87,6 +96,7 @@ const VelgLoesninger = () => {
       </div>
       <div className={classes.utvalgEllerManuelt}>
         <button
+          type={'button'}
           onClick={() =>
             setSelectedOption({ t: 'utvalg', valgtUtvalg: kontroll?.utval })
           }
@@ -97,6 +107,7 @@ const VelgLoesninger = () => {
           Vel løysingar frå utval
         </button>
         <button
+          type={'button'}
           onClick={() => setSelectedOption({ t: 'løsning' })}
           className={classNames({
             [classes.selected]: selectedOption?.t === 'løsning',
@@ -112,17 +123,41 @@ const VelgLoesninger = () => {
           </Heading>
           <div className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
-              <button
-                data-testid="utvalg"
-                key={u.id}
-                onClick={velgUtvalg(u)}
-                className={classNames({ [classes.selected]: isValgt(u) })}
-              >
-                <span className={classes.utvalgNamn}>{u.namn}</span>
-                <span className={classes.utvalgOppretta}>
-                  {formatDate(u.oppretta)}
-                </span>
-              </button>
+              <div key={u.id} className={classes.utvalgPreviewWrapper}>
+                <button
+                  type={'button'}
+                  data-testid="utvalg"
+                  onClick={velgUtvalg(u)}
+                  className={classNames(classes.utvalgValgButton, {
+                    [classes.selected]: isValgt(u),
+                  })}
+                >
+                  <span className={classes.utvalgNamn}>{u.namn}</span>
+                  <span className={classes.utvalgOppretta}>
+                    {formatDate(u.oppretta)}
+                  </span>
+                </button>
+                <Button
+                  className={classes.utvalgPreviewTrigger}
+                  command="show-modal"
+                  commandfor={`utval-preview-modal-${u.id}`}
+                  data-utvalid={u.id}
+                  data-variant={'secondary'}
+                  icon
+                >
+                  <InformationIcon title="a11y-title" fontSize="1.5rem" />
+                </Button>
+                <Dialog id={`utval-preview-modal-${u.id}`}>
+                  <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
+                    Dialog header
+                  </Heading>
+                  <Paragraph style={{ marginBottom: 'var(--ds-size-2)' }}>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Blanditiis doloremque obcaecati assumenda odio ducimus sunt
+                    et.
+                  </Paragraph>
+                </Dialog>
+              </div>
             ))}
           </div>
           {!isEmpty(eldreUtvalg) && (
@@ -138,13 +173,43 @@ const VelgLoesninger = () => {
                       key={u.id}
                       className={classNames({ [classes.selected]: valgt })}
                     >
-                      <button
-                        onClick={velgUtvalg(u)}
-                        className={classNames({ [classes.selected]: valgt })}
-                        title={u.namn}
-                      >
-                        {u.namn}
-                      </button>
+                      <div className={classes.eldreUtvalgPreviewWrapper}>
+                        <button
+                          type={'button'}
+                          onClick={velgUtvalg(u)}
+                          className={classNames(classes.eldreUtvalgValgButton, {
+                            [classes.selected]: valgt,
+                          })}
+                          title={u.namn}
+                        >
+                          {u.namn}
+                        </button>
+                        <Button
+                          className={classes.utvalgPreviewTrigger}
+                          command="show-modal"
+                          commandfor={`utval-preview-modal-${u.id}`}
+                          data-utvalid={u.id}
+                          data-variant={'secondary'}
+                          icon
+                        >
+                          <InformationIcon
+                            title="a11y-title"
+                            fontSize="1.5rem"
+                          />
+                        </Button>
+                        <Dialog id={`utval-preview-modal-${u.id}`}>
+                          <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
+                            Dialog header
+                          </Heading>
+                          <Paragraph
+                            style={{ marginBottom: 'var(--ds-size-2)' }}
+                          >
+                            Lorem ipsum dolor sit, amet consectetur adipisicing
+                            elit. Blanditiis doloremque obcaecati assumenda odio
+                            ducimus sunt et.
+                          </Paragraph>
+                        </Dialog>
+                      </div>
                     </li>
                   );
                 })}
