@@ -4,7 +4,6 @@ import java.net.URI
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
-import no.uutilsynet.testlab2frontendserver.kontroll.KontrollUpdate
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Loeysing
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,11 +33,11 @@ class UtvalResource(
     return restTemplate.getList(url)
   }
 
-    @GetMapping("/loeysingar")
-    fun getUtvalListLoeysingar(): List<Utval> {
-        val url = "${testingApiProperties.url}/v1/utval/loeysingar"
-        return restTemplate.getList(url)
-    }
+  @GetMapping("/loeysingar")
+  fun getUtvalListLoeysingar(): List<Utval> {
+    val url = "${testingApiProperties.url}/v1/utval/loeysingar"
+    return restTemplate.getList(url)
+  }
 
   @GetMapping("/{id}")
   fun getUtval(@PathVariable id: Int): ResponseEntity<Utval> =
@@ -54,47 +53,47 @@ class UtvalResource(
             }
           }
 
-    @DeleteMapping("/{id}")
-    fun deleteUtval(@PathVariable id: Int): ResponseEntity<Void> {
-        val url = "${testingApiProperties.url}/v1/utval/$id"
-        return try {
-            restTemplate.delete(url)
-            ResponseEntity.noContent().build()
-        } catch (e: HttpClientErrorException.NotFound) {
-            logger.error("Klarte ikkje å slette utval med id $id: ${e.message}")
-            ResponseEntity.notFound().build()
-        } catch (e: IllegalArgumentException) {
-            logger.error("Klarte ikkje å slette utval med id $id", e)
-            ResponseEntity.internalServerError().build()
-        }
+  @DeleteMapping("/{id}")
+  fun deleteUtval(@PathVariable id: Int): ResponseEntity<Void> {
+    val url = "${testingApiProperties.url}/v1/utval/$id"
+    return try {
+      restTemplate.delete(url)
+      ResponseEntity.noContent().build()
+    } catch (e: HttpClientErrorException.NotFound) {
+      logger.error("Klarte ikkje å slette utval med id $id: ${e.message}")
+      ResponseEntity.notFound().build()
+    } catch (e: IllegalArgumentException) {
+      logger.error("Klarte ikkje å slette utval med id $id", e)
+      ResponseEntity.internalServerError().build()
     }
+  }
 
-    @PutMapping("/{id}")
-    fun updateUtval(@PathVariable id: Int, @RequestBody utval: Utval): ResponseEntity<Utval> {
-        val url = "${testingApiProperties.url}/v1/utval/$id"
-        return try {
-            restTemplate.put(url, utval)
-            ResponseEntity.ok(utval)
-        } catch (e: HttpClientErrorException.NotFound) {
-            logger.error("Klarte ikkje å oppdatere utval med id $id: ${e.message}")
-            ResponseEntity.notFound().build()
-        } catch (e: IllegalArgumentException) {
-            logger.error("Klarte ikkje å oppdatere utval med id $id", e)
-            ResponseEntity.internalServerError().build()
-        }
+  @PutMapping("/{id}")
+  fun updateUtval(@PathVariable id: Int, @RequestBody utval: Utval): ResponseEntity<Utval> {
+    val url = "${testingApiProperties.url}/v1/utval/$id"
+    return try {
+      restTemplate.put(url, utval)
+      ResponseEntity.ok(utval)
+    } catch (e: HttpClientErrorException.NotFound) {
+      logger.error("Klarte ikkje å oppdatere utval med id $id: ${e.message}")
+      ResponseEntity.notFound().build()
+    } catch (e: IllegalArgumentException) {
+      logger.error("Klarte ikkje å oppdatere utval med id $id", e)
+      ResponseEntity.internalServerError().build()
     }
+  }
 
-    @PostMapping("")
-    fun createUtval(@RequestBody utval: Utval): ResponseEntity<Utval> {
-        val url = "${testingApiProperties.url}/v1/utval"
-        return try {
-            val createdUtval = restTemplate.postForObject(url, utval, Utval::class.java)
-            ResponseEntity.status(201).body(createdUtval)
-        } catch (e: IllegalArgumentException) {
-            logger.error("Klarte ikkje å opprette utval", e)
-            ResponseEntity.internalServerError().build()
-        }
+  @PostMapping("")
+  fun createUtval(@RequestBody utval: Utval): ResponseEntity<Utval> {
+    val url = "${testingApiProperties.url}/v1/utval"
+    return try {
+      val createdUtval = restTemplate.postForObject(url, utval, Utval::class.java)
+      ResponseEntity.status(201).body(createdUtval)
+    } catch (e: IllegalArgumentException) {
+      logger.error("Klarte ikkje å opprette utval", e)
+      ResponseEntity.internalServerError().build()
     }
+  }
 
   private fun fetchUtval(id: Int): Result<Utval> = runCatching {
     val url = URI("${testingApiProperties.url}/v1/utval/$id")
