@@ -13,7 +13,7 @@ export const getLoeysingColumns = (): Array<ColumnDef<Loeysing>> => [
   getCheckboxColumn((row: Row<Loeysing>) => `Velg ${row.original.namn}`),
   {
     accessorFn: (row) => row.namn,
-    id: 'løsying namn',
+    id: 'loesying namn',
     cell: ({ getValue }) => getValue(),
     header: () => <>Namn</>,
   },

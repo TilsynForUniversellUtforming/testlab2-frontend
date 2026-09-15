@@ -32,6 +32,7 @@ export default defineConfig({
       '@loeysingar': '/src/loeysingar',
       '@verksemder': '/src/verksemder',
       '@testreglar': '/src/testreglar',
+      '@utval': '/src/utval',
       '@test': '/src/inngaaende-test',
       '@resultat': '/src/resultat',
     },

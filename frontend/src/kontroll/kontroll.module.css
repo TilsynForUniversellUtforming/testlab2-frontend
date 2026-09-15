@@ -97,9 +97,12 @@
 
 .automatisk-eller-manuelt,
 .testregel-eller-manuelt,
-.utvalg-eller-manuelt,
-.nyeste-utvalg-buttons {
-  button {
+.utvalg-eller-manuelt {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+
+  button:not(.utvalg-preview-trigger) {
     background-color: var(--ds-color-brand1-surface-tinted);
     color: black;
     border: none;
@@ -138,12 +141,74 @@
   }
 }
 
-.automatisk-eller-manuelt,
-.testregel-eller-manuelt,
-.utvalg-eller-manuelt {
+.nyeste-utvalg-buttons {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.5rem 0 4rem;
+  padding-inline-start: 0;
+
+  > .utvalg-preview-wrapper > button:not(.utvalg-preview-trigger) {
+    background-color: var(--ds-color-brand1-surface-tinted);
+    color: black;
+    border: none;
+    font: var(--ds-body-lg-font-weight);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: var(--ds-color-brand1-surface-hover);
+    }
+
+    &:active {
+      background-color: var(--ds-color-brand1-surface-active);
+    }
+
+    &.selected {
+      background: var(--ds-color-brand1-surface-active);
+      &:hover {
+        background-color: var(--ds-color-brand1-surface-hover);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: var(--ds-color-brand1-surface-tinted);
+    }
+
+    .utvalgOppretta {
+      font: var(--ds-body-md-font-weight);
+      color: var(--ds-color-neutral-text-subtle);
+    }
+  }
+
+  .utvalg-preview-wrapper {
+    position: relative;
+    width: calc(100% / 3 - 1rem);
+    list-style-type: none;
+    display: flex;
+  }
+
+  .utvalg-valg-button {
+    width: 100%;
+    height: 8rem;
+    padding-left: 1rem;
+    padding-right: 7rem;
+  }
+
+  .utvalg-preview-trigger {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    z-index: 1;
+    width: auto;
+    height: auto;
+    min-height: auto;
+  }
 }
 
 .automatisk-eller-manuelt button,
@@ -151,20 +216,6 @@
 .utvalg-eller-manuelt button {
   width: 100%;
   height: 8rem;
-}
-
-.nyeste-utvalg-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin: 1.5rem 0 4rem;
-
-  button {
-    width: calc(100% / 3 - 1rem);
-    height: 8rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
 }
 
 .eldre-utvalg {
@@ -175,39 +226,29 @@
   padding: 0;
   margin: 0;
 
-  li {
+  > li {
     flex: 1 1 calc(100% / 2 - 1rem);
     max-width: calc(100% / 2 - 1rem);
     position: relative;
 
-    :hover {
+    &:hover {
       background-color: var(--ds-color-brand1-surface-hover);
     }
 
-    &.selected {
-      :before {
-        height: 25px;
-        width: 25px;
-        content: '•';
-        position: absolute;
-        font-size: 50px;
-        color: var(--ds-color-brand1-surface-active);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        left: -25px;
-      }
+    .eldre-utvalg-preview-wrapper {
+      position: relative;
+      max-width: 450px;
     }
 
-    button {
+    .eldre-utvalg-valg-button {
       border: none;
       text-align: left;
       font: var(--ds-body-lg-font-weight);
-      padding: 0.5rem 0.75rem;
+      padding: 0.5rem 3.25rem 0.5rem 0.75rem;
       cursor: pointer;
       border-radius: 10px;
-      background-color: var(--ds-color-brand1-surface-tinted);
-      max-width: 450px;
+      background-color: var(--ds-color-neutral-surface-tinted);
+      width: 100%;
       overflow: hidden;
       white-space: nowrap;
       display: block;
@@ -215,12 +256,23 @@
       height: 50px;
 
       &.selected {
-        color: var(--ds-color-brand1-surface-default);
         background-color: var(--ds-color-brand1-surface-active);
         &:hover {
           background-color: var(--ds-color-brand1-surface-hover);
         }
       }
+    }
+
+    .utvalg-preview-trigger {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+      width: auto;
+      height: auto;
+      min-height: auto;
+      border-radius: 999px;
     }
   }
 }
@@ -401,24 +453,54 @@
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+  list-style-type: none;
+  padding-block-start: 0;
 
-  button {
-    border: none;
+  > li > button:not(.utvalg-preview-trigger) {
     padding: 3rem;
-    cursor: pointer;
-    border-radius: 10px;
-    background-color: var(--ds-color-brand3-surface-tinted);
+    min-width: 16rem;
     text-align: left;
+    border-radius: 10px;
+  }
+
+  .utvalg-preview-wrapper {
+    position: relative;
+    display: flex;
+    border-radius: 10px;
+  }
+
+  .utvalg-valg-button {
+    width: 100%;
+    padding-right: 6rem !important;
+  }
+
+  .utvalg-preview-trigger {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: auto;
+    height: auto;
+    min-height: auto;
+  }
+
+  > li,
+  > li > button:not(.utvalg-preview-trigger) {
+    color: var(--ds-color-neutral-text-default);
+    border: none;
+    cursor: pointer;
+    background-color: var(--ds-color-brand3-surface-tinted);
     font-size: 21px;
     font-weight: 400;
-    min-width: 16rem;
+
 
     &:hover {
       background-color: var(--ds-color-brand3-surface-hover);
     }
 
     &.selected {
-      background-color: var(--ds-color-brand3-surface-active);
+      background-color: var(--ds-color-brand3-base-default);
       &:hover {
         background-color: var(--ds-color-brand3-surface-hover);
       }

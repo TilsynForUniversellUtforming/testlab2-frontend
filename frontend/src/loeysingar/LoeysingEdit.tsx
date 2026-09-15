@@ -42,7 +42,7 @@ const LoeysingEdit = () => {
           );
           if (existingLoeysing) {
             setAlert(
-              'danger',
+                'danger',
               `Løysing med orgnr. ${loeysing.orgnummer} og url ${loeysing.url} finst allereie`
             );
             return;

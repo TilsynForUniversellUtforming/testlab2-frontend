@@ -36,7 +36,9 @@ export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   }).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
-export const updateLoeysing = async (loeysing: Loeysing): Promise<Loeysing[]> =>
+export const updateLoeysing = async (
+  loeysing: LoeysingFormElement
+): Promise<Loeysing[]> =>
   await fetchWithCsrf('/api/v1/loeysing', {
     method: 'PUT',
     headers: {
@@ -73,7 +75,7 @@ export const deleteLoeysingList = async (
     return response.json();
   } else {
     const message = await response.text();
-    throw Error(message);
+    throw new Error(message);
   }
 };
 

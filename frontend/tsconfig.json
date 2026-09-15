@@ -23,6 +23,7 @@
       "@verksemder/*": ["./src/verksemder/*"],
       "@sak/*": ["./src/sak/*"],
       "@testreglar/*": ["./src/testreglar/*"],
+      "@utval/*": ["./src/utval/*"],
       "@test/*": ["./src/inngaaende-test/*"],
       "@resultat/*": ["./src/resultat/*"],
       "@krav/*": ["./src/krav/*"]
