@@ -10,7 +10,7 @@ import { formatDate } from '@common/util/stringutils';
 type Props = {
   utval: Utval;
   velgUtval: (utval: Utval) => void;
-  isValgt: (utval: Utval) => boolean;
+  isValgt: boolean;
 };
 
 export const UtvalDetailButton = ({utval,velgUtval,isValgt}:Props) => {
@@ -18,13 +18,15 @@ export const UtvalDetailButton = ({utval,velgUtval,isValgt}:Props) => {
     <li className={classes.utvalgPreviewWrapper}>
       <Button
         data-testid="utvalg"
-        onClick={()=>velgUtval(utval)}
+        onClick={() => velgUtval(utval)}
         className={classNames(classes.utvalgValgButton, {
-          [classes.selected]: isValgt(utval),
+          [classes.selected]: isValgt,
         })}
       >
         <span className={classes.utvalgNamn}>{utval.namn}</span>
-        <span className={classes.utvalgOppretta}>{formatDate(utval.oppretta)}</span>
+        <span className={classes.utvalgOppretta}>
+          {formatDate(utval.oppretta)}
+        </span>
       </Button>
       <Button
         className={classes.utvalgPreviewTrigger}
@@ -40,14 +42,11 @@ export const UtvalDetailButton = ({utval,velgUtval,isValgt}:Props) => {
         <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
           Løysingar i utval: {utval.namn}
         </Heading>
-        <Paragraph style={{ marginBottom: 'var(--ds-size-2)' }}>
-          <ul>{
-            utval.loeysingar.map((loeysing) => {
-              return (<li key={loeysing.id}>{loeysing.namn}</li>)
-            })
-          }
-          </ul>
-        </Paragraph>
+        <ul style={{ marginBottom: 'var(--ds-size-2)' }}>
+          {utval.loeysingar.map((loeysing) => {
+            return <li key={loeysing.id}>{loeysing.namn}</li>;
+          })}
+        </ul>
       </Dialog>
     </li>
   );
