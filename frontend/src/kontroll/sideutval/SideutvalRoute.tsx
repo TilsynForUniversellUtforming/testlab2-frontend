@@ -27,12 +27,12 @@ async function fetchKontrollOrThrow(kontrollId: number): Promise<Kontroll> {
 }
 
 const getLoeysingList = async (
-  utvalResponse: PromiseSettledResult<Response>,
+  utvalResponse: PromiseSettledResult<Utval>,
   utvalId: number | undefined
 ) => {
   let loeysingList: Loeysing[] = [];
   if (utvalResponse.status === 'fulfilled' && utvalResponse.value) {
-    const utval: Utval = await utvalResponse.value.json();
+    const utval: Utval = utvalResponse.value;
     loeysingList = utval.loeysingar;
   } else if (utvalId) {
     throw new Error('Kunne ikkje hente løysingar for kontrollens utval');
