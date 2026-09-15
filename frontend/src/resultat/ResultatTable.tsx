@@ -91,7 +91,9 @@ const ResultatTable = <T extends object>({
     setColumnVisibility(tableParams.visibilityState(visDetaljer));
   };
 
-  const [activeTab, setActiveTab] = useState<string>(useGetCurrentPath);
+  const getCurrentPath = useGetCurrentPath();
+
+  const [activeTab, setActiveTab] = useState<string>(getCurrentPath);
   const onChangeTabs = useCallback((tab: string) => {
     setActiveTab(tab);
     if (id !== undefined && loeysingId !== undefined) {
