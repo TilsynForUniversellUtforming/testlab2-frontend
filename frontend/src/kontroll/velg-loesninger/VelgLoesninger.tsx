@@ -1,5 +1,4 @@
 import { drop, isEmpty, take } from '@common/util/arrayUtils';
-import { formatDate } from '@common/util/stringutils';
 import {
   Alert,
   Button,
@@ -16,7 +15,7 @@ import classes from '../kontroll.module.css';
 import LagreOgNeste from '../lagre-og-neste/LagreOgNeste';
 import KontrollStepper from '../stepper/KontrollStepper';
 import { Kontroll } from '../types';
-import { InformationIcon, InformationSquareIcon } from '@navikt/aksel-icons';
+import { InformationIcon } from '@navikt/aksel-icons';
 import { UtvalDetailButton } from './UtvalDetailButton';
 
 
@@ -46,9 +45,7 @@ const VelgLoesninger = () => {
   const eldreUtvalg = drop(utvalSortedByOppretta, 6);
 
   function velgUtvalg(utval: Utval) {
-    return function () {
-      setSelectedOption({ t: 'utvalg', valgtUtvalg: utval });
-    };
+    setSelectedOption({ t: 'utvalg', valgtUtvalg: utval });
   }
 
   function isUtvalg(
@@ -85,6 +82,7 @@ const VelgLoesninger = () => {
       }
     };
   }
+
 
   return (
     <section className={classes.kontrollSection}>
@@ -124,7 +122,7 @@ const VelgLoesninger = () => {
           </Heading>
           <ul className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
-         <UtvalDetailButton key={u.id} utval={u} velgUtval={velgUtvalg} isValgt={isValgt} />
+         <UtvalDetailButton key={u.id} utval={u} velgUtval={velgUtvalg} isValgt={isValgt(u)} />
             ))}
           </ul>
           {!isEmpty(eldreUtvalg) && (
@@ -144,7 +142,7 @@ const VelgLoesninger = () => {
                     >
                       <button
                         type={'button'}
-                        onClick={velgUtvalg(u)}
+                        onClick={() => velgUtvalg(u)}
                         className={classNames(classes.eldreUtvalgValgButton, {
                           [classes.selected]: valgt,
                         })}
@@ -166,13 +164,11 @@ const VelgLoesninger = () => {
                         <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
                           Dialog header
                         </Heading>
-                        <Paragraph style={{ marginBottom: 'var(--ds-size-2)' }}>
-                          <ul>
+                          <ul style={{ marginBottom: 'var(--ds-size-2)' }}>
                             {u.loeysingar.map((loeysing) => {
                               return <li key={loeysing.id}>{loeysing.namn}</li>;
                             })}
                           </ul>
-                        </Paragraph>
                       </Dialog>
                     </li>
                   );
