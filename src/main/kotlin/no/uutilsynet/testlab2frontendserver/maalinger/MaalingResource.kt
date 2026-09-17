@@ -1,20 +1,22 @@
 package no.uutilsynet.testlab2frontendserver.maalinger
 
+import java.net.URI
+import java.net.URL
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Aggregeringstype
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlParameters
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.CrawlUrl
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Maaling
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.IdList
-import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
 import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
@@ -22,11 +24,11 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -34,8 +36,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestClientResponseException
 import org.springframework.web.client.RestTemplate
-import java.net.URI
-import java.net.URL
 
 @RestController
 @RequestMapping("api/v1/maalinger")
@@ -45,9 +45,7 @@ class MaalingResource(
 ) {
   val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
-
-
-    val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
+  val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
   val resultatUrl = "${testingApiProperties.url}/resultat"
 
   @GetMapping
@@ -61,7 +59,7 @@ class MaalingResource(
     }
   }
 
-    @GetMapping("{maalingId}")
+  @GetMapping("{maalingId}")
   fun getMaaling(@PathVariable maalingId: Int): ResponseEntity<Maaling> {
     logger.debug("henter måling med id: $maalingId fra $maalingUrl")
 

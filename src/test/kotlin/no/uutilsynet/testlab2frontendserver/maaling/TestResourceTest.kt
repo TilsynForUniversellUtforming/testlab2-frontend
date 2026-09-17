@@ -52,8 +52,6 @@ class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
             MockRestRequestMatchers.requestTo(CoreMatchers.containsString("resultat?maalingId=1")))
         .andRespond(MockRestResponseCreators.withSuccess(jsonSuccess, MediaType.APPLICATION_JSON))
 
-
-
     val maalingResource = MaalingResource(restTemplate, TestingApiProperties("https://testing.api"))
     val result = maalingResource.getTestResultatList(1, null)
     assertThat(result.size, equalTo(1))

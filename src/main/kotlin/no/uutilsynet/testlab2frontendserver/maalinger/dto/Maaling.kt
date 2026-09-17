@@ -1,14 +1,13 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
+import java.time.LocalDate
+import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.Testresult
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
-import java.time.LocalDate
-import kotlin.math.roundToInt
-
 
 data class Maaling(
     val id: Int,
@@ -65,57 +64,55 @@ fun mergeLists(
     testKoeyringList: List<TestKoeyringDTO>,
     aggregertResultatList: List<AggregertResultatDTO>,
 ): List<Testresult> {
-    val resultMap = aggregertResultatList.groupBy { it.loeysing }
+  val resultMap = aggregertResultatList.groupBy { it.loeysing }
 
-    return testKoeyringList.map { testKoeyring ->
-        val results = resultMap[testKoeyring.loeysing] ?: emptyList()
+  return testKoeyringList.map { testKoeyring ->
+    val results = resultMap[testKoeyring.loeysing] ?: emptyList()
 
-        val aggregatedResultList = mutableListOf<AggegatedTestresultTestregel>()
-        val compliancePercentsForAverage = mutableListOf<Int>()
+    val aggregatedResultList = mutableListOf<AggegatedTestresultTestregel>()
+    val compliancePercentsForAverage = mutableListOf<Int>()
 
-        for (result in results) {
-            val compliancePercent = calculateCompliancePercentElement(result)
+    for (result in results) {
+      val compliancePercent = calculateCompliancePercentElement(result)
 
-            aggregatedResultList.add(
-                AggegatedTestresultTestregel(
-                    loeysing = result.loeysing,
-                    testregelId = result.testregelId,
-                    suksesskriterium = result.suksesskriterium,
-                    talElementSamsvar = result.talElementSamsvar,
-                    talElementBrot = result.talElementBrot,
-                    talElementVarsel = result.talElementVarsel,
-                    talElementIkkjeForekomst = result.talElementIkkjeForekomst,
-                    compliancePercent = compliancePercent,
-                    testregelGjennomsnittlegSideSamsvarProsent =
-                        result.testregelGjennomsnittlegSideSamsvarProsent,
-                    testregelGjennomsnittlegSideBrotProsent =
-                        result.testregelGjennomsnittlegSideBrotProsent)
-            )
+      aggregatedResultList.add(
+          AggegatedTestresultTestregel(
+              loeysing = result.loeysing,
+              testregelId = result.testregelId,
+              suksesskriterium = result.suksesskriterium,
+              talElementSamsvar = result.talElementSamsvar,
+              talElementBrot = result.talElementBrot,
+              talElementVarsel = result.talElementVarsel,
+              talElementIkkjeForekomst = result.talElementIkkjeForekomst,
+              compliancePercent = compliancePercent,
+              testregelGjennomsnittlegSideSamsvarProsent =
+                  result.testregelGjennomsnittlegSideSamsvarProsent,
+              testregelGjennomsnittlegSideBrotProsent =
+                  result.testregelGjennomsnittlegSideBrotProsent))
 
-            if (compliancePercent != null && (result.talElementBrot != 0 || result.talElementSamsvar != 0)) {
-                compliancePercentsForAverage.add(compliancePercent)
-            }
-        }
-
-        val overallCompliancePercent =
-            if (compliancePercentsForAverage.isEmpty()) null
-            else compliancePercentsForAverage.average().roundToInt()
-
-
-        Testresult(
-            loeysing = testKoeyring.loeysing,
-            tilstand = testKoeyring.tilstand,
-            sistOppdatert = testKoeyring.sistOppdatert,
-            framgang = testKoeyring.framgang,
-            aggregatedResultList = aggregatedResultList,
-            antalSider = testKoeyring.antallNettsider,
-            compliancePercent = overallCompliancePercent)
+      if (compliancePercent != null &&
+          (result.talElementBrot != 0 || result.talElementSamsvar != 0)) {
+        compliancePercentsForAverage.add(compliancePercent)
+      }
     }
+
+    val overallCompliancePercent =
+        if (compliancePercentsForAverage.isEmpty()) null
+        else compliancePercentsForAverage.average().roundToInt()
+
+    Testresult(
+        loeysing = testKoeyring.loeysing,
+        tilstand = testKoeyring.tilstand,
+        sistOppdatert = testKoeyring.sistOppdatert,
+        framgang = testKoeyring.framgang,
+        aggregatedResultList = aggregatedResultList,
+        antalSider = testKoeyring.antallNettsider,
+        compliancePercent = overallCompliancePercent)
+  }
 }
 
 private fun calculateCompliancePercentElement(result: AggregertResultatDTO): Int? {
-    val compliancePercent =
-        result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt()
-    return compliancePercent
+  val compliancePercent =
+      result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt()
+  return compliancePercent
 }
-
