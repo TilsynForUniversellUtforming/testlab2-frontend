@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.maaling
 
+import io.micrometer.tracing.Tracer
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.MaalingResource
 import org.hamcrest.CoreMatchers
@@ -8,6 +9,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.http.MediaType
@@ -52,7 +54,10 @@ class TestResourceTest(@Autowired val restTemplate: RestTemplate) {
             MockRestRequestMatchers.requestTo(CoreMatchers.containsString("resultat?maalingId=1")))
         .andRespond(MockRestResponseCreators.withSuccess(jsonSuccess, MediaType.APPLICATION_JSON))
 
-    val maalingResource = MaalingResource(restTemplate, TestingApiProperties("https://testing.api"))
+      val tracer = mock(Tracer::class.java)
+
+
+    val maalingResource = MaalingResource(restTemplate, TestingApiProperties("https://testing.api"),tracer)
     val result = maalingResource.getTestResultatList(1, null)
     assertThat(result.size, equalTo(1))
   }

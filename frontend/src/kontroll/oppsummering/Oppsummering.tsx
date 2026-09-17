@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router';
 
 import kontrollClasses from '../kontroll.module.css';
-import { steps } from '../types';
+import { Kontroll, steps } from '../types';
 import classes from './oppsummering.module.css';
 import { OppsummeringLoadingType, VerksemdLoeysing } from './types';
 import KontrollStepper from '../stepper/KontrollStepper';
@@ -166,7 +166,8 @@ export function Oppsummering() {
           Velg hvilken løsning du vil starte kontrollen for
         </Heading>
         <div className={classes.tags}>
-          <Tag data-color="first">{viewUtvalNamn(kontroll.utval)}</Tag>
+          <Tag data-color={kontroll.utval==undefined?"danger":"info"}>{viewUtvalNamn(kontroll.utval)}</Tag>
+          {kontroll.testreglar==undefined && (<Tag data-color="danger">{viewRegelsett(kontroll)}</Tag>)}
         </div>
         <ul className={classes.liste}>
           {getPage(verksemdLoesyingList, currentPage).map(listeElement)}
@@ -240,6 +241,13 @@ function viewUtvalNamn(utval: Utval | undefined) {
   } else {
     console.error('Utval mangler på denne kontrollen');
     return 'Utval mangler';
+  }
+}
+
+function viewRegelsett(kontroll: Kontroll) {
+  if(kontroll.testreglar==undefined) {
+    console.error('Testreglar manglar på denne kontrollen');
+    return 'Testreglar manglar';
   }
 }
 

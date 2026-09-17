@@ -1,13 +1,14 @@
 package no.uutilsynet.testlab2frontendserver.maalinger.dto
 
-import java.time.LocalDate
-import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.JobStatistics.Companion.toJobStatistics
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.Testresult
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
+import java.time.LocalDate
+import kotlin.math.roundToInt
+
 
 data class Maaling(
     val id: Int,
@@ -27,7 +28,7 @@ fun MaalingDTO.toMaaling() = this.toMaaling(emptyList(), emptyList())
 
 fun MaalingDTO.toMaaling(
     testregelList: List<TestregelBaseDTO>,
-    aggregatedResult: List<AggregertResultatDTO>
+    aggregatedResult: List<AggregertResultatDTO>,
 ): Maaling {
   val maalingTestKoeyringDTOList: List<TestKoeyringDTO> = this.testKoeyringar ?: emptyList()
   val crawlResultat = run { this.crawlResultat ?: emptyList() }.map { it.toCrawlResultat() }
@@ -62,53 +63,59 @@ private fun MaalingDTO.selectLoeysingList(
 
 fun mergeLists(
     testKoeyringList: List<TestKoeyringDTO>,
-    aggregertResultatList: List<AggregertResultatDTO>
+    aggregertResultatList: List<AggregertResultatDTO>,
 ): List<Testresult> {
-  val resultMap = aggregertResultatList.groupBy { it.loeysing }
+    val resultMap = aggregertResultatList.groupBy { it.loeysing }
 
-  return testKoeyringList.map { testKoeyring ->
-    val aggregatedResultList =
-        resultMap[testKoeyring.loeysing]?.map { result ->
-          val compliancePercent =
-              result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt()
+    return testKoeyringList.map { testKoeyring ->
+        val results = resultMap[testKoeyring.loeysing] ?: emptyList()
 
-          AggegatedTestresultTestregel(
-              loeysing = result.loeysing,
-              testregelId = result.testregelId,
-              suksesskriterium = result.suksesskriterium,
-              talElementSamsvar = result.talElementSamsvar,
-              talElementBrot = result.talElementBrot,
-              talElementVarsel = result.talElementVarsel,
-              talElementIkkjeForekomst = result.talElementIkkjeForekomst,
-              compliancePercent = compliancePercent,
-              testregelGjennomsnittlegSideSamsvarProsent =
-                  result.testregelGjennomsnittlegSideSamsvarProsent,
-              testregelGjennomsnittlegSideBrotProsent =
-                  result.testregelGjennomsnittlegSideBrotProsent)
+        val aggregatedResultList = mutableListOf<AggegatedTestresultTestregel>()
+        val compliancePercentsForAverage = mutableListOf<Int>()
+
+        for (result in results) {
+            val compliancePercent = calculateCompliancePercentElement(result)
+
+            aggregatedResultList.add(
+                AggegatedTestresultTestregel(
+                    loeysing = result.loeysing,
+                    testregelId = result.testregelId,
+                    suksesskriterium = result.suksesskriterium,
+                    talElementSamsvar = result.talElementSamsvar,
+                    talElementBrot = result.talElementBrot,
+                    talElementVarsel = result.talElementVarsel,
+                    talElementIkkjeForekomst = result.talElementIkkjeForekomst,
+                    compliancePercent = compliancePercent,
+                    testregelGjennomsnittlegSideSamsvarProsent =
+                        result.testregelGjennomsnittlegSideSamsvarProsent,
+                    testregelGjennomsnittlegSideBrotProsent =
+                        result.testregelGjennomsnittlegSideBrotProsent)
+            )
+
+            if (compliancePercent != null && (result.talElementBrot != 0 || result.talElementSamsvar != 0)) {
+                compliancePercentsForAverage.add(compliancePercent)
+            }
         }
-            ?: emptyList()
 
+        val overallCompliancePercent =
+            if (compliancePercentsForAverage.isEmpty()) null
+            else compliancePercentsForAverage.average().roundToInt()
+
+
+        Testresult(
+            loeysing = testKoeyring.loeysing,
+            tilstand = testKoeyring.tilstand,
+            sistOppdatert = testKoeyring.sistOppdatert,
+            framgang = testKoeyring.framgang,
+            aggregatedResultList = aggregatedResultList,
+            antalSider = testKoeyring.antallNettsider,
+            compliancePercent = overallCompliancePercent)
+    }
+}
+
+private fun calculateCompliancePercentElement(result: AggregertResultatDTO): Int? {
     val compliancePercent =
-        if (aggregatedResultList.isEmpty()) null
-        else if (aggregatedResultList.all { erIkkjeForekomst(it) }) null
-        else
-            aggregatedResultList
-                .filter { !erIkkjeForekomst(it) }
-                .mapNotNull { it.compliancePercent }
-                .average()
-                .roundToInt()
-
-    Testresult(
-        loeysing = testKoeyring.loeysing,
-        tilstand = testKoeyring.tilstand,
-        sistOppdatert = testKoeyring.sistOppdatert,
-        framgang = testKoeyring.framgang,
-        aggregatedResultList = aggregatedResultList,
-        antalSider = testKoeyring.antallNettsider,
-        compliancePercent = compliancePercent)
-  }
+        result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt()
+    return compliancePercent
 }
 
-fun erIkkjeForekomst(resultat: AggegatedTestresultTestregel): Boolean {
-  return resultat.talElementBrot == 0 && resultat.talElementSamsvar == 0
-}

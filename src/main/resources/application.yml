@@ -9,6 +9,9 @@ spring:
   profiles:
     active:
 
+  application:
+    name: "testlab2-frontend"
+
 logging:
   level:
     root: INFO

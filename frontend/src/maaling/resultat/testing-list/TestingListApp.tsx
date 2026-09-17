@@ -110,13 +110,13 @@ const TestingListApp = () => {
       const doRestart = async () => {
         setLoading(true);
         try {
-          const restartCrawlingRequest: RestartRequest = {
+          const restartRequest: RestartRequest = {
             maalingId: maaling.id,
             loeysingIdList: { idList: loeysingIdList },
             process: 'test',
           };
 
-          const restartedMaaling = await restart(restartCrawlingRequest);
+          const restartedMaaling = await restart(restartRequest);
           setMaaling(restartedMaaling);
           setTestResult(restartedMaaling.testResult);
           setAlert('success', 'Testing er starta på nytt');
