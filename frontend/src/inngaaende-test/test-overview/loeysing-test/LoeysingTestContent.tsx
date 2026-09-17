@@ -183,6 +183,9 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
                         resultater={activeTest.testResultList}
                         showHelpText={true}
                         onResultat={handleUpdateResult}
+                        slettTestelement={handleSlettTestelement}
+                        isLoading={false}
+                        isDemoApp={false}
                       />
                     )}
                     <TestlabDivider />
