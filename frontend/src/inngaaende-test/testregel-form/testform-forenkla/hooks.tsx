@@ -44,6 +44,7 @@ export const useTestFormForenklaFormOptions = (
       valgtUtfallIndex:
         selectedUtfallIndex >= 0 ? selectedUtfallIndex : defaultUtfallIndex,
       elementOmtale: eksisterandeResultat.elementOmtale,
+      elementOmtaleHtml: eksisterandeResultat.elementOmtaleHtml,
     },
     resolver: zodResolver(testformForenklaValidationSchema),
   });

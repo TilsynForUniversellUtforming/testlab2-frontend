@@ -19,9 +19,9 @@ interface Props {
   resultater: ResultatManuellKontroll[];
   showHelpText: boolean;
   onResultat: (testResultUpdate: TestResultUpdate) => void;
-  slettTestelement?: (resultatId: number) => void;
-  isLoading?: boolean;
-  isDemoApp?: boolean;
+  slettTestelement: (resultatId: number) => void;
+  isLoading: boolean;
+  isDemoApp: boolean;
   onCreateForenklaResultat?: (resultat: ResultatManuellKontroll) => void;
 }
 
