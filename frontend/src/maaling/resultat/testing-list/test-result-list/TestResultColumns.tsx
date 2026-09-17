@@ -36,7 +36,7 @@ export const getAggregatedResultColumns = (): Array<
     accessorFn: (row) => row.compliancePercent,
     id: 'compliancePercent',
     cell: ({ row }) => (
-      <Tag data-size="sm" color={getSeverity(row.getValue('compliancePercent'))}>
+      <Tag data-size="sm" data-color={getSeverity(row.getValue('compliancePercent'))}>
         {row.getValue('compliancePercent') ?? 'Ikkje forekomst'}
       </Tag>
     ),

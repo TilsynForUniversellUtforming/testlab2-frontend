@@ -41,12 +41,11 @@ import org.springframework.web.client.RestTemplate
 @RequestMapping("api/v1/maalinger")
 class MaalingResource(
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties
+    val testingApiProperties: TestingApiProperties,
 ) {
   val logger = LoggerFactory.getLogger(MaalingResource::class.java)
 
   val maalingUrl = "${testingApiProperties.url}/v1/maalinger"
-  val testregelUrl = "${testingApiProperties.url}/v1/testreglar"
   val resultatUrl = "${testingApiProperties.url}/resultat"
 
   @GetMapping
@@ -56,7 +55,7 @@ class MaalingResource(
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
       logger.error("klarte ikke å hente målingar", e)
-      throw RuntimeException("Klarte ikkje å hente målingar")
+      throw IllegalStateException("Klarte ikkje å hente målingar")
     }
   }
 
@@ -65,11 +64,7 @@ class MaalingResource(
     logger.debug("henter måling med id: $maalingId fra $maalingUrl")
 
     val maalingDTO = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
-
-    if (maalingDTO == null) {
-      logger.error("Kunne ikkje hente måling med id $maalingId frå server")
-      throw RuntimeException("Klarte ikkje å hente måling")
-    }
+    checkNotNull(maalingDTO) { "Kunne ikkje hente måling med id $maalingId frå server" }
 
     val maaling =
         when (maalingDTO.status) {
@@ -95,15 +90,16 @@ class MaalingResource(
             val headers = HttpHeaders()
             headers.contentType = MediaType.APPLICATION_JSON
             val entity = HttpEntity(requestBody, headers)
-            val location =
-                restTemplate.postForLocation(maalingUrl, entity, Int::class.java)
-                    ?: throw RuntimeException(
-                        "jeg fikk laget en ny måling, men jeg fikk ikke noen location fra serveren")
+            val location = restTemplate.postForLocation(maalingUrl, entity, Int::class.java)
+            checkNotNull(location) {
+              "Fikk lage en ny måling, men jeg fikk ikke noen location fra serveren"
+            }
             val newMaaling =
                 restTemplate.getForObject(
                     "${testingApiProperties.url}${location}", MaalingDTO::class.java)
-                    ?: throw RuntimeException(
-                        "jeg fikk laget en ny måling, men klarte ikke å hente den nye målingen fra serveren")
+            checkNotNull(newMaaling) {
+              "Fikk laga en ny måling, men klarte ikke å hente den nye målingen fra serveren"
+            }
             ResponseEntity.created(URI("/maaling/${newMaaling.id}")).body(newMaaling)
           }
           .getOrElse {
@@ -120,9 +116,7 @@ class MaalingResource(
   fun getCrawlParametersKontrollMaaling(
       @PathVariable kontrollId: Int,
   ): ResponseEntity<CrawlParameters> {
-    val maalingId =
-        restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)
-    val maaling = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+    val maaling = getMaalingForKontroll(kontrollId)
 
     if (maaling == null) {
       logger.error("Finns ingen måling knytta til kontrollId $kontrollId")
@@ -138,10 +132,7 @@ class MaalingResource(
       @RequestBody crawlParameters: CrawlParameters
   ): ResponseEntity<out Any> =
       runCatching {
-            val maalingId =
-                restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)
-            val maaling =
-                restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+            val maaling = getMaalingForKontroll(kontrollId)
             if (maaling == null) {
               logger.error("Finns ingen måling knytta til kontrollId $kontrollId")
               return ResponseEntity.badRequest().build()
@@ -158,6 +149,13 @@ class MaalingResource(
             updateMaaling(maalingEdit)
           }
           .getOrElse { ResponseEntity.internalServerError().build() }
+
+  private fun getMaalingForKontroll(kontrollId: Int): MaalingDTO? {
+    val maalingId =
+        restTemplate.getForObject("${maalingUrl}/kontroll/${kontrollId}", Int::class.java)
+    val maaling = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+    return maaling
+  }
 
   @PutMapping
   fun updateMaaling(@RequestBody maaling: MaalingEdit): ResponseEntity<out Any> =
@@ -215,7 +213,7 @@ class MaalingResource(
             logger.error(
                 "Kunne ikkje hente nett resultat for løysing med id $loeysingId og måling med id $maalingId",
                 it)
-            throw RuntimeException("Klarte ikkje å hente crawl resultat")
+            throw NoSuchElementException("Klarte ikkje å hente crawl resultat")
           }
           .map { CrawlUrl(it) }
 
@@ -229,11 +227,11 @@ class MaalingResource(
     val aggregatedType = object : ParameterizedTypeReference<List<AggregertResultatDTO>>() {}
     return runCatching {
           val map = restTemplate.exchange(url, HttpMethod.GET, null, aggregatedType).body
-          map ?: throw RuntimeException("Response body for aggregering er tom")
+          checkNotNull(map) { "Response body for aggregering er tom" }
         }
         .getOrElse {
           logger.error("Kunne ikkje hente aggregering for måling med id $maalingId", it)
-          throw RuntimeException("Klarte ikkje å hente aggregering", it)
+          throw NoSuchElementException("Klarte ikkje å hente aggregering", it)
         }
   }
 
@@ -272,7 +270,7 @@ class MaalingResource(
           .getOrElse {
             logger.info(
                 "Kunne ikkje hente testresultat for måling med id $maalingId og løysing med id $loeysingId")
-            throw RuntimeException("Klarte ikkje å hente testresultat", it)
+            throw NoSuchElementException("Klarte ikkje å hente testresultat", it)
           }
 
   @GetMapping("kontroll/{kontrollId}")
@@ -289,6 +287,6 @@ class MaalingResource(
           }
           .getOrElse {
             logger.error("Feila ved henting av testreglar for måling $maalingId", it)
-            throw RuntimeException("Klarte ikkje å hente testreglar")
+            throw IllegalStateException("Klarte ikkje å hente testreglar")
           }
 }

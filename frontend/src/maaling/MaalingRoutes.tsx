@@ -83,7 +83,7 @@ export const MaalingRoutes: RouteObject = {
     const kontrollIdSearchParams = new URL(request.url).searchParams.get(
       'kontrollId'
     );
-    const kontrollId = parseInt(kontrollIdSearchParams ?? '');
+    const kontrollId = Number.parseInt(kontrollIdSearchParams ?? '');
     if (isDefined(kontrollId)) {
       const maalingId = await getMaalingIdFromKontrollId(kontrollId);
       return redirect(`/maaling/${maalingId}`);
