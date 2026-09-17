@@ -121,6 +121,7 @@ export const useTestResultatActions = ({
   const slettTestelement = useCallback(
     async (activeTest: ActiveTest, resultatId: number) => {
       const resultat = testResults.find((tr) => tr.id === resultatId);
+      console.log("Slett testelement", resultatId, resultat);
       if (!resultat) {
         raiseAlert('danger', 'Resultatet finnes ikkje', `Vi prøvde å slette resultatet med id ${resultatId}, men det eksisterer ikkje.`);
         return;
