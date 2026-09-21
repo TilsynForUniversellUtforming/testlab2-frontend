@@ -4,12 +4,17 @@ import useError from '@common/hooks/useError';
 import { getFullPath, idPath } from '@common/util/routeUtils';
 import { isNotDefined } from '@common/util/validationUtils';
 import { restart } from '@maaling/api/maaling-api';
-import { Maaling, RestartRequest, TestResult } from '@maaling/api/types';
+import {
+  AggregatedTestresult,
+  Maaling,
+  RestartRequest,
+  TestResult,
+} from '@maaling/api/types';
 import { MAALING, TEST_RESULT_LIST } from '@maaling/MaalingRoutes';
 import { MaalingContext } from '@maaling/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Outlet,
+  Outlet, useLoaderData,
   useNavigate,
   useOutletContext,
   useParams,

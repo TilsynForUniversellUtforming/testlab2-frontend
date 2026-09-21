@@ -5,7 +5,7 @@ import {
   idPath,
 } from '@common/util/routeUtils';
 import { isDefined } from '@common/util/validationUtils';
-import { getMaalingIdFromKontrollId } from '@maaling/api/maaling-api';
+import { getMaalingIdFromKontrollId, getTestresultatForMaalingLoeysing } from '@maaling/api/maaling-api';
 import MaalingList from '@maaling/list/MaalingList';
 import MaalingApp from '@maaling/MaalingApp';
 import MaalingCreate from '@maaling/MaalingCreate';
@@ -138,6 +138,11 @@ export const MaalingRoutes: RouteObject = {
                 {
                   index: true,
                   element: <TestResultList />,
+                  loader: ({ params }) =>
+                    getTestresultatForMaalingLoeysing(
+                      Number.parseInt(params.id as string),
+                      Number.parseInt(params.loeysingId as string)
+                    ),
                 },
                 {
                   path: TEST_VIOLATION_LIST.path,

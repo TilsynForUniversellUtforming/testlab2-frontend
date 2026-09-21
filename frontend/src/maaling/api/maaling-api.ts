@@ -3,6 +3,7 @@ import { responseWithLogErrors } from '@common/util/apiUtils';
 import { CrawlUrl } from '@maaling/types';
 
 import {
+  AggregatedTestresult,
   CrawlParameters,
   IdList,
   Maaling,
@@ -161,5 +162,18 @@ export const getMaalingIdFromKontrollId = async (
   await fetchWithErrorHandling(`/api/v1/maalinger/kontroll/${kontrollId}`, {
     method: 'GET',
   }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
+  );
+
+export const getTestresultatForMaalingLoeysing = async (
+  maalingId: number,
+  loeysingId: number
+): Promise<AggregatedTestresult[]> =>
+  await fetchWithErrorHandling(
+    `/api/v1/maalinger/${maalingId}/testresultat/loeysing/${loeysingId}`,
+    {
+      method: 'GET',
+    }
+  ).then((response) =>
     responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );

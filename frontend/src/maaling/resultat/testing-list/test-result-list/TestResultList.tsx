@@ -8,7 +8,12 @@ import { AggregatedTestresult } from '@maaling/api/types';
 import { MAALING, TEST_RESULT_LIST } from '@maaling/MaalingRoutes';
 import { MaalingTestStatus } from '@maaling/types';
 import { useMemo, useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router';
+import {
+  useLoaderData,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from 'react-router';
 
 import { TestResultContext } from '../../types';
 import { getAggregatedResultColumns } from './TestResultColumns';
@@ -22,6 +27,12 @@ const TestResultList = () => {
     contextLoading,
     contextError,
   }: TestResultContext = useOutletContext();
+
+  const data: AggregatedTestresult[] =
+    useLoaderData() as AggregatedTestresult[];
+
+
+  console.log('loeysingTestResult', data);
 
   const navigate = useNavigate();
 
@@ -85,7 +96,7 @@ const TestResultList = () => {
             : undefined
         }
         tableProps={{
-          data: loeysingTestResult?.aggregatedResultList ?? [],
+          data: data ?? [],
           defaultColumns: testResultatColumns,
           loading: contextLoading,
           onClickRetry: refreshMaaling,
