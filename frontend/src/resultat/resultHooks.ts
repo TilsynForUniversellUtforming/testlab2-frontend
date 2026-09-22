@@ -3,5 +3,9 @@ import { useLocation } from 'react-router';
 export const useGetCurrentPath =() => {
   const location = useLocation();
 
-  return location.pathname.split('/').pop() ?? 'resultat';
+  const tab = location.pathname.split('/').pop();
+  if (tab === 'tema' || tab === 'krav') {
+    return tab;
+  }
+  return 'resultat';
 }

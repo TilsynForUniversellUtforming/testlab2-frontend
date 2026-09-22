@@ -7,7 +7,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.JobStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.LoeysingVerksemd
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class Testresult(
+data class TestresultStatus(
     val loeysing: LoeysingVerksemd,
     val tilstand: JobStatus,
     val sistOppdatert: LocalDate,

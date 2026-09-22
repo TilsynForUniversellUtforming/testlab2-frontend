@@ -2,6 +2,7 @@ package no.uutilsynet.testlab2frontendserver.maalinger
 
 import java.net.URI
 import java.net.URL
+import kotlin.math.roundToInt
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.Aggregeringstype
@@ -13,7 +14,9 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingDTO
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingEdit
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.MaalingStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.RestartProcess
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggegatedTestresultTestregel
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.AggregertResultatDTO
+import no.uutilsynet.testlab2frontendserver.maalinger.dto.aggregation.TestresultStatus
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestResultat
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.toMaaling
 import no.uutilsynet.testlab2frontendserver.testreglar.dto.TestregelBaseDTO
@@ -55,7 +58,7 @@ class MaalingResource(
       restTemplate.getList<MaalingDTO>(maalingUrl).map { it.toMaaling() }
     } catch (e: RestClientException) {
       logger.error("klarte ikke å hente målingar", e)
-      throw IllegalStateException("Klarte ikkje å hente målingar")
+      error("Klarte ikkje å hente målingar")
     }
   }
 
@@ -64,20 +67,14 @@ class MaalingResource(
     logger.debug("henter måling med id: $maalingId fra $maalingUrl")
 
     val maalingDTO = restTemplate.getForObject("${maalingUrl}/${maalingId}", MaalingDTO::class.java)
+    val testresultat = getTestResultatMetadataForMaaling(maalingId)
     checkNotNull(maalingDTO) { "Kunne ikkje hente måling med id $maalingId frå server" }
 
     val maaling =
         when (maalingDTO.status) {
           MaalingStatus.planlegging -> maalingDTO.toMaaling()
           else -> {
-            val aggregatedTestresult =
-                if (maalingDTO.status == MaalingStatus.testing_ferdig) {
-                  getAggregering(maalingId, Aggregeringstype.testresultat)
-                } else {
-                  emptyList()
-                }
-
-            maalingDTO.toMaaling(getTestregelListForMaaling(maalingDTO.id), aggregatedTestresult)
+            maalingDTO.toMaaling(getTestregelListForMaaling(maalingDTO.id), testresultat)
           }
         }
 
@@ -280,6 +277,42 @@ class MaalingResource(
       }
           ?: ResponseEntity.badRequest().build()
 
+  @GetMapping("{maalingId}/testresultat")
+  fun getTestResultatMetadataForMaaling(
+      @PathVariable maalingId: Int,
+  ): List<TestresultStatus> {
+    return runCatching {
+          restTemplate.getList<TestresultStatus>("${maalingUrl}/testresultat/$maalingId")
+        }
+        .getOrElse {
+          logger.info("Kunne ikkje hente metadata testresultat for måling med id $maalingId")
+          throw NoSuchElementException("Klarte ikkje å hente testresultat", it)
+        }
+  }
+
+  @GetMapping("{maalingId}/testresultat/loeysing/{loeysingId}")
+  fun getTestResultatMetadataForMaalingAndLoeysing(
+      @PathVariable maalingId: Int,
+      @PathVariable loeysingId: Int
+  ): List<AggegatedTestresultTestregel> {
+    return runCatching {
+          restTemplate
+              .getList<AggegatedTestresultTestregel>(
+                  "${maalingUrl}/testresultat/${maalingId}/loeysing/${loeysingId}")
+              .map { result ->
+                result.copy(
+                    compliancePercent =
+                        result.testregelGjennomsnittlegSideSamsvarProsent?.times(100)?.roundToInt()
+                            ?: 0)
+              }
+        }
+        .getOrElse {
+          logger.info(
+              "Kunne ikkje hente metadata testresultat for måling med id $maalingId og løysing med id $loeysingId")
+          throw NoSuchElementException("Klarte ikkje å hente testresultat", it)
+        }
+  }
+
   private fun getTestregelListForMaaling(maalingId: Int): List<TestregelBaseDTO> =
       runCatching {
             logger.debug("Henter testreglar for måling $maalingId")
@@ -287,6 +320,6 @@ class MaalingResource(
           }
           .getOrElse {
             logger.error("Feila ved henting av testreglar for måling $maalingId", it)
-            throw IllegalStateException("Klarte ikkje å hente testreglar")
+            error("Klarte ikkje å hente testreglar")
           }
 }
