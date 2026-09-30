@@ -118,6 +118,18 @@ class KontrollResource(
             })
   }
 
+    @GetMapping("/testgrunnlag/byUser")
+    fun testgrunnlagForKontrollByUser(): List<TestgrunnlagDTO> {
+        return testgrunnlagAPIClient
+            .getTestgrunnlagByUser()
+            .fold(
+                { it },
+                {
+                    logger.error("Klarte ikkje å henta testgrunnlag for brukaren: $it")
+                    throw it
+                })
+    }
+
   @PostMapping("{kontrollId}/testgrunnlag")
   fun nyttTestgrunnlag(
       @PathVariable kontrollId: Int,

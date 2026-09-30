@@ -3,7 +3,7 @@ import { AppRoute, idPath } from '@common/util/routeUtils';
 import TestregelDemoApp from '@test/demo/TestregelDemoApp';
 import TestOverviewLoeysing from '@test/test-overview/loeysing-test/TestOverviewLoeysing';
 import {
-  testLoader,
+  testLoader, testOverViewByUserLoader,
   testOverviewLoader,
   testOverviewLoeysingLoader,
 } from '@test/TestingRoutes.loader';
@@ -45,6 +45,12 @@ export const TESTREGEL_DEMO_FORENKLA: AppRoute = {
   parentRoute: TEST_ROOT,
 }
 
+export const MINE_TESTAR: AppRoute = {
+  navn: 'Mine testar',
+  path: `by-user`,
+  parentRoute: TEST_ROOT,
+}
+
 export const TestingRoutes: RouteObject = {
   path: TEST_ROOT.path,
   handle: { name: TEST_ROOT.navn },
@@ -77,9 +83,15 @@ export const TestingRoutes: RouteObject = {
       handle: { name: 'Demo' },
     },
     {
-      path:TESTREGEL_DEMO_FORENKLA.path,
-      element:  <TestregelDemoApp />,
+      path: TESTREGEL_DEMO_FORENKLA.path,
+      element: <TestregelDemoApp />,
       handle: { name: 'Demo forenkla' },
-    }
+    },
+    {
+      path: MINE_TESTAR.path,
+      element: <TestOverview />,
+      handle: { name: MINE_TESTAR.navn },
+      loader: testOverViewByUserLoader,
+    },
   ],
 };

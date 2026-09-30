@@ -7,7 +7,10 @@ import no.uutilsynet.testlab2frontendserver.testing.Retest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.body
+import org.springframework.web.client.getForObject
 
 interface ITestgrunnlagAPIClient {
   fun createTestgrunnlag(
@@ -19,6 +22,8 @@ interface ITestgrunnlagAPIClient {
   fun getTestgrunnlag(kontrollId: Int): Result<List<KontrollResource.TestgrunnlagDTO>>
 
   fun deleteTestgrunnlag(testgrunnlagId: Int): Result<Unit>
+
+  fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>>
 }
 
 @Component
@@ -40,7 +45,7 @@ class TestgrunnlagAPIClient(
       check(location != null) { "Vi fikk ikkje location for det nye testgrunnlaget fra serveren" }
 
       val nyttTestgrunnlag =
-          restTemplate.getForObject(location, KontrollResource.TestgrunnlagDTO::class.java)
+          restTemplate.getForObject<KontrollResource.TestgrunnlagDTO>(location)
       check(nyttTestgrunnlag != null) {
         "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje."
       }
@@ -77,7 +82,19 @@ class TestgrunnlagAPIClient(
     }
   }
 
-  data class NyttTestgrunnlag(
+    override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
+        val restClient = RestClient.builder().build()
+        val url = "${testingApiProperties.url}/testgrunnlag/kontroll/byUser"
+        return runCatching {
+            restClient.get()
+                .uri(url)
+                .retrieve()
+                .body<List<KontrollResource.TestgrunnlagDTO>>()
+                ?: emptyList()
+        }
+    }
+
+    data class NyttTestgrunnlag(
       val kontrollId: Int,
       val namn: String,
       val type: TestgrunnlagType,

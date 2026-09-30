@@ -30,23 +30,24 @@ import { capitalize, sanitizeEnumLabel } from '@common/util/stringutils';
 
 const TestOverview = () => {
   const { id } = useParams();
-  const kontrollId = Number(id);
+
 
   const navigate = useNavigate();
   const [alert, setAlert] = useAlert();
   const { styringsdataError, testgrunnlagOverviewElements } =
     useLoaderData() as TestOverviewLoaderData;
+
   const submit = useSubmit();
 
   const onChangeLoeysing = useCallback(
-    async (testgrunnlagId: number, loeysingId: number) => {
-      if (!loeysingId || !id) {
+    async (testgrunnlagId: number, loeysingId: number, kontrollId: number) => {
+      if (!loeysingId || !kontrollId) {
         setAlert('danger', 'Det oppstod ein feil ved endring av løysing');
       } else {
         navigate(
           getFullPath(
             TEST_LOEYSING_KONTROLL,
-            { pathParam: idPath, id: id },
+            { pathParam: idPath, id: String(kontrollId) },
             {
               pathParam: ':loeysingId',
               id: String(loeysingId),
@@ -62,6 +63,7 @@ const TestOverview = () => {
   function retest(
     testgrunnlagId: number,
     loeysingId: number,
+    kontrollId:number
   ) {
       const retestRequest: RetestRequest = {
         originalTestgrunnlagId: testgrunnlagId,
@@ -108,6 +110,7 @@ const TestOverview = () => {
             teststatistics,
             kanReteste,
             kanSlette,
+            kontrollId,
             kontrollType,
             loeysingstype
           } = element;
@@ -180,14 +183,14 @@ const TestOverview = () => {
                 <div className={classes.buttons}>
                   <Button
                     title="Start testing"
-                    onClick={() => onChangeLoeysing(testgrunnlagId, loeysingId)}
+                    onClick={() => onChangeLoeysing(testgrunnlagId, loeysingId,kontrollId)}
                   >
                     {getJobstatus(status)}
                   </Button>
                   {kanReteste && (
                     <Button
                       variant="secondary"
-                      onClick={() => retest(testgrunnlagId, loeysingId)}
+                      onClick={() => retest(testgrunnlagId, loeysingId,kontrollId)}
                     >
                       Retest
                     </Button>

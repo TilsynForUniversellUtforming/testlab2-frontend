@@ -1,4 +1,9 @@
-import { fetchTestResults, getTestoverview, listTestgrunnlag } from '@test/api/testing-api';
+import {
+  fetchTestResults,
+  getTestoverview,
+  getTestoverviewForBrukar,
+  listTestgrunnlag,
+} from '@test/api/testing-api';
 import { ResultatManuellKontroll } from '@test/api/types';
 import {
   Testgrunnlag,
@@ -188,58 +193,37 @@ export const testOverviewLoader = async ({
 }: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
   const kontrollId = getIdFromParams(params?.id);
 
-  const [kontrollResult, testgrunnlagResult, styringsdataResult,testoverviewResult] =
+  const [ styringsdataResult, testoverviewResult] =
     await Promise.allSettled([
-      fetchKontroll(kontrollId),
-      listTestgrunnlag(kontrollId),
       findStyringsdataForKontroll(kontrollId),
       getTestoverview(kontrollId),
     ]);
 
-  const testgrunnlag = validatedTestgrunnlag(testgrunnlagResult);
-  const kontroll = await validatedKontroll(kontrollResult, kontrollId);
-  const resultater = await fetchAllTestresultat(testgrunnlag);
-  const loeysingList = getLoeysingarForTestgrunnlag(kontroll, testgrunnlag);
   const testoverviewList = validatedTestoverview(testoverviewResult);
 
   const styringsdataRejected = styringsdataResult.status === 'rejected';
 
-  const styringsdata = styringsdataRejected
-    ? []
-    : (styringsdataResult as PromiseFulfilledResult<any>).value
-      .styringsdataLoeysing
-
-
-  const testoverviewElements: TestOverviewElement[] = testgrunnlag.flatMap((etTestgrunnlag) =>
-    [...groupSideutvalByLoeysing(etTestgrunnlag).entries()].map(([loeysingId, sideutval]) => {
-      const loeysingStyringsdata = filterStyringdataForLoeysing(styringsdata, loeysingId);
-
-      const filteredResults = filterResultaterForLoeysingTestgrunnlag(
-        resultater,
-        loeysingId,
-        etTestgrunnlag.id
-      );
-      return {
-        etTestgrunnlag: etTestgrunnlag,
-        loeysingNamn: findLoeysingNamn(loeysingList, loeysingId),
-        loeysingId,
-        testStatus: teststatus(filteredResults, etTestgrunnlag, loeysingId),
-        testType: viewTestType(
-          etTestgrunnlag,
-          sideutval.map((su) => su.id),
-          testgrunnlag
-        ),
-        styringsdataId: loeysingStyringsdata?.id ?? 0,
-        styringsdataStatus: getStyringsdataStatus(loeysingStyringsdata) ?? '',
-        testresultat: filteredResults,
-      } satisfies TestOverviewElement;
-    })
-  );
 
   return {
-    testgrunnlag,
     styringsdataError: styringsdataRejected,
-    testoverviewElements: testoverviewElements,
+    testgrunnlagOverviewElements: testoverviewList,
+  };
+};
+
+export const testOverViewByUserLoader = async ({
+  params,
+}: LoaderFunctionArgs): Promise<TestOverviewLoaderData> => {
+
+  const [testoverviewResult] = await Promise.allSettled([
+    getTestoverviewForBrukar(),
+  ]);
+
+  const testoverviewList = validatedTestoverview(testoverviewResult);
+
+
+
+  return {
+    styringsdataError: false,
     testgrunnlagOverviewElements: testoverviewList,
   };
 };

@@ -95,3 +95,13 @@ export async function fetchAlleKontroller(): Promise<KontrollListItem[]> {
   }
   return res.json();
 }
+
+export async function fetchAlleKontrollerForBrukar(): Promise<KontrollListItem[]> {
+  const res = await fetchWithErrorHandling('/api/v1/kontroller/byUser');
+  if (res.status > 399) {
+    throw new Response('Feilet da vi prøvde å hente alle kontroller for brukar', {
+      statusText: res.statusText,
+    });
+  }
+  return res.json();
+}
