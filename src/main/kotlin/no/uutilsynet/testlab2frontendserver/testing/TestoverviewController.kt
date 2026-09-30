@@ -41,22 +41,20 @@ class TestoverviewController(
     }
   }
 
-    @GetMapping("/byUser")
-    fun getTestOverview(): List<TestingStatus> {
-        val response =
-            restClient
-                .get()
-                .uri("${testresultUrl}/testoverview/byUser")
-                .retrieve()
-                .toEntity<List<TestingStatus>>()
+  @GetMapping("/byUser")
+  fun getTestOverview(): List<TestingStatus> {
+    val response =
+        restClient
+            .get()
+            .uri("${testresultUrl}/testoverview/byUser")
+            .retrieve()
+            .toEntity<List<TestingStatus>>()
 
-        check(response.statusCode == HttpStatus.OK) {
-            "Feil ved henting av testoverview for for brukar, status code: ${response.statusCode}"
-        }
-        return checkNotNull(response.body) {
-            "Tom respons ved henting av testoverview for for brukar"
-        }
+    check(response.statusCode == HttpStatus.OK) {
+      "Feil ved henting av testoverview for for brukar, status code: ${response.statusCode}"
     }
+    return checkNotNull(response.body) { "Tom respons ved henting av testoverview for for brukar" }
+  }
 }
 
 data class TestingStatus(

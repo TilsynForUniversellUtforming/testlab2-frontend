@@ -57,7 +57,7 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
     return Result.success(Unit)
   }
 
-    override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
-        TODO("Not yet implemented")
-    }
+  override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
+    TODO("Not yet implemented")
+  }
 }

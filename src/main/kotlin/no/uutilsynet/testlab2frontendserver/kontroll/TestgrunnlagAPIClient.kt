@@ -44,8 +44,7 @@ class TestgrunnlagAPIClient(
               "${testingApiProperties.url}/testgrunnlag/kontroll", nyttTestgrunnlag)
       check(location != null) { "Vi fikk ikkje location for det nye testgrunnlaget fra serveren" }
 
-      val nyttTestgrunnlag =
-          restTemplate.getForObject<KontrollResource.TestgrunnlagDTO>(location)
+      val nyttTestgrunnlag = restTemplate.getForObject<KontrollResource.TestgrunnlagDTO>(location)
       check(nyttTestgrunnlag != null) {
         "Vi forsøkte å hente det nye testgrunnlaget, men det finst ikkje."
       }
@@ -82,19 +81,16 @@ class TestgrunnlagAPIClient(
     }
   }
 
-    override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
-        val restClient = RestClient.builder().build()
-        val url = "${testingApiProperties.url}/testgrunnlag/kontroll/byUser"
-        return runCatching {
-            restClient.get()
-                .uri(url)
-                .retrieve()
-                .body<List<KontrollResource.TestgrunnlagDTO>>()
-                ?: emptyList()
-        }
+  override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
+    val restClient = RestClient.builder().build()
+    val url = "${testingApiProperties.url}/testgrunnlag/kontroll/byUser"
+    return runCatching {
+      restClient.get().uri(url).retrieve().body<List<KontrollResource.TestgrunnlagDTO>>()
+          ?: emptyList()
     }
+  }
 
-    data class NyttTestgrunnlag(
+  data class NyttTestgrunnlag(
       val kontrollId: Int,
       val namn: String,
       val type: TestgrunnlagType,

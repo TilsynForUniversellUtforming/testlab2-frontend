@@ -39,6 +39,18 @@ const TestOverview = () => {
 
   const submit = useSubmit();
 
+ function testFormPath(testgrunnlagId: number, loeysingId: number, kontrollId: number) {
+    return getFullPath(
+      TEST_LOEYSING_KONTROLL,
+      { pathParam: idPath, id: String(kontrollId) },
+      {
+        pathParam: ':loeysingId',
+        id: String(loeysingId),
+      },
+      { pathParam: ':testgrunnlagId', id: String(testgrunnlagId) }
+    );
+  }
+
   const onChangeLoeysing = useCallback(
     async (testgrunnlagId: number, loeysingId: number, kontrollId: number) => {
       if (!loeysingId || !kontrollId) {
@@ -153,27 +165,28 @@ const TestOverview = () => {
                     <Heading data-size="md" level={4}>
                       {loeysingNamn}
                     </Heading>
-                    {styringsdataStatus && styringsdataStatus!=='INGEN_REAKSJON_BRUKT' && (
-                      <TestlabStatusTag<KlageType>
-                        status={styringsdataStatus.toLowerCase()}
-                        colorMapping={{
-                          danger: ['bot'],
-                          warning: ['paalegg'],
-                        }}
-                        data-size="sm"
-                      />
-                    )}
+                    {styringsdataStatus &&
+                      styringsdataStatus !== 'INGEN_REAKSJON_BRUKT' && (
+                        <TestlabStatusTag<KlageType>
+                          status={styringsdataStatus.toLowerCase()}
+                          colorMapping={{
+                            danger: ['bot'],
+                            warning: ['paalegg'],
+                          }}
+                          data-size="sm"
+                        />
+                      )}
                   </div>
                   <div className={classes.tagWrapper}>
                     <div className={classes.testTags}>
                       <Tag data-color="warning" data-size="sm">
                         {capitalize(kontrollType)}
                       </Tag>
-                      {testgrunnlagType=='RETEST' &&
-                      <Tag data-color="warning" data-size="sm">
-                        {sanitizeEnumLabel(testgrunnlagType)}
-                      </Tag>
-                      }
+                      {testgrunnlagType == 'RETEST' && (
+                        <Tag data-color="warning" data-size="sm">
+                          {sanitizeEnumLabel(testgrunnlagType)}
+                        </Tag>
+                      )}
                     </div>
                     <Tag data-color="neutral" data-size="sm">
                       {sanitizeEnumLabel(loeysingstype)}
@@ -181,16 +194,20 @@ const TestOverview = () => {
                   </div>
                 </div>
                 <div className={classes.buttons}>
-                  <Button
-                    title="Start testing"
-                    onClick={() => onChangeLoeysing(testgrunnlagId, loeysingId,kontrollId)}
-                  >
-                    {getJobstatus(status)}
+                  <Button title={getJobstatus(status)}
+                  asChild={true}>
+                    <Link
+                      to={testFormPath(testgrunnlagId, loeysingId, kontrollId)}
+                    >
+                      {getJobstatus(status)}
+                    </Link>
                   </Button>
                   {kanReteste && (
                     <Button
                       variant="secondary"
-                      onClick={() => retest(testgrunnlagId, loeysingId,kontrollId)}
+                      onClick={() =>
+                        retest(testgrunnlagId, loeysingId, kontrollId)
+                      }
                     >
                       Retest
                     </Button>
@@ -204,16 +221,18 @@ const TestOverview = () => {
                       Slett
                     </Button>
                   )}
-                  <Link to={styringsdataPath}>
-                    <Button
-                      variant={ButtonVariant.Outline}
-                      disabled={styringsdataError}
-                    >
+
+                  <Button
+                    variant={ButtonVariant.Outline}
+                    disabled={styringsdataError}
+                    asChild={true}
+                  >
+                    <Link to={styringsdataPath}>
                       {styringsdataId
                         ? 'Endre styringsdata'
                         : 'Legg til styringsdata'}
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
