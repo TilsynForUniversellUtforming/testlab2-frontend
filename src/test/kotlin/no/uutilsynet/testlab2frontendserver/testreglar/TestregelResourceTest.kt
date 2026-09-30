@@ -1,8 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.testreglar
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.time.Instant
 import no.uutilsynet.testlab2.constants.KravStatus
 import no.uutilsynet.testlab2.constants.StringTestregelDefinition
@@ -25,7 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.boot.restclient.test.autoconfigure.RestClientTest
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.test.web.client.ExpectedCount
@@ -33,6 +30,7 @@ import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
 import org.springframework.web.client.RestTemplate
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @RestClientTest
 class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
@@ -49,10 +47,7 @@ class TestregelResourceTest(@Autowired val restTemplate: RestTemplate) {
           KravApiProperties(testregelApiUrl),
           testregelApiClient,
           Mockito.mock(KravApiClient::class.java))
-  private val mapper =
-      jacksonObjectMapper()
-          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-          .registerModule(JavaTimeModule())
+  private val mapper = jacksonObjectMapper()
 
   @BeforeEach
   fun setup() {

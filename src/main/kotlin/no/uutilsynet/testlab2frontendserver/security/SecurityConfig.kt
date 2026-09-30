@@ -15,11 +15,11 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 @EnableWebSecurity()
 class SecurityConfig {
 
-  @Bean
+  @Bean("frontendFilterChain")
   @Profile("security")
-  fun filterChain(http: HttpSecurity): SecurityFilterChain {
+  fun frontendFilterChain(http: HttpSecurity): SecurityFilterChain {
     http {
-      authorizeHttpRequests { authorize(anyRequest, authenticated) }
+      authorizeHttpRequests { authorize(anyRequest, hasAuthority("brukar subscriber")) }
       oauth2ResourceServer {
         jwt { jwtAuthenticationConverter = Testlab2AuthenticationConverter() }
       }

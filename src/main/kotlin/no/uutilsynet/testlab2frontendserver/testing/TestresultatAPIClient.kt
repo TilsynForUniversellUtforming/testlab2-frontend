@@ -28,7 +28,9 @@ class TestresultatAPIClient(
   ): Result<ResultatManuellKontroll> = runCatching {
     val location = restTemplate.postForLocation(testresultUrl, createTestResultat)
     checkNotNull(location) { "Vi fikk ikkje location for det nye testresultatet fra serveren" }
-    restTemplate.getForObject(location)
+    val resultat = restTemplate.getForObject<ResultatManuellKontroll>(location)
+    checkNotNull(resultat) { "Vi fikk ikkje testresultat fra serveren" }
+    return Result.success(resultat)
   }
 
   override fun updateResultatManuellKontroll(
@@ -43,12 +45,12 @@ class TestresultatAPIClient(
       testgrunnlagId: Int
   ): Result<List<ResultatManuellKontroll>> = runCatching {
     val testResults: TestresultatForKontroll? =
-        restTemplate.getForObject(
-            "$testresultUrl?testgrunnlagId=$testgrunnlagId", TestresultatForKontroll::class.java)
+        restTemplate.getForObject<TestresultatForKontroll>(
+            "$testresultUrl?testgrunnlagId=$testgrunnlagId")
     if (testResults != null) {
       return Result.success(testResults.resultat)
     } else {
-      throw RuntimeException(
+      throw NoSuchElementException(
           "Vi klarte ikkje å hente testresultat for testgrunnlag $testgrunnlagId")
     }
   }

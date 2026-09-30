@@ -8,6 +8,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.LoeysingFormElement
 import no.uutilsynet.testlab2frontendserver.verksemd.Verksemd
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -41,26 +42,28 @@ class LoeysingResource(
   fun getLoeysing(@PathVariable id: Int): ResponseEntity<Loeysing> =
       try {
         val url = "$loeysingUrl/$id"
-        val loeysing: Loeysing = restTemplate.getForObject(url)
+        val loeysing: Loeysing? = restTemplate.getForObject<Loeysing>(url)
+        requireNotNull(loeysing) { "loeysing must not be null" }
         ResponseEntity.ok(loeysing)
-      } catch (e: Error) {
+      } catch (e: Exception) {
         logger.error("Klarte ikkje å hente løysing med id $id", e)
-        throw RuntimeException("Klarte ikkje å hente løysing")
+        ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
       }
 
   @GetMapping("/{id}/withVerksemd")
   fun getLoeysingWithVerksemd(@PathVariable id: Int): ResponseEntity<LoeysingFormElement> {
     try {
       val url = "$loeysingUrl/$id"
-      val loeysing: Loeysing = restTemplate.getForObject(url)
+      val loeysing: Loeysing? = restTemplate.getForObject<Loeysing>(url)
+      requireNotNull(loeysing) { "loeysing must not be null" }
       val verksemd = getVerksemd(loeysing)
 
       return ResponseEntity.ok(
           LoeysingFormElement(
               loeysing.id, loeysing.namn, loeysing.url, loeysing.orgnummer, verksemd))
-    } catch (e: Error) {
+    } catch (e: Exception) {
       logger.error("Klarte ikkje å hente løysing med id $id", e)
-      throw RuntimeException("Klarte ikkje å hente løysing")
+      return ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 
@@ -77,7 +80,6 @@ class LoeysingResource(
       println("Feil i param")
       return ResponseEntity.badRequest().body("Må søke med enten namn eller orgnummer")
     }
-    println("Params: namn=$namn, orgnummer=$orgnummer")
     return try {
       if (namn != null) {
         ResponseEntity.ok(restTemplate.getList<Loeysing>("$loeysingUrl?search=$namn"))
@@ -86,7 +88,7 @@ class LoeysingResource(
       } else {
         ResponseEntity.ok(getLoeysingList())
       }
-    } catch (e: Error) {
+    } catch (e: Exception) {
       logger.error("Klarte ikkje å hente løysingar", e)
       return ResponseEntity.internalServerError().body("Klarte ikkje å hente løysingar")
     }
@@ -106,10 +108,10 @@ class LoeysingResource(
                         "namn" to dto.namn,
                         "url" to dto.url,
                         "orgnummer" to dto.organisasjonsnummer))
-                    ?: throw RuntimeException("Kunne ikkje hente location frå servaren")
+            checkNotNull(location) { "Kunne ikkje hente location frå servaren" }
             val createdLoeysing =
-                restTemplate.getForObject(location, Loeysing::class.java)
-                    ?: throw RuntimeException("Kunne ikkje hente løysing frå servaren")
+                restTemplate.getForObject<Loeysing>(location)
+                    ?: throw NoSuchElementException("Kunne ikkje hente løysing frå servaren")
             ResponseEntity.created(URI("/loeysing/${createdLoeysing.id}")).body(getLoeysingList())
           }
           .getOrElse {
