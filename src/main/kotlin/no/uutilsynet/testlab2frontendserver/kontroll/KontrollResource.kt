@@ -20,21 +20,10 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
-
-typealias Orgnummer = String
-
-data class KontrollListItem(
-    val id: Int,
-    val tittel: String,
-    val saksbehandler: String,
-    val sakstype: String,
-    val arkivreferanse: String,
-    val kontrolltype: String,
-    val virksomheter: List<Orgnummer>,
-    val styringsdataId: Int?
-)
+import org.springframework.web.client.toEntity
 
 @RestController
 @RequestMapping("api/v1/kontroller")
@@ -63,15 +52,17 @@ class KontrollResource(
             val location =
                 restTemplate.postForLocation(
                     testingApiProperties.url + "/kontroller", opprettKontroll)
-            val kontrollId =
-                location?.path?.substringAfterLast("/")?.toInt()
-                    ?: throw IllegalStateException(
-                        "En ny kontroll ble opprettet, men vi fikk ikke noen location fra serveren.")
+            val kontrollId = location?.path?.substringAfterLast("/")?.toInt()
+
+            check(kontrollId != null) {
+              "En ny kontroll ble opprettet, men vi fikk ikke noen location fra serveren."
+            }
+
             mapOf("kontrollId" to kontrollId)
           }
           .getOrElse {
             logger.error("Oppretting av kontroll feilet", it)
-            throw RuntimeException(it)
+            error(it)
           }
 
   @GetMapping("{id}")
@@ -106,12 +97,14 @@ class KontrollResource(
 
   @GetMapping("sideutvaltype")
   fun getSideutvalType(): List<SideutvalType> =
-      try {
-        restTemplate.getList<SideutvalType>("${testingApiProperties.url}/kontroller/sideutvaltype")
-      } catch (e: Error) {
-        logger.error("klarte ikke å hente sideutvaltyper", e)
-        throw Error("Klarte ikke å hente sideutvaltyper")
-      }
+      runCatching {
+            restTemplate.getList<SideutvalType>(
+                "${testingApiProperties.url}/kontroller/sideutvaltype")
+          }
+          .getOrElse { e ->
+            logger.error("klarte ikke å hente sideutvaltyper", e)
+            error("Klarte ikke å hente sideutvaltyper")
+          }
 
   @GetMapping("{kontrollId}/testgrunnlag")
   fun testgrunnlagForKontroll(@PathVariable kontrollId: Int): List<TestgrunnlagDTO> {
@@ -121,6 +114,18 @@ class KontrollResource(
             { it },
             {
               logger.error("Klarte ikkje å henta testgrunnlag for kontroll $kontrollId: $it")
+              throw it
+            })
+  }
+
+  @GetMapping("/testgrunnlag/byUser")
+  fun testgrunnlagForKontrollByUser(): List<TestgrunnlagDTO> {
+    return testgrunnlagAPIClient
+        .getTestgrunnlagByUser()
+        .fold(
+            { it },
+            {
+              logger.error("Klarte ikkje å henta testgrunnlag for brukaren: $it")
               throw it
             })
   }
@@ -149,28 +154,30 @@ class KontrollResource(
             val (originalTestgrunnlagId, loeysingId) = retest
 
             logger.debug(
-                "Oppretter retest for løysing $loeysingId i kontroll $kontrollId med opprinnelig testgrunnlag $originalTestgrunnlagId")
+                "Oppretter retest for løysing $loeysingId i kontroll " +
+                    "$kontrollId med opprinnelig testgrunnlag $originalTestgrunnlagId")
 
             val resultat =
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
             check(okToRetest(resultat))
-            val testgrunnlagDTO = testgrunnlagAPIClient.createRetest(retest).getOrThrow()
+            val testgrunnlagDTO: TestgrunnlagDTO =
+                testgrunnlagAPIClient.createRetest(retest).getOrThrow()
             ResponseEntity.ok(testgrunnlagDTO)
           }
           .getOrElse { throwable ->
             when (throwable) {
               is IllegalArgumentException ->
-                  ResponseEntity.badRequest().build<TestgrunnlagDTO?>().also {
+                  ResponseEntity.badRequest().build<TestgrunnlagDTO>().also {
                     logger.warn(throwable.message)
                   }
               is IllegalStateException ->
-                  ResponseEntity.status(HttpStatus.FORBIDDEN).build<TestgrunnlagDTO?>().also {
+                  ResponseEntity.status(HttpStatus.FORBIDDEN).build<TestgrunnlagDTO>().also {
                     logger.warn(throwable.message)
                   }
               else ->
-                  ResponseEntity.internalServerError().build<TestgrunnlagDTO?>().also {
+                  ResponseEntity.internalServerError().build<TestgrunnlagDTO>().also {
                     logger.error("Klarte ikkje å starte retest: ${throwable.message}")
                   }
             }
@@ -180,7 +187,7 @@ class KontrollResource(
   fun slettTestgrunnlag(
       @PathVariable kontrollId: Int,
       @PathVariable testgrunnlagId: Int
-  ): ResponseEntity<Unit?> {
+  ): ResponseEntity<Unit> {
     return testresultatAPIClient
         .getResultatForTestgrunnlag(testgrunnlagId)
         .mapCatching { resultat ->
@@ -192,15 +199,15 @@ class KontrollResource(
             { throwable ->
               when (throwable) {
                 is IllegalArgumentException ->
-                    ResponseEntity.badRequest().build<Unit?>().also {
+                    ResponseEntity.badRequest().build<Unit>().also {
                       logger.warn(throwable.message)
                     }
                 is IllegalStateException ->
-                    ResponseEntity.status(HttpStatus.FORBIDDEN).build<Unit?>().also {
+                    ResponseEntity.status(HttpStatus.FORBIDDEN).build<Unit>().also {
                       logger.warn(throwable.message)
                     }
                 else ->
-                    ResponseEntity.internalServerError().build<Unit?>().also {
+                    ResponseEntity.internalServerError().build<Unit>().also {
                       logger.error("Klarte ikkje å slette testgrunnlag: $it")
                     }
               }
@@ -212,9 +219,8 @@ class KontrollResource(
       @PathVariable kontrollId: Int,
   ): ResponseEntity<TestStatus> {
     val responseEntity =
-        restTemplate.getForEntity(
-            testingApiProperties.url + "/kontroller/test-status/$kontrollId",
-            TestStatus::class.java)
+        restTemplate.getForEntity<TestStatus>(
+            testingApiProperties.url + "/kontroller/test-status/$kontrollId")
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
   }
 
@@ -223,10 +229,20 @@ class KontrollResource(
       @PathVariable kontrollId: Int,
   ): ResponseEntity<KontrollTestingMetadata> {
     val responseEntity =
-        restTemplate.getForEntity(
-            testingApiProperties.url + "/kontroller/testmetadata/$kontrollId",
-            KontrollTestingMetadata::class.java)
+        restTemplate.getForEntity<KontrollTestingMetadata>(
+            testingApiProperties.url + "/kontroller/testmetadata/$kontrollId")
     return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
+  }
+
+  @GetMapping("/byUser")
+  fun getKontrollerByUser(): ResponseEntity<List<KontrollListItem>> {
+    val restClient = RestClient.builder(restTemplate).build()
+
+    return restClient
+        .get()
+        .uri(testingApiProperties.url + "/kontroller/byUser")
+        .retrieve()
+        .toEntity<List<KontrollListItem>>()
   }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
@@ -260,3 +276,16 @@ class KontrollResource(
       val datoOppretta: Instant
   )
 }
+
+typealias Orgnummer = String
+
+data class KontrollListItem(
+    val id: Int,
+    val tittel: String,
+    val saksbehandler: String,
+    val sakstype: String,
+    val arkivreferanse: String,
+    val kontrolltype: String,
+    val virksomheter: List<Orgnummer>,
+    val styringsdataId: Int?
+)

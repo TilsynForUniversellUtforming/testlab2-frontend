@@ -44,9 +44,9 @@ export type TestResultUpdate = {
 };
 
 export type TestOverviewLoaderData = {
-  testgrunnlag: Testgrunnlag[];
+  testgrunnlag?: Testgrunnlag[];
   styringsdataError: boolean;
-  testoverviewElements: TestOverviewElement[];
+  testoverviewElements?: TestOverviewElement[];
   testgrunnlagOverviewElements: TestgrunnlagOverviewElement[];
 };
 
@@ -108,6 +108,7 @@ export type TestgrunnlagOverviewElement = {
   testgrunnlagId: number;
   loeysingNamn: string;
   loeysingstype: string;
+  kontrollId: number;
   kontrollType: string;
   testgrunnlagType: string;
   styringsdataId?: number;

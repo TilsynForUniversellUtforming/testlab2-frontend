@@ -4,7 +4,7 @@ import Page404 from '@common/Page404';
 import { AppRoute } from '@common/util/routeUtils';
 import { LOEYSING_ROOT, LoeysingRoutes } from '@loeysingar/LoeysingRoutes';
 import { MAALING_ROOT, MaalingRoutes } from '@maaling/MaalingRoutes';
-import { TestingRoutes } from '@test/TestingRoutes';
+import { MINE_TESTAR, TestingRoutes } from '@test/TestingRoutes';
 import { TESTREGEL_ROOT, TestregelRoutes } from '@testreglar/TestregelRoutes';
 import { VERKSEMD_LIST, VerksemdRoutes } from '@verksemder/VerksemdRoutes';
 import { RouteObject } from 'react-router';
@@ -15,7 +15,11 @@ import mineTestarImg from './assets/mine-testar.svg';
 import teknikkImg from './assets/teknikk.svg';
 import konkurranseImg from './assets/teknikk.svg';
 import tilsynImg from './assets/tilsyn.svg';
-import { KONTROLL_LISTE, KontrollRoutes } from './kontroll/KontrollRoutes';
+import {
+  KONTROLL_LISTE,
+  KontrollRoutes,
+  MINE_KONTROLLER,
+} from './kontroll/KontrollRoutes';
 import { KRAV_LIST, KravRoutes } from './krav/KravRoutes';
 import Oversikt from './oversikt/Oversikt';
 import { RESULTAT_ROOT, ResultRoutes } from './resultat/ResultatRoutes';
@@ -35,20 +39,7 @@ export const DISKUSJON_ROOT: AppRoute = {
   imgSrc: diskusjonImg,
   disabled: true,
 };
-export const MINE_SAKER_ROOT: AppRoute = {
-  navn: 'Mine saker',
-  path: '/',
-  parentRoute: ROOT,
-  imgSrc: mineSakerImg,
-  disabled: true,
-};
-export const MINE_TESTAR_ROOT: AppRoute = {
-  navn: 'Mine testar',
-  path: '/',
-  parentRoute: ROOT,
-  imgSrc: mineTestarImg,
-  disabled: true,
-};
+
 
 const TEKNIKK_ROOT: AppRoute = {
   navn: 'Teknikk',
@@ -79,12 +70,12 @@ export const utval: AppRoute[] = [
 ];
 
 export const saksbehandling: AppRoute[] = [
-  MINE_SAKER_ROOT,
+  MINE_KONTROLLER,
   KONTROLL_LISTE,
   MAALING_ROOT,
 ];
 
-export const testing: AppRoute[] = [MINE_TESTAR_ROOT, RESULTAT_ROOT];
+export const testing: AppRoute[] = [MINE_TESTAR, RESULTAT_ROOT];
 
 export const anna: AppRoute[] = [DISKUSJON_ROOT, KONKURRANSE_ROOT];
 

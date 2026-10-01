@@ -146,24 +146,6 @@ export const createRetest = async (
     responseWithLogErrors(response, 'Kunne ikkje opprette retest')
   );
 };
-
-export const postTestgrunnlag = async (nyttTestgrunnlag: {
-  kontrollId: number;
-}): Promise<Testgrunnlag> => {
-  return await fetchWithCsrf(
-    `${kontrollApiBaseUrl}/${nyttTestgrunnlag.kontrollId}/testgrunnlag`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(nyttTestgrunnlag),
-    }
-  ).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje opprette testgrunnlag')
-  );
-};
-
 export const deleteTestgrunnlag = async (deleteRetestRequest: DeleteTestgrunnlagRequest) => {
   return await fetchWithCsrf(
     `${kontrollApiBaseUrl}/${deleteRetestRequest.kontrollId}/testgrunnlag/${deleteRetestRequest.testgrunnlagId}`,
@@ -183,6 +165,18 @@ export const getTestoverview = async (
     responseWithLogErrors(
       response,
       'Klarte ikke å hente liste med testingstatus'
+    )
+  );
+};
+
+export const getTestoverviewForBrukar = async (): Promise<TestgrunnlagOverviewElement[]> => {
+  return await fetchWithErrorHandling(
+    `${testingApiBaseUrl}/testoverview/byUser`,
+    {}
+  ).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Klarte ikke å hente testgrunnlag for brukaren'
     )
   );
 };

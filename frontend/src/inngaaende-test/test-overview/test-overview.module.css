@@ -3,6 +3,25 @@
   gap: 1rem;
 }
 
+.buttons a {
+  color: var(--dsc-button-color);
+
+}
+
+.buttons a:hover {
+  color: var(--dsc-button-color);
+  background-color: var(--ds-color-base-hover);
+}
+
+.buttons a[data-variant="secondary"] {
+  color: var(--ds-color-text-subtle);
+}
+
+.buttons a[data-variant="secondary"]:hover {
+  color: var(--ds-color-text-subtle);
+  background-color: var(--ds-color-surface-hover);
+}
+
 .manual-test-container {
   display: flex;
   flex-direction: column;

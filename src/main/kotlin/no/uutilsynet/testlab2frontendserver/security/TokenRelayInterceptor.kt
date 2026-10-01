@@ -19,9 +19,9 @@ class TokenRelayInterceptor : ClientHttpRequestInterceptor {
       bytes: ByteArray,
       execution: ClientHttpRequestExecution
   ): ClientHttpResponse {
-    val authentication: Authentication = SecurityContextHolder.getContext().authentication
+    val authentication: Authentication? = SecurityContextHolder.getContext().authentication
 
-    if (authentication is JwtAuthenticationToken) {
+    if (authentication != null && authentication is JwtAuthenticationToken) {
       request.headers.setBearerAuth(authentication.token.tokenValue)
     }
     return execution.execute(request, bytes)

@@ -56,4 +56,8 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
     database.remove(testgrunnlagId)
     return Result.success(Unit)
   }
+
+  override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
+    TODO("Not yet implemented")
+  }
 }

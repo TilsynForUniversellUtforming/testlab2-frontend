@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.14</version>
+        <version>4.1.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>no.uutilsynet</groupId>
@@ -15,16 +15,16 @@
     <description>Frontenden til testlab2</description>
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>2.1.10</kotlin.version>
+        <kotlin.version>2.2.21</kotlin.version>
         <docker.image.prefix>localhost</docker.image.prefix>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
+            <groupId>tools.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
         <dependency>
@@ -44,13 +44,18 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.uutilsynet</groupId>
             <artifactId>testlab2-security-lib</artifactId>
-            <version>0.0.11</version>
+            <version>0.0.12</version>
         </dependency>
 
         <dependency>
@@ -61,6 +66,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -110,7 +119,6 @@
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>5.0.0</version>
             </plugin>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>

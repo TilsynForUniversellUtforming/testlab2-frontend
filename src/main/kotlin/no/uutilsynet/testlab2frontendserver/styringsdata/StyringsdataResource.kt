@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.getForEntity
 import org.springframework.web.client.getForObject
 
 @RestController
@@ -32,8 +33,8 @@ class StyringsdataResource(
   ): ResponseEntity<StyringsdataResult> =
       runCatching {
             val responseEntity =
-                restTemplate.getForEntity(
-                    "$styringsdataUrl?kontrollId=$kontrollId", StyringsdataResult::class.java)
+                restTemplate.getForEntity<StyringsdataResult>(
+                    "$styringsdataUrl?kontrollId=$kontrollId")
             return ResponseEntity.status(responseEntity.statusCode).body(responseEntity.body)
           }
           .getOrElse {
@@ -45,10 +46,10 @@ class StyringsdataResource(
   fun getStyringsdata(
       @PathVariable("stryingsdataType") styringsdataType: StyringsdataType,
       @PathVariable("styringsdataId") styringsdataId: Int,
-  ): ResponseEntity<Styringsdata?> {
+  ): ResponseEntity<Styringsdata> {
     return runCatching {
-          restTemplate.getForEntity(
-              "$styringsdataUrl/${styringsdataType.name}/$styringsdataId", Styringsdata::class.java)
+          restTemplate.getForEntity<Styringsdata>(
+              "$styringsdataUrl/${styringsdataType.name}/$styringsdataId")
         }
         .fold(
             { responseEntity ->
@@ -59,13 +60,12 @@ class StyringsdataResource(
               when (exception) {
                 is HttpClientErrorException -> {
                   if (exception.statusCode == HttpStatus.NOT_FOUND) {
-                    ResponseEntity.notFound().build<Styringsdata?>()
+                    ResponseEntity.notFound().build()
                   } else {
-                    ResponseEntity.status(exception.statusCode).build<Styringsdata?>()
+                    ResponseEntity.status(exception.statusCode).build()
                   }
                 }
-                else ->
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build<Styringsdata?>()
+                else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
               }
             })
   }
@@ -82,9 +82,9 @@ class StyringsdataResource(
 
             val validated = validateStyringsdata(styringsdata, styringsdataResult)
 
-            val location =
-                restTemplate.postForLocation(styringsdataUrl, validated)
-                    ?: throw IllegalStateException("Vi fikk ikkje location fra $styringsdataUrl")
+            val location = restTemplate.postForLocation(styringsdataUrl, validated)
+
+            checkNotNull(location) { "Kunne ikkje hente location frå servaren" }
             ResponseEntity.ok(restTemplate.getForObject<Styringsdata>(location))
           }
           .getOrElse {
@@ -112,7 +112,7 @@ class StyringsdataResource(
           }
           .getOrElse {
             logger.error("Endring av styringsdata feila", it)
-            throw RuntimeException(it)
+            error(it)
           }
 }
 
@@ -138,10 +138,7 @@ private fun validateStyringsdata(
         else -> true
       }
 
-  if (duplicate) {
-    throw IllegalArgumentException(
-        "Styringsdata for kontroll ${styringsdata.kontrollId} finnes allereie")
-  }
+  require(!duplicate) { "Styringsdata for kontroll ${styringsdata.kontrollId} finnes allereie" }
 
   return styringsdata
 }

@@ -9,7 +9,7 @@ import {
 
 import nySakImg from '../assets/ny_sak.svg';
 import sakerImg from '../assets/saker.svg';
-import { KontrollListRoute } from './list/KontrollListRoute';
+import { KontrollListForBrukarRoute, KontrollListRoute } from './list/KontrollListRoute';
 import {
   EditKontrollRoute,
   OpprettKontrollRoute,
@@ -22,6 +22,12 @@ import { VelgTestreglarRoute } from './velg-testreglar/VelgTestreglarRoute';
 export const KONTROLL_LISTE = {
   navn: 'Kontroller',
   path: 'kontroll/liste',
+  imgSrc: sakerImg,
+};
+
+export const MINE_KONTROLLER = {
+  navn: 'Mine kontroller',
+  path: 'kontroll/mine-kontroller',
   imgSrc: sakerImg,
 };
 
@@ -44,6 +50,7 @@ export const KontrollRoutes: RouteObject = {
     OpprettKontrollRoute,
     EditKontrollRoute,
     KontrollListRoute,
+    KontrollListForBrukarRoute,
     VelgLoesningerRoute,
     VelgTestreglarRoute,
     SideutvalRoute,
