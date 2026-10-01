@@ -15,7 +15,7 @@ const TestStatusChart = ({ total, finished, testing, pending }: Props) => {
 
   return (
     <div className={classes.statusContainer}>
-      <div className={classes.status}>
+      <ul className={classes.status}>
         <LoadingBar
           percentage={percentage(pending)}
           customText={statusText('Ikkje starta', pending)}
@@ -37,7 +37,7 @@ const TestStatusChart = ({ total, finished, testing, pending }: Props) => {
           severity="success"
           ariaLabel="Tester med status ferdig"
         />
-      </div>
+      </ul>
     </div>
   );
 };

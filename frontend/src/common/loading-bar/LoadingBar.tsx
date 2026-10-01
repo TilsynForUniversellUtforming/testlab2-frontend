@@ -50,7 +50,7 @@ const LoadingBar = ({
   const color = dynamicSeverity ? getSeverity(percentage) : severity;
 
   return (
-    <div
+    <li
       className={classnames('loading-bar', size, labelPlacement)}
       title={ariaLabel}
     >
@@ -69,7 +69,7 @@ const LoadingBar = ({
         aria-valuenow={percentage}
         id="progresjon"
       />
-    </div>
+    </li>
   );
 };
 

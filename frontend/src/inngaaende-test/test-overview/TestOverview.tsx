@@ -96,7 +96,7 @@ const TestOverview = () => {
 
   return (
     <div className={classes.testContainer}>
-      <div className={classes.testWrapper}>
+      <ul className={classes.testWrapper}>
         {styringsdataError && (
           <Alert data-color="danger">Kunne ikkje hente styringsdata</Alert>
         )}
@@ -134,7 +134,7 @@ const TestOverview = () => {
           );
 
           return (
-            <div
+            <li
               key={`${testgrunnlagId}/${loeysingId}`}
               className={classes.loeysingButton}
             >
@@ -235,7 +235,7 @@ const TestOverview = () => {
                   </Button>
                 </div>
               </div>
-            </div>
+            </li>
           );
         })}
         {alert && (
@@ -245,7 +245,7 @@ const TestOverview = () => {
             clearMessage={alert.clearMessage}
           />
         )}
-      </div>
+      </ul>
     </div>
   );
 };
