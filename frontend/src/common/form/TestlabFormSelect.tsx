@@ -76,7 +76,8 @@ interface SelectProps<T extends object> {
 }
 
 
-const TestlabFormSelectCheckbox = <T extends object>({name,control, label,required,description,options,size,errorMessage}:SelectProps<T> & {size:Size|undefined; errorMessage:string|undefined}) => {
+const TestlabFormSelectCheckbox = <T extends object>(props:SelectProps<T> & {size:Size|undefined; errorMessage:string|undefined}) => {
+  const { name, control, label, required, description, options, size, errorMessage } = props;
 
   return (
     <div className="testlab-form__select">
@@ -91,21 +92,23 @@ const TestlabFormSelectCheckbox = <T extends object>({name,control, label,requir
         name={name}
         control={control}
         render={({ field: { onChange, value } }) => (
-          <Select value={value} onChange={onChange} id={name}>
+          <Select value={value ?? ''} onChange={onChange} id={name} data-size={size}>
             {options.map((o) => (
               <Select.Option
                 value={o.value}
                 key={`${o.label}_${o.value}`}
                 label={o.label?.toString() ?? o.label}
               >
-                {value} {o.label}
+                {o.label}
               </Select.Option>
             ))}
           </Select>
         )}
       />
       {errorMessage && (
-        <ErrorSummary data-size="sm">{errorMessage}</ErrorSummary>
+        <ErrorSummary data-size="sm">
+          <ErrorSummary.Heading>{errorMessage}</ErrorSummary.Heading>
+        </ErrorSummary>
       )}
     </div>
   );};

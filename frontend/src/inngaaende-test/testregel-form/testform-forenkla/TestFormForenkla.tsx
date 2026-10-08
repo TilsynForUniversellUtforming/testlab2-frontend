@@ -1,11 +1,15 @@
 import TestlabForm from '@common/form/TestlabForm';
+import { createOptionsFromLiteral } from '@common/util/stringutils';
 import { Testregel } from '@testreglar/api/types';
 import { ResultatManuellKontroll } from '@test/api/types';
 import { TestResultUpdate } from '@test/types';
 import { Details } from '@digdir/designsystemet-react';
 import DOMPurify from 'dompurify';
 import styles from '@test/testregel-form/test-form.module.scss';
-import { TestformForenklaFormValues } from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
+import {
+  customUtfallValue,
+  TestformForenklaFormValues,
+} from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
 import {
   useTestFormForenklaFormOptions,
   useUtfallOption,
@@ -18,6 +22,7 @@ import {
 } from '@test/testregel-form/utils';
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
+import { useMemo } from 'react';
 
 interface Props {
   testregel: Testregel;
@@ -45,25 +50,68 @@ const TestFormForenkla = (props: Props) => {
     props.testregel.definition.utfall
   );
 
-  const sucsessFullSubmit = formMethods.formState.isSubmitSuccessful
+  const successFullSubmit = formMethods.formState.isSubmitSuccessful
 
 
   const helptext = sanitizeHelptext(props);
   const instruksjon = sanitizeInstruksjon(props);
 
   const utfallOptions = useUtfallOption(props.testregel.definition.utfall);
+  const utfallOptionsWithCustom = useMemo(
+    () => [
+      ...utfallOptions,
+      {
+        label: 'Eigendefinert utfall',
+        value: customUtfallValue,
+      },
+    ],
+    [utfallOptions]
+  );
+
+  const customUtfallTestresultatOptions = useMemo(() => {
+    const availableUtfallTypes = Array.from(
+      new Set(
+        props.testregel.definition!.utfall
+          .map((utfall) => utfall.testresultat)
+          .concat(props.activeResult.elementResultat ?? [])
+      )
+    );
+
+    return createOptionsFromLiteral(availableUtfallTypes);
+  }, [props.activeResult.elementResultat, props.testregel.definition]);
+  const valgtUtfallIndex = formMethods.watch('valgtUtfallIndex');
+
+
+  const erEigendefinertUtfall = valgtUtfallIndex === customUtfallValue;
 
   const onSubmit = (values: TestformForenklaFormValues) => {
-    const utfall = props.testregel.definition!.utfall[values.valgtUtfallIndex];
-    if (!utfall) {
-      return;
+    let testresultat: string;
+    let beskrivelse: string;
+
+    if (values.valgtUtfallIndex === customUtfallValue) {
+      if (!values.customUtfallTestresultat || !values.customUtfallBeskrivelse) {
+        return;
+      }
+
+      testresultat = values.customUtfallTestresultat;
+      beskrivelse = values.customUtfallBeskrivelse;
+    } else {
+      const utfall = props.testregel.definition!.utfall[values.valgtUtfallIndex];
+      if (!utfall) {
+        return;
+      }
+
+      testresultat = utfall.testresultat;
+      beskrivelse = utfall.beskrivelse;
     }
 
     const oppdatertResultat: ResultatManuellKontroll = {
       ...props.activeResult,
-      ...values,
-      elementResultat: mapUtfallToElementResultat(utfall.testresultat),
-      elementUtfall: utfall.beskrivelse,
+      kommentar: values.kommentar,
+      elementOmtale: values.elementOmtale,
+      elementOmtaleHtml: values.elementOmtaleHtml,
+      elementResultat: mapUtfallToElementResultat(testresultat),
+      elementUtfall: beskrivelse,
       svar: values.svar ?? [],
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
@@ -76,7 +124,7 @@ const TestFormForenkla = (props: Props) => {
       kommentar: oppdatertResultat.kommentar,
       elementOmtale: oppdatertResultat.elementOmtale,
       elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(utfall.testresultat, utfall.beskrivelse),
+      resultat: mapToTestregelResultat(testresultat, beskrivelse),
     });
   };
 
@@ -122,9 +170,33 @@ const TestFormForenkla = (props: Props) => {
           <TestlabForm.FormSelect<TestformForenklaFormValues>
             label="Vel utfall"
             name="valgtUtfallIndex"
-            options={utfallOptions}
+            options={utfallOptionsWithCustom}
             required
           />
+
+          {erEigendefinertUtfall && (
+            <fieldset className={styles.testFormCustomUtfallGroup}>
+              <legend className={styles.testFormCustomUtfallLegend}>
+                Eigendefinert utfall
+              </legend>
+              <p className={styles.testFormCustomUtfallDescription}>
+                Fyll ut resultat og skildring for det eigendefinerte utfallet.
+              </p>
+
+              <TestlabForm.FormSelect<TestformForenklaFormValues>
+                label="Vel resultat for eigendefinert utfall"
+                name="customUtfallTestresultat"
+                options={customUtfallTestresultatOptions}
+                required
+              />
+
+              <TestlabForm.FormInput<TestformForenklaFormValues>
+                label="Beskriv eigendefinert utfall"
+                name="customUtfallBeskrivelse"
+                required
+              />
+            </fieldset>
+          )}
 
           <TestlabFormTextArea<TestformForenklaFormValues>
             label="Kommentar"
@@ -133,7 +205,7 @@ const TestFormForenkla = (props: Props) => {
         </fieldset>
         <ImageUpload resultatId={props.activeResult.id} isDemo={props.isDemoApp} />
 
-        {sucsessFullSubmit && (
+        {successFullSubmit && (
           <StatusMessageBox statusmessage={'Lagra ' + description} />
         )}
 

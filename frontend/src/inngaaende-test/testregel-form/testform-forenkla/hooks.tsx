@@ -2,6 +2,7 @@ import { CreateTestResultat, ResultatStatus, Svar } from '@test/api/types';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import {
   TestformForenklaFormValues,
+  customUtfallValue,
   testformForenklaValidationSchema,
 } from '@test/testregel-form/testform-forenkla/testformForenklaValidationSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,8 +19,19 @@ export const useTestFormForenklaFormOptions = (
   } & CreateTestResultat,
   utfall: TestregelUtfall[]
 ): UseFormReturn<TestformForenklaFormValues> => {
+  const eksisterandeElementResultat =
+    eksisterandeResultat.elementResultat ?? undefined;
+  const eksisterandeElementUtfall =
+    eksisterandeResultat.elementUtfall ?? undefined;
+
   const selectedUtfallIndex = utfall.findIndex(
-    (u) => u.testresultat === eksisterandeResultat.elementResultat
+    (u) =>
+      u.testresultat === eksisterandeElementResultat &&
+      u.beskrivelse === eksisterandeElementUtfall
+  );
+
+  const selectedUtfallIndexByResult = utfall.findIndex(
+    (u) => u.testresultat === eksisterandeElementResultat
   );
 
   const defaultUtfallIndex = Math.max(
@@ -27,7 +39,27 @@ export const useTestFormForenklaFormOptions = (
     0
   );
 
-  return useForm<TestformForenklaFormValues>({
+  const hasCustomUtfall =
+    selectedUtfallIndex < 0 &&
+    eksisterandeElementUtfall !== undefined &&
+    eksisterandeElementResultat !== undefined;
+
+  let valgtUtfallIndex: TestformForenklaFormValues['valgtUtfallIndex'] =
+    defaultUtfallIndex;
+
+  if (hasCustomUtfall) {
+    valgtUtfallIndex = customUtfallValue;
+  } else if (selectedUtfallIndex >= 0) {
+    valgtUtfallIndex = selectedUtfallIndex;
+  } else if (selectedUtfallIndexByResult >= 0) {
+    valgtUtfallIndex = selectedUtfallIndexByResult;
+  }
+
+  return useForm<
+    TestformForenklaFormValues,
+    unknown,
+    TestformForenklaFormValues
+  >({
     defaultValues: {
       id: eksisterandeResultat.id,
       testgrunnlagId: eksisterandeResultat.testgrunnlagId,
@@ -41,10 +73,15 @@ export const useTestFormForenklaFormOptions = (
           ? eksisterandeResultat.svar
           : undefined,
       kommentar: eksisterandeResultat.kommentar,
-      valgtUtfallIndex:
-        selectedUtfallIndex >= 0 ? selectedUtfallIndex : defaultUtfallIndex,
+      valgtUtfallIndex,
       elementOmtale: eksisterandeResultat.elementOmtale,
       elementOmtaleHtml: eksisterandeResultat.elementOmtaleHtml,
+      customUtfallTestresultat: hasCustomUtfall
+        ? eksisterandeElementResultat
+        : undefined,
+      customUtfallBeskrivelse: hasCustomUtfall
+        ? eksisterandeElementUtfall
+        : undefined,
     },
     resolver: zodResolver(testformForenklaValidationSchema),
   });
