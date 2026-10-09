@@ -87,6 +87,7 @@ const TestFormForenkla = (props: Props) => {
   const onSubmit = (values: TestformForenklaFormValues) => {
     let testresultat: string;
     let beskrivelse: string;
+    let utfallId: number | undefined = undefined;
 
     if (values.valgtUtfallIndex === customUtfallValue) {
       if (!values.customUtfallTestresultat || !values.customUtfallBeskrivelse) {
@@ -103,6 +104,7 @@ const TestFormForenkla = (props: Props) => {
 
       testresultat = utfall.testresultat;
       beskrivelse = utfall.beskrivelse;
+      utfallId = utfall.id;
     }
 
     const oppdatertResultat: ResultatManuellKontroll = {
@@ -115,6 +117,7 @@ const TestFormForenkla = (props: Props) => {
       svar: values.svar ?? [],
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
+      elementUtfallId: utfallId ?? null,
     };
 
     props.onCreateForenklaResultat?.(oppdatertResultat);
@@ -124,7 +127,7 @@ const TestFormForenkla = (props: Props) => {
       kommentar: oppdatertResultat.kommentar,
       elementOmtale: oppdatertResultat.elementOmtale,
       elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(testresultat, beskrivelse),
+      resultat: mapToTestregelResultat(testresultat, beskrivelse,utfallId ?? null),
     });
   };
 

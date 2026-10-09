@@ -98,7 +98,7 @@ export const useUtfallOption = (utfall: TestregelUtfall[]) => {
           </>
         ),
         label: capitalize(utfall.testresultat) + ': ' + utfall.beskrivelse,
-        value: index,
+        value: utfall.id,
       })),
     [utfall]
   );

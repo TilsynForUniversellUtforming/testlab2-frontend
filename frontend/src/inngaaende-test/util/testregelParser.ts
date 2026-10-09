@@ -25,6 +25,7 @@ export type Avslutt = {
   type: 'avslutt';
   fasit: Exclude<HandlingFasitTyper, 'sjekkDelutfall'>;
   utfall: string;
+  utfallId?: number | null;
 };
 
 type BesvartSteg = StegJaNei | StegRadio | StegTekst;

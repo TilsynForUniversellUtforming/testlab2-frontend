@@ -21,9 +21,10 @@ export type CreateTestResultat = {
   elementOmtale?: string;
   elementOmtaleHtml?: string;
   elementResultat?: ElementResultat;
-  elementUtfall?: string;
+  elementUtfall?: string | undefined;
   testVartUtfoert?: string;
   kommentar?: string;
+  elementUtfallId?: number | null;
 };
 
 export type ResultatManuellKontroll = {

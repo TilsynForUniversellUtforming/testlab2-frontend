@@ -23,6 +23,7 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
             null,
             null,
             null,
+            null,
             emptyList(),
             null,
             ResultatManuellKontroll.Status.IkkjePaabegynt,

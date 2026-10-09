@@ -18,7 +18,6 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
-import TestFormForenkla from '@test/testregel-form/testform-forenkla/TestFormForenkla';
 
 interface Props {
   sideutval: PageType;
