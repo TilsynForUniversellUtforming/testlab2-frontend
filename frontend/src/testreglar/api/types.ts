@@ -109,6 +109,7 @@ export type TestresultatUtfall =
 
 
 export type TestregelUtfall = {
+  id: number;
   beskrivelse: string;
   testresultat: ElementResultat;
   default: boolean;

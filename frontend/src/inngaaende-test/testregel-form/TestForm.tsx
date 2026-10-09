@@ -112,6 +112,7 @@ const TestForm = ({
     kommentar?: string
   ) => {
     const elementOmtale = findElementOmtale(testregel, svar);
+
     onResultat({
       resultatId,
       alleSvar: svar,

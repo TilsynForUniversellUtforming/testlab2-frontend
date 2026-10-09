@@ -88,6 +88,9 @@ export const useTestResultatActions = ({
           kommentar,
           sistLagra: activeTestResult.sistLagra,
         };
+        if(resultat?.type === 'avslutt') {
+          testResult.elementUtfallId = resultat.utfallId ?? null;
+        }
         await withAggregert(() => updateTestResultat(testResult), 'Kunne ikkje lagre', activeTest.testregel);
       } else {
         raiseAlert('danger', 'Kunne ikkje lagre', 'Ugyldig oppdatering av testresultat');

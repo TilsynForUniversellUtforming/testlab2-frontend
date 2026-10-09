@@ -13,6 +13,7 @@ data class ResultatManuellKontroll(
     val elementOmtale: String?,
     val elementResultat: ElementResultat?,
     val elementUtfall: String?,
+    val elementUtfallId: Int? = null,
     val svar: List<Svar>,
     val testVartUtfoert: Instant?,
     val status: Status = Status.IkkjePaabegynt,

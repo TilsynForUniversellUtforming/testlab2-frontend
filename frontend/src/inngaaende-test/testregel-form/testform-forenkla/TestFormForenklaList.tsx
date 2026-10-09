@@ -118,6 +118,6 @@ function createForenklaBaseResultat({
     loeysingId: 0,
     testregelId,
     sideutvalId: 0,
-    sistLagra: new Date().toISOString(),
+    sistLagra: new Date().toISOString()
   };
 }
