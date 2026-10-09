@@ -24,7 +24,6 @@ const KopierSvarDropdown = ({
   kopierSvar,
 }:Props) => {
   return (
-    console.log('items', items),
     (
       <>
         <Button
