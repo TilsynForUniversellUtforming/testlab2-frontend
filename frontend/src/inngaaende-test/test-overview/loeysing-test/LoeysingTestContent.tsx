@@ -128,7 +128,7 @@ const LoeysingTestContent = memo(({
   const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
   const isManuell = activeTest?.testregel.modus === 'manuell';
   const isAutomatisk = activeTest?.testregel.modus === 'automatisk';
-
+  
   return (
     <>
       <TestRegelParamSelection
