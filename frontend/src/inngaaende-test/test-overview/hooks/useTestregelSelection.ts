@@ -30,6 +30,9 @@ const shouldCreateTestResult = (status: ManuellTestStatus, selected: ResultatMan
   (status === 'under-arbeid' || status === 'ikkje-forekomst' || status === 'samsvar') &&
   isNotDefined(selected);
 
+const shouldCloseActiveTest = (status: ManuellTestStatus) =>
+  status === 'ferdig' || status === 'samsvar' || status === 'ikkje-forekomst';
+
 const canSetFerdigStatus = (
   selected: ResultatManuellKontroll[],
   testregel: Testregel,
@@ -118,6 +121,9 @@ export const useTestregelSelection = ({
 
       if (shouldCreateTestResult(status, selected)) {
         testregelActions.createResult(testregel, sideId, status === 'under-arbeid' ? undefined : status);
+        if (shouldCloseActiveTest(status)) {
+          setActiveTest(undefined);
+        }
         return;
       }
 
@@ -127,7 +133,9 @@ export const useTestregelSelection = ({
 
       const updated = selected.map((tr) => ({ ...tr, testregelId, status: mapStatus(status) }));
       testregelActions.updateStatus(updated);
-      if (testregelId === activeTest?.testregel.id) setActiveTest(undefined);
+      if (shouldCloseActiveTest(status) && testregelId === activeTest?.testregel.id) {
+        setActiveTest(undefined);
+      }
     },
     [testreglarForLoeysing, testResults, sideId, activeTest, testregelActions, raiseAlert, setActiveTest]
   );

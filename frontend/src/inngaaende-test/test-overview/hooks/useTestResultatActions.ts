@@ -62,6 +62,14 @@ export const useTestResultatActions = ({
   processData,
   raiseAlert,
 }: UseTestResultatActionsProps): UseTestResultatActionsResult => {
+  const refreshTestResults = useCallback(
+    async (activeTestregel?: Testregel) => {
+      const alleResultater = await fetchTestResults(testgrunnlagId);
+      processData(alleResultater, sideId, activeTestregel);
+    },
+    [testgrunnlagId, sideId, processData]
+  );
+
   const withAggregert = useCallback(
     async (
       apiCall: () => Promise<ResultatManuellKontroll[] | ResultatManuellKontroll>,
@@ -84,9 +92,18 @@ export const useTestResultatActions = ({
   );
 
   const doUpdateTestResultStatus = useCallback(
-    (testResultat: ResultatManuellKontroll[]) =>
-      withAggregert(() => updateTestResultatMany(testResultat), 'Kunne ikkje endre status'),
-    [withAggregert]
+    async (testResultat: ResultatManuellKontroll[]) => {
+      try {
+        await updateTestResultatMany(testResultat);
+        await createTestresultatAggregert(testgrunnlagId).catch((e) =>
+          raiseAlert('danger', 'Kunne ikkje oppdatere aggregert resultat', `Oppdatering av aggregert resultat feila ${e}`)
+        );
+        await refreshTestResults();
+      } catch {
+        raiseAlert('danger', 'Kunne ikkje endre status', 'Kunne ikkje endre status feila');
+      }
+    },
+    [testgrunnlagId, raiseAlert, refreshTestResults]
   );
 
   const doUpdateTestResult = useCallback(
@@ -178,13 +195,14 @@ export const useTestResultatActions = ({
             sideutvalId,
           });
         }
-        const alleResultater = await fetchTestResults(testgrunnlagId);
-        processData(alleResultater, sideId, activeTestregel);
+        await refreshTestResults(
+          status === 'under-arbeid' || status == null ? activeTestregel : undefined
+        );
       } catch {
         raiseAlert('danger', 'Kunne ikkje lagre', 'Opprett testresultat feila');
       }
     },
-    [sideId, testgrunnlagId, loeysingId, processData, raiseAlert, withAggregert]
+    [loeysingId, raiseAlert, refreshTestResults, testgrunnlagId, withAggregert]
   );
 
   const slettTestelement = useCallback(
@@ -218,10 +236,9 @@ export const useTestResultatActions = ({
         sideutvalId: sideId,
       };
       await createTestResultat(nyttTestresultat);
-      const alleResultater = await fetchTestResults(testgrunnlagId);
-      processData(alleResultater, sideId, activeTestregel);
+      await refreshTestResults(activeTestregel);
     },
-    [processData]
+    [refreshTestResults]
   );
 
   return { doUpdateTestResultStatus, doUpdateTestResult, doCreateTestResult, slettTestelement, createNewTestResult, withAggregert };
