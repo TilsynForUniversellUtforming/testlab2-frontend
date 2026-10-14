@@ -45,7 +45,8 @@ export type ResultatStatus =
   | 'Ferdig'
   | 'Deaktivert'
   | 'UnderArbeid'
-  | 'IkkjePaabegynt';
+  | 'IkkjePaabegynt'
+
 
 export const elementOmtaleSide = 'Side';
 
