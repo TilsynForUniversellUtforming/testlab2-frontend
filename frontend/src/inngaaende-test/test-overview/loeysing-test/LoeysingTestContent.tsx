@@ -37,8 +37,6 @@ interface Props {
   doUpdateTestResult: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
-  showHelpText: boolean;
-  toggleShowHelpText: () => void;
 }
 
 const chunkArray = <T extends object>(array: T[], size: number) => {
@@ -61,7 +59,7 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.elementUtfall != null);
 }
 
-  const LoeysingTestContent = memo(({
+const LoeysingTestContent = memo(({
   sideutval,
   innhaldstype,
   progressionPercent,
@@ -74,11 +72,10 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   doUpdateTestResult,
   slettTestelement,
   onChangeStatus,
-  showHelpText,
-  toggleShowHelpText,
 }: Props) => {
   const { testgrunnlagId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
+  const [showHelpText, setShowHelpText] = useState(true);
   const alertRef = useRef<HTMLDialogElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -101,8 +98,12 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
     clearActiveTestregel();
   }, [clearActiveTestregel]);
 
+  const toggleShowHelpText = useCallback(
+    () => setShowHelpText((prev) => !prev),
+    []
+  );
+
   const leggTilFlereTestelementer = useCallback(() => {
-    console.log("Legger til nytt testresultat")
     if (activeTest?.testResultList && alleHarUtfall(activeTest.testResultList)) {
       createNewTestResult(
         activeTest.testregel,
