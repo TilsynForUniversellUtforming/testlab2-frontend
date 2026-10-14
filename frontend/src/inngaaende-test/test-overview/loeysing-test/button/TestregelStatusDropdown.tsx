@@ -33,7 +33,7 @@ const TestregelStatusDropdown = ({
   };
 
   const isStarted = status !== 'ikkje-starta';
-  const isFinished = status === 'ferdig';
+  const isFinished = status === 'ferdig' || status === 'samsvar' || status === 'ikkje-forekomst';
   const isActive = isStarted && !isFinished;
 
   const options: StatusOption[] = [
@@ -49,6 +49,16 @@ const TestregelStatusDropdown = ({
       title: isStartedTitle(isActive, isFinished),
       disabled: isActive,
     },
+    {
+      label: 'Ikke forekomst',
+      value: 'ikkje-forekomst',
+      title: 'Sett test til ikke forekomst',
+    },
+    {
+      label: 'Samsvar',
+      value: 'samsvar',
+      title: 'Sett test til samsvar',
+    },
   ];
 
   return (
@@ -62,7 +72,7 @@ const TestregelStatusDropdown = ({
         }}
       >
         <CogIcon />
-        Oppgi status
+          Oppgi status
       </Button>
       <Dropdown
         open={show}

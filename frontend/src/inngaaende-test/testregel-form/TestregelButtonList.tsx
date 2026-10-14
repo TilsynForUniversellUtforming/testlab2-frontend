@@ -25,6 +25,8 @@ const TestregelButtonList = ({
   sideId,
   onChangeStatus,
 }: Props) => {
+  console.log("TeststatusMap", testStatusMap);
+
   return (
     <div className="testregel-container">
       {row.map((tr) => (
