@@ -22,7 +22,6 @@ const TestregelButtonList = ({
   onChangeStatus,
   onSetSideUtfall,
 }: Props) => {
-  console.log("TeststatusMap", testStatusMap);
 
   return (
     <div className="testregel-container">
