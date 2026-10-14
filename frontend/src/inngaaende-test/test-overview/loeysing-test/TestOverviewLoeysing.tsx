@@ -7,7 +7,6 @@ import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
-import { useShowHelpText } from '@test/test-overview/hooks/useShowHelpText';
 
 
 const TestOverviewLoeysing = () => {
@@ -29,9 +28,6 @@ const TestOverviewLoeysing = () => {
     testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
   const [alert, raiseAlert, modalRef] = useAlertModal();
-
-  const { showHelpText, toggleShowHelpText } = useShowHelpText();
-
 
   const {
     innhaldstype,
@@ -71,7 +67,7 @@ const TestOverviewLoeysing = () => {
       modalRef.current?.showModal();
     }
   }, [alert, modalRef]);
-  
+
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
@@ -102,8 +98,6 @@ const TestOverviewLoeysing = () => {
             doUpdateTestResult={doUpdateTestResult}
             slettTestelement={slettTestelement}
             onChangeStatus={onChangeTestregelStatus}
-            toggleShowHelpText={toggleShowHelpText}
-            showHelpText={showHelpText}
           />
         </div>
         {alert && (
