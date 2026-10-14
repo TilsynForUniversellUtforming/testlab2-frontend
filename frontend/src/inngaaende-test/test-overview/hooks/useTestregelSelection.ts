@@ -8,6 +8,15 @@ import { Severity } from '@common/types';
 
 type RaiseAlert = (severity: Severity, title: string, message: string) => void;
 
+export interface TestregelSelectionActions {
+  createResult: (
+    testregel: Testregel,
+    sideId: number | undefined,
+    status?: ManuellTestStatus
+  ) => void;
+  updateStatus: (results: ResultatManuellKontroll[]) => void;
+}
+
 const getSelectedTestResults = (
   testResults: ResultatManuellKontroll[],
   testregelId: number,
@@ -49,7 +58,7 @@ const canSetFerdigStatus = (
   return true;
 };
 
-interface UseTestregelSelectionProps {
+export interface UseTestregelSelectionProps {
   testgrunnlagId: number;
   sideId: number;
   testResults: ResultatManuellKontroll[];
@@ -57,10 +66,14 @@ interface UseTestregelSelectionProps {
   testreglarForLoeysing: Testregel[];
   activeTest: ActiveTest | undefined;
   setActiveTest: (test: ActiveTest | undefined) => void;
-  doCreateTestResult: (testregel: Testregel, sideId: number | undefined, status?: ManuellTestStatus) => void;
-  doUpdateTestResultStatus: (results: ResultatManuellKontroll[]) => void;
+  testregelActions: TestregelSelectionActions;
   processData: (results: ResultatManuellKontroll[], sideId: number, testregel?: Testregel) => void;
   raiseAlert: RaiseAlert;
+}
+
+export interface UseTestregelSelectionResult {
+  onChangeTestregel: (testregelId: number) => void;
+  onChangeTestregelStatus: (status: ManuellTestStatus, testregelId: number) => void;
 }
 
 export const useTestregelSelection = ({
@@ -71,11 +84,10 @@ export const useTestregelSelection = ({
   testreglarForLoeysing,
   activeTest,
   setActiveTest,
-  doCreateTestResult,
-  doUpdateTestResultStatus,
+  testregelActions,
   processData,
   raiseAlert,
-}: UseTestregelSelectionProps) => {
+}: UseTestregelSelectionProps): UseTestregelSelectionResult => {
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       const nextTestregel = testreglarForLoeysing.find((tr) => tr.id === testregelId);
@@ -89,12 +101,12 @@ export const useTestregelSelection = ({
       }
       const statusKey = toTestregelStatusKey(testgrunnlagId, nextTestregel.id, sideId);
       if (testStatusMap.get(statusKey) === 'ikkje-starta') {
-        doCreateTestResult(nextTestregel, sideId);
+        testregelActions.createResult(nextTestregel, sideId);
       } else {
         processData(testResults, sideId, nextTestregel);
       }
     },
-    [testreglarForLoeysing, testStatusMap, testResults, sideId, activeTest, testgrunnlagId, processData, doCreateTestResult, raiseAlert, setActiveTest]
+    [testreglarForLoeysing, testStatusMap, testResults, sideId, activeTest, testgrunnlagId, processData, testregelActions, raiseAlert, setActiveTest]
   );
 
   const onChangeTestregelStatus = useCallback(
@@ -102,19 +114,10 @@ export const useTestregelSelection = ({
       const testregel = testreglarForLoeysing.find((tr) => tr.id === testregelId);
       const selected = getSelectedTestResults(testResults, testregelId, sideId);
 
-      console.log(selected);
-
       if (!testregel) return;
-      console.log('Update status', status +  "  " + isNotDefined(selected));
 
       if (shouldCreateTestResult(status, selected)) {
-        console.log('shouldCreateTestResult', status, selected);
-        doCreateTestResult(testregel, sideId, status === 'under-arbeid' ? undefined : status);
-        if(status!== 'under-arbeid')
-        {
-          setActiveTest(undefined);
-        }
-        console.log('Created new test result for testregelId:', testregelId, 'with status:', status);
+        testregelActions.createResult(testregel, sideId, status === 'under-arbeid' ? undefined : status);
         return;
       }
 
@@ -123,12 +126,11 @@ export const useTestregelSelection = ({
       }
 
       const updated = selected.map((tr) => ({ ...tr, testregelId, status: mapStatus(status) }));
-      doUpdateTestResultStatus(updated);
+      testregelActions.updateStatus(updated);
       if (testregelId === activeTest?.testregel.id) setActiveTest(undefined);
     },
-    [testreglarForLoeysing, testResults, sideId, activeTest, doCreateTestResult, doUpdateTestResultStatus, raiseAlert, setActiveTest]
+    [testreglarForLoeysing, testResults, sideId, activeTest, testregelActions, raiseAlert, setActiveTest]
   );
 
   return { onChangeTestregel, onChangeTestregelStatus };
 };
-

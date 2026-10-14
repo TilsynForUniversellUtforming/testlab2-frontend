@@ -6,16 +6,17 @@ import {
   toTestregelStatus,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
+import { Sideutval, SideutvalType } from '../../../kontroll/sideutval/types';
 import { ResultatManuellKontroll } from '@test/api/types';
 
-import { usePageType } from '@test/util/usePageType';
-import { useTestResults } from '@test/util/useTestResults';
-import { useTestResultatActions } from '@test/util/useTestResultatActions';
-import { useTestregelSelection } from '@test/util/useTestregelSelection';
+import { usePageType } from '@test/test-overview/hooks/usePageType';
+import { useTestResults } from '@test/test-overview/hooks/useTestResults';
+import { useTestResultatActions } from '@test/test-overview/hooks/useTestResultatActions';
+import { useTestregelSelection } from '@test/test-overview/hooks/useTestregelSelection';
 import { Severity } from '@common/types';
+import { ManuellTestStatus } from '@test/types';
 
-interface UseTestOverviewStateProps {
+export interface UseTestOverviewStateProps {
   testgrunnlagId: number;
   loeysingId: number;
   innhaldstypeList: InnhaldstypeTesting[];
@@ -25,6 +26,25 @@ interface UseTestOverviewStateProps {
   testreglarForLoeysing: Testregel[];
   testKeys: string[];
   raiseAlert: (severity: Severity, title: string, message: string) => void;
+}
+
+export interface UseTestOverviewStateResult {
+  innhaldstype: InnhaldstypeTesting;
+  onChangeInnhaldstype: (innhaldstypeId: number) => void;
+  pageType: ReturnType<typeof usePageType>['pageType'];
+  pageTypeList: ReturnType<typeof usePageType>['pageTypeList'];
+  onChangeSideutval: (sideId: number) => void;
+  activeTest: ReturnType<typeof useTestResults>['activeTest'];
+  setActiveTest: ReturnType<typeof useTestResults>['setActiveTest'];
+  testFerdig: boolean;
+  progressionPercent: number;
+  testregelListElements: ReturnType<typeof mapTestregelOverviewElements>;
+  testStatusMap: Map<string, ManuellTestStatus>;
+  doUpdateTestResult: ReturnType<typeof useTestResultatActions>['doUpdateTestResult'];
+  onChangeTestregel: ReturnType<typeof useTestregelSelection>['onChangeTestregel'];
+  onChangeTestregelStatus: ReturnType<typeof useTestregelSelection>['onChangeTestregelStatus'];
+  slettTestelement: ReturnType<typeof useTestResultatActions>['slettTestelement'];
+  createNewTestResult: ReturnType<typeof useTestResultatActions>['createNewTestResult'];
 }
 
 export const useTestOverviewState = ({
@@ -37,26 +57,23 @@ export const useTestOverviewState = ({
   testreglarForLoeysing,
   testKeys,
   raiseAlert,
-}: UseTestOverviewStateProps) => {
+}: UseTestOverviewStateProps): UseTestOverviewStateResult => {
   const [innhaldstype, setInnhaldstype] = useState(innhaldstypeList[0]);
 
-  const { testResults, activeTest, setActiveTest, processData } =
-    useTestResults({
-      loeysingId,
-      testResultatForLoeysing,
-      testKeys,
-    });
+  const { testResults, activeTest, setActiveTest, processData } = useTestResults({
+    loeysingId,
+    testResultatForLoeysing,
+  });
 
-  const { pageTypeList, pageType, setPageType, sideId, onChangeSideutval } =
-    usePageType({
-      sideutvalForLoeysing,
-      sideutvalTypeList,
-      onSideutvalNotFound: () =>
-        raiseAlert('danger', 'Kan ikkje velje sideutval', 'Ugylig sideutval'),
-      onSideutvalChanged: () => {
-        setActiveTest(undefined);
-      },
-    });
+  const { pageTypeList, pageType, sideId, onChangeSideutval } = usePageType({
+    sideutvalForLoeysing,
+    sideutvalTypeList,
+    onSideutvalNotFound: () =>
+      raiseAlert('danger', 'Kan ikkje velje sideutval', 'Ugylig sideutval'),
+    onSideutvalChanged: () => {
+      setActiveTest(undefined);
+    },
+  });
 
   const progressionPercent = useMemo(
     () =>
@@ -113,13 +130,7 @@ export const useTestOverviewState = ({
     [innhaldstypeList, raiseAlert, setActiveTest]
   );
 
-  const {
-    doUpdateTestResultStatus,
-    doUpdateTestResult,
-    doCreateTestResult,
-    slettTestelement,
-    createNewTestResult,
-  } = useTestResultatActions({
+  const testResultatActions = useTestResultatActions({
     testgrunnlagId,
     loeysingId,
     sideId,
@@ -129,39 +140,38 @@ export const useTestOverviewState = ({
     raiseAlert,
   });
 
-  const { onChangeTestregel, onChangeTestregelStatus } = useTestregelSelection({
+  const testregelSelection = useTestregelSelection({
     testgrunnlagId,
     sideId,
     testResults,
-    testStatusMap: testStatusMap,
+    testStatusMap,
     testreglarForLoeysing,
     activeTest,
     setActiveTest,
-    doCreateTestResult,
-    doUpdateTestResultStatus,
+    testregelActions: {
+      createResult: testResultatActions.doCreateTestResult,
+      updateStatus: testResultatActions.doUpdateTestResultStatus,
+    },
     processData,
     raiseAlert,
   });
 
   return {
     innhaldstype,
+    onChangeInnhaldstype,
     pageType,
-    setPageType,
+    pageTypeList,
+    onChangeSideutval,
     activeTest,
     setActiveTest,
     testFerdig,
     progressionPercent,
     testregelListElements,
     testStatusMap,
-    onChangeSideutval,
-    onChangeInnhaldstype,
-    pageTypeList,
-    doUpdateTestResultStatus,
-    doUpdateTestResult,
-    doCreateTestResult,
-    onChangeTestregel,
-    onChangeTestregelStatus,
-    slettTestelement,
-    createNewTestResult,
+    doUpdateTestResult: testResultatActions.doUpdateTestResult,
+    onChangeTestregel: testregelSelection.onChangeTestregel,
+    onChangeTestregelStatus: testregelSelection.onChangeTestregelStatus,
+    slettTestelement: testResultatActions.slettTestelement,
+    createNewTestResult: testResultatActions.createNewTestResult,
   };
 };

@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useTestOverviewState } from '@test/util/useTestOverviewState';
+import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
 import { act } from 'react';
 
 
