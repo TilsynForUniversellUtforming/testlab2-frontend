@@ -25,12 +25,15 @@ const TestregelButton = memo(({
   isActive,
   status,
   onChangeStatus,
-}: Props) => (
-  <div
-    className={classnames(styles.testregelButtonWrapper, {
-      [styles.active]: isActive,
-    })}
-  >
+}: Props) => {
+  console.log("IsActive:", isActive, "Status:", status, "Testregel ID:", testregel.id, "Testregel Name:", testregel.name);
+  return (
+    <div
+      className={classnames(styles.testregelButtonWrapper, {
+        [styles.active]: isActive,
+      })}
+    >
+
     <button
       className={classnames(
         styles.testregelButton,
@@ -60,6 +63,7 @@ const TestregelButton = memo(({
       testregelId={testregel.id}
     />
   </div>
-));
+  );
+});
 
 export default TestregelButton;
