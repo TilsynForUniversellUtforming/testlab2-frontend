@@ -17,11 +17,11 @@ import {
 } from '@test/api/testing-api';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { Severity } from '@common/types';
+import { ProcessData } from '@test/test-overview/hooks/useTestResults';
 
 type RaiseAlert = (severity: Severity, title: string, message: string) => void;
-type ProcessData = (results: ResultatManuellKontroll[], sideId: number, testregel?: Testregel) => void;
 
-interface UseTestResultatActionsProps {
+export interface UseTestResultatActionsProps {
   testgrunnlagId: number;
   loeysingId: number;
   sideId: number;
@@ -29,6 +29,28 @@ interface UseTestResultatActionsProps {
   activeTest: ActiveTest | undefined;
   processData: ProcessData;
   raiseAlert: RaiseAlert;
+}
+
+export interface UseTestResultatActionsResult {
+  doUpdateTestResultStatus: (testResultat: ResultatManuellKontroll[]) => void;
+  doUpdateTestResult: (testResultUpdate: TestResultUpdate) => Promise<void>;
+  doCreateTestResult: (
+    activeTestregel: Testregel,
+    sideutvalId: number | undefined,
+    status?: ManuellTestStatus
+  ) => Promise<void>;
+  slettTestelement: (activeTest: ActiveTest, resultatId: number) => Promise<void>;
+  createNewTestResult: (
+    activeTestregel: Testregel,
+    testgrunnlagId: number,
+    loeysingId: number,
+    sideId: number
+  ) => Promise<void>;
+  withAggregert: (
+    apiCall: () => Promise<ResultatManuellKontroll[] | ResultatManuellKontroll>,
+    errorMsg: string,
+    activeTestregel?: Testregel
+  ) => Promise<void>;
 }
 
 export const useTestResultatActions = ({
@@ -39,7 +61,7 @@ export const useTestResultatActions = ({
   activeTest,
   processData,
   raiseAlert,
-}: UseTestResultatActionsProps) => {
+}: UseTestResultatActionsProps): UseTestResultatActionsResult => {
   const withAggregert = useCallback(
     async (
       apiCall: () => Promise<ResultatManuellKontroll[] | ResultatManuellKontroll>,
@@ -106,6 +128,9 @@ export const useTestResultatActions = ({
           ekstraSjekk:
             testResultUpdate.ekstraSjekk ?? activeTestResult.ekstraSjekk,
         };
+        if (resultat?.type === 'avslutt') {
+          testResult.elementUtfallId = resultat.utfallId ?? null;
+        }
         await withAggregert(() => updateTestResultat(testResult), 'Kunne ikkje lagre', activeTest.testregel);
       } else {
         raiseAlert('danger', 'Kunne ikkje lagre', 'Ugyldig oppdatering av testresultat');
@@ -117,7 +142,7 @@ export const useTestResultatActions = ({
   const doCreateTestResult = useCallback(
     async (
       activeTestregel: Testregel,
-      sideutvalId: number|undefined,
+      sideutvalId: number | undefined,
       status?: ManuellTestStatus
     ) => {
       if (!activeTestregel || !sideutvalId) {
@@ -159,7 +184,7 @@ export const useTestResultatActions = ({
         raiseAlert('danger', 'Kunne ikkje lagre', 'Opprett testresultat feila');
       }
     },
-    [sideId, testgrunnlagId, loeysingId, processData, raiseAlert]
+    [sideId, testgrunnlagId, loeysingId, processData, raiseAlert, withAggregert]
   );
 
   const slettTestelement = useCallback(
@@ -179,22 +204,25 @@ export const useTestResultatActions = ({
     [testResults, sideId, processData, raiseAlert]
   );
 
-  const createNewTestResult = async (
-    activeTestregel: Testregel,
-    testgrunnlagId: number,
-    loeysingId: number,
-    sideId: number
-  ) => {
-    const nyttTestresultat: CreateTestResultat = {
-      testgrunnlagId: testgrunnlagId,
-      loeysingId: loeysingId,
-      testregelId: activeTestregel.id,
-      sideutvalId: sideId,
-    };
-    await createTestResultat(nyttTestresultat);
-    const alleResultater = await fetchTestResults(testgrunnlagId);
-    processData(alleResultater, sideId, activeTestregel);
-  };
+  const createNewTestResult = useCallback(
+    async (
+      activeTestregel: Testregel,
+      testgrunnlagId: number,
+      loeysingId: number,
+      sideId: number
+    ) => {
+      const nyttTestresultat: CreateTestResultat = {
+        testgrunnlagId: testgrunnlagId,
+        loeysingId: loeysingId,
+        testregelId: activeTestregel.id,
+        sideutvalId: sideId,
+      };
+      await createTestResultat(nyttTestresultat);
+      const alleResultater = await fetchTestResults(testgrunnlagId);
+      processData(alleResultater, sideId, activeTestregel);
+    },
+    [processData]
+  );
 
-  return { doUpdateTestResultStatus, doUpdateTestResult, doCreateTestResult, slettTestelement, createNewTestResult,withAggregert };
+  return { doUpdateTestResultStatus, doUpdateTestResult, doCreateTestResult, slettTestelement, createNewTestResult, withAggregert };
 };

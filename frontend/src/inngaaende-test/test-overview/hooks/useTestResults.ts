@@ -3,28 +3,36 @@ import { ResultatManuellKontroll } from '@test/api/types';
 import { Testregel } from '@testreglar/api/types';
 import { ActiveTest } from '@test/types';
 
-interface UseTestResultsProps {
+export type ProcessData = (
+  allResults: ResultatManuellKontroll[],
+  currentSideId: number,
+  activeTestregel?: Testregel
+) => void;
+
+export interface UseTestResultsProps {
   loeysingId: number;
   testResultatForLoeysing: ResultatManuellKontroll[];
-  testKeys: string[];
+}
+
+export interface UseTestResultsResult {
+  testResults: ResultatManuellKontroll[];
+  activeTest: ActiveTest | undefined;
+  setActiveTest: React.Dispatch<React.SetStateAction<ActiveTest | undefined>>;
+  processData: ProcessData;
 }
 
 export const useTestResults = ({
   loeysingId,
   testResultatForLoeysing,
-  testKeys,
-}: UseTestResultsProps) => {
+}: UseTestResultsProps): UseTestResultsResult => {
   const [testResults, setTestResults] = useState(testResultatForLoeysing);
   const [activeTest, setActiveTest] = useState<ActiveTest>();
 
-  const processData = useCallback(
-    (
-      allResults: ResultatManuellKontroll[],
-      currentSideId: number,
-      activeTestregel?: Testregel
-    ) => {
+  const processData = useCallback<ProcessData>(
+    (allResults, currentSideId, activeTestregel) => {
       const filtered = allResults.filter((tr) => tr.loeysingId === loeysingId);
       setTestResults(filtered);
+
       if (activeTestregel) {
         setActiveTest({
           testregel: activeTestregel,
@@ -34,9 +42,8 @@ export const useTestResults = ({
         });
       }
     },
-    [loeysingId, testKeys]
+    [loeysingId]
   );
 
-  return { testResults,  activeTest, setActiveTest, processData };
+  return { testResults, activeTest, setActiveTest, processData };
 };
-

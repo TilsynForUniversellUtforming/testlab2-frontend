@@ -6,8 +6,8 @@ import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
-import { useTestOverviewState } from '@test/util/useTestOverviewState';
-import { useShowHelpText } from '@test/util/useShowHelpText';
+import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
+import { useShowHelpText } from '@test/test-overview/hooks/useShowHelpText';
 
 
 const TestOverviewLoeysing = () => {
