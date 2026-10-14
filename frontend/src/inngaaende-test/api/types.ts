@@ -25,12 +25,12 @@ export type CreateTestResultat = {
   testVartUtfoert?: string;
   kommentar?: string;
   elementUtfallId?: number | null;
+  status?: ResultatStatus;
 };
 
 export type ResultatManuellKontroll = {
   id: number;
   svar: Svar[];
-  status: ResultatStatus;
   sistLagra: string;
 } & CreateTestResultat;
 
@@ -38,7 +38,8 @@ export type ResultatStatus =
   | 'Ferdig'
   | 'Deaktivert'
   | 'UnderArbeid'
-  | 'IkkjePaabegynt';
+  | 'IkkjePaabegynt'
+
 
 export const elementOmtaleSide = 'Side';
 

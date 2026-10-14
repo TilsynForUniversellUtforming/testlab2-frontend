@@ -11,9 +11,12 @@ import {
 
 export type ManuellTestStatus =
   | 'ferdig'
-  | 'deaktivert'
+  | 'ikkje-forekomst'
   | 'under-arbeid'
-  | 'ikkje-starta';
+  | 'ikkje-starta'
+  | 'samsvar';
+
+
 
 export type ButtonStatus = ManuellTestStatus | 'aktiv';
 

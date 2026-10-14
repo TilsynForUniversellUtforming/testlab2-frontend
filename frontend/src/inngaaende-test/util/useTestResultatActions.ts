@@ -1,8 +1,13 @@
 import { useCallback } from 'react';
 import { mapStatus } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
-import { ActiveTest, TestResultUpdate } from '@test/types';
-import { CreateTestResultat, ResultatManuellKontroll, toElementResultat } from '@test/api/types';
+import { ActiveTest, ManuellTestStatus, TestResultUpdate } from '@test/types';
+import {
+  CreateTestResultat,
+  elementOmtaleSide,
+  ResultatManuellKontroll,
+  toElementResultat,
+} from '@test/api/types';
 import {
   createTestResultat,
   deleteTestResultat,
@@ -37,7 +42,7 @@ export const useTestResultatActions = ({
 }: UseTestResultatActionsProps) => {
   const withAggregert = useCallback(
     async (
-      apiCall: () => Promise<ResultatManuellKontroll[]>,
+      apiCall: () => Promise<ResultatManuellKontroll[] | ResultatManuellKontroll>,
       errorMsg: string,
       activeTestregel?: Testregel
     ) => {
@@ -46,7 +51,9 @@ export const useTestResultatActions = ({
         await createTestresultatAggregert(testgrunnlagId).catch((e) =>
           raiseAlert('danger', 'Kunne ikkje oppdatere aggregert resultat', `Oppdatering av aggregert resultat feila ${e}`)
         );
-        processData(updated, sideId, activeTestregel);
+        const updatedResults = Array.isArray(updated) ? updated : [updated];
+
+        processData(updatedResults, sideId, activeTestregel);
       } catch {
         raiseAlert('danger', errorMsg, `${errorMsg} feila`);
       }
@@ -100,18 +107,44 @@ export const useTestResultatActions = ({
   );
 
   const doCreateTestResult = useCallback(
-    async (activeTestregel: Testregel, sideutvalId: number | undefined) => {
+    async (
+      activeTestregel: Testregel,
+      sideutvalId: number|undefined,
+      status?: ManuellTestStatus
+    ) => {
       if (!activeTestregel || !sideutvalId) {
-        raiseAlert('danger', 'Kunne ikkje lagre', 'Ugyldig oppretting av testresultat');
+        raiseAlert(
+          'danger',
+          'Kunne ikkje lagre',
+          'Ugyldig oppretting av testresultat'
+        );
         return;
       }
       try {
-        await createTestResultat({
-          testgrunnlagId,
-          loeysingId,
-          testregelId: activeTestregel.id,
-          sideutvalId,
-        });
+        if (status === 'samsvar' || status === 'ikkje-forekomst') {
+          await withAggregert(
+            () =>
+              createTestResultat({
+                testgrunnlagId,
+                loeysingId,
+                testregelId: activeTestregel.id,
+                sideutvalId,
+                elementOmtale: elementOmtaleSide,
+                elementResultat:
+                  status === 'samsvar' ? 'samsvar' : 'ikkjeForekomst',
+                status: mapStatus(status),
+                kommentar: `Utfall på side ${status}`,
+              }),
+            'Kunne ikkje endre status'
+          );
+        } else {
+          await createTestResultat({
+            testgrunnlagId,
+            loeysingId,
+            testregelId: activeTestregel.id,
+            sideutvalId,
+          });
+        }
         const alleResultater = await fetchTestResults(testgrunnlagId);
         processData(alleResultater, sideId, activeTestregel);
       } catch {
@@ -155,6 +188,6 @@ export const useTestResultatActions = ({
     processData(alleResultater, sideId, activeTestregel);
   };
 
-  return { doUpdateTestResultStatus, doUpdateTestResult, doCreateTestResult, slettTestelement, createNewTestResult };
+  return { doUpdateTestResultStatus, doUpdateTestResult, doCreateTestResult, slettTestelement, createNewTestResult,withAggregert };
 };
 
