@@ -23,7 +23,6 @@ const TestregelButtonList = ({
   onSetSideUtfall,
 }: Props) => {
 
-  console.log('Active testregel id:', testStatusMap);
 
   return (
     <div className="testregel-container">
