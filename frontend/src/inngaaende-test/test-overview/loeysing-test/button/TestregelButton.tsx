@@ -26,7 +26,6 @@ const TestregelButton = memo(({
   status,
   onChangeStatus,
 }: Props) => {
-  console.log("IsActive:", isActive, "Status:", status, "Testregel ID:", testregel.id, "Testregel Name:", testregel.name);
   return (
     <div
       className={classnames(styles.testregelButtonWrapper, {

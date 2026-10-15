@@ -63,6 +63,11 @@ const TestregelDemoApp = () => {
         showHelpText={true}
         onResultat={onResultat}
         activeResult={createResultat(testregel)}
+        slettTestelement={function (resultatId: number): void {
+          throw new Error('Function not implemented.');
+        }}
+        isLoading={false}
+        isDemoApp={false}
       />
     );
   }
