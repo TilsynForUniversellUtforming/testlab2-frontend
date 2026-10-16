@@ -1,9 +1,9 @@
 import TestlabFormSelect from '@common/form/TestlabFormSelect';
 import { OptionType, ButtonVariant } from '@common/types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import styles from '../testreglar.module.scss';
 
-import { TestregelModus, TestresultatUtfall } from '../api/types';
+import { TestregelModus } from '../api/types';
 import { TestregelFormInput } from './testreglarValidationSchema';
 import TestlabFormInput from '@common/form/TestlabFormInput';
 import TestlabFormTextArea from '@common/form/TestlabFormTextArea';
@@ -15,42 +15,7 @@ import {
   Heading,
 } from '@digdir/designsystemet-react';
 import { TrashFillIcon } from '@navikt/aksel-icons';
-import { Controller, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
-import 'tinymce/tinymce';
-// DOM model
-import 'tinymce/models/dom/model';
-// Theme
-import 'tinymce/themes/silver';
-// Toolbar icons
-import 'tinymce/icons/default';
-// Editor styles
-import 'tinymce/skins/ui/oxide/skin';
-// Content styles, including inline UI like fake cursors
-import 'tinymce/skins/content/default/content';
-import 'tinymce/skins/ui/oxide/content';
-
-// Import plugins
-import 'tinymce/plugins/anchor';
-import 'tinymce/plugins/advlist';
-import 'tinymce/plugins/autolink';
-import 'tinymce/plugins/charmap';
-import 'tinymce/plugins/code';
-import 'tinymce/plugins/media';
-import 'tinymce/plugins/visualblocks';
-import 'tinymce/plugins/fullscreen';
-import 'tinymce/plugins/insertdatetime';
-import 'tinymce/plugins/preview';
-import 'tinymce/plugins/help';
-
-// Include resources that a plugin lazy-loads at the run-time
-import 'tinymce/plugins/help/js/i18n/keynav/en';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/lists';
-import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/table';
-import 'tinymce/plugins/wordcount';
-import { Editor } from '@tinymce/tinymce-react';
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import { ElementResultat } from '@test/api/types';
 
 interface SelectProps {
@@ -172,61 +137,53 @@ export const KravTilSamsvarTextArea = () => (
   <TestlabFormTextArea label="Krav til samsvar" name="kravTilSamsvar" />
 );
 
-  export const InstruksjonTextArea = () => {
-    const { control } = useFormContext();
+const BrowserRichTextEditor = React.lazy(
+  () =>
+    import('./TestregelRichTextEditor').then((module) => ({
+      default: module.default,
+    }))
+);
 
-    return (
-      <>
-        <Heading level={3} data-size="xs">
-          Testbeskrivelse
-        </Heading>
-        <Controller
-          name="definition.description"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <Editor
-              value={value}
-              onEditorChange={onChange}
-              licenseKey="gpl"
-              plugins={['lists', 'advlist', 'code', 'table']}
-              toolbar={[
-                'undo redo | bold italic underline | fontfamily fontsize',
-                'alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist',
-              ]}
-            />
-          )}
-        />
-      </>
-    );
-  };
+const ServerRichTextEditor = ({
+  heading,
+  className,
+}: {
+  heading: string;
+  className?: string;
+}) => (
+  <>
+    <Heading level={3} data-size="xs" className={className}>
+      {heading}
+    </Heading>
+    <div className={styles.testregelFormTextareaHeading} />
+  </>
+);
 
-export const HelptextTextArea = ()=> {
-  const { control } = useFormContext();
+const RichTextEditor =
+  typeof window === 'undefined' ? ServerRichTextEditor : BrowserRichTextEditor;
 
-  return (
-    <>
-      <Heading level={3} data-size="xs" className={styles.testregelFormTextareaHeading}>
-        Helpetekst
-      </Heading>
-      <Controller
-        name="definition.helptext"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <Editor
-            value={value}
-            onEditorChange={onChange}
-            licenseKey="gpl"
-            plugins={['lists', 'advlist', 'code', 'table']}
-            toolbar={[
-              'undo redo | bold italic underline | fontfamily fontsize',
-              'alignleft aligncenter alignright alignjustify | outdent indent | bullist numlist',
-            ]}
-          />
-        )}
+export const InstruksjonTextArea = () => (
+  <React.Suspense fallback={<ServerRichTextEditor heading="Testbeskrivelse" />}>
+    <RichTextEditor heading="Testbeskrivelse" name="definition.description" />
+  </React.Suspense>
+);
+
+export const HelptextTextArea = () => (
+  <React.Suspense
+    fallback={
+      <ServerRichTextEditor
+        heading="Helpetekst"
+        className={styles.testregelFormTextareaHeading}
       />
-    </>
-  );
-}
+    }
+  >
+    <RichTextEditor
+      heading="Helpetekst"
+      name="definition.helptext"
+      className={styles.testregelFormTextareaHeading}
+    />
+  </React.Suspense>
+);
 
 const testresultatUtfallOptions = createOptionsFromLiteral<ElementResultat>([
   'samsvar',
@@ -237,12 +194,14 @@ const testresultatUtfallOptions = createOptionsFromLiteral<ElementResultat>([
 ]);
 
 export const UtfallFieldArray = () => {
-  const { control, setValue } = useFormContext<TestregelFormInput>();
+  const { control, setValue } = useFormContext<any>();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'definition.utfall',
+    name: 'definition.utfall' as any,
   });
-  const utfallValues = useWatch({ control, name: 'definition.utfall' });
+  const utfallValues = useWatch({ control, name: 'definition.utfall' as any });
+  const AnyTestlabFormTextArea = TestlabFormTextArea as any;
+  const AnyTestlabFormSelect = TestlabFormSelect as any;
 
   const addUtfall = () => {
     append({
@@ -254,7 +213,7 @@ export const UtfallFieldArray = () => {
 
   const onDefaultChange = (targetIndex: number, checked: boolean) => {
     if (!checked) {
-      setValue(`definition.utfall.${targetIndex}.default`, false, {
+      setValue(`definition.utfall.${targetIndex}.default` as any, false, {
         shouldDirty: true,
         shouldTouch: true,
         shouldValidate: true,
@@ -263,7 +222,7 @@ export const UtfallFieldArray = () => {
     }
 
     fields.forEach((_, index) => {
-      setValue(`definition.utfall.${index}.default`, index === targetIndex, {
+      setValue(`definition.utfall.${index}.default` as any, index === targetIndex, {
         shouldDirty: true,
         shouldTouch: true,
         shouldValidate: true,
@@ -280,25 +239,25 @@ export const UtfallFieldArray = () => {
         <div key={field.id} className={styles.testregelFormUtfallRow}>
           <Details key={field.id} className={styles.testregelFormUtfallRow}>
             <Details.Summary>
-              {utfallValues?.[index]?.beskrivelse}
+              {(utfallValues as any)?.[index]?.beskrivelse}
             </Details.Summary>
             <Details.Content>
-              <TestlabFormTextArea
+              <AnyTestlabFormTextArea
                 label={`Beskrivelse utfall ${index + 1}`}
-                name={`definition.utfall.${index}.beskrivelse` as const}
+                name={`definition.utfall.${index}.beskrivelse`}
                 required
               />
-              <TestlabFormSelect<TestregelFormInput>
+              <AnyTestlabFormSelect
                 options={testresultatUtfallOptions}
                 label="Testresultat"
-                name={`definition.utfall.${index}.testresultat` as const}
+                name={`definition.utfall.${index}.testresultat`}
                 required
               />
               <Checkbox
                 label="Bruk som standard"
-                checked={Boolean(utfallValues?.[index]?.default)}
+                checked={Boolean((utfallValues as any)?.[index]?.default)}
                 onChange={() =>
-                  onDefaultChange(index, !utfallValues?.[index]?.default)
+                  onDefaultChange(index, !((utfallValues as any)?.[index]?.default))
                 }
               />
               <Button
