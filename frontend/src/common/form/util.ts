@@ -63,6 +63,10 @@ const getTokenFromResponse = async (response: Response): Promise<string> => {
 };
 
 const getTokenFromCookie = (): string | undefined => {
+  if (typeof document === 'undefined') {
+    return undefined;
+  }
+
   const cookies = document.cookie.split(';');
 
   function getCsrfcookies() {
@@ -82,28 +86,50 @@ const getTokenFromCookie = (): string | undefined => {
   }
 };
 
+const getServerApiBaseUrl = () => {
+  return globalThis.__TESTLAB2_API_BASE__ ?? 'http://localhost:8080';
+};
+
+const resolveFetchInput = (input: RequestInfo | URL): RequestInfo | URL => {
+  if (typeof window !== 'undefined') {
+    return input;
+  }
+
+  if (typeof input === 'string' && input.startsWith('/')) {
+    return new URL(input, getServerApiBaseUrl()).toString();
+  }
+
+  if (input instanceof URL && input.pathname.startsWith('/')) {
+    return new URL(input.toString(), getServerApiBaseUrl()).toString();
+  }
+
+  return input;
+};
+
 export const fetchWithCsrf = async (
   input: string,
   init?: RequestInit,
   defaultContentType: boolean = true
 ): Promise<Response> => {
   if (init) {
-    return await fetch(`/csrf`, { method: 'GET' }).then(async (response) => {
-      const token = await getTokenFromResponse(response);
+    return await fetch(resolveFetchInput('/csrf'), { method: 'GET' }).then(
+      async (response) => {
+        const token = await getTokenFromResponse(response);
 
-      if (defaultContentType) {
-        init.headers = {
-          'Content-Type': 'application/json',
-          'X-XSRF-TOKEN': token,
-        };
-      } else {
-        init.headers = {
-          'X-XSRF-TOKEN': token,
-        };
+        if (defaultContentType) {
+          init.headers = {
+            'Content-Type': 'application/json',
+            'X-XSRF-TOKEN': token,
+          };
+        } else {
+          init.headers = {
+            'X-XSRF-TOKEN': token,
+          };
+        }
+        init.credentials = 'include';
+        return await fetchWithErrorHandling(input, init);
       }
-      init.credentials = 'include';
-      return await fetchWithErrorHandling(input, init);
-    });
+    );
   } else {
     return await fetchWithErrorHandling(input, init);
   }
@@ -115,18 +141,21 @@ export const fetchWithErrorHandling: typeof fetch = async (
 ) => {
   try {
     const init: RequestInit = { credentials: 'include', ...rest[0] };
-    const response = await fetch(input, init);
+    const response = await fetch(resolveFetchInput(input), init);
     if (response.status >= 500) {
       console.error(
         `HTTP error! status: ${response.status}, message: ${response.statusText}`
       );
       throw new Error(response.statusText);
     }
-    if(response.status == 401 || response.status == 403) {
+    if (
+      typeof window !== 'undefined' &&
+      (response.status == 401 || response.status == 403)
+    ) {
       globalThis.location.href = '/oauth2/authorization/brukar';
     }
 
-      return response;
+    return response;
   } catch (error) {
     console.error(error);
     throw error;
