@@ -10,7 +10,10 @@ import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 import { useShowHelpText } from '@test/util/useShowHelpText';
+import 'bootstrap/dist/css/bootstrap-grid.min.css';
 import styles from './loeysing-test.module.css';
+import { Col, Container, Row } from 'react-bootstrap';
+
 
 
 
@@ -77,7 +80,7 @@ const TestOverviewLoeysing = () => {
   }, [alert, modalRef]);
   
   return (
-    <div className={styles.manualTestContainer}>
+    <Container className={styles.manualTestContainer} fluid={true}>
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={activeLoeysing.namn}
@@ -91,20 +94,29 @@ const TestOverviewLoeysing = () => {
         currentLoeysingId={loeysingId}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
-      <div className={styles.manualTestWrapper}>
+      <Row className={styles.manualTestWrapper}>
         <LoeysingTestLeftColumn
-          title={kontrollTitle}
-          currentLoeysingName={activeLoeysing.namn}
-          sideutvalList={pageTypeList}
-          sideutval={pageType}
-          onChangeSideutval={onChangeSideutval}
-          innhaldstypeList={innhaldstypeList}
-          innhaldstype={innhaldstype}
-          onChangeInnhaldstype={onChangeInnhaldstype}
-          testgrunnlagId={testgrunnlagId}
-          currentLoeysingId={loeysingId}
+          sideutval={{
+            list: pageTypeList,
+            selected: pageType,
+            onChange: onChangeSideutval,
+          }}
+          innhaldstype={{
+            list: innhaldstypeList,
+            selected: innhaldstype,
+            onChange: onChangeInnhaldstype,
+          }}
+          testregeButtonListProps={{
+            row: testregelListElements,
+            activeTest,
+            onChangeTestregel,
+            testStatusMap,
+            testgrunnlagId: String(testgrunnlagId),
+            sideId: pageType.sideId,
+            onChangeStatus: onChangeTestregelStatus,
+          }}
         />
-        <div className={styles.manualTestButtons}>
+        <Col as={'main'} xs={6} className={styles.manualTestButtons}>
           <LoeysingTestContent
             sideutval={pageType}
             innhaldstype={innhaldstype}
@@ -121,7 +133,7 @@ const TestOverviewLoeysing = () => {
             toggleShowHelpText={toggleShowHelpText}
             showHelpText={showHelpText}
           />
-        </div>
+        </Col>
         <LoeysingTestRightColumn />
         {alert && (
           <AlertModal
@@ -132,8 +144,8 @@ const TestOverviewLoeysing = () => {
             clearMessage={alert.clearMessage}
           />
         )}
-      </div>
-    </div>
+      </Row>
+    </Container>
   );
 };
 

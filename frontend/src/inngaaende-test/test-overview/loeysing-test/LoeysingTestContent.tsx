@@ -13,6 +13,8 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
+import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
+import { toTestregelStatusKey } from '@test/util/testregelUtils';
 
 interface Props {
   sideutval: PageType;
@@ -124,28 +126,6 @@ const LoeysingTestContent = memo(({
   return (
     <>
       <div>
-        {chunkedTestregelList.map((row) => {
-          const rowKey = row.map((tr) => tr.id).join('-');
-
-          return (
-            <div
-              className={classNames('testregel-row', {
-                single: testregelList.length === 1,
-              })}
-              key={rowKey}
-            >
-              <TestregelButtonList
-                row={row}
-                activeTest={activeTest}
-                onChangeTestregel={onChangeTestregel}
-                testStatusMap={testStatusMap}
-                testgrunnlagId={testgrunnlagId}
-                sideId={sideutval.sideId}
-                onChangeStatus={onChangeStatus}
-              />
-            </div>
-          );
-        })}
         {activeTestregelOverviewElement(activeTest) && (
           <LoeysingTestForm
             activeTest={activeTest}

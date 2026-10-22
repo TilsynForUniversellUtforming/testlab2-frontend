@@ -5,6 +5,7 @@ import TestForm from '@test/testregel-form/TestForm';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
 import { ActiveTest, TestResultUpdate } from '@test/types';
 import classNames from 'classnames';
+import { Col } from "react-bootstrap";
 
 interface Props {
   activeTest: ActiveTest | undefined;
@@ -38,7 +39,8 @@ const LoeysingTestForm = ({
   }
 
   return (
-    <main
+    <Col
+      as={'main'}
       className={classNames('testregel-form-wrapper', {
         single: testregelListLength === 1,
       })}
@@ -76,7 +78,7 @@ const LoeysingTestForm = ({
           <Button onClick={onClickSave}>Lagre og lukk</Button>
         </div>
       </div>
-    </main>
+    </Col>
   );
 };
 

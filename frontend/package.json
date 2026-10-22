@@ -37,7 +37,10 @@
     "react-intl": "10.1.23",
     "zod": "3.25.76",
     "@tinymce/tinymce-react": "6.3.0",
-    "tinymce": "8.8.2"
+    "tinymce": "8.8.2",
+    "bootstrap": "5.3.8",
+    "react-bootstrap": "2.10.10",
+    "react-bootstrap-icons": "1.11.6"
   },
   "devDependencies": {
     "@faker-js/faker": "10.5.0",

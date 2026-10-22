@@ -6,7 +6,7 @@ import {
 } from '@test/types';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 
-interface Props {
+export interface TestregelButtonListProps {
   row: TestregelOverviewElement[];
   activeTest: ActiveTest | undefined;
   onChangeTestregel: (testregelId: number) => void;
@@ -24,7 +24,7 @@ const TestregelButtonList = ({
   testgrunnlagId,
   sideId,
   onChangeStatus,
-}: Props) => {
+}: TestregelButtonListProps) => {
   return (
     <div className="testregel-container">
       {row.map((tr) => (
