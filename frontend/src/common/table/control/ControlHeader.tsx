@@ -22,23 +22,22 @@ const ControlHeader = <T extends object>({
   rowActionEnabled,
   small = false,
 }: Props<T>) => {
-  const tableElementSize = table.getPreFilteredRowModel().flatRows.length;
-  const hasElements = tableElementSize > 0;
+  const filteredRowCount = table.getPreFilteredRowModel().flatRows.length;
+  const hasVisibleRows = filteredRowCount > 0;
 
-  const showFilters = !small && filterPreference !== 'none' && hasElements;
+  const showFilters = !small && filterPreference !== 'none' && hasVisibleRows;
+  const showRowActions = Array.isArray(rowActions) && rowActions.length > 0;
 
-  const showRowActions = rowActions && rowActions.length > 0;
-
-  const resetPagination = useCallback(() => {
+  const handleResetPagination = useCallback(() => {
     table.setPageIndex(0);
-  }, []);
+  }, [table]);
 
   return (
     <div className="control-header">
       <TableSearch
         showSearch={showFilters}
         onChangeFilter={onChangeFilter}
-        resetPagination={resetPagination}
+        resetPagination={handleResetPagination}
       />
       <div className="control-header__actions">
         {showRowActions && (

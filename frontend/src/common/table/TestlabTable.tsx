@@ -1,27 +1,10 @@
 import './testlabTable.scss';
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  FilterFn,
-  getCoreRowModel,
-  getFacetedMinMaxValues,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  PaginationState,
-  Row,
-  RowSelectionState,
-  useReactTable,
-} from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 
 import TestlabTableBody from '@common/table/TestlabTableBody';
 import { ErrorSummary, Table } from '@digdir/designsystemet-react';
-import { RankingInfo } from '@tanstack/match-sorter-utils';
-import { TableOptions } from '@tanstack/table-core';
 import classnames from 'classnames';
-import React, { ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { ReactElement } from 'react';
 
 import ErrorCard, { TestlabError } from '../error/ErrorCard';
 import { isDefined } from '../util/validationUtils';
@@ -29,36 +12,7 @@ import ControlHeader from './control/ControlHeader';
 import PaginationContainer from './control/pagination/PaginationContainer';
 import TestlabTableHeader from './TestlabTableHeader';
 import { TableFilterPreference, TableRowAction, TableStyle } from './types';
-import { fuzzyFilter } from './util';
-import { useSearchParams } from 'react-router';
-
-declare module '@tanstack/table-core' {
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>;
-    exact: FilterFn<unknown>;
-  }
-
-  interface FilterMeta {
-    itemRank: RankingInfo;
-  }
-}
-
-/*
-ColumnMeta is extended to include the select property,
-which is used to indicate whether a column should use a select component instead of input
-*/
-declare module '@tanstack/react-table' {
-  // eslint-disable-next-line
-  interface ColumnMeta<TData, TValue> {
-    select?: boolean;
-  }
-}
-
-// eslint-disable-next-line
-const exactTextFilterFn: FilterFn<any> = (row, columnId, value) => {
-  const rowValue = row.getValue(columnId);
-  return rowValue === value;
-};
+import { useTestlabTable } from './useTestlabTable';
 
 export interface TestlabTableProps<T extends object> {
   data: T[];
@@ -76,25 +30,6 @@ export interface TestlabTableProps<T extends object> {
   classNames?: string[];
 }
 
-/**
- * A TanStack table component for displaying and manipulating data.
- *
- * @template T - The type of data displayed in the table.
- * @param {object} props - The props for the component.
- * @param {T[]} props.data - The data to be displayed in the table.
- * @param {ColumnDef<T>[]} props.defaultColumns - The default columns to display in the table.
- * @param {TestlabError} props.displayError - The error to show in the error card.
- * @param {string} props.actionRequiredError - Optional error message to display if a table requires a user action.
- * @param {boolean} [props.loading=false] - Whether the table is currently loading data.
- * @param {TableFilterPreference} [props.filterPreference='all'] - The default filter preference.
- * @param {boolean[]} [props.selectedRows=[]] - An array indicating which rows are selected.
- * @param {(rows: T[]) => void} [props.onSelectRows] - A function to be called when rows are selected. If defined the row selection is implicitly active
- * @param {(row?: Row<T>) => void} [props.onClickRow] - A optional function to be called when a row is clicked. The clicked row's data will be passed as an argument to the function.
- * @param {() => void} [props.onClickRetry] - A function to be called when the user clicks the retry button.
- * @param {TableStyle} [props.customStyle={ full: true, small: false, fixed: false }] - The custom styles to apply to the table.
- * @param {TableRowAction[]} [props.rowActions] - The actions that can be preformed on the table rows. Assumes that the table is selectable.
- * @returns {ReactElement} - The React component for the TestlabTable.
- */
 const TestlabTable = <T extends object>({
   data,
   defaultColumns,
@@ -106,134 +41,45 @@ const TestlabTable = <T extends object>({
   onSelectRows,
   onClickRow,
   onClickRetry,
-  customStyle = {
-    small: false,
-  },
+  customStyle = { small: false },
   rowActions,
   classNames,
 }: TestlabTableProps<T>): ReactElement => {
   const isLoading = loading ?? false;
-  const [columns, setColumns] = useState<typeof defaultColumns>(() => [
-    ...defaultColumns,
-  ]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({
-    ...selectedRows,
-  } as unknown as RowSelectionState);
 
-  const rowSelectionEnabled = typeof onSelectRows !== 'undefined';
-
-  const handleRowSelection = (rss: RowSelectionState) => {
-    setRowSelection(rss);
-  };
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // 1. Read initial state from URL on load, fallback to defaults
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: Number(searchParams.get('page'))
-      ? Number(searchParams.get('page')) - 1
-      : 0,
-    pageSize: Number(searchParams.get('size')) || 10,
+  const {
+    table,
+    headerGroup,
+    setPagination,
+    rowSelectionEnabled,
+    rowSelection,
+    handleGlobalFilterChange,
+    handleRetry,
+  } = useTestlabTable({
+    data,
+    defaultColumns,
+    selectedRows,
+    onSelectRows,
+    onClickRetry,
   });
-
-  useEffect(() => {
-    setSearchParams((prev) => {
-      prev.set('page', String(pagination.pageIndex + 1)); // URL pages are typically 1-indexed
-      prev.set('size', String(pagination.pageSize));
-      return prev;
-    });
-  }, [pagination, setSearchParams]);
-
-  useEffect(() => {
-    setColumns([...defaultColumns]);
-  }, [defaultColumns]);
-
-  const tableOptions: TableOptions<T> = {
-    data: data,
-    columns: columns,
-    filterFns: {
-      fuzzy: fuzzyFilter,
-      exact: exactTextFilterFn,
-    },
-    state: {
-      columnFilters,
-      globalFilter,
-      rowSelection,
-      pagination,
-    },
-    enableRowSelection: rowSelectionEnabled,
-    enableMultiRowSelection: rowSelectionEnabled,
-    onRowSelectionChange: (updaterOrValue) => {
-      if (typeof updaterOrValue === 'function') {
-        handleRowSelection(updaterOrValue(rowSelection));
-      } else {
-        handleRowSelection(updaterOrValue);
-      }
-    },
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    autoResetPageIndex: false,
-  };
-
-  const table = useReactTable(tableOptions);
-
-  useEffect(() => {
-    if (rowSelectionEnabled) {
-      const selectedTableRows = table
-        .getSelectedRowModel()
-        .flatRows.map((fr) => fr.original);
-      onSelectRows?.(selectedTableRows);
-    }
-  }, [rowSelection, rowSelectionEnabled]);
-
-  useEffect(() => {
-    if (isDefined(selectedRows)) {
-      table.setRowSelection({
-        ...selectedRows,
-      } as unknown as RowSelectionState);
-    }
-  }, [selectedRows]);
-
-  const onChangeGlobalFilter = useCallback((value: string) => {
-    setGlobalFilter(value);
-  }, []);
-
-  const handleClickRetry = () => {
-    table.toggleAllRowsSelected(false);
-    if (onClickRetry) {
-      onClickRetry();
-    }
-  };
 
   if (displayError?.error) {
     return (
       <ErrorCard
         errorHeader={displayError.errorHeader}
         error={displayError.error}
-        onClick={displayError.onClick ?? handleClickRetry}
+        onClick={displayError.onClick ?? handleRetry}
         buttonText={displayError.buttonText ?? 'Prøv igjen'}
       />
     );
   }
-
-  const headerGroup = table.getHeaderGroups()[0];
 
   return (
     <div className="testlab-table">
       <ControlHeader
         filterPreference={filterPreference ?? 'all'}
         table={table}
-        onChangeFilter={onChangeGlobalFilter}
+        onChangeFilter={handleGlobalFilterChange}
         small={customStyle?.small}
         rowActionEnabled={rowSelectionEnabled && isDefined(rowSelection)}
         rowActions={rowActions}
@@ -263,7 +109,11 @@ const TestlabTable = <T extends object>({
         </Table.Body>
         <Table.Foot>
           <Table.Row className="testlab-table__footer">
-            <PaginationContainer table={table} loading={isLoading} paginationHander={setPagination}/>
+            <PaginationContainer
+              table={table}
+              loading={isLoading}
+              paginationHander={setPagination}
+            />
           </Table.Row>
         </Table.Foot>
       </Table>
