@@ -1,10 +1,6 @@
 import AlertModal from '@common/alert/AlertModal';
-import TestlabDivider from '@common/divider/TestlabDivider';
-import { ButtonVariant } from '@common/types';
-import { Button } from '@digdir/designsystemet-react';
 import { ResultatManuellKontroll } from '@test/api/types';
-import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
-import TestForm from '@test/testregel-form/TestForm';
+import LoeysingTestForm from '@test/test-overview/loeysing-test/LoeysingTestForm';
 import {
   ActiveTest,
   ManuellTestStatus,
@@ -17,7 +13,6 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
-import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
 
 interface Props {
   sideutval: PageType;
@@ -61,10 +56,9 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.elementUtfall != null);
 }
 
-  const LoeysingTestContent = memo(({
+
+const LoeysingTestContent = memo(({
   sideutval,
-  innhaldstype,
-  progressionPercent,
   testregelList,
   activeTest,
   clearActiveTestregel,
@@ -75,7 +69,6 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   slettTestelement,
   onChangeStatus,
   showHelpText,
-  toggleShowHelpText,
 }: Props) => {
   const { testgrunnlagId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
@@ -130,17 +123,10 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
 
   return (
     <>
-      <TestRegelParamSelection
-        pageType={sideutval.pageType}
-        innhaldstype={innhaldstype.innhaldstype}
-        progressionPercent={progressionPercent}
-        toggleShowHelpText={toggleShowHelpText}
-        showHelpText={showHelpText}
-        url={sideutval.url}
-      />
       <div>
         {chunkedTestregelList.map((row) => {
           const rowKey = row.map((tr) => tr.id).join('-');
+
           return (
             <div
               className={classNames('testregel-row', {
@@ -157,53 +143,24 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
                 sideId={sideutval.sideId}
                 onChangeStatus={onChangeStatus}
               />
-
-              {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
-                activeTest &&
-                activeTest.testResultList.length > 0 && (
-                  <div
-                    className={classNames('testregel-form-wrapper', {
-                      single: testregelList.length === 1,
-                    })}
-                  >
-                    {isManuell && (
-                      <TestForm
-                        testregel={activeTest.testregel}
-                        resultater={activeTest.testResultList}
-                        onResultat={handleUpdateResult}
-                        showHelpText={showHelpText}
-                        slettTestelement={handleSlettTestelement}
-                        isLoading={loading}
-                      />
-                    )}
-                    {(isForenkla || isAutomatisk) && (
-                      <TestFormForenklaList
-                        testregel={activeTest.testregel}
-                        resultater={activeTest.testResultList}
-                        showHelpText={true}
-                        onResultat={handleUpdateResult}
-                        slettTestelement={handleSlettTestelement}
-                        isLoading={false}
-                        isDemoApp={false}
-                      />
-                    )}
-                    <TestlabDivider />
-                    <div className="testregel-form-button-wrapper">
-                      <div className="testregel-form-buttons">
-                        <Button
-                          variant={ButtonVariant.Outline}
-                          onClick={leggTilFlereTestelementer}
-                        >
-                          Legg til flere testelementer
-                        </Button>
-                        <Button onClick={onClickSave}>Lagre og lukk</Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
             </div>
           );
         })}
+        {activeTestregelOverviewElement(activeTest) && (
+          <LoeysingTestForm
+            activeTest={activeTest}
+            isManuell={isManuell}
+            isForenkla={isForenkla}
+            isAutomatisk={isAutomatisk}
+            showHelpText={showHelpText}
+            loading={loading}
+            onResultat={handleUpdateResult}
+            onSlettTestelement={handleSlettTestelement}
+            leggTilFlereTestelementer={leggTilFlereTestelementer}
+            onClickSave={onClickSave}
+            testregelListLength={testregelList.length}
+          />
+        )}
       </div>
       <AlertModal
         ref={alertRef}
@@ -216,4 +173,14 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   );
 });
 
+
+function activeTestregelOverviewElement(
+  activeTest: ActiveTest|undefined
+) {
+  if (!activeTest) return false;
+  return (
+    activeTest &&
+    activeTest.testResultList.length > 0
+  );
+}
 export default LoeysingTestContent;

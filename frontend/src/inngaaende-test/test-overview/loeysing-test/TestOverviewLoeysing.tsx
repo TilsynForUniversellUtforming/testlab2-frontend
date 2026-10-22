@@ -2,12 +2,16 @@ import AlertModal from '@common/alert/AlertModal';
 import useAlertModal from '@common/alert/useAlertModal';
 import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestContent';
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
+import LoeysingTestLeftColumn from '@test/test-overview/loeysing-test/LoeysingTestLeftColumn';
+import LoeysingTestRightColumn from '@test/test-overview/loeysing-test/LoeysingTestRightColumn';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/util/useTestOverviewState';
 import { useShowHelpText } from '@test/util/useShowHelpText';
+import styles from './loeysing-test.module.css';
+
 
 
 const TestOverviewLoeysing = () => {
@@ -73,7 +77,7 @@ const TestOverviewLoeysing = () => {
   }, [alert, modalRef]);
   
   return (
-    <div className="manual-test-container">
+    <div className={styles.manualTestContainer}>
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={activeLoeysing.namn}
@@ -87,8 +91,20 @@ const TestOverviewLoeysing = () => {
         currentLoeysingId={loeysingId}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
-      <div className="manual-test-wrapper">
-        <div className="manual-test-buttons">
+      <div className={styles.manualTestWrapper}>
+        <LoeysingTestLeftColumn
+          title={kontrollTitle}
+          currentLoeysingName={activeLoeysing.namn}
+          sideutvalList={pageTypeList}
+          sideutval={pageType}
+          onChangeSideutval={onChangeSideutval}
+          innhaldstypeList={innhaldstypeList}
+          innhaldstype={innhaldstype}
+          onChangeInnhaldstype={onChangeInnhaldstype}
+          testgrunnlagId={testgrunnlagId}
+          currentLoeysingId={loeysingId}
+        />
+        <div className={styles.manualTestButtons}>
           <LoeysingTestContent
             sideutval={pageType}
             innhaldstype={innhaldstype}
@@ -106,6 +122,7 @@ const TestOverviewLoeysing = () => {
             showHelpText={showHelpText}
           />
         </div>
+        <LoeysingTestRightColumn />
         {alert && (
           <AlertModal
             ref={modalRef}

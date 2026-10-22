@@ -148,3 +148,30 @@
   gap: 2rem;
   flex-direction: column;
 }
+
+.manual-test-wrapper {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(0, 2.5fr) minmax(180px, 1fr);
+  gap: 1rem;
+  width: min(100%, 1600px);
+  align-items: start;
+}
+
+.manual-test-buttons {
+  min-width: 0;
+}
+
+.loeysing-test-left-column,
+.loeysing-test-right-column {
+  background: var(--ds-color-neutral-background-default);
+  border: 1px solid var(--ds-color-neutral-border-subtle);
+  border-radius: 0.75rem;
+  min-height: 200px;
+  padding: 1rem;
+}
+
+.loeysing-test-left-column h1,
+.loeysing-test-right-column h1 {
+  margin: 0;
+  font-size: 1rem;
+}

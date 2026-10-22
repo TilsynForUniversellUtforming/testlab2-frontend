@@ -1,0 +1,115 @@
+.manualTestContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  min-width: 400px;
+  width: calc(100vw - 20px);
+  margin-bottom: auto;
+
+  padding: 2rem 0;
+  overflow: hidden;
+}
+
+.manualTestWrapper {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(0, 2.5fr) minmax(180px, 1fr);
+  gap: 1rem;
+  width: min(100%, 1600px);
+  align-items: start;
+}
+
+.manualTestButtons {
+  min-width: 0;
+}
+
+.loeysingTestLeftColumn,
+.loeysingTestRightColumn {
+  background: var(--ds-color-neutral-background-default);
+  border: 1px solid var(--ds-color-neutral-border-subtle);
+  border-radius: 0.75rem;
+  min-height: 200px;
+  padding: 1rem;
+}
+
+.loeysingTestLeftColumn h1,
+.loeysingTestRightColumn h1 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.manualTestHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(100%, 1600px);
+  background-color: var(--ds-color-accent-surface-tinted);
+  padding: 1rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.statusFerdig {
+  width: min(100%, 1600px);
+}
+
+.statusFerdigButton {
+  margin-top: 1rem;
+}
+
+.sistLagra {
+  display: flex;
+  align-items: center;
+}
+
+.pageSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pageSelectorWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pageSelectorDropdown {
+  display: flex;
+  align-items: center;
+}
+
+.active {
+  background-color: var(--ds-color-brand1-surface-active);
+  border-radius: 5px;
+}
+
+.active > button {
+  color: var(--ds-color-background-default);
+}
+
+.chevronIcon {
+  transition: transform 0.2s ease;
+}
+
+.pageSelector li:hover {
+  cursor: pointer;
+}
+
+.testParamSelection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.testParamSelectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

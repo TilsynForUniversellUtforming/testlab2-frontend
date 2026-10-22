@@ -2,6 +2,7 @@ import LoadingBar from '@common/loading-bar/LoadingBar';
 import { isUrl } from '@common/util/validationUtils';
 import { Heading, Link, Switch } from '@digdir/designsystemet-react';
 import { ExternalLinkIcon } from '@navikt/aksel-icons';
+import styles from './loeysing-test.module.css';
 
 interface Props {
   pageType: string;
@@ -20,8 +21,12 @@ const TestRegelParamSelection = ({
   toggleShowHelpText,
   url,
 }: Props) => (
-  <div className="test-param-selection">
-    <Heading data-size="sm" level={6} className="test-param-selection__header">
+  <div className={styles.testParamSelection}>
+    <Heading
+      data-size="sm"
+      level={6}
+      className={styles.testParamSelectionHeader}
+    >
       {innhaldstype} og {pageType}
       {isUrl(url) && (
         <Link href={url} target="_blank" title={`Gå til ${url}`}>

@@ -3,6 +3,7 @@ import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
 import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
 import { PageType } from '@test/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
+import styles from './loeysing-test.module.css';
 
 export interface Props {
   title: string;
@@ -29,31 +30,20 @@ const LoeysingTestHeading = ({
   innhaldstypeList,
   testgrunnlagId,
   currentLoeysingId,
-  currentSideutvalId
 }: Props) => {
   return (
-    <div className="manual-test-heading">
+    <div className={styles.manualTestHeading}>
       <Heading data-size="xl" level={2}>
-        Gjennomfør test
+        {currentLoeysingName}
       </Heading>
       <Paragraph variant={'long'}>
         {title} TestgrunnlagId:{testgrunnlagId}
       </Paragraph>
-      <div className="tags">
-        <Tag color="second">Inngående kontroll</Tag>
-        <Tag color="second">Nettside</Tag>
-        <Tag color="second">
-          {currentLoeysingName} loeysingId: {currentLoeysingId}
-        </Tag>
+      <div className={styles.tags}>
+        <Tag data-color="warning">Inngående kontroll</Tag>
+        <Tag data-color="warning">Nettside</Tag>
+        <Tag data-color="warning">loeysingId: {currentLoeysingId}</Tag>
       </div>
-      <PageTypeSelector
-        sideutvalList={sideutvalList}
-        sideutvalId={sideutval.sideId}
-        onChangeSideutval={onChangeSideutval}
-        innhaldstypeList={innhaldstypeList}
-        innhaldstypeId={innhaldstype.id}
-        onChangeType={onChangeInnhaldstype}
-      />
     </div>
   );
 };
