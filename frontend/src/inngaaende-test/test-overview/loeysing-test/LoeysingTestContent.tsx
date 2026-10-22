@@ -15,6 +15,7 @@ import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
+import TestOverviewResultList from '@test/test-overview/loeysing-test/TestOverviewResultList';
 
 interface Props {
   sideutval: PageType;
@@ -141,6 +142,7 @@ const LoeysingTestContent = memo(({
             testregelListLength={testregelList.length}
           />
         )}
+        <TestOverviewResultList />
       </div>
       <AlertModal
         ref={alertRef}
