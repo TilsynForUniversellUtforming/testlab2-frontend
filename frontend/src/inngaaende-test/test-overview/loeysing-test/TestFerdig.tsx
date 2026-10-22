@@ -11,6 +11,7 @@ import {
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { TESTRESULTAT_LOEYSING } from '@resultat/ResultatRoutes';
 import { useNavigate, useParams } from 'react-router';
+import styles from './loeysing-test.module.css';
 
 const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
   const {
@@ -46,7 +47,7 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
   };
 
   return (
-    <div className="status-ferdig">
+    <div className={styles.statusFerdig}>
       <Alert data-color="success">
         <Heading level={5} data-size="xs">
           {loeysingNamn} er ferdig testa!
@@ -58,7 +59,7 @@ const TestFerdig = ({ loeysingNamn }: { loeysingNamn: string }) => {
         <Button
           color={ButtonColor.Success}
           onClick={onFerdigTest}
-          className="status-ferdig__button"
+          className={styles.statusFerdigButton}
         >
           Gå til resultat
         </Button>

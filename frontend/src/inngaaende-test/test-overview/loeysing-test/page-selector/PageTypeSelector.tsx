@@ -1,10 +1,9 @@
-import './page-selector.scss';
-
-import { OptionType } from '@common/types';
+import type { OptionType } from '@common/types';
 import { Heading } from '@digdir/designsystemet-react';
 import TypeDropdown from '@test/test-overview/loeysing-test/page-selector/TypeDropdown';
 import { PageType } from '@test/types';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
+import styles from '../loeysing-test.module.css';
 
 export interface PageTypeSelectorProps {
   sideutvalList: PageType[];
@@ -38,11 +37,11 @@ const PageTypeSelector = ({
   );
 
   return (
-    <div className="page-selector">
+    <div className={styles.pageSelector}>
       <Heading level={3} data-size="sm">
         Vel type test
       </Heading>
-      <div className="page-selector-wrapper">
+      <div className={styles.pageSelectorWrapper}>
         <TypeDropdown
           title="Innhaldstypar"
           typeId={innhaldstypeId}
