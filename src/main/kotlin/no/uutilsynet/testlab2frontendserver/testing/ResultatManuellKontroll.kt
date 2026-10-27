@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
+import no.uutilsynet.testlab2.constants.TestresultatUtfall
 import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.Brukar
 
@@ -10,23 +11,29 @@ data class ResultatManuellKontroll(
     val testregelId: Int,
     val sideutvalId: Int,
     val brukar: Brukar = Brukar("testesen@digdir.no", "Test Testesen"),
-    val elementOmtale: String?,
-    val elementResultat: ElementResultat?,
-    val elementUtfall: String?,
-    val elementUtfallId: Int? = null,
+    val element: Element? = null,
     val svar: List<Svar>,
     val testVartUtfoert: Instant?,
-    val status: Status = Status.IkkjePaabegynt,
+    val status: ResultatStatus = ResultatStatus.IkkjePaabegynt,
     val kommentar: String?,
     val sistLagra: Instant,
-    val elementOmtaleHtml: String? = null
-) {
+    val ekstraSjekk: Boolean = false,
+    ) {
   data class Svar(val steg: String, val svar: String)
+}
 
-  enum class Status {
+enum class ResultatStatus {
     IkkjePaabegynt,
     UnderArbeid,
     Ferdig,
     Deaktivert
-  }
 }
+
+data class Element(
+    val elementOmtale: String?,
+    val elementResultat: TestresultatUtfall?,
+    val elementUtfall: String?,
+    val elementUtfallId: Int? = null,
+    val elementOmtaleHtml: String? = null,
+    val elementPlassering: String? = null,
+)

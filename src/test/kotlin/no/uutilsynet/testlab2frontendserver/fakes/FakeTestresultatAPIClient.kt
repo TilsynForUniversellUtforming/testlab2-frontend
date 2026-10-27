@@ -4,6 +4,7 @@ import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.testing.CreateTestResultat
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
 import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
+import no.uutilsynet.testlab2frontendserver.testing.ResultatStatus
 
 object FakeTestresultatAPIClient : ITestresultatAPIClient {
   private val database = mutableMapOf<Int, ResultatManuellKontroll>()
@@ -26,7 +27,7 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
             null,
             emptyList(),
             null,
-            ResultatManuellKontroll.Status.IkkjePaabegynt,
+            ResultatStatus.IkkjePaabegynt,
             null,
             sistLagra = Instant.now(),
             elementOmtaleHtml = null)

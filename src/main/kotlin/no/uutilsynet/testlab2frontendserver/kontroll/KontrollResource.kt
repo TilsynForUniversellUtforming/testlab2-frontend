@@ -7,6 +7,7 @@ import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestStatu
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.ITestresultatAPIClient
 import no.uutilsynet.testlab2frontendserver.testing.ResultatManuellKontroll
+import no.uutilsynet.testlab2frontendserver.testing.ResultatStatus
 import no.uutilsynet.testlab2frontendserver.testing.Retest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -246,11 +247,11 @@ class KontrollResource(
   }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
-    return resultat.all { it.status == ResultatManuellKontroll.Status.IkkjePaabegynt }
+    return resultat.all { it.status == ResultatStatus.IkkjePaabegynt }
   }
 
   private fun okToRetest(resultat: List<ResultatManuellKontroll>): Boolean {
-    return resultat.all { it.status == ResultatManuellKontroll.Status.Ferdig }
+    return resultat.all { it.status == ResultatStatus.Ferdig }
   }
 
   data class SideutvalType(

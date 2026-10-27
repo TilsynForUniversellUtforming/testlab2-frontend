@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
+import no.uutilsynet.testlab2.constants.TestresultatUtfall
 import java.net.URI
 import java.time.Instant
 import kotlin.properties.Delegates
@@ -95,11 +96,13 @@ class KontrollResourceTest {
         listOf(
             testResult.copy(
                 kommentar = "Ferdig",
-                elementOmtale = elementOmtale,
-                elementResultat = ElementResultat.brot,
-                elementUtfall = elementUtfall,
+                element = testResult.element?.copy(
+                    elementOmtale = elementOmtale,
+                    elementResultat = TestresultatUtfall.brot,
+                    elementUtfall = elementUtfall,
+                ),
                 testVartUtfoert = Instant.now(),
-                status = ResultatManuellKontroll.Status.Ferdig)))
+                status = ResultatStatus.Ferdig)))
 
     val deleteResponse = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId)
     assertThat(deleteResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
@@ -143,11 +146,13 @@ class KontrollResourceTest {
         listOf(
             testResult.copy(
                 kommentar = "Ferdig",
-                elementOmtale = elementOmtale,
-                elementResultat = ElementResultat.brot,
-                elementUtfall = elementUtfall,
+                element = testResult.element?.copy(
+                    elementOmtale = elementOmtale,
+                    elementResultat = TestresultatUtfall.brot,
+                    elementUtfall = elementUtfall,
+                ),
                 testVartUtfoert = Instant.now(),
-                status = ResultatManuellKontroll.Status.Ferdig)))
+                status = ResultatStatus.Ferdig)))
 
     val retestResponse: ResponseEntity<KontrollResource.TestgrunnlagDTO> =
         kontrollResource.createRetest(kontrollId, Retest(testgrunnlagId, loeysingId))

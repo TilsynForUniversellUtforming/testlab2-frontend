@@ -21,10 +21,11 @@ export type CreateTestResultat = {
   elementOmtale?: string;
   elementOmtaleHtml?: string;
   elementResultat?: ElementResultat;
-  elementUtfall?: string | undefined;
+  elementUtfall?: string;
   testVartUtfoert?: string;
   kommentar?: string;
-  elementUtfallId?: number | null;
+  elementUtfallId?: number;
+  elementPlassering?: string;
 };
 
 export type ResultatManuellKontroll = {
@@ -32,6 +33,7 @@ export type ResultatManuellKontroll = {
   svar: Svar[];
   status: ResultatStatus;
   sistLagra: string;
+  ekstraSjekk?: boolean;
 } & CreateTestResultat;
 
 export type ResultatStatus =

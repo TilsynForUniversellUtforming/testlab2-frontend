@@ -87,8 +87,8 @@ class TestResource(
       runCatching {
             val missingKommentar =
                 resultatManuellKontrollList.any { resultatManuellKontroll ->
-                  resultatManuellKontroll.elementOmtale == "Side" &&
-                      resultatManuellKontroll.status == ResultatManuellKontroll.Status.Ferdig &&
+                  resultatManuellKontroll.element?.elementOmtale == "Side" &&
+                      resultatManuellKontroll.status == ResultatStatus.Ferdig &&
                       resultatManuellKontroll.kommentar.isNullOrBlank()
                 }
             require(!missingKommentar) {
