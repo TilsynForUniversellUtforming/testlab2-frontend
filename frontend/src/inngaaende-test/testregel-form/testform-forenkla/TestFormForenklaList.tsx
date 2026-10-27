@@ -53,10 +53,10 @@ const TestFormForenklaList = (props: Props) => {
               <Details className={commonClasses.accordionDetails}>
                 <Details.Summary className={commonClasses.accordionButton}>
                   <div>{index + 1}</div>
-                  <span>{resultat.elementOmtale}</span>
+                  <span>{resultat.element?.elementOmtale}</span>
                   <TestlabStatusTag<ElementResultat>
                     className={commonClasses.resultat}
-                    status={resultat.elementResultat}
+                    status={resultat.element?.elementResultat}
                     colorMapping={{
                       danger: ['brot'],
                       success: ['samsvar'],
@@ -118,6 +118,7 @@ function createForenklaBaseResultat({
     loeysingId: 0,
     testregelId,
     sideutvalId: 0,
-    sistLagra: new Date().toISOString()
+    sistLagra: new Date().toISOString(),
+    element: {},
   };
 }

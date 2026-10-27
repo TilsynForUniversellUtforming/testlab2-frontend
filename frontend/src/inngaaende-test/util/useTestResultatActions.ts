@@ -79,18 +79,19 @@ export const useTestResultatActions = ({
           loeysingId,
           testregelId: activeTest.testregel?.id,
           sideutvalId: sideId,
-          elementOmtale,
-          elementOmtaleHtml,
-          elementResultat: resultat && toElementResultat(resultat),
-          elementUtfall: resultat?.utfall,
+          element: {
+            elementOmtale,
+            elementOmtaleHtml,
+            elementResultat: resultat && toElementResultat(resultat),
+            elementUtfall: resultat?.utfall,
+            elementUtfallId:
+              resultat?.type === 'avslutt' ? resultat.utfallId ?? undefined : undefined,
+          },
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
           kommentar,
           sistLagra: activeTestResult.sistLagra,
         };
-        if(resultat?.type === 'avslutt') {
-          testResult.elementUtfallId = resultat.utfallId ?? null;
-        }
         await withAggregert(() => updateTestResultat(testResult), 'Kunne ikkje lagre', activeTest.testregel);
       } else {
         raiseAlert('danger', 'Kunne ikkje lagre', 'Ugyldig oppdatering av testresultat');
@@ -157,4 +158,3 @@ export const useTestResultatActions = ({
 
   return { doUpdateTestResultStatus, doUpdateTestResult, doCreateTestResult, slettTestelement, createNewTestResult };
 };
-

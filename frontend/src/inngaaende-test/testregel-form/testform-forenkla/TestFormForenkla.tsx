@@ -73,12 +73,12 @@ const TestFormForenkla = (props: Props) => {
       new Set(
         props.testregel.definition!.utfall
           .map((utfall) => utfall.testresultat)
-          .concat(props.activeResult.elementResultat ?? [])
+          .concat(props.activeResult.element?.elementResultat ?? [])
       )
     );
 
     return createOptionsFromLiteral(availableUtfallTypes);
-  }, [props.activeResult.elementResultat, props.testregel.definition]);
+  }, [props.activeResult.element?.elementResultat, props.testregel.definition]);
   const valgtUtfallIndex = formMethods.watch('valgtUtfallIndex');
 
 
@@ -110,14 +110,17 @@ const TestFormForenkla = (props: Props) => {
     const oppdatertResultat: ResultatManuellKontroll = {
       ...props.activeResult,
       kommentar: values.kommentar,
-      elementOmtale: values.elementOmtale,
-      elementOmtaleHtml: values.elementOmtaleHtml,
-      elementResultat: mapUtfallToElementResultat(testresultat),
-      elementUtfall: beskrivelse,
+      element: {
+        ...props.activeResult.element,
+        elementOmtale: values.elementOmtale,
+        elementOmtaleHtml: values.elementOmtaleHtml,
+        elementResultat: mapUtfallToElementResultat(testresultat),
+        elementUtfall: beskrivelse,
+        elementUtfallId: utfallId,
+      },
       svar: values.svar ?? [],
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
-      elementUtfallId: utfallId ?? null,
     };
 
     props.onCreateForenklaResultat?.(oppdatertResultat);
@@ -125,9 +128,9 @@ const TestFormForenkla = (props: Props) => {
       resultatId: oppdatertResultat.id,
       alleSvar: oppdatertResultat.svar,
       kommentar: oppdatertResultat.kommentar,
-      elementOmtale: oppdatertResultat.elementOmtale,
-      elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(testresultat, beskrivelse,utfallId ?? null),
+      elementOmtale: oppdatertResultat.element?.elementOmtale,
+      elementOmtaleHtml: oppdatertResultat.element?.elementOmtaleHtml,
+      resultat: mapToTestregelResultat(testresultat, beskrivelse, utfallId),
     });
   };
 

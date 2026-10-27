@@ -58,7 +58,7 @@ const calculateItemsPerRow = () => {
 
 function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   console.log(resultater);
-  return resultater.every((r) => r.elementUtfall != null);
+  return resultater.every((r) => r.element?.elementUtfall != null);
 }
 
   const LoeysingTestContent = memo(({
