@@ -23,6 +23,7 @@ import {
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
 import { useMemo } from 'react';
+import TestlabFormCheckbox from '@common/form/TestlabFormCheckbox';
 
 interface Props {
   testregel: Testregel;
@@ -117,10 +118,12 @@ const TestFormForenkla = (props: Props) => {
         elementResultat: mapUtfallToElementResultat(testresultat),
         elementUtfall: beskrivelse,
         elementUtfallId: utfallId,
+        elementPlassering: values.elementPlassering,
       },
       svar: values.svar ?? [],
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
+      ekstraSjekk: values.ekstraSjekk,
     };
 
     props.onCreateForenklaResultat?.(oppdatertResultat);
@@ -130,6 +133,8 @@ const TestFormForenkla = (props: Props) => {
       kommentar: oppdatertResultat.kommentar,
       elementOmtale: oppdatertResultat.element?.elementOmtale,
       elementOmtaleHtml: oppdatertResultat.element?.elementOmtaleHtml,
+      elementPlassering : oppdatertResultat.element?.elementPlassering,
+      ekstraSjekk: oppdatertResultat.ekstraSjekk,
       resultat: mapToTestregelResultat(testresultat, beskrivelse, utfallId),
     });
   };
@@ -208,8 +213,23 @@ const TestFormForenkla = (props: Props) => {
             label="Kommentar"
             name="kommentar"
           />
+
+          <TestlabForm.FormInput<TestformForenklaFormValues>
+            label="Plassering av elementet"
+            name="elementPlassering"
+          />
+
+          <TestlabFormCheckbox<TestformForenklaFormValues>
+            checkboxLabel="Treng ekstra kvalitetssikring"
+            label="Ekstra sjekk"
+            name="ekstraSjekk"
+            required={false}
+          />
         </fieldset>
-        <ImageUpload resultatId={props.activeResult.id} isDemo={props.isDemoApp} />
+        <ImageUpload
+          resultatId={props.activeResult.id}
+          isDemo={props.isDemoApp}
+        />
 
         {successFullSubmit && (
           <StatusMessageBox statusmessage={'Lagra ' + description} />

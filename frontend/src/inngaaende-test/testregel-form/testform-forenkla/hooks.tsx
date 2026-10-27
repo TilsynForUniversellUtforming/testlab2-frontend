@@ -76,6 +76,8 @@ export const useTestFormForenklaFormOptions = (
       valgtUtfallIndex,
       elementOmtale: eksisterandeResultat.element?.elementOmtale,
       elementOmtaleHtml: eksisterandeResultat.element?.elementOmtaleHtml,
+      elementPlassering: eksisterandeResultat.element?.elementPlassering,
+      ekstraSjekk: eksisterandeResultat.ekstraSjekk,
       customUtfallTestresultat: hasCustomUtfall
         ? eksisterandeElementResultat
         : undefined,

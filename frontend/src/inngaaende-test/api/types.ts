@@ -21,6 +21,7 @@ export type CreateTestResultat = {
   element?: TestElement;
   testVartUtfoert?: string;
   kommentar?: string;
+  ekstraSjekk?: boolean;
 };
 
 
@@ -29,7 +30,6 @@ export type ResultatManuellKontroll = {
   svar: Svar[];
   status: ResultatStatus;
   sistLagra: string;
-  ekstraSjekk?: boolean;
 } & CreateTestResultat;
 
 export type TestElement = {

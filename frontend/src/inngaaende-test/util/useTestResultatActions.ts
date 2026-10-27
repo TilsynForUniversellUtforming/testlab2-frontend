@@ -86,11 +86,13 @@ export const useTestResultatActions = ({
             elementUtfall: resultat?.utfall,
             elementUtfallId:
               resultat?.type === 'avslutt' ? resultat.utfallId ?? undefined : undefined,
+            elementPlassering: testResultUpdate.elementPlassering,
           },
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
           kommentar,
           sistLagra: activeTestResult.sistLagra,
+          ekstraSjekk: testResultUpdate.ekstraSjekk
         };
         await withAggregert(() => updateTestResultat(testResult), 'Kunne ikkje lagre', activeTest.testregel);
       } else {

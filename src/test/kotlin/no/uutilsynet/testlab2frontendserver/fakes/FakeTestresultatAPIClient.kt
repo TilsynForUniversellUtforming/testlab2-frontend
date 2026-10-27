@@ -22,15 +22,11 @@ object FakeTestresultatAPIClient : ITestresultatAPIClient {
             createTestResultat.sideutvalId,
             createTestResultat.brukar,
             null,
-            null,
-            null,
-            null,
             emptyList(),
             null,
             ResultatStatus.IkkjePaabegynt,
             null,
-            sistLagra = Instant.now(),
-            elementOmtaleHtml = null)
+            sistLagra = Instant.now())
     database[id] = testResultat
     return Result.success(testResultat)
   }
