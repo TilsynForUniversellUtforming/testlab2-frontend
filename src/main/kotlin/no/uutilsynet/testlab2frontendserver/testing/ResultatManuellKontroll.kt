@@ -1,7 +1,7 @@
 package no.uutilsynet.testlab2frontendserver.testing
 
-import no.uutilsynet.testlab2.constants.TestresultatUtfall
 import java.time.Instant
+import no.uutilsynet.testlab2.constants.TestresultatUtfall
 import no.uutilsynet.testlab2frontendserver.common.Brukar
 
 data class ResultatManuellKontroll(
@@ -18,15 +18,15 @@ data class ResultatManuellKontroll(
     val kommentar: String?,
     val sistLagra: Instant,
     val ekstraSjekk: Boolean = false,
-    ) {
+) {
   data class Svar(val steg: String, val svar: String)
 }
 
 enum class ResultatStatus {
-    IkkjePaabegynt,
-    UnderArbeid,
-    Ferdig,
-    Deaktivert
+  IkkjePaabegynt,
+  UnderArbeid,
+  Ferdig,
+  Deaktivert
 }
 
 data class Element(

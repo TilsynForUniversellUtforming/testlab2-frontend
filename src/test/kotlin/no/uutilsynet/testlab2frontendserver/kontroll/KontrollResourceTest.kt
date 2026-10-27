@@ -1,9 +1,9 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
-import no.uutilsynet.testlab2.constants.TestresultatUtfall
 import java.net.URI
 import java.time.Instant
 import kotlin.properties.Delegates
+import no.uutilsynet.testlab2.constants.TestresultatUtfall
 import no.uutilsynet.testlab2frontendserver.common.Brukar
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.fakes.*
@@ -96,11 +96,12 @@ class KontrollResourceTest {
         listOf(
             testResult.copy(
                 kommentar = "Ferdig",
-                element = testResult.element?.copy(
-                    elementOmtale = elementOmtale,
-                    elementResultat = TestresultatUtfall.brot,
-                    elementUtfall = elementUtfall,
-                ),
+                element =
+                    testResult.element?.copy(
+                        elementOmtale = elementOmtale,
+                        elementResultat = TestresultatUtfall.brot,
+                        elementUtfall = elementUtfall,
+                    ),
                 testVartUtfoert = Instant.now(),
                 status = ResultatStatus.Ferdig)))
 
@@ -146,11 +147,12 @@ class KontrollResourceTest {
         listOf(
             testResult.copy(
                 kommentar = "Ferdig",
-                element = testResult.element?.copy(
-                    elementOmtale = elementOmtale,
-                    elementResultat = TestresultatUtfall.brot,
-                    elementUtfall = elementUtfall,
-                ),
+                element =
+                    testResult.element?.copy(
+                        elementOmtale = elementOmtale,
+                        elementResultat = TestresultatUtfall.brot,
+                        elementUtfall = elementUtfall,
+                    ),
                 testVartUtfoert = Instant.now(),
                 status = ResultatStatus.Ferdig)))
 
