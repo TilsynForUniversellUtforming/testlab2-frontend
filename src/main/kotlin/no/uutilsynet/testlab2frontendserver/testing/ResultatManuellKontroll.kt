@@ -34,6 +34,6 @@ data class Element(
     val elementResultat: TestresultatUtfall?,
     val elementUtfall: String?,
     val elementUtfallId: Int?,
-    val elementOmtaleHtml: String,
-    val elementPlassering: String,
+    val elementOmtaleHtml: String?,
+    val elementPlassering: String?,
 )
