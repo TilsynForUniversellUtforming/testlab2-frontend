@@ -69,7 +69,7 @@ export const useTestregelSelection = ({
       }
 
       if (status === 'ferdig') {
-        if (selected.some((tr) => isNotDefined(tr.elementResultat))) {
+        if (selected.some((tr) => isNotDefined(tr.element?.elementResultat))) {
           raiseAlert('warning', `Kan ikkje sette status ${status}`, 'Ferdigstatus kan ikkje settast før man har eit utfall for alle testelement');
           return;
         }
@@ -104,4 +104,3 @@ export const useTestregelSelection = ({
 
   return { onChangeTestregel, onChangeTestregelStatus };
 };
-

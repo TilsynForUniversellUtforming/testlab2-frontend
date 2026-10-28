@@ -18,14 +18,12 @@ export type CreateTestResultat = {
   loeysingId: number;
   testregelId: number;
   sideutvalId: number;
-  elementOmtale?: string;
-  elementOmtaleHtml?: string;
-  elementResultat?: ElementResultat;
-  elementUtfall?: string | undefined;
+  element?: TestElement;
   testVartUtfoert?: string;
   kommentar?: string;
-  elementUtfallId?: number | null;
+  ekstraSjekk?: boolean;
 };
+
 
 export type ResultatManuellKontroll = {
   id: number;
@@ -33,6 +31,15 @@ export type ResultatManuellKontroll = {
   status: ResultatStatus;
   sistLagra: string;
 } & CreateTestResultat;
+
+export type TestElement = {
+  elementOmtale?: string;
+  elementOmtaleHtml?: string;
+  elementResultat?: ElementResultat;
+  elementUtfall?: string;
+  elementUtfallId?: number;
+  elementPlassering?: string;
+};
 
 export type ResultatStatus =
   | 'Ferdig'

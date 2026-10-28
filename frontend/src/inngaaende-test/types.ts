@@ -40,6 +40,8 @@ export type TestResultUpdate = {
   resultat?: TestregelResultat;
   elementOmtale?: string;
   elementOmtaleHtml?: string;
+  elementPlassering?: string;
+  ekstraSjekk?: boolean;
   kommentar?: string;
 };
 

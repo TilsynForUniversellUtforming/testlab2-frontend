@@ -57,8 +57,7 @@ const calculateItemsPerRow = () => {
 };
 
 function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
-  console.log(resultater);
-  return resultater.every((r) => r.elementUtfall != null);
+  return resultater.every((r) => r.element?.elementUtfall != null);
 }
 
   const LoeysingTestContent = memo(({
@@ -102,7 +101,6 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   }, [clearActiveTestregel]);
 
   const leggTilFlereTestelementer = useCallback(() => {
-    console.log("Legger til nytt testresultat")
     if (activeTest?.testResultList && alleHarUtfall(activeTest.testResultList)) {
       createNewTestResult(
         activeTest.testregel,

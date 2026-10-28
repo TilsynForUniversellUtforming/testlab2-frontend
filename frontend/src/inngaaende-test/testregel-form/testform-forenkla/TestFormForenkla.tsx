@@ -23,6 +23,7 @@ import {
 import ImageUpload from '@common/image-edit/ImageUpload';
 import { TestElementFooter } from '@test/testregel-form/TestElementFooter';
 import { useMemo } from 'react';
+import TestlabFormCheckbox from '@common/form/TestlabFormCheckbox';
 
 interface Props {
   testregel: Testregel;
@@ -73,12 +74,12 @@ const TestFormForenkla = (props: Props) => {
       new Set(
         props.testregel.definition!.utfall
           .map((utfall) => utfall.testresultat)
-          .concat(props.activeResult.elementResultat ?? [])
+          .concat(props.activeResult.element?.elementResultat ?? [])
       )
     );
 
     return createOptionsFromLiteral(availableUtfallTypes);
-  }, [props.activeResult.elementResultat, props.testregel.definition]);
+  }, [props.activeResult.element?.elementResultat, props.testregel.definition]);
   const valgtUtfallIndex = formMethods.watch('valgtUtfallIndex');
 
 
@@ -110,14 +111,19 @@ const TestFormForenkla = (props: Props) => {
     const oppdatertResultat: ResultatManuellKontroll = {
       ...props.activeResult,
       kommentar: values.kommentar,
-      elementOmtale: values.elementOmtale,
-      elementOmtaleHtml: values.elementOmtaleHtml,
-      elementResultat: mapUtfallToElementResultat(testresultat),
-      elementUtfall: beskrivelse,
+      element: {
+        ...props.activeResult.element,
+        elementOmtale: values.elementOmtale,
+        elementOmtaleHtml: values.elementOmtaleHtml,
+        elementResultat: mapUtfallToElementResultat(testresultat),
+        elementUtfall: beskrivelse,
+        elementUtfallId: utfallId,
+        elementPlassering: values.elementPlassering,
+      },
       svar: values.svar ?? [],
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
-      elementUtfallId: utfallId ?? null,
+      ekstraSjekk: values.ekstraSjekk,
     };
 
     props.onCreateForenklaResultat?.(oppdatertResultat);
@@ -125,9 +131,11 @@ const TestFormForenkla = (props: Props) => {
       resultatId: oppdatertResultat.id,
       alleSvar: oppdatertResultat.svar,
       kommentar: oppdatertResultat.kommentar,
-      elementOmtale: oppdatertResultat.elementOmtale,
-      elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(testresultat, beskrivelse,utfallId ?? null),
+      elementOmtale: oppdatertResultat.element?.elementOmtale,
+      elementOmtaleHtml: oppdatertResultat.element?.elementOmtaleHtml,
+      elementPlassering : oppdatertResultat.element?.elementPlassering,
+      ekstraSjekk: oppdatertResultat.ekstraSjekk,
+      resultat: mapToTestregelResultat(testresultat, beskrivelse, utfallId),
     });
   };
 
@@ -205,8 +213,23 @@ const TestFormForenkla = (props: Props) => {
             label="Kommentar"
             name="kommentar"
           />
+
+          <TestlabForm.FormInput<TestformForenklaFormValues>
+            label="Plassering av elementet"
+            name="elementPlassering"
+          />
+
+          <TestlabFormCheckbox<TestformForenklaFormValues>
+            checkboxLabel="Treng ekstra kvalitetssikring"
+            label="Ekstra sjekk"
+            name="ekstraSjekk"
+            required={false}
+          />
         </fieldset>
-        <ImageUpload resultatId={props.activeResult.id} isDemo={props.isDemoApp} />
+        <ImageUpload
+          resultatId={props.activeResult.id}
+          isDemo={props.isDemoApp}
+        />
 
         {successFullSubmit && (
           <StatusMessageBox statusmessage={'Lagra ' + description} />

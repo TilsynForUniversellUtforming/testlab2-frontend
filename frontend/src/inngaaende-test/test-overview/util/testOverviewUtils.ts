@@ -87,7 +87,7 @@ export function visRetestKnapp(
 
   return (
     teststatus(resultater, testgrunnlag, loeysingId) === 'ferdig' &&
-    resultater.some((r) => r.elementResultat === 'brot')
+    resultater.some((r) => r.element?.elementResultat === 'brot')
   );
 }
 export const findLoeysingNamn = (loeysingList: Loeysing[], loeysingId: number) =>
@@ -134,4 +134,3 @@ export function getJobstatus(status: ManuellTestStatus): string {
   if (status === 'under-arbeid') return 'Fortsett testing';
   return 'Vis testen';
 }
-

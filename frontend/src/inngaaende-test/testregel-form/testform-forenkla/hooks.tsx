@@ -20,9 +20,9 @@ export const useTestFormForenklaFormOptions = (
   utfall: TestregelUtfall[]
 ): UseFormReturn<TestformForenklaFormValues> => {
   const eksisterandeElementResultat =
-    eksisterandeResultat.elementResultat ?? undefined;
+    eksisterandeResultat.element?.elementResultat ?? undefined;
   const eksisterandeElementUtfall =
-    eksisterandeResultat.elementUtfall ?? undefined;
+    eksisterandeResultat.element?.elementUtfall ?? undefined;
 
   const selectedUtfallIndex = utfall.findIndex(
     (u) =>
@@ -74,8 +74,10 @@ export const useTestFormForenklaFormOptions = (
           : undefined,
       kommentar: eksisterandeResultat.kommentar,
       valgtUtfallIndex,
-      elementOmtale: eksisterandeResultat.elementOmtale,
-      elementOmtaleHtml: eksisterandeResultat.elementOmtaleHtml,
+      elementOmtale: eksisterandeResultat.element?.elementOmtale,
+      elementOmtaleHtml: eksisterandeResultat.element?.elementOmtaleHtml,
+      elementPlassering: eksisterandeResultat.element?.elementPlassering,
+      ekstraSjekk: eksisterandeResultat.ekstraSjekk,
       customUtfallTestresultat: hasCustomUtfall
         ? eksisterandeElementResultat
         : undefined,

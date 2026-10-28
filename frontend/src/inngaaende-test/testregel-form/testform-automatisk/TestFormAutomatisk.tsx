@@ -48,7 +48,13 @@ const TestFormAutomatisk = (props: Props) => {
     const oppdatertResultat: ResultatManuellKontroll = {
       ...props.activeResult,
       ...values,
-      elementResultat: utfall,
+      element: {
+        ...(props.activeResult.element ?? {}),
+        elementOmtale: values.elementOmtale,
+        elementOmtaleHtml: values.elementOmtaleHtml,
+        elementResultat: utfall,
+        elementUtfall: values.elementUtfall,
+      },
       sistLagra: new Date().toISOString(),
       status: 'Ferdig',
     };
@@ -58,9 +64,9 @@ const TestFormAutomatisk = (props: Props) => {
       resultatId: oppdatertResultat.id,
       alleSvar: oppdatertResultat.svar,
       kommentar: oppdatertResultat.kommentar,
-      elementOmtale: oppdatertResultat.elementOmtale,
-      elementOmtaleHtml: oppdatertResultat.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(values['elementResultat'], values['elementUtfall'],null),
+      elementOmtale: oppdatertResultat.element?.elementOmtale,
+      elementOmtaleHtml: oppdatertResultat.element?.elementOmtaleHtml,
+      resultat: mapToTestregelResultat(values['elementResultat'], values['elementUtfall'],undefined),
     });
   };
 

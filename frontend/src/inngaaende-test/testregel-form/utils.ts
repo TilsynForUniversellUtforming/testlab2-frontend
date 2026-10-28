@@ -18,7 +18,7 @@ export function mapUtfallToElementResultat(testresultat: string): ElementResulta
 export function mapToTestregelResultat(
   testresultat: string,
   utfall: string,
-  utfallId: number | null,
+  utfallId: number | undefined,
 ): TestregelResultat {
   if (testresultat === 'ikkje-forekomst') {
     return { type: 'ikkjeForekomst', utfall };

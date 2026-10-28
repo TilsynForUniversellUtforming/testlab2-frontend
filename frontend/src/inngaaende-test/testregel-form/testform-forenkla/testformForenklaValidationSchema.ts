@@ -28,6 +28,8 @@ export const testformForenklaValidationSchema = z.object({
   ]),
   elementOmtale: z.string().min(1),
   elementOmtaleHtml: z.string().optional(),
+  elementPlassering: z.string().optional(),
+  ekstraSjekk: z.boolean().optional(),
   customUtfallTestresultat: z.string().optional(),
   customUtfallBeskrivelse: z.string().optional(),
 }).superRefine((values, ctx) => {

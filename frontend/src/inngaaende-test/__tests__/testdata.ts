@@ -154,12 +154,14 @@ export function createResultatManuellKontroll(
         loeysingId: loeysingId,
         testregelId: testgrunnlag.testreglar[testregelIndex],
         sideutvalId: sideutvalIdForLoeysingId,
-        elementOmtale: faker.lorem.word(),
-        elementOmtaleHtml: faker.lorem.words(),
-        elementResultat:
-          elementResultat ??
-          faker.helpers.arrayElement(['samsvar', 'ikkjeForekomst', 'brot']),
-        elementUtfall: faker.lorem.word(),
+        element: {
+          elementOmtale: faker.lorem.word(),
+          elementOmtaleHtml: faker.lorem.words(),
+          elementResultat:
+            elementResultat ??
+            faker.helpers.arrayElement(['samsvar', 'ikkjeForekomst', 'brot']),
+          elementUtfall: faker.lorem.word(),
+        },
         testVartUtfoert: faker.date.recent().toISOString(),
         kommentar: faker.lorem.words(),
         sistLagra: faker.date.recent().toISOString(),
