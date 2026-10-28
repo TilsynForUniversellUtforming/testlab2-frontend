@@ -5,6 +5,9 @@ import {
   TestformAutomatiskFormValues,
   testformAutomatiskValidationSchema,
 } from '@test/testregel-form/testform-automatisk/testformAutomatiskValidationSchema';
+import { TestregelUtfall } from '@testreglar/api/types';
+import { useMemo } from 'react';
+import { capitalize } from '@common/util/stringutils';
 
 export const useTestFormAutomatiskFormOptions = (
   eksisterandeResultat: {

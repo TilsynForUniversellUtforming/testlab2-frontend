@@ -85,14 +85,19 @@ export const useTestResultatActions = ({
             elementResultat: resultat && toElementResultat(resultat),
             elementUtfall: resultat?.utfall,
             elementUtfallId:
-              resultat?.type === 'avslutt' ? resultat.utfallId ?? undefined : undefined,
-            elementPlassering: testResultUpdate.elementPlassering,
+              resultat?.type === 'avslutt'
+                ? (resultat.utfallId ?? undefined)
+                : undefined,
+            elementPlassering:
+              testResultUpdate.elementPlassering ??
+              activeTestResult.element?.elementPlassering,
           },
           svar: alleSvar,
           status: mapStatus('under-arbeid'),
           kommentar,
           sistLagra: activeTestResult.sistLagra,
-          ekstraSjekk: testResultUpdate.ekstraSjekk
+          ekstraSjekk:
+            testResultUpdate.ekstraSjekk ?? activeTestResult.ekstraSjekk,
         };
         await withAggregert(() => updateTestResultat(testResult), 'Kunne ikkje lagre', activeTest.testregel);
       } else {

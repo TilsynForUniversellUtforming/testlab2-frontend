@@ -66,7 +66,7 @@ const TestFormAutomatisk = (props: Props) => {
       kommentar: oppdatertResultat.kommentar,
       elementOmtale: oppdatertResultat.element?.elementOmtale,
       elementOmtaleHtml: oppdatertResultat.element?.elementOmtaleHtml,
-      resultat: mapToTestregelResultat(values['elementResultat'], values['elementUtfall'],null),
+      resultat: mapToTestregelResultat(values['elementResultat'], values['elementUtfall'],undefined),
     });
   };
 
