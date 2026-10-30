@@ -20,7 +20,7 @@ const TestregelStatusDropdown = ({
     status === 'ferdig' || status === 'samsvar' || status === 'ikkje-forekomst';
   const isActive = isStarted && !isFinished;
 
-  const options: StatusDropdownOption[] = [
+  const options: StatusDropdownOption<ManuellTestStatus>[] = [
     {
       label: 'Ferdig',
       value: 'ferdig',
