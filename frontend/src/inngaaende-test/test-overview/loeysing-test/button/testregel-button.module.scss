@@ -11,11 +11,30 @@
       transparent transparent;
   }
 
-  .status-dropdown {
+  .status-dropdowns {
     position: relative;
     top: -2.75rem;
     left: 7.5rem;
-    //display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    width: fit-content;
+    font-size: var(--ds-body-long-sm-font-size);
+
+    > div {
+      position: relative;
+    }
+
+    > button {
+      color: var(--ds-color-text-neutral-default);
+    }
+  }
+
+  .status-dropdown {
+    position: relative;
+    top: 0;
+    left: 0;
+
     > button {
       color: var(--ds-color-text-neutral-default);
     }
@@ -147,4 +166,3 @@
     -webkit-box-orient: vertical;
   }
 }
-
