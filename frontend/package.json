@@ -31,7 +31,7 @@
     "@tanstack/react-table": "8.21.3",
     "@tanstack/react-query": "5.102.8",
     "classnames": "^2.5.1",
-    "dompurify": "3.4.16",
+    "dompurify": "3.4.17",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "7.84.0",
@@ -40,7 +40,7 @@
     "react-intl": "10.1.23",
     "zod": "3.25.76",
     "@tinymce/tinymce-react": "6.3.0",
-    "tinymce": "8.8.2",
+    "tinymce": "8.10.1",
     "@react-router/node": "^8.4.0",
     "@react-router/serve": "^8.4.0"
   },

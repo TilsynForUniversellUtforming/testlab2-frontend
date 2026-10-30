@@ -49,7 +49,7 @@ function canSetFerdigStatus(
   testregel: Testregel,
   raiseAlert: RaiseAlert
 ) {
-  if (selected.some((tr) => isNotDefined(tr.elementResultat))) {
+  if (selected.some((tr) => isNotDefined(tr.element?.elementResultat))) {
     raiseAlert(
       'warning',
       'Kan ikkje sette status ferdig',
