@@ -1,34 +1,33 @@
 import { ButtonVariant } from '@common/types';
 import { Button, Dropdown } from '@digdir/designsystemet-react';
 import { CogIcon } from '@navikt/aksel-icons';
-import { ManuellTestStatus } from '@test/types';
-import { useState } from 'react';
+import { Key, useState } from 'react';
 
 import styles from './testregel-button.module.scss';
 
-export type StatusDropdownOption = {
+export type StatusDropdownOption<T> = {
   label: string;
-  value: ManuellTestStatus;
+  value: T;
   title?: string;
   disabled?: boolean;
 };
 
-interface StatusDropdownProps {
+interface StatusDropdownProps<T> {
   id: string;
-  options: StatusDropdownOption[];
-  onSelect: (value: ManuellTestStatus) => void;
+  options: StatusDropdownOption<T>[];
+  onSelect: (value: T) => void;
   buttonLabel?: string;
 }
 
-const StatusDropdown = ({
+const StatusDropdown = <T extends Key | null | undefined,>({
   id,
   options,
   onSelect,
   buttonLabel = 'Oppgi status',
-}: StatusDropdownProps) => {
+}: StatusDropdownProps<T>) => {
   const [show, setShow] = useState(false);
 
-  const handleButtonClick = (value: ManuellTestStatus) => {
+  const handleButtonClick = (value: T) => {
     setShow(false);
     onSelect(value);
   };
@@ -71,4 +70,3 @@ const StatusDropdown = ({
 };
 
 export default StatusDropdown;
-
