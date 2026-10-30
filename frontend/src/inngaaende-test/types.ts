@@ -4,6 +4,7 @@ import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 
 import { Sideutval, SideutvalType } from '../kontroll/sideutval/types';
 import {
+  ElementResultat,
   ResultatManuellKontroll,
   Svar,
   TestgrunnlagListElement,
@@ -11,9 +12,14 @@ import {
 
 export type ManuellTestStatus =
   | 'ferdig'
-  | 'deaktivert'
+  | 'ikkje-forekomst'
   | 'under-arbeid'
-  | 'ikkje-starta';
+  | 'ikkje-starta'
+  | 'samsvar';
+
+export type UtfallSide = "samsvar" | "ikkje-forekomst"
+
+
 
 export type ButtonStatus = ManuellTestStatus | 'aktiv';
 
@@ -32,6 +38,9 @@ export type PageType = {
 export type ActiveTest = {
   testregel: Testregel;
   testResultList: ResultatManuellKontroll[];
+  pageType: PageType;
+  testgrunnlagId: number;
+  testStatus: ElementResultat;
 };
 
 export type TestResultUpdate = {

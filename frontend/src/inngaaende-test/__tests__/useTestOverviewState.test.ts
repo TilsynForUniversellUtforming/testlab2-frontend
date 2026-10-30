@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useTestOverviewState } from '@test/util/useTestOverviewState';
+import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
 import { act } from 'react';
 
 
@@ -45,14 +45,11 @@ describe('useTestOverviewState', () => {
     expect(result.current.testStatusMap).toEqual(new Map());
 
     // Check existence and type of all returned values
-    expect(typeof result.current.setPageType).toBe('function');
     expect(result.current.pageTypeList).toBeDefined();
     expect(typeof result.current.setActiveTest).toBe('function');
     expect(typeof result.current.onChangeSideutval).toBe('function');
     expect(typeof result.current.onChangeInnhaldstype).toBe('function');
-    expect(typeof result.current.doUpdateTestResultStatus).toBe('function');
     expect(typeof result.current.doUpdateTestResult).toBe('function');
-    expect(typeof result.current.doCreateTestResult).toBe('function');
     expect(typeof result.current.onChangeTestregel).toBe('function');
     expect(typeof result.current.onChangeTestregelStatus).toBe('function');
     expect(typeof result.current.slettTestelement).toBe('function');

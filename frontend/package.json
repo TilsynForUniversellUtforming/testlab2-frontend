@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev:ssr": "node ./server.mjs",
+    "build": "npm run build:ssr",
+    "build:ssr": "vite build --outDir dist/client && vite build --ssr src/entry.server.tsx --outDir dist/server",
+    "preview": "NODE_ENV=production node ./server.mjs",
+    "preview:ssr": "NODE_ENV=production node ./server.mjs",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
     "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore;prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
@@ -28,16 +31,18 @@
     "@tanstack/react-table": "8.21.3",
     "@tanstack/react-query": "5.102.8",
     "classnames": "^2.5.1",
-    "dompurify": "3.4.16",
+    "dompurify": "3.4.17",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "7.84.0",
     "react-loading-skeleton": "^3.5.0",
-    "react-router": "8.3.0",
+    "react-router": "8.4.0",
     "react-intl": "10.1.23",
     "zod": "3.25.76",
     "@tinymce/tinymce-react": "6.3.0",
-    "tinymce": "8.8.2"
+    "tinymce": "8.10.1",
+    "@react-router/node": "^8.4.0",
+    "@react-router/serve": "^8.4.0"
   },
   "devDependencies": {
     "@faker-js/faker": "10.5.0",
@@ -69,7 +74,8 @@
     "sass": "^1.102.0",
     "typescript": "6.0.3",
     "vite": "^8.3.0",
-    "vitest": "^4.1.12"
+    "vitest": "^4.1.12",
+    "@react-router/dev": "^8.4.0"
   },
   "husky": {
     "hooks": {

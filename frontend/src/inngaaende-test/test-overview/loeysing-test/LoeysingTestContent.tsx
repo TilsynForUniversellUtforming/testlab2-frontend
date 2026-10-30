@@ -37,8 +37,6 @@ interface Props {
   doUpdateTestResult: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
-  showHelpText: boolean;
-  toggleShowHelpText: () => void;
 }
 
 const chunkArray = <T extends object>(array: T[], size: number) => {
@@ -60,7 +58,7 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.element?.elementUtfall != null);
 }
 
-  const LoeysingTestContent = memo(({
+const LoeysingTestContent = memo(({
   sideutval,
   innhaldstype,
   progressionPercent,
@@ -73,11 +71,10 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   doUpdateTestResult,
   slettTestelement,
   onChangeStatus,
-  showHelpText,
-  toggleShowHelpText,
 }: Props) => {
   const { testgrunnlagId, loeysingId } = useParams();
   const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
+  const [showHelpText, setShowHelpText] = useState(true);
   const alertRef = useRef<HTMLDialogElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -99,6 +96,11 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   const onClickSave = useCallback(() => {
     clearActiveTestregel();
   }, [clearActiveTestregel]);
+
+  const toggleShowHelpText = useCallback(
+    () => setShowHelpText((prev) => !prev),
+    []
+  );
 
   const leggTilFlereTestelementer = useCallback(() => {
     if (activeTest?.testResultList && alleHarUtfall(activeTest.testResultList)) {
@@ -125,7 +127,7 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
   const isManuell = activeTest?.testregel.modus === 'manuell';
   const isAutomatisk = activeTest?.testregel.modus === 'automatisk';
-
+  
   return (
     <>
       <TestRegelParamSelection

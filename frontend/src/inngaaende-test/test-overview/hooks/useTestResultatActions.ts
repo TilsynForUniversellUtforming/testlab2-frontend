@@ -1,0 +1,292 @@
+import { useCallback } from 'react';
+import { mapStatus } from '@test/util/testregelUtils';
+import { Testregel } from '@testreglar/api/types';
+import { ActiveTest, ManuellTestStatus, TestResultUpdate, UtfallSide } from '@test/types';
+import {
+  CreateTestResultat,
+  elementOmtaleSide, ElementResultat,
+  ResultatManuellKontroll,
+  toElementResultat,
+} from '@test/api/types';
+import {
+  createTestResultat,
+  deleteTestResultat,
+  fetchTestResults,
+  updateTestResultat,
+  updateTestResultatMany,
+} from '@test/api/testing-api';
+import { createTestresultatAggregert } from '@resultat/resultat-api';
+import { Severity } from '@common/types';
+import { ProcessData } from '@test/test-overview/hooks/useTestResults';
+
+type RaiseAlert = (severity: Severity, title: string, message: string) => void;
+
+export interface UseTestResultatActionsProps {
+  testgrunnlagId: number;
+  loeysingId: number;
+  sideId: number;
+  testResults: ResultatManuellKontroll[];
+  activeTest: ActiveTest | undefined;
+  processData: ProcessData;
+  raiseAlert: RaiseAlert;
+}
+
+export interface UseTestResultatActionsResult {
+  doUpdateTestResultStatus: (testResultat: ResultatManuellKontroll[]) => void;
+  doUpdateTestResult: (testResultUpdate: TestResultUpdate) => Promise<void>;
+  doCreateTestResult: (
+    activeTestregel: Testregel,
+    sideutvalId: number | undefined,
+    status?: ManuellTestStatus
+  ) => Promise<void>;
+  slettTestelement: (
+    activeTest: ActiveTest,
+    resultatId: number
+  ) => Promise<void>;
+  createNewTestResult: (
+    activeTestregel: Testregel,
+    testgrunnlagId: number,
+    loeysingId: number,
+    sideId: number
+  ) => Promise<void>;
+  withAggregert: (
+    apiCall: () => Promise<ResultatManuellKontroll[] | ResultatManuellKontroll>,
+    errorMsg: string,
+    activeTestregel?: Testregel
+  ) => Promise<void>;
+  doSetTestregelOutcome: (activeTest: ActiveTest, outcome: ElementResultat) => void;
+}
+
+export const useTestResultatActions = ({
+  testgrunnlagId,
+  loeysingId,
+  sideId,
+  testResults,
+  activeTest,
+  processData,
+  raiseAlert,
+}: UseTestResultatActionsProps): UseTestResultatActionsResult => {
+  const refreshTestResults = useCallback(
+    async (activeTestregel?: Testregel) => {
+      const alleResultater = await fetchTestResults(testgrunnlagId);
+      processData(alleResultater, sideId, activeTestregel);
+    },
+    [testgrunnlagId, sideId, processData]
+  );
+
+  const withAggregert = useCallback(
+    async (
+      apiCall: () => Promise<ResultatManuellKontroll[] | ResultatManuellKontroll>,
+      errorMsg: string,
+      activeTestregel?: Testregel
+    ) => {
+      try {
+        const updated = await apiCall();
+        await createTestresultatAggregert(testgrunnlagId).catch((e) =>
+          raiseAlert('danger', 'Kunne ikkje oppdatere aggregert resultat', `Oppdatering av aggregert resultat feila ${e}`)
+        );
+        const updatedResults = Array.isArray(updated) ? updated : [updated];
+
+        processData(updatedResults, sideId, activeTestregel);
+      } catch {
+        raiseAlert('danger', errorMsg, `${errorMsg} feila`);
+      }
+    },
+    [testgrunnlagId, sideId, processData, raiseAlert]
+  );
+
+  const doUpdateTestResultStatus = useCallback(
+    async (testResultat: ResultatManuellKontroll[]) => {
+      try {
+        await updateTestResultatMany(testResultat);
+        await createTestresultatAggregert(testgrunnlagId).catch((e) =>
+          raiseAlert('danger', 'Kunne ikkje oppdatere aggregert resultat', `Oppdatering av aggregert resultat feila ${e}`)
+        );
+        await refreshTestResults();
+      } catch {
+        raiseAlert('danger', 'Kunne ikkje endre status', 'Kunne ikkje endre status feila');
+      }
+    },
+    [testgrunnlagId, raiseAlert, refreshTestResults]
+  );
+
+  const doSetTestregelOutcome = useCallback(
+    async (activeTest: ActiveTest, outcome: ElementResultat) => {
+      await withAggregert(
+        () =>
+          createTestResultat({
+            testgrunnlagId,
+            loeysingId,
+            testregelId: activeTest.testregel.id,
+            sideutvalId: activeTest.pageType.sideId,
+            element: {
+              elementOmtale: elementOmtaleSide,
+              elementResultat: outcome,
+            },
+            kommentar: `Utfall på side ${outcome}`,
+          }),
+        'Kunne ikkje endre status'
+      );
+      await refreshTestResults();
+      activeTest.testStatus = outcome;
+      return activeTest;
+    },
+    [refreshTestResults]
+  );
+
+  const doUpdateTestResult = useCallback(
+    async (testResultUpdate: TestResultUpdate) => {
+      const {
+        resultatId,
+        alleSvar,
+        resultat,
+        elementOmtale,
+        elementOmtaleHtml,
+        kommentar,
+      } = testResultUpdate;
+      const activeTestResult = activeTest?.testResultList.find((tr) => tr.id === resultatId);
+
+
+      if (activeTest && activeTestResult) {
+
+            const testResult: ResultatManuellKontroll = {
+              id: activeTestResult.id,
+              testgrunnlagId: activeTestResult.testgrunnlagId,
+              loeysingId: activeTestResult.loeysingId,
+              testregelId: activeTestResult.testregelId,
+              sideutvalId: activeTestResult.sideutvalId,
+              element: {
+                elementOmtale,
+                elementOmtaleHtml,
+                elementResultat: resultat && toElementResultat(resultat),
+                elementUtfall: resultat?.utfall,
+                elementUtfallId:
+                  resultat?.type === 'avslutt'
+                    ? (resultat.utfallId ?? undefined)
+                    : undefined,
+                elementPlassering:
+                  testResultUpdate.elementPlassering ??
+                  activeTestResult.element?.elementPlassering,
+              },
+              svar: alleSvar,
+              status: mapStatus('under-arbeid'),
+              kommentar,
+              sistLagra: activeTestResult.sistLagra,
+              ekstraSjekk:
+                testResultUpdate.ekstraSjekk ?? activeTestResult.ekstraSjekk,
+            };
+            if (resultat?.type === 'avslutt' && testResult.element!= undefined) {
+              testResult.element.elementUtfallId = resultat.utfallId ?? undefined;
+            }
+            await withAggregert(
+              () => updateTestResultat(testResult),
+              'Kunne ikkje lagre',
+              activeTest.testregel
+            );
+      } else {
+        raiseAlert(
+          'danger',
+          'Kunne ikkje lagre',
+          'Ugyldig oppdatering av testresultat'
+        );
+      }
+    },
+    [activeTest, withAggregert, raiseAlert]
+  );
+
+  const doCreateTestResult = useCallback(
+    async (
+      activeTestregel: Testregel,
+      sideutvalId: number | undefined,
+      status?: ManuellTestStatus
+    ) => {
+      if (!activeTestregel || !sideutvalId) {
+        raiseAlert(
+          'danger',
+          'Kunne ikkje lagre',
+          'Ugyldig oppretting av testresultat'
+        );
+        return;
+      }
+      try {
+        if (status === 'samsvar' || status === 'ikkje-forekomst') {
+          await withAggregert(
+            () =>
+              createTestResultat({
+                testgrunnlagId,
+                loeysingId,
+                testregelId: activeTestregel.id,
+                sideutvalId,
+                element: {
+                  elementOmtale: elementOmtaleSide,
+                  elementResultat:
+                    status === 'samsvar' ? 'samsvar' : 'ikkjeForekomst',
+                },
+                kommentar: `Utfall på side ${status}`,
+              }),
+            'Kunne ikkje endre status'
+          );
+        } else {
+          await createTestResultat({
+            testgrunnlagId,
+            loeysingId,
+            testregelId: activeTestregel.id,
+            sideutvalId,
+          });
+        }
+        await refreshTestResults(
+          status === 'under-arbeid' || status == null ? activeTestregel : undefined
+        );
+      } catch {
+        raiseAlert('danger', 'Kunne ikkje lagre', 'Opprett testresultat feila');
+      }
+    },
+    [loeysingId, raiseAlert, refreshTestResults, testgrunnlagId, withAggregert]
+  );
+
+  const slettTestelement = useCallback(
+    async (activeTest: ActiveTest, resultatId: number) => {
+      const resultat = testResults.find((tr) => tr.id === resultatId);
+      if (!resultat) {
+        raiseAlert('danger', 'Resultatet finnes ikkje', `Vi prøvde å slette resultatet med id ${resultatId}, men det eksisterer ikkje.`);
+        return;
+      }
+      try {
+        const alleResultater = await deleteTestResultat(resultat);
+        processData(alleResultater, sideId, activeTest.testregel);
+      } catch {
+        raiseAlert('danger', 'Kunne ikkje slette test', 'Sletting av test for testregel feila');
+      }
+    },
+    [testResults, sideId, processData, raiseAlert]
+  );
+
+  const createNewTestResult = useCallback(
+    async (
+      activeTestregel: Testregel,
+      testgrunnlagId: number,
+      loeysingId: number,
+      sideId: number
+    ) => {
+      const nyttTestresultat: CreateTestResultat = {
+        testgrunnlagId: testgrunnlagId,
+        loeysingId: loeysingId,
+        testregelId: activeTestregel.id,
+        sideutvalId: sideId,
+      };
+      await createTestResultat(nyttTestresultat);
+      await refreshTestResults(activeTestregel);
+    },
+    [refreshTestResults]
+  );
+
+  return {
+    doUpdateTestResultStatus,
+    doUpdateTestResult,
+    doCreateTestResult,
+    slettTestelement,
+    createNewTestResult,
+    withAggregert,
+    doSetTestregelOutcome,
+  };
+};

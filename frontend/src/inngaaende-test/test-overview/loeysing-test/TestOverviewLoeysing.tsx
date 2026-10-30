@@ -6,8 +6,7 @@ import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
-import { useTestOverviewState } from '@test/util/useTestOverviewState';
-import { useShowHelpText } from '@test/util/useShowHelpText';
+import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
 
 
 const TestOverviewLoeysing = () => {
@@ -29,9 +28,6 @@ const TestOverviewLoeysing = () => {
     testKeys,
   } = useLoaderData() as TestOverviewLoaderResponse;
   const [alert, raiseAlert, modalRef] = useAlertModal();
-
-  const { showHelpText, toggleShowHelpText } = useShowHelpText();
-
 
   const {
     innhaldstype,
@@ -71,7 +67,8 @@ const TestOverviewLoeysing = () => {
       modalRef.current?.showModal();
     }
   }, [alert, modalRef]);
-  
+
+
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
@@ -102,8 +99,6 @@ const TestOverviewLoeysing = () => {
             doUpdateTestResult={doUpdateTestResult}
             slettTestelement={slettTestelement}
             onChangeStatus={onChangeTestregelStatus}
-            toggleShowHelpText={toggleShowHelpText}
-            showHelpText={showHelpText}
           />
         </div>
         {alert && (
