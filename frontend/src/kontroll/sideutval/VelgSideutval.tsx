@@ -32,7 +32,6 @@ import {
   ButtonSideutvalManuellKontroll,
   SideutvalErrorSummary,
 } from './SideutvalComponents';
-import { error } from 'highcharts';
 
 
 
@@ -79,7 +78,6 @@ const VelgSideutval = () => {
   const { register, control, handleSubmit } = formMethods;
 
   const onSubmitError = (errors: FieldErrors<SideutvalForm>) => {
-    console.log(errors);
     const errorMap = new Map<string, FormError>();
 
     fields.forEach((field, index) => {

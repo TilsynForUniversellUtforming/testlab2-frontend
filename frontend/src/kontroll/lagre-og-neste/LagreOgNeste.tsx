@@ -21,6 +21,7 @@ type Props = {
   onClickNeste: () => void;
   submitOnSave?: boolean;
   feilet?: boolean;
+  canSubmit?: boolean;
 };
 
 export default function LagreOgNeste({
@@ -29,6 +30,7 @@ export default function LagreOgNeste({
   onClickNeste,
   submitOnSave = false,
   feilet = false,
+  canSubmit = true,
 }: Readonly<Props>) {
   const [internalSaveState, setInternalSaveState] = React.useState<SaveState>({
     t: 'idle',
@@ -88,7 +90,7 @@ export default function LagreOgNeste({
         onClick={handleSave}
         type={submitOnSave ? 'submit' : 'button'}
         aria-disabled={isSaving(internalSaveState)}
-        disabled={isSaving(internalSaveState)}
+        disabled={isSaving(internalSaveState) || !canSubmit}
       >
         Lagre til seinare
       </Button>
@@ -96,7 +98,7 @@ export default function LagreOgNeste({
         variant="primary"
         onClick={handleSaveNeste}
         aria-disabled={isSaving(internalSaveState)}
-        disabled={isSaving(internalSaveState)}
+        disabled={isSaving(internalSaveState) || !canSubmit}
         type={submitOnSave ? 'submit' : 'button'}
       >
         Lagre og gå til neste

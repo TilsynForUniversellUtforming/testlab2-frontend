@@ -40,7 +40,12 @@ object FakeTestgrunnlagAPIClient : ITestgrunnlagAPIClient {
             sideutval =
                 listOf(
                     Sideutval(
-                        retest.loeysingId, fakeId(), siteutvalNamn, URI(dummyUrl), null, fakeId())),
+                        retest.loeysingId,
+                        fakeId(),
+                        siteutvalNamn,
+                        URI(dummyUrl).toString(),
+                        null,
+                        fakeId())),
             testreglar = listOf(1),
             datoOppretta = Instant.now())
     database[id] = testgrunnlag

@@ -20,7 +20,7 @@ import {
 
 import classes from '../kontroll.module.css';
 import KontrollStepper from '../stepper/KontrollStepper';
-import { Kontroll, KontrollType, Sakstype } from '../types';
+import { Kontroll, KontrollType } from '../types';
 import {
   KontrollInit,
   kontrollInitValidationSchema,
@@ -40,7 +40,6 @@ export default function OpprettKontroll() {
       kontrolltype: kontroll?.kontrolltype ?? KontrollType.InngaaendeKontroll,
       tittel: kontroll?.tittel ?? '',
       saksbehandler: kontroll?.saksbehandler ?? '',
-      sakstype: kontroll?.sakstype ?? 'forvaltningssak',
       arkivreferanse: kontroll?.arkivreferanse ?? '',
     },
     mode: 'onBlur',
@@ -63,7 +62,6 @@ export default function OpprettKontroll() {
         ...kontroll,
         tittel: formData.tittel,
         saksbehandler: formData.saksbehandler,
-        sakstype: formData.sakstype,
         arkivreferanse: formData.arkivreferanse,
       };
       submit(JSON.stringify(kontrollEdit), {
@@ -135,17 +133,6 @@ export default function OpprettKontroll() {
           required
         />
 
-        <TestlabFormSelect
-          label="Hva slags sak er det?"
-          name="sakstype"
-          id="sakstype"
-          options={createOptionsFromLiteral<Sakstype>([
-            'forvaltningssak',
-            'arkivsak',
-          ])}
-          radio
-          required
-        />
         <TestlabFormInput
           label="Arkivreferanse"
           className={classes.arkivreferanse}

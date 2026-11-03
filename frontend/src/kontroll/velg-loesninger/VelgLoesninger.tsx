@@ -45,6 +45,10 @@ const VelgLoesninger = () => {
   const eldreUtvalg = drop(utvalSortedByOppretta, 6);
 
   function velgUtvalg(utval: Utval) {
+    if (isUtvalg(selectedOption) && selectedOption.valgtUtvalg?.id === utval.id) {
+      setSelectedOption({ t: 'utvalg', valgtUtvalg: undefined });
+      return;
+    }
     setSelectedOption({ t: 'utvalg', valgtUtvalg: utval });
   }
 
@@ -180,6 +184,7 @@ const VelgLoesninger = () => {
             sistLagret={actionData?.sistLagret}
             onClickLagreKontroll={lagre(false)}
             onClickNeste={lagre(true)}
+            canSubmit={isUtvalg(selectedOption) && !!selectedOption.valgtUtvalg}
           />
         </>
       )}

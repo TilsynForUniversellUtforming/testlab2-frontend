@@ -72,7 +72,12 @@ class KontrollResourceTest {
             sideutval =
                 listOf(
                     Sideutval(
-                        loeysingId, fakeId(), siteutvalNamn, URI(dummyUrl), null, sideutvalId)),
+                        loeysingId,
+                        fakeId(),
+                        siteutvalNamn,
+                        URI(dummyUrl).toString(),
+                        null,
+                        sideutvalId)),
             testregelIdList = listOf(testregelId),
         )
     val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body
@@ -122,7 +127,12 @@ class KontrollResourceTest {
             sideutval =
                 listOf(
                     Sideutval(
-                        loeysingId, fakeId(), "Eit sideutval", URI(dummyUrl), null, sideutvalId)),
+                        loeysingId,
+                        fakeId(),
+                        "Eit sideutval",
+                        URI(dummyUrl).toString(),
+                        null,
+                        sideutvalId)),
             testregelIdList = listOf(testregelId),
         )
     val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body
@@ -175,7 +185,12 @@ class KontrollResourceTest {
             sideutval =
                 listOf(
                     Sideutval(
-                        loeysingId, fakeId(), "Eit sideutval", URI(dummyUrl), null, sideutvalId)),
+                        loeysingId,
+                        fakeId(),
+                        "Eit sideutval",
+                        URI(dummyUrl).toString(),
+                        null,
+                        sideutvalId)),
             testregelIdList = listOf(testregelId),
         )
     val testgrunnlag = kontrollResource.nyttTestgrunnlag(kontrollId, nyttTestgrunnlag).body

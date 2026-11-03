@@ -1,4 +1,4 @@
-import { isDefined, isNotDefined } from '@common/util/validationUtils';
+import { isDefined } from '@common/util/validationUtils';
 import { z } from 'zod';
 
 export const sideutvalValidationSchema = z.object({
@@ -7,7 +7,7 @@ export const sideutvalValidationSchema = z.object({
       .object({
         loeysingId: z.number().positive('Løysing er påkrevd'),
         typeId: z.number().positive('Type er pårkrevd'),
-        begrunnelse: z.string(),
+        begrunnelse: z.string().optional(),
         url: z.string().min(1, 'Ugyldig url').or(z.literal('')),
         egendefinertType: z
           .string()
@@ -15,17 +15,5 @@ export const sideutvalValidationSchema = z.object({
           .optional()
           .or(z.literal('')),
       })
-      .refine(
-        ({ url, begrunnelse }) => isDefined(url) === isDefined(begrunnelse),
-        ({ url }) => {
-          if (isNotDefined(url)) {
-            return { message: 'Ugyldig url', path: ['url'] };
-          }
-          return {
-            message: 'Sideutval må ha begrunnelse',
-            path: ['begrunnelse'],
-          };
-        }
-      )
   ),
 });
