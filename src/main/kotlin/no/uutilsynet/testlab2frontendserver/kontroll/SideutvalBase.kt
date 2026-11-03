@@ -6,7 +6,7 @@ open class SideutvalBase(
     open val loeysingId: Int,
     open val typeId: Int,
     open val begrunnelse: String?,
-    open val url: URI,
+    open val url: String,
     open val egendefinertType: String?
 )
 
@@ -14,7 +14,7 @@ data class Sideutval(
     override val loeysingId: Int,
     override val typeId: Int,
     override val begrunnelse: String?,
-    override val url: URI,
+    override val url: String,
     override val egendefinertType: String?,
     val id: Int,
 ) :
