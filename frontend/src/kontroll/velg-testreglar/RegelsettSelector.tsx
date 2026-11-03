@@ -62,13 +62,11 @@ const RegelsettSelector = ({
             <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
               Testreglar i utval: {regelsett.namn}
             </Heading>
-            <Paragraph style={{ marginBottom: 'var(--ds-size-2)' }}>
               <ul>
                 {regelsett.testregelList.map((testregel) => {
                   return <li key={testregel.id}>{testregel.namn}</li>;
                 })}
               </ul>
-            </Paragraph>
           </Dialog>
         </li>
       ))}

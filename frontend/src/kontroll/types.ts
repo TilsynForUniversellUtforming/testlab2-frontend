@@ -11,7 +11,6 @@ export type KontrollListItem = {
   id: number;
   tittel: string;
   saksbehandler: string;
-  sakstype: Sakstype;
   arkivreferanse: string;
   kontrolltype: KontrollType;
   virksomheter: Orgnummer[];
@@ -23,7 +22,6 @@ export type Kontroll = {
   kontrolltype: KontrollType;
   tittel: string;
   saksbehandler: string;
-  sakstype: Sakstype;
   arkivreferanse: string;
   utval: Utval | undefined;
   testreglar: KontrollTestreglar | undefined;

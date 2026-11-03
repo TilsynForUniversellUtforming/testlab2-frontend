@@ -254,6 +254,7 @@ const VelgTestreglar = () => {
             sistLagret={actionData?.sistLagret}
             onClickLagreKontroll={lagreKontroll(false)}
             onClickNeste={lagreKontroll(true)}
+            canSubmit={regelsettSelected ? !!selectedRegelsettId : selectedTestregelIdList.length > 0}
           />
         </div>
       </div>
