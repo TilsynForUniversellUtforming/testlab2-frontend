@@ -1,7 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
-import java.net.URI
-
 open class SideutvalBase(
     open val loeysingId: Int,
     open val typeId: Int,
