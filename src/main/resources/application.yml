@@ -16,7 +16,12 @@ logging:
   level:
     root: INFO
     no.uutilsynet: DEBUG
-    org.springframework.web.client.RestTemplate: DEBUG
+    org:
+      springframework:
+        web:
+          client:
+            RestTemplate: DEBUG
+            RestClient: DEBUG
 
 features:
   alle-kontroller: false
