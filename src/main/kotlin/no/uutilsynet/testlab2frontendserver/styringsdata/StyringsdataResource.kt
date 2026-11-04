@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.styringsdata
 
+import jakarta.validation.Valid
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -42,10 +43,10 @@ class StyringsdataResource(
             throw RuntimeException(it)
           }
 
-  @GetMapping("{stryingsdataType}/{styringsdataId}")
+  @GetMapping("{styringsdataType}/{styringsdataId}")
   fun getStyringsdata(
-      @PathVariable("stryingsdataType") styringsdataType: StyringsdataType,
-      @PathVariable("styringsdataId") styringsdataId: Int,
+      @PathVariable styringsdataType: StyringsdataType,
+      @PathVariable styringsdataId: Int,
   ): ResponseEntity<Styringsdata> {
     return runCatching {
           restTemplate.getForEntity<Styringsdata>(
@@ -71,7 +72,9 @@ class StyringsdataResource(
   }
 
   @PostMapping
-  fun createStyringsdata(@RequestBody styringsdata: Styringsdata): ResponseEntity<Styringsdata> =
+  fun createStyringsdata(
+      @Valid @RequestBody styringsdata: Styringsdata
+  ): ResponseEntity<Styringsdata> =
       runCatching {
             val styringsdataResult =
                 restTemplate
@@ -98,8 +101,8 @@ class StyringsdataResource(
 
   @PutMapping("{styringsdataId}")
   fun updateStyringsdataForLoeysing(
-      @PathVariable("styringsdataId") styringsdataId: Int,
-      @RequestBody styringsdata: Styringsdata
+      @PathVariable styringsdataId: Int,
+      @Valid @RequestBody styringsdata: Styringsdata
   ) =
       runCatching {
             val styringsdataType =
