@@ -284,7 +284,7 @@ data class KontrollListItem(
     val id: Int,
     val tittel: String,
     val saksbehandler: String,
-    val sakstype: String,
+    val sakstype: String?,
     val arkivreferanse: String,
     val kontrolltype: String,
     val virksomheter: List<Orgnummer>,

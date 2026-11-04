@@ -12,7 +12,7 @@ data class Kontroll(
     val kontrolltype: Kontrolltype,
     val tittel: String,
     val saksbehandler: String,
-    val sakstype: Sakstype,
+    val sakstype: Sakstype? = null,
     val arkivreferanse: String,
     val loeysingar: List<Loeysing> = emptyList(),
     val utval: UtvalResource.Utval? = null,
