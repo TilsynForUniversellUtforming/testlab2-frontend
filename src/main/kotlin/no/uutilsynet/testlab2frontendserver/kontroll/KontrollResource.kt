@@ -240,21 +240,12 @@ class KontrollResource(
   fun getKontrollerByUser(): ResponseEntity<List<KontrollListItem>> {
     val restClient = RestClient.builder(restTemplate).build()
 
-      val auth = SecurityContextHolder.getContext().authentication
 
-      logger.info("Fetching kontroller by user from ${testingApiProperties.url}/kontroller/byUser" + " with user ${auth?.principal}")
-
-      val response = restClient
+      return restClient
           .get()
           .uri(testingApiProperties.url + "/kontroller/byUser")
           .retrieve()
           .toEntity<List<KontrollListItem>>()
-
-      logger.info("Response headers: ${response.headers}")
-
-
-
-    return response
   }
 
   private fun okToDelete(resultat: List<ResultatManuellKontroll>): Boolean {
