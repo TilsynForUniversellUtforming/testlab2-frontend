@@ -263,7 +263,7 @@ class KontrollResource(
       val kontrolltype: String,
       val tittel: String,
       val saksbehandler: String,
-      val sakstype: String,
+      val sakstype: String?,
       val arkivreferanse: String,
   )
 
