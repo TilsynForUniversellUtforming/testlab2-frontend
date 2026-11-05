@@ -47,8 +47,8 @@ export const createRegelsett = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(regelsettCreate),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje lage nytt regelsett')
   );
 
 export const updateRegelsett = async (
@@ -60,6 +60,6 @@ export const updateRegelsett = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(regelsett),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere regelsett')
   );

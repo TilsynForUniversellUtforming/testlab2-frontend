@@ -20,7 +20,7 @@ export const findStyringsdataForKontroll = async (
   ).then((response) =>
     responseWithLogErrors(
       response,
-      response.statusText
+      'Kunne ikkje hente styringsdata for kontroll'
     )
   );
 };
@@ -34,38 +34,37 @@ export const fetchStyringsdataLoeysing = async (
       method: 'GET',
     }
   ).then((response) =>
-    responseWithLogErrors(response, response.statusText)
+    responseWithLogErrors(response, 'Kunne ikkje hente styringsdata')
   );
 };
 
 export const updateStyringsdataLoeysing = async (
   styringsdata: StyringsdataLoeysing
 ): Promise<StyringsdataLoeysing> =>
-{
-  console.log(JSON.stringify(styringsdata));
-  return await fetchWithCsrf(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
+  await fetchWithCsrf(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(styringsdata),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).message)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere styringsdata')
   );
-}
 
-export const createStyringsdataLoeysing = async (styringsdata: StyringsdataLoeysing) =>
+export const createStyringsdataLoeysing = async (
+  styringsdata: StyringsdataLoeysing
+) =>
   await fetchWithCsrf(styringsdataApiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ...styringsdata, type: 'loeysing' }),
-  }).then(async (response) => {
+  }).then((response) => {
     if (response.status === 400) {
-      throw new Error((await response.json()).message);
+      throw new Error('Styringsdata finns allereie');
     }
-    return responseWithLogErrors(response, response.statusText);
+    return responseWithLogErrors(response, 'Kunne ikkje opprette styringsdata');
   });
 
 export const fetchStyringsdataKontroll = async (
@@ -76,38 +75,36 @@ export const fetchStyringsdataKontroll = async (
     {
       method: 'GET',
     }
-  ).then(async (response) => responseWithLogErrors(response, await response.text()));
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente styringsdata')
+  );
 };
 
 export const updateStyringsdataKontroll = async (
   styringsdata: StyringsdataKontroll
 ): Promise<StyringsdataKontroll> =>
-{
-  console.log("Styringsdata", styringsdata);
-  return await fetchWithCsrf(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
+  await fetchWithCsrf(`${styringsdataApiBaseUrl}/${styringsdata.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(styringsdata),
-  }).then(async (response) =>
-    responseWithLogErrors(response, await response.text())
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere styringsdata')
   );
-}
 
-export const createStyringsdataKontroll = async (styringsdata: StyringsdataKontroll) => {
-  console.log("Styringsdata", styringsdata);
-  return await fetchWithCsrf(styringsdataApiBaseUrl, {
+export const createStyringsdataKontroll = async (
+  styringsdata: StyringsdataKontroll
+) =>
+  await fetchWithCsrf(styringsdataApiBaseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ ...styringsdata, type: 'kontroll' }),
-  }).then(async (response) => {
+  }).then((response) => {
     if (response.status === 400) {
-      throw new Error(await response.text());
+      throw new Error('Styringsdata finns allereie');
     }
-
-    return responseWithLogErrors(response, await response.text());
+    return responseWithLogErrors(response, 'Kunne ikkje opprette styringsdata');
   });
-}
