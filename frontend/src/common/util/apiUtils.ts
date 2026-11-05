@@ -9,7 +9,7 @@ import { fetchWithCsrf } from '@common/form/util';
  * @return {Promise<any>} A promise that resolves with the JSON content of the response.
  * @throws {Error} If the response is not ok.
  */
-export const responseToJson = (
+export const responseToJson = async (
   response: Response,
   errorMessage?: string
   // eslint-disable-next-line
@@ -17,7 +17,8 @@ export const responseToJson = (
   if (response.ok) {
     return response.json();
   } else {
-    throw new Error(errorMessage + " : " + (response as any).detail);
+    const errorDetail = (await response.json() as any).detail;
+    throw new Error(errorMessage + ' : ' + errorDetail);
   }
 };
 
