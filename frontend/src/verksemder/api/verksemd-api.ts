@@ -20,16 +20,16 @@ export default getVerksemdList_dummy;
 export const fetchVerksemd = async (id: number): Promise<Verksemd> => {
   return await fetchWithErrorHandling(`/api/v1/verksemd/${id}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 };
 
 export const findVerksemdByName = async (name: string): Promise<Verksemd[]> =>
   await fetchWithErrorHandling(`/api/v1/verksemd/list?name=${name}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const findVerksemdByOrgnummer = async (
@@ -37,15 +37,15 @@ export const findVerksemdByOrgnummer = async (
 ): Promise<Verksemd[]> =>
   await fetchWithErrorHandling(`/api/v1/verksemd/list?orgnummer=${orgnummer}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const fetchVerksemdList = async (): Promise<Verksemd[]> =>
   await fetchWithErrorHandling('/api/v1/verksemd', {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const fetchVerksemdMany = async (
@@ -56,8 +56,8 @@ export const fetchVerksemdMany = async (
     {
       method: 'GET',
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente verksemder')
   );
 
 export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
@@ -67,8 +67,8 @@ export const updateVerksemd = async (Verksemd: Verksemd): Promise<Verksemd[]> =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(Verksemd),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere løysing')
   );
 
 export const createVerksemd = async (
@@ -77,8 +77,8 @@ export const createVerksemd = async (
   return await fetchWithCsrf('/api/v1/verksemd', {
     method: 'POST',
     body: JSON.stringify(VerksemdInit),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje opprette løysing')
   );
 };
 
@@ -97,6 +97,6 @@ export const deleteVerksemd = async (
     return response.json();
   } else {
     const message = await response.text();
-    throw new Error(message);
+    throw Error(message);
   }
 };

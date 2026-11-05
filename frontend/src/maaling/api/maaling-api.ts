@@ -21,8 +21,11 @@ export const createMaaling = async (maaling: MaalingInit): Promise<Maaling> =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maaling),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Kunne ikkje oppretta måling, ver vennleg og prøv igjen seinare'
+    )
   );
 
 export const updateMaaling = async (
@@ -34,8 +37,8 @@ export const updateMaaling = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maaling),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const fetchCrawlParametersKontroll = async (
@@ -46,8 +49,8 @@ export const fetchCrawlParametersKontroll = async (
     {
       method: 'GET',
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente crawl-parametere')
   );
 
 export const updateCrawlParameters = async (
@@ -63,19 +66,21 @@ export const updateCrawlParameters = async (
       },
       body: JSON.stringify(crawlParameters),
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere crawl-parametere')
   );
 
-export const deleteMaalingList = async (maalingIdList: IdList): Promise<Maaling[]> =>
+export const deleteMaalingList = async (
+  maalingIdList: IdList
+): Promise<Maaling[]> =>
   fetchWithCsrf(`/api/v1/maalinger`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(maalingIdList),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente målingar')
   );
 
 export const updateMaalingStatus = async (
@@ -88,22 +93,22 @@ export const updateMaalingStatus = async (
       'Content-Type': 'application/json',
     },
     body: status,
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere måling')
   );
 
 export const fetchMaalingList = async (): Promise<Maaling[]> =>
   fetchWithErrorHandling('/api/v1/maalinger', {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente målingar')
   );
 
 export const fetchMaaling = async (id: number): Promise<Maaling> =>
   fetchWithErrorHandling(`/api/v1/maalinger/${id}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente måling')
   );
 
 export const restart = async (
@@ -134,8 +139,8 @@ export const fetchLoeysingNettsider = async (
     {
       method: 'GET',
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente sideutval for måling')
   );
 
 export const fetchTestResultatLoeysing = async (
@@ -147,8 +152,8 @@ export const fetchTestResultatLoeysing = async (
     {
       method: 'GET',
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const getMaalingIdFromKontrollId = async (
@@ -156,8 +161,8 @@ export const getMaalingIdFromKontrollId = async (
 ): Promise<number> =>
   await fetchWithErrorHandling(`/api/v1/maalinger/kontroll/${kontrollId}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 
 export const getTestresultatForMaalingLoeysing = async (
@@ -169,6 +174,6 @@ export const getTestresultatForMaalingLoeysing = async (
     {
       method: 'GET',
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );

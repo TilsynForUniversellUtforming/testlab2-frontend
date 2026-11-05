@@ -22,8 +22,8 @@ export const fetchTestResults = async (
     {
       method: 'GET',
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikke hente testresultat')
   );
 };
 
@@ -36,8 +36,8 @@ export const createTestResultat = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(testResultat),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje opprette testresultat')
   );
 };
 
@@ -50,8 +50,8 @@ export const updateTestResultat = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify([testResultat]),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere testresultat')
   );
 };
 
@@ -64,8 +64,8 @@ export const updateTestResultatMany = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(testResultatList),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere testresultat')
   );
 };
 
@@ -78,8 +78,8 @@ export const deleteTestResultat = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(resultat),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje slette testresultat')
   );
 };
 
@@ -98,14 +98,14 @@ export const uploadBilde = async (
       body: formData,
     },
     false
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje lagre bilde')
   );
 };
 
 export const getBilder = async (resultatId: number): Promise<Bilde[]> =>
   await fetchWithCsrf(`${testingApiBaseUrl}/bilder/${resultatId}`).then(
-    async (response) => responseWithLogErrors(response, (await response.json()).detail)
+    (response) => responseWithLogErrors(response, 'Kunne ikkje hente bilder')
   );
 
 export const deleteBilde = async (
@@ -114,15 +114,20 @@ export const deleteBilde = async (
 ): Promise<Bilde[]> =>
   await fetchWithCsrf(`${testingApiBaseUrl}/bilder/${resultatId}/${bildeId}`, {
     method: 'DELETE',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje slette bilde')
   );
 
-export const listTestgrunnlag = async (kontrollId: number): Promise<Testgrunnlag[]> =>
+export const listTestgrunnlag = async (
+  kontrollId: number
+): Promise<Testgrunnlag[]> =>
   await fetchWithErrorHandling(
     `${kontrollApiBaseUrl}/${kontrollId}/testgrunnlag`
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Klarte ikke å hente liste med testgrunnlag'
+    )
   );
 
 export const createRetest = async (
@@ -137,8 +142,8 @@ export const createRetest = async (
       },
       body: JSON.stringify(retestParams),
     }
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje opprette retest')
   );
 };
 export const deleteTestgrunnlag = async (deleteRetestRequest: DeleteTestgrunnlagRequest) => {
@@ -156,8 +161,11 @@ export const getTestoverview = async (
   return await fetchWithErrorHandling(
     `${testingApiBaseUrl}/testoverview/kontroll/${kontrollId}`,
     {}
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Klarte ikke å hente liste med testingstatus'
+    )
   );
 };
 
@@ -165,7 +173,10 @@ export const getTestoverviewForBrukar = async (): Promise<TestgrunnlagOverviewEl
   return await fetchWithErrorHandling(
     `${testingApiBaseUrl}/testoverview/byUser`,
     {}
-  ).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  ).then((response) =>
+    responseWithLogErrors(
+      response,
+      'Klarte ikke å hente testgrunnlag for brukaren'
+    )
   );
 };

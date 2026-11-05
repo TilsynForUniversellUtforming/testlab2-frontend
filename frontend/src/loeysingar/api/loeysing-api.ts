@@ -6,11 +6,19 @@ import {
   LoeysingFormElement,
   LoeysingInit,
 } from './types';
+
+export const fetchLoeysing = async (id: number): Promise<Loeysing> =>
+  await fetchWithErrorHandling(`/api/v1/loeysing/${id}`, {
+    method: 'GET',
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
+  );
+
 export const findLoeysingByName = async (name: string): Promise<Loeysing[]> =>
   await fetchWithErrorHandling(`/api/v1/loeysing?name=${name}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const findLoeysingByOrgnummer = async (
@@ -18,15 +26,15 @@ export const findLoeysingByOrgnummer = async (
 ): Promise<Loeysing[]> =>
   await fetchWithErrorHandling(`/api/v1/loeysing?orgnummer=${orgnummer}`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje søke etter virksomhet')
   );
 
 export const fetchLoeysingList = async (): Promise<Loeysing[]> =>
   await fetchWithErrorHandling('/api/v1/loeysing', {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 export const updateLoeysing = async (
   loeysing: LoeysingFormElement
@@ -37,8 +45,8 @@ export const updateLoeysing = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(loeysing),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje oppdatere løysing')
   );
 
 export const createLoeysing = async (
@@ -47,8 +55,8 @@ export const createLoeysing = async (
   return await fetchWithCsrf('/api/v1/loeysing', {
     method: 'POST',
     body: JSON.stringify(loeysingInit),
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje opprette løysing')
   );
 };
 
@@ -76,7 +84,7 @@ export const fetchLoeysingFormElement = async (
 ): Promise<LoeysingFormElement> => {
   return await fetchWithErrorHandling(`/api/v1/loeysing/${id}/withVerksemd`, {
     method: 'GET',
-  }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).detail)
+  }).then((response) =>
+    responseWithLogErrors(response, 'Kunne ikkje hente løysingar')
   );
 };

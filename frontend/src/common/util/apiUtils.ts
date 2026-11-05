@@ -11,13 +11,13 @@ import { fetchWithCsrf } from '@common/form/util';
  */
 export const responseToJson = (
   response: Response,
-  errorMessage: string
+  errorMessage?: string
   // eslint-disable-next-line
 ): Promise<any> => {
   if (response.ok) {
     return response.json();
   } else {
-    throw new Error(errorMessage);
+    throw new Error(errorMessage + " : " + (response as any).detail);
   }
 };
 
