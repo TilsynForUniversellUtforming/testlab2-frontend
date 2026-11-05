@@ -49,8 +49,10 @@ class ResultatResource(
           val location =
               restTemplate.postForLocation(
                   "$testresultatUrl/aggregert/$testgrunnlagId", testgrunnlagId)
-                  ?: throw RuntimeException(
-                      "Feil ved oppretting av aggregert resultat for testgrunnlagId: $testgrunnlagId")
+
+          requireNotNull(location) {
+            "Feil ved oppretting av aggregert resultat for testgrunnlagId: $testgrunnlagId"
+          }
           return ResponseEntity.created(
                   URI.create("/api/v1/testresultat/aggregert/${testgrunnlagId}"))
               .body(location)

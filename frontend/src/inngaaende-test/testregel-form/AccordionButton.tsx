@@ -60,7 +60,7 @@ export const AccordionButton = ({
           danger: ['brot'],
           success: ['samsvar'],
           warning: ['advarsel'],
-          info: ['ikkjeForekomst', 'ikkjeTesta'],
+          info: ['ikkjeForekomst', 'ikkjeTesta','ikkjeTestbart'],
         }}
         data-size="md"
       />

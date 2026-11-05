@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.common
 
-
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
@@ -11,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import tools.jackson.databind.DatabindException
-import tools.jackson.databind.exc.InvalidFormatException
 import tools.jackson.databind.exc.UnrecognizedPropertyException
 
 @RestControllerAdvice
@@ -37,22 +35,21 @@ class RestControllerAdvice {
   fun handleHttpMessageNotReadable(
       ex: HttpMessageNotReadableException
   ): ResponseEntity<ProblemDetail> {
-      val detail =
+    val detail =
         when (val cause = ex.mostSpecificCause) {
           is UnrecognizedPropertyException -> "Ukjent felt '${cause.propertyName}' i request body."
           is DatabindException -> {
             val field =
                 cause.path.joinToString(".") { reference ->
-
                   reference.propertyName ?: reference.index.toString()
-
                 }
-            val fieldMessage =  cause.pathReference
+            val fieldMessage = cause.pathReference
 
             "Felt '$field' har ugyldig eller manglende verdi."
           }
-//          is DatabindException ->
-//              "Request body er ugyldig eller mangler felter. ${cause.cause ?: "Kontroller formatet."}"
+          //          is DatabindException ->
+          //              "Request body er ugyldig eller mangler felter. ${cause.cause ?:
+          // "Kontroller formatet."}"
           else -> "Request body er ugyldig eller mangler felter."
         }
 
