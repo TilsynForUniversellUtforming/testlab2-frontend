@@ -49,7 +49,7 @@ class RestControllerAdvice {
                 }
             val fieldMessage =  cause.pathReference
 
-            "Felt '$field' har ugyldig eller manglende verdi. $fieldMessage"
+            "Felt '$field' har ugyldig eller manglende verdi."
           }
 //          is DatabindException ->
 //              "Request body er ugyldig eller mangler felter. ${cause.cause ?: "Kontroller formatet."}"

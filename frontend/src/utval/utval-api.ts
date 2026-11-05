@@ -25,8 +25,8 @@ export const fetchUtvalList = async (): Promise<Utval[]> =>
   await fetchWithErrorHandling('/api/v1/utval', {
     method: 'GET',
   })
-    .then((response) =>
-      responseWithLogErrors(response, 'Kunne ikkje hente utval')
+    .then(async (response) =>
+      responseWithLogErrors(response, (await response.json()).detail)
     )
     .then((utval: Utval[]) =>
       utval.map((u) => ({ ...u, oppretta: new Date(u.oppretta) }))
@@ -36,8 +36,8 @@ export const fetchUtvalListLoeysingar = async (): Promise<Utval[]> =>
   await fetchWithErrorHandling('/api/v1/utval/loeysingar', {
     method: 'GET',
   })
-    .then((response) =>
-      responseWithLogErrors(response, 'Kunne ikkje hente utval')
+    .then(async (response) =>
+      responseWithLogErrors(response, (await response.json()).detail)
     )
     .then((utval: Utval[]) =>
       utval.map((u) => ({ ...u, oppretta: new Date(u.oppretta) }))
@@ -47,7 +47,7 @@ export const getUtvalById = async (
   id: number | undefined
 ): Promise<Utval> => {
   if (id === undefined) throw new Error(`utvalId ${id} undefined`);
-  return await fetchWithErrorHandling(`/api/v1/utval/${id}`).then((response) => response.json());
+  return await fetchWithErrorHandling(`/api/v1/utval/${id}`).then(async (response) => responseWithLogErrors(response, (await response.json()).detail));
 };
 
 export const updateUtval = async (utval: Utval): Promise<Utval> => {
@@ -59,8 +59,8 @@ export const updateUtval = async (utval: Utval): Promise<Utval> => {
     },
     body: JSON.stringify(payload),
   })
-    .then((response) =>
-      responseWithLogErrors(response, 'Kunne ikkje oppdatere utval')
+    .then(async (response) =>
+      responseWithLogErrors(response, (await response.json()).detail)
     )
     .then((updatedUtval: Utval) => ({
       ...updatedUtval,
@@ -77,8 +77,8 @@ export const createUtval = async (utval: Omit<Utval, 'id'>): Promise<Utval> => {
     },
     body: JSON.stringify(payload),
   })
-    .then((response) =>
-      responseWithLogErrors(response, 'Kunne ikkje opprette utval')
+    .then(async (response) =>
+      responseWithLogErrors(response, (await response.json()).detail)
     )
     .then((createdUtval: Utval) => ({
       ...createdUtval,
@@ -89,8 +89,8 @@ export const createUtval = async (utval: Omit<Utval, 'id'>): Promise<Utval> => {
 export const deleteUtval = async (id: number): Promise<void> => {
   return await fetchWithErrorHandling(`/api/v1/utval/${id}`, {
     method: 'DELETE',
-  }).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje slette utval')
+  }).then(async (response) =>
+    responseWithLogErrors(response, (await response.json()).detail)
   );
 };
 

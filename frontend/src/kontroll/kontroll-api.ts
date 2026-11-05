@@ -81,8 +81,8 @@ export function updateKontrollSideutval(
 export async function listSideutvalType(): Promise<SideutvalType[]> {
   return await fetchWithErrorHandling(`/api/v1/kontroller/sideutvaltype`, {
     method: 'GET',
-  }).then((response) =>
-    responseWithLogErrors(response, 'Kunne ikkje hente testregel')
+  }).then(async (response) =>
+    responseWithLogErrors(response, (await response.json()).detail)
   );
 }
 
@@ -90,7 +90,7 @@ export async function fetchAlleKontroller(): Promise<KontrollListItem[]> {
   const res = await fetchWithErrorHandling('/api/v1/kontroller');
   if (res.status > 399) {
     throw new Response('Feilet da vi prøvde å hente alle kontroller', {
-      statusText: res.statusText,
+      statusText: (await res.json()).detail,
     });
   }
   return res.json();
@@ -99,9 +99,12 @@ export async function fetchAlleKontroller(): Promise<KontrollListItem[]> {
 export async function fetchAlleKontrollerForBrukar(): Promise<KontrollListItem[]> {
   const res = await fetchWithErrorHandling('/api/v1/kontroller/byUser');
   if (res.status > 399) {
-    throw new Response('Feilet da vi prøvde å hente alle kontroller for brukar', {
-      statusText: res.statusText,
-    });
+    throw new Response(
+      'Feilet da vi prøvde å hente alle kontroller for brukar',
+      {
+        statusText: (await res.json()).detail,
+      }
+    );
   }
   return res.json();
 }

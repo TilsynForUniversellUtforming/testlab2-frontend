@@ -21,15 +21,17 @@ export const responseToJson = (
   }
 };
 
-export const responseWithLogErrors = (
+export const responseWithLogErrors = async (
   response: Response,
   errorMessage: string
   // eslint-disable-next-line
 ): Promise<any> => {
-  return responseToJson(response, errorMessage).catch((error) => {
+  try {
+    return await responseToJson(response, errorMessage);
+  } catch (error) {
     console.error(error);
     throw error;
-  });
+  }
 };
 
 /**

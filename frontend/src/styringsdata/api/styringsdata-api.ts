@@ -17,11 +17,8 @@ export const findStyringsdataForKontroll = async (
     {
       method: 'GET',
     }
-  ).then((response) =>
-    responseWithLogErrors(
-      response,
-      response.statusText
-    )
+  ).then(async (response) =>
+    responseWithLogErrors(response, (await response.json()).detail)
   );
 };
 
@@ -33,8 +30,10 @@ export const fetchStyringsdataLoeysing = async (
     {
       method: 'GET',
     }
-  ).then((response) =>
-    responseWithLogErrors(response, response.statusText)
+  ).then(async (response) =>
+  {
+    return responseWithLogErrors(response, (await response.json()).detail);
+  }
   );
 };
 
@@ -50,7 +49,7 @@ export const updateStyringsdataLoeysing = async (
     },
     body: JSON.stringify(styringsdata),
   }).then(async (response) =>
-    responseWithLogErrors(response, (await response.json()).message)
+    responseWithLogErrors(response, (await response.json()).detail)
   );
 }
 
@@ -63,9 +62,9 @@ export const createStyringsdataLoeysing = async (styringsdata: StyringsdataLoeys
     body: JSON.stringify({ ...styringsdata, type: 'loeysing' }),
   }).then(async (response) => {
     if (response.status === 400) {
-      throw new Error((await response.json()).message);
+      throw new Error((await response.json()).detail);
     }
-    return responseWithLogErrors(response, response.statusText);
+    return responseWithLogErrors(response, (await response.json()).detail);
   });
 
 export const fetchStyringsdataKontroll = async (
@@ -76,7 +75,9 @@ export const fetchStyringsdataKontroll = async (
     {
       method: 'GET',
     }
-  ).then(async (response) => responseWithLogErrors(response, await response.text()));
+  ).then(async (response) =>
+    responseWithLogErrors(response, (await response.json()).detail)
+  );
 };
 
 export const updateStyringsdataKontroll = async (
@@ -91,7 +92,7 @@ export const updateStyringsdataKontroll = async (
     },
     body: JSON.stringify(styringsdata),
   }).then(async (response) =>
-    responseWithLogErrors(response, await response.text())
+    responseWithLogErrors(response, (await response.json()).detail)
   );
 }
 
@@ -105,9 +106,9 @@ export const createStyringsdataKontroll = async (styringsdata: StyringsdataKontr
     body: JSON.stringify({ ...styringsdata, type: 'kontroll' }),
   }).then(async (response) => {
     if (response.status === 400) {
-      throw new Error(await response.text());
+      throw new Error((await response.json()).detail);
     }
 
-    return responseWithLogErrors(response, await response.text());
+    return responseWithLogErrors(response, (await response.json()).detail);
   });
 }
