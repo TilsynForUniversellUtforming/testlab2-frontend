@@ -12,7 +12,7 @@ describe('responseToJson', () => {
   });
 
   it('should throw an error if response is not ok', async () => {
-    const mockResponse = new Response(null, {
+    const mockResponse = new Response(JSON.stringify({ detail: 'Error' }), {
       status: 404,
     });
 
