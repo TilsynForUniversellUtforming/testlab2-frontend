@@ -241,7 +241,7 @@ class KontrollResource(
 
     return restClient
         .get()
-        .uri(testingApiProperties.url + "/kontroller/byUser")
+        .uri("${testingApiProperties.url}/kontroller")
         .retrieve()
         .toEntity<List<KontrollListItem>>()
   }
