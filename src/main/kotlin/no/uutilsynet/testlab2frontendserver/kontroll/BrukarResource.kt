@@ -10,13 +10,11 @@ import org.springframework.web.client.RestClient
 
 @RestController
 @RequestMapping("api/v1/users")
-class BrukarResource(
-    val testingApiProperties: TestingApiProperties,
-) {
+class BrukarResource(val testingApiProperties: TestingApiProperties, val restClient: RestClient) {
 
   @GetMapping
   fun getUsers(): List<Brukar> {
-    return RestClient.create()
+    return restClient
         .get()
         .uri(testingApiProperties.url + "/users")
         .retrieve()

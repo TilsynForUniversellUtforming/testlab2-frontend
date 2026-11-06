@@ -19,7 +19,8 @@ import org.springframework.web.client.body
 @RequestMapping("api/v1/testresultat/rapport")
 class RapportResource(
     val restTemplate: RestTemplate,
-    final val testingApiProperties: TestingApiProperties
+    final val testingApiProperties: TestingApiProperties,
+    val restClient: RestClient
 ) {
 
   val testresultatUrl = "${testingApiProperties.url}/rapport"
@@ -34,8 +35,6 @@ class RapportResource(
 
     restTemplate.messageConverters.add(0, ByteArrayHttpMessageConverter())
 
-    val restClient = RestClient.builder(restTemplate).build()
-
     response.setHeader("Content-disposition", "attachment;filename=tilsynsrapport.docx")
     response.contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
@@ -49,7 +48,7 @@ class RapportResource(
             .retrieve()
             .onStatus(HttpStatusCode::isError) { _, _,
               ->
-              throw RuntimeException("Feil ved generering av rapport")
+              throw IllegalStateException("Feil ved generering av rapport")
             }
             .body<ByteArray>()
 
@@ -60,15 +59,13 @@ class RapportResource(
   }
   @PutMapping("publiser/kontroll/{kontrollId}")
   fun publiserResultat(@PathVariable kontrollId: Int) {
-    val restClient = RestClient.builder(restTemplate).build()
-
     restClient
         .put()
         .uri(eksternResultatUrl + "/publiser/kontroll/${kontrollId}")
         .retrieve()
         .onStatus(HttpStatusCode::isError) { _, response: ClientHttpResponse,
           ->
-          throw RuntimeException("Feil ved publisering av resultat ${response.statusText}")
+          throw IllegalStateException("Feil ved publisering av resultat ${response.statusText}")
         }
         .toBodilessEntity()
   }
