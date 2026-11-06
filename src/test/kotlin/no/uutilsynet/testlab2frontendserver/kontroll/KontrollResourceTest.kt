@@ -38,9 +38,8 @@ class KontrollResourceTest {
             FakeTestresultatAPIClient,
             mockRestTemplate,
             mockTestingApiProperties,
-            restClient = mockRestClient
-        )
-      testResource =
+            restClient = mockRestClient)
+    testResource =
         TestResource(
             FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties, mockBildeService)
   }

@@ -12,38 +12,40 @@ import org.springframework.web.client.RestTemplate
 @Configuration
 class RestClientConfig {
 
-    @Bean
-    @Profile("!security")
-    fun restClient(
-        builder: RestClient.Builder,
-    ): RestClient {
-        return builder.build()
-    }
+  @Bean
+  @Profile("!security")
+  fun restClient(
+      builder: RestClient.Builder,
+  ): RestClient {
+    return builder.build()
+  }
 
-    @Bean
-    @Profile("security")
-    fun restClientSecurity(
-        builder: RestClient.Builder,
-        tokenRelayInterceptor: TokenRelayInterceptor,
-    ): RestClient {
-        val clientBuilder = builder.requestInterceptor(tokenRelayInterceptor)
-        return clientBuilder.build()
-    }
+  @Bean
+  @Profile("security")
+  fun restClientSecurity(
+      builder: RestClient.Builder,
+      tokenRelayInterceptor: TokenRelayInterceptor,
+  ): RestClient {
+    val clientBuilder = builder.requestInterceptor(tokenRelayInterceptor)
+    return clientBuilder.build()
+  }
 
-    @Bean
-    @Profile("security")
-    fun restTemplateSecurity(tokenRelayInterceptor: TokenRelayInterceptor,
-                             restTemplateBuilder: RestTemplateBuilder): RestTemplate {
-        val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
-        interceptors.add(tokenRelayInterceptor)
+  @Bean
+  @Profile("security")
+  fun restTemplateSecurity(
+      tokenRelayInterceptor: TokenRelayInterceptor,
+      restTemplateBuilder: RestTemplateBuilder
+  ): RestTemplate {
+    val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
+    interceptors.add(tokenRelayInterceptor)
 
-        return restTemplateBuilder.interceptors(interceptors).build()
-    }
+    return restTemplateBuilder.interceptors(interceptors).build()
+  }
 
-    @Bean
-    @Profile("!security")
-    fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate {
+  @Bean
+  @Profile("!security")
+  fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate {
 
-        return restTemplateBuilder.build()
-    }
+    return restTemplateBuilder.build()
+  }
 }

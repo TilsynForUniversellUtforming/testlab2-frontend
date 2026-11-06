@@ -35,7 +35,6 @@ class RapportResource(
 
     restTemplate.messageConverters.add(0, ByteArrayHttpMessageConverter())
 
-
     response.setHeader("Content-disposition", "attachment;filename=tilsynsrapport.docx")
     response.contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
