@@ -39,7 +39,7 @@ class KontrollResourceTest {
             mockRestTemplate,
             mockTestingApiProperties,
             restClient = mockRestClient)
-      kontrollId = fakeId()
+    kontrollId = fakeId()
     testResource =
         TestResource(
             FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties, mockBildeService)
