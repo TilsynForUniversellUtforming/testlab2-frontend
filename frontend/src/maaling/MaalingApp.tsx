@@ -220,7 +220,7 @@ const MaalingApp = () => {
           if (data?.advisors) {
             setAdvisorList(data.advisors);
           } else {
-            setError(new Error('Kunne ikkje hente rådgivere'));
+            setError(new Error('Kunne ikkje hente brukere'));
           }
 
           if (data?.verksemdList) {

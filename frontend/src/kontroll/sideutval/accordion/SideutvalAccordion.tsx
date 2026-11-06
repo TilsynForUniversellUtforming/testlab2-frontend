@@ -158,12 +158,6 @@ const SideutvalAccordion = ({
           <Heading level={5} data-size="sm">
             {selectedLoeysing.namn}
           </Heading>
-          <div className={classes.testregelTypeSelectorChips}>
-            <Chip.Radio defaultChecked>Test av nettside</Chip.Radio>
-            <Chip.Radio title="Test av mobil er ikkje tilgjengelig ennå">
-              Test av mobil
-            </Chip.Radio>
-          </div>
         </div>
       </div>
       <div className={classes.centered}>

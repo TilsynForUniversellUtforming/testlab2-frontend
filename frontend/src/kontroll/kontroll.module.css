@@ -28,12 +28,12 @@
   border: 2px solid transparent;
 
   &:hover {
-    background-color: var(--ds-color-brand1-surface-hover);
+    background-color: var(--ds-color-brand1-border-subtle);
   }
 }
 
 .stepper .selected {
-  background-color: var(--ds-color-brand1-surface-hover);
+  background-color: var(--ds-color-brand1-border-subtle);
   border: 2px solid var(--ds-color-brand1-border-default);
 
   p {
@@ -41,7 +41,7 @@
   }
 
   &:hover {
-    background-color: var(--ds-color-brand1-surface-active);
+    background-color: var(--ds-color-brand1-border-subtle);
   }
 }
 
@@ -115,17 +115,17 @@
     align-items: center;
 
     &:hover {
-      background-color: var(--ds-color-brand1-surface-hover);
+      background-color: var(--ds-color-brand1-border-subtle);
     }
 
     &:active {
-      background-color: var(--ds-color-brand1-surface-active);
+      background-color: var(--ds-color-brand1-border-default);
     }
 
     &.selected {
-      background: var(--ds-color-brand1-surface-active);
+      background: var(--ds-color-brand1-border-default);
       &:hover {
-        background-color: var(--ds-color-brand1-surface-hover);
+        background-color: var(--ds-color-brand1-border-subtle);
       }
     }
 
@@ -161,17 +161,17 @@
     align-items: center;
 
     &:hover {
-      background-color: var(--ds-color-brand1-surface-hover);
+      background-color: var(--ds-color-brand1-border-subtle);
     }
 
     &:active {
-      background-color: var(--ds-color-brand1-surface-active);
+      background-color: var(--ds-color-brand1-border-default);
     }
 
     &.selected {
-      background: var(--ds-color-brand1-surface-active);
+      background: var(--ds-color-brand1-border-default);
       &:hover {
-        background-color: var(--ds-color-brand1-surface-hover);
+        background-color: var(--ds-color-brand1-border-subtle);
       }
     }
 

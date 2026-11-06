@@ -9,27 +9,30 @@ import { fetchWithCsrf } from '@common/form/util';
  * @return {Promise<any>} A promise that resolves with the JSON content of the response.
  * @throws {Error} If the response is not ok.
  */
-export const responseToJson = (
+export const responseToJson = async (
   response: Response,
-  errorMessage: string
+  errorMessage?: string
   // eslint-disable-next-line
 ): Promise<any> => {
   if (response.ok) {
     return response.json();
   } else {
-    throw new Error(errorMessage);
+    const errorDetail = (await response.json() as any).detail;
+    throw new Error(errorMessage + ' : ' + errorDetail);
   }
 };
 
-export const responseWithLogErrors = (
+export const responseWithLogErrors = async (
   response: Response,
   errorMessage: string
   // eslint-disable-next-line
 ): Promise<any> => {
-  return responseToJson(response, errorMessage).catch((error) => {
+  try {
+    return await responseToJson(response, errorMessage);
+  } catch (error) {
     console.error(error);
     throw error;
-  });
+  }
 };
 
 /**

@@ -11,7 +11,8 @@ export type ElementResultat =
   | 'ikkjeForekomst'
   | 'brot'
   | 'advarsel'
-  | 'ikkjeTesta';
+  | 'ikkjeTesta'
+  | 'ikkjeTestbart';
 
 export type CreateTestResultat = {
   testgrunnlagId: number;
@@ -59,7 +60,7 @@ export function toElementResultat(
       case 'Nei':
         return 'brot';
       case 'Ikkje testbart':
-        return 'ikkjeTesta';
+        return 'ikkjeTestbart';
     }
   } else {
     return 'ikkjeForekomst';

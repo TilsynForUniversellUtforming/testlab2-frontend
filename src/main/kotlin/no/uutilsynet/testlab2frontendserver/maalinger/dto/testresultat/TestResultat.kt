@@ -8,7 +8,6 @@ data class TestResultat(
     val side: String,
     val testregelId: Int,
     val testregelNoekkel: String,
-    val sideNivaa: Int,
     val testVartUtfoert: LocalDateTime?,
     val elementUtfall: String,
     val elementResultat: String,

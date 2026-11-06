@@ -3,6 +3,9 @@ package no.uutilsynet.testlab2frontendserver.styringsdata
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import java.time.Instant
 import java.time.LocalDate
 
@@ -19,32 +22,32 @@ sealed class Styringsdata {
   abstract val sistLagra: Instant?
 
   data class Loeysing(
-      override val id: Int?,
-      override val kontrollId: Int,
-      override val ansvarleg: String,
-      override val oppretta: LocalDate,
-      override val frist: LocalDate,
+      @field:NotNull override val id: Int?,
+      @field:NotNull override val kontrollId: Int,
+      @field:NotBlank override val ansvarleg: String,
+      @field:NotNull override val oppretta: LocalDate,
+      @field:NotNull override val frist: LocalDate,
       override val sistLagra: Instant?,
-      val loeysingId: Int,
-      val reaksjon: Reaksjonstype,
-      val paaleggReaksjon: Reaksjonstype,
-      val paaleggKlageReaksjon: Reaksjonstype,
-      val botReaksjon: Reaksjonstype,
-      val botKlageReaksjon: Reaksjonstype,
-      val paalegg: Paalegg?,
-      val paaleggKlage: Klage?,
-      val bot: Bot?,
-      val botKlage: Klage?,
+      @field:NotNull val loeysingId: Int,
+      @field:NotNull val reaksjon: Reaksjonstype,
+      @field:NotNull val paaleggReaksjon: Reaksjonstype,
+      @field:NotNull val paaleggKlageReaksjon: Reaksjonstype,
+      @field:NotNull val botReaksjon: Reaksjonstype,
+      @field:NotNull val botKlageReaksjon: Reaksjonstype,
+      @field:Valid val paalegg: Paalegg?,
+      @field:Valid val paaleggKlage: Klage?,
+      @field:Valid val bot: Bot?,
+      @field:Valid val botKlage: Klage?,
   ) : Styringsdata() {
     data class Paalegg(
         val id: Int?,
-        val vedtakDato: LocalDate,
+        @field:NotNull val vedtakDato: LocalDate,
         val frist: LocalDate?,
     )
 
     data class Klage(
         val id: Int?,
-        val klageMottattDato: LocalDate,
+        @field:NotNull val klageMottattDato: LocalDate,
         val klageAvgjortDato: LocalDate?,
         val resultatKlageTilsyn: ResultatKlage?,
         val klageDatoDepartement: LocalDate?,
@@ -53,12 +56,12 @@ sealed class Styringsdata {
 
     data class Bot(
         val id: Int?,
-        val beloepDag: Int,
-        val oekingEtterDager: Int,
-        val oekningType: BotOekningType,
-        val oekingSats: Int,
-        val vedtakDato: LocalDate,
-        val startDato: LocalDate,
+        @field:NotNull val beloepDag: Int,
+        @field:NotNull val oekingEtterDager: Int,
+        @field:NotNull val oekningType: BotOekningType,
+        @field:NotNull val oekingSats: Int,
+        @field:NotNull val vedtakDato: LocalDate,
+        @field:NotNull val startDato: LocalDate,
         val sluttDato: LocalDate?,
         val kommentar: String?,
     )

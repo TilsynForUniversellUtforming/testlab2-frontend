@@ -42,8 +42,7 @@ export type ResultatTema = {
   talTestaElement: number;
   talElementBrot: number;
   talElementSamsvar: number;
-  talIkkjeTestbar: number;
-  talIkkjeForekomst: number;
+  talElementIkkjeForekomst: number;
 };
 
 export type ResultatKrav = {
@@ -52,8 +51,7 @@ export type ResultatKrav = {
   talTestaElement: number;
   talElementBrot: number;
   talElementSamsvar: number;
-  talIkkjeTestbar: number;
-  talIkkjeForekomst: number;
+  talElementIkkjeForekomst: number;
 };
 
 export type ViolationsData = {

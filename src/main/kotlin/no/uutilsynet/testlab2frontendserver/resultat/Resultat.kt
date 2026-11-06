@@ -47,8 +47,7 @@ data class ResultatTema(
     val talTestaElement: Int,
     val talElementBrot: Int,
     val talElementSamsvar: Int,
-    val talIkkjeTestbar: Int,
-    val talIkkjeForekomst: Int,
+    val talElementIkkjeForekomst: Int,
 )
 
 data class ResultatKrav(

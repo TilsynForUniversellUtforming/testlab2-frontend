@@ -22,7 +22,7 @@ import { redirect, RouteObject } from 'react-router';
 import maalingImg from '../assets/maalingar.svg';
 
 export const MAALING_ROOT: AppRoute = {
-  navn: 'Målingar',
+  navn: 'Forenkla kontroll/Statusmålingar',
   path: 'maaling',
   imgSrc: maalingImg,
 };

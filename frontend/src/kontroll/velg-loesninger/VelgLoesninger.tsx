@@ -88,14 +88,17 @@ const VelgLoesninger = () => {
   }
 
 
+  const loeysingHeading = kontroll.kontrolltype == 'forenkla-kontroll' ? <>løysingar</> : <>løysing</>;
   return (
     <section className={classes.kontrollSection}>
       <KontrollStepper />
       <div className={classes.velgLoesningerOverskrift}>
         <Heading level={1} data-size="xl">
-          Vel løysingar
+          Vel {loeysingHeading}
         </Heading>
-        <Paragraph>Vel kva løysingar du vil ha med i kontrollen</Paragraph>
+        <Paragraph>
+          Vel kva {loeysingHeading} du vil ha med i kontrollen
+        </Paragraph>
       </div>
       <div className={classes.utvalgEllerManuelt}>
         <button
@@ -107,7 +110,7 @@ const VelgLoesninger = () => {
             [classes.selected]: isUtvalg(selectedOption),
           })}
         >
-          Vel løysingar frå utval
+          Vel {loeysingHeading} frå utval
         </button>
         <button
           type={'button'}
@@ -116,23 +119,28 @@ const VelgLoesninger = () => {
             [classes.selected]: selectedOption?.t === 'løsning',
           })}
         >
-          Vel løysingar sjølv
+          Vel {loeysingHeading} sjølv
         </button>
       </div>
       {isUtvalg(selectedOption) && (
         <>
           <Heading level={2} data-size="lg">
-            Nyaste utval av løysingar
+            Nyaste utval
           </Heading>
           <ul className={classes.nyesteUtvalgButtons}>
             {nyesteUtvalg.map((u) => (
-         <UtvalDetailButton key={u.id} utval={u} velgUtval={velgUtvalg} isValgt={isValgt(u)} />
+              <UtvalDetailButton
+                key={u.id}
+                utval={u}
+                velgUtval={velgUtvalg}
+                isValgt={isValgt(u)}
+              />
             ))}
           </ul>
           {!isEmpty(eldreUtvalg) && (
             <>
               <Heading level={2} data-size="lg">
-                Eldre utval av løysingar
+                Eldre utval
               </Heading>
               <ul className={classes.eldreUtvalg}>
                 {eldreUtvalg.map((u) => {
@@ -168,11 +176,11 @@ const VelgLoesninger = () => {
                         <Heading style={{ marginBottom: 'var(--ds-size-2)' }}>
                           Dialog header
                         </Heading>
-                          <ul style={{ marginBottom: 'var(--ds-size-2)' }}>
-                            {u.loeysingar.map((loeysing) => {
-                              return <li key={loeysing.id}>{loeysing.namn}</li>;
-                            })}
-                          </ul>
+                        <ul style={{ marginBottom: 'var(--ds-size-2)' }}>
+                          {u.loeysingar.map((loeysing) => {
+                            return <li key={loeysing.id}>{loeysing.namn}</li>;
+                          })}
+                        </ul>
                       </Dialog>
                     </li>
                   );
