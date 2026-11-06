@@ -198,13 +198,13 @@ const TestFormForenkla = (props: Props) => {
                 label="Vel resultat for eigendefinert utfall"
                 name="customUtfallTestresultat"
                 options={customUtfallTestresultatOptions}
-                required
+                required={false}
               />
 
               <TestlabForm.FormInput<TestformForenklaFormValues>
                 label="Beskriv eigendefinert utfall"
                 name="customUtfallBeskrivelse"
-                required
+                required={false}
               />
             </fieldset>
           )}
@@ -212,11 +212,13 @@ const TestFormForenkla = (props: Props) => {
           <TestlabFormTextArea<TestformForenklaFormValues>
             label="Kommentar"
             name="kommentar"
+            required={false}
           />
 
           <TestlabForm.FormInput<TestformForenklaFormValues>
             label="Plassering av elementet"
             name="elementPlassering"
+            required={false}
           />
 
           <TestlabFormCheckbox<TestformForenklaFormValues>

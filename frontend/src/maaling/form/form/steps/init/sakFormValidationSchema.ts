@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { inngaaendeVerksemdSchema } from './inngaaendeVerksemdSchema';
 
 export const fristSchema = z
-  .string({ required_error: 'Alle saker må ha ein frist.' })
+  .string({ error: 'Alle saker må ha ein frist.' })
   .regex(/\d{4}-\d{2}-\d{2}/);
 
 export const sakInitValidationSchema = z
