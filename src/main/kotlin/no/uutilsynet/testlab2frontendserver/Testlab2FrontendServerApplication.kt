@@ -18,23 +18,23 @@ import org.springframework.web.client.RestTemplate
 @ConfigurationPropertiesScan
 class Testlab2FrontendServerApplication(val restTemplateBuilder: RestTemplateBuilder) {
 
-    @Bean
-    @Profile("security")
-    fun restTemplateSecurity(tokenRelayInterceptor: TokenRelayInterceptor): RestTemplate {
-        val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
-        interceptors.add(tokenRelayInterceptor)
+  @Bean
+  @Profile("security")
+  fun restTemplateSecurity(tokenRelayInterceptor: TokenRelayInterceptor): RestTemplate {
+    val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
+    interceptors.add(tokenRelayInterceptor)
 
-        return restTemplateBuilder.interceptors(interceptors).build()
-    }
+    return restTemplateBuilder.interceptors(interceptors).build()
+  }
 
-    @Bean
-    @Profile("!security")
-    fun restTemplate(): RestTemplate {
+  @Bean
+  @Profile("!security")
+  fun restTemplate(): RestTemplate {
 
-        return restTemplateBuilder.build()
-    }
+    return restTemplateBuilder.build()
+  }
 }
 
 fun main(args: Array<String>) {
-    runApplication<Testlab2FrontendServerApplication>(*args)
+  runApplication<Testlab2FrontendServerApplication>(*args)
 }

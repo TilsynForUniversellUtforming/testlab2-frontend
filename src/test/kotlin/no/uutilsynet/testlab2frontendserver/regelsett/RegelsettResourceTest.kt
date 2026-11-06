@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.restclient.test.autoconfigure.RestClientTest
@@ -18,7 +17,6 @@ import org.springframework.test.web.client.ExpectedCount
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers
 import org.springframework.test.web.client.response.MockRestResponseCreators
-import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import tools.jackson.module.kotlin.jacksonObjectMapper
 
