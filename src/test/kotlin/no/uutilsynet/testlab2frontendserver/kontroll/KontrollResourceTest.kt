@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 
 class KontrollResourceTest {
@@ -29,15 +30,17 @@ class KontrollResourceTest {
     val mockRestTemplate = Mockito.mock(RestTemplate::class.java)
     val mockTestingApiProperties = Mockito.mock(TestingApiProperties::class.java)
     val mockBildeService = Mockito.mock(BildeService::class.java)
+    val mockRestClient = Mockito.mock(RestClient::class.java)
 
     kontrollResource =
         KontrollResource(
             FakeTestgrunnlagAPIClient,
             FakeTestresultatAPIClient,
             mockRestTemplate,
-            mockTestingApiProperties)
-    kontrollId = fakeId()
-    testResource =
+            mockTestingApiProperties,
+            restClient = mockRestClient
+        )
+      testResource =
         TestResource(
             FakeTestresultatAPIClient, mockRestTemplate, mockTestingApiProperties, mockBildeService)
   }

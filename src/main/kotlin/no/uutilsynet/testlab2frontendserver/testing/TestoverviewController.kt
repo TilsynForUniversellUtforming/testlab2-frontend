@@ -17,11 +17,10 @@ import org.springframework.web.client.toEntity
 @RestController
 @RequestMapping("api/v1/testing/testoverview")
 class TestoverviewController(
-    val restTemplate: RestTemplate,
+    val restClient: RestClient,
     testingApiProperties: TestingApiProperties
 ) {
 
-  private val restClient = RestClient.create(restTemplate)
   private val testresultUrl = testingApiProperties.url
 
   @GetMapping("/kontroll/{kontrollId}")

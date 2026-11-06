@@ -16,24 +16,7 @@ import org.springframework.web.client.RestTemplate
     scanBasePackages =
         ["no.uutilsynet.testlab2frontendserver", "no.uutilsynet.testlab2securitylib"])
 @ConfigurationPropertiesScan
-class Testlab2FrontendServerApplication(val restTemplateBuilder: RestTemplateBuilder) {
-
-  @Bean
-  @Profile("security")
-  fun restTemplateSecurity(tokenRelayInterceptor: TokenRelayInterceptor): RestTemplate {
-    val interceptors: ArrayList<ClientHttpRequestInterceptor> = ArrayList()
-    interceptors.add(tokenRelayInterceptor)
-
-    return restTemplateBuilder.interceptors(interceptors).build()
-  }
-
-  @Bean
-  @Profile("!security")
-  fun restTemplate(): RestTemplate {
-
-    return restTemplateBuilder.build()
-  }
-}
+class Testlab2FrontendServerApplication
 
 fun main(args: Array<String>) {
   runApplication<Testlab2FrontendServerApplication>(*args)

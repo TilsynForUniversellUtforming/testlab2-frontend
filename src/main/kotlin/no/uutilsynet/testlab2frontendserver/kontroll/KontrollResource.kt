@@ -33,6 +33,7 @@ class KontrollResource(
     val testresultatAPIClient: ITestresultatAPIClient,
     val restTemplate: RestTemplate,
     val testingApiProperties: TestingApiProperties,
+    val restClient: RestClient
 ) {
   private val logger: Logger = LoggerFactory.getLogger(KontrollResource::class.java)
 
@@ -237,7 +238,6 @@ class KontrollResource(
 
   @GetMapping("/byUser")
   fun getKontrollerByUser(): ResponseEntity<List<KontrollListItem>> {
-    val restClient = RestClient.builder(restTemplate).build()
 
     return restClient
         .get()

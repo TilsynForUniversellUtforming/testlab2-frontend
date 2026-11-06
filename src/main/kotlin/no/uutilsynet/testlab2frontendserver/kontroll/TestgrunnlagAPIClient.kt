@@ -29,7 +29,8 @@ interface ITestgrunnlagAPIClient {
 @Component
 class TestgrunnlagAPIClient(
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties
+    val testingApiProperties: TestingApiProperties,
+    val restClient: RestClient
 ) : ITestgrunnlagAPIClient {
   private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -82,7 +83,6 @@ class TestgrunnlagAPIClient(
   }
 
   override fun getTestgrunnlagByUser(): Result<List<KontrollResource.TestgrunnlagDTO>> {
-    val restClient = RestClient.builder().build()
     val url = "${testingApiProperties.url}/testgrunnlag/kontroll/byUser"
     return runCatching {
       restClient.get().uri(url).retrieve().body<List<KontrollResource.TestgrunnlagDTO>>()
