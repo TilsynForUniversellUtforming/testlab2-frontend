@@ -131,12 +131,12 @@ class TestResource(
   ): ResponseEntity<List<Bilde>> {
 
     val allowedMIMETypes =
-        listOf(MimeTypeUtils.IMAGE_JPEG_VALUE, MimeTypeUtils.IMAGE_PNG_VALUE, "image/bmp")
+        listOf(MimeTypeUtils.IMAGE_JPEG_VALUE, MimeTypeUtils.IMAGE_PNG_VALUE, "image/bmp", "video/mp4")
     try {
 
       requireNotNull(bilde.originalFilename) { "Bilde kan ikkje vere null" }
       require(allowedMIMETypes.contains(bilde.contentType)) {
-        "Ugyldig filtype. Kun JPEG, PNG og BMP er tillatt."
+        "Ugyldig filtype. Kun JPEG, PNG, BMP og MP4 er tillatt."
       }
 
       val body: MultiValueMap<String, Any> = createBildeRequestBody(bilde)

@@ -162,27 +162,13 @@ class KontrollResource(
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
-            check(okToRetest(resultat))
+           require(okToRetest(resultat)) {"Alle element ikkje ferdig testa. Testgrunnlag ikkje klar til retesting"}
+
             val testgrunnlagDTO: TestgrunnlagDTO =
                 testgrunnlagAPIClient.createRetest(retest).getOrThrow()
             ResponseEntity.ok(testgrunnlagDTO)
           }
-          .getOrElse { throwable ->
-            when (throwable) {
-              is IllegalArgumentException ->
-                  ResponseEntity.badRequest().build<TestgrunnlagDTO>().also {
-                    logger.warn(throwable.message)
-                  }
-              is IllegalStateException ->
-                  ResponseEntity.status(HttpStatus.FORBIDDEN).build<TestgrunnlagDTO>().also {
-                    logger.warn(throwable.message)
-                  }
-              else ->
-                  ResponseEntity.internalServerError().build<TestgrunnlagDTO>().also {
-                    logger.error("Klarte ikkje å starte retest: ${throwable.message}")
-                  }
-            }
-          }
+          .getOrThrow()
 
   @DeleteMapping("{kontrollId}/testgrunnlag/{testgrunnlagId}")
   fun slettTestgrunnlag(
