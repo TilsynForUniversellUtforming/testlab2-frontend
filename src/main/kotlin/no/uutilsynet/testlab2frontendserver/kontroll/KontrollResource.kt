@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestStatus
@@ -18,7 +19,6 @@ import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
 import org.springframework.web.client.toEntity
-import java.time.Instant
 
 @RestController
 @RequestMapping("api/v1/kontroller")
@@ -237,10 +237,10 @@ class KontrollResource(
         .get()
         .uri("${testingApiProperties.url}/kontroller")
         .retrieve()
-        .onStatus ( HttpStatusCode::is4xxClientError) { _, response->
-            val errorBody: ByteArray = response.body.readAllBytes()
-            throw IllegalStateException("API Error occurred: " + String(errorBody))
-         }
+        .onStatus(HttpStatusCode::is4xxClientError) { _, response ->
+          val errorBody: ByteArray = response.body.readAllBytes()
+          throw IllegalStateException("API Error occurred: " + String(errorBody))
+        }
         .toEntity<List<KontrollListItem>>()
   }
 
