@@ -239,7 +239,7 @@ class KontrollResource(
   fun getKontrollerByUser(): ResponseEntity<List<KontrollListItem>> {
 
     val responseEntity: List<KontrollListItem> =
-        restTemplate.getList<KontrollListItem>("${testingApiProperties.url}/kontroller")
+        restTemplate.getList<KontrollListItem>("${testingApiProperties.url}/kontroller/byUser")
     if (responseEntity.isEmpty()) return ResponseEntity.noContent().build<List<KontrollListItem>>()
     return ResponseEntity.ok(responseEntity)
   }
