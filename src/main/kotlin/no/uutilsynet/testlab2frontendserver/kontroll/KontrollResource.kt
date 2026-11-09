@@ -1,6 +1,5 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
-import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestStatus
@@ -12,19 +11,14 @@ import no.uutilsynet.testlab2frontendserver.testing.Retest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
 import org.springframework.web.client.toEntity
+import java.time.Instant
 
 @RestController
 @RequestMapping("api/v1/kontroller")
@@ -243,6 +237,10 @@ class KontrollResource(
         .get()
         .uri("${testingApiProperties.url}/kontroller")
         .retrieve()
+        .onStatus ( HttpStatusCode::is4xxClientError) { _, response->
+            val errorBody: ByteArray = response.body.readAllBytes()
+            throw IllegalStateException("API Error occurred: " + String(errorBody))
+         }
         .toEntity<List<KontrollListItem>>()
   }
 
