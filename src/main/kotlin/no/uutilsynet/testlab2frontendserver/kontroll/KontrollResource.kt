@@ -1,5 +1,6 @@
 package no.uutilsynet.testlab2frontendserver.kontroll
 
+import java.time.Instant
 import no.uutilsynet.testlab2frontendserver.common.RestHelper.getList
 import no.uutilsynet.testlab2frontendserver.common.TestingApiProperties
 import no.uutilsynet.testlab2frontendserver.maalinger.dto.testresultat.TestStatus
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
-import java.time.Instant
 
 @RestController
 @RequestMapping("api/v1/kontroller")
@@ -238,9 +238,9 @@ class KontrollResource(
   @GetMapping("/byUser")
   fun getKontrollerByUser(): ResponseEntity<List<KontrollListItem>> {
 
-      val responseEntity: List<KontrollListItem> =
-          restTemplate.getList<KontrollListItem>("${testingApiProperties.url}/kontroller")
-      if(responseEntity.isEmpty()) return ResponseEntity.noContent().build<List<KontrollListItem>>()
+    val responseEntity: List<KontrollListItem> =
+        restTemplate.getList<KontrollListItem>("${testingApiProperties.url}/kontroller")
+    if (responseEntity.isEmpty()) return ResponseEntity.noContent().build<List<KontrollListItem>>()
     return ResponseEntity.ok(responseEntity)
   }
 
