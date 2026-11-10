@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.resource.PathResourceResolver
 
 @Configuration
-class SinglePageAppConfig : WebMvcConfigurer {
+class SPAConfig : WebMvcConfigurer {
 
   val resolver =
       object : PathResourceResolver() {
@@ -30,7 +30,6 @@ class SinglePageAppConfig : WebMvcConfigurer {
         .addResourceLocations("classpath:/public/assets/")
         .setCachePeriod(Duration.ofDays(7).seconds.toInt())
         .resourceChain(true)
-        .addResolver(resolver)
 
     registry
         .setOrder(3)
@@ -38,7 +37,6 @@ class SinglePageAppConfig : WebMvcConfigurer {
         .addResourceLocations("classpath:/public/")
         .setCachePeriod(Duration.ofDays(365).seconds.toInt())
         .resourceChain(true)
-        .addResolver(resolver)
 
     registry
         .setOrder(4)

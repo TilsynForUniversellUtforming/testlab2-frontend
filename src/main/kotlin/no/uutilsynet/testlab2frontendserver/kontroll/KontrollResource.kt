@@ -162,7 +162,9 @@ class KontrollResource(
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
-           require(okToRetest(resultat)) {"Alle element ikkje ferdig testa. Testgrunnlag ikkje klar til retesting"}
+            require(okToRetest(resultat)) {
+              "Alle element ikkje ferdig testa. Testgrunnlag ikkje klar til retesting"
+            }
 
             val testgrunnlagDTO: TestgrunnlagDTO =
                 testgrunnlagAPIClient.createRetest(retest).getOrThrow()
