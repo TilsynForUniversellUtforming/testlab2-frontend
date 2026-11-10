@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
 
@@ -31,8 +31,7 @@ class KontrollResource(
     val testgrunnlagAPIClient: ITestgrunnlagAPIClient,
     val testresultatAPIClient: ITestresultatAPIClient,
     val restTemplate: RestTemplate,
-    val testingApiProperties: TestingApiProperties,
-    val restClient: RestClient
+    val testingApiProperties: TestingApiProperties
 ) {
   private val logger: Logger = LoggerFactory.getLogger(KontrollResource::class.java)
 
@@ -162,27 +161,15 @@ class KontrollResource(
                 testresultatAPIClient
                     .getResultatForTestgrunnlag(originalTestgrunnlagId)
                     .getOrThrow()
-            check(okToRetest(resultat))
+            check(okToRetest(resultat)) {
+              "Alle element ikkje ferdig testa. Testgrunnlag ikkje klar til retesting"
+            }
+
             val testgrunnlagDTO: TestgrunnlagDTO =
                 testgrunnlagAPIClient.createRetest(retest).getOrThrow()
             ResponseEntity.ok(testgrunnlagDTO)
           }
-          .getOrElse { throwable ->
-            when (throwable) {
-              is IllegalArgumentException ->
-                  ResponseEntity.badRequest().build<TestgrunnlagDTO>().also {
-                    logger.warn(throwable.message)
-                  }
-              is IllegalStateException ->
-                  ResponseEntity.status(HttpStatus.FORBIDDEN).build<TestgrunnlagDTO>().also {
-                    logger.warn(throwable.message)
-                  }
-              else ->
-                  ResponseEntity.internalServerError().build<TestgrunnlagDTO>().also {
-                    logger.error("Klarte ikkje å starte retest: ${throwable.message}")
-                  }
-            }
-          }
+          .getOrThrow()
 
   @DeleteMapping("{kontrollId}/testgrunnlag/{testgrunnlagId}")
   fun slettTestgrunnlag(
@@ -192,27 +179,12 @@ class KontrollResource(
     return testresultatAPIClient
         .getResultatForTestgrunnlag(testgrunnlagId)
         .mapCatching { resultat ->
-          check(okToDelete(resultat))
+          check(okToDelete(resultat)) {
+            "Testgrunnlag kan ikkje slettast når det finst eit resultat"
+          }
           testgrunnlagAPIClient.deleteTestgrunnlag(testgrunnlagId)
         }
-        .fold(
-            { ResponseEntity.noContent().build() },
-            { throwable ->
-              when (throwable) {
-                is IllegalArgumentException ->
-                    ResponseEntity.badRequest().build<Unit>().also {
-                      logger.warn(throwable.message)
-                    }
-                is IllegalStateException ->
-                    ResponseEntity.status(HttpStatus.FORBIDDEN).build<Unit>().also {
-                      logger.warn(throwable.message)
-                    }
-                else ->
-                    ResponseEntity.internalServerError().build<Unit>().also {
-                      logger.error("Klarte ikkje å slette testgrunnlag: $it")
-                    }
-              }
-            })
+        .fold({ ResponseEntity.noContent().build() }, { throw it })
   }
 
   @GetMapping("/test-status/{kontrollId}")
@@ -239,7 +211,7 @@ class KontrollResource(
   fun getKontrollerByUser(): ResponseEntity<List<KontrollListItem>> {
 
     val responseEntity: List<KontrollListItem> =
-        restTemplate.getList<KontrollListItem>("${testingApiProperties.url}/kontroller")
+        restTemplate.getList<KontrollListItem>("${testingApiProperties.url}/kontroller/byUser")
     if (responseEntity.isEmpty()) return ResponseEntity.noContent().build<List<KontrollListItem>>()
     return ResponseEntity.ok(responseEntity)
   }
@@ -250,6 +222,18 @@ class KontrollResource(
 
   private fun okToRetest(resultat: List<ResultatManuellKontroll>): Boolean {
     return resultat.all { it.status == ResultatStatus.Ferdig }
+  }
+
+  @ExceptionHandler(IllegalStateException::class)
+  fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<String> {
+    logger.warn(ex.message, ex)
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(ex.message)
+  }
+
+  @ExceptionHandler(IllegalArgumentException::class)
+  fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<String> {
+    logger.warn(ex.message, ex)
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.message)
   }
 
   data class SideutvalType(

@@ -10,6 +10,7 @@ import no.uutilsynet.testlab2frontendserver.fakes.*
 import no.uutilsynet.testlab2frontendserver.resultat.TestgrunnlagType
 import no.uutilsynet.testlab2frontendserver.testing.*
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -25,8 +26,6 @@ class KontrollResourceTest {
 
   @BeforeEach
   fun setUp() {
-    // Mocker disse avhengighetene, siden det ikke finnes noen kers for dem. De brukes ikke i
-    // testen. Hvis de skal brukes senere, er det bedre om vi lager fakes for dem.
     val mockRestTemplate = Mockito.mock(RestTemplate::class.java)
     val mockTestingApiProperties = Mockito.mock(TestingApiProperties::class.java)
     val mockBildeService = Mockito.mock(BildeService::class.java)
@@ -37,8 +36,7 @@ class KontrollResourceTest {
             FakeTestgrunnlagAPIClient,
             FakeTestresultatAPIClient,
             mockRestTemplate,
-            mockTestingApiProperties,
-            restClient = mockRestClient)
+            mockTestingApiProperties)
     kontrollId = fakeId()
     testResource =
         TestResource(
@@ -113,8 +111,13 @@ class KontrollResourceTest {
                 testVartUtfoert = Instant.now(),
                 status = ResultatStatus.Ferdig)))
 
-    val deleteResponse = kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId)
-    assertThat(deleteResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
+    val exception: Throwable =
+        assertThrows(
+            IllegalStateException::class.java,
+            { kontrollResource.slettTestgrunnlag(kontrollId, testgrunnlagId) })
+
+    assertThat(exception.message)
+        .isEqualTo("Testgrunnlag kan ikkje slettast når det finst eit resultat")
   }
 
   @Test
@@ -215,9 +218,12 @@ class KontrollResourceTest {
     // Status ikkje starta
     testResource.createTestResultat(createTestResultat)
 
-    val retestResponse =
-        kontrollResource.createRetest(kontrollId, Retest(testgrunnlagId, loeysingId))
+    val exception =
+        assertThrows(
+            java.lang.IllegalStateException::class.java,
+            { kontrollResource.createRetest(kontrollId, Retest(testgrunnlagId, loeysingId)) })
 
-    assertThat(retestResponse.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
+    assertThat(exception.message)
+        .isEqualTo("Alle element ikkje ferdig testa. Testgrunnlag ikkje klar til retesting")
   }
 }

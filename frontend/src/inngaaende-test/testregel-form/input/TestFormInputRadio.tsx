@@ -1,7 +1,8 @@
 import { htmlToReactNode } from '@common/util/stringutils';
-import { Fieldset, Radio } from '@digdir/designsystemet-react';
+import { Fieldset, Radio, useRadioGroup, ValidationMessage } from '@digdir/designsystemet-react';
 import { Svar } from '@test/api/types';
 import { StegJaNei, StegRadio } from '@test/util/testregel-interface/Steg';
+import React, { useEffect } from 'react';
 
 interface Props {
   steg: StegJaNei | StegRadio;
@@ -19,19 +20,33 @@ const TestFormInputRadio = ({ steg, svar, index, onAnswer }: Props) => {
 
   const options = steg.type === 'jaNei' ? ['Ja', 'Nei'] : steg.svarArray;
 
+  const { getRadioProps, validationMessageProps, setValue } = useRadioGroup({
+    name: `${stegnr}-${index}`,
+    value: svar ?? '',
+    onChange: (nextValue) => {
+      handleValueChange(nextValue);
+    },
+  });
+
+  useEffect(() => {
+    setValue(svar ?? '');
+  }, [svar, setValue]);
+
   return (
     <div>
-      <Fieldset
-      >
-        <Fieldset.Legend>
-          {htmlToReactNode(spm)}
-        </Fieldset.Legend>
+      <Fieldset>
+        <Fieldset.Legend>{htmlToReactNode(spm)}</Fieldset.Legend>
         {htmlToReactNode(ht)}
         {options.map((svaralternativ) => (
-          <Radio name={`${stegnr}-${index}`} value={svaralternativ} key={svaralternativ} label={svaralternativ} onChange={(value) => handleValueChange(svaralternativ)}>
+          <Radio
+            {...getRadioProps({ value: svaralternativ })}
+            key={svaralternativ}
+            label={svaralternativ}
+          >
             {svaralternativ}
           </Radio>
         ))}
+        <ValidationMessage {...validationMessageProps} />
       </Fieldset>
     </div>
   );
