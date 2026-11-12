@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { getInitialPageType, getPageTypeList } from '@test/util/testregelUtils';
 import { PageType } from '@test/types';
-import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
+import { Sideutval, SideutvalType } from '../../../kontroll/sideutval/types';
 
 interface UsePageTypeProps {
   sideutvalForLoeysing: Sideutval[];

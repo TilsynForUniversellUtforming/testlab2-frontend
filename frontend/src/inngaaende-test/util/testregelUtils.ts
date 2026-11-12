@@ -91,13 +91,12 @@ export const toTestregelStatus = (
   new Map(
     testregelList.map((testregel) => [
       toTestregelStatusKey(testgrunnlagId, testregel.id, sideutvalId),
-      // TODO - Slett når ResultatManuellKontroll har statusfelt
       deriveTestregelStatus(findActiveTestResults(testResults, testgrunnlagId, testregel.id, sideutvalId)),
     ])
   );
 
 const toTestregelOverviewElement = ({ id, namn, testregelId }: Testregel): TestregelOverviewElement => {
-  const match = RegExp(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/).exec(
+  const match = new RegExp(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/).exec(
     namn
   );
   return { id, name: match ? match[4] : namn, krav: capitalize(testregelId) };
@@ -141,9 +140,13 @@ export const getInnhaldstypeInTest = (innhaldstypeList: InnhaldstypeTesting[]) =
 export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
   switch (frontendState) {
     case 'ferdig': return 'Ferdig';
-    case 'deaktivert': return 'Deaktivert';
     case 'under-arbeid': return 'UnderArbeid';
     case 'ikkje-starta': return 'IkkjePaabegynt';
+    case 'samsvar': return 'Ferdig';
+    case 'ikkje-forekomst': return 'Ferdig';
+    default: {
+      throw new Error(`Ukjent frontendState: ${frontendState}`);
+    }
   }
 };
 

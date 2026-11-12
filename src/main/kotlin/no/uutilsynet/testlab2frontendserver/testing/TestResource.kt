@@ -68,9 +68,12 @@ class TestResource(
       @RequestBody createTestResultat: CreateTestResultat
   ): ResultatManuellKontroll =
       runCatching {
-            logger.debug(
-                "Lagrer nytt testresultat med loeysingId: ${createTestResultat.loeysingId}," +
-                    " testregelId: ${createTestResultat.testregelId}, sideutalId: ${createTestResultat.sideutvalId}")
+            logger.info(
+                "Lagrer nytt testresultat med : {}, testregelId: {}, sideutalId: {}",
+                createTestResultat,
+                createTestResultat.testregelId,
+                createTestResultat.sideutvalId
+            )
             val testResultat =
                 testresultatAPIClient.createTestResultat(createTestResultat).getOrThrow()
             testResultat

@@ -9,9 +9,9 @@ data class CreateTestResultat(
     val testregelId: Int,
     val sideutvalId: Int,
     val brukar: Brukar = Brukar("testesen@digdir.no", "Test Testesen"),
-    val elementOmtale: String? = null,
-    val elementResultat: String? = null,
-    val elementUtfall: String? = null,
+    val element: Element? = null,
     val testVartUtfoert: Instant? = null,
     val kommentar: String? = null,
+    val imageDataUrl: String? = null,
+    val ekstraSjekk: Boolean = false,
 )

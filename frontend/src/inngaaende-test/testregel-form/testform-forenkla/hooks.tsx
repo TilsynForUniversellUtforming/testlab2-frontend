@@ -1,4 +1,4 @@
-import { CreateTestResultat, ResultatStatus, Svar } from '@test/api/types';
+import { ResultatManuellKontroll } from '@test/api/types';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import {
   TestformForenklaFormValues,
@@ -11,12 +11,7 @@ import { useMemo } from 'react';
 import { capitalize } from '@common/util/stringutils';
 
 export const useTestFormForenklaFormOptions = (
-  eksisterandeResultat: {
-    id: number;
-    svar: Svar[];
-    status: ResultatStatus;
-    sistLagra: string;
-  } & CreateTestResultat,
+  eksisterandeResultat: ResultatManuellKontroll,
   utfall: TestregelUtfall[]
 ): UseFormReturn<TestformForenklaFormValues> => {
   const eksisterandeElementResultat =
