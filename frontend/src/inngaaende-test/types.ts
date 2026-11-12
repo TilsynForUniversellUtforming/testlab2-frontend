@@ -38,9 +38,6 @@ export type PageType = {
 export type ActiveTest = {
   testregel: Testregel;
   testResultList: ResultatManuellKontroll[];
-  pageType: PageType;
-  testgrunnlagId: number;
-  testStatus: ElementResultat;
 };
 
 export type TestResultUpdate = {

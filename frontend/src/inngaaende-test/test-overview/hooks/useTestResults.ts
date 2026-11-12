@@ -34,16 +34,12 @@ export const useTestResults = ({
       setTestResults(filtered);
 
 
-      if (activeTestregel && activeTest) {
+      if (activeTestregel) {
         setActiveTest({
           testregel: activeTestregel,
           testResultList: filtered.filter(
             (tr) => tr.testregelId === activeTestregel.id && tr.sideutvalId === currentSideId
-          ),
-          pageType: activeTest?.pageType,
-          testStatus: activeTest?.testStatus,
-          testgrunnlagId:activeTest?.testgrunnlagId
-
+          )
         });
       }
     },
