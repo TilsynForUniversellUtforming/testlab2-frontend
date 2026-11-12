@@ -2,7 +2,7 @@ import AlertModal from '@common/alert/AlertModal';
 import TestlabDivider from '@common/divider/TestlabDivider';
 import { ButtonVariant } from '@common/types';
 import { Button } from '@digdir/designsystemet-react';
-import { ResultatManuellKontroll } from '@test/api/types';
+import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
 import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
 import TestForm from '@test/testregel-form/TestForm';
 import {
@@ -14,7 +14,14 @@ import {
 } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
@@ -37,6 +44,7 @@ interface Props {
   doUpdateTestResult: (testResultUpdate: TestResultUpdate) => void;
   slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
+  onSetPageOutCome?: (outcome: ElementResultat, testregelId:number, sideId: number) => void;
 }
 
 const chunkArray = <T extends object>(array: T[], size: number) => {
@@ -58,162 +66,188 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.element?.elementUtfall != null);
 }
 
-const LoeysingTestContent = memo(({
-  sideutval,
-  innhaldstype,
-  progressionPercent,
-  testregelList,
-  activeTest,
-  clearActiveTestregel,
-  onChangeTestregel,
-  createNewTestResult,
-  testStatusMap,
-  doUpdateTestResult,
-  slettTestelement,
-  onChangeStatus,
-}: Props) => {
-  const { testgrunnlagId, loeysingId } = useParams();
-  const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
-  const [showHelpText, setShowHelpText] = useState(true);
-  const alertRef = useRef<HTMLDialogElement>(null);
-  const [loading, setLoading] = useState(false);
+const LoeysingTestContent = memo(
+  ({
+    sideutval,
+    innhaldstype,
+    progressionPercent,
+    testregelList,
+    activeTest,
+    clearActiveTestregel,
+    onChangeTestregel,
+    createNewTestResult,
+    testStatusMap,
+    doUpdateTestResult,
+    slettTestelement,
+    onChangeStatus,
+    onSetPageOutCome,
+  }: Props) => {
+    const { testgrunnlagId, loeysingId } = useParams();
+    const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
+    const [showHelpText, setShowHelpText] = useState(true);
+    const alertRef = useRef<HTMLDialogElement>(null);
+    const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => setItemsPerRow(calculateItemsPerRow());
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    useEffect(() => {
+      const handleResize = () => setItemsPerRow(calculateItemsPerRow());
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-  useEffect(() => {
-    setLoading(false);
-  }, [activeTest?.testResultList]);
+    useEffect(() => {
+      setLoading(false);
+    }, [activeTest?.testResultList]);
 
-  const chunkedTestregelList = useMemo(
-    () => chunkArray(testregelList, itemsPerRow),
-    [testregelList, itemsPerRow]
-  );
+    const chunkedTestregelList = useMemo(
+      () => chunkArray(testregelList, itemsPerRow),
+      [testregelList, itemsPerRow]
+    );
 
-  const onClickSave = useCallback(() => {
-    clearActiveTestregel();
-  }, [clearActiveTestregel]);
+    const onClickSave = useCallback(() => {
+      clearActiveTestregel();
+    }, [clearActiveTestregel]);
 
-  const toggleShowHelpText = useCallback(
-    () => setShowHelpText((prev) => !prev),
-    []
-  );
+    const toggleShowHelpText = useCallback(
+      () => setShowHelpText((prev) => !prev),
+      []
+    );
 
-  const leggTilFlereTestelementer = useCallback(() => {
-    if (activeTest?.testResultList && alleHarUtfall(activeTest.testResultList)) {
-      createNewTestResult(
-        activeTest.testregel,
-        Number(testgrunnlagId),
-        Number(loeysingId),
-        sideutval.sideId
-      );
-    } else {
-      alertRef.current?.showModal();
-    }
-  }, [activeTest, createNewTestResult, testgrunnlagId, loeysingId, sideutval.sideId]);
+    const leggTilFlereTestelementer = useCallback(() => {
+      if (
+        activeTest?.testResultList &&
+        alleHarUtfall(activeTest.testResultList)
+      ) {
+        createNewTestResult(
+          activeTest.testregel,
+          Number(testgrunnlagId),
+          Number(loeysingId),
+          sideutval.sideId
+        );
+      } else {
+        alertRef.current?.showModal();
+      }
+    }, [
+      activeTest,
+      createNewTestResult,
+      testgrunnlagId,
+      loeysingId,
+      sideutval.sideId,
+    ]);
 
-  const handleUpdateResult = useCallback((testresultUpdate: TestResultUpdate) => {
-    setLoading(true);
-    doUpdateTestResult(testresultUpdate);
-  }, [doUpdateTestResult]);
+    const handleUpdateResult = useCallback(
+      (testresultUpdate: TestResultUpdate) => {
+        setLoading(true);
+        doUpdateTestResult(testresultUpdate);
+      },
+      [doUpdateTestResult]
+    );
 
-  const handleSlettTestelement = useCallback((resultatId: number) => {
-    if (activeTest) slettTestelement(activeTest, resultatId);
-  }, [activeTest, slettTestelement]);
+    const handleSlettTestelement = useCallback(
+      (resultatId: number) => {
+        if (activeTest) slettTestelement(activeTest, resultatId);
+      },
+      [activeTest, slettTestelement]
+    );
 
-  const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
-  const isManuell = activeTest?.testregel.modus === 'manuell';
-  const isAutomatisk = activeTest?.testregel.modus === 'automatisk';
-  
-  return (
-    <>
-      <TestRegelParamSelection
-        pageType={sideutval.pageType}
-        innhaldstype={innhaldstype.innhaldstype}
-        progressionPercent={progressionPercent}
-        toggleShowHelpText={toggleShowHelpText}
-        showHelpText={showHelpText}
-        url={sideutval.url}
-      />
-      <div>
-        {chunkedTestregelList.map((row) => {
-          const rowKey = row.map((tr) => tr.id).join('-');
-          return (
-            <div
-              className={classNames('testregel-row', {
-                single: testregelList.length === 1,
-              })}
-              key={rowKey}
-            >
-              <TestregelButtonList
-                row={row}
-                activeTest={activeTest}
-                onChangeTestregel={onChangeTestregel}
-                testStatusMap={testStatusMap}
-                testgrunnlagId={testgrunnlagId}
-                sideId={sideutval.sideId}
-                onChangeStatus={onChangeStatus}
-              />
+    const onChangeSideUtfall = useCallback(
+      (resultat: ElementResultat, testregelId:number, sideutvalId:number) => {
+        onSetPageOutCome?.(resultat, testregelId, sideutvalId);
+      },
+      [activeTest, onSetPageOutCome, sideutval.sideId]
+    );
 
-              {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
-                activeTest &&
-                activeTest.testResultList.length > 0 && (
-                  <div
-                    className={classNames('testregel-form-wrapper', {
-                      single: testregelList.length === 1,
-                    })}
-                  >
-                    {isManuell && (
-                      <TestForm
-                        testregel={activeTest.testregel}
-                        resultater={activeTest.testResultList}
-                        onResultat={handleUpdateResult}
-                        showHelpText={showHelpText}
-                        slettTestelement={handleSlettTestelement}
-                        isLoading={loading}
-                      />
-                    )}
-                    {(isForenkla || isAutomatisk) && (
-                      <TestFormForenklaList
-                        testregel={activeTest.testregel}
-                        resultater={activeTest.testResultList}
-                        showHelpText={true}
-                        onResultat={handleUpdateResult}
-                        slettTestelement={handleSlettTestelement}
-                        isLoading={false}
-                        isDemoApp={false}
-                      />
-                    )}
-                    <TestlabDivider />
-                    <div className="testregel-form-button-wrapper">
-                      <div className="testregel-form-buttons">
-                        <Button
-                          variant={ButtonVariant.Outline}
-                          onClick={leggTilFlereTestelementer}
-                        >
-                          Legg til flere testelementer
-                        </Button>
-                        <Button onClick={onClickSave}>Lagre og lukk</Button>
+    const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
+    const isManuell = activeTest?.testregel.modus === 'manuell';
+    const isAutomatisk = activeTest?.testregel.modus === 'automatisk';
+
+    return (
+      <>
+        <TestRegelParamSelection
+          pageType={sideutval.pageType}
+          innhaldstype={innhaldstype.innhaldstype}
+          progressionPercent={progressionPercent}
+          toggleShowHelpText={toggleShowHelpText}
+          showHelpText={showHelpText}
+          url={sideutval.url}
+        />
+        <div>
+          {chunkedTestregelList.map((row) => {
+            const rowKey = row.map((tr) => tr.id).join('-');
+            return (
+              <div
+                className={classNames('testregel-row', {
+                  single: testregelList.length === 1,
+                })}
+                key={rowKey}
+              >
+                <TestregelButtonList
+                  row={row}
+                  activeTest={activeTest}
+                  onChangeTestregel={onChangeTestregel}
+                  testStatusMap={testStatusMap}
+                  testgrunnlagId={testgrunnlagId}
+                  sideId={sideutval.sideId}
+                  onChangeStatus={onChangeStatus}
+                  onSetSideUtfall={onChangeSideUtfall}
+                />
+
+                {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
+                  activeTest &&
+                  activeTest.testResultList.length > 0 && (
+                    <div
+                      className={classNames('testregel-form-wrapper', {
+                        single: testregelList.length === 1,
+                      })}
+                    >
+                      {isManuell && (
+                        <TestForm
+                          testregel={activeTest.testregel}
+                          resultater={activeTest.testResultList}
+                          onResultat={handleUpdateResult}
+                          showHelpText={showHelpText}
+                          slettTestelement={handleSlettTestelement}
+                          isLoading={loading}
+                        />
+                      )}
+                      {(isForenkla || isAutomatisk) && (
+                        <TestFormForenklaList
+                          testregel={activeTest.testregel}
+                          resultater={activeTest.testResultList}
+                          showHelpText={true}
+                          onResultat={handleUpdateResult}
+                          slettTestelement={handleSlettTestelement}
+                          isLoading={false}
+                          isDemoApp={false}
+                        />
+                      )}
+                      <TestlabDivider />
+                      <div className="testregel-form-button-wrapper">
+                        <div className="testregel-form-buttons">
+                          <Button
+                            variant={ButtonVariant.Outline}
+                            onClick={leggTilFlereTestelementer}
+                          >
+                            Legg til flere testelementer
+                          </Button>
+                          <Button onClick={onClickSave}>Lagre og lukk</Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-            </div>
-          );
-        })}
-      </div>
-      <AlertModal
-        ref={alertRef}
-        severity="warning"
-        title="Kan ikke legge til et nytt testelement"
-        message="Alle testelementer må ha et utfall før du kan legge til et nytt."
-        clearMessage={() => alertRef.current?.close()}
-      />
-    </>
-  );
-});
+                  )}
+              </div>
+            );
+          })}
+        </div>
+        <AlertModal
+          ref={alertRef}
+          severity="warning"
+          title="Kan ikke legge til et nytt testelement"
+          message="Alle testelementer må ha et utfall før du kan legge til et nytt."
+          clearMessage={() => alertRef.current?.close()}
+        />
+      </>
+    );
+  }
+);
 
 export default LoeysingTestContent;

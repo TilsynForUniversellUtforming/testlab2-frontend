@@ -54,7 +54,7 @@ export interface UseTestResultatActionsResult {
     errorMsg: string,
     activeTestregel?: Testregel
   ) => Promise<void>;
-  doSetTestregelOutcome: (activeTest: ActiveTest, outcome: ElementResultat) => void;
+  doSetTestregelOutcome: (outcome: ElementResultat,testregelId:number, sideId:number) => void;
 }
 
 export const useTestResultatActions = ({
@@ -111,14 +111,16 @@ export const useTestResultatActions = ({
   );
 
   const doSetTestregelOutcome = useCallback(
-    async (activeTest: ActiveTest, outcome: ElementResultat) => {
+    async (outcome: ElementResultat,testregelId:number,sideId:number) => {
+      await deleteOldResults(testResults, testregelId, sideId);
+
       await withAggregert(
         () =>
           createTestResultat({
             testgrunnlagId,
             loeysingId,
-            testregelId: activeTest.testregel.id,
-            sideutvalId: activeTest.pageType.sideId,
+            testregelId,
+            sideutvalId: sideId,
             element: {
               elementOmtale: elementOmtaleSide,
               elementResultat: outcome,
@@ -128,10 +130,8 @@ export const useTestResultatActions = ({
         'Kunne ikkje endre status'
       );
       await refreshTestResults();
-      activeTest.testStatus = outcome;
-      return activeTest;
     },
-    [refreshTestResults]
+    [refreshTestResults,testResults]
   );
 
   const doUpdateTestResult = useCallback(
@@ -290,3 +290,12 @@ export const useTestResultatActions = ({
     doSetTestregelOutcome,
   };
 };
+
+async function deleteOldResults(testResults: ResultatManuellKontroll[], testregelId:number,sideId: number) {
+  for (const testresult1 of testResults
+    .filter((testresult) => {
+      return testresult.testregelId == testregelId && testresult.sideutvalId == sideId;
+    })) {
+      await deleteTestResultat(testresult1);
+    }
+}

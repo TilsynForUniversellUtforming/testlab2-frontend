@@ -4,12 +4,13 @@ import StatusDropdown, { StatusDropdownOption } from './StatusDropdown';
 import { ElementResultat } from '@test/api/types';
 
 interface Props {
-  onChangeStatus: (status: ElementResultat, testregelId: number) => void;
+  onChangeStatus: (status: ElementResultat, testregelId: number,sideId:number) => void;
   testregelId: number;
+  sideId: number;
   status: ButtonStatus;
 }
 
-const TestregelUtfallDropdown = ({ onChangeStatus, testregelId }: Props) => {
+const TestregelUtfallDropdown = ({ onChangeStatus, testregelId, sideId }: Props) => {
   const options: StatusDropdownOption<ElementResultat>[] = [
     {
       label: 'Ikke forekomst',
@@ -27,7 +28,7 @@ const TestregelUtfallDropdown = ({ onChangeStatus, testregelId }: Props) => {
     <StatusDropdown
       id={`test-status-dropdown-${testregelId}`}
       options={options}
-      onSelect={(value) => onChangeStatus(value, testregelId)}
+      onSelect={(value) => onChangeStatus(value, testregelId,sideId)}
       buttonLabel={'Sett utfall'}
     />
   );

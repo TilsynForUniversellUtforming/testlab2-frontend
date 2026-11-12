@@ -45,6 +45,7 @@ export interface UseTestOverviewStateResult {
   onChangeTestregelStatus: ReturnType<typeof useTestregelSelection>['onChangeTestregelStatus'];
   slettTestelement: ReturnType<typeof useTestResultatActions>['slettTestelement'];
   createNewTestResult: ReturnType<typeof useTestResultatActions>['createNewTestResult'];
+  doSetTestregelOutcome: ReturnType<typeof useTestResultatActions>['doSetTestregelOutcome'];
 }
 
 export const useTestOverviewState = ({
@@ -173,5 +174,6 @@ export const useTestOverviewState = ({
     onChangeTestregelStatus: testregelSelection.onChangeTestregelStatus,
     slettTestelement: testResultatActions.slettTestelement,
     createNewTestResult: testResultatActions.createNewTestResult,
+    doSetTestregelOutcome: testResultatActions.doSetTestregelOutcome
   };
 };

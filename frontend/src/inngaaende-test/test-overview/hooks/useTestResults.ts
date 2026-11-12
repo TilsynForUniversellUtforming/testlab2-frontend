@@ -33,12 +33,17 @@ export const useTestResults = ({
       const filtered = allResults.filter((tr) => tr.loeysingId === loeysingId);
       setTestResults(filtered);
 
-      if (activeTestregel) {
+
+      if (activeTestregel && activeTest) {
         setActiveTest({
           testregel: activeTestregel,
           testResultList: filtered.filter(
             (tr) => tr.testregelId === activeTestregel.id && tr.sideutvalId === currentSideId
           ),
+          pageType: activeTest?.pageType,
+          testStatus: activeTest?.testStatus,
+          testgrunnlagId:activeTest?.testgrunnlagId
+
         });
       }
     },

@@ -46,6 +46,7 @@ const TestOverviewLoeysing = () => {
     onChangeTestregelStatus,
     slettTestelement,
     createNewTestResult,
+    doSetTestregelOutcome,
   } = useTestOverviewState({
     testgrunnlagId,
     loeysingId,
@@ -99,6 +100,7 @@ const TestOverviewLoeysing = () => {
             doUpdateTestResult={doUpdateTestResult}
             slettTestelement={slettTestelement}
             onChangeStatus={onChangeTestregelStatus}
+            onSetPageOutCome={doSetTestregelOutcome}
           />
         </div>
         {alert && (

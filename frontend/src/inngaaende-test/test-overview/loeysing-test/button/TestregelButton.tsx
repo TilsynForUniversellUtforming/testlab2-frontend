@@ -19,7 +19,8 @@ export interface Props {
   onClick: (testregelId: number) => void;
   status: ButtonStatus;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
-  onSetSideUtfall: (status: ElementResultat, testregelId: number) => void;
+  onSetSideUtfall: (status: ElementResultat, testregelId: number, sideId: number) => void;
+  sideId: number;
 }
 
 const TestregelButton = memo(
@@ -30,6 +31,7 @@ const TestregelButton = memo(
     status,
     onChangeStatus,
     onSetSideUtfall,
+     sideId
   }: Props) => {
     return (
       <div
@@ -72,6 +74,7 @@ const TestregelButton = memo(
             status={status}
             onChangeStatus={onSetSideUtfall}
             testregelId={testregel.id}
+            sideId={sideId}
           />
         </div>
       </div>

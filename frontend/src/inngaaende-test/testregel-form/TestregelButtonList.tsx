@@ -1,3 +1,4 @@
+import { ElementResultat } from "@test/api/types";
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import {
   ActiveTest,
@@ -14,6 +15,7 @@ interface Props {
   testgrunnlagId: string | undefined;
   sideId: number;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
+  onSetSideUtfall: (status: ElementResultat, testregelId: number,sideId:number) => void;
 }
 
 const TestregelButtonList = ({
@@ -24,9 +26,8 @@ const TestregelButtonList = ({
   testgrunnlagId,
   sideId,
   onChangeStatus,
+  onSetSideUtfall,
 }: Props) => {
-
-
   return (
     <div className="testregel-container">
       {row.map((tr) => (
@@ -34,6 +35,7 @@ const TestregelButtonList = ({
           isActive={tr.id === Number(activeTest?.testregel.id)}
           key={tr.id}
           testregel={tr}
+          sideId={sideId}
           onClick={onChangeTestregel}
           status={
             testStatusMap.get(
@@ -41,6 +43,7 @@ const TestregelButtonList = ({
             ) ?? 'ikkje-starta'
           }
           onChangeStatus={onChangeStatus}
+          onSetSideUtfall={onSetSideUtfall}
         />
       ))}
     </div>
