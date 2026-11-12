@@ -87,5 +87,8 @@
     "*.{html,css,less,ejs,scss}": [
       "prettier --write"
     ]
+  },
+  "overrides": {
+    "minimatch": "11.0.5"
   }
 }
