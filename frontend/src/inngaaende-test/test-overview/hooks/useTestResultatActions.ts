@@ -17,7 +17,6 @@ import {
 } from '@test/api/testing-api';
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { Severity } from '@common/types';
-import { ProcessData } from '@test/test-overview/hooks/useTestResults';
 import { useTestSession } from './testSessionContext';
 
 type RaiseAlert = (severity: Severity, title: string, message: string) => void;

@@ -7,7 +7,9 @@ import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
-import { TestSessionProvider, useTestSession } from '@test/test-overview/hooks/testSessionContext';
+import { TestSessionProvider } from '@test/test-overview/hooks/testSessionContext';
+import { useTestOverviewElement } from '@test/test-overview/hooks/useTestOverviewElement';
+import { useTestregelSelection } from '@test/test-overview/hooks/useTestregelSelection';
 
 
 const TestOverviewLoeysing = () => {
@@ -74,25 +76,25 @@ const TestOverviewLoeysingSContent = ({
   alert,
   modalRef,
 }: TestOverviewLoeysingSContentProps) => {
-
   const {
     onChangeInnhaldstype,
-    onChangeSideutval,
     testFerdig,
     progressionPercent,
-    testregelListElements,
-    doUpdateTestResult,
-    onChangeTestregel,
-    onChangeTestregelStatus,
-    slettTestelement,
-    createNewTestResult,
-    doSetTestregelOutcome,
   } = useTestOverviewState({
     testreglarForLoeysing,
     testKeys,
     innhaldstypeList,
   });
 
+  // Get selection - simplified props
+  const testregelSelection = useTestregelSelection({
+    testreglarForLoeysing,
+  });
+
+  const { testregelListElements } = useTestOverviewElement({
+    testreglarForLoeysing,
+    testKeys,
+  });
 
   useEffect(() => {
     if (alert) {
@@ -100,13 +102,11 @@ const TestOverviewLoeysingSContent = ({
     }
   }, [alert, modalRef]);
 
-
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={activeLoeysing.namn}
-        onChangeSideutval={onChangeSideutval}
         innhaldstypeList={innhaldstypeList}
         onChangeInnhaldstype={onChangeInnhaldstype}
       />
@@ -116,12 +116,8 @@ const TestOverviewLoeysingSContent = ({
           <LoeysingTestContent
             progressionPercent={progressionPercent}
             testregelList={testregelListElements}
-            onChangeTestregel={onChangeTestregel}
-            createNewTestResult={createNewTestResult}
-            doUpdateTestResult={doUpdateTestResult}
-            slettTestelement={slettTestelement}
-            onChangeStatus={onChangeTestregelStatus}
-            onSetPageOutCome={doSetTestregelOutcome}
+            onChangeTestregel={testregelSelection.onChangeTestregel}
+            onChangeStatus={testregelSelection.onChangeTestregelStatus}
           />
         </div>
         {alert && (

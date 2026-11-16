@@ -8,19 +8,23 @@ export interface Props {
   title: string;
   currentLoeysingName: string;
   innhaldstypeList: InnhaldstypeTesting[];
-  onChangeSideutval: (sideutvalId: number) => void;
   onChangeInnhaldstype: (innhaldstypeId: number) => void;
 }
 
 const LoeysingTestHeading = ({
   title,
   currentLoeysingName,
-  onChangeSideutval,
   onChangeInnhaldstype,
   innhaldstypeList,
 }: Props) => {
-  const { pageType, pageTypeList, loeysingId, testgrunnlagId,innhaldstype } =
-    useTestSession();
+  const {
+    pageType,
+    pageTypeList,
+    loeysingId,
+    testgrunnlagId,
+    innhaldstype,
+    onChangeSideutval,
+  } = useTestSession();
 
   return (
     <div className="manual-test-heading">

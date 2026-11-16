@@ -6,6 +6,7 @@ import { elementOmtaleSide, ResultatManuellKontroll } from '@test/api/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Severity } from '@common/types';
 import { useTestSession } from './testSessionContext';
+import { useTestResultatActions } from '@test/test-overview/hooks/useTestResultatActions';
 
 type RaiseAlert = (severity: Severity, title: string, message: string) => void;
 
@@ -81,8 +82,6 @@ function canSetFerdigStatus(
 
 export interface UseTestregelSelectionDeps {
   testreglarForLoeysing: Testregel[];
-  doCreateTestResult: (testregel: Testregel, sideId: number | undefined, status?: ManuellTestStatus) => void;
-  doUpdateTestResultStatus: (testResultat: ResultatManuellKontroll[]) => void;
 }
 
 export interface UseTestregelSelectionResult {
@@ -95,8 +94,6 @@ export interface UseTestregelSelectionResult {
 
 export const useTestregelSelection = ({
   testreglarForLoeysing,
-  doCreateTestResult,
-  doUpdateTestResultStatus,
 }: UseTestregelSelectionDeps): UseTestregelSelectionResult => {
   // Get remaining needed state from context
   const {
@@ -109,6 +106,12 @@ export const useTestregelSelection = ({
     processData,
     raiseAlert,
   } = useTestSession();
+
+  const testResultatActions = useTestResultatActions();
+
+  const doCreateTestResult = testResultatActions.doCreateTestResult;
+  const doUpdateTestResultStatus = testResultatActions.doUpdateTestResultStatus;
+
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       const nextTestregel = testreglarForLoeysing.find(

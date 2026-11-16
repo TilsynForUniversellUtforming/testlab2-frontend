@@ -6,12 +6,10 @@ import { ElementResultat, ResultatManuellKontroll } from '@test/api/types';
 import TestRegelParamSelection from '@test/test-overview/loeysing-test/TestRegelParamSelection';
 import TestForm from '@test/testregel-form/TestForm';
 import {
-  ActiveTest,
   ManuellTestStatus,
   TestregelOverviewElement,
   TestResultUpdate,
 } from '@test/types';
-import { Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
 import React, {
   memo,
@@ -25,21 +23,13 @@ import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
 import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
+import { useTestResultatActions } from '@test/test-overview/hooks/useTestResultatActions';
 
 interface Props {
   progressionPercent: number;
   testregelList: TestregelOverviewElement[];
   onChangeTestregel: (testregelId: number) => void;
-  createNewTestResult: (
-    activeTestregel: Testregel,
-    testgrunnlagId: number,
-    loeysingId: number,
-    sideId: number
-  ) => void;
-  doUpdateTestResult: (testResultUpdate: TestResultUpdate) => void;
-  slettTestelement: (activeTest: ActiveTest, resultatId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
-  onSetPageOutCome?: (outcome: ElementResultat, testregelId:number, sideId: number) => void;
 }
 
 const chunkArray = <T extends object>(array: T[], size: number) => {
@@ -68,17 +58,21 @@ const LoeysingTestContent = memo(
     progressionPercent,
     testregelList,
      onChangeTestregel,
-    createNewTestResult,
-     doUpdateTestResult,
-    slettTestelement,
     onChangeStatus,
-    onSetPageOutCome,
   }: Props) => {
     const { testgrunnlagId, loeysingId } = useParams();
     const [itemsPerRow, setItemsPerRow] = useState(calculateItemsPerRow);
     const [showHelpText, setShowHelpText] = useState(true);
     const alertRef = useRef<HTMLDialogElement>(null);
     const [loading, setLoading] = useState(false);
+
+
+    const testResultatActions = useTestResultatActions();
+    const doUpdateTestResult = testResultatActions.doUpdateTestResult;
+    const slettTestelement = testResultatActions.slettTestelement;
+    const createNewTestResult = testResultatActions.createNewTestResult;
+    const onSetPageOutCome = testResultatActions.doSetTestregelOutcome;
+
 
     useEffect(() => {
       const handleResize = () => setItemsPerRow(calculateItemsPerRow());

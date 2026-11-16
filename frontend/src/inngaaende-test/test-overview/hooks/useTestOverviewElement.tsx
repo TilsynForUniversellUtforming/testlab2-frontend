@@ -6,26 +6,20 @@ import {
   toTestregelStatus,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { ResultatManuellKontroll } from '@test/api/types';
+import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
 
 export interface UseTestOverviewElementProps {
-  testgrunnlagId: number;
-  testResultatForLoeysing: ResultatManuellKontroll[];
   testreglarForLoeysing: Testregel[];
   testKeys: string[];
-  sideId:number,
-  innhaldstype:InnhaldstypeTesting,
-  testResults:ResultatManuellKontroll[],
 }
 
 export const useTestOverviewElement = ({
-  testgrunnlagId,
   testreglarForLoeysing,
   testKeys,
-  sideId,
-  innhaldstype,
-  testResults,
 }: UseTestOverviewElementProps) => {
+
+
+  const {sideId,innhaldstype,testgrunnlagId,testResults} = useTestSession()
   const filteredTestregel = useMemo(
     () =>
       filterTestregelByTestKeys(
