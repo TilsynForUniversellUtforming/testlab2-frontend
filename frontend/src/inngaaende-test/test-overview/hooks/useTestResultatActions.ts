@@ -18,18 +18,9 @@ import {
 import { createTestresultatAggregert } from '@resultat/resultat-api';
 import { Severity } from '@common/types';
 import { ProcessData } from '@test/test-overview/hooks/useTestResults';
+import { useTestSession } from './testSessionContext';
 
 type RaiseAlert = (severity: Severity, title: string, message: string) => void;
-
-export interface UseTestResultatActionsProps {
-  testgrunnlagId: number;
-  loeysingId: number;
-  sideId: number;
-  testResults: ResultatManuellKontroll[];
-  activeTest: ActiveTest | undefined;
-  processData: ProcessData;
-  raiseAlert: RaiseAlert;
-}
 
 export interface UseTestResultatActionsResult {
   doUpdateTestResultStatus: (testResultat: ResultatManuellKontroll[]) => void;
@@ -57,15 +48,17 @@ export interface UseTestResultatActionsResult {
   doSetTestregelOutcome: (outcome: ElementResultat,testregelId:number, sideId:number) => void;
 }
 
-export const useTestResultatActions = ({
-  testgrunnlagId,
-  loeysingId,
-  sideId,
-  testResults,
-  activeTest,
-  processData,
-  raiseAlert,
-}: UseTestResultatActionsProps): UseTestResultatActionsResult => {
+export const useTestResultatActions = (): UseTestResultatActionsResult => {
+  // Get all needed state from context
+  const {
+    testgrunnlagId,
+    loeysingId,
+    sideId,
+    testResults,
+    activeTest,
+    processData,
+    raiseAlert
+  } = useTestSession();
   const refreshTestResults = useCallback(
     async (activeTestregel?: Testregel) => {
       const alleResultater = await fetchTestResults(testgrunnlagId);

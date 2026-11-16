@@ -7,6 +7,7 @@ import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
 import { useCallback, useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
+import { TestSessionProvider, useTestSession } from '@test/test-overview/hooks/testSessionContext';
 
 
 const TestOverviewLoeysing = () => {
@@ -29,6 +30,53 @@ const TestOverviewLoeysing = () => {
   } = useLoaderData() as TestOverviewLoaderResponse;
   const [alert, raiseAlert, modalRef] = useAlertModal();
 
+  return (
+    <TestSessionProvider
+      testgrunnlagId={testgrunnlagId}
+      loeysingId={loeysingId}
+      innhaldstypeList={innhaldstypeList}
+      sideutvalTypeList={sideutvalTypeList}
+      testResultatForLoeysing={testResultatForLoeysing}
+      sideutvalForLoeysing={sideutvalForLoeysing}
+      testreglarForLoeysing={testreglarForLoeysing}
+      testKeys={testKeys}
+      raiseAlert={raiseAlert}
+    >
+      <TestOverviewLoeysingSContent
+        activeLoeysing={activeLoeysing}
+        kontrollTitle={kontrollTitle}
+        testreglarForLoeysing={testreglarForLoeysing}
+        testKeys={testKeys}
+        innhaldstypeList={innhaldstypeList}
+        alert={alert}
+        modalRef={modalRef}
+      />
+    </TestSessionProvider>
+  );
+};
+
+interface TestOverviewLoeysingSContentProps {
+  activeLoeysing: any;
+  kontrollTitle: string;
+  testreglarForLoeysing: any[];
+  testKeys: string[];
+  innhaldstypeList: any[];
+  alert: any;
+  modalRef: React.RefObject<HTMLDialogElement>;
+}
+
+const TestOverviewLoeysingSContent = ({
+  activeLoeysing,
+  kontrollTitle,
+  testreglarForLoeysing,
+  testKeys,
+  innhaldstypeList,
+  alert,
+  modalRef,
+}: TestOverviewLoeysingSContentProps) => {
+  // Get IDs from context
+  const { testgrunnlagId, loeysingId } = useTestSession();
+
   const {
     innhaldstype,
     onChangeInnhaldstype,
@@ -47,15 +95,9 @@ const TestOverviewLoeysing = () => {
     createNewTestResult,
     doSetTestregelOutcome,
   } = useTestOverviewState({
-    testgrunnlagId,
-    loeysingId,
-    innhaldstypeList,
-    sideutvalTypeList,
-    testResultatForLoeysing,
-    sideutvalForLoeysing,
     testreglarForLoeysing,
     testKeys,
-    raiseAlert,
+    innhaldstypeList,
   });
 
   const handleSetInactiveTest = useCallback(() => {

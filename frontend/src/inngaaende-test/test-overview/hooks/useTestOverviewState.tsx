@@ -14,20 +14,15 @@ import { usePageType } from '@test/test-overview/hooks/usePageType';
 import { useTestResults } from '@test/test-overview/hooks/useTestResults';
 import { useTestResultatActions } from '@test/test-overview/hooks/useTestResultatActions';
 import { useTestregelSelection } from '@test/test-overview/hooks/useTestregelSelection';
+import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
+import { useTestOverviewElement } from '@test/test-overview/hooks/useTestOverviewElement';
 import { Severity } from '@common/types';
 import { ManuellTestStatus } from '@test/types';
-import { useTestOverviewElement } from '@test/test-overview/hooks/useTestOverviewElement';
 
 export interface UseTestOverviewStateProps {
-  testgrunnlagId: number;
-  loeysingId: number;
-  innhaldstypeList: InnhaldstypeTesting[];
-  sideutvalTypeList: SideutvalType[];
-  testResultatForLoeysing: ResultatManuellKontroll[];
-  sideutvalForLoeysing: Sideutval[];
   testreglarForLoeysing: Testregel[];
   testKeys: string[];
-  raiseAlert: (severity: Severity, title: string, message: string) => void;
+  innhaldstypeList: InnhaldstypeTesting[];
 }
 
 export interface UseTestOverviewStateResult {
@@ -51,32 +46,26 @@ export interface UseTestOverviewStateResult {
 }
 
 export const useTestOverviewState = ({
-  testgrunnlagId,
-  loeysingId,
-  innhaldstypeList,
-  sideutvalTypeList,
-  testResultatForLoeysing,
-  sideutvalForLoeysing,
   testreglarForLoeysing,
   testKeys,
-  raiseAlert,
+  innhaldstypeList,
 }: UseTestOverviewStateProps): UseTestOverviewStateResult => {
-  const [innhaldstype, setInnhaldstype] = useState(innhaldstypeList[0]);
-
-  const { testResults, activeTest, setActiveTest, processData } = useTestResults({
-    loeysingId,
-    testResultatForLoeysing,
-  });
-
-  const { pageTypeList, pageType, sideId, onChangeSideutval } = usePageType({
-    sideutvalForLoeysing,
-    sideutvalTypeList,
-    onSideutvalNotFound: () =>
-      raiseAlert('danger', 'Kan ikkje velje sideutval', 'Ugylig sideutval'),
-    onSideutvalChanged: () => {
-      setActiveTest(undefined);
-    },
-  });
+  // Get all shared state from context
+  const {
+    testgrunnlagId,
+    sideId,
+    innhaldstype,
+    setInnhaldstype,
+    pageType,
+    pageTypeList,
+    onChangeSideutval,
+    activeTest,
+    setActiveTest,
+    testResults,
+    testStatusMap,
+    processData,
+    raiseAlert,
+  } = useTestSession();
 
   const progressionPercent = useMemo(
     () =>
@@ -89,11 +78,9 @@ export const useTestOverviewState = ({
     [testreglarForLoeysing, testResults, sideId, innhaldstype]
   );
 
-
-
-  const { testregelListElements, testStatusMap } = useTestOverviewElement({
+  const { testregelListElements } = useTestOverviewElement({
     testgrunnlagId,
-    testResultatForLoeysing,
+    testResultatForLoeysing: testResults,
     testreglarForLoeysing,
     testKeys,
     sideId,
@@ -102,8 +89,8 @@ export const useTestOverviewState = ({
   });
 
   const testFerdig = useMemo(
-    () => isTestFinished(testResultatForLoeysing, testKeys),
-    [testResultatForLoeysing, testKeys]
+    () => isTestFinished(testResults, testKeys),
+    [testResults, testKeys]
   );
 
   const onChangeInnhaldstype = useCallback(
@@ -116,37 +103,21 @@ export const useTestOverviewState = ({
         raiseAlert(
           'danger',
           'Kan ikkje velje innhaldstype',
-          'Ugylig innhaldstype'
+          'Ugyldig innhaldstype'
         );
       }
     },
-    [innhaldstypeList, raiseAlert, setActiveTest]
+    [innhaldstypeList, raiseAlert, setInnhaldstype, setActiveTest]
   );
 
-  const testResultatActions = useTestResultatActions({
-    testgrunnlagId,
-    loeysingId,
-    sideId,
-    testResults,
-    activeTest,
-    processData,
-    raiseAlert,
-  });
+  // Get actions - now using context internally, no props needed
+  const testResultatActions = useTestResultatActions();
 
+  // Get selection - simplified props
   const testregelSelection = useTestregelSelection({
-    testgrunnlagId,
-    sideId,
-    testResults,
-    testStatusMap,
     testreglarForLoeysing,
-    activeTest,
-    setActiveTest,
-    testregelActions: {
-      createResult: testResultatActions.doCreateTestResult,
-      updateStatus: testResultatActions.doUpdateTestResultStatus,
-    },
-    processData,
-    raiseAlert,
+    doCreateTestResult: testResultatActions.doCreateTestResult,
+    doUpdateTestResultStatus: testResultatActions.doUpdateTestResultStatus,
   });
 
   return {
