@@ -72,8 +72,7 @@ class TestResource(
                 "Lagrer nytt testresultat med : {}, testregelId: {}, sideutalId: {}",
                 createTestResultat,
                 createTestResultat.testregelId,
-                createTestResultat.sideutvalId
-            )
+                createTestResultat.sideutvalId)
             val testResultat =
                 testresultatAPIClient.createTestResultat(createTestResultat).getOrThrow()
             testResultat
