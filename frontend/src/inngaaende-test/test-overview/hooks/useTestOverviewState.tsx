@@ -16,6 +16,7 @@ import { useTestResultatActions } from '@test/test-overview/hooks/useTestResulta
 import { useTestregelSelection } from '@test/test-overview/hooks/useTestregelSelection';
 import { Severity } from '@common/types';
 import { ManuellTestStatus } from '@test/types';
+import { useTestOverviewElement } from '@test/test-overview/hooks/useTestOverviewElement';
 
 export interface UseTestOverviewStateProps {
   testgrunnlagId: number;
@@ -90,46 +91,15 @@ export const useTestOverviewState = ({
 
 
 
-  const filteredTestregel = useMemo(
-    () =>
-      filterTestregelByTestKeys(
-        testreglarForLoeysing,
-        innhaldstype,
-        testKeys,
-        sideId
-      ),
-    [testreglarForLoeysing, innhaldstype, testKeys, sideId]
-  );
-
-  const testStatusMap = useMemo(
-    () =>
-      toTestregelStatus(
-        filteredTestregel,
-        testResults,
-        testgrunnlagId,
-        sideId
-      ),
-    [filteredTestregel, testResults, testgrunnlagId, sideId]
-  );
-
-  const testregelListElements = useMemo(
-    () =>
-      mapTestregelOverviewElements(
-        testreglarForLoeysing,
-        sideId,
-        testStatusMap,
-        testgrunnlagId,
-        testResults
-      ),
-    [
-      testreglarForLoeysing,
-      sideId,
-      testgrunnlagId,
-      testStatusMap,
-      testResults,
-    ]
-  );
-
+  const { testregelListElements, testStatusMap } = useTestOverviewElement({
+    testgrunnlagId,
+    testResultatForLoeysing,
+    testreglarForLoeysing,
+    testKeys,
+    sideId,
+    innhaldstype,
+    testResults,
+  });
 
   const testFerdig = useMemo(
     () => isTestFinished(testResultatForLoeysing, testKeys),

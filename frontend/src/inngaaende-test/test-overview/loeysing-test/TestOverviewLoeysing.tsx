@@ -40,7 +40,6 @@ const TestOverviewLoeysing = () => {
     testFerdig,
     progressionPercent,
     testregelListElements,
-    testStatusMap,
     doUpdateTestResult,
     onChangeTestregel,
     onChangeTestregelStatus,
@@ -91,7 +90,6 @@ const TestOverviewLoeysing = () => {
             sideutval={pageType}
             innhaldstype={innhaldstype}
             progressionPercent={progressionPercent}
-            testStatusMap={testStatusMap}
             testregelList={testregelListElements}
             activeTest={activeTest}
             clearActiveTestregel={handleSetInactiveTest}

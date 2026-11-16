@@ -23,28 +23,7 @@ export const progressionForSelection = (
   ).size;
   return toPercent(numFinished, testregelIds.length);
 };
-export const getPageTypeList = (
-  sideutvalList: Sideutval[],
-  sideutvalType: SideutvalType[]
-): PageType[] =>
-  sideutvalList.reduce((acc: PageType[], su) => {
-    let label: string;
-    if (su.egendefinertType && su.egendefinertType.length > 0) {
-      label = `Egendefinert: ${su.egendefinertType}`;
-    } else {
-      const type = sideutvalType.find((sut) => sut.id === su.typeId)?.type ?? '';
-      const typeCount = acc.filter((item) => item.pageType.startsWith(type)).length;
-      label = typeCount > 0 ? `${type} ${typeCount + 1}` : type;
-    }
-    acc.push({ sideId: su.id, pageType: label, url: su.url });
-    return acc;
-  }, []);
 
-export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
-  const first = pageTypeList[0];
-  if (isNotDefined(first)) throw new Error('Det finns ikkje sideutval for test');
-  return pageTypeList.find((su) => su.pageType.toLowerCase() === 'forside') ?? first;
-};
 
 export const innhaldstypeAlle: InnhaldstypeTesting = { id: 0, innhaldstype: 'Alle' };
 

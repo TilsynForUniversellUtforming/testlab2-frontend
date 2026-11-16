@@ -30,7 +30,6 @@ interface Props {
   sideutval: PageType;
   innhaldstype: InnhaldstypeTesting;
   progressionPercent: number;
-  testStatusMap: Map<string, ManuellTestStatus>;
   testregelList: TestregelOverviewElement[];
   activeTest: ActiveTest | undefined;
   clearActiveTestregel: () => void;
@@ -76,8 +75,7 @@ const LoeysingTestContent = memo(
     clearActiveTestregel,
     onChangeTestregel,
     createNewTestResult,
-    testStatusMap,
-    doUpdateTestResult,
+     doUpdateTestResult,
     slettTestelement,
     onChangeStatus,
     onSetPageOutCome,
@@ -97,6 +95,7 @@ const LoeysingTestContent = memo(
     useEffect(() => {
       setLoading(false);
     }, [activeTest?.testResultList]);
+
 
     const chunkedTestregelList = useMemo(
       () => chunkArray(testregelList, itemsPerRow),
@@ -181,12 +180,9 @@ const LoeysingTestContent = memo(
                 key={rowKey}
               >
                 <TestregelButtonList
-                  row={row}
+                  TestregelOverviewRow={row}
                   activeTest={activeTest}
                   onChangeTestregel={onChangeTestregel}
-                  testStatusMap={testStatusMap}
-                  testgrunnlagId={testgrunnlagId}
-                  sideId={sideutval.sideId}
                   onChangeStatus={onChangeStatus}
                   onSetSideUtfall={onChangeSideUtfall}
                 />
