@@ -16,17 +16,15 @@ export type ManuellTestStatus =
   | 'under-arbeid'
   | 'ikkje-starta'
   | 'samsvar';
-
-export type UtfallSide = "samsvar" | "ikkje-forekomst"
-
-
-
 export type ButtonStatus = ManuellTestStatus | 'aktiv';
 
 export type TestregelOverviewElement = {
-  id: number;
   name: string;
   krav: string;
+  testregelId: number;
+  status: ManuellTestStatus;
+  sideutvalId: number;
+  sideutfall?:ElementResultat;
 };
 
 export type PageType = {

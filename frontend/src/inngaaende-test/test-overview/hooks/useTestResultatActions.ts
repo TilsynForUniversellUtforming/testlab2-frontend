@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { mapStatus } from '@test/util/testregelUtils';
 import { Testregel } from '@testreglar/api/types';
-import { ActiveTest, ManuellTestStatus, TestResultUpdate, UtfallSide } from '@test/types';
+import { ActiveTest, ManuellTestStatus, TestResultUpdate } from '@test/types';
 import {
   CreateTestResultat,
   elementOmtaleSide, ElementResultat,

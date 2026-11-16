@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
+  filterTestregelByTestKeys,
   isTestFinished,
   mapTestregelOverviewElements,
   progressionForSelection,
@@ -87,27 +88,48 @@ export const useTestOverviewState = ({
     [testreglarForLoeysing, testResults, sideId, innhaldstype]
   );
 
-  const testregelListElements = useMemo(
+
+
+  const filteredTestregel = useMemo(
     () =>
-      mapTestregelOverviewElements(
+      filterTestregelByTestKeys(
         testreglarForLoeysing,
         innhaldstype,
-        sideId,
-        testKeys
+        testKeys,
+        sideId
       ),
-    [testreglarForLoeysing, innhaldstype, sideId, testKeys]
+    [testreglarForLoeysing, innhaldstype, testKeys, sideId]
   );
 
   const testStatusMap = useMemo(
     () =>
       toTestregelStatus(
-        testregelListElements,
+        filteredTestregel,
         testResults,
         testgrunnlagId,
         sideId
       ),
-    [testregelListElements, testResults, testgrunnlagId, sideId]
+    [filteredTestregel, testResults, testgrunnlagId, sideId]
   );
+
+  const testregelListElements = useMemo(
+    () =>
+      mapTestregelOverviewElements(
+        testreglarForLoeysing,
+        sideId,
+        testStatusMap,
+        testgrunnlagId,
+        testResults
+      ),
+    [
+      testreglarForLoeysing,
+      sideId,
+      testgrunnlagId,
+      testStatusMap,
+      testResults,
+    ]
+  );
+
 
   const testFerdig = useMemo(
     () => isTestFinished(testResultatForLoeysing, testKeys),

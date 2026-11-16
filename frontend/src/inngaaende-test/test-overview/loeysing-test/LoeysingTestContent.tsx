@@ -172,7 +172,7 @@ const LoeysingTestContent = memo(
         />
         <div>
           {chunkedTestregelList.map((row) => {
-            const rowKey = row.map((tr) => tr.id).join('-');
+            const rowKey = row.map((tr) => tr.testregelId).join('-');
             return (
               <div
                 className={classNames('testregel-row', {
@@ -191,7 +191,7 @@ const LoeysingTestContent = memo(
                   onSetSideUtfall={onChangeSideUtfall}
                 />
 
-                {row.some((tr) => tr.id === Number(activeTest?.testregel.id)) &&
+                {row.some((tr) => tr.testregelId === Number(activeTest?.testregel.id)) &&
                   activeTest &&
                   activeTest.testResultList.length > 0 && (
                     <div

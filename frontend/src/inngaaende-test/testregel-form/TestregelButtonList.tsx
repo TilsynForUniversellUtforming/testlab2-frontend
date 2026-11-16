@@ -22,9 +22,6 @@ const TestregelButtonList = ({
   row,
   activeTest,
   onChangeTestregel,
-  testStatusMap,
-  testgrunnlagId,
-  sideId,
   onChangeStatus,
   onSetSideUtfall,
 }: Props) => {
@@ -32,16 +29,12 @@ const TestregelButtonList = ({
     <div className="testregel-container">
       {row.map((tr) => (
         <TestregelButton
-          isActive={tr.id === Number(activeTest?.testregel.id)}
-          key={tr.id}
+          isActive={tr.testregelId === Number(activeTest?.testregel.id)}
+          key={tr.testregelId}
           testregel={tr}
-          sideId={sideId}
+          sideId={tr.sideutvalId}
           onClick={onChangeTestregel}
-          status={
-            testStatusMap.get(
-              toTestregelStatusKey(Number(testgrunnlagId), tr.id, sideId)
-            ) ?? 'ikkje-starta'
-          }
+          status={tr.status}
           onChangeStatus={onChangeStatus}
           onSetSideUtfall={onSetSideUtfall}
         />

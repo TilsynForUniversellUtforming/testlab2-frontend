@@ -28,10 +28,8 @@ const TestregelButton = memo(
     onClick,
     testregel,
     isActive,
-    status,
     onChangeStatus,
-    onSetSideUtfall,
-     sideId
+    onSetSideUtfall
   }: Props) => {
     return (
       <div
@@ -43,19 +41,19 @@ const TestregelButton = memo(
           className={classnames(
             styles.testregelButton,
             isActive && styles.active,
-            status !== 'ikkje-starta' && styles[status]
+            testregel.status !== 'ikkje-starta' && styles[testregel.status]
           )}
-          onClick={() => onClick(testregel.id)}
+          onClick={() => onClick(testregel.testregelId)}
           title={`${testregel.krav} ${testregel.name}`}
         >
           <div className={styles.testregelButtonId}>
             <div className={styles.idTextWrapper}>
               <div className="krav">
-                {testregel.krav} id: {testregel.id}
+                {testregel.krav} id: {testregel.testregelId}
               </div>
-              {(status !== 'ikkje-starta' || isActive) && (
+              {(testregel.status !== 'ikkje-starta' || isActive) && (
                 <div className={styles.status}>
-                  {isActive ? 'Aktiv' : sanitizeEnumLabel(status)}
+                  {isActive ? 'Aktiv' : sanitizeEnumLabel(testregel.status)}
                 </div>
               )}
             </div>
@@ -66,15 +64,13 @@ const TestregelButton = memo(
         </button>
         <div className={styles.statusDropdowns}>
           <TestregelStatusDropdown
-            status={status}
+            status={testregel.status}
             onChangeStatus={onChangeStatus}
-            testregelId={testregel.id}
+            testregelId={testregel.testregelId}
           />
           <TestregelUtfallButton
-            status={status}
             onChangeStatus={onSetSideUtfall}
-            testregelId={testregel.id}
-            sideId={sideId}
+            testoverviewElement={testregel}
           />
         </div>
       </div>

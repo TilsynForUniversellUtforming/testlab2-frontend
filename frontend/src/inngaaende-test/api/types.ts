@@ -1,5 +1,6 @@
 import { finnSvar, TestregelResultat } from '@test/util/testregelParser';
 import { Testregel } from '@testreglar/api/types';
+import { ManuellTestStatus } from '@test/types';
 
 export type Svar = {
   steg: string;
@@ -41,6 +42,15 @@ export type TestElement = {
   elementUtfallId?: number;
   elementPlassering?: string;
 };
+
+export type TestObject = {
+  testregelId: number;
+  sideutvalId: number;
+  loeysingId: number;
+  testresultat: ResultatManuellKontroll[],
+  status: ManuellTestStatus,
+  sideutfall?:ElementResultat
+}
 
 export type ResultatStatus =
   | 'Ferdig'
