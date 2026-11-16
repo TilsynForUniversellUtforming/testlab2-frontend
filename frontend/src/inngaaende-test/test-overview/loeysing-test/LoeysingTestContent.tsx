@@ -8,11 +8,10 @@ import TestForm from '@test/testregel-form/TestForm';
 import {
   ActiveTest,
   ManuellTestStatus,
-  PageType,
   TestregelOverviewElement,
   TestResultUpdate,
 } from '@test/types';
-import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
+import { Testregel } from '@testreglar/api/types';
 import classNames from 'classnames';
 import React, {
   memo,
@@ -25,14 +24,11 @@ import React, {
 import { useParams } from 'react-router';
 import TestregelButtonList from '@test/testregel-form/TestregelButtonList';
 import TestFormForenklaList from '@test/testregel-form/testform-forenkla/TestFormForenklaList';
+import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
 
 interface Props {
-  sideutval: PageType;
-  innhaldstype: InnhaldstypeTesting;
   progressionPercent: number;
   testregelList: TestregelOverviewElement[];
-  activeTest: ActiveTest | undefined;
-  clearActiveTestregel: () => void;
   onChangeTestregel: (testregelId: number) => void;
   createNewTestResult: (
     activeTestregel: Testregel,
@@ -65,15 +61,13 @@ function alleHarUtfall(resultater: ResultatManuellKontroll[]) {
   return resultater.every((r) => r.element?.elementUtfall != null);
 }
 
+
+
 const LoeysingTestContent = memo(
   ({
-    sideutval,
-    innhaldstype,
     progressionPercent,
     testregelList,
-    activeTest,
-    clearActiveTestregel,
-    onChangeTestregel,
+     onChangeTestregel,
     createNewTestResult,
      doUpdateTestResult,
     slettTestelement,
@@ -92,9 +86,17 @@ const LoeysingTestContent = memo(
       return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const { pageType, innhaldstype, activeTest,setActiveTest } = useTestSession();
+
+    const handleSetInactiveTest = useCallback(() => {
+      setActiveTest(undefined);
+    }, [setActiveTest]);
+
+
     useEffect(() => {
       setLoading(false);
     }, [activeTest?.testResultList]);
+
 
 
     const chunkedTestregelList = useMemo(
@@ -103,8 +105,8 @@ const LoeysingTestContent = memo(
     );
 
     const onClickSave = useCallback(() => {
-      clearActiveTestregel();
-    }, [clearActiveTestregel]);
+      handleSetInactiveTest();
+    }, [handleSetInactiveTest]);
 
     const toggleShowHelpText = useCallback(
       () => setShowHelpText((prev) => !prev),
@@ -120,7 +122,7 @@ const LoeysingTestContent = memo(
           activeTest.testregel,
           Number(testgrunnlagId),
           Number(loeysingId),
-          sideutval.sideId
+          pageType.sideId
         );
       } else {
         alertRef.current?.showModal();
@@ -130,7 +132,7 @@ const LoeysingTestContent = memo(
       createNewTestResult,
       testgrunnlagId,
       loeysingId,
-      sideutval.sideId,
+      pageType.sideId,
     ]);
 
     const handleUpdateResult = useCallback(
@@ -152,7 +154,7 @@ const LoeysingTestContent = memo(
       (resultat: ElementResultat, testregelId:number, sideutvalId:number) => {
         onSetPageOutCome?.(resultat, testregelId, sideutvalId);
       },
-      [activeTest, onSetPageOutCome, sideutval.sideId]
+      [activeTest, onSetPageOutCome, pageType.sideId]
     );
 
     const isForenkla = activeTest?.testregel.modus === 'manuell-forenkla';
@@ -162,12 +164,12 @@ const LoeysingTestContent = memo(
     return (
       <>
         <TestRegelParamSelection
-          pageType={sideutval.pageType}
+          pageType={pageType.pageType}
           innhaldstype={innhaldstype.innhaldstype}
           progressionPercent={progressionPercent}
           toggleShowHelpText={toggleShowHelpText}
           showHelpText={showHelpText}
-          url={sideutval.url}
+          url={pageType.url}
         />
         <div>
           {chunkedTestregelList.map((row) => {

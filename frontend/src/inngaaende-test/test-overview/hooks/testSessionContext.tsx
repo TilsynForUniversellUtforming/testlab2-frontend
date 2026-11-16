@@ -29,13 +29,14 @@ export interface TestSessionContextType {
 
   // Test State
   activeTest: ActiveTest | undefined;
-  setActiveTest: (test: ActiveTest | undefined) => void;
+  setActiveTest: React.Dispatch<React.SetStateAction<ActiveTest | undefined>>;
   testResults: ResultatManuellKontroll[];
   testStatusMap: Map<string, ManuellTestStatus>;
 
   // Callbacks & Actions
   processData: ProcessData;
   raiseAlert: (severity: Severity, title: string, message: string) => void;
+
 }
 
 const TestSessionContext = createContext<TestSessionContextType | null>(null);

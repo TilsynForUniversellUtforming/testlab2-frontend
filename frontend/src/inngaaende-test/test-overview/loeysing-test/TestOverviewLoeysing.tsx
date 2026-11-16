@@ -4,7 +4,7 @@ import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestC
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
 import { TestSessionProvider, useTestSession } from '@test/test-overview/hooks/testSessionContext';
@@ -62,7 +62,7 @@ interface TestOverviewLoeysingSContentProps {
   testKeys: string[];
   innhaldstypeList: any[];
   alert: any;
-  modalRef: React.RefObject<HTMLDialogElement>;
+  modalRef: React.RefObject<HTMLDialogElement | null>;
 }
 
 const TestOverviewLoeysingSContent = ({
@@ -74,17 +74,10 @@ const TestOverviewLoeysingSContent = ({
   alert,
   modalRef,
 }: TestOverviewLoeysingSContentProps) => {
-  // Get IDs from context
-  const { testgrunnlagId, loeysingId } = useTestSession();
 
   const {
-    innhaldstype,
     onChangeInnhaldstype,
-    pageType,
-    pageTypeList,
     onChangeSideutval,
-    activeTest,
-    setActiveTest,
     testFerdig,
     progressionPercent,
     testregelListElements,
@@ -100,9 +93,6 @@ const TestOverviewLoeysingSContent = ({
     innhaldstypeList,
   });
 
-  const handleSetInactiveTest = useCallback(() => {
-    setActiveTest(undefined);
-  }, [setActiveTest]);
 
   useEffect(() => {
     if (alert) {
@@ -116,25 +106,16 @@ const TestOverviewLoeysingSContent = ({
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={activeLoeysing.namn}
-        sideutvalList={pageTypeList}
-        sideutval={pageType}
         onChangeSideutval={onChangeSideutval}
         innhaldstypeList={innhaldstypeList}
-        innhaldstype={innhaldstype}
         onChangeInnhaldstype={onChangeInnhaldstype}
-        testgrunnlagId={testgrunnlagId}
-        currentLoeysingId={loeysingId}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
       <div className="manual-test-wrapper">
         <div className="manual-test-buttons">
           <LoeysingTestContent
-            sideutval={pageType}
-            innhaldstype={innhaldstype}
             progressionPercent={progressionPercent}
             testregelList={testregelListElements}
-            activeTest={activeTest}
-            clearActiveTestregel={handleSetInactiveTest}
             onChangeTestregel={onChangeTestregel}
             createNewTestResult={createNewTestResult}
             doUpdateTestResult={doUpdateTestResult}

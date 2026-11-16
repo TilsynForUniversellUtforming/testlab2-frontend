@@ -1,14 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
-  filterTestregelByTestKeys,
   isTestFinished,
   mapTestregelOverviewElements,
   progressionForSelection,
-  toTestregelStatus,
 } from '@test/util/testregelUtils';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
-import { Sideutval, SideutvalType } from '../../../kontroll/sideutval/types';
-import { ResultatManuellKontroll } from '@test/api/types';
 
 import { usePageType } from '@test/test-overview/hooks/usePageType';
 import { useTestResults } from '@test/test-overview/hooks/useTestResults';
@@ -16,7 +12,6 @@ import { useTestResultatActions } from '@test/test-overview/hooks/useTestResulta
 import { useTestregelSelection } from '@test/test-overview/hooks/useTestregelSelection';
 import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
 import { useTestOverviewElement } from '@test/test-overview/hooks/useTestOverviewElement';
-import { Severity } from '@common/types';
 import { ManuellTestStatus } from '@test/types';
 
 export interface UseTestOverviewStateProps {
@@ -63,7 +58,6 @@ export const useTestOverviewState = ({
     setActiveTest,
     testResults,
     testStatusMap,
-    processData,
     raiseAlert,
   } = useTestSession();
 
