@@ -5,11 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:ssr": "node ./server.mjs",
-    "build": "npm run build:ssr",
-    "build:ssr": "vite build --outDir dist/client && vite build --ssr src/entry.server.tsx --outDir dist/server",
-    "preview": "NODE_ENV=production node ./server.mjs",
-    "preview:ssr": "NODE_ENV=production node ./server.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
     "lint": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore;prettier  --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\"",
@@ -87,8 +84,5 @@
     "*.{html,css,less,ejs,scss}": [
       "prettier --write"
     ]
-  },
-  "overrides": {
-    "minimatch": "11.0.5"
   }
 }
