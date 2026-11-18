@@ -1,3 +1,4 @@
+import { ElementResultat } from "@test/api/types";
 import TestregelButton from '@test/test-overview/loeysing-test/button/TestregelButton';
 import {
   ActiveTest,
@@ -7,38 +8,32 @@ import {
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 
 interface Props {
-  row: TestregelOverviewElement[];
+  TestregelOverviewRow: TestregelOverviewElement[];
   activeTest: ActiveTest | undefined;
   onChangeTestregel: (testregelId: number) => void;
-  testStatusMap: Map<string, ManuellTestStatus>;
-  testgrunnlagId: string | undefined;
-  sideId: number;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
+  onSetSideUtfall: (status: ElementResultat, testregelId: number,sideId:number) => void;
 }
 
 const TestregelButtonList = ({
-  row,
+  TestregelOverviewRow,
   activeTest,
   onChangeTestregel,
-  testStatusMap,
-  testgrunnlagId,
-  sideId,
   onChangeStatus,
+  onSetSideUtfall,
 }: Props) => {
   return (
     <div className="testregel-container">
-      {row.map((tr) => (
+      {TestregelOverviewRow.map((tr) => (
         <TestregelButton
-          isActive={tr.id === Number(activeTest?.testregel.id)}
-          key={tr.id}
+          isActive={tr.testregelId === Number(activeTest?.testregel.id)}
+          key={tr.testregelId}
           testregel={tr}
+          sideId={tr.sideutvalId}
           onClick={onChangeTestregel}
-          status={
-            testStatusMap.get(
-              toTestregelStatusKey(Number(testgrunnlagId), tr.id, sideId)
-            ) ?? 'ikkje-starta'
-          }
+          status={tr.status}
           onChangeStatus={onChangeStatus}
+          onSetSideUtfall={onSetSideUtfall}
         />
       ))}
     </div>

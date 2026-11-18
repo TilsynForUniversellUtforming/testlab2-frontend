@@ -1,13 +1,8 @@
 import { toUnique } from '@common/util/arrayUtils';
 import { capitalize } from '@common/util/stringutils';
 import { isNotDefined } from '@common/util/validationUtils';
-import { ResultatManuellKontroll, ResultatStatus } from '@test/api/types';
-import {
-  ManuellTestStatus,
-  PageType,
-  Testgrunnlag,
-  TestregelOverviewElement,
-} from '@test/types';
+import { elementOmtaleSide, ElementResultat, ResultatManuellKontroll, ResultatStatus, } from '@test/api/types';
+import { ManuellTestStatus, PageType, Testgrunnlag, TestregelOverviewElement, } from '@test/types';
 import { InnhaldstypeTesting, Testregel } from '@testreglar/api/types';
 import { filterFerdig } from '@test/test-overview/util/testOverviewUtils';
 import { Sideutval, SideutvalType } from '../../kontroll/sideutval/types';
@@ -29,28 +24,6 @@ export const progressionForSelection = (
   return toPercent(numFinished, testregelIds.length);
 };
 
-export const getPageTypeList = (
-  sideutvalList: Sideutval[],
-  sideutvalType: SideutvalType[]
-): PageType[] =>
-  sideutvalList.reduce((acc: PageType[], su) => {
-    let label: string;
-    if (su.egendefinertType && su.egendefinertType.length > 0) {
-      label = `Egendefinert: ${su.egendefinertType}`;
-    } else {
-      const type = sideutvalType.find((sut) => sut.id === su.typeId)?.type ?? '';
-      const typeCount = acc.filter((item) => item.pageType.startsWith(type)).length;
-      label = typeCount > 0 ? `${type} ${typeCount + 1}` : type;
-    }
-    acc.push({ sideId: su.id, pageType: label, url: su.url });
-    return acc;
-  }, []);
-
-export const getInitialPageType = (pageTypeList: PageType[]): PageType => {
-  const first = pageTypeList[0];
-  if (isNotDefined(first)) throw new Error('Det finns ikkje sideutval for test');
-  return pageTypeList.find((su) => su.pageType.toLowerCase() === 'forside') ?? first;
-};
 
 export const innhaldstypeAlle: InnhaldstypeTesting = { id: 0, innhaldstype: 'Alle' };
 
@@ -83,7 +56,7 @@ const deriveTestregelStatus = (
 };
 
 export const toTestregelStatus = (
-  testregelList: TestregelOverviewElement[],
+  testregelList: Testregel[],
   testResults: ResultatManuellKontroll[],
   testgrunnlagId: number,
   sideutvalId: number
@@ -91,16 +64,20 @@ export const toTestregelStatus = (
   new Map(
     testregelList.map((testregel) => [
       toTestregelStatusKey(testgrunnlagId, testregel.id, sideutvalId),
-      // TODO - Slett når ResultatManuellKontroll har statusfelt
       deriveTestregelStatus(findActiveTestResults(testResults, testgrunnlagId, testregel.id, sideutvalId)),
     ])
   );
 
-const toTestregelOverviewElement = ({ id, namn, testregelId }: Testregel): TestregelOverviewElement => {
-  const match = RegExp(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/).exec(
+const toTestregelOverviewElement = (
+  { id, namn, testregelId }: Testregel,
+  sideutfall: ElementResultat | undefined,
+  sideutvalId: number,
+  status: ManuellTestStatus
+): TestregelOverviewElement => {
+  const match = new RegExp(/^((Nett-|App-)?\d+\.\d+\.\d+([a-z])?)\s+(.*)$/).exec(
     namn
   );
-  return { id, name: match ? match[4] : namn, krav: capitalize(testregelId) };
+  return { sideutfall, sideutvalId, status, testregelId: id, name: match ? match[4] : namn, krav: capitalize(testregelId) };
 };
 
 export const filterTestregelByInnhaldstype = (
@@ -111,15 +88,46 @@ export const filterTestregelByInnhaldstype = (
     (tr) => innhaldstype.innhaldstype === 'Alle' || tr.innhaldstypeTesting?.id === innhaldstype.id
   );
 
-export const mapTestregelOverviewElements = (
+
+export const filterTestregelByTestKeys = (
   testregelList: Testregel[],
   innhaldstype: InnhaldstypeTesting,
+  testKeys: string[],
+  sideutvalId: number
+): Testregel[] => {
+  return filterTestregelByInnhaldstype(testregelList, innhaldstype).filter(
+    (tr) => testKeys.includes(toTestKey(tr.id, sideutvalId))
+  );
+};
+
+export const mapTestregelOverviewElements = (
+  testregelList: Testregel[],
   sideutvalId: number,
-  testKeys: string[]
-) =>
-  filterTestregelByInnhaldstype(testregelList, innhaldstype)
-    .filter((tr) => testKeys.includes(toTestKey(tr.id, sideutvalId)))
-    .map(toTestregelOverviewElement);
+  testStatusMap: Map<string, ManuellTestStatus>,
+  testgrunnlagId:number,
+  testresults: ResultatManuellKontroll[]
+) => {
+  return testregelList.map((testregel) => {
+    const status =
+      testStatusMap.get(
+        toTestregelStatusKey(testgrunnlagId, testregel.id, sideutvalId)
+      ) ?? 'ikkje-starta';
+    const sideUtfall = testresults.find(
+      (tr) =>
+        tr.testgrunnlagId === testgrunnlagId &&
+        tr.testregelId === testregel.id &&
+        tr.sideutvalId === sideutvalId &&
+        tr.element?.elementOmtale === elementOmtaleSide
+    );
+
+    return toTestregelOverviewElement(
+      testregel,
+      sideUtfall?.element?.elementResultat,
+      sideutvalId,
+      status
+    );
+  });
+}
 
 export function findActiveTestResults(
   testResults: ResultatManuellKontroll[],
@@ -141,9 +149,13 @@ export const getInnhaldstypeInTest = (innhaldstypeList: InnhaldstypeTesting[]) =
 export const mapStatus = (frontendState: ManuellTestStatus): ResultatStatus => {
   switch (frontendState) {
     case 'ferdig': return 'Ferdig';
-    case 'deaktivert': return 'Deaktivert';
     case 'under-arbeid': return 'UnderArbeid';
     case 'ikkje-starta': return 'IkkjePaabegynt';
+    case 'samsvar': return 'Ferdig';
+    case 'ikkje-forekomst': return 'Ferdig';
+    default: {
+      throw new Error(`Ukjent frontendState: ${frontendState}`);
+    }
   }
 };
 

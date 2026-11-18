@@ -91,9 +91,7 @@ class KontrollResourceTest {
             testregelId = testregelId,
             sideutvalId = sideutvalId,
             brukar = Brukar(emailAddress, brukarNamn),
-            elementOmtale = null,
-            elementResultat = null,
-            elementUtfall = null,
+            element = null,
             testVartUtfoert = null,
             kommentar = null)
     val testResult = testResource.createTestResultat(createTestResultat)
@@ -151,9 +149,7 @@ class KontrollResourceTest {
             testregelId = testregelId,
             sideutvalId = sideutvalId,
             brukar = Brukar(emailAddress, brukarNamn),
-            elementOmtale = null,
-            elementResultat = null,
-            elementUtfall = null,
+            element = null,
             testVartUtfoert = null,
             kommentar = null)
 
@@ -209,9 +205,7 @@ class KontrollResourceTest {
             testregelId = testregelId,
             sideutvalId = sideutvalId,
             brukar = Brukar(emailAddress, brukarNamn),
-            elementOmtale = null,
-            elementResultat = null,
-            elementUtfall = null,
+            element = null,
             testVartUtfoert = null,
             kommentar = null)
 

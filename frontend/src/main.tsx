@@ -3,12 +3,9 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { IntlProvider } from 'react-intl';
 
-
 const queryClient = new QueryClient();
 const locale = getLocale();
 import NO from './lang/no.json';
-
-
 
 import '@digdir/designsystemet-css';
 
@@ -25,9 +22,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 );
 
 function getLocale() {
-  return (
-   'no'
-  );
+  return 'no';
 }
 
 function getMessages() {
