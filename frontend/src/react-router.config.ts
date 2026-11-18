@@ -5,5 +5,5 @@ export default {
   appDirectory: 'src',
 
   // Enforce runtime Server-Side Rendering (defaults to true)
-  ssr: true,
+  ssr: false,
 } satisfies Config;
