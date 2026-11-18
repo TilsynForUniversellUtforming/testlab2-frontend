@@ -5,6 +5,8 @@ import { ActiveTest, ManuellTestStatus } from '@test/types';
 import { elementOmtaleSide, ResultatManuellKontroll } from '@test/api/types';
 import { isDefined, isNotDefined } from '@common/util/validationUtils';
 import { Severity } from '@common/types';
+import { useTestSession } from './testSessionContext';
+import { useTestResultatActions } from '@test/test-overview/hooks/useTestResultatActions';
 
 type RaiseAlert = (severity: Severity, title: string, message: string) => void;
 
@@ -78,21 +80,8 @@ function canSetFerdigStatus(
   return true;
 }
 
-export interface UseTestregelSelectionProps {
-  testgrunnlagId: number;
-  sideId: number;
-  testResults: ResultatManuellKontroll[];
-  testStatusMap: Map<string, ManuellTestStatus>;
+export interface UseTestregelSelectionDeps {
   testreglarForLoeysing: Testregel[];
-  activeTest: ActiveTest | undefined;
-  setActiveTest: (test: ActiveTest | undefined) => void;
-  testregelActions: TestregelSelectionActions;
-  processData: (
-    results: ResultatManuellKontroll[],
-    sideId: number,
-    testregel?: Testregel
-  ) => void;
-  raiseAlert: RaiseAlert;
 }
 
 export interface UseTestregelSelectionResult {
@@ -103,21 +92,26 @@ export interface UseTestregelSelectionResult {
   ) => void;
 }
 
-
-
-
 export const useTestregelSelection = ({
-  testgrunnlagId,
-  sideId,
-  testResults,
-  testStatusMap,
   testreglarForLoeysing,
-  activeTest,
-  setActiveTest,
-  testregelActions,
-  processData,
-  raiseAlert,
-}: UseTestregelSelectionProps): UseTestregelSelectionResult => {
+}: UseTestregelSelectionDeps): UseTestregelSelectionResult => {
+  // Get remaining needed state from context
+  const {
+    testgrunnlagId,
+    sideId,
+    testResults,
+    testStatusMap,
+    activeTest,
+    setActiveTest,
+    processData,
+    raiseAlert,
+  } = useTestSession();
+
+  const testResultatActions = useTestResultatActions();
+
+  const doCreateTestResult = testResultatActions.doCreateTestResult;
+  const doUpdateTestResultStatus = testResultatActions.doUpdateTestResultStatus;
+
   const onChangeTestregel = useCallback(
     (testregelId: number) => {
       const nextTestregel = testreglarForLoeysing.find(
@@ -142,7 +136,7 @@ export const useTestregelSelection = ({
         sideId
       );
       if (testStatusMap.get(statusKey) === 'ikkje-starta') {
-        testregelActions.createResult(nextTestregel, sideId);
+        doCreateTestResult(nextTestregel, sideId);
       } else {
         processData(testResults, sideId, nextTestregel);
       }
@@ -155,7 +149,7 @@ export const useTestregelSelection = ({
       activeTest,
       testgrunnlagId,
       processData,
-      testregelActions,
+      doCreateTestResult,
       raiseAlert,
       setActiveTest,
     ]
@@ -176,10 +170,10 @@ export const useTestregelSelection = ({
       }
 
       if (shouldCreateTestResult(status, selected)) {
-        handleCreateNewTestResults(testregelActions, testregel, sideId, status, setActiveTest);
+        handleCreateNewTestResults(doCreateTestResult, testregel, sideId, status, setActiveTest);
       }
       else {
-        handleUpdateTestresults(status, selected, testregelId, testregelActions, activeTest, setActiveTest);
+        handleUpdateTestresults(status, selected, testregelId, doUpdateTestResultStatus, activeTest, setActiveTest);
       }
     },
     [
@@ -187,7 +181,8 @@ export const useTestregelSelection = ({
       testResults,
       sideId,
       activeTest,
-      testregelActions,
+      doCreateTestResult,
+      doUpdateTestResultStatus,
       raiseAlert,
       setActiveTest,
     ]
@@ -237,13 +232,13 @@ function illegalFinishedState(
 }
 
 function handleCreateNewTestResults(
-  testregelActions: TestregelSelectionActions,
+  doCreateTestResult: (testregel: Testregel, sideId: number | undefined, status?: ManuellTestStatus) => void,
   testregel: Testregel,
   sideId: number,
   status: ManuellTestStatus,
   setActiveTest: (test: ActiveTest | undefined) => void
 ) {
-  testregelActions.createResult(
+  doCreateTestResult(
     testregel,
     sideId,
     status === 'under-arbeid' ? undefined : status
@@ -252,11 +247,12 @@ function handleCreateNewTestResults(
     setActiveTest(undefined);
   }
 }
+
 function handleUpdateTestresults(
   status: ManuellTestStatus,
   selected: ResultatManuellKontroll[],
   testregelId: number,
-  testregelActions: TestregelSelectionActions,
+  doUpdateTestResultStatus: (testResultat: ResultatManuellKontroll[]) => void,
   activeTest: ActiveTest | undefined,
   setActiveTest: (test: ActiveTest | undefined) => void
 ) {
@@ -264,7 +260,7 @@ function handleUpdateTestresults(
 
   const updated = updateResultStatus(updatedSideUtfall, testregelId, status);
 
-  testregelActions.updateStatus(updated);
+  doUpdateTestResultStatus(updated);
   if (
     shouldCloseActiveTest(status) &&
     testregelId === activeTest?.testregel?.id

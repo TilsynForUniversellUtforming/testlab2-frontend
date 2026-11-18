@@ -4,9 +4,12 @@ import LoeysingTestContent from '@test/test-overview/loeysing-test/LoeysingTestC
 import LoeysingTestHeading from '@test/test-overview/loeysing-test/LoeysingTestHeading';
 import TestFerdig from '@test/test-overview/loeysing-test/TestFerdig';
 import { TestContextKontroll, TestOverviewLoaderResponse } from '@test/types';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLoaderData, useOutletContext, useParams } from 'react-router';
 import { useTestOverviewState } from '@test/test-overview/hooks/useTestOverviewState';
+import { TestSessionProvider } from '@test/test-overview/hooks/testSessionContext';
+import { useTestOverviewElement } from '@test/test-overview/hooks/useTestOverviewElement';
+import { useTestregelSelection } from '@test/test-overview/hooks/useTestregelSelection';
 
 
 const TestOverviewLoeysing = () => {
@@ -29,38 +32,69 @@ const TestOverviewLoeysing = () => {
   } = useLoaderData() as TestOverviewLoaderResponse;
   const [alert, raiseAlert, modalRef] = useAlertModal();
 
+  return (
+    <TestSessionProvider
+      testgrunnlagId={testgrunnlagId}
+      loeysingId={loeysingId}
+      innhaldstypeList={innhaldstypeList}
+      sideutvalTypeList={sideutvalTypeList}
+      testResultatForLoeysing={testResultatForLoeysing}
+      sideutvalForLoeysing={sideutvalForLoeysing}
+      testreglarForLoeysing={testreglarForLoeysing}
+      testKeys={testKeys}
+      raiseAlert={raiseAlert}
+    >
+      <TestOverviewLoeysingSContent
+        activeLoeysing={activeLoeysing}
+        kontrollTitle={kontrollTitle}
+        testreglarForLoeysing={testreglarForLoeysing}
+        testKeys={testKeys}
+        innhaldstypeList={innhaldstypeList}
+        alert={alert}
+        modalRef={modalRef}
+      />
+    </TestSessionProvider>
+  );
+};
+
+interface TestOverviewLoeysingSContentProps {
+  activeLoeysing: any;
+  kontrollTitle: string;
+  testreglarForLoeysing: any[];
+  testKeys: string[];
+  innhaldstypeList: any[];
+  alert: any;
+  modalRef: React.RefObject<HTMLDialogElement | null>;
+}
+
+const TestOverviewLoeysingSContent = ({
+  activeLoeysing,
+  kontrollTitle,
+  testreglarForLoeysing,
+  testKeys,
+  innhaldstypeList,
+  alert,
+  modalRef,
+}: TestOverviewLoeysingSContentProps) => {
   const {
-    innhaldstype,
     onChangeInnhaldstype,
-    pageType,
-    pageTypeList,
-    onChangeSideutval,
-    activeTest,
-    setActiveTest,
     testFerdig,
     progressionPercent,
-    testregelListElements,
-    doUpdateTestResult,
-    onChangeTestregel,
-    onChangeTestregelStatus,
-    slettTestelement,
-    createNewTestResult,
-    doSetTestregelOutcome,
   } = useTestOverviewState({
-    testgrunnlagId,
-    loeysingId,
-    innhaldstypeList,
-    sideutvalTypeList,
-    testResultatForLoeysing,
-    sideutvalForLoeysing,
     testreglarForLoeysing,
     testKeys,
-    raiseAlert,
+    innhaldstypeList,
   });
 
-  const handleSetInactiveTest = useCallback(() => {
-    setActiveTest(undefined);
-  }, [setActiveTest]);
+  // Get selection - simplified props
+  const testregelSelection = useTestregelSelection({
+    testreglarForLoeysing,
+  });
+
+  const { testregelListElements } = useTestOverviewElement({
+    testreglarForLoeysing,
+    testKeys,
+  });
 
   useEffect(() => {
     if (alert) {
@@ -68,37 +102,22 @@ const TestOverviewLoeysing = () => {
     }
   }, [alert, modalRef]);
 
-
   return (
     <div className="manual-test-container">
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={activeLoeysing.namn}
-        sideutvalList={pageTypeList}
-        sideutval={pageType}
-        onChangeSideutval={onChangeSideutval}
         innhaldstypeList={innhaldstypeList}
-        innhaldstype={innhaldstype}
         onChangeInnhaldstype={onChangeInnhaldstype}
-        testgrunnlagId={testgrunnlagId}
-        currentLoeysingId={loeysingId}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
       <div className="manual-test-wrapper">
         <div className="manual-test-buttons">
           <LoeysingTestContent
-            sideutval={pageType}
-            innhaldstype={innhaldstype}
             progressionPercent={progressionPercent}
             testregelList={testregelListElements}
-            activeTest={activeTest}
-            clearActiveTestregel={handleSetInactiveTest}
-            onChangeTestregel={onChangeTestregel}
-            createNewTestResult={createNewTestResult}
-            doUpdateTestResult={doUpdateTestResult}
-            slettTestelement={slettTestelement}
-            onChangeStatus={onChangeTestregelStatus}
-            onSetPageOutCome={doSetTestregelOutcome}
+            onChangeTestregel={testregelSelection.onChangeTestregel}
+            onChangeStatus={testregelSelection.onChangeTestregelStatus}
           />
         </div>
         {alert && (

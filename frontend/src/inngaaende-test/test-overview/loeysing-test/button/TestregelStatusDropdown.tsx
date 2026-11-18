@@ -16,8 +16,7 @@ const TestregelStatusDropdown = ({
   status,
 }: Props) => {
   const isStarted = status !== 'ikkje-starta';
-  const isFinished =
-    status === 'ferdig' || status === 'samsvar' || status === 'ikkje-forekomst';
+  const isFinished = status === 'ferdig' || status === 'samsvar' || status === 'ikkje-forekomst';
   const isActive = isStarted && !isFinished;
 
   const options: StatusDropdownOption<ManuellTestStatus>[] = [
