@@ -46,13 +46,13 @@ export const useTestOverviewElement = ({
   const testregelListElements = useMemo(
     () =>
       mapTestregelOverviewElements(
-        testreglarForLoeysing,
+        filteredTestregel,
         sideId,
         testStatusMap,
         testgrunnlagId,
         testResults
       ),
-    [testreglarForLoeysing, sideId, testStatusMap, testgrunnlagId, testResults]
+    [filteredTestregel, sideId, testStatusMap, testgrunnlagId, testResults]
   );
 
   return { testregelListElements,testStatusMap };

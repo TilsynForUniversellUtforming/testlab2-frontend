@@ -38,7 +38,7 @@ const TestregelUtfallDropdown = ({
 
   return (
     <StatusDropdown
-      id={`test-status-dropdown-${testoverviewElement.testregelId}`}
+      id={`test-utfall-dropdown-${testoverviewElement.testregelId}`}
       options={options}
       onSelect={(value) =>
         onChangeStatus(

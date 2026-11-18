@@ -112,7 +112,7 @@ export const fetchWithCsrf = async (
   defaultContentType: boolean = true
 ): Promise<Response> => {
   if (init) {
-    return await fetch(resolveFetchInput('/csrf'), { method: 'GET' }).then(
+    return await fetch('/csrf', { method: 'GET' }).then(
       async (response) => {
         const token = await getTokenFromResponse(response);
 
@@ -141,7 +141,7 @@ export const fetchWithErrorHandling: typeof fetch = async (
 ) => {
   try {
     const init: RequestInit = { credentials: 'include', ...rest[0] };
-    const response = await fetch(resolveFetchInput(input), init);
+    const response = await fetch(input, init);
     if (response.status >= 500) {
       console.error(
         `HTTP error! status: ${response.status}, message: ${response.statusText}`

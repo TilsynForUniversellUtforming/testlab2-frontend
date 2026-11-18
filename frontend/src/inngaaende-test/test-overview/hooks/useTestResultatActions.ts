@@ -111,9 +111,7 @@ export const useTestResultatActions = ({
   );
 
   const doSetTestregelOutcome = useCallback(
-    async (outcome: ElementResultat,testregelId:number,sideId:number) => {
-      await deleteOldResults(testResults, testregelId, sideId);
-
+    async (outcome: ElementResultat, testregelId: number, sideId: number) => {
       await withAggregert(
         () =>
           createTestResultat({
@@ -129,9 +127,20 @@ export const useTestResultatActions = ({
           }),
         'Kunne ikkje endre status'
       );
-      await refreshTestResults();
+      await refreshTestResults(
+        activeTest?.testregel.id === testregelId
+          ? activeTest.testregel
+          : undefined
+      );
     },
-    [refreshTestResults,testResults]
+    [
+      activeTest,
+      loeysingId,
+      refreshTestResults,
+      testgrunnlagId,
+      testResults,
+      withAggregert,
+    ]
   );
 
   const doUpdateTestResult = useCallback(
@@ -291,11 +300,3 @@ export const useTestResultatActions = ({
   };
 };
 
-async function deleteOldResults(testResults: ResultatManuellKontroll[], testregelId:number,sideId: number) {
-  for (const testresult1 of testResults
-    .filter((testresult) => {
-      return testresult.testregelId == testregelId && testresult.sideutvalId == sideId;
-    })) {
-      await deleteTestResultat(testresult1);
-    }
-}

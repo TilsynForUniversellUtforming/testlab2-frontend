@@ -69,8 +69,7 @@ class TestResource(
   ): ResultatManuellKontroll =
       runCatching {
             logger.info(
-                "Lagrer nytt testresultat med : {}, testregelId: {}, sideutalId: {}",
-                createTestResultat,
+                "Lagrer nytt testresultat med :, testregelId: {}, sideutalId: {}",
                 createTestResultat.testregelId,
                 createTestResultat.sideutvalId)
             val testResultat =
