@@ -175,13 +175,6 @@ const LoeysingTestContent = memo(
                 })}
                 key={rowKey}
               >
-                <TestregelButtonList
-                  TestregelOverviewRow={row}
-                  activeTest={activeTest}
-                  onChangeTestregel={onChangeTestregel}
-                  onChangeStatus={onChangeStatus}
-                  onSetSideUtfall={onChangeSideUtfall}
-                />
 
                 {row.some((tr) => tr.testregelId === Number(activeTest?.testregel.id)) &&
                   activeTest &&

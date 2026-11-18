@@ -62,7 +62,7 @@ const TestregelButton = memo(
             {testregel.name}
           </Paragraph>
         </button>
-        <div className={styles.statusDropdowns}>
+        <div className={styles.statusDropdown}>
           <TestregelStatusDropdown
             status={testregel.status}
             onChangeStatus={onChangeStatus}

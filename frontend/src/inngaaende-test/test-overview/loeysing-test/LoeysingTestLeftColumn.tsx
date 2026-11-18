@@ -7,50 +7,50 @@ import { Col, Row } from 'react-bootstrap';
 import TestregelButtonList, {
   TestregelButtonListProps,
 } from '@test/testregel-form/TestregelButtonList';
+import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
 
 
 const LoeysingTestLeftColumn = ({
   sideutval,
-  innhaldstype,
+  innhaldstypeTesting,
   testregeButtonListProps,
 }: LeftColumFilterProps) => {
+
+  const { pageType, pageTypeList, innhaldstype,  } =
+    useTestSession();
+
   return (
     <Col as={'aside'} className={styles.loeysingTestLeftColumn}>
       <h1>Left Column</h1>
       <Row className={styles.leftColumnRow}>
         <PageTypeSelector
-          sideutvalList={sideutval.list}
-          sideutvalId={sideutval.selected.sideId}
+          sideutvalList={pageTypeList}
+          sideutvalId={pageType.sideId}
           onChangeSideutval={sideutval.onChange}
-          innhaldstypeList={innhaldstype.list}
-          innhaldstypeId={innhaldstype.selected.id}
-          onChangeType={innhaldstype.onChange}
+          innhaldstypeList={innhaldstypeTesting.list}
+          innhaldstypeId={innhaldstype.id}
+          onChangeType={innhaldstypeTesting.onChange}
         />
       </Row>
       <Row className={styles.leftColumnRow}>
-        <TestregelButtonList
-          {...testregeButtonListProps}
-        />
+        <TestregelButtonList {...testregeButtonListProps} />
       </Row>
     </Col>
   );
 };
 
 export interface SideutvalProps {
-  list: PageType[];
-  selected: PageType;
   onChange: (sideutvalId: number) => void;
 }
 
 export interface InnhaldstypeProps {
   list: InnhaldstypeTesting[];
-  selected: InnhaldstypeTesting;
   onChange: (innhaldstypeId: number) => void;
 }
 
 export interface LeftColumFilterProps {
   sideutval: SideutvalProps;
-  innhaldstype: InnhaldstypeProps;
+  innhaldstypeTesting: InnhaldstypeProps;
   testregeButtonListProps: TestregelButtonListProps;
 }
 

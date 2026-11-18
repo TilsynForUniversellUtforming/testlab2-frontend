@@ -42,15 +42,6 @@ const TestRegelParamSelection = ({
       labelPlacement="right"
       percentage={progressionPercent}
     />
-    <Switch
-      position="start"
-      data-size="sm"
-      checked={showHelpText}
-      onChange={toggleShowHelpText}
-      aria-label="Hjelpetekster"
-    >
-      Hjelpetekster
-    </Switch>
   </div>
 );
 
