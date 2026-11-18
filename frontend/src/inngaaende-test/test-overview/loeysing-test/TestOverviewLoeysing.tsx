@@ -119,8 +119,6 @@ const TestOverviewLoeysingSContent = ({
       <LoeysingTestHeading
         title={kontrollTitle}
         currentLoeysingName={activeLoeysing.namn}
-        innhaldstypeList={innhaldstypeList}
-        onChangeInnhaldstype={onChangeInnhaldstype}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
       <Row className={styles.manualTestWrapper}>
