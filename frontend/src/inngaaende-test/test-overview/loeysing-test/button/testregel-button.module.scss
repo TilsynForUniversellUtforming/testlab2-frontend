@@ -12,9 +12,9 @@
   }
 
   .status-dropdown {
-    position: relative;
-    top: -2.75rem;
-    left: 7.5rem;
+   // position: relative;
+    //top: -2.75rem;
+    //left: 7.5rem;
     //display: inline-block;
     > button {
       color: var(--ds-color-text-neutral-default);
@@ -34,8 +34,8 @@
   overflow: hidden;
   padding: 0;
   height: 10rem;
-  min-width: 26rem;
-  max-width: 26rem;
+  //min-width: 26rem;
+  //max-width: 26rem;
 
   &.ferdig {
     background-color: var(--ds-color-success-surface-tinted);

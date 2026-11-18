@@ -2,8 +2,7 @@ import { memo } from 'react';
 import styles from './loeysing-test.module.css';
 import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
 import { InnhaldstypeTesting } from '@testreglar/api/types';
-import { PageType } from '@test/types';
-import { Col, Row } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import TestregelButtonList, {
   TestregelButtonListProps,
 } from '@test/testregel-form/TestregelButtonList';
@@ -20,7 +19,7 @@ const LoeysingTestLeftColumn = ({
     useTestSession();
 
   return (
-    <Col as={'aside'} className={styles.loeysingTestLeftColumn}>
+    <>
       <h1>Left Column</h1>
       <Row className={styles.leftColumnRow}>
         <PageTypeSelector
@@ -35,7 +34,7 @@ const LoeysingTestLeftColumn = ({
       <Row className={styles.leftColumnRow}>
         <TestregelButtonList {...testregeButtonListProps} />
       </Row>
-    </Col>
+    </>
   );
 };
 

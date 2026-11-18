@@ -106,6 +106,11 @@ const TestOverviewLoeysingSContent = ({
     testKeys,
   });
 
+  // Determine if right column has content (currently empty, so it won't display)
+  const hasRightColumnContent = false;
+  const mainColWidth = hasRightColumnContent ? 8 : 10;
+  const rightColWidth = hasRightColumnContent ? 2 : 0;
+
   useEffect(() => {
     if (alert) {
       modalRef.current?.showModal();
@@ -121,32 +126,36 @@ const TestOverviewLoeysingSContent = ({
         currentLoeysingName={activeLoeysing.namn}
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
-      <Row className={styles.manualTestWrapper}>
-        <LoeysingTestLeftColumn
-          sideutval={{
-            onChange: onChangeSideutval,
-          }}
-          innhaldstypeTesting={{
-            list: innhaldstypeList,
-            onChange: onChangeInnhaldstype,
-          }}
-          testregeButtonListProps={{
-            testregelOverviewRow: testregelListElements,
-            activeTest,
-            onChangeTestregel: testregelSelection.onChangeTestregel,
-            onChangeStatus: testregelSelection.onChangeTestregelStatus,
-            onSetSideUtfall: (status: ElementResultat, testregelId: number,sideId:number) => {throw new Error('Not implemented')},
-          }}
-        />
-        <Col as={'main'} xs={6} className={styles.manualTestButtons}>
+      <Row className={`${styles.manualTestWrapper} g-0`}>
+        <Col as={'aside'} xs={2} className={styles.loeysingTestLeftColumn}>
+          <LoeysingTestLeftColumn
+            sideutval={{
+              onChange: onChangeSideutval,
+            }}
+            innhaldstypeTesting={{
+              list: innhaldstypeList,
+              onChange: onChangeInnhaldstype,
+            }}
+            testregeButtonListProps={{
+              testregelOverviewRow: testregelListElements,
+              activeTest,
+              onChangeTestregel: testregelSelection.onChangeTestregel,
+              onChangeStatus: testregelSelection.onChangeTestregelStatus,
+              onSetSideUtfall: (status: ElementResultat, testregelId: number,sideId:number) => {throw new Error('Not implemented')},
+            }}
+          />
+        </Col>
+        <Col as={'main'} xs={mainColWidth} className={styles.manualTestButtons}>
           <LoeysingTestContent
             progressionPercent={progressionPercent}
             testregelList={testregelListElements}
-            onChangeTestregel={testregelSelection.onChangeTestregel}
-            onChangeStatus={testregelSelection.onChangeTestregelStatus}
           />
         </Col>
-        <LoeysingTestRightColumn />
+        {hasRightColumnContent && (
+          <Col as={'aside'} xs={rightColWidth} className={styles.loeysingTestRightColumn}>
+            <LoeysingTestRightColumn />
+          </Col>
+        )}
         {alert && (
           <AlertModal
             ref={modalRef}
