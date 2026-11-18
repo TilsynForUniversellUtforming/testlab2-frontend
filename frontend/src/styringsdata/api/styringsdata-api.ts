@@ -62,7 +62,7 @@ export const createStyringsdataLoeysing = async (
     body: JSON.stringify({ ...styringsdata, type: 'loeysing' }),
   }).then((response) => {
     if (response.status === 400) {
-      throw new Error('Styringsdata finns allereie');
+      throw new Error((response as any).detail);
     }
     return responseWithLogErrors(response, 'Kunne ikkje opprette styringsdata');
   });
@@ -104,7 +104,7 @@ export const createStyringsdataKontroll = async (
     body: JSON.stringify({ ...styringsdata, type: 'kontroll' }),
   }).then((response) => {
     if (response.status === 400) {
-      throw new Error('Styringsdata finns allereie');
+      throw new Error((response as any).detail);
     }
     return responseWithLogErrors(response, 'Kunne ikkje opprette styringsdata');
   });
