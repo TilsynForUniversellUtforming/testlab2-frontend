@@ -188,7 +188,7 @@ export const useTestResultatActions = (): UseTestResultatActionsResult => {
         raiseAlert(
           'danger',
           'Kunne ikkje lagre',
-          'Ugyldig oppdatering av testresultat'
+          'Ugyldig oppdatering av testresultat. Kunne ikkje oppdatering utan akiv test'
         );
       }
     },
