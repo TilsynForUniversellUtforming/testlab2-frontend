@@ -58,21 +58,15 @@ const TestregelButton = memo(
               )}
             </div>
           </div>
-          <Paragraph className={styles.testregelButtonName}>
+          <div className={styles.testregelButtonName}>
             {testregel.name}
-          </Paragraph>
+          </div>
         </button>
-        <div className={styles.statusDropdown}>
           <TestregelStatusDropdown
             status={testregel.status}
             onChangeStatus={onChangeStatus}
             testregelId={testregel.testregelId}
           />
-          <TestregelUtfallButton
-            onChangeStatus={onSetSideUtfall}
-            testoverviewElement={testregel}
-          />
-        </div>
       </div>
     );
   }

@@ -1,12 +1,18 @@
 import { ResultatManuellKontroll } from '@test/api/types';
 import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
 import { Table } from '@digdir/designsystemet-react';
-import { ColumnDef, VisibilityState } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  createColumnHelper,
+  VisibilityState,
+} from '@tanstack/react-table';
 import { ResultatOversiktLoeysing } from '@resultat/types';
 import { TableParams } from '@resultat/ResultatTable';
 import { resultTable } from '@resultat/tableoptions';
 import React from 'react';
 import TestlabTable from '@common/table/TestlabTable';
+import styles from './testform-results.module.scss';
+
 
 const TestOverviewResultList = () => {
   const { testResults } = useTestSession();
@@ -33,8 +39,7 @@ const TestOverviewResultList = () => {
   );
 
   return (
-    <div>
-      <h2>Test Overview Result List</h2>
+    <div className={styles.testFormResults}>
     <TestlabTable
     data={testResults}
     defaultColumns={tableParams.defaultColumns}>
@@ -44,28 +49,29 @@ const TestOverviewResultList = () => {
 };
 
 
+const columnHelper = createColumnHelper<ResultatManuellKontroll>();
 
 
 export const getResultColumns = (): Array<ColumnDef<ResultatManuellKontroll>> => [
   {
-    accessorKey: 'id',
-    header: 'ID',
+    id: 'nr',
+    header: 'NR',
+    cell: (info) => `${info.row.original.testregelId} ${info.row.index + 1}`,
+  },
+  {
+    accessorKey: 'sideutvalId',
+    header: 'Side',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'testregelId',
-    header: 'Testregel ID',
+    accessorKey: 'element.elementOmtale',
+    header: 'Element',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: 'sistLagra',
-    header: 'Sist Lagra',
-    cell: (info) => info.getValue(),
+    accessorKey: 'element.elementResultat',
+    header: 'Utfall',
+    cell: (info) => info.getValue() || '-',
   },
   {
     accessorKey: 'kommentar',
@@ -73,14 +79,14 @@ export const getResultColumns = (): Array<ColumnDef<ResultatManuellKontroll>> =>
     cell: (info) => info.getValue() || '-',
   },
   {
-    accessorKey: 'testVartUtfoert',
-    header: 'Test Utført',
-    cell: (info) => info.getValue() || '-',
+    accessorKey: 'sistLagra',
+    header: 'Sist endret',
+    cell: (info) => info.getValue(),
   },
   {
     accessorKey: 'ekstraSjekk',
-    header: 'Ekstra Sjekk',
-    cell: (info) => (info.getValue() ? 'Ja' : 'Nei'),
+    header: 'Flagget',
+    cell: (info) => info.getValue(),
   },
 ];
 

@@ -1,0 +1,11 @@
+.test-form-results table {
+
+    border-spacing: 0 0.3rem;
+    th {
+        background-color: var(--ds-color-accent-surface-active);
+    }
+
+    td {
+        background-color: var(--ds-color-accent-surface-tinted);
+    }
+}

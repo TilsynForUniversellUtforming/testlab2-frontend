@@ -127,7 +127,7 @@ const TestOverviewLoeysingSContent = ({
       />
       {testFerdig && <TestFerdig loeysingNamn={activeLoeysing.namn} />}
       <Row className={`${styles.manualTestWrapper} g-0`}>
-        <Col as={'aside'} xs={2} className={styles.loeysingTestLeftColumn}>
+        <Col as={'aside'} xs={3} className={styles.loeysingTestLeftColumn}>
           <LoeysingTestLeftColumn
             sideutval={{
               onChange: onChangeSideutval,
@@ -145,7 +145,7 @@ const TestOverviewLoeysingSContent = ({
             }}
           />
         </Col>
-        <Col as={'main'} xs={mainColWidth} className={styles.manualTestButtons}>
+        <Col as={'main'} className={styles.manualTestButtons}>
           <LoeysingTestContent
             progressionPercent={progressionPercent}
             testregelList={testregelListElements}
