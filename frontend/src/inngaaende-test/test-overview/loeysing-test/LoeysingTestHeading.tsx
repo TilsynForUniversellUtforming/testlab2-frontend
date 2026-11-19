@@ -1,54 +1,35 @@
 import { memo } from 'react';
 import { Heading, Paragraph, Tag } from '@digdir/designsystemet-react';
-import PageTypeSelector from '@test/test-overview/loeysing-test/page-selector/PageTypeSelector';
-import { InnhaldstypeTesting } from '@testreglar/api/types';
 import { useTestSession } from '@test/test-overview/hooks/testSessionContext';
+import styles from './loeysing-test.module.css';
 
 export interface Props {
   title: string;
   currentLoeysingName: string;
-  innhaldstypeList: InnhaldstypeTesting[];
-  onChangeInnhaldstype: (innhaldstypeId: number) => void;
 }
 
 const LoeysingTestHeading = ({
   title,
   currentLoeysingName,
-  onChangeInnhaldstype,
-  innhaldstypeList,
-}: Props) => {
+  }: Props) => {
   const {
-    pageType,
-    pageTypeList,
     loeysingId,
-    testgrunnlagId,
-    innhaldstype,
-    onChangeSideutval,
+    testgrunnlagId
   } = useTestSession();
 
   return (
-    <div className="manual-test-heading">
+    <div className={styles.manualTestHeading}>
       <Heading data-size="xl" level={2}>
-        Gjennomfør test
+        {currentLoeysingName}
       </Heading>
       <Paragraph variant={'long'}>
         {title} TestgrunnlagId:{testgrunnlagId}
       </Paragraph>
-      <div className="tags">
-        <Tag color="second">Inngående kontroll</Tag>
-        <Tag color="second">Nettside</Tag>
-        <Tag color="second">
-          {currentLoeysingName} loeysingId: {loeysingId}
-        </Tag>
+      <div className={styles.tags}>
+        <Tag data-color="warning">Inngående kontroll</Tag>
+        <Tag data-color="warning">Nettside</Tag>
+        <Tag data-color="warning">loeysingId: {loeysingId}</Tag>
       </div>
-      <PageTypeSelector
-        sideutvalList={pageTypeList}
-        sideutvalId={pageType.sideId}
-        onChangeSideutval={onChangeSideutval}
-        innhaldstypeList={innhaldstypeList}
-        innhaldstypeId={innhaldstype.id}
-        onChangeType={onChangeInnhaldstype}
-      />
     </div>
   );
 };

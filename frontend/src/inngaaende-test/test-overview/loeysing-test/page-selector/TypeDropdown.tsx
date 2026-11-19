@@ -3,6 +3,7 @@ import { Dropdown } from '@digdir/designsystemet-react';
 import { ChevronDownIcon } from '@navikt/aksel-icons';
 import classnames from 'classnames';
 import { useState } from 'react';
+import styles from '../loeysing-test.module.css';
 
 interface Props {
   title: string;
@@ -29,12 +30,12 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
   }));
 
   return (
-    <div className="page-selector__dropdown">
+    <div className={styles.pageSelectorDropdown}>
       <Dropdown.TriggerContext>
         <Dropdown.Trigger onClick={() => setShow((prev) => !prev)}>
           {title}
           <ChevronDownIcon
-            className="chevron-icon"
+            className={styles.chevronIcon}
             style={{ transform: show ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </Dropdown.Trigger>
@@ -46,7 +47,7 @@ const TypeDropdown = ({ title, typeId, onChangeType, options }: Props) => {
                 key={option.index}
                 onClick={() => handleButtonClick(String(option.value))}
                 className={classnames({
-                  active: option.value === String(typeId),
+                  [styles.active]: option.value === String(typeId),
                 })}
               >
                 {option.label}

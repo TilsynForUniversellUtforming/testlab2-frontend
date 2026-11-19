@@ -7,8 +7,8 @@ import {
 } from '@test/types';
 import { toTestregelStatusKey } from '@test/util/testregelUtils';
 
-interface Props {
-  TestregelOverviewRow: TestregelOverviewElement[];
+export interface TestregelButtonListProps {
+  testregelOverviewRow: TestregelOverviewElement[];
   activeTest: ActiveTest | undefined;
   onChangeTestregel: (testregelId: number) => void;
   onChangeStatus: (status: ManuellTestStatus, testregelId: number) => void;
@@ -16,17 +16,17 @@ interface Props {
 }
 
 const TestregelButtonList = ({
-  TestregelOverviewRow,
+  testregelOverviewRow,
   activeTest,
   onChangeTestregel,
   onChangeStatus,
   onSetSideUtfall,
-}: Props) => {
+}: TestregelButtonListProps) => {
 
 
   return (
     <div className="testregel-container">
-      {TestregelOverviewRow.map((tr) => (
+      {testregelOverviewRow.map((tr) => (
         <TestregelButton
           isActive={tr.testregelId === Number(activeTest?.testregel.id)}
           key={tr.testregelId}
